@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
-import { QuizV1Schema } from "@oakai/aila/src/protocol/schema";
-import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
+import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 
@@ -14,7 +13,8 @@ export type QuizSectionProps = {
 
 export const QuizSection = ({ quizSection }: QuizSectionProps) => {
   const quiz = useMemo(() => {
-    return QuizV1Schema.safeParse(quizSection).data;
+    const result = QuizV2Schema.safeParse(quizSection);
+    return result.success ? result.data : null;
   }, [quizSection]);
 
   if (!quiz) {
@@ -22,11 +22,9 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
     return "Invalid quiz";
   }
 
-  const quizV2 = convertQuizV1ToV2(quiz);
-
   return (
     <>
-      {quizV2.questions.map((question, index) => {
+      {quiz.questions.map((question, index) => {
         if (question.questionType === "multiple-choice") {
           return (
             <MultipleChoiceQuestion

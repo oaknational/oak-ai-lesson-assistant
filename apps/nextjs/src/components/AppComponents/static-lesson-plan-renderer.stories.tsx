@@ -22,13 +22,19 @@ const meta = {
       topic: "Amphibians",
       learningOutcome:
         "Students will understand the characteristics of amphibians",
-      starterQuiz: [
-        {
-          question: "What do you know about frogs?",
-          answers: ["They are amphibians"],
-          distractors: ["They are reptiles", "They are fish"],
-        },
-      ],
+      starterQuiz: {
+        version: "v2" as const,
+        imageAttributions: [],
+        questions: [
+          {
+            questionType: "multiple-choice" as const,
+            question: "What do you know about frogs?",
+            answers: ["They are amphibians"],
+            distractors: ["They are reptiles", "They are fish"],
+            hint: null,
+          },
+        ],
+      },
       keyLearningPoints: [
         "Frogs are amphibians",
         "They live in water and on land",

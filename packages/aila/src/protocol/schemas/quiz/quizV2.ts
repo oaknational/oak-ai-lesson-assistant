@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { minMaxText } from "../../schemaHelpers";
+
 // ********** QUIZ V2 (discriminated union for multiple quiz types) **********
 
 export const QUIZ_V2_DESCRIPTIONS = {
@@ -7,12 +9,14 @@ export const QUIZ_V2_DESCRIPTIONS = {
   questionType: "The type of quiz question",
   answers: "The answers specific to this question type",
   hint: "Optional hint to help students",
+  imageAttributions:
+    "Copyright info for images. DO NOT hallucinate - only use existing attributions from source.",
 } as const;
 
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
   question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
-  hint: z.string().optional().describe(QUIZ_V2_DESCRIPTIONS.hint),
+  hint: z.string().nullable().describe(QUIZ_V2_DESCRIPTIONS.hint),
 });
 
 // Multiple choice question
@@ -64,6 +68,14 @@ export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
 export const QuizV2Schema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
+  imageAttributions: z
+    .array(
+      z.object({
+        imageUrl: z.string(),
+        attribution: z.string(),
+      }),
+    )
+    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
 export const QuizV2SchemaWithoutLength = QuizV2Schema;
@@ -82,3 +94,45 @@ export type QuizV2QuestionShortAnswer = z.infer<
 >;
 export type QuizV2QuestionMatch = z.infer<typeof QuizV2QuestionMatchSchema>;
 export type QuizV2QuestionOrder = z.infer<typeof QuizV2QuestionOrderSchema>;
+
+// ********** LLM-SPECIFIC SCHEMAS (MULTIPLE CHOICE ONLY) **********
+
+// LLM can only generate multiple choice questions, so we create specific schemas for that
+export const QuizV2MultipleChoiceOnlyQuestionSchema =
+  QuizV2QuestionMultipleChoiceSchema;
+
+export const QuizV2MultipleChoiceOnlySchema = z.object({
+  version: z.literal("v2").describe("Schema version identifier"),
+  questions: z
+    .array(QuizV2MultipleChoiceOnlyQuestionSchema)
+    .describe(
+      `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
+    ),
+  imageAttributions: z
+    .array(
+      z.object({
+        imageUrl: z.string(),
+        attribution: z.string(),
+      }),
+    )
+    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
+});
+
+export const QuizV2MultipleChoiceOnlySchemaWithoutLength =
+  QuizV2MultipleChoiceOnlySchema;
+
+export const QuizV2MultipleChoiceOnlyOptionalSchema =
+  QuizV2MultipleChoiceOnlySchema.optional();
+
+export const QuizV2MultipleChoiceOnlyStrictMax6Schema =
+  QuizV2MultipleChoiceOnlySchema.extend({
+    questions: z.array(QuizV2MultipleChoiceOnlyQuestionSchema).min(1).max(6),
+  });
+
+// Type exports for LLM-specific schemas
+export type QuizV2MultipleChoiceOnly = z.infer<
+  typeof QuizV2MultipleChoiceOnlySchema
+>;
+export type QuizV2MultipleChoiceOnlyOptional = z.infer<
+  typeof QuizV2MultipleChoiceOnlyOptionalSchema
+>;

@@ -17,7 +17,7 @@ import {
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-//const FIXTURE_MODE = "record" as FixtureMode;
+// const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
