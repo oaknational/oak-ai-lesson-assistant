@@ -7,6 +7,11 @@ import {
   type QuizV1Optional,
   QuizV1Schema,
   QuizV1SchemaWithoutLength,
+  QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  QuizV2MultipleChoiceOnlyStrictMax6Schema,
+  type QuizV2Optional,
+  QuizV2Schema,
+  QuizV2SchemaWithoutLength,
 } from "./schemas/quiz";
 import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
 
@@ -340,7 +345,7 @@ export const PriorKnowledgeSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.priorKnowledge);
 
-export const PriorKnowledgeSctrictMax5Schema =
+export const PriorKnowledgeStrictMax5Schema =
   PriorKnowledgeSchema.min(1).max(5);
 
 export const KeyLearningPointsSchema = z
@@ -368,11 +373,11 @@ export const CompletedLessonPlanSchema = z.object({
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
   basedOn: BasedOnSchema.nullish(),
-  starterQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+  starterQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.describe("The third learning cycle"),
-  exitQuiz: QuizV1Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
@@ -503,7 +508,7 @@ export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
   | MisconceptionsOptional
   | KeywordOptional[]
-  | QuizV1Optional
+  | QuizV2Optional
   | CycleOptional
   | string
   | string[]
@@ -521,14 +526,21 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizV1SchemaWithoutLength.describe(
+  starterQuiz: QuizV2SchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
   cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
-  exitQuiz: QuizV1SchemaWithoutLength.describe(
+  exitQuiz: QuizV2SchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),
   additionalMaterials: AdditionalMaterialsSchema,
 });
+
+// Re-export quiz schemas for external use
+export {
+  QuizV2MultipleChoiceOnlySchema,
+  QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  QuizV2MultipleChoiceOnlyStrictMax6Schema,
+} from "./schemas/quiz";

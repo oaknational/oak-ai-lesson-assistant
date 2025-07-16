@@ -17,7 +17,7 @@ export function convertQuizV1QuestionToV2(
     question: questionV1.question,
     answers: questionV1.answers,
     distractors: questionV1.distractors,
-    hint: undefined,
+    hint: null,
   };
 }
 
@@ -28,6 +28,7 @@ export function convertQuizV1ToV2(quizV1: QuizV1): QuizV2 {
   return {
     version: "v2",
     questions: quizV1.map(convertQuizV1QuestionToV2),
+    imageAttributions: [],
   };
 }
 
@@ -48,4 +49,27 @@ export function detectQuizVersion(
   }
 
   return "unknown";
+}
+
+/**
+ * Type guard to check if a quiz is V1 format
+ */
+export function isQuizV1(
+  quiz: QuizV1 | QuizV2 | null | undefined,
+): quiz is QuizV1 {
+  return Array.isArray(quiz);
+}
+
+/**
+ * Type guard to check if a quiz is V2 format
+ */
+export function isQuizV2(
+  quiz: QuizV1 | QuizV2 | null | undefined,
+): quiz is QuizV2 {
+  return (
+    quiz != null &&
+    typeof quiz === "object" &&
+    "version" in quiz &&
+    quiz.version === "v2"
+  );
 }

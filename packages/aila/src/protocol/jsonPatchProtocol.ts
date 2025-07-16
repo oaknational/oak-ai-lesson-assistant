@@ -25,7 +25,9 @@ import {
   MisconceptionsSchemaWithoutLength,
   QuizV1OptionalSchema,
   QuizV1Schema,
-  QuizV1SchemaWithoutLength,
+  QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  QuizV2OptionalSchema,
+  QuizV2Schema,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -119,12 +121,20 @@ export const PatchCycleForLLM = z.object({
   ),
 });
 
+/**
+ * @deprecated Use PatchQuizV2Optional instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
 export const PatchQuizV1Optional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
   value: QuizV1OptionalSchema,
 });
 
+/**
+ * @deprecated Use PatchQuizV2 instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
 export const PatchQuizV1 = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
@@ -133,11 +143,26 @@ export const PatchQuizV1 = z.object({
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
 // so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchQuizV1ForLLM = z.object({
-  type: z.literal("quizV1"),
+
+// V2 Quiz Patch Schemas
+export const PatchQuizV2Optional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV1SchemaWithoutLength,
+  value: QuizV2OptionalSchema,
+});
+
+export const PatchQuizV2 = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2Schema,
+});
+
+// For LLM - multiple choice only since LLM can only generate those
+export const PatchQuizV2ForLLM = z.object({
+  type: z.literal("quiz"),
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2MultipleChoiceOnlySchemaWithoutLength,
 });
 
 export const PatchBasedOnOptional = z.object({
@@ -239,6 +264,7 @@ export const JsonPatchValueSchema = z.union([
   PatchStringArray,
   PatchCycle,
   PatchQuizV1,
+  PatchQuizV2,
   PatchMisconceptions,
   PatchKeywords,
 ]);
@@ -253,7 +279,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchStringForLLM,
   PatchStringArrayForLLM,
   PatchCycleForLLM,
-  PatchQuizV1ForLLM,
+  PatchQuizV2ForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
 ]);
@@ -273,6 +299,7 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchStringArray,
   PatchCycleOptional,
   PatchQuizV1Optional,
+  PatchQuizV2Optional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
 ]);
@@ -299,7 +326,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchStringForLLM,
     PatchBasedOnForLLM,
     PatchMisconceptionsForLLM,
-    PatchQuizV1ForLLM,
+    PatchQuizV2ForLLM,
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,

@@ -2,7 +2,7 @@ import type {
   Cycle,
   Keyword,
   Misconception,
-  QuizV1,
+  QuizV2,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -175,12 +175,18 @@ function sampleKeyword(): Keyword {
   };
 }
 
-function sampleQuiz(): QuizV1 {
-  return [
-    {
-      question: "Sample question",
-      answers: ["Sample answer"],
-      distractors: ["Sample distractor"],
-    },
-  ];
+function sampleQuiz(): QuizV2 {
+  return {
+    version: "v2" as const,
+    imageAttributions: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question: "Sample question",
+        answers: ["Sample answer"],
+        distractors: ["Sample distractor"],
+        hint: null,
+      },
+    ],
+  };
 }
