@@ -17,7 +17,6 @@ import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
-  extractPatches,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {

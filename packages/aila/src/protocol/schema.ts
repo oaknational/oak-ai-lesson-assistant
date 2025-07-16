@@ -4,16 +4,11 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
 import {
-  type QuizV1Optional,
-  QuizV1Schema,
-  QuizV1SchemaWithoutLength,
-  QuizV2MultipleChoiceOnlySchemaWithoutLength,
-  QuizV2MultipleChoiceOnlyStrictMax6Schema,
   type QuizV2Optional,
   QuizV2Schema,
   QuizV2SchemaWithoutLength,
 } from "./schemas/quiz";
-import { type RawQuiz, rawQuizSchema } from "./schemas/quiz/rawQuiz";
+import { type RawQuiz } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
 export const BASED_ON_DESCRIPTIONS = {
