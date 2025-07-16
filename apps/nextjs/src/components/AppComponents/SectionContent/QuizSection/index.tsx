@@ -4,6 +4,7 @@ import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/s
 import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
+import { OrderQuestion } from "./OrderQuestion";
 
 export type QuizSectionProps = {
   // When we have agentic generation, we will know that sections are valid when streamed
@@ -28,6 +29,15 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
         if (question.questionType === "multiple-choice") {
           return (
             <MultipleChoiceQuestion
+              key={index}
+              question={question}
+              questionNumber={index + 1}
+            />
+          );
+        }
+        if (question.questionType === "order") {
+          return (
+            <OrderQuestion
               key={index}
               question={question}
               questionNumber={index + 1}
