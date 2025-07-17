@@ -47,7 +47,7 @@ describe("handleSetStepNumber", () => {
     jest.restoreAllMocks();
   });
 
-  it("sets stepNumber and logs info", () => {
+  it("sets correct stepNumber and scrolls", () => {
     const set = jest.fn();
     const get = createMockGet();
     // @ts-expect-error Only analytics is mocked, not the full actions shape
