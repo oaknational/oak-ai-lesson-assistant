@@ -40,7 +40,9 @@ export const MultipleChoiceQuestion = ({
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">
-            <AnswerBox wobbleOffset={index} isChecked={answer.isCorrect} />
+            <AnswerBox wobbleOffset={index}>
+              {answer.isCorrect && <AnswerBox.Check />}
+            </AnswerBox>
             <OakBox
               $font={answer.isCorrect ? "body-2-bold" : "body-2"}
               className="pt-[2px]"

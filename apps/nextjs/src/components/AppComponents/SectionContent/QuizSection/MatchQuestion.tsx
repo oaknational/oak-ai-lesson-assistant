@@ -37,56 +37,12 @@ export const MatchQuestion = ({
         />
       </OakFlex>
 
-      {/* Desktop layout */}
       <OakFlex
-        $gap="space-between-l"
-        $flexWrap="wrap"
-        $display={["none", "flex"]}
+        $gap={["space-between-s", "space-between-l"]}
+        $flexDirection={["column", "row"]}
       >
-        {/* Left column */}
-        <OakBox $minWidth="all-spacing-15">
-          {question.pairs.map((pair, index) => {
-            return (
-              <OakFlex
-                key={index}
-                $alignItems="center"
-                $mb="space-between-s"
-                $minHeight="all-spacing-7"
-              >
-                <MemoizedReactMarkdownWithStyles
-                  markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
-                  className="[&>p]:mb-0 [&>p]:inline"
-                />
-              </OakFlex>
-            );
-          })}
-        </OakBox>
-
-        {/* Right column */}
-        <OakBox>
-          {shuffledRight.map((item, index) => (
-            <OakFlex
-              key={index}
-              $alignItems="center"
-              $mb="space-between-s"
-              $minHeight="all-spacing-7"
-            >
-              <AnswerBox wobbleOffset={index}>{item.label}</AnswerBox>
-              <OakBox>
-                <MemoizedReactMarkdownWithStyles
-                  markdown={item.text}
-                  className="[&>p]:mb-0 [&>p]:inline"
-                />
-              </OakBox>
-            </OakFlex>
-          ))}
-        </OakBox>
-      </OakFlex>
-
-      {/* Mobile layout: two separate blocks */}
-      <OakBox $display={["block", "none"]}>
         {/* Left column - questions */}
-        <OakBox $mb="space-between-m">
+        <OakBox $minWidth={["auto", "all-spacing-15"]}>
           {question.pairs.map((pair, index) => {
             return (
               <OakFlex
@@ -123,7 +79,7 @@ export const MatchQuestion = ({
             </OakFlex>
           ))}
         </OakBox>
-      </OakBox>
+      </OakFlex>
     </OakBox>
   );
 };
