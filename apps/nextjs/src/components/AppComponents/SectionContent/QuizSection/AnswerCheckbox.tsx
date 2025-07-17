@@ -10,7 +10,7 @@ type AnswerCheckboxProps = {
 
 const AnswerCheckboxBase = ({ children, index = 0 }: AnswerCheckboxProps) => {
   // Calculate rotation and offsets based on index for handwritten feel
-  const rotations = [-2.5, 1.5, -1.5, 2.5, 0, -3, 1];
+  const rotations = [-2, 1.5, -1.5, 2.5, 0, -3, 1];
   const xOffsets = [0.25, -0.25, 0, 0.25, -0.25, 0, 0.25];
   const yOffsets = [-0.25, 0, 0.25, -0.25, 0.25, 0, -0.25];
 

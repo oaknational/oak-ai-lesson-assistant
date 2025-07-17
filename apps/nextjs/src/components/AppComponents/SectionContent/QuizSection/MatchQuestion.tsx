@@ -89,7 +89,12 @@ export const MatchQuestion = ({
         <OakBox $mb="space-between-m">
           {question.pairs.map((pair, index) => {
             return (
-              <OakFlex key={index} $alignItems="center" $mb="space-between-s" $minHeight="all-spacing-7">
+              <OakFlex
+                key={index}
+                $alignItems="center"
+                $mb="space-between-s"
+                $minHeight="all-spacing-7"
+              >
                 <MemoizedReactMarkdownWithStyles
                   markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
                   className="[&>p]:mb-0 [&>p]:inline"
