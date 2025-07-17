@@ -33,18 +33,7 @@ const StaticLessonPlanRenderer = ({
   lessonPlan: LooseLessonPlan;
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
-  const {
-    _experimental_starterQuizMathsV0,
-    _experimental_exitQuizMathsV0,
-    ...restOfLessonPlan
-  } = lessonPlan;
-  const lessonPlanWithExperiments: LooseLessonPlan = {
-    ...restOfLessonPlan,
-    starterQuiz:
-      lessonPlan._experimental_starterQuizMathsV0 ?? lessonPlan.starterQuiz,
-    exitQuiz: lessonPlan._experimental_exitQuizMathsV0 ?? lessonPlan.exitQuiz,
-  };
-  return Object.entries(lessonPlanWithExperiments)
+  return Object.entries(lessonPlan)
     .filter(
       (
         entry,
