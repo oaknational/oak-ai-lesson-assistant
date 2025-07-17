@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { TrpcUtils } from "@/utils/trpc";
 
 import { handleStoreError } from "../../utils/errorHandling";
 import { handleGenerateMaterial } from "../handleGenerateMaterial";
@@ -18,15 +18,27 @@ const baseLessonPlan = {
 };
 
 describe("handleGenerateMaterial", () => {
+  let mockTrpc: TrpcUtils;
+
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Create trpc mock
+    mockTrpc = {
+      client: {
+        additionalMaterials: {
+          generateAdditionalMaterial: {
+            mutate: jest.fn().mockResolvedValue({
+              resource: { foo: "bar" },
+              moderation: { flagged: false },
+            }),
+          },
+        },
+      },
+    } as unknown as TrpcUtils;
   });
 
-  it("calls mutateAsync and sets generation on success", async () => {
-    const mockMutateAsync = jest.fn().mockResolvedValue({
-      resource: { foo: "bar" },
-      moderation: { flagged: false },
-    });
+  it("calls mutate and sets generation on success", async () => {
     const mockGet = jest.fn(() => ({
       actions: {
         setGeneration: jest.fn(),
@@ -39,9 +51,11 @@ describe("handleGenerateMaterial", () => {
       id: "resource-1",
     }));
     // @ts-expect-error Only analytics is mocked, not the full actions shape
-    const handler = handleGenerateMaterial(mockSet, mockGet);
-    await handler({ mutateAsync: mockMutateAsync });
-    expect(mockMutateAsync).toHaveBeenCalled();
+    const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
+    await handler();
+    expect(
+      mockTrpc.client.additionalMaterials.generateAdditionalMaterial.mutate,
+    ).toHaveBeenCalled();
     expect(mockSet).toHaveBeenCalledWith({
       generation: { foo: "bar" },
       moderation: { flagged: false },
@@ -62,8 +76,8 @@ describe("handleGenerateMaterial", () => {
       id: "resource-1",
     }));
     // @ts-expect-error Only analytics is mocked, not the full actions shape
-    const handler = handleGenerateMaterial(mockSet, mockGet);
-    await expect(handler({ mutateAsync: jest.fn() })).rejects.toThrow(
+    const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
+    await expect(handler()).rejects.toThrow(
       "Expected 'additional-comprehension' | 'additional-glossary' | 'additional-starter-quiz' | 'additional-exit-quiz', received null",
     );
   });
@@ -81,15 +95,18 @@ describe("handleGenerateMaterial", () => {
       id: "resource-1",
     }));
     // @ts-expect-error Only analytics is mocked, not the full actions shape
-    const handler = handleGenerateMaterial(mockSet, mockGet);
-    await expect(handler({ mutateAsync: jest.fn() })).rejects.toThrow(
+    const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
+    await expect(handler()).rejects.toThrow(
       "Lesson plan is missing required fields (title, subject, or keyStage)",
     );
   });
 
-  it("calls handleStoreError on mutateAsync error", async () => {
+  it("calls handleStoreError on mutate error", async () => {
     const error = new Error("fail");
-    const mockMutateAsync = jest.fn().mockRejectedValue(error);
+    (
+      mockTrpc.client.additionalMaterials.generateAdditionalMaterial
+        .mutate as jest.Mock
+    ).mockRejectedValue(error);
     const mockGet = jest.fn(() => ({
       actions: {
         setGeneration: jest.fn(),
@@ -102,8 +119,8 @@ describe("handleGenerateMaterial", () => {
       id: "resource-1",
     }));
     // @ts-expect-error Only analytics is mocked, not the full actions shape
-    const handler = handleGenerateMaterial(mockSet, mockGet);
-    await handler({ mutateAsync: mockMutateAsync });
+    const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
+    await handler();
     expect(handleStoreError).toHaveBeenCalledWith(
       mockSet,
       error,

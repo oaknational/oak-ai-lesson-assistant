@@ -1,6 +1,4 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -11,8 +9,6 @@ import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
-
-export type GenerateMaterialParams = {};
 
 export const handleGenerateMaterial =
   (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) => async () => {
