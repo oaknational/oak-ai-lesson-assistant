@@ -43,9 +43,7 @@ interface AdditionalMaterialsUserProps {
   };
 }
 
-export const TeachingMaterialsViewInner: FC<
-  AdditionalMaterialsUserProps
-> = () => {
+const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);

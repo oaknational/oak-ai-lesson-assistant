@@ -8,14 +8,14 @@ import { DialogProvider } from "../DialogContext";
 export type LayoutProps = Readonly<{
   readonly children: React.ReactNode;
   readonly includeFooter?: boolean;
-  page?: "teachingMaterials" | "aila";
+  feature?: "teachingMaterials" | "aila";
 }>;
 
-const Layout = ({ children, includeFooter, page }: LayoutProps) => {
+const Layout = ({ children, includeFooter, feature }: LayoutProps) => {
   return (
     <DialogProvider>
       <div className="flex min-h-screen flex-col">
-        <Header page={page} />
+        <Header page={feature} />
 
         <main className={`} flex h-full flex-1 flex-col bg-muted/50 bg-white`}>
           {children}

@@ -49,8 +49,8 @@ export function DemoBanner({
       {remaining !== undefined && (
         <OakBox $display={["none", "none", "block"]}>
           <OakSpan $font={"body-1-bold"}>
-            {monthlyLimit} {resourceLabel}
-            {remaining === 1 ? "" : "s"} remaining
+            {remaining} of {monthlyLimit} {resourceLabel}
+            {resourceLabel === "lesson" && remaining === 1 ? "" : "s"} remaining
           </OakSpan>
         </OakBox>
       )}
