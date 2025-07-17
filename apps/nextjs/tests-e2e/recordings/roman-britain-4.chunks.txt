@@ -11,27 +11,23 @@ Materials
 type":"
 patch
 ","reasoning":"
-Providing
- additional
- materials
- in
- the
- form
- of
+Added
  a
  narrative
- script
  to
  support
  the
  teacher
  in
  delivering
- complex
- topics
- about
- Roman
- Britain
+ the
+ lesson
+,
+ providing
+ specific
+ content
+ and
+ guidance
 .","
 value":{"
 type":"
@@ -44,224 +40,250 @@ Materials
 ","value":"
 ##
  Narrative
- Script
  for
- Teachers
+ Teacher
 \n
 \n
 \"
 Today
 ,
- we're
+ we
+ are
  going
  to
- travel
- back
- in
+ explore
+ a
+ very
+ interesting
  time
- to
+ in
+ history
  when
  the
  Romans
- were
- in
- Britain
-.
- Imagine
- you
- are
- a
- Roman
- soldier
-,
- wearing
- your
- armour
- and
- sandals
-,
- walking
- the
- long
- roads
- they
- built
-.
- These
- roads
- were
- very
- important
- because
- they
- connected
- towns
- and
- made
- travel
- easier
-.
- But
- around
- AD
- 
-410
-,
- the
- Roman
- Empire
- was
- facing
- big
- problems
-.
- They
- needed
- their
- soldiers
- back
- home
- to
- help
- fight
- battles
- elsewhere
-.
- So
-,
- they
  decided
  to
  leave
  Britain
+.
+ Imagine
+ having
+ a
+ big
+ empire
+ that
+ stretches
+ across
+ many
+ countries
+,
+ just
+ like
+ a
+ giant
+ puzzle
+ with
+ many
+ pieces
+.
+ The
+ Roman
+ Empire
+ was
+ just
+ like
+ that
+,
+ and
+ it
+ was
+ hard
+ to
+ keep
+ all
+ the
+ pieces
+ together
 .\
 n
 \n
-Now
+First
 ,
- picture
- the
- changes
- in
- Britain
- when
+ we'll
+ learn
+ why
  the
  Romans
  left
 .
+ They
+ didn't
+ leave
+ because
+ of
+ something
+ happening
+ just
+ in
+ Britain
+,
+ but
+ because
+ they
+ had
+ to
+ deal
+ with
+ problems
+ in
+ other
+ parts
+ of
+ their
+ empire
+.
+ Imagine
+ if
+ you
+ had
+ to
+ leave
+ a
+ toy
+ behind
+ because
+ you
+ needed
+ to
+ take
+ care
+ of
+ something
+ important
+ somewhere
+ else
+.\
+n
+\n
+Next
+,
+ we'll
+ see
+ what
+ happened
+ to
+ Britain
+ after
+ the
+ Romans
+ left
+.
+ It
+ was
+ like
+ removing
+ a
+ piece
+ from
+ the
+ puzzle
+.
  New
- groups
+ people
+,
  like
  the
  Sax
 ons
- came
- and
+,
  started
  to
- live
- here
-.
- The
- Roman
- buildings
- slowly
- changed
- or
- disappeared
-,
- but
- some
+ come
+ in
+ and
+ change
  things
-,
- like
+.
+ Some
  roads
  and
  towns
-,
- stayed
- and
- influenced
- how
- people
- lived
+ began
+ to
+ crumble
+ because
+ they
+ weren't
+ looked
+ after
 .\
 n
 \n
-Ar
-chae
-ologists
- are
- like
- detectives
-.
- They
- dig
- up
- old
- Roman
- coins
+Finally
 ,
- pottery
-,
- and
- tools
- to
- learn
+ we'll
+ talk
  about
  how
- people
- lived
- back
- then
-.
- These
- discoveries
- tell
- us
- exciting
- stories
- about
+ these
+ changes
+ affected
  the
- past
+ people
+ living
+ in
+ Britain
+.
+ Some
+ were
+ happy
+ to
+ have
+ more
+ freedom
 ,
- like
- what
+ while
+ others
+ missed
+ the
+ order
+ that
  the
  Romans
- ate
-,
- the
- clothes
- they
- wore
-,
- and
- the
- games
- they
- played
+ brought
 .\
 n
 \n
-Remember
+As
+ we
+ go
+ through
+ the
+ lesson
 ,
- history
- is
- a
- puzzle
-,
- and
- each
- piece
- helps
- us
- understand
- more
+ keep
+ thinking
  about
- our
- world
- today
+ how
+ these
+ changes
+ were
+ like
+ a
+ big
+ wave
+ that
+ washed
+ over
+ Britain
+,
+ bringing
+ lots
+ of
+ new
+ things
+ and
+ ideas
 .
 \"\
 n
@@ -273,72 +295,57 @@ n
  Explanation
 \n
 -
- Importance
- of
+ The
  Roman
- roads
+ Empire
+ was
+ vast
+,
+ requiring
+ resources
  and
- infrastructure
+ defence
 .\
 n
 -
- Reasons
- for
- Roman
- departure
- due
- to
+ Press
+ures
+ on
+ the
  empire
- pressures
+ led
+ to
+ the
+ withdrawal
+ from
+ Britain
 .\
 n
 -
- Post
--R
-oman
- changes
+ Britain's
+ infrastructure
  and
+ society
+ changed
+ with
+ new
+ settlers
+ like
+ the
  Sax
-on
- invas
-ions
+ons
 .\
 n
 -
- Role
+ The
+ blend
  of
- archae
-ologists
- in
- uncover
-ing
- history
-.\
-n
-\n
-Search
- terms
- for
- images
-:
- \"
-Roman
- soldier
- armour
-\",
- \"
-Roman
- roads
-\",
- \"
-S
-axon
- settlements
-\",
- \"
-Roman
- artifacts
-\"
+ cultures
+ led
+ to
+ new
+ societal
+ norms
 ."
 },"status":"
 complete
@@ -349,33 +356,38 @@ Materials
 type":"
 text
 ","value":"
-I
- have
- added
+The
+ additional
+ materials
+ section
+ has
+ been
+ updated
+ with
  a
  narrative
- script
  to
  support
  the
  lesson
  delivery
 .
- Are
- the
- additional
- materials
- appropriate
- for
- your
- pupils
-?
  If
- not
+ you
+ would
+ like
+ any
+ changes
+ or
+ have
+ other
+ materials
+ to
+ add
 ,
- suggest
- an
- edit
+ let
+ me
+ know
 .
  Otherwise
 ,
@@ -384,10 +396,7 @@ I
 Continue
 **
  to
- complete
- the
- lesson
- plan
+ finish
 ."
 },"status":"
 complete

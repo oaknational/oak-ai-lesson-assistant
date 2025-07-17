@@ -2,8 +2,9 @@
  * Quiz schema exports - both V1 (legacy) and V2 (discriminated union)
  *
  * This module provides all quiz-related schemas:
- * - V1: Multiple choice only (legacy, used by LLM)
- * - V2: Discriminated union for all quiz types (modern, used by frontend/export)
+ * - V1: Multiple choice only (legacy, being phased out)
+ * - V2: Discriminated union for all quiz types (modern)
+ * - V2 LLM-specific: Multiple choice only subset of V2 (for LLM generation)
  */
 import { z } from "zod";
 

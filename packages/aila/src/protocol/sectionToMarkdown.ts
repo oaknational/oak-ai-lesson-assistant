@@ -4,7 +4,7 @@ import { isArray, isNumber, isObject, isString } from "remeda";
 import { z } from "zod";
 
 import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
-import type { QuizV1Optional } from "./schema";
+import type { QuizV1Optional, QuizV2Optional } from "./schema";
 import { CycleOptionalSchema, QuizV1OptionalSchema } from "./schema";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
@@ -43,7 +43,7 @@ function renderCycle(value: unknown) {
       explanation:
         sectionToMarkdown("explanation", cycle.explanation ?? "…") ?? "…",
       checkForUnderstanding: cycle.checkForUnderstanding
-        ? organiseAnswersAndDistractors(cycle.checkForUnderstanding)
+        ? quizV1ToMarkdown(cycle.checkForUnderstanding)
         : "…",
       practice: cycle.practice ?? "…",
       feedback: cycle.feedback ?? "…",
@@ -120,7 +120,7 @@ function renderTwoKeyObjectArray(value: readonly unknown[]): string {
     .map((v) => {
       const header = v[key1] ?? "…";
       const body = v[key2] ?? "…";
-      return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
+      return `### ${header}\n\n${body}`;
     })
     .join("\n\n");
 }
@@ -140,10 +140,6 @@ function renderArray(key: string, value: readonly unknown[]): string {
   }
 
   if (typeof value[0] === "object") {
-    if (key === "starterQuiz" || key === "exitQuiz") {
-      return organiseAnswersAndDistractors(value as QuizV1Optional);
-    }
-
     if (key === "misconceptions") {
       return renderMisconceptions(value);
     }
@@ -164,7 +160,6 @@ export function sectionToMarkdown(
   if (key.includes("cycle")) {
     return renderCycle(value);
   }
-
   if (isArray(value)) {
     return renderArray(key, value);
   }
@@ -179,7 +174,7 @@ export function sectionToMarkdown(
   }
 }
 
-export function organiseAnswersAndDistractors(quiz: QuizV1Optional) {
+export function quizV1ToMarkdown(quiz: QuizV1Optional) {
   return QuizV1OptionalSchema.parse(quiz)
     .map((v, i) => {
       // Combine answers and distractors into a single array

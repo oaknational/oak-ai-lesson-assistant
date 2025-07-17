@@ -23,7 +23,7 @@ describe("V1 to V2 Quiz Conversion", () => {
         question: "What is 2 + 2?",
         answers: ["4"],
         distractors: ["3", "5"],
-        hint: undefined,
+        hint: null,
       });
     });
   });
@@ -65,9 +65,10 @@ describe("V1 to V2 Quiz Conversion", () => {
             question: "Q1",
             answers: ["A"],
             distractors: ["B"],
-            hint: undefined,
+            hint: null,
           },
         ],
+        imageAttributions: [],
       };
 
       expect(detectQuizVersion(v1Quiz)).toBe("v1");
