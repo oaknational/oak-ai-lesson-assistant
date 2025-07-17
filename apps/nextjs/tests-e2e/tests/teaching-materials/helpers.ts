@@ -12,7 +12,7 @@ import {
 
 const log = aiLogger("additional-materials:testing");
 
-export const applyTeachingMaterialsFixtures = async (page: Page) => {
+export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
   await page.route(
     "**/api/trpc/main/additionalMaterials.generatePartialLessonPlanObject?batch=1",
     async (route, request) => {

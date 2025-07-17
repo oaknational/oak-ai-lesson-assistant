@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
-import { applyTeachingMaterialsFixtures } from "./helpers";
+import { applyTeachingMaterialsMockAPIRequests } from "./helpers";
 
 test.describe("Teaching Materials", () => {
   test(
@@ -17,7 +17,7 @@ test.describe("Teaching Materials", () => {
         await page.goto(`${TEST_BASE_URL}/aila`);
       });
 
-      await applyTeachingMaterialsFixtures(page);
+      await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
         await page.getByTestId("create-teaching-materials-button").click();
@@ -101,7 +101,7 @@ test.describe("Teaching Materials", () => {
         await page.goto(`${TEST_BASE_URL}/aila`);
       });
 
-      await applyTeachingMaterialsFixtures(page);
+      await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
         await page.getByTestId("create-teaching-materials-button").click();
