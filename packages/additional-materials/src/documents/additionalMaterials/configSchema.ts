@@ -38,10 +38,6 @@ const additionalMaterialDocType = [
   "additional-exit-quiz",
 ] as const;
 
-export const actionEnum = z.enum(["generate", "refine", "translate"]);
-
-export type Action = z.infer<typeof actionEnum>;
-
 export const additionalMaterialTypeEnum = z.enum(additionalMaterialDocType);
 
 export type AdditionalMaterialType = z.infer<typeof additionalMaterialTypeEnum>;
@@ -103,7 +99,7 @@ export const additionalMaterialPromptBuilderMap = {
 } satisfies {
   [K in AdditionalMaterialType]: {
     buildSystemMessage: () => string;
-    buildPrompt: (context: ContextByMaterialType[K], action: Action) => string;
+    buildPrompt: (context: ContextByMaterialType[K]) => string;
   };
 };
 
@@ -121,7 +117,7 @@ const additionalMaterialVersions: Record<AdditionalMaterialType, number> = {
 type AdditionalMaterialsConfigMap = {
   [K in AdditionalMaterialType]: {
     systemMessage: () => string;
-    buildPrompt: (context: ContextByMaterialType[K], action: Action) => string;
+    buildPrompt: (context: ContextByMaterialType[K]) => string;
     schema: ZodType;
     promptContextSchema: ZodType;
     version: number;
@@ -152,7 +148,6 @@ function makeInputVariant<T extends AdditionalMaterialType>(
   context: (typeof additionalMaterialContextSchemasMap)[T],
 ) {
   return z.object({
-    action: actionEnum,
     documentType: z.literal(documentType),
     context,
     resourceId: z.string().nullish(),
@@ -174,3 +169,5 @@ export const generateAdditionalMaterialInputSchema = z.discriminatedUnion(
 export type GenerateAdditionalMaterialInput = z.infer<
   typeof generateAdditionalMaterialInputSchema
 >;
+
+export { starterQuizSchema, exitQuizSchema };

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "*.ts", "*.tsx", "index.ts"],
+  "compilerOptions": {
+    "types": ["jest", "node"],
+    "module": "esnext",
+    "esModuleInterop": true
+  }
+}

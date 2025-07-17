@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
-import { DemoProvider } from "../../../../../src/components/ContextProviders/Demo";
+import { DemoProvider } from "../../../../../components/ContextProviders/Demo";
 import { DownloadContent } from "./DownloadView";
 
 const meta = {

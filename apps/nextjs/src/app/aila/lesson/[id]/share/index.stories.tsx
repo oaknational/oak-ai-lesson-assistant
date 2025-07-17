@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
 
-import ShareChat from "./";
+import ShareChat from ".";
 
 const meta = {
   title: "Pages/Chat/Share",

@@ -23,7 +23,7 @@ export const DropDownButton = ({
   children: React.ReactNode;
   onClick: () => void;
 }) => (
-  <OakSecondaryButton onClick={onClick}>
+  <OakSecondaryButton data-testid={"drop-down-button"} onClick={onClick}>
     <InnerButtonFlexSpan>
       <p>{children}</p>
       <OakBox className="scale-75">
@@ -45,8 +45,8 @@ export const DropDownWrapper = ({
       $top="all-spacing-4"
       $zIndex="modal-dialog"
       $mt="space-between-l"
-      $height="all-spacing-20"
-      $width="all-spacing-20"
+      $height={["all-spacing-19", "all-spacing-20"]}
+      $minWidth={["all-spacing-17", "all-spacing-20"]}
       $overflowY="scroll"
       $borderRadius="border-radius-m"
       $ba="border-solid-m"

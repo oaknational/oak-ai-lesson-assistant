@@ -2,6 +2,8 @@ import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import { expectFinished } from "./helpers";
@@ -23,7 +25,7 @@ test(
       await setupClerkTestingToken({ page });
 
       const chatId = await getTestChatIdFromCookie(page);
-      await page.goto(`${TEST_BASE_URL}/aila/${chatId}`);
+      await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}`);
       await expectFinished(page);
     });
 
@@ -31,7 +33,7 @@ test(
       // Open 'download resources' menu
       const downloadResources = page.getByTestId("chat-download-resources");
       await downloadResources.click();
-      await page.waitForURL(/aila\/.*\/download/);
+      await page.waitForURL(/aila\/lesson\/.*\/download/);
       page.getByRole("heading", { name: "Download resources" });
 
       // Click to download lesson plan

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 
@@ -36,7 +37,11 @@ export const MobileExportButtons = ({
         <OakSmallSecondaryButton
           element={Link}
           iconName="download"
-          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+          href={
+            demo.isSharingEnabled
+              ? `${getAilaUrl("lesson")}}/${id}/download/`
+              : "#"
+          }
           onClick={() => {
             if (!demo.isSharingEnabled) {
               setDialogWindow("demo-share-locked");
