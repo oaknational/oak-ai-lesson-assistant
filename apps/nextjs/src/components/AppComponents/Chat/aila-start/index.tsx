@@ -107,6 +107,7 @@ export function AilaStart() {
                   <OakPrimaryButton
                     element={Link}
                     href={getAilaUrl("teaching-materials")}
+                    data-testid={"create-teaching-materials-button"}
                     iconName="arrow-right"
                     isTrailingIcon={true}
                     onClick={() => {
@@ -130,7 +131,6 @@ export function AilaStart() {
         </OakGrid>
         <OakFlex
           $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
-          // $alignItems={"flex-end"}
           $justifyContent={"center"}
         >
           <OakBox $mt="space-between-l">

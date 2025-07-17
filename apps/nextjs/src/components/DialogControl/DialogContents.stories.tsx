@@ -7,7 +7,7 @@ import type { PostHog } from "posthog-js";
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
-import { ResourcesStoreDecorator } from "@/storybook/decorators/ResourcesStoreDecorator";
+import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
@@ -112,7 +112,7 @@ export const AdditionalMaterialsModeration: Story = {
   parameters: {
     dialogWindow: "additional-materials-moderation",
   },
-  decorators: [ResourcesStoreDecorator],
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const AdditionalMaterialsThreatDetected: Story = {
@@ -120,7 +120,7 @@ export const AdditionalMaterialsThreatDetected: Story = {
   parameters: {
     dialogWindow: "additional-materials-threat-detected",
   },
-  decorators: [ResourcesStoreDecorator],
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const AdditionalMaterialsRateLimit: Story = {
@@ -129,7 +129,7 @@ export const AdditionalMaterialsRateLimit: Story = {
     dialogWindow: "additional-materials-rate-limit",
   },
   decorators: [
-    ResourcesStoreDecorator,
+    TeachingMaterialsStoreDecorator,
     (Story) => (
       <DemoProvider>
         <Story />
@@ -145,7 +145,7 @@ export const AdditionalMaterialsRateLimitDemo: Story = {
     auth: "signedInDemo",
   },
   decorators: [
-    ResourcesStoreDecorator,
+    TeachingMaterialsStoreDecorator,
     (Story) => (
       <DemoProvider>
         <Story />
@@ -159,7 +159,7 @@ export const AdditionalMaterialsInappropriateContent: Story = {
   parameters: {
     dialogWindow: "additional-materials-toxic-moderation",
   },
-  decorators: [ResourcesStoreDecorator],
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const AdditionalMaterialsStartAgain: Story = {
@@ -167,7 +167,7 @@ export const AdditionalMaterialsStartAgain: Story = {
   parameters: {
     dialogWindow: "additional-materials-start-again",
   },
-  decorators: [ResourcesStoreDecorator],
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const AdditionalMaterialsError: Story = {
@@ -175,7 +175,7 @@ export const AdditionalMaterialsError: Story = {
   parameters: {
     dialogWindow: "additional-materials-error",
   },
-  decorators: [ResourcesStoreDecorator],
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const Feedback: Story = {

@@ -23,7 +23,7 @@ export const DropDownButton = ({
   children: React.ReactNode;
   onClick: () => void;
 }) => (
-  <OakSecondaryButton onClick={onClick}>
+  <OakSecondaryButton data-testid={"drop-down-button"} onClick={onClick}>
     <InnerButtonFlexSpan>
       <p>{children}</p>
       <OakBox className="scale-75">
