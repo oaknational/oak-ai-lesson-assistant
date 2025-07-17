@@ -43,7 +43,7 @@ interface AdditionalMaterialsUserProps {
   };
 }
 
-const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
+const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -133,17 +133,17 @@ const ResourcesContentsInner: FC<AdditionalMaterialsUserProps> = () => {
   );
 };
 
-const ResourcesContents: FC<AdditionalMaterialsUserProps> = (props) => {
+const TeachingMaterialsView: FC<AdditionalMaterialsUserProps> = (props) => {
   return (
     <ResourcesStoresProvider>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
-          <ResourcesContentsInner {...props} />
+          <TeachingMaterialsViewInner {...props} />
         </DialogRoot>
       </DialogProvider>
     </ResourcesStoresProvider>
   );
 };
 
-export default ResourcesContents;
+export default TeachingMaterialsView;

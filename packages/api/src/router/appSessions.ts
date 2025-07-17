@@ -136,7 +136,7 @@ export const appSessionsRouter = router({
 
       const output: AilaPersistedChat = {
         id: chatId,
-        path: `/aila/${chatId}`,
+        path: `/aila/lesson/${chatId}`,
         title: "",
         topic: "",
         userId,

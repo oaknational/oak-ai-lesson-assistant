@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
@@ -53,7 +53,7 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   disabled: boolean;
 }>`
   background: none;
-  color: inherit;
+  color: white;
   border: none;
   padding: 0;
   font: inherit;
@@ -62,9 +62,9 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   font-family: unset;
   outline: none;
   font-family: --var(google-font), Lexend, sans-serif;
-  color: #222222;
-  background: #ffffff;
-  padding: 0.75rem;
+
+  background: #222222;
+
   padding-left: 1rem;
   padding-right: 1rem;
   border: 0.125rem solid;
@@ -76,6 +76,14 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
       opacity: 0.5;
       cursor: not-allowed;
     `}
+`;
+
+const MobileNoLetterSpacingButton = styled(OakSecondaryButton)`
+  @media (max-width: 600px) {
+    button div span {
+      letter-spacing: 0;
+    }
+  }
 `;
 
 type StepFourProps = {
@@ -102,6 +110,22 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const refinementOptions = resourceType?.refinementOptions ?? [];
+
+  const refinementRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    if (isFooterAdaptOpen && refinementRefs.current[0]) {
+      refinementRefs.current[0].focus();
+    }
+  }, [isFooterAdaptOpen]);
+
+  useEffect(() => {
+    if (refinementHistory.length > 0 && !isResourceRefining) {
+      const btn = document.getElementById("undo-btn");
+      btn?.focus();
+    }
+  }, [isResourceRefining, refinementHistory.length]);
+
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -133,13 +157,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     }
 
     if (docType === "additional-starter-quiz" && isStarterQuiz(generation)) {
-      return (
-        <Quiz action={docType} generation={generation} quizType="starter" />
-      );
+      return <Quiz action={docType} generation={generation} />;
     }
 
     if (docType === "additional-exit-quiz" && isExitQuiz(generation)) {
-      return <Quiz action={docType} generation={generation} quizType="exit" />;
+      return <Quiz action={docType} generation={generation} />;
     }
 
     return null;
@@ -178,6 +200,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 Done!
               </OakP>
               <OakSmallTertiaryInvertedButton
+                id="undo-btn"
                 onClick={undoRefinement}
                 disabled={
                   isResourcesLoading || isResourceRefining || isDownloading
@@ -191,19 +214,12 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
           <OakFlex $justifyContent="space-between" $width="100%">
             {isFooterAdaptOpen ? (
               <OakFlex
-                $flexDirection="row-reverse"
+                $flexDirection="row"
                 $gap="all-spacing-5"
                 $width="100%"
                 $justifyContent="space-between"
                 $alignItems="center"
               >
-                <OakPrimaryInvertedButton
-                  onClick={() => setIsFooterAdaptOpen(false)}
-                  iconName="cross"
-                >
-                  Close
-                </OakPrimaryInvertedButton>
-
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
                   {isResourceRefining ? (
                     <OakFlex $alignItems="center" $gap="all-spacing-2">
@@ -212,17 +228,28 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                     </OakFlex>
                   ) : (
                     <>
-                      {refinementOptions.map((refinement: RefinementOption) => (
-                        <InlineButton
-                          key={refinement.id}
-                          onClick={() => handleRefineMaterial(refinement.value)}
-                        >
-                          {refinement.label}
-                        </InlineButton>
-                      ))}
+                      {refinementOptions.map(
+                        (refinement: RefinementOption, index) => (
+                          <InlineButton
+                            ref={(el) => (refinementRefs.current[index] = el)}
+                            key={refinement.id}
+                            onClick={() =>
+                              handleRefineMaterial(refinement.value)
+                            }
+                          >
+                            {refinement.label}
+                          </InlineButton>
+                        ),
+                      )}
                     </>
                   )}
                 </OakFlex>
+                <OakPrimaryInvertedButton
+                  onClick={() => setIsFooterAdaptOpen(false)}
+                  iconName="cross"
+                >
+                  Close
+                </OakPrimaryInvertedButton>
               </OakFlex>
             ) : (
               <>
@@ -273,39 +300,45 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   $display={["flex", "none"]}
                   $width={"100%"}
                   $gap="all-spacing-2"
-                  $flexDirection={["row-reverse", "row"]}
+                  $flexDirection={["row", "row"]}
                 >
-                  <MockOakSecondaryButtonWithJustIcon
-                    onClick={() => void handleDownloadMaterial()}
-                    disabled={
-                      !generation || isResourcesLoading || isDownloading
-                    }
-                  >
-                    {isDownloading ? (
-                      <OakLoadingSpinner $width="all-spacing-6" />
-                    ) : (
-                      <OakIcon iconName="download" iconWidth="all-spacing-7" />
-                    )}
-                  </MockOakSecondaryButtonWithJustIcon>
-                  <OakSecondaryButton
-                    onClick={() => {
-                      setIsFooterAdaptOpen(true);
-                    }}
-                    disabled={
-                      refinementOptions.length === 0 ||
-                      !generation ||
-                      isDownloading
-                    }
-                  >
-                    Modify
-                  </OakSecondaryButton>
-                  <OakSecondaryButton
+                  <MobileNoLetterSpacingButton
                     onClick={() =>
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
                     Start again
-                  </OakSecondaryButton>
+                  </MobileNoLetterSpacingButton>
+                  <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
+                    <MobileNoLetterSpacingButton
+                      onClick={() => {
+                        setIsFooterAdaptOpen(true);
+                      }}
+                      disabled={
+                        refinementOptions.length === 0 ||
+                        !generation ||
+                        isDownloading
+                      }
+                    >
+                      Modify
+                    </MobileNoLetterSpacingButton>
+                    <MockOakSecondaryButtonWithJustIcon
+                      onClick={() => void handleDownloadMaterial()}
+                      disabled={
+                        !generation || isResourcesLoading || isDownloading
+                      }
+                    >
+                      {isDownloading ? (
+                        <OakLoadingSpinner $width="all-spacing-6" />
+                      ) : (
+                        <OakIcon
+                          iconName="download"
+                          iconWidth="all-spacing-7"
+                          $colorFilter={"white"}
+                        />
+                      )}
+                    </MockOakSecondaryButtonWithJustIcon>
+                  </OakFlex>
                 </OakFlex>
               </>
             )}
