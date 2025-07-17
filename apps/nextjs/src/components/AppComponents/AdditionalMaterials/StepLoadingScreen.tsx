@@ -1,9 +1,4 @@
-import {
-  OakBox,
-  OakFlex,
-  OakLoadingSpinner,
-  OakP,
-} from "@oaknational/oak-components";
+import { OakFlex, OakLoadingSpinner, OakP } from "@oaknational/oak-components";
 
 const StepLoadingScreen = ({
   docTypeName,
@@ -13,7 +8,7 @@ const StepLoadingScreen = ({
   source: "teachingMaterial" | "lessonPlan";
 }) => {
   return (
-    <OakBox
+    <OakFlex
       $position="absolute"
       $top="all-spacing-0"
       $left="all-spacing-0"
@@ -22,6 +17,7 @@ const StepLoadingScreen = ({
       $background="white"
     >
       <OakFlex
+        $mh="space-between-l"
         $flexDirection="column"
         $alignItems="center"
         $justifyContent="center"
@@ -31,15 +27,21 @@ const StepLoadingScreen = ({
       >
         {source === "lessonPlan" ? (
           <>
-            <OakP $font="heading-6">Generating lesson details</OakP>
-            <OakP $mb={"space-between-m"} $font="body-2">
+            <OakP $textAlign={"center"} $font="heading-6">
+              Generating lesson details
+            </OakP>
+            <OakP $textAlign={"center"} $mb={"space-between-m"} $font="body-2">
               {`These details will ensure Aila has the right context for your ${docTypeName ?? "teaching material"}.`}
             </OakP>
             <OakLoadingSpinner $width="all-spacing-10" />
           </>
         ) : (
           <>
-            <OakP $mb={"space-between-m"} $font="heading-6">
+            <OakP
+              $textAlign={"center"}
+              $mb={"space-between-m"}
+              $font="heading-6"
+            >
               Creating your{" "}
               {docTypeName ? docTypeName.toLowerCase() : "teaching material"}
             </OakP>
@@ -48,7 +50,7 @@ const StepLoadingScreen = ({
           </>
         )}
       </OakFlex>
-    </OakBox>
+    </OakFlex>
   );
 };
 

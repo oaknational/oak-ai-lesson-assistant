@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 import Layout from "@/components/Layout";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const HelpContent = () => {
   const startingRef = useRef(null);
@@ -119,7 +120,7 @@ export const HelpContent = () => {
           >
             <OakBox $display={["block", "none", "none"]}>
               <OakLink
-                href={ailaId ? `/aila/${ailaId}` : "/aila"}
+                href={ailaId ? `${getAilaUrl("lesson")}/${ailaId}` : "/aila"}
                 iconName="chevron-left"
               >
                 Back to Aila
