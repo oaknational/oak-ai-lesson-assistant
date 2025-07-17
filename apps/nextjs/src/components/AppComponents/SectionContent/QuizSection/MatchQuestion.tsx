@@ -83,36 +83,41 @@ export const MatchQuestion = ({
         </OakBox>
       </OakFlex>
 
-      {/* Mobile layout: interleaved with correct answer pairings */}
+      {/* Mobile layout: two separate blocks */}
       <OakBox $display={["block", "none"]}>
-        {question.pairs.map((pair, pairIndex) => {
-          // Find the corresponding answer with its shuffled label
-          const answerItem = shuffledRight.find(
-            (item) => item.text === pair.right,
-          );
-
-          return (
-            <OakBox key={pairIndex} $mb="space-between-m">
-              {/* Question */}
-              <OakBox $mb="space-between-xs">
+        {/* Left column - questions */}
+        <OakBox $mb="space-between-m">
+          {question.pairs.map((pair, index) => {
+            return (
+              <OakFlex key={index} $alignItems="center" $mb="space-between-s" $minHeight="all-spacing-7">
                 <MemoizedReactMarkdownWithStyles
-                  markdown={`${String.fromCharCode(97 + pairIndex)}) ${pair.left}`}
+                  markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
+                  className="[&>p]:mb-0 [&>p]:inline"
+                />
+              </OakFlex>
+            );
+          })}
+        </OakBox>
+
+        {/* Right column - answers */}
+        <OakBox>
+          {shuffledRight.map((item, index) => (
+            <OakFlex
+              key={index}
+              $alignItems="center"
+              $mb="space-between-s"
+              $minHeight="all-spacing-7"
+            >
+              <AnswerCheckbox index={index}>{item.label}</AnswerCheckbox>
+              <OakBox>
+                <MemoizedReactMarkdownWithStyles
+                  markdown={item.text}
                   className="[&>p]:mb-0 [&>p]:inline"
                 />
               </OakBox>
-
-              {/* Correct answer with left margin */}
-              {answerItem && (
-                <OakBox $ml="space-between-l">
-                  <MemoizedReactMarkdownWithStyles
-                    markdown={`**${answerItem.text}**`}
-                    className="[&>p]:mb-0 [&>p]:inline"
-                  />
-                </OakBox>
-              )}
-            </OakBox>
-          );
-        })}
+            </OakFlex>
+          ))}
+        </OakBox>
       </OakBox>
     </OakBox>
   );
