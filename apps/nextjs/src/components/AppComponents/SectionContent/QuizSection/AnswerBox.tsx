@@ -10,7 +10,6 @@ type AnswerBoxProps = {
    */
   children?: ReactNode;
   wobbleOffset?: number;
-  isChecked?: boolean;
 };
 
 // Generate transform for handwritten feel based on variant
@@ -33,7 +32,6 @@ const getWobbleTransform = (variant: number | undefined) => {
 const AnswerBoxBase = ({
   children,
   wobbleOffset,
-  isChecked = false,
 }: AnswerBoxProps) => {
   return (
     <OakFlex
@@ -41,14 +39,14 @@ const AnswerBoxBase = ({
       $width="all-spacing-7"
       $height="all-spacing-7"
       $ba="border-solid-m"
-      $borderColor={isChecked ? "text-primary" : "grey50"}
+      $borderColor="border-primary"
       $borderRadius="border-radius-s"
       $background="bg-primary"
       $flexShrink="0"
       $alignItems="center"
       $justifyContent="center"
       $font="body-1-bold"
-      $color="icon-success"
+      $color="text-success"
     >
       <span
         style={{
@@ -59,7 +57,7 @@ const AnswerBoxBase = ({
           textAlign: "center",
         }}
       >
-        {isChecked && !children ? <Check /> : children}
+        {children}
       </span>
     </OakFlex>
   );
