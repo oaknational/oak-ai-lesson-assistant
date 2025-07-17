@@ -26,9 +26,3 @@ export const SignedOut: Story = {
     auth: "signedOut",
   },
 };
-
-export const DemoUser: Story = {
-  parameters: {
-    auth: "signedInDemo",
-  },
-};
