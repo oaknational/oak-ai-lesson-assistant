@@ -15,17 +15,19 @@ declare module "@storybook/csf" {
 }
 
 const trackEvents = {
-  lessonPlanInitiated: fn(),
-  lessonPlanRefined: fn(),
-  lessonPlanCompleted: fn(),
-  lessonPlanTerminated: fn(),
+  teachingMaterialsSelected: fn(),
+  teachingMaterialsRefined: fn(),
+  teachingMaterialDownloaded: fn(),
 } as unknown as ReturnType<typeof useAnalytics>["track"];
 
-export const ResourcesStoreDecorator: Decorator = (Story, { parameters }) => {
+export const TeachingMaterialsStoreDecorator: Decorator = (
+  Story,
+  { parameters },
+) => {
   const stores = useMemo(() => {
     // Default values for the store
     const defaultState: Partial<ResourcesState> = {
-      stepNumber: 2, // Most dialogs appear after initial setup
+      stepNumber: 0,
       docType: "additional-glossary",
       pageData: {
         lessonPlan: {
@@ -37,10 +39,6 @@ export const ResourcesStoreDecorator: Decorator = (Story, { parameters }) => {
       moderation: {
         justification: "This contains content that requires guidance.",
         categories: ["l/strong-language", "u/sensitive-content"],
-      },
-      error: {
-        type: "unknown",
-        message: "An unexpected error occurred while generating your resource.",
       },
     };
 

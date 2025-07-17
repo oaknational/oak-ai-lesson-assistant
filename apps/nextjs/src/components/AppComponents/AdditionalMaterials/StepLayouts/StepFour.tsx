@@ -180,10 +180,10 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     <>
       {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
 
+      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       {moderation?.categories && moderation.categories.length > 0 && (
         <ModerationMessage />
       )}
-      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
           {refinementHistory.length > 0 && !isResourceRefining && (
@@ -269,6 +269,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
                     <OakSecondaryButton
+                      data-testid="modify-desktop"
                       onClick={() => {
                         setIsFooterAdaptOpen(true);
                       }}
@@ -311,6 +312,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   </MobileNoLetterSpacingButton>
                   <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
                     <MobileNoLetterSpacingButton
+                      data-testid="modify-mobile"
                       onClick={() => {
                         setIsFooterAdaptOpen(true);
                       }}
@@ -335,6 +337,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                           iconName="download"
                           iconWidth="all-spacing-7"
                           $colorFilter={"white"}
+                          data-testid="download-icon-button"
                         />
                       )}
                     </MockOakSecondaryButtonWithJustIcon>
