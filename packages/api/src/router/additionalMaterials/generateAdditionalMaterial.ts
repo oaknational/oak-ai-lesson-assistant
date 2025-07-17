@@ -72,6 +72,7 @@ export async function generateAdditionalMaterial({
       `Failed to generate moderation -  Doctype: ${input.documentType} - lessonId ${input.lessonId}`,
     );
     Sentry.captureException(error);
+    throw error;
   }
 
   const { resourceId, adaptsOutputId, documentType } = input;
