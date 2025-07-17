@@ -32,7 +32,7 @@ export const ShortAnswerQuestion = ({
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         {hasInlineAnswer ? (
-          <OakBox className="[&_strong]:border-b-2 [&_strong]:border-black [&_strong]:px-[6px] [&_strong]:font-bold [&_strong]:text-[#2B8848]">
+          <OakBox className="[&_strong]:border-b-2 [&_strong]:border-gray-800 [&_strong]:font-bold [&_strong]:text-[#2B8848]">
             <MemoizedReactMarkdownWithStyles
               markdown={questionWithInstruction.replace(
                 "{{}}",
@@ -54,7 +54,7 @@ export const ShortAnswerQuestion = ({
           <OakBox
             $font="body-2-bold"
             $color="icon-success"
-            className="inline-block border-b-2 border-black px-[6px]"
+            className="inline-block border-b-2 border-gray-800"
           >
             {displayAnswer}
           </OakBox>

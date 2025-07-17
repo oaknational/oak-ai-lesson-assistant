@@ -4,7 +4,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
-import { AnswerCheckbox } from "./AnswerCheckbox";
+import { AnswerBox } from "./AnswerBox";
 import { addInstruction } from "./helpers";
 import { shuffleOrderItems } from "./shuffle";
 
@@ -38,7 +38,7 @@ export const OrderQuestion = ({
       <OakBox>
         {shuffledItems.map((item, index) => (
           <OakFlex key={index} $alignItems="center" $mb="space-between-xs">
-            <AnswerCheckbox index={index}>{item.correctIndex}</AnswerCheckbox>
+            <AnswerBox wobbleOffset={index}>{item.correctIndex}</AnswerBox>
             <OakBox $font="body-2">
               <MemoizedReactMarkdownWithStyles
                 markdown={item.text}

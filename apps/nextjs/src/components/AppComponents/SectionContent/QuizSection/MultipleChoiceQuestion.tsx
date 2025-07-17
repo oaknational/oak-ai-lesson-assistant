@@ -4,7 +4,7 @@ import { OakBox, OakFlex, OakIcon } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
-import { AnswerCheckbox } from "./AnswerCheckbox";
+import { AnswerBox } from "./AnswerBox";
 import { addInstruction } from "./helpers";
 import { shuffleMultipleChoiceAnswers } from "./shuffle";
 
@@ -40,9 +40,7 @@ export const MultipleChoiceQuestion = ({
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">
-            <AnswerCheckbox index={index}>
-              {answer.isCorrect && <AnswerCheckbox.Check />}
-            </AnswerCheckbox>
+            <AnswerBox wobbleOffset={index} isChecked={answer.isCorrect} />
             <OakBox
               $font={answer.isCorrect ? "body-2-bold" : "body-2"}
               className="pt-[2px]"

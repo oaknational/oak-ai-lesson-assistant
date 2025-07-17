@@ -4,7 +4,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
-import { AnswerCheckbox } from "./AnswerCheckbox";
+import { AnswerBox } from "./AnswerBox";
 import { addInstruction } from "./helpers";
 import { shuffleMatchItems } from "./shuffle";
 
@@ -39,7 +39,7 @@ export const MatchQuestion = ({
 
       {/* Desktop layout */}
       <OakFlex
-        $gap="space-between-xl"
+        $gap="space-between-l"
         $flexWrap="wrap"
         $display={["none", "flex"]}
       >
@@ -71,7 +71,7 @@ export const MatchQuestion = ({
               $mb="space-between-s"
               $minHeight="all-spacing-7"
             >
-              <AnswerCheckbox index={index}>{item.label}</AnswerCheckbox>
+              <AnswerBox wobbleOffset={index}>{item.label}</AnswerBox>
               <OakBox>
                 <MemoizedReactMarkdownWithStyles
                   markdown={item.text}
@@ -113,7 +113,7 @@ export const MatchQuestion = ({
               $mb="space-between-s"
               $minHeight="all-spacing-7"
             >
-              <AnswerCheckbox index={index}>{item.label}</AnswerCheckbox>
+              <AnswerBox wobbleOffset={index}>{item.label}</AnswerBox>
               <OakBox>
                 <MemoizedReactMarkdownWithStyles
                   markdown={item.text}
