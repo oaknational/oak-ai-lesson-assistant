@@ -38,7 +38,7 @@ export const OrderQuestion = ({
       <OakBox>
         {shuffledItems.map((item, index) => (
           <OakFlex key={index} $alignItems="center" $mb="space-between-xs">
-            <AnswerCheckbox>{item.correctIndex}</AnswerCheckbox>
+            <AnswerCheckbox index={index}>{item.correctIndex}</AnswerCheckbox>
             <OakBox $font="body-2">
               <MemoizedReactMarkdownWithStyles
                 markdown={item.text}

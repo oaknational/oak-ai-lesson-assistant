@@ -40,7 +40,7 @@ export const MultipleChoiceQuestion = ({
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">
-            <AnswerCheckbox>
+            <AnswerCheckbox index={index}>
               {answer.isCorrect && <AnswerCheckbox.Check />}
             </AnswerCheckbox>
             <OakBox

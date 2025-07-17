@@ -71,7 +71,7 @@ export const MatchQuestion = ({
               $mb="space-between-s"
               $minHeight="all-spacing-7"
             >
-              <AnswerCheckbox>{item.label}</AnswerCheckbox>
+              <AnswerCheckbox index={index}>{item.label}</AnswerCheckbox>
               <OakBox>
                 <MemoizedReactMarkdownWithStyles
                   markdown={item.text}
