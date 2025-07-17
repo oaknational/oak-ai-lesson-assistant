@@ -1,3 +1,28 @@
+# [1.45.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.44.0...v1.45.0) (2025-07-16)
+
+
+### Bug Fixes
+
+* fix broken parsing of nested patch keys [AI-1099] ([#747](https://github.com/oaknational/oak-ai-lesson-assistant/issues/747)) ([bb3e899](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bb3e89987df6b78678cc8065666d9490f2459a34))
+
+
+### Features
+
+* [AI-1367] migrate internal quiz generation to V2 format ([#735](https://github.com/oaknational/oak-ai-lesson-assistant/issues/735)) ([1f2fc8e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1f2fc8e2a199e2d6a3366398e426a7848a65526d))
+
+# [1.44.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.43.0...v1.44.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* preserve keyword definition casing [AI-1322] ([#725](https://github.com/oaknational/oak-ai-lesson-assistant/issues/725)) ([08c18d0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/08c18d0a4b4dc9b206a736c026b8cfa98bb39536))
+
+
+### Features
+
+* [AI-1374] implement quiz v2 multiple choice components ([#733](https://github.com/oaknational/oak-ai-lesson-assistant/issues/733)) ([60bae59](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60bae59d9ab729ec9ac049ce46b345c65f7a4013))
+* send messages to user via the 'messaging' agent [AI-1211] ([#722](https://github.com/oaknational/oak-ai-lesson-assistant/issues/722)) ([3cbf7a0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3cbf7a0549eb1c86bdcbce5dcd3917e2b7b44074))
+
 # [1.43.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.42.0...v1.43.0) (2025-06-26)
 
 

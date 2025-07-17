@@ -15,10 +15,9 @@ const log = aiLogger("additional-materials");
 export type GenerateMaterialParams = {};
 
 export const handleGenerateMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
-  async () => {
+  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) => async () => {
     set({ stepNumber: 3 });
-    
+
     // Clear any existing generation
     get().actions.setGeneration(null);
     get().actions.setIsResourcesLoading(true);
@@ -49,19 +48,23 @@ export const handleGenerateMaterial =
       log.info("Generating material", { docType });
 
       // Make the API call
-      const result = await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate({
-        documentType: docTypeParsed,
-        context: {
-          lessonPlan: {
-            ...lessonPlan,
-            year: formState.year,
+      const result =
+        await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
+          {
+            documentType: docTypeParsed,
+
+            context: {
+              lessonPlan: {
+                ...lessonPlan,
+                year: formState.year,
+              },
+              previousOutput: null,
+              options: null,
+            },
+            resourceId: get().id, // Use existing resourceId
+            lessonId: get().pageData.lessonPlan.lessonId,
           },
-          previousOutput: null,
-          options: null,
-        },
-        resourceId: get().id, // Use existing resourceId
-        lessonId: get().pageData.lessonPlan.lessonId,
-      });
+        );
       get().actions.setIsResourcesLoading(false);
 
       set({

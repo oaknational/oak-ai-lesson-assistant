@@ -50,7 +50,7 @@ const DEFAULT_STATE = {
       keyLearningPoints: [],
       misconceptions: [],
       keywords: [],
-      starterQuiz: [],
+      starterQuiz: undefined,
       cycle1: undefined,
       cycle2: undefined,
       cycle3: undefined,
