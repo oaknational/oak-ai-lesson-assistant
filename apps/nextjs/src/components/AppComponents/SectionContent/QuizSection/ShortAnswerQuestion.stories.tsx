@@ -20,7 +20,7 @@ export const InlineAnswer: Story = {
   args: {
     question: {
       questionType: "short-answer",
-      question: "The capital of France is [answer].",
+      question: "The capital of France is {{}}.",
       answers: ["Paris"],
       hint: null,
     },
