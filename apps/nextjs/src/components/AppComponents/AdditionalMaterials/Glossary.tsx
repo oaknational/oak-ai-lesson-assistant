@@ -19,7 +19,6 @@ export const Glossary = ({
         <OakFlex
           key={`${item.term}-${index}`}
           $flexDirection="row"
-          $justifyContent=""
           $alignItems="flex-start"
           $mb="space-between-xs"
           $flexWrap="wrap"
