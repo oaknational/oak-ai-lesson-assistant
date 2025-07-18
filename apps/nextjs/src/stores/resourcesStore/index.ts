@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+import type { TrpcUtils } from "@/utils/trpc";
 
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAnalytics } from "./actionFunctions/handleAnalytics";
@@ -72,6 +73,7 @@ const DEFAULT_STATE = {
 
 export const createResourcesStore = (
   track: TrackFns,
+  trpc: TrpcUtils,
   initState?: Partial<ResourcesState>,
 ) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
@@ -101,15 +103,15 @@ export const createResourcesStore = (
       resetFormState: handleResetFormState(set, get),
 
       // Business logic actions
-      submitLessonPlan: handleSubmitLessonPlan(set, get),
-      generateMaterial: handleGenerateMaterial(set, get),
-      refineMaterial: handleRefineMaterial(set, get),
+      submitLessonPlan: handleSubmitLessonPlan(set, get, trpc),
+      generateMaterial: handleGenerateMaterial(set, get, trpc),
+      refineMaterial: handleRefineMaterial(set, get, trpc),
       downloadMaterial: handleDownload(set, get),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
-      createMaterialSession: handleCreateMaterialSession(set, get),
+      createMaterialSession: handleCreateMaterialSession(set, get, trpc),
 
       // Analytics actions
       analytics: handleAnalytics(set, get, track),

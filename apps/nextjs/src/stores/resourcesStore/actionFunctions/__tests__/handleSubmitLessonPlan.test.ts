@@ -9,6 +9,7 @@ import {
   type SubmitLessonPlanParams,
   handleSubmitLessonPlan,
 } from "../handleSubmitLessonPlan";
+import type { TrpcUtils } from "@/utils/trpc";
 
 // Mock dependencies
 jest.mock("@oakai/logger", () => ({
@@ -38,6 +39,7 @@ describe("handleSubmitLessonPlan", () => {
   let mockSetIsLoadingLessonPlan: jest.Mock;
   let mockTrackMaterialRefined: jest.Mock;
   let mockParams: SubmitLessonPlanParams;
+  let mockTrpc: TrpcUtils;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -62,18 +64,30 @@ describe("handleSubmitLessonPlan", () => {
       title: "Test Lesson Title",
       subject: "mathematics",
       year: "year-7",
-      mutateAsync: jest.fn().mockResolvedValue({
-        lesson: {
-          title: "Test Lesson Plan",
-          subject: "mathematics",
-          keyStage: "key-stage-3",
-        },
-        lessonId: "test-lesson-id-123",
-        moderation: { categories: [] },
-        threatDetection: false,
-      }),
-      updateSessionMutateAsync: jest.fn().mockResolvedValue({ success: true }),
     };
+
+    // Create trpc mock
+    mockTrpc = {
+      client: {
+        additionalMaterials: {
+          generatePartialLessonPlanObject: {
+            mutate: jest.fn().mockResolvedValue({
+              lesson: {
+                title: "Test Lesson Plan",
+                subject: "mathematics",
+                keyStage: "key-stage-3",
+              },
+              lessonId: "test-lesson-id-123",
+              moderation: { categories: [] },
+              threatDetection: false,
+            }),
+          },
+          updateMaterialSession: {
+            mutate: jest.fn().mockResolvedValue({ success: true }),
+          },
+        },
+      },
+    } as unknown as TrpcUtils;
 
     // Setup default mock returns
 
@@ -85,6 +99,7 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -96,11 +111,12 @@ describe("handleSubmitLessonPlan", () => {
 
     it("sets isLoadingLessonPlan to false even when an error occurs", async () => {
       const error = new Error("API Error");
-      (mockParams.mutateAsync as jest.Mock).mockRejectedValue(error);
+      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -116,12 +132,13 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
 
       // Accept any superset, but require these fields
-      expect(mockParams.mutateAsync).toHaveBeenCalledWith(
+      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Test Lesson Title",
           subject: "mathematics",
@@ -152,12 +169,13 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
 
       // Should include base fields plus all lesson field keys
-      expect(mockParams.mutateAsync).toHaveBeenCalledWith(
+      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Test Lesson Title",
           subject: "mathematics",
@@ -169,16 +187,17 @@ describe("handleSubmitLessonPlan", () => {
   });
 
   describe("mutateAsync calls", () => {
-    it("calls mutateAsync with correct props", async () => {
+    it("calls mutate with correct props", async () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
 
-      expect(mockParams.mutateAsync).toHaveBeenCalledTimes(1);
-      expect(mockParams.mutateAsync).toHaveBeenCalledWith({
+      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledTimes(1);
+      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith({
         title: "Test Lesson Title",
         subject: "mathematics",
         year: "year-7",
@@ -186,10 +205,11 @@ describe("handleSubmitLessonPlan", () => {
       });
     });
 
-    it("handles successful mutateAsync response", async () => {
+    it("handles successful mutate response", async () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -211,7 +231,7 @@ describe("handleSubmitLessonPlan", () => {
 
     it("handles toxic content response", async () => {
       mockIsToxic.mockReturnValue(true);
-      (mockParams.mutateAsync as jest.Mock).mockResolvedValue({
+      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockResolvedValue({
         lesson: null,
         lessonId: "test-lesson-id-toxic",
         moderation: { categories: ["toxic"] },
@@ -221,6 +241,7 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -239,30 +260,32 @@ describe("handleSubmitLessonPlan", () => {
   });
 
   describe("updateMaterialSessionWithLessonId calls", () => {
-    it("calls updateSessionMutateAsync with correct props", async () => {
+    it("calls updateMaterialSession mutate with correct props", async () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
 
-      expect(mockParams.updateSessionMutateAsync).toHaveBeenCalledTimes(1);
-      expect(mockParams.updateSessionMutateAsync).toHaveBeenCalledWith({
+      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledTimes(1);
+      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledWith({
         resourceId: "test-resource-id-123",
         lessonId: "test-lesson-id-123",
       });
     });
 
-    it("handles updateSessionMutateAsync errors gracefully", async () => {
+    it("handles updateMaterialSession errors gracefully", async () => {
       const updateError = new Error("Update session failed");
-      (mockParams.updateSessionMutateAsync as jest.Mock).mockRejectedValue(
+      (mockTrpc.client.additionalMaterials.updateMaterialSession.mutate as jest.Mock).mockRejectedValue(
         updateError,
       );
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -278,6 +301,7 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -290,11 +314,12 @@ describe("handleSubmitLessonPlan", () => {
 
     it("does not call trackMaterialRefined when an error occurs", async () => {
       const error = new Error("API Error");
-      (mockParams.mutateAsync as jest.Mock).mockRejectedValue(error);
+      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -306,11 +331,12 @@ describe("handleSubmitLessonPlan", () => {
   describe("error handling", () => {
     it("catches and handles generic errors correctly", async () => {
       const error = new Error("Generic error");
-      (mockParams.mutateAsync as jest.Mock).mockRejectedValue(error);
+      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -322,11 +348,12 @@ describe("handleSubmitLessonPlan", () => {
 
     it("catches and handles TRPC errors correctly", async () => {
       const trpcError = new TRPCClientError("TRPC Error");
-      (mockParams.mutateAsync as jest.Mock).mockRejectedValue(trpcError);
+      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(trpcError);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
@@ -351,6 +378,7 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await expect(handler(mockParams)).rejects.toThrow(
@@ -358,20 +386,30 @@ describe("handleSubmitLessonPlan", () => {
       );
     });
 
-    it("throws error when updateSessionMutateAsync is undefined", async () => {
-      const paramsWithoutUpdate = {
-        ...mockParams,
-        updateSessionMutateAsync: undefined,
-      };
+    it("handles missing trpc client gracefully", async () => {
+      const mockTrpcWithoutUpdate = {
+        client: {
+          additionalMaterials: {
+            generatePartialLessonPlanObject: {
+              mutate: jest.fn().mockResolvedValue({
+                lesson: { title: "Test" },
+                lessonId: "test-id",
+                moderation: { categories: [] },
+                threatDetection: false,
+              }),
+            },
+          },
+        },
+      } as unknown as TrpcUtils;
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpcWithoutUpdate,
       );
 
-      await expect(handler(paramsWithoutUpdate)).rejects.toThrow(
-        "Update session mutate function must be defined",
-      );
+      await handler(mockParams);
+      expect(Sentry.captureException).toHaveBeenCalled();
     });
 
     it("ensures loading state is reset even on invariant errors", async () => {
@@ -389,6 +427,7 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       try {
@@ -407,20 +446,21 @@ describe("handleSubmitLessonPlan", () => {
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
 
       // Verify the complete flow
       expect(mockSetIsLoadingLessonPlan).toHaveBeenNthCalledWith(1, true);
-      expect(mockParams.mutateAsync).toHaveBeenCalledWith(expect.any(Object));
+      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(expect.any(Object));
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           pageData: expect.any(Object),
           error: null,
         }),
       );
-      expect(mockParams.updateSessionMutateAsync).toHaveBeenCalledWith(
+      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledWith(
         expect.any(Object),
       );
       expect(mockTrackMaterialRefined).toHaveBeenCalledWith(
@@ -432,13 +472,14 @@ describe("handleSubmitLessonPlan", () => {
     it("handles mixed success/failure scenarios", async () => {
       // Success with API but failure with session update
       const updateError = new Error("Session update failed");
-      (mockParams.updateSessionMutateAsync as jest.Mock).mockRejectedValue(
+      (mockTrpc.client.additionalMaterials.updateMaterialSession.mutate as jest.Mock).mockRejectedValue(
         updateError,
       );
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
         mockGet as ResourcesGetter,
+        mockTrpc,
       );
 
       await handler(mockParams);
