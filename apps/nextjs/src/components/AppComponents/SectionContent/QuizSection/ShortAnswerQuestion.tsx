@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import type { Components } from "react-markdown";
+
 import type { QuizV2QuestionShortAnswer } from "@oakai/aila/src/protocol/schema";
 
 import { OakBox, OakFlex, OakSpan } from "@oaknational/oak-components";
@@ -11,52 +14,76 @@ type ShortAnswerQuestionProps = {
   questionNumber: number;
 };
 
+// Create custom components for inline answer rendering
+const getInlineAnswerComponents = (answer: string): Partial<Components> => ({
+  em: ({ children }) => {
+    const isInlineAnswer = children?.toString() === "{{}}";
+    if (isInlineAnswer) {
+      return (
+        <OakSpan
+          $ba="border-solid-m"
+          $borderColor="border-primary"
+          $font="body-2-bold"
+          $color="text-success"
+          $borderStyle="none none solid none"
+          aria-label={`blank filled with: ${answer}`}
+          role="insertion"
+        >
+          {answer}
+        </OakSpan>
+      );
+    }
+
+    // Regular italic text
+    return <em>{children}</em>;
+  },
+});
+
 export const ShortAnswerQuestion = ({
   question,
   questionNumber,
 }: ShortAnswerQuestionProps) => {
-  // Check if answer should be inline (within the text) or on a separate line
   const hasInlineAnswer = question.question.includes("{{}}");
+  const answer = question.answers?.[0] ?? "";
 
-  // Get the first answer to display
-  const displayAnswer = question.answers?.[0] || "";
-
-  // Add instruction to question
-  const questionWithInstruction = addInstruction(
-    question.question,
+  const questionText = addInstruction(
+    // Wrap {{}} in italics. We can intercept with a custom em component
+    question.question.replace("{{}}", "_{{}}_ "),
     "Fill in the blank.",
   );
 
+  const customComponents = useMemo(
+    () => getInlineAnswerComponents(answer),
+    [answer],
+  );
+
   return (
-    <OakBox $mb="space-between-l">
+    <OakBox
+      $mb="space-between-l"
+      role="group"
+      aria-label={`Question ${questionNumber}: Short answer`}
+    >
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
-        {hasInlineAnswer ? (
-          <OakBox className="[&_strong]:border-b-2 [&_strong]:border-gray-800 [&_strong]:font-bold [&_strong]:text-[#2B8848]">
-            <MemoizedReactMarkdownWithStyles
-              markdown={questionWithInstruction.replace(
-                "{{}}",
-                `**${displayAnswer}**`,
-              )}
-              className="[&>p]:mb-0"
-            />
-          </OakBox>
-        ) : (
-          <MemoizedReactMarkdownWithStyles
-            markdown={questionWithInstruction}
-            className="[&>p]:mb-0"
-          />
-        )}
+        <MemoizedReactMarkdownWithStyles
+          markdown={questionText}
+          className="[&>p]:mb-0"
+          components={customComponents}
+        />
       </OakFlex>
 
       {!hasInlineAnswer && (
-        <OakBox $mb="space-between-m">
+        <OakBox $mb="space-between-m" aria-label="Answer">
           <OakBox
             $font="body-2-bold"
-            $color="icon-success"
-            className="inline-block border-b-2 border-gray-800"
+            $color="text-success"
+            $display="inline-block"
+            $ba="border-solid-m"
+            $borderColor="border-primary"
+            $borderStyle="none none solid none"
+            aria-label={`Correct answer: ${answer}`}
           >
-            {displayAnswer}
+            {answer}
           </OakBox>
         </OakBox>
       )}

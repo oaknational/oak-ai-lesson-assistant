@@ -26,7 +26,11 @@ export const OrderQuestion = ({
   );
 
   return (
-    <OakBox $mb="space-between-l">
+    <OakBox
+      $mb="space-between-l"
+      role="group"
+      aria-label={`Question ${questionNumber}: Ordering`}
+    >
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
@@ -35,9 +39,15 @@ export const OrderQuestion = ({
         />
       </OakFlex>
 
-      <OakBox>
+      <OakBox role="list" aria-label="Items to order">
         {shuffledItems.map((item, index) => (
-          <OakFlex key={index} $alignItems="center" $mb="space-between-xs">
+          <OakFlex
+            key={index}
+            $alignItems="center"
+            $mb="space-between-xs"
+            role="listitem"
+            aria-label={`Item in position ${item.correctIndex}: ${item.text}`}
+          >
             <AnswerBox wobbleOffset={index}>{item.correctIndex}</AnswerBox>
             <OakBox $font="body-2">
               <MemoizedReactMarkdownWithStyles

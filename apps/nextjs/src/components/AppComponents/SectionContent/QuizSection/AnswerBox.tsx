@@ -29,10 +29,7 @@ const getWobbleTransform = (variant: number | undefined) => {
   return `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`;
 };
 
-const AnswerBoxBase = ({
-  children,
-  wobbleOffset,
-}: AnswerBoxProps) => {
+const AnswerBoxBase = ({ children, wobbleOffset }: AnswerBoxProps) => {
   return (
     <OakFlex
       $mr="space-between-xs"
@@ -71,6 +68,7 @@ const Check = () => {
       $height="100%"
       $colorFilter="icon-success"
       $transform="scale(1.15)"
+      aria-label="Correct"
     />
   );
 };

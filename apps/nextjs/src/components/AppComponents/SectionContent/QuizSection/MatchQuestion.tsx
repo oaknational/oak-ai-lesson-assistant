@@ -28,7 +28,11 @@ export const MatchQuestion = ({
   );
 
   return (
-    <OakBox $mb="space-between-l">
+    <OakBox
+      $mb="space-between-l"
+      role="group"
+      aria-label={`Question ${questionNumber}: Matching`}
+    >
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
@@ -40,19 +44,28 @@ export const MatchQuestion = ({
       <OakFlex
         $gap={["space-between-s", "space-between-l"]}
         $flexDirection={["column", "row"]}
+        role="group"
+        aria-label="Matching exercise"
       >
         {/* Left column - questions */}
-        <OakBox $minWidth={["auto", "all-spacing-15"]}>
+        <OakBox
+          $minWidth={["auto", "all-spacing-15"]}
+          role="list"
+          aria-label="Items to match"
+        >
           {question.pairs.map((pair, index) => {
+            const letter = String.fromCharCode(97 + index);
             return (
               <OakFlex
                 key={index}
                 $alignItems="center"
                 $mb="space-between-s"
                 $minHeight="all-spacing-7"
+                role="listitem"
+                aria-label={`Match item ${letter}: ${pair.left}`}
               >
                 <MemoizedReactMarkdownWithStyles
-                  markdown={`${String.fromCharCode(97 + index)}) ${pair.left}`}
+                  markdown={`${letter}) ${pair.left}`}
                   className="[&>p]:mb-0 [&>p]:inline"
                 />
               </OakFlex>
@@ -61,13 +74,15 @@ export const MatchQuestion = ({
         </OakBox>
 
         {/* Right column - answers */}
-        <OakBox>
+        <OakBox role="list" aria-label="Answer options">
           {shuffledRight.map((item, index) => (
             <OakFlex
               key={index}
               $alignItems="center"
               $mb="space-between-s"
               $minHeight="all-spacing-7"
+              role="listitem"
+              aria-label={`Matches with ${item.label}: ${item.text}`}
             >
               <AnswerBox wobbleOffset={index}>{item.label}</AnswerBox>
               <OakBox>

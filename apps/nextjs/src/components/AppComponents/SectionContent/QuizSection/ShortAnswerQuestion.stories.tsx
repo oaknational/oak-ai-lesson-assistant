@@ -20,8 +20,8 @@ export const InlineAnswer: Story = {
   args: {
     question: {
       questionType: "short-answer",
-      question: "The capital of France is {{}}.",
-      answers: ["Paris"],
+      question: "Plants need water, warmth and {{}} to grow and stay healthy.",
+      answers: ["sunlight"],
       hint: null,
     },
     questionNumber: 1,
@@ -32,8 +32,9 @@ export const SeparateAnswer: Story = {
   args: {
     question: {
       questionType: "short-answer",
-      question: "What is the value of x if 2x = 10?",
-      answers: ["5", "x = 5", "x=5"],
+      question:
+        "What is the process by which plants make their own food using sunlight?",
+      answers: ["photosynthesis"],
       hint: null,
     },
     questionNumber: 4,
