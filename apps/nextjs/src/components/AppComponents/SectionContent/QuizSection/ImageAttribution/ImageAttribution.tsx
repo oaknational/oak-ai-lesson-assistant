@@ -23,13 +23,13 @@ export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
   return (
     <OakBox $mt="space-between-m" $color="text-subdued">
       <OakSpan $font="body-3">
-        <OakSpan $font="body-3-bold">Image sources: </OakSpan>
         {groupedAttributions.map(({ attribution, questionRange }, index) => (
           <span key={`attribution-${index}`}>
-            {attribution} ({questionRange})
-            {index < groupedAttributions.length - 1 && ", "}
+            © {attribution} ({questionRange})
+            {index < groupedAttributions.length - 1 && "; "}
           </span>
         ))}
+        .
       </OakSpan>
     </OakBox>
   );
