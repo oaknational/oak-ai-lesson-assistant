@@ -1,10 +1,12 @@
 import type { QuizV2, QuizV2Question } from "@oakai/aila/src/protocol/schema";
 
+import { formatNumberRanges } from "./formatNumberRanges";
+
 export function extractImageUrls(text: string): string[] {
   // Matches markdown image syntax: ![alt text](url)
   // More precise: only matches content between [ and ] that doesn't contain unescaped brackets
   const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
-  
+
   const matches = Array.from(text.matchAll(imageRegex));
   return matches.map((match) => match[2]).filter((url): url is string => !!url);
 }
@@ -39,14 +41,34 @@ export function getAttributionsForQuestion(
   return Array.from(new Set(attributions));
 }
 
-export function getQuestionsWithAttributions(
+export function getGroupedAttributions(
   questions: QuizV2Question[],
   quizAttributions: QuizV2["imageAttributions"],
-): Array<{ questionNumber: number; attributions: string[] }> {
-  return questions
-    .map((question, index) => ({
-      questionNumber: index + 1,
-      attributions: getAttributionsForQuestion(question, quizAttributions),
-    }))
-    .filter((item) => item.attributions.length > 0);
+): Record<string, number[]> {
+  const attributionGroups: Record<string, number[]> = {};
+
+  questions.forEach((question, index) => {
+    const attributions = getAttributionsForQuestion(question, quizAttributions);
+
+    attributions.forEach((attribution) => {
+      if (!attributionGroups[attribution]) {
+        attributionGroups[attribution] = [];
+      }
+      attributionGroups[attribution].push(index + 1);
+    });
+  });
+
+  return attributionGroups;
+}
+
+export function getFormattedAttributions(
+  questions: QuizV2Question[],
+  quizAttributions: QuizV2["imageAttributions"],
+): Array<{ attribution: string; questionRange: string }> {
+  const groups = getGroupedAttributions(questions, quizAttributions);
+
+  return Object.entries(groups).map(([attribution, questionNumbers]) => ({
+    attribution,
+    questionRange: formatNumberRanges(questionNumbers),
+  }));
 }
