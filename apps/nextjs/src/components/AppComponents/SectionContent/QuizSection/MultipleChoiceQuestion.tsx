@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import type { QuizV2QuestionMultipleChoice } from "@oakai/aila/src/protocol/schema";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
@@ -17,9 +19,9 @@ export const MultipleChoiceQuestion = ({
   question,
   questionNumber,
 }: MultipleChoiceQuestionProps) => {
-  const answers = shuffleMultipleChoiceAnswers(
-    question.answers,
-    question.distractors,
+  const answers = useMemo(
+    () => shuffleMultipleChoiceAnswers(question.answers, question.distractors),
+    [question.answers, question.distractors],
   );
 
   const questionWithInstruction = addInstruction(

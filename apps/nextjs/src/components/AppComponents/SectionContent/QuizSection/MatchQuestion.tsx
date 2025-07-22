@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import type { QuizV2QuestionMatch } from "@oakai/aila/src/protocol/schema";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
@@ -18,8 +20,10 @@ export const MatchQuestion = ({
   questionNumber,
 }: MatchQuestionProps) => {
   // Extract right side items and shuffle them
-  const rightItems = question.pairs.map((pair) => pair.right);
-  const shuffledRight = shuffleMatchItems(rightItems);
+  const shuffledRight = useMemo(() => {
+    const rightItems = question.pairs.map((pair) => pair.right);
+    return shuffleMatchItems(rightItems);
+  }, [question.pairs]);
 
   // Add instruction to question
   const questionWithInstruction = addInstruction(

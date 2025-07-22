@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import type { QuizV2QuestionOrder } from "@oakai/aila/src/protocol/schema";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
@@ -17,7 +19,10 @@ export const OrderQuestion = ({
   question,
   questionNumber,
 }: OrderQuestionProps) => {
-  const shuffledItems = shuffleOrderItems(question.items);
+  const shuffledItems = useMemo(
+    () => shuffleOrderItems(question.items),
+    [question.items],
+  );
 
   // Add instruction to question
   const questionWithInstruction = addInstruction(
