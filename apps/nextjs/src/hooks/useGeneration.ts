@@ -52,7 +52,7 @@ export const useGeneration = <TSchema extends z.Schema>(
   schema: TSchema,
   {
     stream: streamCompletions,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     timeout: _timeoutSeconds,
   }: AdditionalUseGenerationOptions,
 ): UseGenerationReturnValue<TSchema> => {
