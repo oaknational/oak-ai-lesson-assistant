@@ -33,14 +33,21 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-const errorType = z.enum(["rate_limit", "banned", "toxic", "unknown"]);
+const errorType = z.enum([
+  "rate_limit",
+  "banned",
+  "toxic",
+  "restrictedContentGuidance",
+  "copyright",
+  "unknown",
+]);
 export type ErrorType = z.infer<typeof errorType>;
 
 export const errorResponse = z.object({
   type: errorType,
   message: z.string(),
 });
-type ErrorResponse = z.infer<typeof errorResponse>;
+export type ErrorResponse = z.infer<typeof errorResponse>;
 
 export type ResourcesState = {
   id: string | null;
@@ -72,6 +79,7 @@ export type ResourcesState = {
     setIsResourcesLoading: (isLoading: boolean) => void;
     setIsResourceRefining: (isRefining: boolean) => void;
     setThreatDetection: (threatDetection: boolean) => void;
+    setError: (error: ErrorResponse | null) => void;
 
     // Form state setters
     setSubject: (subject: string | null) => void;

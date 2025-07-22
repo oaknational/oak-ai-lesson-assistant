@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import invariant from "tiny-invariant";
 
 import { createTeachingMaterialInteraction } from "@/app/actions";
+import type { ErrorResponse } from "@/stores/resourcesStore";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import TeachingMaterialsView, {
@@ -18,26 +19,37 @@ import TeachingMaterialsView, {
 
 const log = aiLogger("additional-materials");
 
-// Helper to handle copyright errors
-function handleCopyrightError(
-  fetchError: unknown,
-  pageProps: TeachingMaterialsPageProps,
-  lessonSlug: string,
-  programmeSlug: string,
-) {
-  log.error("Copyright error fetching lesson data", {
+// Helper to handle expected errors
+function handleExpectedError({
+  fetchError,
+  pageProps,
+  lessonSlug,
+  programmeSlug,
+  error,
+  docType,
+}: {
+  fetchError: unknown;
+  pageProps: TeachingMaterialsPageProps;
+  lessonSlug: string;
+  programmeSlug: string;
+  error: ErrorResponse;
+  docType: string;
+}) {
+  log.error(`${error.type}: error fetching lesson data`, {
     error: fetchError,
     lessonSlug,
     programmeSlug,
   });
   Sentry.captureException(fetchError, {
     extra: {
-      message: "Copyright error fetching lesson data",
+      message: `${error.type}: error fetching lesson data`,
       lessonSlug,
       programmeSlug,
     },
   });
-  return <TeachingMaterialsView {...{ ...pageProps, error: "copyright" }} />;
+  return (
+    <TeachingMaterialsView {...{ ...pageProps, error, docType: docType }} />
+  );
 }
 
 // Helper to fetch lesson data
@@ -105,17 +117,46 @@ export default async function AdditionalMaterialsTestPage({
         baseUrl,
       });
       if (!res.ok) {
+        console.log("RES not ok");
         const fetchError: unknown = await res.json();
+        const errorData = fetchError as { error?: string; message?: string };
+
         if (
-          fetchError instanceof Error &&
-          fetchError.message.includes("copyright")
+          errorData.error?.includes("copyright") ||
+          errorData.message?.includes("copyright")
         ) {
-          return handleCopyrightError(
+          return handleExpectedError({
             fetchError,
             pageProps,
             lessonSlug,
             programmeSlug,
-          );
+            docType,
+            error: {
+              type: "copyright",
+              message:
+                errorData.error ||
+                errorData.message ||
+                "Copyright restricted content",
+            },
+          });
+        } else if (
+          errorData.error?.includes("content-guidance") ||
+          errorData.message?.includes("content-guidance")
+        ) {
+          return handleExpectedError({
+            fetchError,
+            pageProps,
+            lessonSlug,
+            programmeSlug,
+            docType,
+            error: {
+              type: "restrictedContentGuidance",
+              message:
+                errorData.error ||
+                errorData.message ||
+                "Restricted content guidance",
+            },
+          });
         } else {
           log.error("Failed to fetch lesson data", {
             error: fetchError,
