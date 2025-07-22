@@ -23,8 +23,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleCreateSession: ({ documentType }: { documentType: string }) => {
-      console.log("Creating session with document type:", documentType);
+    handleCreateSession: (docType: string | null): Promise<void> => {
+      return { docType } as unknown as Promise<void>;
     },
   },
   decorators: [

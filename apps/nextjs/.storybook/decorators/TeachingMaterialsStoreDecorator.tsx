@@ -7,6 +7,7 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import { ResourcesStoresContext } from "@/stores/ResourcesStoreProvider";
 import { createResourcesStore } from "@/stores/resourcesStore";
 import type { ResourcesState } from "@/stores/resourcesStore/types";
+import type { TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
@@ -19,6 +20,32 @@ const trackEvents = {
   teachingMaterialsRefined: fn(),
   teachingMaterialDownloaded: fn(),
 } as unknown as ReturnType<typeof useAnalytics>["track"];
+
+const mockTrpc: TrpcUtils = {
+  client: {
+    runtime: {} as any,
+    query: jest.fn(),
+    mutation: jest.fn(),
+    subscription: jest.fn(),
+    additionalMaterials: {
+      generateAdditionalMaterial: {
+        mutate: jest.fn(),
+      },
+      createMaterialSession: {
+        mutate: jest.fn(),
+      },
+      updateMaterialSession: {
+        mutate: jest.fn(),
+      },
+      generatePartialLessonPlanObject: {
+        mutate: jest.fn(),
+      },
+      remainingLimit: {
+        query: jest.fn(),
+      },
+    },
+  },
+} as unknown as TrpcUtils;
 
 export const TeachingMaterialsStoreDecorator: Decorator = (
   Story,
@@ -43,7 +70,7 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
     };
 
     // Create the store with merged initial values from parameters
-    const resourcesStore = createResourcesStore(trackEvents, {
+    const resourcesStore = createResourcesStore(trackEvents, mockTrpc, {
       ...defaultState,
       ...parameters.resourcesStoreState,
     });
