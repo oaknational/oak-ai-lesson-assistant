@@ -13,7 +13,6 @@ export const QUIZ_V2_DESCRIPTIONS = {
     "Copyright info for images. DO NOT hallucinate - only use existing attributions from source.",
 } as const;
 
-// Image attribution metadata
 export const ImageAttributionSchema = z.object({
   imageUrl: z.string().describe("The URL of the image"),
   attribution: z.string().describe("Attribution text for the image"),

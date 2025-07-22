@@ -4,7 +4,6 @@ import { formatNumberRanges } from "./formatNumberRanges";
 
 export function extractImageUrls(text: string): string[] {
   // Matches markdown image syntax: ![alt text](url)
-  // More precise: only matches content between [ and ] that doesn't contain unescaped brackets
   const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
 
   const matches = Array.from(text.matchAll(imageRegex));
@@ -19,7 +18,6 @@ export function getAttributionsForQuestion(
     return [];
   }
 
-  // Extract image URLs from question text and answer choices
   const questionImageUrls = extractImageUrls(question.question);
 
   let answerImageUrls: string[] = [];
@@ -32,7 +30,6 @@ export function getAttributionsForQuestion(
 
   const allImageUrls = [...questionImageUrls, ...answerImageUrls];
 
-  // Find attributions for these images
   const attributions = quizAttributions
     .filter((attr) => allImageUrls.includes(attr.imageUrl))
     .map((attr) => attr.attribution);

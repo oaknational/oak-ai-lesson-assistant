@@ -14,18 +14,15 @@ export function formatNumberRanges(numbers: number[]): string {
   let end = sorted[0]!;
 
   for (let i = 1; i <= sorted.length; i++) {
-    // Check if current number is consecutive
     if (i < sorted.length && sorted[i]! === end + 1) {
       end = sorted[i]!;
     } else {
-      // Add the range to results with Q prefix
       if (start === end) {
         ranges.push(`Q${start}`);
       } else {
         ranges.push(`Q${start}-Q${end}`);
       }
 
-      // Start a new range
       if (i < sorted.length) {
         start = sorted[i]!;
         end = sorted[i]!;
