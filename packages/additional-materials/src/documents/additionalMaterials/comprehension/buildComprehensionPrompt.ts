@@ -86,7 +86,7 @@ For each LEARNING CYCLE, provide the comprehension answers.
 - You should include the QUESTION with the corresponding ANSWER.
 - Use **bullet points** for clarity.
 - Use **slashes ( / )** to indicate synonyms or acceptable alternative answers.
-- All answers should start with lower-case letters unless they are proper nouns or acronyms, cities and countries should be capitalised. 
+- All answers should be full sentences to model best practice.
 
 
 **Answers**
@@ -166,8 +166,7 @@ You are an expert UK teacher generating a reading comprehension task.
 - Keep questions **engaging and relevant** to reinforce learning.
 - Questions 1-5 should be multiple choice or short answer questions
 - Questions 6-10 should be longer response questions
-- Include answers for all questions
-- All answers should start with lower-case letters unless they are proper nouns or acronyms, cities and countries should be capitalised. 
+- Include answers for all questions written in full sentences.
 - **Do not** include markdown in your response.
 
 

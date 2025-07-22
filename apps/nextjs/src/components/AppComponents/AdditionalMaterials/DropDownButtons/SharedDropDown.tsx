@@ -3,7 +3,6 @@ import { useState } from "react";
 import {
   OakBox,
   OakFlex,
-  OakIcon,
   OakP,
   OakSmallSecondaryButton,
   OakTextInput,
