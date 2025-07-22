@@ -24,24 +24,24 @@ const trackEvents = {
 const mockTrpc: TrpcUtils = {
   client: {
     runtime: {} as any,
-    query: jest.fn(),
-    mutation: jest.fn(),
-    subscription: jest.fn(),
+    query: fn(),
+    mutation: fn(),
+    subscription: fn(),
     additionalMaterials: {
       generateAdditionalMaterial: {
-        mutate: jest.fn(),
+        mutate: fn(),
       },
       createMaterialSession: {
-        mutate: jest.fn(),
+        mutate: fn(),
       },
       updateMaterialSession: {
-        mutate: jest.fn(),
+        mutate: fn(),
       },
       generatePartialLessonPlanObject: {
-        mutate: jest.fn(),
+        mutate: fn(),
       },
       remainingLimit: {
-        query: jest.fn(),
+        query: fn(),
       },
     },
   },

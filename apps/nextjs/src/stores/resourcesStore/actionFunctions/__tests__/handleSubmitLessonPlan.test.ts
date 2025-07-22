@@ -3,13 +3,14 @@ import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCClientError } from "@trpc/client";
 
+import type { TrpcUtils } from "@/utils/trpc";
+
 import type { ResourcesGetter, ResourcesSetter } from "../../types";
 import { handleStoreError } from "../../utils/errorHandling";
 import {
   type SubmitLessonPlanParams,
   handleSubmitLessonPlan,
 } from "../handleSubmitLessonPlan";
-import type { TrpcUtils } from "@/utils/trpc";
 
 // Mock dependencies
 jest.mock("@oakai/logger", () => ({
@@ -111,7 +112,10 @@ describe("handleSubmitLessonPlan", () => {
 
     it("sets isLoadingLessonPlan to false even when an error occurs", async () => {
       const error = new Error("API Error");
-      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
+      (
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate as jest.Mock
+      ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
@@ -138,7 +142,10 @@ describe("handleSubmitLessonPlan", () => {
       await handler(mockParams);
 
       // Accept any superset, but require these fields
-      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(
+      expect(
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Test Lesson Title",
           subject: "mathematics",
@@ -175,7 +182,10 @@ describe("handleSubmitLessonPlan", () => {
       await handler(mockParams);
 
       // Should include base fields plus all lesson field keys
-      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(
+      expect(
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Test Lesson Title",
           subject: "mathematics",
@@ -196,8 +206,14 @@ describe("handleSubmitLessonPlan", () => {
 
       await handler(mockParams);
 
-      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledTimes(1);
-      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith({
+      expect(
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate,
+      ).toHaveBeenCalledWith({
         title: "Test Lesson Title",
         subject: "mathematics",
         year: "year-7",
@@ -231,7 +247,10 @@ describe("handleSubmitLessonPlan", () => {
 
     it("handles toxic content response", async () => {
       mockIsToxic.mockReturnValue(true);
-      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockResolvedValue({
+      (
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate as jest.Mock
+      ).mockResolvedValue({
         lesson: null,
         lessonId: "test-lesson-id-toxic",
         moderation: { categories: ["toxic"] },
@@ -269,8 +288,12 @@ describe("handleSubmitLessonPlan", () => {
 
       await handler(mockParams);
 
-      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledTimes(1);
-      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledWith({
+      expect(
+        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+      ).toHaveBeenCalledWith({
         resourceId: "test-resource-id-123",
         lessonId: "test-lesson-id-123",
       });
@@ -278,9 +301,10 @@ describe("handleSubmitLessonPlan", () => {
 
     it("handles updateMaterialSession errors gracefully", async () => {
       const updateError = new Error("Update session failed");
-      (mockTrpc.client.additionalMaterials.updateMaterialSession.mutate as jest.Mock).mockRejectedValue(
-        updateError,
-      );
+      (
+        mockTrpc.client.additionalMaterials.updateMaterialSession
+          .mutate as jest.Mock
+      ).mockRejectedValue(updateError);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
@@ -314,7 +338,10 @@ describe("handleSubmitLessonPlan", () => {
 
     it("does not call trackMaterialRefined when an error occurs", async () => {
       const error = new Error("API Error");
-      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
+      (
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate as jest.Mock
+      ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
@@ -331,7 +358,10 @@ describe("handleSubmitLessonPlan", () => {
   describe("error handling", () => {
     it("catches and handles generic errors correctly", async () => {
       const error = new Error("Generic error");
-      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(error);
+      (
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate as jest.Mock
+      ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
@@ -348,7 +378,10 @@ describe("handleSubmitLessonPlan", () => {
 
     it("catches and handles TRPC errors correctly", async () => {
       const trpcError = new TRPCClientError("TRPC Error");
-      (mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate as jest.Mock).mockRejectedValue(trpcError);
+      (
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate as jest.Mock
+      ).mockRejectedValue(trpcError);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
@@ -453,16 +486,19 @@ describe("handleSubmitLessonPlan", () => {
 
       // Verify the complete flow
       expect(mockSetIsLoadingLessonPlan).toHaveBeenNthCalledWith(1, true);
-      expect(mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate).toHaveBeenCalledWith(expect.any(Object));
+      expect(
+        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+          .mutate,
+      ).toHaveBeenCalledWith(expect.any(Object));
       expect(mockSet).toHaveBeenCalledWith(
         expect.objectContaining({
           pageData: expect.any(Object),
           error: null,
         }),
       );
-      expect(mockTrpc.client.additionalMaterials.updateMaterialSession.mutate).toHaveBeenCalledWith(
-        expect.any(Object),
-      );
+      expect(
+        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+      ).toHaveBeenCalledWith(expect.any(Object));
       expect(mockTrackMaterialRefined).toHaveBeenCalledWith(
         "generate_overview",
       );
@@ -472,9 +508,10 @@ describe("handleSubmitLessonPlan", () => {
     it("handles mixed success/failure scenarios", async () => {
       // Success with API but failure with session update
       const updateError = new Error("Session update failed");
-      (mockTrpc.client.additionalMaterials.updateMaterialSession.mutate as jest.Mock).mockRejectedValue(
-        updateError,
-      );
+      (
+        mockTrpc.client.additionalMaterials.updateMaterialSession
+          .mutate as jest.Mock
+      ).mockRejectedValue(updateError);
 
       const handler = handleSubmitLessonPlan(
         mockSet as ResourcesSetter,
