@@ -4,6 +4,7 @@ import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { trpc } from "@/utils/trpc";
 
 import { createResourcesStore } from "./resourcesStore";
 import type { ResourcesState } from "./resourcesStore/types";
@@ -29,9 +30,12 @@ export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
 > = ({ children, initState, ...props }) => {
   const { track } = useAnalytics();
+
+  const trpcUtils = trpc.useUtils();
+
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(props, track, initState),
+      resources: createResourcesStore(props, track, trpcUtils, initState),
     };
     return storesObj;
   });

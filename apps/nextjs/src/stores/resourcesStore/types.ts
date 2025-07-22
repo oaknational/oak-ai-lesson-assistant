@@ -2,6 +2,8 @@ import type {
   AdditionalMaterialSchemas,
   AdditionalMaterialType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
+import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
@@ -92,12 +94,10 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    createMaterialSession: (
-      params: CreateMaterialSessionParams,
-    ) => Promise<void>;
+    createMaterialSession: (docType: string | null) => Promise<void>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
-    generateMaterial: (params: GenerateMaterialParams) => Promise<void>;
-    refineMaterial: (params: RefineMaterialParams) => Promise<void>;
+    generateMaterial: () => Promise<void>;
+    refineMaterial: (refinementOption: RefinementOption) => Promise<void>;
     downloadMaterial: () => Promise<void>;
 
     // OWA data loading

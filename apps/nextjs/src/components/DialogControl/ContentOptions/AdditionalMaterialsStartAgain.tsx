@@ -66,7 +66,7 @@ const AdditionalMaterialsStartAgain = ({
         >
           Yes, I want to start again
         </OakPrimaryButton>
-        <OakPrimaryButton
+        {/* <OakPrimaryButton
           iconName="chevron-right"
           isTrailingIcon
           onClick={() => {
@@ -75,7 +75,7 @@ const AdditionalMaterialsStartAgain = ({
           }}
         >
           Create a different teaching material based on this lesson
-        </OakPrimaryButton>
+        </OakPrimaryButton> */}
         <OakSecondaryLink
           element="button"
           aria-label={`Back to ${docTypeDisplayName}`}

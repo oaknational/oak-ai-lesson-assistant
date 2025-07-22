@@ -13,7 +13,6 @@ import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
 import { handleDialogSelection } from "@/components/AppComponents/AdditionalMaterials/StepLayouts/helpers";
-import useStepSubmitLogic from "@/components/AppComponents/AdditionalMaterials/hooks/useStepSubmitLogic";
 import {
   DialogProvider,
   useDialog,
@@ -58,15 +57,14 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
-
-  const { setDialogWindow } = useDialog();
   const {
-    handleSubmitLessonPlan,
-    handleSubmit,
-    handleCreateSession,
-    handleRefineMaterial,
-  } = useStepSubmitLogic();
-  const handleSubmitRef = useRef(handleSubmit);
+    resetFormState,
+    createMaterialSession,
+    submitLessonPlan,
+    generateMaterial,
+    refineMaterial,
+  } = useResourcesActions();
+  const { setDialogWindow } = useDialog();
 
   useEffect(() => {
     if (source === "owa" && !props.error) {
@@ -137,10 +135,10 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
   };
 
   const stepComponents = {
-    0: <StepOne handleCreateSession={handleCreateSession} />,
-    1: <StepTwo handleSubmitLessonPlan={handleSubmitLessonPlan} />,
-    2: <StepThree handleSubmit={handleSubmit} />,
-    3: <StepFour handleRefineMaterial={handleRefineMaterial} />,
+    0: <StepOne handleCreateSession={createMaterialSession} />,
+    1: <StepTwo handleSubmitLessonPlan={submitLessonPlan} />,
+    2: <StepThree handleSubmit={generateMaterial} />,
+    3: <StepFour handleRefineMaterial={refineMaterial} />,
   };
   const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";

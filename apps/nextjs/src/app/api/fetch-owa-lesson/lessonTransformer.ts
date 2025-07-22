@@ -2,7 +2,8 @@ import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materi
 import type {
   Keyword,
   Misconception,
-  QuizV1Question,
+  QuizV2,
+  QuizV2Question,
 } from "@oakai/aila/src/protocol/schema";
 
 import {
@@ -21,19 +22,25 @@ type OwaLesson = z.infer<typeof lessonContentSchema>;
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
+export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
   const quizData = z.array(quizQuestionSchema).parse(quiz);
   if (!quizData || !Array.isArray(quizData)) {
-    return [];
+    return {
+      version: "v2",
+      imageAttributions: [],
+      questions: [],
+    };
   }
 
-  return quizData.map((question) => {
+  const questions: QuizV2Question[] = quizData.map((question) => {
     if (!question || !question.question_stem) {
       return {
+        questionType: "multiple-choice",
         question: "",
         answers: [],
         distractors: [],
-      };
+        hint: null,
+      } as QuizV2Question;
     }
     // Extract the question text from the stem
     const questionText = question.question_stem
@@ -67,9 +74,11 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
         );
 
       return {
+        questionType: "multiple-choice",
         question: questionText,
         answers: correctAnswers,
         distractors: distractors,
+        hint: null,
       };
     } else if (
       question.question_type === "short-answer" &&
@@ -105,20 +114,30 @@ export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV1Question[] {
         );
 
       return {
+        questionType: "multiple-choice",
         question: questionText,
         answers:
           correctAnswers.length > 0 ? correctAnswers : allAnswers.slice(0, 1),
         distractors: distractors.length > 0 ? distractors : [],
+        hint: null,
       };
     }
 
     // Fallback for unsupported question types
     return {
+      questionType: "multiple-choice",
       question: questionText,
       answers: [],
       distractors: [],
+      hint: null,
     };
   });
+
+  return {
+    version: "v2",
+    imageAttributions: [],
+    questions,
+  };
 }
 
 interface OwaMisconception {

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useChatStore } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import AiIcon from "../../AiIcon";
 import ChatButton from "./ui/chat-button";
@@ -38,7 +39,7 @@ const ChatLhsHeader = ({
         <ChatButton
           variant="secondary"
           onClick={() => {
-            router.push("/aila");
+            router.push(getAilaUrl("lesson"));
           }}
           size="sm"
         >

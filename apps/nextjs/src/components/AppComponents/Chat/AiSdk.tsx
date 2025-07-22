@@ -18,6 +18,7 @@ import {
   useChatStore,
   useLessonPlanActions,
 } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { findMessageIdFromContent } from "./Chat/utils";
 import { isAccountLocked } from "./chat-message/protocol";
@@ -94,7 +95,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         toast.error(response.statusText);
       }
       if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/lesson/${id}`);
+        window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
       }
     },
     onFinish(response) {

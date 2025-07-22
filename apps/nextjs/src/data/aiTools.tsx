@@ -1,4 +1,5 @@
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const aiTools: {
   title: string;
@@ -10,7 +11,7 @@ export const aiTools: {
 }[] = [
   {
     title: "Create with AI",
-    href: "/aila/tools",
+    href: getAilaUrl("start"),
     id: "lesson-planner",
     image: oakSupporting,
     behindFeatureFlag: true,

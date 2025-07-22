@@ -43,14 +43,7 @@ export default meta;
 
 type Story = StoryObj<typeof Quiz>;
 
-export const Starter: Story = {
-  args: {
-    generation: quizFixture,
-    action: "view",
-  },
-};
-
-export const Exit: Story = {
+export const TeachingMaterialQuiz: Story = {
   args: {
     generation: quizFixture,
     action: "view",

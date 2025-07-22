@@ -8,8 +8,9 @@ import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
-import type { UseMutateAsyncFunction } from "@tanstack/react-query";
 import invariant from "tiny-invariant";
+
+import type { TrpcUtils } from "@/utils/trpc";
 
 import { type ResourcesGetter, type ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
@@ -20,16 +21,6 @@ export type SubmitLessonPlanParams = {
   title: string;
   subject: string;
   year: string;
-  mutateAsync: UseMutateAsyncFunction<
-    GeneratePartialLessonPlanResponse,
-    Error,
-    PartialLessonContextSchemaType
-  >;
-  updateSessionMutateAsync?: UseMutateAsyncFunction<
-    { success: boolean },
-    Error,
-    { resourceId: string; lessonId: string }
-  >;
 };
 
 /**
@@ -120,20 +111,15 @@ const updateStoreWithLessonPlan = (
 const updateMaterialSessionWithLessonId = async (
   resourceId: string | null,
   lessonId: string,
-  updateSessionMutateAsync?: UseMutateAsyncFunction<
-    { success: boolean },
-    Error,
-    { resourceId: string; lessonId: string }
-  >,
+  trpc: TrpcUtils,
 ) => {
   invariant(resourceId, "Resource ID must be defined");
-  invariant(
-    updateSessionMutateAsync,
-    "Update session mutate function must be defined",
-  );
 
   try {
-    await updateSessionMutateAsync({ resourceId, lessonId });
+    await trpc.client.additionalMaterials.updateMaterialSession.mutate({
+      resourceId,
+      lessonId,
+    });
     log.info("Material session updated with lesson ID", {
       resourceId,
       lessonId,
@@ -145,37 +131,28 @@ const updateMaterialSessionWithLessonId = async (
 };
 
 export const handleSubmitLessonPlan =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
-  async ({
-    title,
-    subject,
-
-    year,
-    mutateAsync,
-    updateSessionMutateAsync,
-  }: SubmitLessonPlanParams) => {
+  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  async ({ title, subject, year }: SubmitLessonPlanParams) => {
     const { setIsLoadingLessonPlan } = get().actions;
     const { docType, id: resourceId, source } = get();
 
+    set({ stepNumber: 2 });
     setIsLoadingLessonPlan(true);
 
     invariant(resourceId, "Resource ID must be defined");
-    invariant(
-      updateSessionMutateAsync,
-      "Update session mutate function must be defined",
-    );
-    invariant(docType, "Document type must be defined");
 
     try {
       log.info("Processing lesson plan", { title, subject, year });
-      const apiInput = buildLessonPlanInput(
-        title,
-        subject,
-        year,
-        docType,
-        source,
-      );
-      const result = await mutateAsync(apiInput);
+      const apiInput = buildLessonPlanInput(title, subject, year, docType);
+
+      const result =
+        await trpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate(
+          apiInput,
+        );
+
+      if (!result) {
+        throw new Error("Failed to generate lesson plan");
+      }
 
       updateStoreWithLessonPlan(set, result);
 
@@ -183,12 +160,12 @@ export const handleSubmitLessonPlan =
       await updateMaterialSessionWithLessonId(
         resourceId,
         result.lessonId,
-        updateSessionMutateAsync,
+        trpc,
       );
       get().actions.analytics.trackMaterialRefined("generate_overview");
     } catch (error: unknown) {
       handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
-      log.error("Error handling lesson plan");
+      log.error("Error handling lesson plan", error);
     } finally {
       setIsLoadingLessonPlan(false);
     }

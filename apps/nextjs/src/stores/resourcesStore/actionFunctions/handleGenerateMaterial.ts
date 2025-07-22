@@ -1,28 +1,19 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
 import { aiLogger } from "@oakai/logger";
 
-import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+import * as Sentry from "@sentry/nextjs";
+
+import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
-export type GenerateMaterialParams = {
-  message?: string;
-  mutateAsync: UseMutateAsyncFunction<
-    GenerateAdditionalMaterialResponse,
-    Error,
-    GenerateAdditionalMaterialInput
-  >;
-};
-
 export const handleGenerateMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
-  async ({ mutateAsync }: GenerateMaterialParams) => {
+  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) => async () => {
+    set({ stepNumber: 3 });
+
     // Clear any existing generation
     get().actions.setGeneration(null);
     get().actions.setIsResourcesLoading(true);
@@ -53,21 +44,23 @@ export const handleGenerateMaterial =
       log.info("Generating material", { docType });
 
       // Make the API call
-      const result = await mutateAsync({
-        documentType: docTypeParsed,
+      const result =
+        await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
+          {
+            documentType: docTypeParsed,
 
-        context: {
-          lessonPlan: {
-            ...lessonPlan,
-            year: formState.year,
+            context: {
+              lessonPlan: {
+                ...lessonPlan,
+                year: formState.year,
+              },
+              previousOutput: null,
+              options: null,
+            },
+            resourceId: get().id, // Use existing resourceId
+            lessonId: get().pageData.lessonPlan.lessonId,
           },
-          previousOutput: null,
-          options: null,
-        },
-        resourceId: get().id, // Use existing resourceId
-        lessonId: get().pageData.lessonPlan.lessonId,
-        source: get().source,
-      });
+        );
       get().actions.setIsResourcesLoading(false);
 
       set({
@@ -86,6 +79,7 @@ export const handleGenerateMaterial =
         context: "handleGenerateMaterial",
         documentType: docType,
       });
-      log.error("Error generating material");
+      log.error("Error generating material", error);
+      Sentry.captureException(error);
     }
   };

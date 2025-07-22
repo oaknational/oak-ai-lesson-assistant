@@ -14,20 +14,15 @@ import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { AilaThreatDetectionError } from "../../features/threatDetection";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  ExperimentalPatchDocument,
-  JsonPatchDocumentOptional,
-} from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
-  extractPatches,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
 import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
@@ -59,10 +54,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  private readonly _experimentalPatches: ExperimentalPatchDocument[];
   public readonly fullQuizService: FullQuizService;
-
-  // private readonly _experimentalPatches: ExperimentalPatchDocument[];
 
   constructor({
     id,
@@ -92,7 +84,6 @@ export class AilaChat implements AilaChatService {
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
-    this._experimentalPatches = [];
 
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
       quizRatingSchema: testRatingSchema,
@@ -168,10 +159,6 @@ export class AilaChat implements AilaChatService {
       return;
     }
     this._chunks.push(value);
-  }
-
-  public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
-    this._experimentalPatches.push(patch);
   }
 
   public async generationFailed(error: unknown) {
@@ -395,19 +382,6 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  private async fetchExperimentalPatches() {
-    await fetchExperimentalPatches({
-      fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.content,
-      llmPatches: extractPatches(this.accumulatedText()).validPatches,
-      handlePatch: async (patch) => {
-        await this.enqueue(patch);
-        this.appendExperimentalPatch(patch);
-      },
-      userId: this._userId,
-    });
-  }
-
   public async createChatCompletionStream(messages: Message[]) {
     return this._llmService.createChatCompletionStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
@@ -430,9 +404,6 @@ export class AilaChat implements AilaChatService {
     log.info("Starting chat completion");
     await this.span("reportUsageMetrics", async () => {
       await this.reportUsageMetrics();
-    });
-    await this.span("fetchExperimentalPatches", async () => {
-      await this.fetchExperimentalPatches();
     });
     await this.span("applyEdits", async () => {
       this.applyEdits();
