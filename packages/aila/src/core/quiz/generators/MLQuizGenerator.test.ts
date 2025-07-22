@@ -1,7 +1,7 @@
 import type { Client } from "@elastic/elasticsearch";
 import type { OpenAI } from "openai";
 
-import { QuizSchema } from "../../../protocol/schema";
+import { QuizV1Schema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
@@ -38,7 +38,7 @@ describe("MLQuizGenerator", () => {
     expect(result.length).toBeGreaterThan(0);
 
     result.forEach((item) => {
-      expect(QuizSchema.safeParse(item).success).toBe(true);
+      expect(QuizV1Schema.safeParse(item).success).toBe(true);
     });
   });
 
@@ -50,7 +50,7 @@ describe("MLQuizGenerator", () => {
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
     result.forEach((item) => {
-      expect(QuizSchema.safeParse(item).success).toBe(true);
+      expect(QuizV1Schema.safeParse(item).success).toBe(true);
     });
   });
 

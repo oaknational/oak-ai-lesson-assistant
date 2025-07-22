@@ -8,12 +8,7 @@ import type {
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import type {
-  LooseLessonPlan,
-  Quiz,
-  QuizPath,
-  QuizQuestion,
-} from "../../../protocol/schema";
+import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
@@ -173,7 +168,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
-        model: "o3",
+        model: "gpt-4.1",
         messages: [
           {
             role: "user",

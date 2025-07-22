@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 
-import { QuizSchema } from "../../../protocol/schema";
+import { QuizV1Schema } from "../../../protocol/schemas/quiz/quizV1";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 
@@ -32,7 +32,7 @@ describe("AilaRagQuizGenerator", () => {
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
     for (const quiz of result) {
-      expect(QuizSchema.safeParse(quiz)).toBeTruthy();
+      expect(QuizV1Schema.safeParse(quiz).success).toBe(true);
     }
   });
   it("Should retrieve questions from a given questionUid", async () => {
