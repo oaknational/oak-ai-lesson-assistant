@@ -1,3 +1,11 @@
+# [1.46.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.45.0...v1.46.0) (2025-07-17)
+
+
+### Features
+
+* launch teaching materials -  AI-857 AI-1340 ([#729](https://github.com/oaknational/oak-ai-lesson-assistant/issues/729)) ([70b8fd1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/70b8fd1c60c0a210a7de27092c5ef22d4fa34604))
+* remove legacy experimental quiz sections ([#744](https://github.com/oaknational/oak-ai-lesson-assistant/issues/744)) ([704612f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/704612f9ed5ee5ffc7034a6ba8a04291196934b0))
+
 # [1.45.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.44.0...v1.45.0) (2025-07-16)
 
 
