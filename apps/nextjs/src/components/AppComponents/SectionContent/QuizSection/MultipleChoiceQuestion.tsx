@@ -56,15 +56,6 @@ export const MultipleChoiceQuestion = ({
         />
       </OakFlex>
 
-      {question.hint && (
-        <OakBox $mb="space-between-s" $color="text-subdued">
-          <MemoizedReactMarkdownWithStyles
-            markdown={question.hint}
-            className="[&>p]:mb-0"
-          />
-        </OakBox>
-      )}
-
       <OakBox>
         {answers.map((answer, index) => (
           <OakFlex key={index} $alignItems="flex-start" $mb="space-between-xs">

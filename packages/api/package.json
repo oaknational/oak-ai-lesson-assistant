@@ -9,6 +9,10 @@
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
+    "test": "jest --config jest.config.mjs",
+    "test:coverage": "COLLECT_TEST_COVERAGE=true jest --config jest.config.mjs --coverage",
+    "test:file": "jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
+    "test:seq": "jest --config jest.config.mjs --verbose --runInBand",
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",

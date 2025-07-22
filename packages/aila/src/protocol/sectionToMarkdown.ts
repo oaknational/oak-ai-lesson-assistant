@@ -4,7 +4,7 @@ import { isArray, isNumber, isObject, isString } from "remeda";
 import { z } from "zod";
 
 import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
-import type { QuizV1Optional } from "./schema";
+import type { QuizV1Optional, QuizV2Optional } from "./schema";
 import { CycleOptionalSchema, QuizV1OptionalSchema } from "./schema";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
@@ -33,7 +33,6 @@ export function keyToHeading(key: string) {
   }
   return camelCaseToSentenceCase(key);
 }
-
 function renderMisconceptions(value: readonly unknown[]): string {
   const MisconceptionSchema = z.object({
     misconception: z.string(),
@@ -81,7 +80,7 @@ function renderTwoKeyObjectArray(value: readonly unknown[]): string {
     .map((v) => {
       const header = v[key1] ?? "…";
       const body = v[key2] ?? "…";
-      return `### ${toSentenceCase(header)}\n\n${toSentenceCase(body)}`;
+      return `### ${header}\n\n${body}`;
     })
     .join("\n\n");
 }
@@ -129,7 +128,6 @@ export function sectionToMarkdown(
       "Quizzes should be rendered using the QuizSection component, not markdown",
     );
   }
-
   if (isArray(value)) {
     return renderArray(key, value);
   }

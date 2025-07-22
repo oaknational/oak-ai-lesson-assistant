@@ -118,7 +118,6 @@ export default async function RootLayout({
               grayColor="olive"
               scaling="110%"
               color="#22222"
-              style={{ overflowX: "hidden" }}
             >
               <TRPCReactProvider>
                 <FontProvider>

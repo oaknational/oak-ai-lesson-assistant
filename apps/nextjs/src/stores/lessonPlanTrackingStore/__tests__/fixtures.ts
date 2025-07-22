@@ -187,17 +187,21 @@ const completedLessonPlan = {
     durationInMinutes: 15,
     checkForUnderstanding: [
       {
-        answers: ["Testing based on inputs and outputs"],
+        questionType: "multiple-choice" as const,
         question: "What is black-box testing?",
+        answers: ["Testing based on inputs and outputs"],
         distractors: [
           "Testing internal structures",
           "Testing with software tools",
         ],
+        hint: null,
       },
       {
-        answers: ["Testing internal structures"],
+        questionType: "multiple-choice" as const,
         question: "What does white-box testing involve?",
+        answers: ["Testing internal structures"],
         distractors: ["Testing inputs and outputs", "Testing without tools"],
+        hint: null,
       },
     ],
   },
@@ -224,20 +228,24 @@ const completedLessonPlan = {
     durationInMinutes: 15,
     checkForUnderstanding: [
       {
-        answers: ["Validating functionality from an end-user perspective"],
+        questionType: "multiple-choice" as const,
         question: "What is the purpose of black-box testing?",
+        answers: ["Validating functionality from an end-user perspective"],
         distractors: [
           "Ensuring code correctness",
           "Testing with automation tools",
         ],
+        hint: null,
       },
       {
-        answers: ["Provides flexibility and human insight"],
+        questionType: "multiple-choice" as const,
         question: "Why is manual testing beneficial?",
+        answers: ["Provides flexibility and human insight"],
         distractors: [
           "Ensures internal code correctness",
           "Automates repetitive tasks",
         ],
+        hint: null,
       },
     ],
   },
@@ -264,51 +272,71 @@ const completedLessonPlan = {
     durationInMinutes: 15,
     checkForUnderstanding: [
       {
-        answers: ["User interface testing"],
+        questionType: "multiple-choice" as const,
         question: "In which scenario is black-box testing most effective?",
+        answers: ["User interface testing"],
         distractors: ["Code quality assurance", "Regression testing"],
+        hint: null,
       },
       {
-        answers: ["Automated testing"],
+        questionType: "multiple-choice" as const,
         question: "Which testing is efficient for regression testing?",
+        answers: ["Automated testing"],
         distractors: ["Manual testing", "Black-box testing"],
+        hint: null,
       },
     ],
   },
   subject: "computing",
-  exitQuiz: [
-    {
-      answers: ["Inputs and outputs"],
-      question: "What is the main focus of black-box testing?",
-      distractors: ["Internal code", "Testing tools"],
-    },
-    {
-      answers: ["White-box testing"],
-      question: "Which technique involves testing internal structures?",
-      distractors: ["Black-box testing", "Manual testing"],
-    },
-    {
-      answers: ["For efficiency in repetitive tasks"],
-      question: "Why is automated testing used?",
-      distractors: ["For human insight", "For testing inputs and outputs"],
-    },
-    {
-      answers: ["In exploratory tasks"],
-      question: "When is manual testing most beneficial?",
-      distractors: ["In repetitive tasks", "In regression testing"],
-    },
-    {
-      answers: ["Black-box testing"],
-      question:
-        "Which testing technique validates functionality from an end-user perspective?",
-      distractors: ["White-box testing", "Automated testing"],
-    },
-    {
-      answers: ["Ensuring code correctness"],
-      question: "What is the role of white-box testing?",
-      distractors: ["Testing user interfaces", "Automating tasks"],
-    },
-  ],
+  exitQuiz: {
+    version: "v2" as const,
+    imageAttributions: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is the main focus of black-box testing?",
+        answers: ["Inputs and outputs"],
+        distractors: ["Internal code", "Testing tools"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "Which technique involves testing internal structures?",
+        answers: ["White-box testing"],
+        distractors: ["Black-box testing", "Manual testing"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "Why is automated testing used?",
+        answers: ["For efficiency in repetitive tasks"],
+        distractors: ["For human insight", "For testing inputs and outputs"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "When is manual testing most beneficial?",
+        answers: ["In exploratory tasks"],
+        distractors: ["In repetitive tasks", "In regression testing"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Which testing technique validates functionality from an end-user perspective?",
+        answers: ["Black-box testing"],
+        distractors: ["White-box testing", "Automated testing"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is the role of white-box testing?",
+        answers: ["Ensuring code correctness"],
+        distractors: ["Testing user interfaces", "Automating tasks"],
+        hint: null,
+      },
+    ],
+  },
   keyStage: "key-stage-4",
   keywords: [
     {
@@ -337,47 +365,63 @@ const completedLessonPlan = {
         "The process of manually checking software for defects without the use of tools or scripts.",
     },
   ],
-  starterQuiz: [
-    {
-      answers: ["A series of phases in software development"],
-      question: "What is the software development lifecycle?",
-      distractors: [
-        "A single stage process in software creation",
-        "An unrelated sequence of steps",
-      ],
-    },
-    {
-      answers: ["To ensure products meet requirements"],
-      question: "Why is quality assurance important in software development?",
-      distractors: [
-        "To reduce the cost of software",
-        "To increase the complexity of software",
-      ],
-    },
-    {
-      answers: ["Finding and fixing errors in code"],
-      question: "What is debugging?",
-      distractors: ["Writing new code", "Testing user interfaces"],
-    },
-    {
-      answers: ["Web application"],
-      question: "Name a type of software application.",
-      distractors: ["Hardware device", "Network cable"],
-    },
-    {
-      answers: ["Loops"],
-      question: "What is a basic programming concept?",
-      distractors: ["Photoshop filters", "Network routers"],
-    },
-    {
-      answers: ["To ensure functionality and reliability"],
-      question: "What is the purpose of testing?",
-      distractors: [
-        "To increase the price",
-        "To make the software more colourful",
-      ],
-    },
-  ],
+  starterQuiz: {
+    version: "v2" as const,
+    imageAttributions: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is the software development lifecycle?",
+        answers: ["A series of phases in software development"],
+        distractors: [
+          "A single stage process in software creation",
+          "An unrelated sequence of steps",
+        ],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "Why is quality assurance important in software development?",
+        answers: ["To ensure products meet requirements"],
+        distractors: [
+          "To reduce the cost of software",
+          "To increase the complexity of software",
+        ],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is debugging?",
+        answers: ["Finding and fixing errors in code"],
+        distractors: ["Writing new code", "Testing user interfaces"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "Name a type of software application.",
+        answers: ["Web application"],
+        distractors: ["Hardware device", "Network cable"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is a basic programming concept?",
+        answers: ["Loops"],
+        distractors: ["Photoshop filters", "Network routers"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question: "What is the purpose of testing?",
+        answers: ["To ensure functionality and reliability"],
+        distractors: [
+          "To increase the price",
+          "To make the software more colourful",
+        ],
+        hint: null,
+      },
+    ],
+  },
   learningCycles: [
     "Identify various software testing techniques and their definitions",
     "Explain the purposes of different software testing techniques",

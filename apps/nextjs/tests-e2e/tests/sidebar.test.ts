@@ -1,6 +1,8 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { bypassVercelProtection } from "../helpers/vercel";
 
@@ -11,7 +13,7 @@ test(
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
-      await page.goto(`${TEST_BASE_URL}/aila`);
+      await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
     });
 
     await test.step("Select a lesson", async () => {

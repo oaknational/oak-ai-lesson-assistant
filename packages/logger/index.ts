@@ -15,13 +15,14 @@ const debugBase = debug("ai");
 debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
-  | "admin"
   | "additional-materials"
+  | "additional-materials:testing"
   | "additional-materials-threat-detection"
+  | "admin"
   | "aila"
   | "aila:agents"
-  | "aila:agents:stream"
   | "aila:agents:prompts"
+  | "aila:agents:stream"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"
@@ -42,6 +43,7 @@ export type LoggerKey =
   | "analytics"
   | "analytics:lesson:store"
   | "app"
+  | "appSessions"
   | "auth"
   | "chat"
   | "chat:store"

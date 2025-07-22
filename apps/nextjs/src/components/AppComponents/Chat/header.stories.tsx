@@ -33,8 +33,11 @@ export const Default: Story = {
 };
 
 export const DemoUser: Story = {
-  args: {},
+  args: {
+    page: "aila",
+  },
   parameters: {
+    page: "aila",
     ...demoParams({
       isDemoUser: true,
       demo: {
@@ -47,7 +50,9 @@ export const DemoUser: Story = {
 };
 
 export const DemoLoading: Story = {
-  args: {},
+  args: {
+    page: "aila",
+  },
   parameters: {
     ...demoParams({
       isDemoUser: true,
@@ -56,5 +61,30 @@ export const DemoLoading: Story = {
         appSessionsRemaining: undefined,
       },
     }),
+  },
+};
+
+export const TeachingMaterials: Story = {
+  args: {
+    page: "teachingMaterials",
+  },
+  parameters: {
+    ...demoParams({
+      isDemoUser: true,
+      demo: {
+        appSessionsPerMonth: 3,
+        additionalMaterialsSessionsRemaining: 1,
+      },
+    }),
+    ...chromaticParams(["desktop"]),
+  },
+};
+
+export const AilaPage: Story = {
+  args: {
+    page: "aila",
+  },
+  parameters: {
+    ...chromaticParams(["desktop"]),
   },
 };
