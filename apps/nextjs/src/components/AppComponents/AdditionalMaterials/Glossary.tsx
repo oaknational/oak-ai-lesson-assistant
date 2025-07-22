@@ -1,23 +1,13 @@
-import {
-  type GlossarySchema,
-  readingAgeRefinement,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { type GlossarySchema } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
 
-import {
-  OakFlex,
-  OakP,
-  OakPrimaryButton,
-  OakSpan,
-} from "@oaknational/oak-components";
+import { OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 
 export const Glossary = ({
   action,
   generation,
-  handleSubmit,
 }: {
   action: string;
   generation: GlossarySchema;
-  handleSubmit?: (refinement: string) => void;
 }) => {
   if (!generation || !action) {
     return null;
@@ -35,23 +25,10 @@ export const Glossary = ({
         >
           <OakP $font="body-2-bold">
             {item.term}
-            <OakSpan $font="body-2">
-              -{" "}
-              {item.definition.charAt(0).toUpperCase() +
-                item.definition.slice(1)}
-            </OakSpan>
+            <OakSpan $font="body-2">{` - ${item.definition}`}</OakSpan>
           </OakP>
         </OakFlex>
       ))}
-      {generation &&
-        handleSubmit &&
-        readingAgeRefinement.map((refinement) => (
-          <OakFlex key={refinement}>
-            <OakPrimaryButton onClick={() => void handleSubmit(refinement)}>
-              {refinement}
-            </OakPrimaryButton>
-          </OakFlex>
-        ))}
     </OakFlex>
   );
 };

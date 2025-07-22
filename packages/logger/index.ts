@@ -16,6 +16,7 @@ debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
   | "additional-materials"
+  | "additional-materials:testing"
   | "additional-materials-threat-detection"
   | "admin"
   | "aila"

@@ -1,10 +1,18 @@
 import { aiLogger } from "@oakai/logger";
 
+import type { z } from "zod";
+
 import { comprehensionTaskSchema } from "../comprehension/schema";
 import type { AdditionalMaterialType } from "../configSchema";
-import { exitQuizSchema } from "../exitQuiz/schema";
+import type { exitQuizSchema } from "../exitQuiz/schema";
 import { glossarySchema } from "../glossary/schema";
-import { starterQuizSchema } from "../starterQuiz/schema";
+import type { starterQuizSchema } from "../starterQuiz/schema";
+
+// Define types for the schemas
+export type StarterQuizData = z.infer<typeof starterQuizSchema>;
+export type ExitQuizData = z.infer<typeof exitQuizSchema>;
+export type ComprehensionTaskData = z.infer<typeof comprehensionTaskSchema>;
+export type GlossaryData = z.infer<typeof glossarySchema>;
 
 const log = aiLogger("additional-materials");
 
@@ -30,6 +38,14 @@ type TransformResult = Array<
   | { type: "placeholders"; map: Record<string, string> }
 >;
 
+const sanitizePlaceholders = (placeholders: Record<string, string>) => {
+  Object.keys(placeholders).forEach((key) => {
+    if (placeholders[key] !== undefined) {
+      placeholders[key] = placeholders[key].replace(/\n{2,}/g, "\n");
+    }
+  });
+};
+
 export const transformDataGlossary =
   () =>
   (data: unknown): Promise<TransformResult> => {
@@ -54,7 +70,8 @@ export const transformDataGlossary =
     glossary.forEach((term, index) => {
       const termNum = index + 1;
       placeholderMap[`label_${termNum}`] = term.term;
-      placeholderMap[`value_${termNum}`] = term.definition;
+      placeholderMap[`value_${termNum}`] =
+        `- ${term.definition.charAt(0).toUpperCase()}${term.definition.slice(1)}`;
     });
 
     // Fill any missing placeholders with empty strings for up to 15 terms
@@ -103,9 +120,11 @@ export const transformDataComprehension =
     // Add questions and answers up to 10 questions
     for (let i = 1; i <= 10; i++) {
       const question = questions[i - 1];
-      placeholderMap[`question_${i}`] = question?.questionText || "";
-      placeholderMap[`question_${i}_answer`] = question?.answer || "";
+      placeholderMap[`question_${i}`] = question?.questionText ?? "";
+      placeholderMap[`question_${i}_answer`] = question?.answer ?? "";
     }
+
+    sanitizePlaceholders(placeholderMap);
 
     const transformedData: TransformResult = [
       { type: "title", text: comprehension.lessonTitle },
@@ -115,124 +134,96 @@ export const transformDataComprehension =
     return Promise.resolve(transformedData);
   };
 
-export const transformDataStarterQuiz =
-  () =>
-  (data: unknown): Promise<TransformResult> => {
-    const parsedData = starterQuizSchema.parse(data);
-    const { title, questions } = parsedData;
+// Helper function to transform quiz data
+const transformQuizData = <T extends StarterQuizData | ExitQuizData>(
+  data: T,
+  type: "Starter" | "Exit",
+): TransformResult => {
+  const { title, questions } = data;
 
-    log.info("Transforming starter quiz data", {
-      title,
-      questionCount: questions.length,
-      firstQuestion: questions[0],
-    });
+  const placeholderMap: Record<string, string> = {
+    title,
+    ms_title: `${title}: answers`,
+    type,
+  };
 
-    const placeholderMap: Record<string, string> = {
-      title: `Starter Quiz: ${title}`,
-    };
-
-    // Add questions and answers up to 10 questions
-    questions.slice(0, 10).forEach((q, qIndex) => {
+  // Add questions and answers up to 10 questions
+  questions.slice(0, 10).forEach(
+    (
+      q: {
+        question: string;
+        options: { text: string; isCorrect: boolean }[];
+      },
+      qIndex: number,
+    ) => {
       const questionNum = qIndex + 1;
       placeholderMap[`question_${questionNum}`] = q.question;
 
-      q.options.forEach((option, aIndex) => {
-        if (aIndex < 3) {
-          const answerNum = aIndex + 1;
-          const marker = option.isCorrect ? "✓ " : "";
-          placeholderMap[`question_${questionNum}_answer_${answerNum}`] =
-            `${marker}${option.text}`;
-        }
-      });
-    });
+      q.options.forEach(
+        (option: { text: string; isCorrect: boolean }, aIndex: number) => {
+          if (aIndex < 3) {
+            const answerNum = aIndex + 1;
 
-    // Fill any missing placeholders with empty strings for up to 10 questions
-    for (let i = 1; i <= 10; i++) {
-      if (!placeholderMap[`question_${i}`]) {
-        placeholderMap[`question_${i}`] = "";
-      }
-      for (let j = 1; j <= 3; j++) {
-        if (!placeholderMap[`question_${i}_answer_${j}`]) {
-          placeholderMap[`question_${i}_answer_${j}`] = "";
-        }
+            placeholderMap[`question_${questionNum}_answer_${answerNum}`] =
+              `${option.text}`;
+          }
+        },
+      );
+    },
+  );
+
+  // Add mark scheme questions and answers up to 10 questions
+  questions.slice(0, 10).forEach(
+    (
+      q: {
+        question: string;
+        options: { text: string; isCorrect: boolean }[];
+      },
+      qIndex: number,
+    ) => {
+      const questionNum = qIndex + 1;
+      placeholderMap[`ms_question_${questionNum}`] = q.question;
+      q.options.forEach(
+        (option: { text: string; isCorrect: boolean }, aIndex: number) => {
+          if (aIndex < 3) {
+            const marker = option.isCorrect ? "✓ " : "";
+            const answerNum = aIndex + 1;
+            placeholderMap[`ms_question_${questionNum}_answer_${answerNum}`] =
+              `${option.text} ${marker}`;
+          }
+        },
+      );
+    },
+  );
+
+  // Fill any missing placeholders with empty strings for up to 10 questions
+  for (let i = 1; i <= 10; i++) {
+    if (!placeholderMap[`question_${i}`]) {
+      placeholderMap[`question_${i}`] = "";
+    }
+    for (let j = 1; j <= 3; j++) {
+      if (!placeholderMap[`question_${i}_answer_${j}`]) {
+        placeholderMap[`question_${i}_answer_${j}`] = "";
       }
     }
+  }
 
-    log.info("Generated starter quiz placeholders", {
-      placeholderCount: Object.keys(placeholderMap).length,
-      samplePlaceholders: {
-        question_1: placeholderMap["question_1"],
-        question_1_answer_1: placeholderMap["question_1_answer_1"],
-        question_1_answer_2: placeholderMap["question_1_answer_2"],
-        question_1_answer_3: placeholderMap["question_1_answer_3"],
-      },
-    });
+  return [
+    { type: "title", text: `${title}` },
+    { type: "placeholders", map: placeholderMap },
+  ];
+};
 
-    const transformedData: TransformResult = [
-      { type: "title", text: `Starter Quiz: ${title}` },
-      { type: "placeholders", map: placeholderMap },
-    ];
-
+export const transformDataStarterQuiz =
+  () =>
+  (data: StarterQuizData): Promise<TransformResult> => {
+    const transformedData = transformQuizData(data, "Starter");
     return Promise.resolve(transformedData);
   };
 
 export const transformDataExitQuiz =
   () =>
-  (data: unknown): Promise<TransformResult> => {
-    const parsedData = exitQuizSchema.parse(data);
-    const { title, questions } = parsedData;
-
-    log.info("Transforming exit quiz data", {
-      title,
-      questionCount: questions.length,
-      firstQuestion: questions[0],
-    });
-
-    const placeholderMap: Record<string, string> = {
-      title: `Exit Quiz: ${title}`,
-    };
-
-    // Add questions and answers up to 10 questions
-    questions.slice(0, 10).forEach((q, qIndex) => {
-      const questionNum = qIndex + 1;
-      placeholderMap[`question_${questionNum}`] = q.question;
-
-      q.options.forEach((option, aIndex) => {
-        if (aIndex < 3) {
-          const answerNum = aIndex + 1;
-          const marker = option.isCorrect ? "✓ " : "";
-          placeholderMap[`question_${questionNum}_answer_${answerNum}`] =
-            `${marker}${option.text}`;
-        }
-      });
-    });
-
-    // Fill any missing placeholders with empty strings for up to 10 questions
-    for (let i = 1; i <= 10; i++) {
-      if (!placeholderMap[`question_${i}`]) {
-        placeholderMap[`question_${i}`] = "";
-      }
-      for (let j = 1; j <= 3; j++) {
-        if (!placeholderMap[`question_${i}_answer_${j}`]) {
-          placeholderMap[`question_${i}_answer_${j}`] = "";
-        }
-      }
-    }
-
-    log.info("Generated exit quiz placeholders", {
-      placeholderCount: Object.keys(placeholderMap).length,
-      samplePlaceholders: {
-        question_1: placeholderMap["question_1"],
-        question_1_answer_1: placeholderMap["question_1_answer_1"],
-        question_1_answer_2: placeholderMap["question_1_answer_2"],
-        question_1_answer_3: placeholderMap["question_1_answer_3"],
-      },
-    });
-
-    const transformedData: TransformResult = [
-      { type: "title", text: `Exit Quiz: ${title}` },
-      { type: "placeholders", map: placeholderMap },
-    ];
-
+  (data: ExitQuizData): Promise<TransformResult> => {
+    const transformedData = transformQuizData(data, "Exit");
     return Promise.resolve(transformedData);
   };

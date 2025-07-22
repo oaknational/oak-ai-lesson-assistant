@@ -33,46 +33,6 @@ export function keyToHeading(key: string) {
   }
   return camelCaseToSentenceCase(key);
 }
-
-function renderCycle(value: unknown) {
-  try {
-    const cycle = CycleOptionalSchema.parse(value);
-
-    const sections = {
-      title: cycle.title ?? "…",
-      explanation:
-        sectionToMarkdown("explanation", cycle.explanation ?? "…") ?? "…",
-      checkForUnderstanding: cycle.checkForUnderstanding
-        ? quizV1ToMarkdown(cycle.checkForUnderstanding)
-        : "…",
-      practice: cycle.practice ?? "…",
-      feedback: cycle.feedback ?? "…",
-    };
-
-    return `## ${sections.title}
-
-### Explanation
-
-${sections.explanation}
-
-### Check for understanding
-
-${sections.checkForUnderstanding}
-
-### Practice
-
-${sections.practice}
-
-### Feedback
-
-${sections.feedback}`;
-  } catch {
-    return `## There's been a problem
-
-It looks like this learning cycle hasn't generated properly. Tap **Retry** or ask for this section to be regenerated.`;
-  }
-}
-
 function renderMisconceptions(value: readonly unknown[]): string {
   const MisconceptionSchema = z.object({
     misconception: z.string(),
@@ -158,7 +118,15 @@ export function sectionToMarkdown(
   value: unknown,
 ): string | undefined {
   if (key.includes("cycle")) {
-    return renderCycle(value);
+    throw new Error(
+      "Cycles should be rendered using the CycleSection component, not markdown",
+    );
+  }
+
+  if (key === "starterQuiz" || key === "exitQuiz") {
+    throw new Error(
+      "Quizzes should be rendered using the QuizSection component, not markdown",
+    );
   }
   if (isArray(value)) {
     return renderArray(key, value);
@@ -172,30 +140,4 @@ export function sectionToMarkdown(
   if (isNumber(value)) {
     return `${value}`;
   }
-}
-
-export function quizV1ToMarkdown(quiz: QuizV1Optional) {
-  return QuizV1OptionalSchema.parse(quiz)
-    .map((v, i) => {
-      // Combine answers and distractors into a single array
-      const allOptions = [
-        ...(v.answers ?? []).map((a) => `**${a}**`),
-        ...(v.distractors ?? []).map((d) => d),
-      ];
-
-      // Sort options ignoring special characters
-      const sortedOptions = sortIgnoringSpecialChars(allOptions);
-
-      // Map sorted options with letter prefixes and invisible bullets
-      const answersAndDistractors = sortedOptions
-        .map(
-          (text, index) =>
-            `&nbsp;&nbsp;&nbsp;&nbsp;${String.fromCharCode(65 + index)}. ${text}`,
-        )
-        .join("\n\n");
-
-      // Return formatted question with options
-      return `### ${i + 1}. ${v.question ?? "…"}\n\n${answersAndDistractors}`;
-    })
-    .join("\n\n");
 }
