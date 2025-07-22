@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
 import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { type AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import {
   type RefinementOption,
   getResourceType,
@@ -87,7 +88,7 @@ const MobileNoLetterSpacingButton = styled(OakSecondaryButton)`
 `;
 
 type StepFourProps = {
-  handleRefineMaterial: (refinementValue: string) => void;
+  handleRefineMaterial: (refinementValue: RefinementOption) => Promise<void>;
 };
 
 const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
@@ -234,7 +235,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                             ref={(el) => (refinementRefs.current[index] = el)}
                             key={refinement.id}
                             onClick={() =>
-                              handleRefineMaterial(refinement.value)
+                              void handleRefineMaterial(refinement)
                             }
                           >
                             {refinement.label}
