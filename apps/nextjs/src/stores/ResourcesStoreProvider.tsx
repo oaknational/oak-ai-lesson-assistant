@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from "react";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { trpc } from "@/utils/trpc";
 
 import { createResourcesStore } from "./resourcesStore";
 import type { ResourcesState } from "./resourcesStore/types";
@@ -19,18 +20,21 @@ export const ResourcesStoresContext = createContext<
   ResourcesStores | undefined
 >(undefined);
 
-export interface ResourcesStoresProviderProps {
+export type ResourcesStoresProviderProps = {
   children: React.ReactNode;
   initState?: Partial<ResourcesState>;
-}
+};
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
 > = ({ children, initState }) => {
   const { track } = useAnalytics();
+
+  const trpcUtils = trpc.useUtils();
+
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(track, initState),
+      resources: createResourcesStore(track, trpcUtils, initState),
     };
     return storesObj;
   });

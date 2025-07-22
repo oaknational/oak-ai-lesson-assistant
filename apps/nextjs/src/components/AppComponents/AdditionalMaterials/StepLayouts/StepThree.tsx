@@ -35,7 +35,7 @@ export function mapLessonPlanSections(
   return lessonFieldKeys.map((key) => ({ key, data: lessonPlan[key] ?? null }));
 }
 
-const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
+const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
   const moderation = useResourcesStore(moderationSelector);
