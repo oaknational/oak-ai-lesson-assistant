@@ -161,4 +161,22 @@ describe("convertRawQuizToV2", () => {
       "![A golden retriever sitting in a park](https://example.com/dog.jpg)",
     );
   });
+
+  it("should throw error for unknown question type", () => {
+    const unknownTypeQuiz = [
+      {
+        question_id: 1,
+        question_uid: "test-uid-1",
+        question_type: "unknown-type" as unknown as "multiple-choice",
+        question_stem: [{ text: "Question", type: "text" }],
+        answers: {},
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ] as RawQuiz;
+    expect(() => convertRawQuizToV2(unknownTypeQuiz)).toThrow(
+      "Unknown question type: unknown-type",
+    );
+  });
 });

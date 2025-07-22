@@ -1,3 +1,5 @@
+import invariant from "tiny-invariant";
+
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
   RawQuiz,
@@ -86,22 +88,13 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
   const questions = rawQuiz
     .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
     .map((rawQuestion): QuizV2Question => {
-      if (!rawQuestion) {
-        // Fallback for invalid questions
-        return {
-          questionType: "multiple-choice" as const,
-          question: "Invalid question",
-          answers: ["N/A"],
-          distractors: ["N/A"],
-          hint: null,
-        };
+      // Early return for explanatory-text (should be filtered out already)
+      if (rawQuestion.question_type === "explanatory-text") {
+        throw new Error("Explanatory text questions should be filtered out");
       }
-
       // Extract question stem as markdown with inlined images
       const { markdown: questionStem, attributions } =
-        extractMarkdownFromContent(
-          rawQuestion.question_stem as Array<StemObject | undefined>,
-        );
+        extractMarkdownFromContent(rawQuestion.question_stem);
 
       const hint = rawQuestion.hint ?? null;
 
@@ -112,14 +105,26 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
 
           const correctAnswerResults = mcAnswers
             .filter((answer) => answer.answer_is_correct)
-            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+            .map((answer) => {
+              invariant(
+                answer.answer,
+                "Multiple choice answer missing 'answer' field",
+              );
+              return extractMarkdownFromContent(answer.answer);
+            });
           const correctAnswers = correctAnswerResults.map(
             (result) => result.markdown,
           );
 
           const distractorResults = mcAnswers
             .filter((answer) => !answer.answer_is_correct)
-            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+            .map((answer) => {
+              invariant(
+                answer.answer,
+                "Multiple choice answer missing 'answer' field",
+              );
+              return extractMarkdownFromContent(answer.answer);
+            });
           const distractors = distractorResults.map(
             (result) => result.markdown,
           );
@@ -142,9 +147,10 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
 
         case "short-answer": {
           const saAnswers = rawQuestion.answers?.["short-answer"] ?? [];
-          const answerResults = saAnswers.map((answer) =>
-            extractMarkdownFromContent(answer.answer || []),
-          );
+          const answerResults = saAnswers.map((answer) => {
+            invariant(answer.answer, "Short answer missing 'answer' field");
+            return extractMarkdownFromContent(answer.answer);
+          });
           const answers = answerResults.map((result) => result.markdown);
 
           allImageAttributions.push(
@@ -211,17 +217,12 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
           };
         }
 
-        default:
-          // Fallback for unknown question types
-          allImageAttributions.push(...attributions);
-
-          return {
-            questionType: "multiple-choice" as const,
-            question: questionStem,
-            answers: ["N/A"],
-            distractors: ["N/A"],
-            hint,
-          };
+        default: {
+          const _exhaustiveCheck: never = rawQuestion.question_type;
+          throw new Error(
+            `Unknown question type: ${_exhaustiveCheck as string}`,
+          );
+        }
       }
     });
 
