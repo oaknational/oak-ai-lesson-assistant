@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   OakBox,
   OakFlex,
+  OakIcon,
   OakP,
   OakSmallSecondaryButton,
   OakTextInput,
@@ -57,19 +58,21 @@ export const SharedDropDown = ({
         <DropDownWrapper>
           {selectedValue !== "Other" &&
             options.map((option) => (
-              <DropDownItemButton
-                key={option}
-                onClick={() => {
-                  setSelectedValue(option);
-                  if (option === "Other") {
-                    setActiveDropdown(dropdownType);
-                  } else {
-                    setActiveDropdown(null);
-                  }
-                }}
-              >
-                {option}
-              </DropDownItemButton>
+              <>
+                <DropDownItemButton
+                  key={option}
+                  onClick={() => {
+                    setSelectedValue(option);
+                    if (option === "Other") {
+                      setActiveDropdown(dropdownType);
+                    } else {
+                      setActiveDropdown(null);
+                    }
+                  }}
+                >
+                  {option}
+                </DropDownItemButton>
+              </>
             ))}
 
           {selectedValue === "Other" && (
@@ -87,7 +90,11 @@ export const SharedDropDown = ({
                   {errorMessage}
                 </OakP>
               )}
-              <OakFlex $mt="space-between-s" $justifyContent="flex-end">
+              <OakFlex
+                $gap={"space-between-xs"}
+                $mt="space-between-s"
+                $justifyContent="flex-end"
+              >
                 <OakSmallSecondaryButton
                   onClick={() => {
                     if (
@@ -107,6 +114,15 @@ export const SharedDropDown = ({
                   }}
                 >
                   Confirm
+                </OakSmallSecondaryButton>
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    setCustomValue("");
+                    setSelectedValue(null);
+                    setActiveDropdown(null);
+                  }}
+                >
+                  Cancel
                 </OakSmallSecondaryButton>
               </OakFlex>
             </OakBox>
