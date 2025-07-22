@@ -2,6 +2,16 @@
 
 exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
 {
+  "imageAttributions": [
+    {
+      "attribution": "Photo by John Doe on Unsplash",
+      "imageUrl": "https://example.com/dog.jpg",
+    },
+    {
+      "attribution": "Image © Example Inc",
+      "imageUrl": "https://example.com/cat.jpg",
+    },
+  ],
   "questions": [
     {
       "answers": [
@@ -11,7 +21,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
         "London",
         "Berlin",
       ],
-      "imageAttributions": [],
+      "hint": "Think about the Eiffel Tower",
       "question": "What is the capital of France?",
       "questionType": "multiple-choice",
     },
@@ -21,7 +31,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
         "blue",
         "yellow",
       ],
-      "imageAttributions": [],
+      "hint": "These colors cannot be created by mixing other colors",
       "question": "Name a primary color",
       "questionType": "short-answer",
     },
@@ -32,21 +42,12 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
       "distractors": [
         "Cat ![](https://example.com/cat.jpg)",
       ],
-      "imageAttributions": [
-        {
-          "attribution": "Photo by John Doe on Unsplash",
-          "imageUrl": "https://example.com/dog.jpg",
-        },
-        {
-          "attribution": "Image © Example Inc",
-          "imageUrl": "https://example.com/cat.jpg",
-        },
-      ],
-      "question": "Which animal is shown in the image? ![](https://example.com/dog.jpg)",
+      "hint": "It barks",
+      "question": "Which animal is shown in the image? ![A friendly golden retriever sitting in a park](https://example.com/dog.jpg)",
       "questionType": "multiple-choice",
     },
     {
-      "imageAttributions": [],
+      "hint": "Think about European geography",
       "pairs": [
         {
           "left": "France",
@@ -61,7 +62,7 @@ exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
       "questionType": "match",
     },
     {
-      "imageAttributions": [],
+      "hint": "Start with the smallest",
       "items": [
         "1",
         "3",
