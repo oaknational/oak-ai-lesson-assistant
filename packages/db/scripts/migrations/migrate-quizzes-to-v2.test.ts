@@ -67,8 +67,10 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
             question: "What is 2+2?",
             answers: ["4"],
             distractors: ["3", "5", "6"],
+            hint: null,
           },
         ],
+        imageAttributions: [],
       });
 
       expect(lessonPlan.exitQuiz).toEqual({
@@ -79,8 +81,10 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
             question: "What is the capital of France?",
             answers: ["Paris"],
             distractors: ["London", "Berlin", "Madrid"],
+            hint: null,
           },
         ],
+        imageAttributions: [],
       });
     });
 
@@ -96,8 +100,10 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
                 question: "Already V2",
                 answers: ["Yes"],
                 distractors: ["No"],
+                hint: null,
               },
             ],
+            imageAttributions: [],
           },
         },
       };
@@ -143,8 +149,10 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
                 question: "V2 Quiz",
                 answers: ["Answer"],
                 distractors: ["Wrong"],
+                hint: null,
               },
             ],
+            imageAttributions: [],
           },
         },
       };
@@ -224,10 +232,12 @@ describe("Quiz V2 Migration with lessonPlanQuizMigrator", () => {
       expect(lessonPlan.starterQuiz).toEqual({
         version: "v2",
         questions: [],
+        imageAttributions: [],
       });
       expect(lessonPlan.exitQuiz).toEqual({
         version: "v2",
         questions: [],
+        imageAttributions: [],
       });
     });
 

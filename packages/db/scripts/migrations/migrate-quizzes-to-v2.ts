@@ -9,6 +9,7 @@
  * V2 Format: Object with version field and questions array supporting multiple types
  *
  * Safety: Run with --dry-run first to preview changes
+ * Note: This migration includes all sessions (including soft-deleted ones)
  */
 import { aiLogger } from "@oakai/logger";
 
@@ -29,19 +30,19 @@ function hasQuizzes(output: unknown): boolean {
 
 async function main() {
   const isDryRun = process.argv.includes("--dry-run");
-  const includeDeleted = process.argv.includes("--include-deleted");
   const showHelp = process.argv.includes("--help");
 
   if (showHelp) {
     log.info(`
 Quiz V1 to V2 Migration
 
-Usage: pnpm tsx migrate-quizzes-to-v2.ts [--dry-run] [--include-deleted]
+Usage: pnpm tsx migrate-quizzes-to-v2.ts [--dry-run]
 
 Options:
   --dry-run          Preview changes without modifying database
-  --include-deleted  Also migrate soft-deleted sessions
   --help             Show this help
+
+Note: This migration includes all sessions (including soft-deleted ones)
 `);
     process.exit(0);
   }
@@ -49,15 +50,12 @@ Options:
   const prisma = new PrismaClient();
 
   log.info(`Starting quiz migration (${isDryRun ? "DRY RUN" : "LIVE"})`);
-  if (includeDeleted) {
-    log.info("Including deleted sessions");
-  }
+  log.info("Including all sessions (including deleted)");
 
   try {
-    // Find all sessions with quizzes
+    // Find all sessions with quizzes (including deleted sessions)
     // Note: We'll check for quiz presence in the code since Prisma JSON filtering is limited
     const allSessions = await prisma.appSession.findMany({
-      where: includeDeleted ? {} : { deletedAt: null },
       select: { id: true, output: true },
     });
 
