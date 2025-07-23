@@ -116,7 +116,23 @@ export const QuizWithImages: Story = {
     sectionKey: "starterQuiz",
     value: {
       version: "v2" as const,
-      imageAttributions: [],
+      imageAttributions: [
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png",
+          attribution: "Pixabay",
+        },
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png",
+          attribution: "Oak National Academy",
+        },
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png",
+          attribution: "Pixabay",
+        },
+      ],
       questions: [
         {
           questionType: "multiple-choice" as const,

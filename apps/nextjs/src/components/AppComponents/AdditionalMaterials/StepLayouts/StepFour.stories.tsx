@@ -1,5 +1,7 @@
 import React from "react";
 
+import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
@@ -53,9 +55,8 @@ const baseDecorators = [
 
 export const StarterQuiz: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -169,9 +170,8 @@ export const StarterQuiz: Story = {
 
 export const ExitQuiz: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -294,9 +294,8 @@ export const ExitQuiz: Story = {
 
 export const Comprehension: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -375,9 +374,8 @@ export const Comprehension: Story = {
 
 export const Glossary: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -467,9 +465,8 @@ export const Glossary: Story = {
 
 export const WithModifyOptions: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -596,9 +593,8 @@ export const WithModifyOptions: Story = {
 
 export const LoadingState: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -636,9 +632,8 @@ export const LoadingState: Story = {
 
 export const RefiningState: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {
@@ -855,9 +850,8 @@ export const RefiningState: Story = {
 
 export const WithRefinementHistory: Story = {
   args: {
-    handleRefineMaterial: (refinementValue: string) => {
-      // Mock handler for refinement
-      return refinementValue;
+    handleRefineMaterial: (_refinementValue: RefinementOption) => {
+      return Promise.resolve();
     },
   },
   parameters: {

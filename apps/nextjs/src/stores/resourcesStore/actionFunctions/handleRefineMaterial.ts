@@ -2,34 +2,20 @@ import {
   additionalMaterialTypeEnum,
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialInput } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { GenerateAdditionalMaterialResponse } from "@oakai/api/src/router/additionalMaterials/generateAdditionalMaterial";
+import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
-import type { UseMutateAsyncFunction } from "@tanstack/react-query";
+
+import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 
 const log = aiLogger("additional-materials");
 
-// Define type for refinement object
-type RefinementOption = {
-  type: string;
-};
-
-export type RefineMaterialParams = {
-  refinement: RefinementOption[];
-  mutateAsync: UseMutateAsyncFunction<
-    GenerateAdditionalMaterialResponse,
-    Error,
-    GenerateAdditionalMaterialInput & { adaptsOutputId?: string | null }
-  >;
-};
-
 export const handleRefineMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
-  async ({ refinement, mutateAsync }: RefineMaterialParams) => {
+  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  async (refinementOption: RefinementOption) => {
     const {
       actions: { setIsResourceRefining },
       docType,
@@ -49,7 +35,7 @@ export const handleRefineMaterial =
     }
 
     try {
-      log.info("Refining material", { docType, refinement });
+      log.info("Refining material", { docType, refinementOption });
 
       const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
 
@@ -59,7 +45,7 @@ export const handleRefineMaterial =
           lessonPlan,
           previousOutput: currentGeneration,
           options: null,
-          refinement,
+          refinement: [{ type: refinementOption.value }],
         },
         adaptsOutputId: originalId, // ID of the material being refined
         lessonId: lessonPlan.lessonId,
@@ -69,7 +55,10 @@ export const handleRefineMaterial =
         generateAdditionalMaterialInputSchema.parse(payload);
 
       // Make the API call
-      const result = await mutateAsync(parsedPayload);
+      const result =
+        await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
+          parsedPayload,
+        );
 
       // Add current generation to history before updating with new result
       // This ensures we can undo back to the current state

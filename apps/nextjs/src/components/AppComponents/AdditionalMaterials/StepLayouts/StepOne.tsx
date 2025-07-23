@@ -26,7 +26,7 @@ import { handleDialogSelection } from "./helpers";
 const StepOne = ({
   handleCreateSession,
 }: {
-  handleCreateSession: ({ documentType }: { documentType: string }) => void;
+  handleCreateSession: (docType: string | null) => Promise<void>;
 }) => {
   const { setDocType, setGeneration, setSubject, setTitle, setYear } =
     useResourcesActions();
@@ -107,7 +107,7 @@ const StepOne = ({
               setShowValidationError("Please select a teaching material.");
               return;
             }
-            handleCreateSession({ documentType: docType });
+            void handleCreateSession(docType);
           }}
         />
       </ResourcesFooter>

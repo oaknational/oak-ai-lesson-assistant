@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
 
+import { ImageAttribution } from "./ImageAttribution";
 import { MatchQuestion } from "./MatchQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
 import { OrderQuestion } from "./OrderQuestion";
@@ -67,6 +68,7 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
             return null;
         }
       })}
+      <ImageAttribution quiz={quiz} />
     </>
   );
 };
