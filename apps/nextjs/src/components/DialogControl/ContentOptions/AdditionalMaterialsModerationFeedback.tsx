@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import {
+  OakBox,
   OakFlex,
   OakIcon,
   OakP,
@@ -64,7 +65,9 @@ const AdditionalMaterialsModerationFeedback = ({
       $justifyContent="space-between"
       $gap={"space-between-m"}
     >
-      <OakIcon iconName={"warning"} />
+      <OakBox $display={["none", "flex"]}>
+        <OakIcon iconName={"warning"} />
+      </OakBox>
       <OakP $font={"heading-6"}>{heading}</OakP>
       <OakP $font="body-2">{message}</OakP>
       <OakTextInput
@@ -74,11 +77,12 @@ const AdditionalMaterialsModerationFeedback = ({
         onChange={(e) => setFeedback(e.target.value)}
       />
       <OakFlex
-        $flexDirection="row"
+        $flexDirection={"row"}
         $alignItems={"center"}
         $justifyContent="space-between"
       >
         <OakSecondaryLink
+          element="button"
           onClick={() => {
             if (resetToDefault) resetToDefault();
             onBack();
@@ -86,14 +90,27 @@ const AdditionalMaterialsModerationFeedback = ({
         >
           {backButtonLabel}
         </OakSecondaryLink>
-        <OakPrimaryButton
-          onClick={() => {
-            submitSurvey(feedback);
-            setSubmittedFeedback(true);
-          }}
-        >
-          Submit feedback
-        </OakPrimaryButton>
+        <OakBox $display={["none", "flex"]}>
+          <OakPrimaryButton
+            onClick={() => {
+              submitSurvey(feedback);
+              setSubmittedFeedback(true);
+            }}
+          >
+            Submit feedback
+          </OakPrimaryButton>
+        </OakBox>
+        <OakBox $display={["flex", "none"]}>
+          <OakPrimaryButton
+            $display={["flex", "none"]}
+            onClick={() => {
+              submitSurvey(feedback);
+              setSubmittedFeedback(true);
+            }}
+          >
+            Submit
+          </OakPrimaryButton>
+        </OakBox>
       </OakFlex>
     </OakFlex>
   );

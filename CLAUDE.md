@@ -26,16 +26,6 @@
   - Coverage: `pnpm test-coverage`
 - **Dev**: `pnpm dev` (runs Next.js on port 2525)
 
-## Quality Checks
-
-Before committing code, run these checks in parallel using the Task tool:
-
-- **Prettier** (formatting): Check changed files with `git diff --name-only HEAD~1..HEAD | xargs pnpm prettier --check`
-- **Lint**: `pnpm lint`
-- **Type Check**: `pnpm type-check`
-
-When running quality checks, use parallel Task tools for efficiency. Fix any errors before committing.
-
 ## Git Workflow
 
 ### Branch Naming

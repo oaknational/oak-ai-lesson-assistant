@@ -6,11 +6,8 @@ import {
   OakP,
 } from "@oaknational/oak-components";
 
-import { DemoBanner } from "@/components/AppComponents/Chat/demo-banner";
-import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
-
+import { Header } from "./AppComponents/Chat/header";
 import { useDemoUser } from "./ContextProviders/Demo";
-import HeaderManager from "./HeaderManager";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -19,62 +16,54 @@ type LayoutProps = {
   step: number;
   docTypeName: string | null;
 };
-const ResourcesLayout = ({
+const TeachingMaterialsLayout = ({
   children,
   title,
   subTitle,
   step,
   docTypeName,
 }: Readonly<LayoutProps>) => {
-  const { isDemoUser, demo } = useDemoUser();
-
-  // Check whether clerk metadata has loaded to prevent the banner from flashing
-  const clerkMetadata = useClerkDemoMetadata();
+  const { isDemoUser } = useDemoUser();
   return (
     <>
-      {clerkMetadata.isSet && isDemoUser && (
-        <DemoBanner
-          resourceType="additionalMaterials"
-          monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.additionalMaterialsSessionsRemaining}
-          contactHref={demo.contactHref}
-        />
-      )}
-
       <OakBox
         as={"header"}
         $position={"fixed"}
         $zIndex={"banner"}
         $width={"100%"}
       >
-        <HeaderManager />
+        <Header page={"teachingMaterials"} />
       </OakBox>
-
-      <OakBox
+      <OakFlex
         as="main"
-        $inset="all-spacing-0"
-        $position={"fixed"}
-        $mt="space-between-xxl"
+        $alignItems="center"
+        $justifyContent="center"
+        $minHeight="100vh"
         $pt="inner-padding-xl7"
+        $pb="inner-padding-xl"
+        $flexDirection="column"
         $background={"lavender30"}
+        $ph={["inner-padding-xl", "inner-padding-xl4"]}
       >
         <OakMaxWidth
+          $mt={[
+            isDemoUser ? "space-between-xxl" : "space-between-m",
+            "space-between-m",
+          ]}
+          $position={"relative"}
           $background="white"
           $borderRadius="border-radius-m"
-          $position={"fixed"}
-          $bottom={"all-spacing-0"}
-          $top="all-spacing-14"
-          $left="all-spacing-4"
-          $right="all-spacing-4"
-          $width="unset"
-          $overflowY={"auto"}
-          $mb="space-between-xxxl"
+          $mh="space-between-m"
+          $width="100%"
+          $mb="space-between-xl"
           $pb="inner-padding-xl"
           $maxWidth={"all-spacing-23"}
         >
-          <OakBox
+          <OakFlex
+            $flexDirection="column"
             $ph={["inner-padding-xl", "inner-padding-xl8"]}
             $pv={["inner-padding-xl", "inner-padding-xl4"]}
+            $width={"100%"}
           >
             <OakFlex
               $bb="border-solid-s"
@@ -103,11 +92,11 @@ const ResourcesLayout = ({
               </OakP>
             </OakFlex>
             {children}
-          </OakBox>
+          </OakFlex>
         </OakMaxWidth>
-      </OakBox>
+      </OakFlex>
     </>
   );
 };
 
-export default ResourcesLayout;
+export default TeachingMaterialsLayout;
