@@ -5,12 +5,10 @@ import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import {
   OakFlex,
   OakHeading,
-  OakIcon,
   OakLI,
   OakLink,
   OakOL,
   OakP,
-  OakPrimaryButton,
 } from "@oaknational/oak-components";
 
 import {
@@ -29,6 +27,7 @@ import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 
 export function mapLessonPlanSections(
   lessonPlan: AilaPersistedChat["lessonPlan"],
@@ -39,7 +38,6 @@ export function mapLessonPlanSections(
 const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
   const pageData = useResourcesStore(pageDataSelector);
   const docType = useResourcesStore(docTypeSelector);
-  const error = useResourcesStore((state) => state.error);
   const moderation = useResourcesStore(moderationSelector);
   const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -75,9 +73,9 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
             {pageData.lessonPlan.learningOutcome}
           </OakP>
 
-          <OakP $font="body-2" $mb={"space-between-m"}>
-            This lesson would include:
-          </OakP>
+          <OakHeading $mb={"space-between-xs"} tag="h2" $font={"heading-6"}>
+            Key learning points
+          </OakHeading>
 
           <OakOL>
             {pageData.lessonPlan.keyLearningPoints?.map((point, index) => (
@@ -102,24 +100,15 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => void }) => {
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => setStepNumber(1, "back_a_step_button")}>
-            <OakFlex $alignItems="center" $gap="all-spacing-2">
-              <OakIcon iconName="chevron-left" />
-              Back a step
-            </OakFlex>
-          </button>
-
-          <OakPrimaryButton
-            onClick={() => {
-              void handleSubmit();
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Create {docTypeName}
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel={`Create ${docTypeName}`}
+          mobileNextLabel="Create"
+          onBackClick={() => setStepNumber(1, "back_a_step_button")}
+          onNextClick={() => {
+            void handleSubmit();
+          }}
+        />
       </ResourcesFooter>
     </>
   );
