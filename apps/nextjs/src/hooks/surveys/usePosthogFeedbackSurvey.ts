@@ -17,7 +17,8 @@ type UsePosthogFeedbackSurveyProps = {
     | "Moderation feedback"
     | "Chat Feedback With Stats"
     | "Report Content"
-    | "End of Aila generation survey launch aug24";
+    | "End of Aila generation survey launch aug24"
+    | "Teaching material feedback";
 };
 export const usePosthogFeedbackSurvey = ({
   closeDialog,

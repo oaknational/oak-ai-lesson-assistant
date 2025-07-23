@@ -117,7 +117,7 @@ export const SharedDropDown = ({
                 <OakSmallSecondaryButton
                   onClick={() => {
                     setCustomValue("");
-                    setSelectedValue(null);
+                    setSelectedValue("");
                     setActiveDropdown(null);
                   }}
                 >
