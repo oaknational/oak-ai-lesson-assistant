@@ -1,4 +1,4 @@
-import { Box, Flex } from "@radix-ui/themes";
+import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import FeedBack from "@/components/Feedback";
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
@@ -15,8 +15,12 @@ const AdditionalMaterialsUserFeedback = ({
     });
 
   return (
-    <Box width="100%">
-      <Flex direction="column" justify="center" align="center">
+    <OakBox $width="100%">
+      <OakFlex
+        $flexDirection="column"
+        $justifyContent="center"
+        $alignItems="center"
+      >
         {survey && (
           <FeedBack
             submitSurvey={submitSurvey}
@@ -25,8 +29,8 @@ const AdditionalMaterialsUserFeedback = ({
             onSubmit={closeDialog}
           />
         )}
-      </Flex>
-    </Box>
+      </OakFlex>
+    </OakBox>
   );
 };
 
