@@ -30,5 +30,5 @@ export function formatNumberRanges(numbers: number[]): string {
     }
   }
 
-  return ranges.join(",");
+  return ranges.join(", ");
 }

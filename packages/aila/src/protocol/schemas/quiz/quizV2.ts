@@ -74,12 +74,7 @@ export const QuizV2Schema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
   imageAttributions: z
-    .array(
-      z.object({
-        imageUrl: z.string(),
-        attribution: z.string(),
-      }),
-    )
+    .array(ImageAttributionSchema)
     .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
@@ -115,12 +110,7 @@ export const QuizV2MultipleChoiceOnlySchema = z.object({
       `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
     ),
   imageAttributions: z
-    .array(
-      z.object({
-        imageUrl: z.string(),
-        attribution: z.string(),
-      }),
-    )
+    .array(ImageAttributionSchema)
     .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 

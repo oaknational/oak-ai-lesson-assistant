@@ -404,7 +404,7 @@ describe("imageAttributionUtils", () => {
       const result = getFormattedAttributions(mockQuestions, mockAttributions);
 
       expect(result).toEqual([
-        { attribution: "Pixabay", questionRange: "Q1,Q3" },
+        { attribution: "Pixabay", questionRange: "Q1, Q3" },
         { attribution: "CIEC", questionRange: "Q2" },
         { attribution: "Oak National Academy", questionRange: "Q4" },
       ]);
