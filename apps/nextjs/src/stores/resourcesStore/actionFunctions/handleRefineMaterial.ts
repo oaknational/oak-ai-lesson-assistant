@@ -55,7 +55,6 @@ export const handleRefineMaterial =
 
       const payload = {
         documentType: docTypeParsed,
-        action: "refine",
         context: {
           lessonPlan,
           previousOutput: currentGeneration,

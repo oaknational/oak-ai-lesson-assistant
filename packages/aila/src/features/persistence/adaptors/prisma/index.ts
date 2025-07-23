@@ -13,6 +13,7 @@ import type {
   LessonPlanKey,
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
+import { upgradeQuizzes } from "../../../../protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
@@ -51,7 +52,20 @@ export class AilaPrismaPersistence extends AilaPersistence {
       throw new AilaAuthenticationError("User not authorised to access chat");
     }
 
-    const parsedChat = chatSchema.parse(appSession?.output);
+    const rawChat = appSession?.output;
+
+    // Upgrade V1 quizzes to V2 before parsing with the schema
+    const upgradeResult = await upgradeQuizzes({
+      data: rawChat,
+      persistUpgrade: async (upgradedData) => {
+        await this._prisma.appSession.update({
+          where: { id },
+          data: { output: upgradedData },
+        });
+      },
+    });
+
+    const parsedChat = chatSchema.parse(upgradeResult.data);
 
     return parsedChat;
   }

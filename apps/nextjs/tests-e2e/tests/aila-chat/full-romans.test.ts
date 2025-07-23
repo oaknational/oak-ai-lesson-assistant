@@ -1,6 +1,8 @@
 import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import type { FixtureMode } from "./helpers";
@@ -17,7 +19,7 @@ import {
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-//const FIXTURE_MODE = "record" as FixtureMode;
+// const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 test(
@@ -31,7 +33,7 @@ test(
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
 
-      await page.goto(`${TEST_BASE_URL}/aila`);
+      await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 

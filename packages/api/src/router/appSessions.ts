@@ -1,6 +1,8 @@
+import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -16,6 +18,8 @@ import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import { checkMutationPermissions } from "./helpers/checkMutationPermissions";
+
+const log = aiLogger("appSessions");
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
@@ -33,6 +37,7 @@ function parseChatAndReportError({
   if (typeof sessionOutput !== "object") {
     throw new Error("sessionOutput is not an object");
   }
+
   const parseResult = chatSchema.safeParse({
     ...sessionOutput,
     userId,
@@ -41,6 +46,7 @@ function parseChatAndReportError({
 
   if (!parseResult.success) {
     const error = new Error("Failed to parse chat");
+    log.error(error);
     Sentry.captureException(error, {
       extra: {
         id,
@@ -65,11 +71,24 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  return parseChatAndReportError({
+  // Upgrade V1 quizzes to V2 if needed
+  const upgradeResult = await upgradeQuizzes({
+    data: chatRecord.output,
+    persistUpgrade: async (upgradedData) => {
+      await prisma.appSession.update({
+        where: { id },
+        data: { output: upgradedData },
+      });
+    },
+  });
+
+  const chat = parseChatAndReportError({
     id,
     userId: chatRecord.userId,
-    sessionOutput: chatRecord.output,
+    sessionOutput: upgradeResult.data,
   });
+
+  return chat;
 }
 
 export const appSessionsRouter = router({
@@ -117,7 +136,7 @@ export const appSessionsRouter = router({
 
       const output: AilaPersistedChat = {
         id: chatId,
-        path: `/aila/${chatId}`,
+        path: `/aila/lesson/${chatId}`,
         title: "",
         topic: "",
         userId,
@@ -275,17 +294,31 @@ export const appSessionsRouter = router({
         });
       }
 
+      // Upgrade V1 quizzes to V2 if needed (but don't persist yet)
+      const upgradeResult = await upgradeQuizzes({
+        data: session.output,
+        persistUpgrade: null,
+      });
+
       const chat = parseChatAndReportError({
         id,
         userId: session.userId,
-        sessionOutput: session.output,
+        sessionOutput: upgradeResult.data,
       });
+
+      if (!chat) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to parse chat",
+        });
+      }
 
       const sharedChat = {
         ...chat,
         isShared: true,
       };
 
+      // Single update that includes both upgrade (if needed) and sharing
       await ctx.prisma?.appSession.update({
         where: { id },
         data: { output: sharedChat },

@@ -70,51 +70,65 @@ export const CircleTheoremLesson = {
       definition: "The quality of being identical in shape and size.",
     },
   ],
-  starterQuiz: [
-    {
-      question: "How many degrees in 2 right angles?",
-      answers: ["180°"],
-      distractors: ["60°", "90°"],
-    },
-    {
-      question:
-        "Two shapes are {{}} if the only difference between them is their size.",
-      answers: ["similar"],
-      distractors: [
-        "No distractors for short answer",
-        "No distractors for short answer",
-      ],
-    },
-    {
-      question:
-        "A fruit stall is having a sale. It sells cherries in boxes of four pairs. How many cherries are there in six packs? There will be {{ }} in six packs.",
-      answers: ["24", "twenty four"],
-      distractors: [
-        "No distractors for short answer",
-        "No distractors for short answer",
-      ],
-    },
-    {
-      question:
-        "In which image is the circumference labelled with a question mark?",
-      answers: [
-        "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
-      ],
-      distractors: [
-        "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
-        "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
-      ],
-    },
-    {
-      question:
-        "Complete the statement. Triangle ABC and triangle XYZ are ____________. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png)",
-      answers: ["similar as the three interior angles are the same."],
-      distractors: [
-        "congruent as the three interior angles are all the same.",
-        "neither similar nor congruent.",
-      ],
-    },
-  ],
+  starterQuiz: {
+    version: "v2" as const,
+    imageAttributions: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question: "How many degrees in 2 right angles?",
+        answers: ["180°"],
+        distractors: ["60°", "90°"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Two shapes are {{}} if the only difference between them is their size.",
+        answers: ["similar"],
+        distractors: [
+          "No distractors for short answer",
+          "No distractors for short answer",
+        ],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "A fruit stall is having a sale. It sells cherries in boxes of four pairs. How many cherries are there in six packs? There will be {{ }} in six packs.",
+        answers: ["24", "twenty four"],
+        distractors: [
+          "No distractors for short answer",
+          "No distractors for short answer",
+        ],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "In which image is the circumference labelled with a question mark?",
+        answers: [
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
+        ],
+        distractors: [
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
+          "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
+        ],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Complete the statement. Triangle ABC and triangle XYZ are ____________. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png)",
+        answers: ["similar as the three interior angles are the same."],
+        distractors: [
+          "congruent as the three interior angles are all the same.",
+          "neither similar nor congruent.",
+        ],
+        hint: null,
+      },
+    ],
+  },
   cycle1: {
     title: "Identifying Key Circle Theorems",
     durationInMinutes: 15,
@@ -202,38 +216,52 @@ export const CircleTheoremLesson = {
     feedback:
       "Model answer: For each problem, identify the applicable theorem and show step-by-step calculations leading to the solution. Ensure that diagrams are correctly annotated.",
   },
-  exitQuiz: [
-    {
-      question:
-        "Work out the length of BM. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157889/x0zkhtqmat2qjbeykaep.png)",
-      answers: ["12 cm"],
-      distractors: ["18 cm", "24 cm", "6 cm"],
-    },
-    {
-      question:
-        "The diagram shows a circle with centre O and M is the midpoint of chord AB. Which statement is INCORRECT? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157891/jzj1whq88imewdz8moar.png)",
-      answers: ["OA=AM"],
-      distractors: ["AM=0.5AB", "AM=BM", "OA=OB"],
-    },
-    {
-      question:
-        "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163527/nudpmbhfucdchpb2jvvd.png)",
-      answers: ["A"],
-      distractors: ["B", "C", "D"],
-    },
-    {
-      question:
-        "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163529/szlbxsyihr4oxzt5xll3.png)",
-      answers: ["D"],
-      distractors: ["A", "B", "C"],
-    },
-    {
-      question:
-        "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163545/dfdqz5vcslzfnxke8j2g.png)",
-      answers: ["B"],
-      distractors: ["A", "C", "D"],
-    },
-  ],
+  exitQuiz: {
+    version: "v2" as const,
+    imageAttributions: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Work out the length of BM. ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157889/x0zkhtqmat2qjbeykaep.png)",
+        answers: ["12 cm"],
+        distractors: ["18 cm", "24 cm", "6 cm"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "The diagram shows a circle with centre O and M is the midpoint of chord AB. Which statement is INCORRECT? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707157891/jzj1whq88imewdz8moar.png)",
+        answers: ["OA=AM"],
+        distractors: ["AM=0.5AB", "AM=BM", "OA=OB"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163527/nudpmbhfucdchpb2jvvd.png)",
+        answers: ["A"],
+        distractors: ["B", "C", "D"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163529/szlbxsyihr4oxzt5xll3.png)",
+        answers: ["D"],
+        distractors: ["A", "B", "C"],
+        hint: null,
+      },
+      {
+        questionType: "multiple-choice" as const,
+        question:
+          "Which circle theorem is being shown in the diagram? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707163545/dfdqz5vcslzfnxke8j2g.png)",
+        answers: ["B"],
+        distractors: ["A", "C", "D"],
+        hint: null,
+      },
+    ],
+  },
 };
 
 const { basedOn, ...CircleTheoremLessonWithoutBasedOn } = CircleTheoremLesson;
