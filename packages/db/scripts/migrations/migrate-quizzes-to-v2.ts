@@ -53,62 +53,82 @@ Note: This migration includes all sessions (including soft-deleted ones)
   log.info("Including all sessions (including deleted)");
 
   try {
-    // Find all sessions with quizzes (including deleted sessions)
-    // Note: We'll check for quiz presence in the code since Prisma JSON filtering is limited
-    const allSessions = await prisma.appSession.findMany({
-      select: { id: true, output: true },
-    });
-
-    // Filter sessions that actually have quizzes
-    const sessionsWithQuizzes = allSessions.filter((session) =>
-      hasQuizzes(session.output),
-    );
-
-    log.info(
-      `Found ${allSessions.length} total sessions, ${sessionsWithQuizzes.length} have quizzes`,
-    );
-
+    const pageSize = 100;
+    let totalSessions = 0;
+    let totalWithQuizzes = 0;
     let upgraded = 0;
     let failed = 0;
+    let skip = 0;
 
-    for (const session of sessionsWithQuizzes) {
-      try {
-        const result = await upgradeQuizzes({
-          data: session.output,
-          persistUpgrade: async (upgradedData) => {
-            if (isDryRun) {
-              log.info(`${session.id}: Would upgrade (dry run)`);
-              return;
-            }
+    // Process sessions in batches
+    while (true) {
+      const batch = await prisma.appSession.findMany({
+        where: { appId: "lesson-planner" },
+        select: { id: true, output: true },
+        skip,
+        take: pageSize,
+        orderBy: { id: "asc" }, // Ensure consistent ordering for pagination
+      });
 
-            await prisma.appSession.update({
-              where: { id: session.id },
-              data: { output: upgradedData as object },
-            });
-            log.info(`${session.id}: Upgraded`);
-          },
-        });
+      if (batch.length === 0) {
+        break; // No more records
+      }
 
-        if (result.wasUpgraded) {
-          upgraded++;
-        }
-      } catch (error) {
-        failed++;
-        log.error(`${session.id}: Failed`, error);
+      totalSessions += batch.length;
 
-        // In production, you might want to stop on first error
-        if (!isDryRun) {
-          throw new Error(`Migration failed at session ${session.id}`);
+      // Filter sessions that actually have quizzes
+      const sessionsWithQuizzes = batch.filter((session) =>
+        hasQuizzes(session.output),
+      );
+
+      totalWithQuizzes += sessionsWithQuizzes.length;
+
+      log.info(
+        `Processing batch starting at offset ${skip}: ${batch.length} sessions, ${sessionsWithQuizzes.length} with quizzes`,
+      );
+
+      for (const session of sessionsWithQuizzes) {
+        try {
+          const result = await upgradeQuizzes({
+            data: session.output,
+            persistUpgrade: async (upgradedData) => {
+              if (isDryRun) {
+                log.info(`${session.id}: Would upgrade (dry run)`);
+                return;
+              }
+
+              await prisma.appSession.update({
+                where: { id: session.id },
+                data: { output: upgradedData as object },
+              });
+              log.info(`${session.id}: Upgraded`);
+            },
+          });
+
+          if (result.wasUpgraded) {
+            upgraded++;
+          }
+        } catch (error) {
+          failed++;
+          log.error(`${session.id}: Failed`, error);
+
+          // In production, you might want to stop on first error
+          if (!isDryRun) {
+            throw new Error(`Migration failed at session ${session.id}`);
+          }
         }
       }
+
+      skip += pageSize;
     }
 
     // Summary
-    const unchanged = sessionsWithQuizzes.length - upgraded - failed;
+    const unchanged = totalWithQuizzes - upgraded - failed;
 
     log.info(`
 Migration Summary:
-- Total sessions: ${sessionsWithQuizzes.length}
+- Total sessions processed: ${totalSessions}
+- Sessions with quizzes: ${totalWithQuizzes}
 - Upgraded: ${upgraded}
 - Already V2: ${unchanged}
 - Failed: ${failed}
