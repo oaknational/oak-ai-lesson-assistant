@@ -57,21 +57,19 @@ export const SharedDropDown = ({
         <DropDownWrapper>
           {selectedValue !== "Other" &&
             options.map((option) => (
-              <>
-                <DropDownItemButton
-                  key={option}
-                  onClick={() => {
-                    setSelectedValue(option);
-                    if (option === "Other") {
-                      setActiveDropdown(dropdownType);
-                    } else {
-                      setActiveDropdown(null);
-                    }
-                  }}
-                >
-                  {option}
-                </DropDownItemButton>
-              </>
+              <DropDownItemButton
+                key={option}
+                onClick={() => {
+                  setSelectedValue(option);
+                  if (option === "Other") {
+                    setActiveDropdown(dropdownType);
+                  } else {
+                    setActiveDropdown(null);
+                  }
+                }}
+              >
+                {option}
+              </DropDownItemButton>
             ))}
 
           {selectedValue === "Other" && (
@@ -117,7 +115,7 @@ export const SharedDropDown = ({
                 <OakSmallSecondaryButton
                   onClick={() => {
                     setCustomValue("");
-                    setSelectedValue("");
+                    setSelectedValue("Subject");
                     setActiveDropdown(null);
                   }}
                 >
