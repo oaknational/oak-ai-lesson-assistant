@@ -15,8 +15,10 @@ import TeachingMaterialsView, {
 } from "./teachingMaterialsView";
 
 const log = aiLogger("additional-materials");
+
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return "";
+  console.log("process.env.VERCEL_URL", process.env.VERCEL_URL);
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
 
   return `http://localhost:${process.env.PORT ?? 2525}`;
@@ -101,7 +103,7 @@ export default async function AdditionalMaterialsTestPage({
   const lessonSlug = searchParams?.lessonSlug;
   const programmeSlug = searchParams?.programmeSlug;
   const docType = searchParams?.docType;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:2525";
+  const baseUrl = getBaseUrl();
 
   log.info("Teaching materials - owa", {
     lessonSlug,
