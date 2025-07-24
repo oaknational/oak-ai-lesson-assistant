@@ -132,8 +132,23 @@ export default async function AdditionalMaterialsTestPage({
         baseUrl,
       });
       if (!res.ok) {
-        const fetchError: unknown = await res.json();
-        const errorData = fetchError as { error?: string; message?: string };
+        let fetchError: unknown;
+        let errorData: { error?: string; message?: string } = {};
+        
+        try {
+          fetchError = await res.json();
+          errorData = fetchError as { error?: string; message?: string };
+        } catch (jsonError) {
+          // Response is not JSON (likely HTML error page)
+          const textError = await res.text();
+          log.error("API returned non-JSON response", {
+            status: res.status,
+            statusText: res.statusText,
+            responseText: textError.substring(0, 500), // Log first 500 chars
+          });
+          fetchError = new Error(`API returned ${res.status}: ${res.statusText}`);
+          errorData = { error: `API Error: ${res.status} ${res.statusText}` };
+        }
 
         if (
           errorData.error?.includes("copyright") ||
