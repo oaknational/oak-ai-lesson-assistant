@@ -6,22 +6,10 @@ export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
-// LaTeX rendering utilities (for testing/debugging)
-export {
-  findLatexPatterns,
-  generateLatexHash,
-} from "./src/gSuite/docs/findLatexPatterns";
-export {
-  renderLatexToPng,
-  batchRenderLatex,
-  clearRenderCache,
-} from "./src/utils/latexRenderer";
-export {
-  uploadImage,
-  uploadLatexImage,
-  batchUploadImages,
-  clearUploadCache,
-} from "./src/utils/imageUploader";
+// LaTeX rendering exports
+export { findLatexPatterns } from "./src/gSuite/docs/findLatexPatterns";
+export { renderLatexToPng } from "./src/utils/latexRenderer";
+
 
 export {
   quizDocInputSchema as exportDocQuizSchema,

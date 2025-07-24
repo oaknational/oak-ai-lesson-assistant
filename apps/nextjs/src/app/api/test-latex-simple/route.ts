@@ -1,11 +1,9 @@
+import { findLatexPatterns, renderLatexToPng } from "@oakai/exports";
+
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    // Test if we can import the packages
-    const { findLatexPatterns } = await import("@oakai/exports");
-    const { renderLatexToPng } = await import("@oakai/exports");
-
     // Simple test
     const patterns = findLatexPatterns("Test: $x = 1$");
 

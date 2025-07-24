@@ -1,6 +1,5 @@
 import { aiLogger } from "@oakai/logger";
 
-import { Resvg } from "@resvg/resvg-js";
 import { init } from "mathjax";
 
 import type { LatexPattern } from "../gSuite/docs/findLatexPatterns";
@@ -65,11 +64,11 @@ export async function renderLatexToPng(
     const mathJaxNode = MathJax.tex2svg(latex, { display: type === "display" });
 
     // Extract the SVG element from MathJax's wrapper
-    const adaptor = MathJax.startup.adaptor;
+    const adaptor = MathJax.startup.adaptor as any;
     const svgNode = adaptor.firstChild(mathJaxNode);
 
     // Get the SVG string
-    const svgString = adaptor.outerHTML(svgNode);
+    const svgString = adaptor.outerHTML(svgNode) as string;
 
     // Clean up SVG for better rendering
     // Remove MathJax-specific attributes that might cause issues
@@ -77,7 +76,8 @@ export async function renderLatexToPng(
       .replace(/data-mml-node="[^"]*"/g, "")
       .replace(/data-c="[^"]*"/g, "");
 
-    // Convert SVG to PNG using resvg-js
+    // Convert SVG to PNG using resvg-js (dynamic import to avoid bundling issues)
+    const { Resvg } = await import("@resvg/resvg-js");
     const resvg = new Resvg(cleanedSvg, {
       fitTo: {
         mode: "width",
