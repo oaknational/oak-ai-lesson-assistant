@@ -1,5 +1,6 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { lessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+import { aiLogger } from "@oakai/logger";
 
 import { string, z } from "zod";
 
@@ -7,6 +8,8 @@ import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/t
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
 import { handleStoreError } from "../utils/errorHandling";
+
+const log = aiLogger("additional-materials");
 
 const dataFromOwaSchema = z.object({
   lesson: lessonPlanSchemaTeachingMaterials,
@@ -25,12 +28,21 @@ export type LoadOwaDataParams = Pick<
   | "docTypeFromQueryPrams"
   | "id"
   | "lessonId"
+  | "error"
 >;
 
 export const handleLoadOwaDataToStore =
   (set: ResourcesSetter, _get: ResourcesGetter) =>
   (params: LoadOwaDataParams) => {
     try {
+      console.log("Loading OWA data to store", params);
+      if (params.error) {
+        log.error("Error loading OWA data to store", { error: params.error });
+        handleStoreError(set, params.error, {
+          context: "handleLoadOwaDataToStore",
+        });
+        return;
+      }
       const parsedParams = dataFromOwaSchema.parse(params);
 
       const {
@@ -84,6 +96,7 @@ export const handleLoadOwaDataToStore =
 
       // Set the id in the store
       set({ id });
+      log.info("Owa data loaded to store");
     } catch (error) {
       handleStoreError(set, error, {
         context: "handleGenerateMaterial",

@@ -2,7 +2,6 @@ import type {
   AdditionalMaterialSchemas,
   AdditionalMaterialType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -16,10 +15,7 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
-import type { CreateMaterialSessionParams } from "./actionFunctions/handleCreateMaterialSession";
-import type { GenerateMaterialParams } from "./actionFunctions/handleGenerateMaterial";
 import type { LoadOwaDataParams } from "./actionFunctions/handleLoadOwaDataToStore";
-import type { RefineMaterialParams } from "./actionFunctions/handleRefineMaterial";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
@@ -81,7 +77,6 @@ export type ResourcesState = {
     setIsResourcesLoading: (isLoading: boolean) => void;
     setIsResourceRefining: (isRefining: boolean) => void;
     setThreatDetection: (threatDetection: boolean) => void;
-    setError: (error: ErrorResponse | null) => void;
 
     // Form state setters
     setSubject: (subject: string | null) => void;

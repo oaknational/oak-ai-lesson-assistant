@@ -1,12 +1,3 @@
-// export const copyrightLesson = `
-// query complexCopyrightLessons($lesson_slug: String!) {
-//   lessons(where: {slug: {_eq: $lesson_slug} _state: {_eq: "published"}}) {
-//     slug
-//     features
-//     _state
-//   }
-// }`;
-
 export const copyrightLesson = `
 query complexCopyrightLessons {
   lessons(where: { 

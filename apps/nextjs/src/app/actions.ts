@@ -14,8 +14,6 @@ import { prisma } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 
-const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
-
 function parseChatAndReportError({
   sessionOutput,
   id,

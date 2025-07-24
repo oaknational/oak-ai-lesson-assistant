@@ -7,20 +7,22 @@ import type { NextApiResponse } from "next";
 
 import { createLessonPlanInteraction } from "@/app/actions";
 
+import { checkForRestrictedContentGuidance } from "./copyrightCheckHelper";
 import {
-  checkForRestrictedContentGuidance,
-  checkForRestrictedFeatures,
-} from "./copyrightCheckHelper";
-import { copyrightLesson, tcpMediaByLessonSlug } from "./copyrightLesson";
-import { copyrightLessons } from "./copyrightLessonsQuery";
-import { exportLessonsToCSV, exportToCSV } from "./csvExportHelper";
+  exportRestrictedContentGuidanceLessonsToCSV,
+  exportTCPWorksToCSV,
+} from "./csvExportHelper";
 import {
   type LessonContentSchema,
   lessonBrowseDataByKsSchema,
   lessonContentSchema,
 } from "./lessonOverview.schema";
-import { lessonOverviewQuery } from "./lessonOverviewQuery";
+import {
+  lessonOverviewQuery,
+  lessonsWithRestrictedContentQuery,
+} from "./lessonOverviewQuery";
 import { transformOwaLessonToLessonPlan } from "./lessonTransformer";
+import { tcpWorks, tcpWorksByLessonSlug } from "./tpcWorksByLessonSlugQuery";
 
 const log = aiLogger("additional-materials");
 
@@ -28,6 +30,25 @@ type LessonOverviewResponse = {
   data?: {
     content?: LessonContentSchema[];
     browseData?: SyntheticUnitvariantLessonsByKs[];
+  };
+};
+
+type TRPCWorksResponse = {
+  data?: {
+    tcpWorksByLessonSlug?: {
+      slug: string;
+      lesson_id: number;
+      works_list: {
+        title: string;
+        author?: string;
+        works_id: number;
+        works_uid: string;
+        attribution?: string;
+        restriction_level: string;
+        tpc_contracts_list: number[];
+        [key: string]: any;
+      }[];
+    }[];
   };
 };
 
@@ -80,6 +101,65 @@ export async function POST(req: Request, res: NextApiResponse) {
   });
 
   try {
+    // const guidanceLessons = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: lessonsWithRestrictedContentQuery,
+    //   }),
+    // });
+
+    // const { data: guidanceData }: LessonOverviewResponse =
+    //   await guidanceLessons.json();
+
+    // if (!guidanceData || !guidanceData.content) {
+    //   log.error("No guidance lessons data found", { guidanceData });
+    //   return Response.json(
+    //     { error: "No guidance lessons data found" },
+    //     { status: 404 },
+    //   );
+    // }
+    // console.log("Guidance data fetched", {
+    //   guidanceData: JSON.stringify(guidanceData, null, 2),
+    // });
+
+    // exportRestrictedContentGuidanceLessonsToCSV(guidanceData?.content ?? []);
+
+    // const tcpWorksAllData = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: tcpWorks,
+    //   }),
+    // });
+
+    // if (!tcpWorksAllData.ok) {
+    //   log.error("Failed to fetch TCP data", {
+    //     status: tcpWorksAllData.status,
+    //     statusText: tcpWorksAllData.statusText,
+    //   });
+    //   return Response.json(
+    //     { error: "Failed to fetch TCP data" },
+    //     { status: tcpWorksAllData.status },
+    //   );
+    // }
+
+    // const tcpResponseAll: TRPCWorksResponse = await tcpWorksAllData.json();
+
+    // const worksListAll = tcpResponseAll;
+
+    // log.info(
+    //   `TCP works data fetched - has restricted works: ${worksListAll}`,
+    // );
+
     const lesson = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -96,79 +176,48 @@ export async function POST(req: Request, res: NextApiResponse) {
       }),
     });
 
-    // const copyrightLessonsResults = await fetch(GRAPHQL_ENDPOINT, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "x-oak-auth-key": AUTH_KEY,
-    //     "x-oak-auth-type": AUTH_TYPE,
-    //   },
-    //   body: JSON.stringify({
-    //     query: copyrightLessons,
-    //   }),
-    // });
-    // const { data: copyrightData }: LessonOverviewResponse =
-    //   await copyrightLessonsResults.json();
+    const tcpData = await fetch(GRAPHQL_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-oak-auth-key": AUTH_KEY,
+        "x-oak-auth-type": AUTH_TYPE,
+      },
+      body: JSON.stringify({
+        query: tcpWorksByLessonSlug,
+        variables: {
+          lesson_slug: lessonSlug,
+        },
+      }),
+    });
 
-    // const copyrightLessonQuery = await fetch(GRAPHQL_ENDPOINT, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "x-oak-auth-key": AUTH_KEY,
-    //     "x-oak-auth-type": AUTH_TYPE,
-    //   },
-    //   body: JSON.stringify({
-    //     query: copyrightLesson,
-    //     // variables: {
-    //     //   lesson_slug: lessonSlug,
-    //     // },
-    //   }),
-    // });
+    if (!tcpData.ok) {
+      log.error("Failed to fetch TCP data", {
+        status: tcpData.status,
+        statusText: tcpData.statusText,
+      });
+      return Response.json(
+        { error: "Failed to fetch TCP data" },
+        { status: tcpData.status },
+      );
+    }
 
-    // const { data: copyrightLessonData }: LessonOverviewResponse =
-    //   await copyrightLessonQuery.json();
+    const tcpResponse = await tcpData.json();
 
-    // console.log("Copyright lesson data", copyrightLessonData);
-    // // console.log("Copyright data", copyrightLessonData.lessons[0].features);
-    // exportLessonsToCSV(copyrightLessonData.lessons);
-    // const lessonTest = copyrightData?.browseData?.filter(
-    //   (item) =>
-    //     item.lesson_slug ===
-    //     "chapter-10-henry-jekylls-full-statement-of-the-case",
-    // );
+    const tcpWorksData: TRPCWorksResponse = tcpResponse;
 
-    // const tcpData = await fetch(GRAPHQL_ENDPOINT, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "x-oak-auth-key": AUTH_KEY,
-    //     "x-oak-auth-type": AUTH_TYPE,
-    //   },
-    //   body: JSON.stringify({
-    //     query: tcpMediaByLessonSlug,
-    //     variables: {
-    //       lesson_slug: lessonSlug,
-    //     },
-    //   }),
-    // });
+    const worksList =
+      tcpWorksData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
+    const hasRestrictedWorks = worksList.length > 0;
 
-    // if (!tcpData.ok) {
-    //   log.error("Failed to fetch TCP data", {
-    //     status: tcpData.status,
-    //     statusText: tcpData.statusText,
-    //   });
-    //   return Response.json(
-    //     { error: "Failed to fetch TCP data" },
-    //     { status: tcpData.status },
-    //   );
-    // }
-
-    // const tcpResponse = await tcpData.json();
-    // console.log("TCP Response", JSON.stringify(tcpResponse));
-
-    // const tcpMediaData =
-    //   tcpResponse?.data?.mv_get_tpc_media_by_lesson_slug_1_0_0[0];
-    // console.log("TCP Media Data", tcpMediaData);
+    log.info(
+      `TCP works data fetched - has restricted works: ${hasRestrictedWorks}`,
+    );
+    log.info("TCP works data", {
+      tcpWorksData: JSON.stringify(tcpWorksData),
+      lessonSlug,
+      programmeSlug,
+    });
 
     const { data }: LessonOverviewResponse = await lesson.json();
 
@@ -181,6 +230,7 @@ export async function POST(req: Request, res: NextApiResponse) {
       log.error("No browse data found", { data });
       return Response.json({ error: "Browse data not found" }, { status: 404 });
     }
+    // exportTCPWorksToCSV(worksListAll, data);
     const lessonData = data?.content[0];
     const parsedLesson = lessonContentSchema.parse(lessonData);
     const browseDataArray = data?.browseData;
@@ -192,10 +242,10 @@ export async function POST(req: Request, res: NextApiResponse) {
     if (browseData[0] === undefined) {
       throw new Error("Lesson not found in browse data");
     }
-    const restrictionResponse = checkForRestrictedFeatures(browseData[0]);
-    if (restrictionResponse) {
-      return restrictionResponse;
-    }
+    // const restrictionResponse = checkForRestrictedFeatures(browseData[0]);
+    // if (restrictionResponse) {
+    //   return restrictionResponse;
+    // }
     const contentGuidanceResponse = checkForRestrictedContentGuidance(
       parsedLesson.content_guidance,
     );
@@ -216,6 +266,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     });
 
     try {
+      log.info("Creating lesson plan interaction");
       const interaction = await createLessonPlanInteraction(
         { userId },
         { ...transformedLesson },
@@ -226,7 +277,10 @@ export async function POST(req: Request, res: NextApiResponse) {
           lesson: {
             ...transformedLesson,
             lessonId,
-            transcript: lessonData?.transcript_sentences,
+            transcript: !hasRestrictedWorks // We are excluding any transcripts that may have tpc restricted works
+              ? lessonData?.transcript_sentences
+              : undefined,
+            hasRestrictedWorks,
           },
         },
         { status: 200 },

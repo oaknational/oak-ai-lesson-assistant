@@ -1,7 +1,4 @@
-import {
-  type LessonPlanSchemaTeachingMaterials,
-  lessonPlanSchemaTeachingMaterials,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+import { lessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import { aiLogger } from "@oakai/logger";
 
 import { auth } from "@clerk/nextjs/server";
@@ -25,6 +22,7 @@ function handleExpectedError({
   pageProps,
   lessonSlug,
   programmeSlug,
+  source,
   error,
   docType,
 }: {
@@ -32,6 +30,7 @@ function handleExpectedError({
   pageProps: TeachingMaterialsPageProps;
   lessonSlug: string;
   programmeSlug: string;
+  source: "owa" | "aila";
   error: ErrorResponse;
   docType: string;
 }) {
@@ -48,7 +47,14 @@ function handleExpectedError({
     },
   });
   return (
-    <TeachingMaterialsView {...{ ...pageProps, error, docType: docType }} />
+    <TeachingMaterialsView
+      {...{
+        ...pageProps,
+        error,
+        docType: docType,
+        source: source,
+      }}
+    />
   );
 }
 
@@ -104,6 +110,7 @@ export default async function AdditionalMaterialsTestPage({
     initialStep: undefined,
     docTypeFromQueryPrams: undefined,
     id: undefined,
+    source: "aila",
   };
 
   if (lessonSlug && programmeSlug && docType && canUseOWALink) {
@@ -117,7 +124,6 @@ export default async function AdditionalMaterialsTestPage({
         baseUrl,
       });
       if (!res.ok) {
-        console.log("RES not ok");
         const fetchError: unknown = await res.json();
         const errorData = fetchError as { error?: string; message?: string };
 
@@ -131,11 +137,12 @@ export default async function AdditionalMaterialsTestPage({
             lessonSlug,
             programmeSlug,
             docType,
+            source: "owa",
             error: {
               type: "copyright",
               message:
-                errorData.error ||
-                errorData.message ||
+                errorData.error ??
+                errorData.message ??
                 "Copyright restricted content",
             },
           });
@@ -148,6 +155,7 @@ export default async function AdditionalMaterialsTestPage({
             pageProps,
             lessonSlug,
             programmeSlug,
+            source: "owa",
             docType,
             error: {
               type: "restrictedContentGuidance",

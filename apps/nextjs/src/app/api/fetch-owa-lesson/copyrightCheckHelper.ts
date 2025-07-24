@@ -7,27 +7,33 @@ import type {
 
 const log = aiLogger("additional-materials");
 
+const RESTRICTED_CONTENT_GUIDANCE_TYPES = [
+  "Depiction or discussion of discriminatory behaviour",
+  "Depiction or discussion of sensitive content",
+  "Depiction or discussion of sexual violence",
+  "Depiction or discussion of sexual content",
+  "Depiction or discussion of mental health issues",
+  "Depiction or discussion of serious crime",
+] as const;
+
 export function checkForRestrictedContentGuidance(
   content: LessonContentSchema["content_guidance"],
 ) {
   if (content === null) {
     return null;
   }
+
   const contentGuidanceLabels = content.map((item) => ({
     contentGuidanceLabel: item.contentguidance_label ?? "",
-    // contentGuidanceDescription: item.contentguidanceDescription ?? "",
-    // contentGuidanceArea: item.contentguidanceArea ?? "",
   }));
-  console.log("Content Guidance Labels:", contentGuidanceLabels);
-  if (
-    contentGuidanceLabels.some(
-      (item) =>
-        item.contentGuidanceLabel ===
-          "Depiction or discussion of discriminatory behaviour" ||
-        item.contentGuidanceLabel ===
-          "Depiction or discussion of sensitive content",
-    )
-  ) {
+
+  const hasRestrictedContent = contentGuidanceLabels.some((item) =>
+    RESTRICTED_CONTENT_GUIDANCE_TYPES.includes(
+      item.contentGuidanceLabel as (typeof RESTRICTED_CONTENT_GUIDANCE_TYPES)[number],
+    ),
+  );
+
+  if (hasRestrictedContent) {
     log.error("Restricted content guidance detected", {
       contentGuidanceLabels,
     });
@@ -40,6 +46,8 @@ export function checkForRestrictedContentGuidance(
       { status: 403 },
     );
   }
+
+  return null;
 }
 
 /**

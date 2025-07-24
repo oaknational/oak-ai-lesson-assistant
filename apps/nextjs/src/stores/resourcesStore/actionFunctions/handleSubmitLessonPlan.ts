@@ -33,7 +33,6 @@ const buildLessonPlanInput = (
   docType: AdditionalMaterialType,
   source: "aila" | "owa",
 ): PartialLessonContextSchemaType => {
-  invariant(docType);
   const resourceType = getResourceType(docType);
 
   // Always include these base fields
@@ -140,10 +139,16 @@ export const handleSubmitLessonPlan =
     setIsLoadingLessonPlan(true);
 
     invariant(resourceId, "Resource ID must be defined");
-
+    invariant(docType, "DocType ID must be defined");
     try {
       log.info("Processing lesson plan", { title, subject, year });
-      const apiInput = buildLessonPlanInput(title, subject, year, docType);
+      const apiInput = buildLessonPlanInput(
+        title,
+        subject,
+        year,
+        docType,
+        source,
+      );
 
       const result =
         await trpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate(

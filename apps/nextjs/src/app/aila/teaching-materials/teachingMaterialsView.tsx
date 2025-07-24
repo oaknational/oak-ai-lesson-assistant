@@ -1,12 +1,12 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
-import { OakP } from "@oaknational/oak-components";
+import { OakFlex, OakP } from "@oaknational/oak-components";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -25,6 +25,7 @@ import {
   useResourcesActions,
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
+import type { ErrorResponse } from "@/stores/resourcesStore";
 import {
   docTypeSelector,
   pageDataSelector,
@@ -40,11 +41,11 @@ export type TeachingMaterialsPageProps = {
   docTypeFromQueryPrams?: string;
   id?: string;
   source?: "aila" | "owa";
-  error?: string;
+  error?: string | ErrorResponse;
   lessonId?: string;
 };
 
-const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
+const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -52,44 +53,16 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = (props) => {
   const docType = useResourcesStore(docTypeSelector);
   const year = useResourcesStore(yearSelector);
   const error = useResourcesStore((state) => state.error);
-  const source = useResourcesStore((state) => state.source);
-  const { loadOwaDataToStore } = useResourcesActions();
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
   const {
-    resetFormState,
     createMaterialSession,
     submitLessonPlan,
     generateMaterial,
     refineMaterial,
   } = useResourcesActions();
   const { setDialogWindow } = useDialog();
-
-  useEffect(() => {
-    if (source === "owa" && !props.error) {
-      loadOwaDataToStore({
-        lesson: props.lesson,
-        transcript: props.transcript,
-        initialStep: props.initialStep,
-        docTypeFromQueryPrams: props.docTypeFromQueryPrams,
-        id: props.id,
-        lessonId: props.lessonId,
-      });
-
-      handleSubmitRef.current();
-    }
-  }, [
-    source,
-    loadOwaDataToStore,
-    props.lesson,
-    props.transcript,
-    props.initialStep,
-    props.docTypeFromQueryPrams,
-    props.id,
-    props.error,
-    props.lessonId,
-  ]);
 
   handleDialogSelection({
     threatDetected,
@@ -161,6 +134,13 @@ const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
+          {props.initialStep === 3 && props.lesson?.hasRestrictedWorks && (
+            <OakFlex>
+              <OakP $font="body-2" $color="text-primary">
+                {`This lesson contains restricted works.`}
+              </OakP>
+            </OakFlex>
+          )}
           <TeachingMaterialsViewInner {...props} />
         </DialogRoot>
       </DialogProvider>
