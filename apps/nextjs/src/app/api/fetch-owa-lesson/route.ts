@@ -3,7 +3,6 @@ import { aiLogger } from "@oakai/logger";
 import { auth } from "@clerk/nextjs/server";
 import { type SyntheticUnitvariantLessonsByKs } from "@oaknational/oak-curriculum-schema";
 import * as Sentry from "@sentry/node";
-import type { NextApiResponse } from "next";
 
 import { createLessonPlanInteraction } from "@/app/actions";
 
@@ -64,10 +63,7 @@ export async function POST(req: Request) {
       AUTH_TYPE,
       GRAPHQL_ENDPOINT,
     });
-    return Response.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 
   const { lessonSlug, programmeSlug, userId } = await req.json();
@@ -288,13 +284,14 @@ export async function POST(req: Request) {
         error: interactionError,
       });
       Sentry.captureException(interactionError);
+      return Response.json(
+        { error: "Failed to create lesson plan interaction" },
+        { status: 500 },
+      );
     }
   } catch (error) {
     log.error("Unexpected error in export additional materials", { error });
     Sentry.captureException(error);
-    return Response.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
