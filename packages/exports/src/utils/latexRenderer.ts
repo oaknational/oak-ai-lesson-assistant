@@ -1,14 +1,12 @@
 import { aiLogger } from "@oakai/logger";
 
-import { init } from "mathjax";
-
 import type { LatexPattern } from "../gSuite/docs/findLatexPatterns";
 import { generateLatexHash } from "../gSuite/docs/findLatexPatterns";
 
 const log = aiLogger("exports");
 
 // Cache for MathJax instance
-let mathJaxInstance: Awaited<ReturnType<typeof init>> | null = null;
+let MathJax: any = null;
 
 // Cache for rendered equations to avoid duplicate processing
 const renderCache = new Map<string, Buffer>();
@@ -16,29 +14,43 @@ const renderCache = new Map<string, Buffer>();
 /**
  * Initialize MathJax if not already initialized
  */
-async function getMathJax() {
-  if (!mathJaxInstance) {
+async function initMathJax() {
+  if (!MathJax) {
     log.info("Initializing MathJax for server-side rendering");
-    mathJaxInstance = await init({
-      loader: { load: ["input/tex", "output/svg"] },
-      tex: {
-        // Match the frontend configuration
-        inlineMath: [
-          ["$", "$"],
-          ["\\(", "\\)"],
-        ],
-        displayMath: [
-          ["$$", "$$"],
-          ["\\[", "\\]"],
-        ],
-      },
-      svg: {
-        fontCache: "local", // Make SVG self-contained
-        scale: 1.2, // Slightly larger for better readability
-      },
-    });
+    
+    try {
+      // Initialize MathJax following the official Node.js demo pattern
+      MathJax = await require('mathjax-full').init({
+        loader: {
+          load: ['adaptors/liteDOM', 'tex-svg']
+        },
+        tex: {
+          packages: ['base', 'ams', 'newcommand', 'require', 'autoload'],
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+        },
+        svg: {
+          fontCache: 'local',
+          scale: 1.2,
+        },
+        startup: {
+          typeset: false  // We'll convert manually
+        }
+      });
+      
+      log.info("MathJax initialized successfully");
+    } catch (error) {
+      log.error("Failed to initialize MathJax", error);
+      throw error;
+    }
   }
-  return mathJaxInstance;
+  return MathJax;
 }
 
 /**
@@ -57,18 +69,20 @@ export async function renderLatexToPng(
   }
 
   try {
-    // Get MathJax instance
-    const MathJax = await getMathJax();
+    // Initialize MathJax
+    await initMathJax();
 
-    // Convert LaTeX to SVG
-    const mathJaxNode = MathJax.tex2svg(latex, { display: type === "display" });
+    // Convert LaTeX to SVG using tex2svgPromise
+    const svg = await MathJax.tex2svgPromise(latex, {
+      display: type === "display",
+      em: 16,
+      ex: 8,
+      containerWidth: type === "display" ? 80 * 16 : 40 * 16
+    });
 
-    // Extract the SVG element from MathJax's wrapper
-    const adaptor = MathJax.startup.adaptor as any;
-    const svgNode = adaptor.firstChild(mathJaxNode);
-
-    // Get the SVG string
-    const svgString = adaptor.outerHTML(svgNode) as string;
+    // Extract the SVG element
+    const adaptor = MathJax.startup.adaptor;
+    const svgString = adaptor.innerHTML(svg) as string;
 
     // Clean up SVG for better rendering
     // Remove MathJax-specific attributes that might cause issues
