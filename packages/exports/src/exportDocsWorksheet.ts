@@ -35,6 +35,7 @@ export const exportDocsWorksheet = async ({
           googleDocs: client,
           documentId: templateCopyId,
           data,
+          enableLatexRendering: true,
         });
       },
       userEmail,

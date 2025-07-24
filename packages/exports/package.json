@@ -18,6 +18,8 @@
   "dependencies": {
     "@oakai/additional-materials": "*",
     "@oakai/logger": "*",
+    "@resvg/resvg-js": "^2.6.2",
+    "mathjax": "^3.2.2",
     "typescript": "5.8.2"
   }
 }

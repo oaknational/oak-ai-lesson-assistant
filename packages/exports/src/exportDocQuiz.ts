@@ -40,6 +40,7 @@ export const exportDocQuiz = async ({
           googleDocs: client,
           documentId: templateCopyId,
           data,
+          enableLatexRendering: true,
         });
       },
       userEmail,

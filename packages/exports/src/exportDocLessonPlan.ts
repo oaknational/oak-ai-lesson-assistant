@@ -37,6 +37,7 @@ export const exportDocLessonPlan = async ({
           googleDocs: client,
           documentId: templateCopyId,
           data,
+          enableLatexRendering: true,
         });
       },
       userEmail,

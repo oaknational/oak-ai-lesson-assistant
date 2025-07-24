@@ -181,6 +181,14 @@ const getConfig = async (phase) => {
       config.module.exprContextCritical = false;
       // End of dd-trace fix
 
+      // Exclude native modules from client-side bundle
+      if (!isServer) {
+        config.externals = [
+          ...(config.externals || []),
+          '@resvg/resvg-js'
+        ];
+      }
+
       return config;
     },
   };

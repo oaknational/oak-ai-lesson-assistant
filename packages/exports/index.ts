@@ -6,6 +6,23 @@ export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
+// LaTeX rendering utilities (for testing/debugging)
+export {
+  findLatexPatterns,
+  generateLatexHash,
+} from "./src/gSuite/docs/findLatexPatterns";
+export {
+  renderLatexToPng,
+  batchRenderLatex,
+  clearRenderCache,
+} from "./src/utils/latexRenderer";
+export {
+  uploadImage,
+  uploadLatexImage,
+  batchUploadImages,
+  clearUploadCache,
+} from "./src/utils/imageUploader";
+
 export {
   quizDocInputSchema as exportDocQuizSchema,
   lessonPlanDocInputSchema as exportDocLessonPlanSchema,
