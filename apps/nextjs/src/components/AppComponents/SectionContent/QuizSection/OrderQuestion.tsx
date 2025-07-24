@@ -53,7 +53,7 @@ export const OrderQuestion = ({
             role="listitem"
             aria-label={`Item in position ${item.correctIndex}: ${item.text}`}
           >
-            <AnswerBox wobbleOffset={index}>{item.correctIndex}</AnswerBox>
+            <AnswerBox>{item.correctIndex}</AnswerBox>
             <OakBox $font="body-2">
               <MemoizedReactMarkdownWithStyles
                 markdown={item.text}

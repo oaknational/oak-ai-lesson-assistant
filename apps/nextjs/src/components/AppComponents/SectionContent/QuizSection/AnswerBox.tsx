@@ -9,27 +9,9 @@ type AnswerBoxProps = {
    * Use <AnswerBox.Check /> for correct answers.
    */
   children?: ReactNode;
-  wobbleOffset?: number;
 };
 
-// Generate transform for handwritten feel based on variant
-const getWobbleTransform = (variant: number | undefined) => {
-  if (variant === undefined) {
-    return undefined;
-  }
-
-  const rotations = [-1.5, 1.5, -1.5, 2.5, 0, -3, 1];
-  const xOffsets = [0.25, -0.25, 0, 0.25, -0.25, 0, 0.25];
-  const yOffsets = [-0.25, 0, 0.25, -0.25, 0.25, 0, -0.25];
-
-  const rotation = rotations[variant % rotations.length];
-  const xOffset = xOffsets[variant % xOffsets.length];
-  const yOffset = yOffsets[variant % yOffsets.length];
-
-  return `rotate(${rotation}deg) translate(${xOffset}px, ${yOffset}px)`;
-};
-
-const AnswerBoxBase = ({ children, wobbleOffset }: AnswerBoxProps) => {
+const AnswerBoxBase = ({ children }: AnswerBoxProps) => {
   return (
     <OakFlex
       $mr="space-between-xs"
@@ -47,7 +29,6 @@ const AnswerBoxBase = ({ children, wobbleOffset }: AnswerBoxProps) => {
     >
       <span
         style={{
-          transform: getWobbleTransform(wobbleOffset),
           display: "block",
           width: "100%",
           height: "100%",

@@ -55,9 +55,7 @@ export const MultipleChoiceQuestion = ({
                 answer.isCorrect ? ", correct answer" : ""
               }`}
             >
-              <AnswerBox wobbleOffset={index}>
-                {answer.isCorrect && <AnswerBox.Check />}
-              </AnswerBox>
+              <AnswerBox>{answer.isCorrect && <AnswerBox.Check />}</AnswerBox>
               <OakBox
                 $font={answer.isCorrect ? "body-2-bold" : "body-2"}
                 className="pt-[2px]"

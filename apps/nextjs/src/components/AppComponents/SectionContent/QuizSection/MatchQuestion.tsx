@@ -88,7 +88,7 @@ export const MatchQuestion = ({
               role="listitem"
               aria-label={`Matches with ${item.label}: ${item.text}`}
             >
-              <AnswerBox wobbleOffset={index}>{item.label}</AnswerBox>
+              <AnswerBox>{item.label}</AnswerBox>
               <OakBox>
                 <MemoizedReactMarkdownWithStyles
                   markdown={item.text}
