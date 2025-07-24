@@ -170,6 +170,19 @@ export async function POST(req: Request) {
       }),
     });
 
+    if (!lesson.ok) {
+      log.error("Failed to fetch lesson data", {
+        status: lesson.status,
+        statusText: lesson.statusText,
+        lessonSlug,
+        programmeSlug,
+      });
+      return Response.json(
+        { error: "Failed to fetch lesson data" },
+        { status: lesson.status },
+      );
+    }
+
     const tcpData = await fetch(GRAPHQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -196,7 +209,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const tcpResponse = await tcpData.json();
+    let tcpResponse: TRPCWorksResponse;
+    try {
+      tcpResponse = await tcpData.json();
+    } catch (jsonError) {
+      log.error("Failed to parse TCP response as JSON", {
+        jsonError,
+        lessonSlug,
+        responseStatus: tcpData.status,
+      });
+      return Response.json(
+        { error: "Invalid response format from TCP API" },
+        { status: 500 },
+      );
+    }
 
     const tcpWorksData: TRPCWorksResponse = tcpResponse;
 
@@ -213,7 +239,23 @@ export async function POST(req: Request) {
       programmeSlug,
     });
 
-    const { data }: LessonOverviewResponse = await lesson.json();
+    let data: LessonOverviewResponse["data"];
+    try {
+      const response: LessonOverviewResponse = await lesson.json();
+      data = response.data;
+    } catch (jsonError) {
+      log.error("Failed to parse lesson response as JSON", {
+        jsonError,
+        lessonSlug,
+        programmeSlug,
+        responseStatus: lesson.status,
+        responseHeaders: Object.fromEntries(lesson.headers.entries()),
+      });
+      return Response.json(
+        { error: "Invalid response format from lesson API" },
+        { status: 500 },
+      );
+    }
 
     if (!data || !data.content || data.content.length === 0) {
       log.error("No lesson data found", { data });
