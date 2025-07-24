@@ -52,12 +52,8 @@ type TRPCWorksResponse = {
   };
 };
 
-export async function POST(req: Request, res: NextApiResponse) {
+export async function POST(req: Request) {
   log.info("Received request to fetch OWA lesson overview");
-  if (req.method !== "POST") {
-    res.status(405).end("Method Not Allowed");
-    return;
-  }
   const AUTH_KEY = process.env.CURRICULUM_API_AUTH_KEY;
   const AUTH_TYPE = process.env.CURRICULUM_API_AUTH_TYPE;
   const GRAPHQL_ENDPOINT = process.env.CURRICULUM_API_URL;
@@ -68,8 +64,10 @@ export async function POST(req: Request, res: NextApiResponse) {
       AUTH_TYPE,
       GRAPHQL_ENDPOINT,
     });
-    res.status(500).end("Internal Server Error");
-    return;
+    return Response.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 
   const { lessonSlug, programmeSlug, userId } = await req.json();
@@ -294,6 +292,9 @@ export async function POST(req: Request, res: NextApiResponse) {
   } catch (error) {
     log.error("Unexpected error in export additional materials", { error });
     Sentry.captureException(error);
-    res.status(500).end("Internal Server Error");
+    return Response.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
