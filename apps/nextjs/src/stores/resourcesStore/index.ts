@@ -8,6 +8,7 @@ import { logStoreUpdates } from "../zustandHelpers";
 import { handleAnalytics } from "./actionFunctions/handleAnalytics";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
+import { handleFetchOwaLesson } from "./actionFunctions/handleFetchOwaLesson";
 import {
   handleResetFormState,
   handleSetActiveDropdown,
@@ -16,7 +17,6 @@ import {
   handleSetYear,
 } from "./actionFunctions/handleFormState";
 import { handleGenerateMaterial } from "./actionFunctions/handleGenerateMaterial";
-import { handleLoadOwaDataToStore } from "./actionFunctions/handleLoadOwaDataToStore";
 import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
@@ -114,7 +114,7 @@ export const createResourcesStore = (
       downloadMaterial: handleDownload(set, get),
 
       // OWA data loading
-      loadOwaDataToStore: handleLoadOwaDataToStore(set, get, trpc),
+      fetchOwaData: handleFetchOwaLesson(set, get, trpc),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
@@ -129,11 +129,6 @@ export const createResourcesStore = (
         set((state) => ({ ...DEFAULT_STATE, id: state.id })),
     },
   }));
-
-  if (props.source === "owa") {
-    void resourcesStore.getState().actions.loadOwaDataToStore(props);
-    // void resourcesStore.getState().actions.generateMaterial();
-  }
 
   // Log store updates
   logStoreUpdates(resourcesStore, "additional-materials");

@@ -6,6 +6,7 @@ export const lessonPlanSchemaTeachingMaterials = LessonPlanSchema.extend({
   year: z.string().optional(),
   transcript: z.string().optional(),
   hasRestrictedWorks: z.boolean().optional(),
+  lessonId: z.string().optional(),
 });
 export type LessonPlanSchemaTeachingMaterials = z.infer<
   typeof lessonPlanSchemaTeachingMaterials

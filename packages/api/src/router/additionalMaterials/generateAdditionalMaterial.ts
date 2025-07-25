@@ -79,7 +79,6 @@ export async function generateAdditionalMaterial({
   log.info(
     "Lesson parts  used in generation",
     JSON.stringify(lessonPartsToUse),
-    JSON.stringify(lesson),
   );
 
   const result = await generateAdditionalMaterialObject({
@@ -129,6 +128,7 @@ export async function generateAdditionalMaterial({
         adaptsOutputId: adaptsOutputId ?? null,
         output: result,
         outputModeration: moderation,
+        derivedFromId: input.lessonId,
       },
     });
   } else {

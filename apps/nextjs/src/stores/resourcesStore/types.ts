@@ -3,6 +3,7 @@ import type {
   AdditionalMaterialType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
@@ -15,11 +16,11 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
-import type { LoadOwaDataParams } from "./actionFunctions/handleLoadOwaDataToStore";
+import type { LoadOwaDataParams } from "./actionFunctions/handleFetchOwaLesson";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
-  lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
+  lessonPlan: LessonPlanSchemaTeachingMaterials;
   transcript?: string | null;
 };
 
@@ -89,14 +90,17 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    createMaterialSession: (docType: string | null) => Promise<void>;
+    createMaterialSession: (
+      docType: string | null,
+      stepNumber?: number,
+    ) => Promise<void>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: () => Promise<void>;
     refineMaterial: (refinementOption: RefinementOption) => Promise<void>;
     downloadMaterial: () => Promise<void>;
 
     // OWA data loading
-    loadOwaDataToStore: (params: LoadOwaDataParams) => Promise<void>;
+    fetchOwaData: (params: LoadOwaDataParams) => Promise<void>;
 
     // History management actions
     undoRefinement: () => void;

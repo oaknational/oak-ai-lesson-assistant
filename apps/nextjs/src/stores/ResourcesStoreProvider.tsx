@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
@@ -39,6 +39,20 @@ export const ResourcesStoresProvider: React.FC<
     };
     return storesObj;
   });
+
+  // Store initialisation
+  const haveInitialized = useRef(false);
+  useEffect(() => {
+    // work around react strict mode double rendering
+    if (haveInitialized.current) {
+      return;
+    }
+    if (props.source === "owa") {
+      void stores.resources.getState().actions.fetchOwaData(props);
+    }
+
+    haveInitialized.current = true;
+  }, [props, stores.resources]);
 
   return (
     <ResourcesStoresContext.Provider value={stores}>

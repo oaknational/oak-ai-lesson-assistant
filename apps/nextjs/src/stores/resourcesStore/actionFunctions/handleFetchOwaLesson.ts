@@ -1,8 +1,7 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { lessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import { aiLogger } from "@oakai/logger";
 
-import { string, z } from "zod";
+import { z } from "zod";
 
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type { TrpcUtils } from "@/utils/trpc";
@@ -12,103 +11,36 @@ import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
-const dataFromOwaSchema = z.object({
-  lesson: lessonPlanSchemaTeachingMaterials,
-  transcript: string().optional(),
-  initialStep: z.number(),
-  docTypeFromQueryPrams: additionalMaterialTypeEnum,
-  id: z.string(),
-  lessonId: z.string(),
-});
-
 export type LoadOwaDataParams = Pick<
   TeachingMaterialsPageProps,
   | "lesson"
   | "transcript"
   | "initialStep"
-  | "docTypeFromQueryPrams"
   | "id"
   | "lessonId"
   | "error"
   | "queryParams"
 >;
 
-export const handleLoadOwaDataToStore =
+export const handleFetchOwaLesson =
   (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
   async (params: LoadOwaDataParams) => {
     try {
-      console.log("Loading OWA data to store", params);
-
       // If we have an error from the page, handle it
       if (params.error) {
         log.error("Error loading OWA data to store", { error: params.error });
         handleStoreError(set, params.error, {
-          context: "handleLoadOwaDataToStore",
+          context: "handleFetchOwaLesson",
         });
         return;
       }
 
-      // If we already have lesson data (legacy path), handle it
-      // if (params.lesson) {
-      //   const parsedParams = dataFromOwaSchema.parse(params);
-      //   const {
-      //     lesson,
-      //     transcript,
-      //     initialStep,
-      //     docTypeFromQueryPrams,
-      //     id,
-      //     lessonId,
-      //   } = parsedParams;
-
-      //   const parsedFormProps = z
-      //     .object({
-      //       subject: z.string(),
-      //       title: z.string(),
-      //       year: z.string(),
-      //     })
-      //     .parse({
-      //       subject: lesson.subject,
-      //       title: lesson.title,
-      //       year: `Year ${lesson.year}`,
-      //     });
-
-      //   // Load form state data (year/subject/lesson title)
-      //   set((state) => ({
-      //     formState: {
-      //       ...state.formState,
-      //       ...parsedFormProps,
-      //     },
-      //   }));
-
-      //   // Set step number
-      //   set({ stepNumber: initialStep });
-
-      //   // Set doc type using enum parse
-      //   const parsedDoctype = additionalMaterialTypeEnum.parse(
-      //     docTypeFromQueryPrams,
-      //   );
-      //   set({ docType: parsedDoctype });
-
-      //   // Set lesson and transcript in page data
-      //   set({
-      //     pageData: {
-      //       lessonPlan: {
-      //         ...lesson,
-      //         lessonId,
-      //       },
-      //       transcript: transcript ?? null,
-      //     },
-      //   });
-
-      //   // Set the id in the store
-      //   set({ id });
-      //   log.info("Owa data loaded to store");
-      //   return;
-      // }
-
-      // New path: fetch data using tRPC
       if (params.queryParams) {
         const { lessonSlug, programmeSlug, docType } = params.queryParams;
+
+        // Set doc type using enum parse
+        const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
+        set({ docType: parsedDoctype });
 
         log.info("Fetching OWA lesson data via tRPC", {
           lessonSlug,
@@ -118,15 +50,24 @@ export const handleLoadOwaDataToStore =
 
         // Set loading state
         set({ isResourcesLoading: true });
-
+        const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
         try {
+          // Create a new session
+          await get().actions.createMaterialSession(docTypeParsed, 3);
+
+          log.info("Material session created ", {
+            resourceId: get().id,
+          });
+
+          // Fetch the OWA lesson data
+
           const response =
-            await trpc.client.additionalMaterials.fetchOwaLesson.mutate({
+            await trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
               lessonSlug,
               programmeSlug,
             });
 
-          const { lesson, transcript } = response;
+          const { lesson } = response;
 
           const parsedFormProps = z
             .object({
@@ -147,24 +88,20 @@ export const handleLoadOwaDataToStore =
               ...parsedFormProps,
             },
           }));
-
-          // Set step number to 3 (material generation step)
-          set({ stepNumber: 3 });
-
-          // Set doc type using enum parse
-          const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
-          set({ docType: parsedDoctype });
+          log.info("Owa lesson set to store", {
+            lessonId: lesson.lessonId,
+            title: lesson.title,
+            subject: lesson.subject,
+            year: lesson.year,
+            resourceId: get().id,
+          });
 
           // Set lesson and transcript in page data
           set({
             pageData: {
               lessonPlan: lesson,
-              // transcript: transcript ?? null,
             },
           });
-
-          // Set the id in the store
-          set({ id: params.id });
 
           log.info("OWA data fetched and loaded to store via tRPC");
 
@@ -190,7 +127,7 @@ export const handleLoadOwaDataToStore =
                     "This lesson contains copyright-restricted resources and cannot be exported.",
                 },
                 {
-                  context: "handleLoadOwaDataToStore",
+                  context: "handleFetchOwaLesson",
                   documentType: docType,
                 },
               );
@@ -204,7 +141,7 @@ export const handleLoadOwaDataToStore =
                     "This lesson contains restricted content-guidance themes and cannot be exported.",
                 },
                 {
-                  context: "handleLoadOwaDataToStore",
+                  context: "handleFetchOwaLesson",
                   documentType: docType,
                 },
               );
@@ -213,7 +150,7 @@ export const handleLoadOwaDataToStore =
           }
 
           handleStoreError(set, fetchError, {
-            context: "handleLoadOwaDataToStore",
+            context: "handleFetchOwaLesson",
             documentType: docType,
           });
         } finally {
@@ -221,10 +158,10 @@ export const handleLoadOwaDataToStore =
         }
       }
     } catch (error) {
-      log.error("Error in handleLoadOwaDataToStore", { error });
+      log.error("Error in handleFetchOwaLesson", { error });
       handleStoreError(set, error, {
-        context: "handleLoadOwaDataToStore",
-        documentType: params.docTypeFromQueryPrams,
+        context: "handleFetchOwaLesson",
+        documentType: params.queryParams?.docType,
       });
       set({ isResourcesLoading: false });
     }

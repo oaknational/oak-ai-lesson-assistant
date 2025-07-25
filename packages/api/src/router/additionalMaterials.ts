@@ -40,7 +40,7 @@ import type {
 const log = aiLogger("additional-materials");
 
 export const additionalMaterialsRouter = router({
-  fetchOwaLesson: protectedProcedure
+  handleFetchOwaLesson: protectedProcedure
     .input(
       z.object({
         lessonSlug: z.string(),
@@ -108,7 +108,7 @@ export const additionalMaterialsRouter = router({
           });
         }
 
-        // Fetch TCP data
+        // Fetch TCP data`
         const tcpResponse = await fetch(GRAPHQL_ENDPOINT, {
           method: "POST",
           headers: {
@@ -186,11 +186,26 @@ export const additionalMaterialsRouter = router({
           tcpData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
         const hasRestrictedWorks = worksList.length > 0;
 
+        log.info(
+          "Has restricted works:",
+          hasRestrictedWorks,
+          "Works list:",
+          worksList,
+        );
+
         // Transform to lesson plan format
         const transformedLesson = transformOwaLessonToLessonPlan(
           parsedLesson,
           parsedBrowseData,
         );
+
+        const lesson = {
+          ...transformedLesson,
+          transcript: !hasRestrictedWorks
+            ? String(rawLesson.transcript_sentences)
+            : undefined,
+          hasRestrictedWorks,
+        };
 
         // Create lesson plan interaction
         const interaction =
@@ -201,17 +216,15 @@ export const additionalMaterialsRouter = router({
                 resourceType: "partial-lesson-plan-owa",
                 resourceTypeVersion: 1,
               },
+              output: lesson,
             },
           });
 
         return {
           lesson: {
-            ...transformedLesson,
+            ...lesson,
             lessonId: interaction.id,
           },
-          transcript: !hasRestrictedWorks
-            ? rawLesson.transcript_sentences
-            : undefined,
         };
       } catch (error) {
         log.error("Error fetching OWA lesson", { error });

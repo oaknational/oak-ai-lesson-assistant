@@ -42,21 +42,12 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
 `;
 
 export const tcpWorksByLessonSlugQuery = `
-query tcpWorksByLessonSlug($lesson_slug: String!) {
-  tcpWorksByLessonSlug: published_tpc_works_by_lesson_slug_6_2_0(
-    where: { lesson_slug: { _eq: $lesson_slug } }
-  ) {
-    slug
-    lesson_id
-    works_list {
-      title
-      author
-      works_id
-      works_uid
-      attribution
-      restriction_level
-      tpc_contracts_list
-    }
-  }
-}
-`;
+        query tcpWorksByLessonSlug($lesson_slug: String!) {
+          tcpWorksByLessonSlug: published_mv_get_tpc_works_by_lesson_slug_1_0_0(where: { 
+            slug: {_eq: $lesson_slug}
+          }) {
+            slug
+            lesson_id
+            works_list
+          }
+        }`;
