@@ -159,7 +159,7 @@ export const handleLoadOwaDataToStore =
           set({
             pageData: {
               lessonPlan: lesson,
-              transcript: transcript ?? null,
+              // transcript: transcript ?? null,
             },
           });
 
