@@ -22,17 +22,20 @@ import {
   generateAdditionalMaterial,
   generatePartialLessonPlan,
 } from "./additionalMaterials/helpers";
+import { checkForRestrictedContentGuidance } from "./owaLesson/copyrightHelper";
 import {
-  type LessonOverviewResponse,
-  type TRPCWorksResponse,
-  checkForRestrictedContentGuidance,
-  checkForRestrictedFeatures,
-  lessonBrowseDataByKsSchema,
-  lessonContentSchema,
   lessonOverviewQuery,
   tcpWorksByLessonSlugQuery,
-  transformOwaLessonToLessonPlan,
-} from "./owaLesson";
+} from "./owaLesson/queries";
+import {
+  lessonBrowseDataByKsSchema,
+  lessonContentSchema,
+} from "./owaLesson/schemas";
+import { transformOwaLessonToLessonPlan } from "./owaLesson/transformer";
+import type {
+  LessonOverviewResponse,
+  TRPCWorksResponse,
+} from "./owaLesson/types";
 
 const log = aiLogger("additional-materials");
 
@@ -176,7 +179,7 @@ export const additionalMaterialsRouter = router({
 
         // Check for restricted content
         checkForRestrictedContentGuidance(parsedLesson.content_guidance);
-        checkForRestrictedFeatures(parsedBrowseData);
+        // checkForRestrictedFeatures(parsedBrowseData);
 
         // Check for restricted works
         const worksList =

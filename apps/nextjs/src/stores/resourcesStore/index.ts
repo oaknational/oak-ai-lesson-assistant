@@ -131,7 +131,7 @@ export const createResourcesStore = (
   }));
 
   if (props.source === "owa") {
-    resourcesStore.getState().actions.loadOwaDataToStore(props);
+    void resourcesStore.getState().actions.loadOwaDataToStore(props);
     // void resourcesStore.getState().actions.generateMaterial();
   }
 

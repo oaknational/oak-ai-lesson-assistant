@@ -96,7 +96,7 @@ export type ResourcesState = {
     downloadMaterial: () => Promise<void>;
 
     // OWA data loading
-    loadOwaDataToStore: (params: LoadOwaDataParams) => void;
+    loadOwaDataToStore: (params: LoadOwaDataParams) => Promise<void>;
 
     // History management actions
     undoRefinement: () => void;
