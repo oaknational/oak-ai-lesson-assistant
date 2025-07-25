@@ -5,6 +5,7 @@ import {
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -23,6 +24,7 @@ type GenerateAdditionalMaterialParams = {
   auth: SignedInAuthObject;
   rateLimit: RateLimitInfo;
   userId: string;
+  source: "aila" | "owa";
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
   };
@@ -34,6 +36,19 @@ export type GenerateAdditionalMaterialResponse = {
   resourceId: string;
 };
 
+function pickKeys<T extends object, K extends keyof T>(
+  obj: T,
+  keys: readonly K[],
+): Partial<T> {
+  const result: Partial<T> = {};
+  for (const key of keys) {
+    if (key in obj) {
+      result[key] = obj[key];
+    }
+  }
+  return result;
+}
+
 /**s
  * Generates additional educational material based on the provided input
  */
@@ -43,14 +58,35 @@ export async function generateAdditionalMaterial({
   input,
   auth,
   rateLimit,
+  source,
 }: GenerateAdditionalMaterialParams) {
   log.info("Generating additional material");
+  const resourceTypes = resourceTypesConfig[input.documentType];
+  const lessonPartsToUse =
+    source === "aila"
+      ? resourceTypes.lessonParts
+      : resourceTypes.owaLessonParts;
+
+  const lesson = pickKeys(input.context.lessonPlan, [
+    "title",
+    "year",
+    "keyStage",
+    "subject",
+    "topic",
+    ...lessonPartsToUse,
+  ]);
+
+  log.info(
+    "Lesson parts  used in generation",
+    JSON.stringify(lessonPartsToUse),
+    JSON.stringify(lesson),
+  );
 
   const result = await generateAdditionalMaterialObject({
     provider: "openai",
     parsedInput: {
       documentType: input.documentType,
-      context: input.context,
+      context: { ...input.context, lessonPlan: lesson },
     },
   });
 

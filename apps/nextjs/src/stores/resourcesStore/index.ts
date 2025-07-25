@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
@@ -15,6 +16,7 @@ import {
   handleSetYear,
 } from "./actionFunctions/handleFormState";
 import { handleGenerateMaterial } from "./actionFunctions/handleGenerateMaterial";
+import { handleLoadOwaDataToStore } from "./actionFunctions/handleLoadOwaDataToStore";
 import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
@@ -72,6 +74,7 @@ const DEFAULT_STATE = {
 };
 
 export const createResourcesStore = (
+  props: TeachingMaterialsPageProps,
   track: TrackFns,
   trpc: TrpcUtils,
   initState?: Partial<ResourcesState>,
@@ -80,7 +83,9 @@ export const createResourcesStore = (
     id: null,
     ...DEFAULT_STATE,
     ...initState,
-
+    source: props.source ?? "aila",
+    stepNumber: props.initialStep ?? 0,
+    isResourcesLoading: props.source === "owa" && props.initialStep === 3,
     actions: {
       // Setters
       setStepNumber: handleSetStepNumber(set, get),
@@ -108,6 +113,9 @@ export const createResourcesStore = (
       refineMaterial: handleRefineMaterial(set, get, trpc),
       downloadMaterial: handleDownload(set, get),
 
+      // OWA data loading
+      loadOwaDataToStore: handleLoadOwaDataToStore(set, get),
+
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
@@ -121,6 +129,11 @@ export const createResourcesStore = (
         set((state) => ({ ...DEFAULT_STATE, id: state.id })),
     },
   }));
+
+  if (props.source === "owa") {
+    resourcesStore.getState().actions.loadOwaDataToStore(props);
+    void resourcesStore.getState().actions.generateMaterial();
+  }
 
   // Log store updates
   logStoreUpdates(resourcesStore, "additional-materials");
