@@ -1,5 +1,3 @@
-import { aiLogger } from "@oakai/logger";
-
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -8,8 +6,6 @@ import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
-
-const log = aiLogger("additional-materials");
 
 export default async function AdditionalMaterialsTestPage({
   searchParams,

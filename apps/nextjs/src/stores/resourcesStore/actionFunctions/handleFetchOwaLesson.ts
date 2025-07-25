@@ -13,13 +13,7 @@ const log = aiLogger("additional-materials");
 
 export type LoadOwaDataParams = Pick<
   TeachingMaterialsPageProps,
-  | "lesson"
-  | "transcript"
-  | "initialStep"
-  | "id"
-  | "lessonId"
-  | "error"
-  | "queryParams"
+  "lesson" | "initialStep" | "id" | "lessonId" | "error" | "queryParams"
 >;
 
 export const handleFetchOwaLesson =
