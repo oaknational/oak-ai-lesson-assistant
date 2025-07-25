@@ -61,7 +61,6 @@ const MobileNavigationButtons: React.FC<{
       onClick={onNextClick}
       iconName="arrow-right"
       isTrailingIcon={true}
-      data-testid="mobile-next-button"
     >
       {mobileNextLabel ?? "Next"}
     </OakPrimaryButton>

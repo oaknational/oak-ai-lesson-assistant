@@ -2,7 +2,6 @@ import type {
   AdditionalMaterialSchemas,
   AdditionalMaterialType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -16,6 +15,7 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
+import type { LoadOwaDataParams } from "./actionFunctions/handleLoadOwaDataToStore";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
@@ -31,17 +31,25 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-const errorType = z.enum(["rate_limit", "banned", "toxic", "unknown"]);
+const errorType = z.enum([
+  "rate_limit",
+  "banned",
+  "toxic",
+  "restrictedContentGuidance",
+  "copyright",
+  "unknown",
+]);
 export type ErrorType = z.infer<typeof errorType>;
 
 export const errorResponse = z.object({
   type: errorType,
   message: z.string(),
 });
-type ErrorResponse = z.infer<typeof errorResponse>;
+export type ErrorResponse = z.infer<typeof errorResponse>;
 
 export type ResourcesState = {
   id: string | null;
+  source: "aila" | "owa";
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
@@ -86,6 +94,9 @@ export type ResourcesState = {
     generateMaterial: () => Promise<void>;
     refineMaterial: (refinementOption: RefinementOption) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // OWA data loading
+    loadOwaDataToStore: (params: LoadOwaDataParams) => Promise<void>;
 
     // History management actions
     undoRefinement: () => void;

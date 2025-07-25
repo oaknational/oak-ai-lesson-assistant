@@ -2,8 +2,10 @@ import { z } from "zod";
 
 import { LessonPlanSchema } from "../../../../aila/src/protocol/schema";
 
-const lessonPlanSchemaTeachingMaterials = LessonPlanSchema.extend({
+export const lessonPlanSchemaTeachingMaterials = LessonPlanSchema.extend({
   year: z.string().optional(),
+  transcript: z.string().optional(),
+  hasRestrictedWorks: z.boolean().optional(),
 });
 export type LessonPlanSchemaTeachingMaterials = z.infer<
   typeof lessonPlanSchemaTeachingMaterials

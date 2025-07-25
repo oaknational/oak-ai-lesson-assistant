@@ -14,10 +14,8 @@ import { z } from "zod";
 
 import type {
   LessonBrowseDataByKsSchema,
-  lessonContentSchema,
-} from "./lessonOverview.schema";
-
-type OwaLesson = z.infer<typeof lessonContentSchema>;
+  LessonContentSchema,
+} from "./schemas";
 
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
@@ -188,7 +186,7 @@ export function transformKeywords(keywordsData: OwaKeyword[]): Keyword[] {
  * Transforms an OWA lesson to the format expected by LessonPlanSchemaWhilstStreaming
  */
 export function transformOwaLessonToLessonPlan(
-  owaLesson: OwaLesson,
+  owaLesson: LessonContentSchema,
   owaBrowseData: LessonBrowseDataByKsSchema,
 ): LessonPlanSchemaTeachingMaterials {
   // Create a base lesson plan object

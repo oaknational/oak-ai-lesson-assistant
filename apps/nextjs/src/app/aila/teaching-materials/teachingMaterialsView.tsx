@@ -1,11 +1,12 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
-import { OakP } from "@oaknational/oak-components";
+import { OakFlex, OakP } from "@oaknational/oak-components";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -24,6 +25,7 @@ import {
   useResourcesActions,
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
+import type { ErrorResponse } from "@/stores/resourcesStore";
 import {
   docTypeSelector,
   pageDataSelector,
@@ -32,17 +34,23 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-interface AdditionalMaterialsUserProps {
-  pageData?: {
-    lessonPlan: {
-      title: string;
-      keyStage: string;
-      subject: string;
-    };
+export type TeachingMaterialsPageProps = {
+  lesson?: LessonPlanSchemaTeachingMaterials;
+  transcript?: string;
+  initialStep?: number;
+  docTypeFromQueryPrams?: string;
+  id?: string;
+  source?: "aila" | "owa";
+  error?: string | ErrorResponse;
+  lessonId?: string;
+  queryParams?: {
+    lessonSlug: string;
+    programmeSlug: string;
+    docType: string;
   };
-}
+};
 
-const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
+const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -51,21 +59,15 @@ const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   const year = useResourcesStore(yearSelector);
   const error = useResourcesStore((state) => state.error);
 
-  // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
   const {
-    resetFormState,
     createMaterialSession,
     submitLessonPlan,
     generateMaterial,
     refineMaterial,
   } = useResourcesActions();
   const { setDialogWindow } = useDialog();
-
-  useEffect(() => {
-    resetFormState();
-  }, [resetFormState]);
 
   handleDialogSelection({
     threatDetected,
@@ -131,12 +133,19 @@ const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   );
 };
 
-const TeachingMaterialsView: FC<AdditionalMaterialsUserProps> = (props) => {
+const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
   return (
-    <ResourcesStoresProvider>
+    <ResourcesStoresProvider {...props}>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
+          {props.initialStep === 3 && props.lesson?.hasRestrictedWorks && (
+            <OakFlex>
+              <OakP $font="body-2" $color="text-primary">
+                {`This lesson contains restricted works.`}
+              </OakP>
+            </OakFlex>
+          )}
           <TeachingMaterialsViewInner {...props} />
         </DialogRoot>
       </DialogProvider>
