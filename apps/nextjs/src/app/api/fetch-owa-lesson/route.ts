@@ -57,16 +57,17 @@ export async function POST(req: Request) {
   const AUTH_TYPE = process.env.CURRICULUM_API_AUTH_TYPE;
   const GRAPHQL_ENDPOINT = process.env.CURRICULUM_API_URL;
 
-  if (!AUTH_KEY || !AUTH_TYPE || !GRAPHQL_ENDPOINT) {
-    log.error("Missing environment variables", {
-      AUTH_KEY,
-      AUTH_TYPE,
-      GRAPHQL_ENDPOINT,
-    });
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
-  }
+  // if (!AUTH_KEY || !AUTH_TYPE || !GRAPHQL_ENDPOINT) {
+  //   log.error("Missing environment variables", {
+  //     AUTH_KEY,
+  //     AUTH_TYPE,
+  //     GRAPHQL_ENDPOINT,
+  //   });
+  //   return Response.json({ error: "Internal Server Error" }, { status: 500 });
+  // }
 
   const { lessonSlug, programmeSlug, userId } = await req.json();
+  console.log("Received request body", { userId, lessonSlug, programmeSlug });
   if (!userId) {
     const error = new Error("Download attempt without userId");
     const authObject = auth();
