@@ -107,10 +107,8 @@ export async function POST(req: Request) {
     //     query: lessonsWithRestrictedContentQuery,
     //   }),
     // });
-
     // const { data: guidanceData }: LessonOverviewResponse =
     //   await guidanceLessons.json();
-
     // if (!guidanceData || !guidanceData.content) {
     //   log.error("No guidance lessons data found", { guidanceData });
     //   return Response.json(
@@ -121,9 +119,7 @@ export async function POST(req: Request) {
     // console.log("Guidance data fetched", {
     //   guidanceData: JSON.stringify(guidanceData, null, 2),
     // });
-
     // exportRestrictedContentGuidanceLessonsToCSV(guidanceData?.content ?? []);
-
     // const tcpWorksAllData = await fetch(GRAPHQL_ENDPOINT, {
     //   method: "POST",
     //   headers: {
@@ -135,7 +131,6 @@ export async function POST(req: Request) {
     //     query: tcpWorks,
     //   }),
     // });
-
     // if (!tcpWorksAllData.ok) {
     //   log.error("Failed to fetch TCP data", {
     //     status: tcpWorksAllData.status,
@@ -146,192 +141,172 @@ export async function POST(req: Request) {
     //     { status: tcpWorksAllData.status },
     //   );
     // }
-
     // const tcpResponseAll: TRPCWorksResponse = await tcpWorksAllData.json();
-
     // const worksListAll = tcpResponseAll;
-
     // log.info(
     //   `TCP works data fetched - has restricted works: ${worksListAll}`,
     // );
-
-    const lesson = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-oak-auth-key": AUTH_KEY,
-        "x-oak-auth-type": AUTH_TYPE,
-      },
-      body: JSON.stringify({
-        query: lessonOverviewQuery,
-        variables: {
-          lesson_slug: lessonSlug,
-          programme_slug: programmeSlug,
-        },
-      }),
-    });
-
-    if (!lesson.ok) {
-      log.error("Failed to fetch lesson data", {
-        status: lesson.status,
-        statusText: lesson.statusText,
-        lessonSlug,
-        programmeSlug,
-      });
-      return Response.json(
-        { error: "Failed to fetch lesson data" },
-        { status: lesson.status },
-      );
-    }
-
-    const tcpData = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-oak-auth-key": AUTH_KEY,
-        "x-oak-auth-type": AUTH_TYPE,
-      },
-      body: JSON.stringify({
-        query: tcpWorksByLessonSlug,
-        variables: {
-          lesson_slug: lessonSlug,
-        },
-      }),
-    });
-
-    if (!tcpData.ok) {
-      log.error("Failed to fetch TCP data", {
-        status: tcpData.status,
-        statusText: tcpData.statusText,
-      });
-      return Response.json(
-        { error: "Failed to fetch TCP data" },
-        { status: tcpData.status },
-      );
-    }
-
-    let tcpResponse: TRPCWorksResponse;
-    try {
-      tcpResponse = await tcpData.json();
-    } catch (jsonError) {
-      log.error("Failed to parse TCP response as JSON", {
-        jsonError,
-        lessonSlug,
-        responseStatus: tcpData.status,
-      });
-      return Response.json(
-        { error: "Invalid response format from TCP API" },
-        { status: 500 },
-      );
-    }
-
-    const tcpWorksData: TRPCWorksResponse = tcpResponse;
-
-    const worksList =
-      tcpWorksData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
-    const hasRestrictedWorks = worksList.length > 0;
-
-    log.info(
-      `TCP works data fetched - has restricted works: ${hasRestrictedWorks}`,
-    );
-    log.info("TCP works data", {
-      tcpWorksData: JSON.stringify(tcpWorksData),
-      lessonSlug,
-      programmeSlug,
-    });
-
-    let data: LessonOverviewResponse["data"];
-    try {
-      const response: LessonOverviewResponse = await lesson.json();
-      data = response.data;
-    } catch (jsonError) {
-      log.error("Failed to parse lesson response as JSON", {
-        jsonError,
-        lessonSlug,
-        programmeSlug,
-        responseStatus: lesson.status,
-        responseHeaders: Object.fromEntries(lesson.headers.entries()),
-      });
-      return Response.json(
-        { error: "Invalid response format from lesson API" },
-        { status: 500 },
-      );
-    }
-
-    if (!data || !data.content || data.content.length === 0) {
-      log.error("No lesson data found", { data });
-      return Response.json({ error: "Lesson not found" }, { status: 404 });
-    }
-
-    if (!data?.browseData || data.browseData.length === 0) {
-      log.error("No browse data found", { data });
-      return Response.json({ error: "Browse data not found" }, { status: 404 });
-    }
-    // exportTCPWorksToCSV(worksListAll, data);
-    const lessonData = data?.content[0];
-    const parsedLesson = lessonContentSchema.parse(lessonData);
-    const browseDataArray = data?.browseData;
-
-    const browseData = browseDataArray.filter(
-      (item) => item.lesson_slug === parsedLesson.lesson_slug,
-    );
-
-    if (browseData[0] === undefined) {
-      throw new Error("Lesson not found in browse data");
-    }
-    // const restrictionResponse = checkForRestrictedFeatures(browseData[0]);
-    // if (restrictionResponse) {
-    //   return restrictionResponse;
+    // const lesson = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: lessonOverviewQuery,
+    //     variables: {
+    //       lesson_slug: lessonSlug,
+    //       programme_slug: programmeSlug,
+    //     },
+    //   }),
+    // });
+    // if (!lesson.ok) {
+    //   log.error("Failed to fetch lesson data", {
+    //     status: lesson.status,
+    //     statusText: lesson.statusText,
+    //     lessonSlug,
+    //     programmeSlug,
+    //   });
+    //   return Response.json(
+    //     { error: "Failed to fetch lesson data" },
+    //     { status: lesson.status },
+    //   );
     // }
-    const contentGuidanceResponse = checkForRestrictedContentGuidance(
-      parsedLesson.content_guidance,
-    );
-    if (contentGuidanceResponse) {
-      return contentGuidanceResponse;
-    }
-
-    const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData[0]);
-
-    const transformedLesson = transformOwaLessonToLessonPlan(
-      parsedLesson,
-      parsedBrowseData,
-    );
-
-    log.info("Transformed owa lesson data", {
-      transformedLesson,
-      userId,
-    });
-
-    try {
-      log.info("Creating lesson plan interaction");
-      const interaction = await createLessonPlanInteraction(
-        { userId },
-        { ...transformedLesson },
-      );
-      const lessonId = interaction.id;
-      return Response.json(
-        {
-          lesson: {
-            ...transformedLesson,
-            lessonId,
-            transcript: !hasRestrictedWorks // We are excluding any transcripts that may have tpc restricted works
-              ? lessonData?.transcript_sentences
-              : undefined,
-            hasRestrictedWorks,
-          },
-        },
-        { status: 200 },
-      );
-    } catch (interactionError) {
-      log.error("Failed to create additional material interaction", {
-        error: interactionError,
-      });
-      Sentry.captureException(interactionError);
-      return Response.json(
-        { error: "Failed to create lesson plan interaction" },
-        { status: 500 },
-      );
-    }
+    // const tcpData = await fetch(GRAPHQL_ENDPOINT, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "x-oak-auth-key": AUTH_KEY,
+    //     "x-oak-auth-type": AUTH_TYPE,
+    //   },
+    //   body: JSON.stringify({
+    //     query: tcpWorksByLessonSlug,
+    //     variables: {
+    //       lesson_slug: lessonSlug,
+    //     },
+    //   }),
+    // });
+    // if (!tcpData.ok) {
+    //   log.error("Failed to fetch TCP data", {
+    //     status: tcpData.status,
+    //     statusText: tcpData.statusText,
+    //   });
+    //   return Response.json(
+    //     { error: "Failed to fetch TCP data" },
+    //     { status: tcpData.status },
+    //   );
+    // }
+    // let tcpResponse: TRPCWorksResponse;
+    // try {
+    //   tcpResponse = await tcpData.json();
+    // } catch (jsonError) {
+    //   log.error("Failed to parse TCP response as JSON", {
+    //     jsonError,
+    //     lessonSlug,
+    //     responseStatus: tcpData.status,
+    //   });
+    //   return Response.json(
+    //     { error: "Invalid response format from TCP API" },
+    //     { status: 500 },
+    //   );
+    // }
+    // const tcpWorksData: TRPCWorksResponse = tcpResponse;
+    // const worksList =
+    //   tcpWorksData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
+    // const hasRestrictedWorks = worksList.length > 0;
+    // log.info(
+    //   `TCP works data fetched - has restricted works: ${hasRestrictedWorks}`,
+    // );
+    // log.info("TCP works data", {
+    //   tcpWorksData: JSON.stringify(tcpWorksData),
+    //   lessonSlug,
+    //   programmeSlug,
+    // });
+    // let data: LessonOverviewResponse["data"];
+    // try {
+    //   const response: LessonOverviewResponse = await lesson.json();
+    //   data = response.data;
+    // } catch (jsonError) {
+    //   log.error("Failed to parse lesson response as JSON", {
+    //     jsonError,
+    //     lessonSlug,
+    //     programmeSlug,
+    //     responseStatus: lesson.status,
+    //     responseHeaders: Object.fromEntries(lesson.headers.entries()),
+    //   });
+    //   return Response.json(
+    //     { error: "Invalid response format from lesson API" },
+    //     { status: 500 },
+    //   );
+    // }
+    // if (!data || !data.content || data.content.length === 0) {
+    //   log.error("No lesson data found", { data });
+    //   return Response.json({ error: "Lesson not found" }, { status: 404 });
+    // }
+    // if (!data?.browseData || data.browseData.length === 0) {
+    //   log.error("No browse data found", { data });
+    //   return Response.json({ error: "Browse data not found" }, { status: 404 });
+    // }
+    // // exportTCPWorksToCSV(worksListAll, data);
+    // const lessonData = data?.content[0];
+    // const parsedLesson = lessonContentSchema.parse(lessonData);
+    // const browseDataArray = data?.browseData;
+    // const browseData = browseDataArray.filter(
+    //   (item) => item.lesson_slug === parsedLesson.lesson_slug,
+    // );
+    // if (browseData[0] === undefined) {
+    //   throw new Error("Lesson not found in browse data");
+    // }
+    // // const restrictionResponse = checkForRestrictedFeatures(browseData[0]);
+    // // if (restrictionResponse) {
+    // //   return restrictionResponse;
+    // // }
+    // const contentGuidanceResponse = checkForRestrictedContentGuidance(
+    //   parsedLesson.content_guidance,
+    // );
+    // if (contentGuidanceResponse) {
+    //   return contentGuidanceResponse;
+    // }
+    // const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData[0]);
+    // const transformedLesson = transformOwaLessonToLessonPlan(
+    //   parsedLesson,
+    //   parsedBrowseData,
+    // );
+    // log.info("Transformed owa lesson data", {
+    //   transformedLesson,
+    //   userId,
+    // });
+    // try {
+    //   log.info("Creating lesson plan interaction");
+    //   const interaction = await createLessonPlanInteraction(
+    //     { userId },
+    //     { ...transformedLesson },
+    //   );
+    //   const lessonId = interaction.id;
+    //   return Response.json(
+    //     {
+    //       lesson: {
+    //         ...transformedLesson,
+    //         lessonId,
+    //         transcript: !hasRestrictedWorks // We are excluding any transcripts that may have tpc restricted works
+    //           ? lessonData?.transcript_sentences
+    //           : undefined,
+    //         hasRestrictedWorks,
+    //       },
+    //     },
+    //     { status: 200 },
+    //   );
+    // } catch (interactionError) {
+    //   log.error("Failed to create additional material interaction", {
+    //     error: interactionError,
+    //   });
+    //   Sentry.captureException(interactionError);
+    //   return Response.json(
+    //     { error: "Failed to create lesson plan interaction" },
+    //     { status: 500 },
+    //   );
+    // }
   } catch (error) {
     log.error("Unexpected error in export additional materials", { error });
     Sentry.captureException(error);
