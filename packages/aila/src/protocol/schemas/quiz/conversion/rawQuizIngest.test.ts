@@ -15,6 +15,7 @@ describe("convertRawQuizToV2", () => {
     expect(result).toEqual({
       version: "v2",
       questions: [],
+      imageAttributions: [],
     });
   });
 
@@ -23,6 +24,7 @@ describe("convertRawQuizToV2", () => {
     expect(result).toEqual({
       version: "v2",
       questions: [],
+      imageAttributions: [],
     });
   });
 
@@ -77,7 +79,7 @@ describe("convertRawQuizToV2", () => {
     expect(result.questions[0]?.question).toContain(
       "![](https://example.com/image1.jpg)",
     );
-    expect(result.questions[0]?.imageAttributions).toEqual([
+    expect(result.imageAttributions).toEqual([
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Photo by Photographer",
@@ -118,6 +120,63 @@ describe("convertRawQuizToV2", () => {
     const result = convertRawQuizToV2(quizWithImages);
     expect(result.questions[0]?.question).toBe(
       "Look at ![](https://example.com/image.jpg) What is it?",
+    );
+  });
+
+  it("should extract alt text from images when available", () => {
+    const quizWithAltText: RawQuiz = [
+      {
+        question_id: 1,
+        question_uid: "test-uid-1",
+        question_type: "multiple-choice",
+        question_stem: [
+          {
+            image_object: {
+              secure_url: "https://example.com/dog.jpg",
+              metadata: {},
+              context: {
+                custom: {
+                  alt: "A golden retriever sitting in a park",
+                },
+              },
+            },
+            type: "image",
+          },
+        ],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [{ text: "Dog", type: "text" }],
+              answer_is_correct: true,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertRawQuizToV2(quizWithAltText);
+    expect(result.questions[0]?.question).toBe(
+      "![A golden retriever sitting in a park](https://example.com/dog.jpg)",
+    );
+  });
+
+  it("should throw error for unknown question type", () => {
+    const unknownTypeQuiz = [
+      {
+        question_id: 1,
+        question_uid: "test-uid-1",
+        question_type: "unknown-type" as unknown as "multiple-choice",
+        question_stem: [{ text: "Question", type: "text" }],
+        answers: {},
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ] as RawQuiz;
+    expect(() => convertRawQuizToV2(unknownTypeQuiz)).toThrow(
+      "Unknown question type: unknown-type",
     );
   });
 });

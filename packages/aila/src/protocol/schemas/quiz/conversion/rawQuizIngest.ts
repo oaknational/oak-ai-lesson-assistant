@@ -1,23 +1,24 @@
+import invariant from "tiny-invariant";
+
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
-  ImageItem,
-  ImageOrTextItem,
   RawQuiz,
   StemImageObject,
-  TextItem,
+  StemObject,
+  StemTextObject,
 } from "../rawQuiz";
 
 /**
  * Check if an item is a text item
  */
-function isTextItem(item: ImageOrTextItem): item is TextItem {
+function isTextItem(item: StemObject): item is StemTextObject {
   return item.type === "text";
 }
 
 /**
  * Check if an item is an image item
  */
-function isImageItem(item: ImageOrTextItem): item is ImageItem {
+function isImageItem(item: StemObject): item is StemImageObject {
   return item.type === "image";
 }
 
@@ -26,7 +27,7 @@ function isImageItem(item: ImageOrTextItem): item is ImageItem {
  * Returns both the markdown content and attribution metadata
  */
 function extractMarkdownFromContent(
-  contentItems: Array<TextItem | ImageItem | undefined>,
+  contentItems: Array<StemObject | undefined>,
 ): {
   markdown: string;
   attributions: Array<{ imageUrl: string; attribution: string }>;
@@ -34,12 +35,15 @@ function extractMarkdownFromContent(
   const attributions: Array<{ imageUrl: string; attribution: string }> = [];
 
   const markdownParts = contentItems
-    .filter((item): item is TextItem | ImageItem => item !== undefined)
+    .filter((item): item is StemObject => item !== undefined)
     .map((item) => {
       if (isTextItem(item)) {
         return item.text || "";
       } else if (isImageItem(item)) {
         const imageUrl = item.image_object.secure_url;
+
+        // Extract alt text from context if available
+        const altText = item.image_object.context?.custom?.alt ?? "";
 
         // Extract attribution if available
         if (
@@ -53,8 +57,8 @@ function extractMarkdownFromContent(
           }
         }
 
-        // Return markdown image syntax
-        return `![](${imageUrl})`;
+        // Return markdown image syntax with alt text
+        return `![${altText}](${imageUrl})`;
       }
       return "";
     });
@@ -73,93 +77,106 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
     return {
       version: "v2",
       questions: [],
+      imageAttributions: [],
     };
   }
+
+  // Collect all image attributions from all questions
+  const allImageAttributions: Array<{ imageUrl: string; attribution: string }> =
+    [];
 
   const questions = rawQuiz
     .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
     .map((rawQuestion): QuizV2Question => {
-      if (!rawQuestion) {
-        // Fallback for invalid questions
-        return {
-          questionType: "multiple-choice" as const,
-          question: "Invalid question",
-          answers: ["N/A"],
-          distractors: ["N/A"],
-          imageAttributions: [],
-        };
+      // Early return for explanatory-text (should be filtered out already)
+      if (rawQuestion.question_type === "explanatory-text") {
+        throw new Error("Explanatory text questions should be filtered out");
       }
-
       // Extract question stem as markdown with inlined images
       const { markdown: questionStem, attributions } =
         extractMarkdownFromContent(rawQuestion.question_stem);
 
+      const hint = rawQuestion.hint ?? null;
+
       // Handle different question types based on Oak's schema
       switch (rawQuestion.question_type) {
         case "multiple-choice": {
-          const mcAnswers = rawQuestion.answers?.["multiple-choice"] || [];
+          const mcAnswers = rawQuestion.answers?.["multiple-choice"] ?? [];
 
           const correctAnswerResults = mcAnswers
             .filter((answer) => answer.answer_is_correct)
-            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+            .map((answer) => {
+              invariant(
+                answer.answer,
+                "Multiple choice answer missing 'answer' field",
+              );
+              return extractMarkdownFromContent(answer.answer);
+            });
           const correctAnswers = correctAnswerResults.map(
             (result) => result.markdown,
           );
 
           const distractorResults = mcAnswers
             .filter((answer) => !answer.answer_is_correct)
-            .map((answer) => extractMarkdownFromContent(answer.answer || []));
+            .map((answer) => {
+              invariant(
+                answer.answer,
+                "Multiple choice answer missing 'answer' field",
+              );
+              return extractMarkdownFromContent(answer.answer);
+            });
           const distractors = distractorResults.map(
             (result) => result.markdown,
           );
 
           // Collect all attributions from question and answers
-          const allAttributions = [
+          allImageAttributions.push(
             ...attributions,
             ...correctAnswerResults.flatMap((result) => result.attributions),
             ...distractorResults.flatMap((result) => result.attributions),
-          ];
+          );
 
           return {
             questionType: "multiple-choice" as const,
             question: questionStem,
             answers: correctAnswers,
             distractors,
-            imageAttributions: allAttributions,
+            hint,
           };
         }
 
         case "short-answer": {
-          const saAnswers = rawQuestion.answers?.["short-answer"] || [];
-          const answerResults = saAnswers.map((answer) =>
-            extractMarkdownFromContent(answer.answer || []),
-          );
+          const saAnswers = rawQuestion.answers?.["short-answer"] ?? [];
+          const answerResults = saAnswers.map((answer) => {
+            invariant(answer.answer, "Short answer missing 'answer' field");
+            return extractMarkdownFromContent(answer.answer);
+          });
           const answers = answerResults.map((result) => result.markdown);
 
-          const allAttributions = [
+          allImageAttributions.push(
             ...attributions,
             ...answerResults.flatMap((result) => result.attributions),
-          ];
+          );
 
           return {
             questionType: "short-answer" as const,
             question: questionStem,
             answers,
-            imageAttributions: allAttributions,
+            hint,
           };
         }
 
         case "match": {
-          const matchAnswers = rawQuestion.answers?.match || [];
+          const matchAnswers = rawQuestion.answers?.match ?? [];
           const pairs = matchAnswers.map((matchItem) => {
             const leftResult = extractMarkdownFromContent(
-              matchItem.match_option || [],
+              matchItem.match_option ?? [],
             );
             const rightResult = extractMarkdownFromContent(
               matchItem.correct_choice || [],
             );
 
-            attributions.push(
+            allImageAttributions.push(
               ...leftResult.attributions,
               ...rightResult.attributions,
             );
@@ -170,48 +187,48 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
             };
           });
 
+          allImageAttributions.push(...attributions);
+
           return {
             questionType: "match" as const,
             question: questionStem,
             pairs,
-            imageAttributions: attributions,
+            hint,
           };
         }
 
         case "order": {
-          const orderAnswers = rawQuestion.answers?.order || [];
+          const orderAnswers = rawQuestion.answers?.order ?? [];
           const itemResults = orderAnswers.map((orderItem) =>
             extractMarkdownFromContent(orderItem.answer || []),
           );
           const items = itemResults.map((result) => result.markdown);
 
-          const allAttributions = [
+          allImageAttributions.push(
             ...attributions,
             ...itemResults.flatMap((result) => result.attributions),
-          ];
+          );
 
           return {
             questionType: "order" as const,
             question: questionStem,
             items,
-            imageAttributions: allAttributions,
+            hint,
           };
         }
 
-        default:
-          // Fallback for unknown question types
-          return {
-            questionType: "multiple-choice" as const,
-            question: questionStem,
-            answers: ["N/A"],
-            distractors: ["N/A"],
-            imageAttributions: attributions,
-          };
+        default: {
+          const _exhaustiveCheck: never = rawQuestion.question_type;
+          throw new Error(
+            `Unknown question type: ${_exhaustiveCheck as string}`,
+          );
+        }
       }
     });
 
   return {
     version: "v2",
     questions,
+    imageAttributions: allImageAttributions,
   };
 }

@@ -72,6 +72,11 @@ export const rawQuizFixture: RawQuiz = [
             attribution: "Photo by John Doe on Unsplash",
             usageRestriction: "Free to use",
           },
+          context: {
+            custom: {
+              alt: "A friendly golden retriever sitting in a park",
+            },
+          },
         },
         type: "image",
       },
