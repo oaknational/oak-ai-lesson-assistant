@@ -114,7 +114,7 @@ export const createResourcesStore = (
       downloadMaterial: handleDownload(set, get),
 
       // OWA data loading
-      loadOwaDataToStore: handleLoadOwaDataToStore(set, get),
+      loadOwaDataToStore: handleLoadOwaDataToStore(set, get, trpc),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
@@ -132,7 +132,7 @@ export const createResourcesStore = (
 
   if (props.source === "owa") {
     resourcesStore.getState().actions.loadOwaDataToStore(props);
-    void resourcesStore.getState().actions.generateMaterial();
+    // void resourcesStore.getState().actions.generateMaterial();
   }
 
   // Log store updates

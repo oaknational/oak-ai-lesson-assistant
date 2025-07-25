@@ -43,6 +43,11 @@ export type TeachingMaterialsPageProps = {
   source?: "aila" | "owa";
   error?: string | ErrorResponse;
   lessonId?: string;
+  queryParams?: {
+    lessonSlug: string;
+    programmeSlug: string;
+    docType: string;
+  };
 };
 
 const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {

@@ -22,11 +22,208 @@ import {
   generateAdditionalMaterial,
   generatePartialLessonPlan,
 } from "./additionalMaterials/helpers";
+import {
+  type LessonOverviewResponse,
+  type TRPCWorksResponse,
+  checkForRestrictedContentGuidance,
+  checkForRestrictedFeatures,
+  lessonBrowseDataByKsSchema,
+  lessonContentSchema,
+  lessonOverviewQuery,
+  tcpWorksByLessonSlugQuery,
+  transformOwaLessonToLessonPlan,
+} from "./owaLesson";
 
 const log = aiLogger("additional-materials");
-const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export const additionalMaterialsRouter = router({
+  fetchOwaLesson: protectedProcedure
+    .input(
+      z.object({
+        lessonSlug: z.string(),
+        programmeSlug: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      log.info("Fetching OWA lesson overview", {
+        lessonSlug: input.lessonSlug,
+        programmeSlug: input.programmeSlug,
+        userId: ctx.auth.userId,
+      });
+
+      const AUTH_KEY = process.env.CURRICULUM_API_AUTH_KEY;
+      const AUTH_TYPE = process.env.CURRICULUM_API_AUTH_TYPE;
+      const GRAPHQL_ENDPOINT = process.env.CURRICULUM_API_URL;
+
+      if (!AUTH_KEY || !AUTH_TYPE || !GRAPHQL_ENDPOINT) {
+        log.error("Missing environment variables", {
+          AUTH_KEY: !!AUTH_KEY,
+          AUTH_TYPE: !!AUTH_TYPE,
+          GRAPHQL_ENDPOINT: !!GRAPHQL_ENDPOINT,
+        });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Missing required environment variables",
+        });
+      }
+
+      if (!ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      try {
+        // Fetch lesson data
+        const lessonResponse = await fetch(GRAPHQL_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-oak-auth-key": AUTH_KEY,
+            "x-oak-auth-type": AUTH_TYPE,
+          },
+          body: JSON.stringify({
+            query: lessonOverviewQuery,
+            variables: {
+              lesson_slug: input.lessonSlug,
+              programme_slug: input.programmeSlug,
+            },
+          }),
+        });
+
+        if (!lessonResponse.ok) {
+          log.error("Failed to fetch lesson data", {
+            status: lessonResponse.status,
+            statusText: lessonResponse.statusText,
+            lessonSlug: input.lessonSlug,
+            programmeSlug: input.programmeSlug,
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch lesson data from curriculum API",
+          });
+        }
+
+        // Fetch TCP data
+        const tcpResponse = await fetch(GRAPHQL_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-oak-auth-key": AUTH_KEY,
+            "x-oak-auth-type": AUTH_TYPE,
+          },
+          body: JSON.stringify({
+            query: tcpWorksByLessonSlugQuery,
+            variables: {
+              lesson_slug: input.lessonSlug,
+            },
+          }),
+        });
+
+        if (!tcpResponse.ok) {
+          log.error("Failed to fetch TCP data", {
+            status: tcpResponse.status,
+            statusText: tcpResponse.statusText,
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch TCP data",
+          });
+        }
+
+        let lessonData: LessonOverviewResponse;
+        let tcpData: TRPCWorksResponse;
+
+        try {
+          lessonData = await lessonResponse.json();
+          tcpData = await tcpResponse.json();
+        } catch (jsonError) {
+          log.error("Failed to parse API responses", { jsonError });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Invalid response format from API",
+          });
+        }
+
+        // Validate lesson data
+        if (
+          !lessonData.data?.content?.[0] ||
+          !lessonData.data?.browseData?.[0]
+        ) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Lesson not found",
+          });
+        }
+
+        const rawLesson = lessonData.data.content[0];
+        const parsedLesson = lessonContentSchema.parse(rawLesson);
+
+        const browseDataArray = lessonData.data.browseData;
+        const browseData = browseDataArray.find(
+          (item) => item.lesson_slug === parsedLesson.lesson_slug,
+        );
+
+        if (!browseData) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Lesson not found in browse data",
+          });
+        }
+
+        const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData);
+
+        // Check for restricted content
+        checkForRestrictedContentGuidance(parsedLesson.content_guidance);
+        checkForRestrictedFeatures(parsedBrowseData);
+
+        // Check for restricted works
+        const worksList =
+          tcpData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
+        const hasRestrictedWorks = worksList.length > 0;
+
+        // Transform to lesson plan format
+        const transformedLesson = transformOwaLessonToLessonPlan(
+          parsedLesson,
+          parsedBrowseData,
+        );
+
+        // Create lesson plan interaction
+        const interaction =
+          await ctx.prisma.additionalMaterialInteraction.create({
+            data: {
+              userId: ctx.auth.userId,
+              config: {
+                resourceType: "partial-lesson-plan-owa",
+                resourceTypeVersion: 1,
+              },
+            },
+          });
+
+        return {
+          lesson: {
+            ...transformedLesson,
+            lessonId: interaction.id,
+          },
+          transcript: !hasRestrictedWorks
+            ? rawLesson.transcript_sentences
+            : undefined,
+        };
+      } catch (error) {
+        log.error("Error fetching OWA lesson", { error });
+        Sentry.captureException(error);
+
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch lesson data",
+        });
+      }
+    }),
   createMaterialSession: protectedProcedure
     .input(
       z.object({
