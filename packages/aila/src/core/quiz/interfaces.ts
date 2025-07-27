@@ -7,8 +7,9 @@ import type {
   LooseLessonPlan,
   QuizPath,
 } from "../../protocol/schema";
-import type { RawQuiz } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
+import type { QuizV2Question } from "../../protocol/schemas/quiz/quizV2";
+import type { RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
   MaxRatingFunctionApplier,

@@ -9,6 +9,7 @@ import type {
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import OpenAI from "openai";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
@@ -23,10 +24,11 @@ import type {
   QuizPath,
   QuizV1,
   QuizV1Question,
+  QuizV2Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import type { RawQuiz } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import { keysToCamelCase } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import { convertRawQuizToV2 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import type { RawQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
@@ -614,12 +616,20 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     if (!quizQuestion) {
       return null;
     }
-    const parsedRawQuiz = JSON.parse(rawQuizString);
-    const rawQuiz = keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>;
+    if (!rawQuizString) {
+      return null;
+    }
+    const parsedRawQuiz = JSON.parse(rawQuizString) as RawQuiz;
+    invariant(parsedRawQuiz, "Parsed raw quiz is null");
+
+    // Handle case where rawQuiz is a single object instead of an array
+    const normalizedRawQuiz = Array.isArray(parsedRawQuiz)
+      ? parsedRawQuiz
+      : [parsedRawQuiz];
 
     return {
       ...quizQuestion,
-      rawQuiz,
+      rawQuiz: normalizedRawQuiz,
     };
   }
 
