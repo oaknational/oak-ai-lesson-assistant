@@ -5,9 +5,9 @@ import type { ParsedChatCompletion } from "openai/resources/beta/chat/completion
 import type {
   LooseLessonPlan,
   QuizPath,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
+import { evaluateQuizReasoningModel } from "../OpenAIRanker";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
@@ -21,7 +21,7 @@ const log = aiLogger("aila:quiz");
 class TestBasedOnRagReranker extends BasedOnRagAilaQuizReranker<
   typeof testRatingSchema
 > {
-  async rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
+  async rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]> {
     return [0];
   }
 }
@@ -72,7 +72,9 @@ describe("BasedOnRagAilaQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<typeof testRatingSchema>;
 
-      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(mockResponse);
+      (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
+        mockResponse,
+      );
 
       await expect(
         reranker.evaluateQuizArray(
@@ -112,7 +114,9 @@ describe("BasedOnRagAilaQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<typeof testRatingSchema>;
 
-      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(mockResponse);
+      (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
+        mockResponse,
+      );
 
       const result = await reranker.evaluateQuizArray(
         mockQuizzes,
