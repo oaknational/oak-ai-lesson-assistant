@@ -1,4 +1,7 @@
-import { convertRawQuizToV2 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import {
+  convertCamelCaseToSnakeCase,
+  convertRawQuizToV2,
+} from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type {
   QuizV2,
   QuizV2Question,
@@ -9,7 +12,8 @@ import type { QuizQuestionWithRawJson } from "./interfaces";
 export function coerceQuizQuestionWithJson(
   quizQuestion: QuizQuestionWithRawJson,
 ): QuizV2 {
-  return convertRawQuizToV2(quizQuestion.rawQuiz);
+  const snakeCaseQuiz = convertCamelCaseToSnakeCase(quizQuestion.rawQuiz);
+  return convertRawQuizToV2(snakeCaseQuiz);
 }
 
 export function coerceQuizQuestionWithJsonArray(

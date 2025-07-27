@@ -8,8 +8,11 @@ import type {
   QuizPath,
 } from "../../protocol/schema";
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
-import type { QuizV2Question } from "../../protocol/schemas/quiz/quizV2";
-import type { RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type {
+  QuizV2,
+  QuizV2Question,
+} from "../../protocol/schemas/quiz/quizV2";
+import type { DbQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -106,7 +109,7 @@ export interface FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
     override?: boolean,
-  ): Promise<QuizQuestionWithRawJson[]>;
+  ): Promise<QuizV2>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
@@ -141,7 +144,7 @@ export interface QuizQuestionTextOnlySource {
 }
 
 export interface QuizQuestionWithRawJson extends QuizV1Question {
-  rawQuiz: NonNullable<RawQuiz>;
+  rawQuiz: NonNullable<DbQuiz>;
 }
 
 export interface CustomHit {

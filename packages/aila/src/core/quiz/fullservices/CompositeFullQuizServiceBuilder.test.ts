@@ -50,10 +50,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         CircleTheoremLesson,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.length).toBeGreaterThan(0);
-      expect(quiz[0]?.question).toBeDefined();
-      expect(quiz[0]?.answers).toBeDefined();
-      expect(quiz[0]?.distractors).toBeDefined();
+      expect(quiz.version).toBe("v2");
+      expect(quiz.questions.length).toBeGreaterThan(0);
+      expect(quiz.questions[0]?.question).toBeDefined();
+      expect(quiz.questions[0]?.questionType).toBeDefined();
       log.info(JSON.stringify(quiz, null, 2));
     });
 
@@ -84,10 +84,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         mockRelevantLessons,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.length).toBeGreaterThan(0);
-      expect(quiz[0]?.question).toBeDefined();
-      expect(quiz[0]?.answers).toBeDefined();
-      expect(quiz[0]?.distractors).toBeDefined();
+      expect(quiz.version).toBe("v2");
+      expect(quiz.questions.length).toBeGreaterThan(0);
+      expect(quiz.questions[0]?.question).toBeDefined();
+      expect(quiz.questions[0]?.questionType).toBeDefined();
       log.info(JSON.stringify(quiz, null, 2));
     });
     it("Should work with a rag quiz generator", async () => {
@@ -112,10 +112,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         mockRelevantLessons,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.length).toBeGreaterThan(0);
-      expect(quiz[0]?.question).toBeDefined();
-      expect(quiz[0]?.answers).toBeDefined();
-      expect(quiz[0]?.distractors).toBeDefined();
+      expect(quiz.version).toBe("v2");
+      expect(quiz.questions.length).toBeGreaterThan(0);
+      expect(quiz.questions[0]?.question).toBeDefined();
+      expect(quiz.questions[0]?.questionType).toBeDefined();
       log.info("Quiz generated with rag and return first: ", quiz);
       log.info(JSON.stringify(quiz, null, 2));
     });
@@ -146,10 +146,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info("Quiz generated with override: ", quizWithOverride);
 
       // Test with override disabled (should use default behavior)
@@ -161,10 +161,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.length).toBeGreaterThan(0);
-      expect(quizWithoutOverride[0]?.question).toBeDefined();
-      expect(quizWithoutOverride[0]?.answers).toBeDefined();
-      expect(quizWithoutOverride[0]?.distractors).toBeDefined();
+      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
 
       log.info("Quiz generated with override: ", quizWithOverride);
       log.info("Quiz generated without override: ", quizWithoutOverride);
@@ -196,10 +196,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info(
         "Quiz generated with override but no basedOn lesson present: ",
         quizWithOverride,
@@ -214,10 +214,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.length).toBeGreaterThan(0);
-      expect(quizWithoutOverride[0]?.question).toBeDefined();
-      expect(quizWithoutOverride[0]?.answers).toBeDefined();
-      expect(quizWithoutOverride[0]?.distractors).toBeDefined();
+      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
 
       log.info(
         "Quiz generated without override and no basedOn lesson: ",
@@ -251,10 +251,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info(
         "Quiz generated with override but no basedOn lesson present: ",
         quizWithOverride,
@@ -269,10 +269,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.length).toBeGreaterThan(0);
-      expect(quizWithoutOverride[0]?.question).toBeDefined();
-      expect(quizWithoutOverride[0]?.answers).toBeDefined();
-      expect(quizWithoutOverride[0]?.distractors).toBeDefined();
+      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
 
       log.info(
         "Quiz generated without override and no basedOn lesson: ",
@@ -306,10 +306,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info(
         "Quiz generated with override but no basedOn lesson present, only rag generator: ",
         quizWithOverride,
@@ -341,10 +341,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info(
         "Quiz generated with override but no basedOn lesson present, only rag generator and schema reranker: ",
         quizWithOverride,
@@ -378,10 +378,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.length).toBeGreaterThan(0);
-      expect(quizWithOverride[0]?.question).toBeDefined();
-      expect(quizWithOverride[0]?.answers).toBeDefined();
-      expect(quizWithOverride[0]?.distractors).toBeDefined();
+      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.questions.length).toBeGreaterThan(0);
+      expect(quizWithOverride.questions[0]?.question).toBeDefined();
+      expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info(
         "Edge case test that works in test env but not upon deployment. ",
         quizWithOverride,

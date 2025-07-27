@@ -7,8 +7,10 @@ import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
   QuizV1Question,
+  QuizV2,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
+import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
 import { AilaRagQuizGenerator } from "../generators/AilaRagQuizGenerator";
 import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
 import type {
@@ -32,7 +34,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizV2> {
     if (override) {
       return this.createBestQuizOverride(
         quizType,
@@ -51,7 +53,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizV2> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
@@ -84,21 +86,25 @@ export abstract class BaseFullQuizService implements FullQuizService {
       log.error(
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
-      return [];
+      return {
+        version: "v2",
+        questions: [],
+        imageAttributions: [],
+      };
     }
     const parsedRankings = quizRankings.map((ranking) =>
       this.quizReranker.ratingSchema!.parse(ranking),
     );
 
     const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, parsedRankings);
-    return bestQuiz;
+    return coerceQuizQuestionWithJsonArray(bestQuiz);
   }
   // Creates a best quiz in a hierarchy of quiz types.
   private async createBestQuizOverride(
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizV2> {
     // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 
@@ -120,7 +126,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
         );
       }
       if (quizArray && quizArray[0] && quizArray[0].length > 0) {
-        return quizArray[0];
+        return coerceQuizQuestionWithJsonArray(quizArray[0]);
       }
     }
 
@@ -164,7 +170,11 @@ export abstract class BaseFullQuizService implements FullQuizService {
       log.error(
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
-      return [];
+      return {
+        version: "v2",
+        questions: [],
+        imageAttributions: [],
+      };
     }
     const ratingSchema = this.quizReranker.ratingSchema;
     const parsedRankings = quizRankings.map((ranking) =>
@@ -172,6 +182,6 @@ export abstract class BaseFullQuizService implements FullQuizService {
     );
 
     const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, parsedRankings);
-    return bestQuiz;
+    return coerceQuizQuestionWithJsonArray(bestQuiz);
   }
 }
