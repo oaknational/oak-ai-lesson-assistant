@@ -2,11 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { z } from "zod";
 
-import type {
-  LooseLessonPlan,
-  QuizPath,
-  QuizQuestion,
-} from "../../../protocol/schema";
+import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
@@ -17,7 +13,7 @@ const log = aiLogger("aila:quiz");
 export class TestSchemaReranker<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 > extends BasedOnRagAilaQuizReranker<T> {
-  public rerankQuiz(quizzes: QuizQuestion[][]): Promise<number[]> {
+  public rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]> {
     return Promise.resolve([]);
   }
   public inputSchema = testRatingSchema;

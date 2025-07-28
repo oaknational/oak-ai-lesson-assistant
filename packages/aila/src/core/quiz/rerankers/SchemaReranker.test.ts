@@ -1,10 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type {
-  LooseLessonPlan,
-  QuizPath,
-  QuizQuestion,
-} from "../../../protocol/schema";
+import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
 import { cachedBadQuiz, cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
