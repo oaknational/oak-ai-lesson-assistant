@@ -10,7 +10,7 @@ describe("svgToPng", () => {
     );
     const expectedPng = readFileSync("src/images/fixtures/simple-equation.png");
 
-    const result = svgToPng(svg, { width: 600, background: "white" });
+    const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
     expect(result).toEqual(expectedPng);
@@ -25,7 +25,7 @@ describe("svgToPng", () => {
       "src/images/fixtures/quadratic-formula.png",
     );
 
-    const result = svgToPng(svg, { width: 600, background: "white" });
+    const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
     expect(result).toEqual(expectedPng);
@@ -40,7 +40,7 @@ describe("svgToPng", () => {
       "src/images/fixtures/fraction-display.png",
     );
 
-    const result = svgToPng(svg, { width: 600, background: "white" });
+    const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
     expect(result).toEqual(expectedPng);
@@ -52,8 +52,8 @@ describe("svgToPng", () => {
       "utf-8",
     );
 
-    const smallPng = svgToPng(svg, { width: 300, background: "white" });
-    const largePng = svgToPng(svg, { width: 600, background: "white" });
+    const smallPng = svgToPng(svg, { width: 300 });
+    const largePng = svgToPng(svg, { width: 600 });
 
     // Different widths should produce different size buffers
     expect(smallPng.length).toBeLessThan(largePng.length);
@@ -66,7 +66,7 @@ describe("svgToPng", () => {
     );
 
     const transparentPng = svgToPng(svg, { width: 600 }); // No background specified
-    const whitePng = svgToPng(svg, { width: 600, background: "white" });
+    const whitePng = svgToPng(svg, { width: 600 });
 
     // Different backgrounds should produce different images
     expect(transparentPng).not.toEqual(whitePng);

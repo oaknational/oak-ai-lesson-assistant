@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
     "test": "pnpm with-env jest --config jest.config.mjs",
+    "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@oakai/prettier-config",
@@ -25,8 +25,8 @@
     "typescript": "5.8.2"
   },
   "devDependencies": {
-    "@types/mathjax": "^0.0.40",
     "@types/jest": "^29.5.14",
+    "@types/mathjax": "^0.0.40",
     "dotenv-cli": "^6.0.0",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5"

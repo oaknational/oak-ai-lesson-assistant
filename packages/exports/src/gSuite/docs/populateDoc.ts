@@ -9,6 +9,7 @@ import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRe
 import { findMarkdownImages } from "./findMarkdownImages";
 import { imageReplacements } from "./imageReplacements";
 import { textReplacements } from "./textReplacements";
+import { latexToImageReplacements } from "./latexToImageReplacements";
 
 const log = aiLogger("exports");
 

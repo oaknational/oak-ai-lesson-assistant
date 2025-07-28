@@ -8,6 +8,8 @@ import { SVG } from "mathjax-full/js/output/svg";
 let adaptor: LiteAdaptor | null = null;
 let document: ReturnType<typeof mathjax.document> | null = null;
 
+// Following mathjax direct pattern: https://github.com/mathjax/MathJax-demos-node/blob/master/direct/tex2svg
+
 function ensureInitialized() {
   if (adaptor && document) {
     return;
@@ -34,12 +36,6 @@ function ensureInitialized() {
   document = mathjax.document("", { InputJax: tex, OutputJax: svg });
 }
 
-/**
- * Convert LaTeX string to SVG using MathJax
- * @param latex - The LaTeX string to convert
- * @param isDisplay - Whether to render as display math (centered, larger) or inline
- * @returns SVG string
- */
 export function latexToSvg(latex: string, isDisplay = false): string {
   ensureInitialized();
   const node = document!.convert(latex, { display: isDisplay });

@@ -1,22 +1,29 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { docs_v1 } from "@googleapis/docs";
-
 import { latexToSvg } from "../../images/latexToSvg";
 import { svgToPng } from "../../images/svgToPng";
-import { type LatexPattern, findLatexPatterns } from "./findLatexPatterns";
+import { findLatexPatterns } from "./findLatexPatterns";
 
 const log = aiLogger("exports");
 
+function getImageUrl(hash: string): string {
+  return `https://placeholder.com/latex/latex-${hash}.png}`;
+}
+
 /**
- * Uploads an image buffer to a cloud service and returns the URL
- * TODO: Implement actual upload to Cloudinary, S3, or GCS
+ * Uploads an image buffer to a cloud service
+ * TODO: Implement actual upload to GCS
  */
-async function uploadImage(buffer: Buffer, filename: string): Promise<string> {
-  log.info(`TODO: Upload image ${filename} (${buffer.length} bytes)`);
-  // For now, return a placeholder URL
-  // Simulate async behavior
-  return Promise.resolve(`https://placeholder.com/latex/${filename}`);
+async function uploadImage(buffer: Buffer, latexHash: string): Promise<string> {
+  log.info(`SIMULATED: Uploading image ${latexHash} (${buffer.length} bytes)`);
+  // Simulate async upload
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  return getImageUrl(latexHash);
+}
+
+function generateAltText(latex: string): string {
+  const trimmed = latex.substring(0, 50) + (latex.length > 50 ? "..." : "");
+  return `LaTeX pattern ${trimmed}`;
 }
 
 /**
@@ -35,124 +42,41 @@ export async function latexToImageReplacements(
 
   log.info(`Found ${patterns.length} LaTeX patterns to convert`);
 
+  // First pass: Replace all LaTeX patterns with markdown images
   let modifiedText = documentText;
-  const imageUrls: string[] = [];
-  let offset = 0; // Track how much we've shifted the indices
+  const imagesToUpload: Array<{ buffer: Buffer; latexHash: string }> = [];
+  let offset = 0;
 
-  // Process patterns in order to maintain correct indices
   for (const pattern of patterns) {
-    try {
-      // Convert LaTeX to SVG using MathJax
-      const svg = latexToSvg(pattern.latex, pattern.type === "display");
+    const imageUrl = getImageUrl(pattern.hash);
+    const altText = generateAltText(pattern.latex);
+    const markdownImage = `![${altText}](${imageUrl})`;
 
-      // Convert SVG to PNG
-      const pngBuffer = svgToPng(svg, {
-        width: pattern.type === "display" ? 600 : 200,
-        background: "white", // White background for better visibility in docs
-      });
+    const adjustedStart = pattern.startIndex + offset;
+    const adjustedEnd = pattern.endIndex + offset;
 
-      // Upload the image
-      const filename = `latex-${pattern.hash}.png`;
-      const imageUrl = await uploadImage(pngBuffer, filename);
-      imageUrls.push(imageUrl);
+    modifiedText =
+      modifiedText.substring(0, adjustedStart) +
+      markdownImage +
+      modifiedText.substring(adjustedEnd);
 
-      // Create markdown image syntax
-      const altText =
-        pattern.latex.substring(0, 50) +
-        (pattern.latex.length > 50 ? "..." : "");
-      const markdownImage = `![${altText}](${imageUrl})`;
+    offset += markdownImage.length - (pattern.endIndex - pattern.startIndex);
 
-      // Replace the LaTeX pattern with markdown image
-      const adjustedStart = pattern.startIndex + offset;
-      const adjustedEnd = pattern.endIndex + offset;
+    const svg = latexToSvg(pattern.latex, pattern.type === "display");
 
-      modifiedText =
-        modifiedText.substring(0, adjustedStart) +
-        markdownImage +
-        modifiedText.substring(adjustedEnd);
+    const pngBuffer = svgToPng(svg);
 
-      // Update offset for next replacements
-      offset += markdownImage.length - (pattern.endIndex - pattern.startIndex);
+    imagesToUpload.push({ buffer: pngBuffer, latexHash: pattern.hash });
 
-      log.info(`Replaced LaTeX pattern: ${pattern.latex.substring(0, 30)}...`);
-    } catch (error) {
-      log.error(`Failed to process LaTeX pattern: ${pattern.latex}`, error);
-      // Continue processing other patterns
-    }
+    log.info(`Prepared LaTeX pattern: ${pattern.latex.substring(0, 30)}...`);
   }
+
+  // Second pass: Upload all images in parallel
+  const imageUrls = await Promise.all(
+    imagesToUpload.map(({ buffer, latexHash }) =>
+      uploadImage(buffer, latexHash),
+    ),
+  );
 
   return { modifiedText, imageUrls };
-}
-
-/**
- * Create requests to replace LaTeX patterns with images in a Google Doc
- * This is an alternative approach that creates direct replacement requests
- */
-export async function createLatexImageRequests(
-  patterns: LatexPattern[],
-): Promise<docs_v1.Schema$Request[]> {
-  const requests: docs_v1.Schema$Request[] = [];
-  let cumulativeShift = 0;
-
-  for (const pattern of patterns) {
-    try {
-      // Convert LaTeX to SVG using MathJax
-      const svg = latexToSvg(pattern.latex, pattern.type === "display");
-
-      // Convert to PNG
-      const pngBuffer = svgToPng(svg, {
-        width: pattern.type === "display" ? 600 : 200,
-        background: "white",
-      });
-
-      // Upload image
-      const filename = `latex-${pattern.hash}.png`;
-      const imageUrl = await uploadImage(pngBuffer, filename);
-
-      // Adjust indices based on previous modifications
-      const adjustedStart = pattern.startIndex + cumulativeShift;
-      const adjustedEnd = pattern.endIndex + cumulativeShift;
-
-      // Delete the LaTeX text
-      requests.push({
-        deleteContentRange: {
-          range: {
-            startIndex: adjustedStart,
-            endIndex: adjustedEnd,
-          },
-        },
-      });
-
-      // Insert the image
-      requests.push({
-        insertInlineImage: {
-          uri: imageUrl,
-          location: {
-            index: adjustedStart,
-          },
-          objectSize: {
-            height: {
-              magnitude: pattern.type === "display" ? 100 : 30,
-              unit: "PT",
-            },
-            width: {
-              magnitude: pattern.type === "display" ? 300 : 100,
-              unit: "PT",
-            },
-          },
-        },
-      });
-
-      // Update cumulative shift (1 character for image - length of LaTeX)
-      const netShift = 1 - (pattern.endIndex - pattern.startIndex);
-      cumulativeShift += netShift;
-    } catch (error) {
-      log.error(
-        `Failed to create request for LaTeX pattern: ${pattern.latex}`,
-        error,
-      );
-    }
-  }
-
-  return requests;
 }

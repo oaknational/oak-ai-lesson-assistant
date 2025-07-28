@@ -2,18 +2,12 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
-import { latexToSvg } from "./latexToSvg.js";
-import { svgToPng } from "./svgToPng.js";
+import { latexToSvg } from "../latexToSvg.js";
+import { svgToPng } from "../svgToPng.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixturesDir = join(__dirname, "fixtures");
 
-// Create fixtures directory if it doesn't exist
-if (!existsSync(fixturesDir)) {
-  mkdirSync(fixturesDir, { recursive: true });
-}
-
-// Generate fixtures
 const fixtures = [
   { name: "simple-equation", latex: "x = 5", display: false },
   {
@@ -32,7 +26,7 @@ fixtures.forEach(({ name, latex, display }) => {
     console.log(`✅ Generated ${name}.svg`);
 
     // Generate PNG
-    const pngBuffer = svgToPng(svg, { width: 600, background: "white" });
+    const pngBuffer = svgToPng(svg, { width: 600 });
     writeFileSync(join(fixturesDir, `${name}.png`), pngBuffer);
     console.log(`✅ Generated ${name}.png`);
   } catch (error) {

@@ -13,7 +13,7 @@ export interface LatexPattern {
  * Generate a hash for a LaTeX expression to use as a unique identifier
  */
 export function generateLatexHash(latex: string): string {
-  return createHash("md5").update(latex).digest("hex").substring(0, 8);
+  return createHash("md5").update(latex).digest("hex").substring(0, 12);
 }
 
 /**
@@ -39,9 +39,6 @@ export function findLatexPatterns(text: string): LatexPattern[] {
       hash: generateLatexHash(latex),
     });
   }
-
-  // Sort by startIndex to process in order
-  patterns.sort((a, b) => a.startIndex - b.startIndex);
 
   return patterns;
 }
