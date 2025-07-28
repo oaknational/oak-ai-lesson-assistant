@@ -9,7 +9,7 @@ import { z } from "zod";
 import type {
   LooseLessonPlan,
   QuizPath,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../protocol/schema";
 import type { BaseType } from "./ChoiceModels";
 import {
@@ -59,7 +59,7 @@ export type ChatMessage =
 export class OpenAIRanker {
   public async rankQuestion(
     lessonPlan: LooseLessonPlan,
-    question: QuizQuestion,
+    question: QuizV1Question,
   ): Promise<number> {
     return 0;
   }
@@ -69,7 +69,7 @@ export class OpenAIRanker {
   }
 
   private transformQuestionSchemaToOpenAIPayload(
-    QuizQuestion: QuizQuestion,
+    QuizQuestion: QuizV1Question,
   ): string {
     return "input";
   }
@@ -396,16 +396,27 @@ export async function OpenAICallReranker(
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
 
-  const response = await openai.chat.completions.create({
-    model: OPENAI_MODEL,
-    max_tokens,
-    messages,
-  });
-
-  const endTime = Date.now();
-  const durationInSeconds = (endTime - startTime) / 1000;
-  log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
-  return response;
+  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_completion_tokens: max_tokens,
+      messages,
+    });
+    const endTime = Date.now();
+    const durationInSeconds = (endTime - startTime) / 1000;
+    log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
+    return response;
+  } else {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_tokens,
+      messages,
+    });
+    const endTime = Date.now();
+    const durationInSeconds = (endTime - startTime) / 1000;
+    log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
+    return response;
+  }
 }
 
 // TODO: type logit_bias properly.
@@ -420,20 +431,38 @@ export async function OpenAICallLogProbs(
   const chatId = "test-chat-id";
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
-  const response = await openai.chat.completions.create({
-    model: OPENAI_MODEL,
-    max_tokens,
-    messages,
-    logit_bias,
-    logprobs: true,
-    top_logprobs: Object.keys(logit_bias).length,
-  });
-  const endTime = Date.now();
-  const durationInSeconds = (endTime - startTime) / 1000;
-  log.info(
-    `OpenAI API log_probs call took ${durationInSeconds.toFixed(2)} seconds`,
-  );
-  return response;
+
+  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_completion_tokens: max_tokens,
+      messages,
+      logit_bias,
+      logprobs: true,
+      top_logprobs: Object.keys(logit_bias).length,
+    });
+    const endTime = Date.now();
+    const durationInSeconds = (endTime - startTime) / 1000;
+    log.info(
+      `OpenAI API log_probs call took ${durationInSeconds.toFixed(2)} seconds`,
+    );
+    return response;
+  } else {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_tokens,
+      messages,
+      logit_bias,
+      logprobs: true,
+      top_logprobs: Object.keys(logit_bias).length,
+    });
+    const endTime = Date.now();
+    const durationInSeconds = (endTime - startTime) / 1000;
+    log.info(
+      `OpenAI API log_probs call took ${durationInSeconds.toFixed(2)} seconds`,
+    );
+    return response;
+  }
 }
 
 /**
@@ -556,37 +585,73 @@ export async function DummyOpenAICall() {
     },
   ];
   //  This adds an id to each message.
-  const response = await openai.chat.completions.create({
-    model: OPENAI_MODEL,
-    max_tokens: 500,
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: "What are in these images? Is there any difference between them?",
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-              detail: "high",
+  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_completion_tokens: 500,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "What are in these images? Is there any difference between them?",
             },
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-              detail: "high",
+            {
+              type: "image_url",
+              image_url: {
+                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                detail: "high",
+              },
             },
-          },
-        ],
-      },
-    ],
-  });
-  log.info("Image description received:", response);
-  log.info("Image description received:", response.choices[0]);
+            {
+              type: "image_url",
+              image_url: {
+                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                detail: "high",
+              },
+            },
+          ],
+        },
+      ],
+    });
+    log.info("Image description received:", response);
+    log.info("Image description received:", response.choices[0]);
 
-  return response.choices[0]?.message.content;
+    return response.choices[0]?.message.content;
+  } else {
+    const response = await openai.chat.completions.create({
+      model: OPENAI_MODEL,
+      max_tokens: 500,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "What are in these images? Is there any difference between them?",
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                detail: "high",
+              },
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
+                detail: "high",
+              },
+            },
+          ],
+        },
+      ],
+    });
+    log.info("Image description received:", response);
+    log.info("Image description received:", response.choices[0]);
+
+    return response.choices[0]?.message.content;
+  }
 }
