@@ -6,6 +6,15 @@ export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
+// LaTeX rendering exports
+export { findLatexPatterns } from "./src/gSuite/docs/findLatexPatterns";
+export {
+  svgToPng,
+  createTestEquationSvg,
+  createTestInlineEquationSvg,
+} from "./src/images/svgToPng";
+export { latexToImageReplacements } from "./src/gSuite/docs/latexToImageReplacements";
+
 export {
   quizDocInputSchema as exportDocQuizSchema,
   lessonPlanDocInputSchema as exportDocLessonPlanSchema,
