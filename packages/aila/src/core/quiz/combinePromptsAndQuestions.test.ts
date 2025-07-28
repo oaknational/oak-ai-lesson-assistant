@@ -1,5 +1,5 @@
-import type { RawQuiz } from "../../protocol/rawQuizSchema";
-import { keysToCamelCase } from "../../protocol/rawQuizSchema";
+import { convertSnakeCaseToCamelCase } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import type { DbQuiz, RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
@@ -56,7 +56,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
       },
       {
         question:
@@ -66,7 +66,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: keysToCamelCase(parsedRawQuiz) as NonNullable<RawQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
       },
     ];
     const openAIMessage = combinePromptsAndQuestions(
@@ -107,8 +107,8 @@ describe("Test OpenAI Image Reranker with online image and quiz questions", () =
             },
             {
               type: "image" as const,
-              imageObject: {
-                secureUrl:
+              image_object: {
+                secure_url:
                   "http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png",
                 metadata: {
                   attribution: "Money calculation question",
