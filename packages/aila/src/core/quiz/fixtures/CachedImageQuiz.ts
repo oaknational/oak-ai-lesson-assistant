@@ -153,7 +153,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: true,
+              answer_is_correct: true,
             },
             {
               answer: [
@@ -162,7 +162,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
             {
               answer: [
@@ -171,7 +171,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
           ],
         },
@@ -202,8 +202,8 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
           },
           {
             type: "image",
-            imageObject: {
-              secureUrl:
+            image_object: {
+              secure_url:
                 "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
               metadata: {
                 attribution: "Two triangles with labeled angles",
@@ -220,7 +220,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: true,
+              answer_is_correct: true,
             },
             {
               answer: [
@@ -229,7 +229,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
             {
               answer: [
@@ -238,7 +238,7 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
           ],
         },
@@ -286,7 +286,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsDefault: true,
+              answer_is_default: true,
             },
           ],
         },
@@ -321,7 +321,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsDefault: true,
+              answer_is_default: true,
             },
             {
               answer: [
@@ -330,7 +330,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsDefault: true,
+              answer_is_default: true,
             },
             {
               answer: [
@@ -374,7 +374,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsDefault: true,
+              answer_is_default: true,
             },
           ],
         },
@@ -410,7 +410,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: true,
+              answer_is_correct: true,
             },
             {
               answer: [
@@ -419,7 +419,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
             {
               answer: [
@@ -428,7 +428,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
           ],
         },
@@ -455,8 +455,8 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
           },
           {
             type: "image",
-            imageObject: {
-              secureUrl:
+            image_object: {
+              secure_url:
                 "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
               metadata: {
                 attribution: "some triangles or whatever",
@@ -473,7 +473,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: true,
+              answer_is_correct: true,
             },
             {
               answer: [
@@ -482,7 +482,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
             {
               answer: [
@@ -491,7 +491,7 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsCorrect: false,
+              answer_is_correct: false,
             },
           ],
         },
