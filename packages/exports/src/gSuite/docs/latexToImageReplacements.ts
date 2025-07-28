@@ -2,11 +2,8 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import {
-  createTestEquationSvg,
-  createTestInlineEquationSvg,
-  svgToPng,
-} from "../../images/svgToPng";
+import { latexToSvg } from "../../images/latexToSvg";
+import { svgToPng } from "../../images/svgToPng";
 import { type LatexPattern, findLatexPatterns } from "./findLatexPatterns";
 
 const log = aiLogger("exports");
@@ -18,7 +15,8 @@ const log = aiLogger("exports");
 async function uploadImage(buffer: Buffer, filename: string): Promise<string> {
   log.info(`TODO: Upload image ${filename} (${buffer.length} bytes)`);
   // For now, return a placeholder URL
-  return `https://placeholder.com/latex/${filename}`;
+  // Simulate async behavior
+  return Promise.resolve(`https://placeholder.com/latex/${filename}`);
 }
 
 /**
@@ -44,15 +42,11 @@ export async function latexToImageReplacements(
   // Process patterns in order to maintain correct indices
   for (const pattern of patterns) {
     try {
-      // For now, use test SVGs instead of actual MathJax rendering
-      // TODO: Replace with actual MathJax SVG generation
-      const svg =
-        pattern.type === "display"
-          ? createTestEquationSvg()
-          : createTestInlineEquationSvg();
+      // Convert LaTeX to SVG using MathJax
+      const svg = latexToSvg(pattern.latex, pattern.type === "display");
 
       // Convert SVG to PNG
-      const pngBuffer = await svgToPng(svg, {
+      const pngBuffer = svgToPng(svg, {
         width: pattern.type === "display" ? 600 : 200,
         background: "white", // White background for better visibility in docs
       });
@@ -102,14 +96,11 @@ export async function createLatexImageRequests(
 
   for (const pattern of patterns) {
     try {
-      // For now, use test SVGs
-      const svg =
-        pattern.type === "display"
-          ? createTestEquationSvg()
-          : createTestInlineEquationSvg();
+      // Convert LaTeX to SVG using MathJax
+      const svg = latexToSvg(pattern.latex, pattern.type === "display");
 
       // Convert to PNG
-      const pngBuffer = await svgToPng(svg, {
+      const pngBuffer = svgToPng(svg, {
         width: pattern.type === "display" ? 600 : 200,
         background: "white",
       });

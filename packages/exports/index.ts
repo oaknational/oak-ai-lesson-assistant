@@ -8,11 +8,8 @@ export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
 // LaTeX rendering exports
 export { findLatexPatterns } from "./src/gSuite/docs/findLatexPatterns";
-export {
-  svgToPng,
-  createTestEquationSvg,
-  createTestInlineEquationSvg,
-} from "./src/images/svgToPng";
+export { svgToPng } from "./src/images/svgToPng";
+export { latexToSvg } from "./src/images/latexToSvg";
 export { latexToImageReplacements } from "./src/gSuite/docs/latexToImageReplacements";
 
 export {
