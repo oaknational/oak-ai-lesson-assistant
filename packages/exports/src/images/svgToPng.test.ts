@@ -1,21 +1,48 @@
-import { readFileSync, writeFileSync } from "fs";
+import { createHash } from "crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
 import { svgToPng } from "./svgToPng.js";
+
+function getChecksum(buffer: Buffer): string {
+  return createHash("sha256").update(buffer).digest("hex");
+}
 
 function comparePngWithFixture(
   actualPng: Buffer,
   expectedPng: Buffer,
   testName: string,
 ): void {
-  try {
-    expect(actualPng).toEqual(expectedPng);
-  } catch (error) {
+  const actualChecksum = getChecksum(actualPng);
+  const expectedChecksum = getChecksum(expectedPng);
+
+  if (actualChecksum !== expectedChecksum) {
     // Save the actual PNG for inspection
     const outputPath = join("src/images/fixtures", `${testName}-actual.png`);
     writeFileSync(outputPath, actualPng);
-    console.error(`PNG mismatch! Actual PNG saved to: ${outputPath}`);
-    throw error;
+
+    // In CI, also save to a location that can be uploaded as an artifact
+    if (process.env.CI) {
+      const ciOutputPath = join(
+        process.cwd(),
+        "test-outputs",
+        `${testName}-actual.png`,
+      );
+      mkdirSync(join(process.cwd(), "test-outputs"), { recursive: true });
+      writeFileSync(ciOutputPath, actualPng);
+      console.error(`CI: PNG saved to ${ciOutputPath} for artifact upload`);
+    }
+
+    console.error(`PNG mismatch for ${testName}!`);
+    console.error(`Expected checksum: ${expectedChecksum}`);
+    console.error(`Actual checksum:   ${actualChecksum}`);
+    console.error(`Actual PNG saved to: ${outputPath}`);
+    console.error(
+      `Size difference: expected ${expectedPng.length} bytes, got ${actualPng.length} bytes`,
+    );
+
+    // Still use expect for the test failure
+    expect(actualChecksum).toBe(expectedChecksum);
   }
 }
 
