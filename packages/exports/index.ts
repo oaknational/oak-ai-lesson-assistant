@@ -6,6 +6,11 @@ export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
+export { findLatexPatterns } from "./src/gSuite/docs/findLatexPatterns";
+export { svgToPng } from "./src/images/svgToPng";
+export { latexToSvg } from "./src/images/latexToSvg";
+export { latexToImageReplacements } from "./src/gSuite/docs/latexToImageReplacements";
+
 export {
   quizDocInputSchema as exportDocQuizSchema,
   lessonPlanDocInputSchema as exportDocLessonPlanSchema,
