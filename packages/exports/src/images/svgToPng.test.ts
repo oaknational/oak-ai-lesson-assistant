@@ -17,21 +17,19 @@ function comparePngWithFixture(
   const expectedChecksum = getChecksum(expectedPng);
 
   if (actualChecksum !== expectedChecksum) {
-    // Save the actual PNG for inspection
-    const outputPath = join("src/images/fixtures", `${testName}-actual.png`);
-    writeFileSync(outputPath, actualPng);
-
-    // In CI, also save to a location that can be uploaded as an artifact
+    // Determine output path based on environment
+    let outputPath: string;
     if (process.env.CI) {
-      const ciOutputPath = join(
-        process.cwd(),
-        "test-outputs",
-        `${testName}-actual.png`,
-      );
-      mkdirSync(join(process.cwd(), "test-outputs"), { recursive: true });
-      writeFileSync(ciOutputPath, actualPng);
-      console.error(`CI: PNG saved to ${ciOutputPath} for artifact upload`);
+      // In CI, save to test-outputs/ at monorepo root for artifact upload
+      // Tests run from monorepo root via pnpm turbo
+      outputPath = join("test-outputs", `${testName}-actual.png`);
+      mkdirSync("test-outputs", { recursive: true });
+    } else {
+      // Locally, save to fixtures directory for inspection
+      outputPath = join("src/images/fixtures", `${testName}-actual.png`);
     }
+
+    writeFileSync(outputPath, actualPng);
 
     console.error(`PNG mismatch for ${testName}!`);
     console.error(`Expected checksum: ${expectedChecksum}`);

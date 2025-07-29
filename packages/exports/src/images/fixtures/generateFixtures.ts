@@ -1,4 +1,5 @@
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+/* eslint-disable no-console */
+import { writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 

@@ -5,40 +5,50 @@ import { TeX } from "mathjax-full/js/input/tex";
 import { mathjax } from "mathjax-full/js/mathjax";
 import { SVG } from "mathjax-full/js/output/svg";
 
-let adaptor: LiteAdaptor | null = null;
-let document: ReturnType<typeof mathjax.document> | null = null;
-
 // Following mathjax direct pattern: https://github.com/mathjax/MathJax-demos-node/blob/master/direct/tex2svg
 
-function ensureInitialized() {
-  if (adaptor && document) {
-    return;
-  }
+type MathJaxContext = {
+  adaptor: LiteAdaptor;
+  document: ReturnType<typeof mathjax.document>;
+};
 
-  adaptor = liteAdaptor();
-  RegisterHTMLHandler(adaptor);
+function createMathJaxInitializer(): () => MathJaxContext {
+  let context: MathJaxContext | null = null;
 
-  const tex = new TeX({
-    packages: [
-      "base",
-      "ams",
-      "noundefined",
-      "newcommand",
-      "boldsymbol",
-      "unicode",
-    ],
-  });
+  return function getMathJaxContext(): MathJaxContext {
+    if (!context) {
+      const adaptor = liteAdaptor();
+      RegisterHTMLHandler(adaptor);
 
-  const svg = new SVG({
-    fontCache: "local",
-  });
+      const tex = new TeX({
+        packages: [
+          "base",
+          "ams",
+          "noundefined",
+          "newcommand",
+          "boldsymbol",
+          "unicode",
+        ],
+      });
 
-  document = mathjax.document("", { InputJax: tex, OutputJax: svg });
+      const svg = new SVG({
+        fontCache: "local",
+      });
+
+      const document = mathjax.document("", { InputJax: tex, OutputJax: svg });
+
+      context = { adaptor, document };
+    }
+
+    return context;
+  };
 }
 
+const getMathJaxContext = createMathJaxInitializer();
+
 export function latexToSvg(latex: string, isDisplay = false): string {
-  ensureInitialized();
-  const node = document!.convert(latex, { display: isDisplay });
+  const { adaptor, document } = getMathJaxContext();
+  const node = document.convert(latex, { display: isDisplay });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  return adaptor!.innerHTML(node);
+  return adaptor.innerHTML(node);
 }
