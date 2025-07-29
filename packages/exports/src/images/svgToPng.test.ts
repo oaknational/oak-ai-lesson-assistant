@@ -1,6 +1,23 @@
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
+import { join } from "path";
 
 import { svgToPng } from "./svgToPng.js";
+
+function comparePngWithFixture(
+  actualPng: Buffer,
+  expectedPng: Buffer,
+  testName: string,
+): void {
+  try {
+    expect(actualPng).toEqual(expectedPng);
+  } catch (error) {
+    // Save the actual PNG for inspection
+    const outputPath = join("src/images/fixtures", `${testName}-actual.png`);
+    writeFileSync(outputPath, actualPng);
+    console.error(`PNG mismatch! Actual PNG saved to: ${outputPath}`);
+    throw error;
+  }
+}
 
 describe("svgToPng", () => {
   it("converts simple equation SVG to PNG", () => {
@@ -13,7 +30,7 @@ describe("svgToPng", () => {
     const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
-    expect(result).toEqual(expectedPng);
+    comparePngWithFixture(result, expectedPng, "simple-equation");
   });
 
   it("converts quadratic formula SVG to PNG", () => {
@@ -28,7 +45,7 @@ describe("svgToPng", () => {
     const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
-    expect(result).toEqual(expectedPng);
+    comparePngWithFixture(result, expectedPng, "quadratic-formula");
   });
 
   it("converts display mode fraction SVG to PNG", () => {
@@ -43,7 +60,7 @@ describe("svgToPng", () => {
     const result = svgToPng(svg, { width: 600 });
 
     expect(result).toBeInstanceOf(Buffer);
-    expect(result).toEqual(expectedPng);
+    comparePngWithFixture(result, expectedPng, "fraction-display");
   });
 
   it("respects width option", () => {
@@ -57,18 +74,5 @@ describe("svgToPng", () => {
 
     // Different widths should produce different size buffers
     expect(smallPng.length).toBeLessThan(largePng.length);
-  });
-
-  it("handles transparent background", () => {
-    const svg = readFileSync(
-      "src/images/fixtures/simple-equation.svg",
-      "utf-8",
-    );
-
-    const transparentPng = svgToPng(svg, { width: 600 }); // No background specified
-    const whitePng = svgToPng(svg, { width: 600 });
-
-    // Different backgrounds should produce different images
-    expect(transparentPng).not.toEqual(whitePng);
   });
 });

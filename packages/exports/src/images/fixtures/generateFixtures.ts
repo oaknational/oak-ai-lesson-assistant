@@ -6,7 +6,7 @@ import { latexToSvg } from "../latexToSvg.js";
 import { svgToPng } from "../svgToPng.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const fixturesDir = join(__dirname, "fixtures");
+const fixturesDir = __dirname;
 
 const fixtures = [
   { name: "simple-equation", latex: "x = 5", display: false },
