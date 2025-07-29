@@ -24,8 +24,9 @@ export function findLatexPatterns(text: string): LatexPattern[] {
   const patterns: LatexPattern[] = [];
 
   // Oak uses $$ for inline math (see MathJaxContext.tsx configuration)
-  // Pattern matches $$ ... $$ with optional spaces inside
-  const regex = /\$\$\s*([^$]+?)\s*\$\$/g;
+  // Pattern matches $$ ... $$ with content in between
+  // Using a simple non-greedy match without nested quantifiers to avoid ReDoS
+  const regex = /\$\$([^$]*)\$\$/g;
 
   let match;
   while ((match = regex.exec(text)) !== null) {
