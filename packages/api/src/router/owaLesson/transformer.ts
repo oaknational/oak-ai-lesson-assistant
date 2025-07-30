@@ -6,11 +6,7 @@ import type {
   QuizV2Question,
 } from "@oakai/aila/src/protocol/schema";
 
-import {
-  type QuizQuestion as OwaQuizQuestion,
-  quizQuestionSchema,
-} from "@oaknational/oak-curriculum-schema/";
-import { z } from "zod";
+import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
 
 import type {
   LessonBrowseDataByKsSchema,
@@ -20,121 +16,156 @@ import type {
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(quiz: OwaQuizQuestion[]): QuizV2 {
-  const quizData = z.array(quizQuestionSchema).parse(quiz);
-  if (!quizData || !Array.isArray(quizData)) {
-    return {
-      version: "v2",
-      imageAttributions: [],
-      questions: [],
-    };
+export function transformQuiz(questions: OwaQuizQuestion[]): QuizV2 {
+  // Refined helper function with proper typing
+  function filterUndefined<T>(items?: (T | undefined)[]): T[] {
+    return Array.isArray(items)
+      ? items.filter((item): item is T => item !== undefined)
+      : [];
   }
 
-  const questions: QuizV2Question[] = quizData.map((question) => {
-    if (!question || !question.question_stem) {
-      return {
+  // Updated isTextOnly function
+  const isTextOnly = (
+    items?: OwaQuizQuestion["question_stem"] | OwaQuizQuestion["answers"],
+  ) => Array.isArray(items) && items.every((i) => i?.type === "text");
+
+  const extractText = (items?: OwaQuizQuestion["question_stem"]) =>
+    (items ?? [])
+      .filter(
+        (item): item is { text: string; type: "text" } =>
+          item.type === "text" && !!item?.text,
+      )
+      .map((item) => item.text.trim());
+
+  const result: QuizV2Question[] = [];
+
+  for (const q of questions) {
+    if (!isTextOnly(q.question_stem)) continue;
+
+    const question = extractText(q.question_stem).join(" ").trim();
+    const hint = q.hint ?? null;
+
+    if (q.answers?.["multiple-choice"]) {
+      const correct: string[] = [];
+      const incorrect: string[] = [];
+
+      let valid = true;
+
+      for (const opt of q.answers["multiple-choice"]) {
+        const removeUndefined = filterUndefined(opt.answer);
+        if (!isTextOnly(removeUndefined)) {
+          valid = false;
+          break;
+        }
+
+        const text = extractText(removeUndefined).join(" ");
+        if (!text) continue;
+
+        if (opt.answer_is_correct) {
+          correct.push(text);
+        } else {
+          incorrect.push(text);
+        }
+      }
+
+      if (!valid) continue;
+
+      result.push({
         questionType: "multiple-choice",
-        question: "",
-        answers: [],
-        distractors: [],
-        hint: null,
-      } as QuizV2Question;
+        question,
+        hint,
+        answers: correct,
+        distractors: incorrect,
+      });
+    } else if (q.answers?.["short-answer"]) {
+      let valid = true;
+
+      // Updated to apply filterUndefined before passing to extractText
+      const answers = q.answers["short-answer"]
+        .filter((ans) => {
+          const removeUndefined = filterUndefined(ans.answer);
+          if (!isTextOnly(removeUndefined)) {
+            valid = false;
+            return false;
+          }
+          return true;
+        })
+        .flatMap((ans) => extractText(filterUndefined(ans.answer)));
+
+      if (!valid || answers.length === 0) continue;
+
+      result.push({
+        questionType: "short-answer",
+        question,
+        hint,
+        answers,
+      });
+    } else if (q.answers?.match) {
+      let valid = true;
+      const pairs: { left: string; right: string }[] = [];
+
+      for (const pair of q.answers.match) {
+        if (
+          !isTextOnly(pair.match_option) ||
+          !isTextOnly(pair.correct_choice)
+        ) {
+          valid = false;
+          break;
+        }
+
+        const left = extractText(pair.match_option).join(" ");
+        const right = extractText(pair.correct_choice).join(" ");
+
+        if (left && right) {
+          pairs.push({ left, right });
+        }
+      }
+
+      if (!valid || pairs.length === 0) continue;
+
+      result.push({
+        questionType: "match",
+        question,
+        hint,
+        pairs,
+      });
+    } else if (q.answers?.order) {
+      let valid = true;
+
+      const ordered = [...q.answers.order]
+        .filter(
+          (item): item is NonNullable<typeof item> =>
+            !!item && typeof item.correct_order === "number",
+        )
+        .sort((a, b) => (a.correct_order ?? 0) - (b.correct_order ?? 0));
+
+      const items: string[] = [];
+
+      for (const item of ordered) {
+        if (!isTextOnly(item.answer)) {
+          valid = false;
+          break;
+        }
+
+        const text = extractText(item.answer).join(" ");
+        if (text) items.push(text);
+      }
+
+      if (!valid || items.length === 0) continue;
+
+      result.push({
+        questionType: "order",
+        question,
+        hint,
+        items,
+      });
     }
-    // Extract the question text from the stem
-    const questionText = question.question_stem
-      .filter((item) => item.type === "text")
-      .map((item) => item.text)
-      .join(" ");
-
-    if (
-      question.question_type === "multiple-choice" &&
-      question.answers &&
-      question.answers["multiple-choice"]
-    ) {
-      // Extract correct answers
-      const correctAnswers = question.answers["multiple-choice"]
-        .filter((answer) => answer.answer_is_correct)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item.text)
-            .join(""),
-        );
-
-      // Extract distractors (incorrect answers)
-      const distractors = question.answers["multiple-choice"]
-        .filter((answer) => !answer.answer_is_correct)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
-
-      return {
-        questionType: "multiple-choice",
-        question: questionText,
-        answers: correctAnswers,
-        distractors: distractors,
-        hint: null,
-      };
-    } else if (
-      question.question_type === "short-answer" &&
-      question.answers &&
-      question.answers["short-answer"]
-    ) {
-      // For short answer questions, treat all answers as correct
-      const allAnswers = question.answers["short-answer"].map((answer) =>
-        answer.answer
-          .filter((item) => item?.type === "text")
-          .map((item) => item?.text)
-          .join(""),
-      );
-
-      // Default answers (primary answers) will be treated as the correct ones
-      const correctAnswers = question.answers["short-answer"]
-        .filter((answer) => answer.answer_is_default)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
-
-      // Non-default answers will be treated as distractors/alternative answers
-      const distractors = question.answers["short-answer"]
-        .filter((answer) => !answer.answer_is_default)
-        .map((answer) =>
-          answer.answer
-            .filter((item) => item?.type === "text")
-            .map((item) => item?.text)
-            .join(""),
-        );
-
-      return {
-        questionType: "multiple-choice",
-        question: questionText,
-        answers:
-          correctAnswers.length > 0 ? correctAnswers : allAnswers.slice(0, 1),
-        distractors: distractors.length > 0 ? distractors : [],
-        hint: null,
-      };
-    }
-
-    // Fallback for unsupported question types
-    return {
-      questionType: "multiple-choice",
-      question: questionText,
-      answers: [],
-      distractors: [],
-      hint: null,
-    };
-  });
+  }
 
   return {
     version: "v2",
+    questions: result,
     imageAttributions: [],
-    questions,
   };
 }
 
