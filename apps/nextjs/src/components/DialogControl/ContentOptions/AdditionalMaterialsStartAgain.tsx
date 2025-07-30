@@ -11,6 +11,7 @@ import {
   OakRadioGroup,
   OakSecondaryLink,
 } from "@oaknational/oak-components";
+import { usePathname, useRouter } from "next/navigation";
 import invariant from "tiny-invariant";
 
 import {
@@ -38,12 +39,17 @@ const AdditionalMaterialsStartAgain = ({
     useResourcesActions();
   const [selectedOption, setSelectedOption] = useState<string>("");
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const handleContinue = () => {
+    router.replace(pathname, { scroll: false });
     if (selectedOption === "current-lesson") {
       setStepNumber(0);
       setId(null);
       setDocType(null);
       setGeneration(null);
+      // Reset the dialog state
       closeDialog();
     } else if (selectedOption === "new-lesson") {
       resetToDefault();

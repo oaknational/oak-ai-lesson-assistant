@@ -34,40 +34,15 @@ const StepOne = ({
   const {
     setDocType,
     setGeneration,
-    setSubject,
-    setTitle,
-    setYear,
+
     generateMaterial,
   } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
 
-  const source = useResourcesStore((state) => state.source);
   const lesson = useResourcesStore((state) => state.pageData.lessonPlan);
   const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
-
-  // useEffect(() => {
-  //   // Reset the document type when the component is mounted
-  //   if (source === "owa" && lesson) {
-  //     setDocType(null);
-  //     setGeneration(null);
-  //   } else {
-  //     setDocType(null);
-  //     setGeneration(null);
-  //     setSubject(null);
-  //     setTitle(null);
-  //     setYear(null);
-  //   }
-  // }, [
-  //   lesson,
-  //   setDocType,
-  //   setGeneration,
-  //   setSubject,
-  //   setTitle,
-  //   setYear,
-  //   source,
-  // ]);
 
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
@@ -121,9 +96,7 @@ const StepOne = ({
         <SharedNavigationButtons
           backLabel="Back a step"
           nextLabel={
-            source == "owa" && lesson
-              ? "Create teaching material"
-              : "Next, provide lesson details"
+            lesson ? "Create teaching material" : "Next, provide lesson details"
           }
           onBackClick={() => {}} // href used here instead
           backHref={getAilaUrl("start")}
@@ -132,10 +105,12 @@ const StepOne = ({
               setShowValidationError("Please select a teaching material.");
               return;
             }
-            if (source === "aila") void handleCreateSession(docType);
-            if (source === "owa" && lesson) {
+
+            if (lesson.lessonId) {
               void handleCreateSession(docType, 3);
               void generateMaterial();
+            } else {
+              void handleCreateSession(docType);
             }
           }}
         />

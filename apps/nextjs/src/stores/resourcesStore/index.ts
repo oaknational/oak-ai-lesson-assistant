@@ -128,7 +128,7 @@ export const createResourcesStore = (
       analytics: handleAnalytics(set, get, track),
 
       // Reset store to default state
-      resetToDefault: () => set((state) => ({ ...DEFAULT_STATE })),
+      resetToDefault: () => set(() => ({ ...DEFAULT_STATE })),
     },
   }));
 

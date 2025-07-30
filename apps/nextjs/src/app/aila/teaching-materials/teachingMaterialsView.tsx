@@ -71,8 +71,6 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   } = useResourcesActions();
   const { setDialogWindow } = useDialog();
 
-  console.log("TM STAGE,state", state);
-
   handleDialogSelection({
     threatDetected,
     error,
@@ -82,10 +80,9 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const titleAreaContent = {
     0: {
       title: "Select teaching material",
-      subTitle:
-        source === "owa" && lessonPlan.title
-          ? `Choose the downloadable resource you'd like to create for the lesson: ${lessonPlan.title}.`
-          : "Choose the downloadable resource you'd like to create with Aila for your lesson.",
+      subTitle: lessonPlan.title
+        ? `Choose the downloadable resource you'd like to create for the lesson: ${lessonPlan.title}.`
+        : "Choose the downloadable resource you'd like to create with Aila for your lesson.",
     },
     1: {
       title: "What are you teaching?",
