@@ -403,7 +403,6 @@ export const additionalMaterialsRouter = router({
           input: parsedInput.data,
           auth: ctx.auth,
           rateLimit: ctx.rateLimit,
-          source: parsedInput.data.source,
         });
       } catch (cause) {
         const TrpcError = new Error(

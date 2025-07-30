@@ -19,12 +19,11 @@ import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
 
-type GenerateAdditionalMaterialParams = {
+export type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
   rateLimit: RateLimitInfo;
   userId: string;
-  source: "aila" | "owa";
   input: GenerateAdditionalMaterialInput & {
     lessonId?: string | null;
   };
@@ -58,12 +57,11 @@ export async function generateAdditionalMaterial({
   input,
   auth,
   rateLimit,
-  source,
 }: GenerateAdditionalMaterialParams) {
   log.info("Generating additional material");
   const resourceTypes = resourceTypesConfig[input.documentType];
   const lessonPartsToUse =
-    source === "aila"
+    input.source === "aila"
       ? resourceTypes.lessonParts
       : resourceTypes.owaLessonParts;
 
