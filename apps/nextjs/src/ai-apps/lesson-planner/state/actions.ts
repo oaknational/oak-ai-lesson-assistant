@@ -1,10 +1,6 @@
 import type { RateLimitInfo } from "@oakai/api/src/types";
 import type { KeyStageName, SubjectName } from "@oakai/core";
 
-import type {
-  QuizAppQuestion,
-  QuizAppStateQuestion,
-} from "@/ai-apps/quiz-designer/state/types";
 import type { DeepPartial } from "@/utils/types/DeepPartial";
 
 import type {
@@ -13,6 +9,8 @@ import type {
   LPMisconception,
   LessonPlanSections,
   LessonPlannerAppState,
+  QuizAppQuestion,
+  QuizAppStateQuestion,
 } from "./types";
 
 /**
