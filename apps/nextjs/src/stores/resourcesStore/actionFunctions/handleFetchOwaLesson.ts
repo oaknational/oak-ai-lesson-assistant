@@ -105,44 +105,6 @@ export const handleFetchOwaLesson =
         } catch (fetchError) {
           log.error("Failed to fetch OWA lesson data via tRPC", { fetchError });
 
-          // Handle specific tRPC errors
-          if (
-            fetchError &&
-            typeof fetchError === "object" &&
-            "message" in fetchError
-          ) {
-            const message = fetchError.message as string;
-            if (message.includes("copyright")) {
-              handleStoreError(
-                set,
-                {
-                  type: "copyright",
-                  message:
-                    "This lesson contains copyright-restricted resources and cannot be exported.",
-                },
-                {
-                  context: "handleFetchOwaLesson",
-                  documentType: docType,
-                },
-              );
-              return;
-            } else if (message.includes("content-guidance")) {
-              handleStoreError(
-                set,
-                {
-                  type: "restrictedContentGuidance",
-                  message:
-                    "This lesson contains restricted content-guidance themes and cannot be exported.",
-                },
-                {
-                  context: "handleFetchOwaLesson",
-                  documentType: docType,
-                },
-              );
-              return;
-            }
-          }
-
           handleStoreError(set, fetchError, {
             context: "handleFetchOwaLesson",
             documentType: docType,

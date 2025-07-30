@@ -16,6 +16,7 @@ const AdditionalMaterialsError = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsErrorProps>) => {
   const docType = useResourcesStore(docTypeSelector);
+  const error = useResourcesStore((state) => state.error);
 
   const docTypeDisplayName = docType
     ? resourceTypesConfig[docType].displayName
@@ -33,6 +34,11 @@ const AdditionalMaterialsError = ({
       <OakP $textAlign={"center"} $font="body-2">
         {`An error occurred while generating your ${docTypeDisplayName ?? "teaching material"}.`}
       </OakP>
+      {error?.message && (
+        <OakP $textAlign={"center"} $font="body-2" $color="text-error">
+          {error.message}
+        </OakP>
+      )}
       <OakFlex
         $width={"100%"}
         $flexDirection={"column"}
