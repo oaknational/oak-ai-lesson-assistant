@@ -1,5 +1,15 @@
 import invariant from "tiny-invariant";
 
+/*
+ * Google Cloud Storage (GCS) bucket configuration:
+ * - Grant the `allUsers` principal the "Storage Object Viewer" role
+ *   (roles/storage.objectViewer) to allow public read access.
+ *
+ * Service account permissions:
+ * - Grant the service account the "Storage Object Creator" role
+ *   (roles/storage.objectCreator) to allow uploading new objects to the bucket.
+ */
+
 invariant(
   process.env.GCS_LATEX_SERVICE_ACCOUNT_EMAIL,
   "GCS_LATEX_SERVICE_ACCOUNT_EMAIL is required",
