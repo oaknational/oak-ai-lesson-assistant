@@ -4,7 +4,6 @@ import type {
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { z } from "zod";
@@ -42,11 +41,11 @@ const errorType = z.enum([
 ]);
 export type ErrorType = z.infer<typeof errorType>;
 
-export const errorResponse = z.object({
+export const teachingMaterialError = z.object({
   type: errorType,
   message: z.string(),
 });
-export type ErrorResponse = z.infer<typeof errorResponse>;
+export type TeachingMaterialError = z.infer<typeof teachingMaterialError>;
 
 export type ResourcesState = {
   id: string | null;
@@ -62,7 +61,7 @@ export type ResourcesState = {
   formState: StepOneFormState;
   moderation?: ModerationResult;
   threatDetection?: boolean;
-  error: ErrorResponse | null;
+  error: TeachingMaterialError | null;
   refinementGenerationHistory: AdditionalMaterialSchemas[];
 
   actions: {

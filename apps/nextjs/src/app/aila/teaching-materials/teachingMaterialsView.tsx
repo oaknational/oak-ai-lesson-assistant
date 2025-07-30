@@ -25,7 +25,6 @@ import {
   useResourcesActions,
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
-import type { ErrorResponse } from "@/stores/resourcesStore";
 import {
   docTypeSelector,
   pageDataSelector,
@@ -39,7 +38,7 @@ export type TeachingMaterialsPageProps = {
   initialStep?: number;
   id?: string;
   source?: "aila" | "owa";
-  error?: string | ErrorResponse;
+  error?: Error;
   lessonId?: string;
   queryParams?: {
     lessonSlug: string;
