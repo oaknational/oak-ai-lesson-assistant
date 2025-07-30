@@ -55,10 +55,12 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const docType = useResourcesStore(docTypeSelector);
   const year = useResourcesStore(yearSelector);
   const error = useResourcesStore((state) => state.error);
+  const lessonPlan = useResourcesStore((state) => state.pageData.lessonPlan);
+  const source = useResourcesStore((state) => state.source);
   const hasRestrictedWorks = useResourcesStore(
     (state) => state.pageData.lessonPlan.hasRestrictedWorks,
   );
-
+  const state = useResourcesStore((state) => state);
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
   const {
@@ -68,6 +70,8 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
     refineMaterial,
   } = useResourcesActions();
   const { setDialogWindow } = useDialog();
+
+  console.log("TM STAGE,state", state);
 
   handleDialogSelection({
     threatDetected,
@@ -79,7 +83,9 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
     0: {
       title: "Select teaching material",
       subTitle:
-        "Choose the downloadable resource you'd like to create with Aila for your lesson.",
+        source === "owa" && lessonPlan.title
+          ? `Choose the downloadable resource you'd like to create for the lesson: ${lessonPlan.title}.`
+          : "Choose the downloadable resource you'd like to create with Aila for your lesson.",
     },
     1: {
       title: "What are you teaching?",

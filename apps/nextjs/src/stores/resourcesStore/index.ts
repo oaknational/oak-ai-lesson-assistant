@@ -33,10 +33,12 @@ import type { ResourcesState } from "./types";
 export * from "./types";
 
 const DEFAULT_STATE = {
+  id: null,
   stepNumber: 0,
   isLoadingLessonPlan: false,
   isResourcesLoading: false,
   isResourceRefining: false,
+  source: "aila" as const,
   isDownloading: false,
   error: null,
   pageData: {
@@ -80,7 +82,6 @@ export const createResourcesStore = (
   initState?: Partial<ResourcesState>,
 ) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
-    id: null,
     ...DEFAULT_STATE,
     ...initState,
     source: props.source ?? "aila",
@@ -92,7 +93,9 @@ export const createResourcesStore = (
       setPageData: handleSetPageData(set, get),
       setGeneration: handleSetGeneration(set, get),
       setDocType: handleSetDocType(set, get),
+      setId: (id: string | null) => set({ id }),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
+      setSource: (source: "aila" | "owa") => set({ source }),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
       setIsResourceRefining: handleSetIsResourceRefining(set, get),
       setIsResourceDownloading: (isDownloading: boolean) =>
@@ -125,8 +128,7 @@ export const createResourcesStore = (
       analytics: handleAnalytics(set, get, track),
 
       // Reset store to default state
-      resetToDefault: () =>
-        set((state) => ({ ...DEFAULT_STATE, id: state.id })),
+      resetToDefault: () => set((state) => ({ ...DEFAULT_STATE })),
     },
   }));
 
