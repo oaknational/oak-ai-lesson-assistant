@@ -5,7 +5,7 @@ export type LessonContentSchema = {
   title: string;
   content_guidance?: string[];
   transcript_sentences?: string[];
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type LessonOverviewResponse = {
@@ -28,7 +28,7 @@ export type TRPCWorksResponse = {
         attribution?: string;
         restriction_level: string;
         tpc_contracts_list: number[];
-        [key: string]: any;
+        [key: string]: unknown;
       }[];
     }[];
   };
