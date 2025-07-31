@@ -185,7 +185,7 @@ export const getLessonDetails = (
     lines.push("**Transcript**:");
     lines.push(lessonPlan.transcript);
   }
-  console.log(lines);
+
   return lines.join("\n");
 };
 
