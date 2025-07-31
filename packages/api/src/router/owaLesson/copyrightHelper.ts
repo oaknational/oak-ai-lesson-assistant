@@ -7,8 +7,6 @@ import type { LessonContentSchema } from "./schemas";
 const log = aiLogger("additional-materials");
 
 const RESTRICTED_CONTENT_GUIDANCE_TYPES = [
-  "Depiction or discussion of discriminatory behaviour",
-  "Depiction or discussion of sensitive content",
   "Depiction or discussion of sexual violence",
   "Depiction or discussion of sexual content",
   "Depiction or discussion of mental health issues",
