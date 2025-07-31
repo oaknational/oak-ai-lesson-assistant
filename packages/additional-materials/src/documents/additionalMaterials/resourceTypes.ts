@@ -139,10 +139,11 @@ export const resourceTypesConfig: Record<
     ],
     owaLessonParts: [
       "learningOutcome",
-      "learningCycles",
       "keyLearningPoints",
       "misconceptions",
       "keywords",
+      "starterQuiz",
+      "exitQuiz",
       "transcript",
     ],
   },
@@ -164,7 +165,15 @@ export const resourceTypesConfig: Record<
       "misconceptions",
       "keywords",
     ],
-    owaLessonParts: ["transcript"],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
+    ],
   },
   "additional-starter-quiz": {
     // Backend config
@@ -185,7 +194,15 @@ export const resourceTypesConfig: Record<
       "misconceptions",
       "keywords",
     ],
-    owaLessonParts: ["transcript"],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
+    ],
   },
   "additional-exit-quiz": {
     // Backend config
@@ -207,7 +224,15 @@ export const resourceTypesConfig: Record<
       "misconceptions",
       "keywords",
     ],
-    owaLessonParts: ["transcript"],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
+    ],
   },
 } as const;
 

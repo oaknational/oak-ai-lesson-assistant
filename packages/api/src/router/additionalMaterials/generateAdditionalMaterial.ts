@@ -13,6 +13,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
+import { pick } from "remeda";
 
 import type { RateLimitInfo } from "../../types";
 import { recordSafetyViolation } from "./safetyUtils";
@@ -35,19 +36,6 @@ export type GenerateAdditionalMaterialResponse = {
   resourceId: string;
 };
 
-function pickKeys<T extends object, K extends keyof T>(
-  obj: T,
-  keys: readonly K[],
-): Partial<T> {
-  const result: Partial<T> = {};
-  for (const key of keys) {
-    if (key in obj) {
-      result[key] = obj[key];
-    }
-  }
-  return result;
-}
-
 /**s
  * Generates additional educational material based on the provided input
  */
@@ -65,7 +53,7 @@ export async function generateAdditionalMaterial({
       ? resourceTypes.lessonParts
       : resourceTypes.owaLessonParts;
 
-  const lesson = pickKeys(input.context.lessonPlan, [
+  const lesson = pick(input.context.lessonPlan, [
     "title",
     "year",
     "keyStage",

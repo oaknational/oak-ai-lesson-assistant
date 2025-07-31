@@ -260,7 +260,8 @@ export const getQuizAvoids = () => {
 - Negatively phrased questions (e.g., "Which is NOT…")
 - "All of the above" or "None of the above" options
 - True/false questions
-- Answers should always start with lower-case letters unless they are proper nouns or acronyms. Cities and countries should be capitalised.`;
+- Answers should always start with lower-case letters unless they are proper nouns or acronyms. Cities and countries should be capitalised.
+- Do not repeat questions from the lesson details`;
 };
 
 export const getQuizSystemMessage = (quizType: "starter" | "exit") => {
