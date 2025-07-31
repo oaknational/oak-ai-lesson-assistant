@@ -16,6 +16,7 @@ import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsM
 import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
 import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
 import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
+import AdditionalMaterialsUserFeedback from "./ContentOptions/AdditionalMaterialsUserFeedback";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -82,6 +83,10 @@ const dialogTitlesAndIcons: Record<
     iconName: "warning",
   },
   "additional-materials-start-again": {
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-user-feedback": {
     title: "",
     iconName: null,
   },
@@ -183,6 +188,9 @@ const DialogContents = ({
             )}
             {dialogWindow === "additional-materials-error" && (
               <AdditionalMaterialsError closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-user-feedback" && (
+              <AdditionalMaterialsUserFeedback closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>

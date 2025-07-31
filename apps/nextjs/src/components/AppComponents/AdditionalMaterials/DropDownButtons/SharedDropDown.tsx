@@ -87,7 +87,11 @@ export const SharedDropDown = ({
                   {errorMessage}
                 </OakP>
               )}
-              <OakFlex $mt="space-between-s" $justifyContent="flex-end">
+              <OakFlex
+                $gap={"space-between-xs"}
+                $mt="space-between-s"
+                $justifyContent="flex-end"
+              >
                 <OakSmallSecondaryButton
                   onClick={() => {
                     if (
@@ -107,6 +111,15 @@ export const SharedDropDown = ({
                   }}
                 >
                   Confirm
+                </OakSmallSecondaryButton>
+                <OakSmallSecondaryButton
+                  onClick={() => {
+                    setCustomValue("");
+                    setSelectedValue("Subject");
+                    setActiveDropdown(null);
+                  }}
+                >
+                  Cancel
                 </OakSmallSecondaryButton>
               </OakFlex>
             </OakBox>
