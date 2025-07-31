@@ -21,12 +21,13 @@ import { router } from "../trpc";
 import {
   generateAdditionalMaterial,
   generatePartialLessonPlan,
+  validateCurriculumApiEnv,
 } from "./additionalMaterials/helpers";
-import { checkForRestrictedContentGuidance } from "./owaLesson/copyrightHelper";
 import {
   lessonOverviewQuery,
   tcpWorksByLessonSlugQuery,
 } from "./owaLesson/queries";
+import { checkForRestrictedContentGuidance } from "./owaLesson/restrictionsHelper";
 import {
   lessonBrowseDataByKsSchema,
   lessonContentSchema,
@@ -54,21 +55,7 @@ export const additionalMaterialsRouter = router({
         userId: ctx.auth.userId,
       });
 
-      const AUTH_KEY = process.env.CURRICULUM_API_AUTH_KEY;
-      const AUTH_TYPE = process.env.CURRICULUM_API_AUTH_TYPE;
-      const GRAPHQL_ENDPOINT = process.env.CURRICULUM_API_URL;
-
-      if (!AUTH_KEY || !AUTH_TYPE || !GRAPHQL_ENDPOINT) {
-        log.error("Missing environment variables", {
-          AUTH_KEY: !!AUTH_KEY,
-          AUTH_TYPE: !!AUTH_TYPE,
-          GRAPHQL_ENDPOINT: !!GRAPHQL_ENDPOINT,
-        });
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Missing required environment variables",
-        });
-      }
+      const { authKey, authType, graphqlEndpoint } = validateCurriculumApiEnv();
 
       if (!ctx.auth.userId) {
         throw new TRPCError({
@@ -79,12 +66,12 @@ export const additionalMaterialsRouter = router({
 
       try {
         // Fetch lesson data
-        const lessonResponse = await fetch(GRAPHQL_ENDPOINT, {
+        const lessonResponse = await fetch(graphqlEndpoint, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-oak-auth-key": AUTH_KEY,
-            "x-oak-auth-type": AUTH_TYPE,
+            "x-oak-auth-key": authKey,
+            "x-oak-auth-type": authType,
           },
           body: JSON.stringify({
             query: lessonOverviewQuery,
@@ -109,12 +96,12 @@ export const additionalMaterialsRouter = router({
         }
 
         // Fetch TCP data`
-        const tcpResponse = await fetch(GRAPHQL_ENDPOINT, {
+        const tcpResponse = await fetch(graphqlEndpoint, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-oak-auth-key": AUTH_KEY,
-            "x-oak-auth-type": AUTH_TYPE,
+            "x-oak-auth-key": authKey,
+            "x-oak-auth-type": authType,
           },
           body: JSON.stringify({
             query: tcpWorksByLessonSlugQuery,
