@@ -2,7 +2,6 @@ import { getHubspotContactByEmail } from "@oakai/core/src/analytics/hubspotClien
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

@@ -23,6 +23,7 @@ export const handleRefineMaterial =
       refinementGenerationHistory: currentHistory,
       id: originalId,
       pageData: { lessonPlan },
+      source,
     } = get();
 
     log.info("Setting isResourceRefining to TRUE");
@@ -49,6 +50,7 @@ export const handleRefineMaterial =
         },
         adaptsOutputId: originalId, // ID of the material being refined
         lessonId: lessonPlan.lessonId,
+        source,
       };
 
       const parsedPayload =

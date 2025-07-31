@@ -87,7 +87,11 @@ const TeachingMaterialsLayout = ({
               <OakHeading as="h1" tag="h1" $font="heading-5">
                 {title}
               </OakHeading>
-              <OakP $mv="space-between-ssx" $font="body-2" $color="grey70">
+              <OakP
+                $mv="space-between-ssx"
+                $font="body-2"
+                $color="text-primary"
+              >
                 {subTitle}
               </OakP>
             </OakFlex>

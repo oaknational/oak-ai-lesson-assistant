@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
 import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
-import { type AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import {
   type RefinementOption,
   getResourceType,
@@ -266,7 +265,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
-                    Start again
+                    Create more
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
                     <OakSecondaryButton
@@ -309,7 +308,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
-                    Start again
+                    Create more
                   </MobileNoLetterSpacingButton>
                   <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
                     <MobileNoLetterSpacingButton

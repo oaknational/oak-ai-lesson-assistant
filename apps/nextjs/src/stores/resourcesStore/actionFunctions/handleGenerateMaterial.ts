@@ -48,7 +48,6 @@ export const handleGenerateMaterial =
         await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
           {
             documentType: docTypeParsed,
-
             context: {
               lessonPlan: {
                 ...lessonPlan,
@@ -59,6 +58,7 @@ export const handleGenerateMaterial =
             },
             resourceId: get().id, // Use existing resourceId
             lessonId: get().pageData.lessonPlan.lessonId,
+            source: get().source,
           },
         );
       get().actions.setIsResourcesLoading(false);

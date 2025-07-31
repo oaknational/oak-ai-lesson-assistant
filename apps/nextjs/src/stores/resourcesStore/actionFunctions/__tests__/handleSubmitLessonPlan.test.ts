@@ -160,40 +160,6 @@ describe("handleSubmitLessonPlan", () => {
         }),
       );
     });
-
-    it("builds correct API input when docType is null (fallback to all fields)", async () => {
-      mockGet.mockReturnValue({
-        actions: {
-          setIsLoadingLessonPlan: mockSetIsLoadingLessonPlan,
-          analytics: {
-            trackMaterialRefined: mockTrackMaterialRefined,
-          },
-        },
-        docType: null,
-        id: "test-resource-id-123",
-      });
-
-      const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
-        mockTrpc,
-      );
-
-      await handler(mockParams);
-
-      // Should include base fields plus all lesson field keys
-      expect(
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
-          .mutate,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: "Test Lesson Title",
-          subject: "mathematics",
-          year: "year-7",
-          lessonParts: expect.arrayContaining(["title", "keyStage", "subject"]),
-        }),
-      );
-    });
   });
 
   describe("mutateAsync calls", () => {

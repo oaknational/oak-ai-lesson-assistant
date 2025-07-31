@@ -25,21 +25,28 @@ export const handleStoreError = (
     });
 
     errorMessage = error.message;
-
-    // Determine error type based on message content
-    if (errorMessage.includes("RateLimitExceededError")) {
-      errorType = "rate_limit";
-    } else if (errorMessage.includes("UserBannedError")) {
-      errorType = "banned";
-    }
   }
   // Handle standard Error
   else if (error instanceof Error) {
-    errorMessage = error.message || errorMessage;
+    errorMessage = error.message ?? errorMessage;
   }
   // Handle non-Error objects
   else if (error) {
     errorMessage = String(error);
+  }
+
+  if (errorMessage.includes("RateLimitExceededError")) {
+    errorType = "rate_limit";
+  } else if (errorMessage.includes("UserBannedError")) {
+    errorType = "banned";
+  } else if (errorMessage.includes("copyright")) {
+    errorType = "copyright";
+    errorMessage =
+      "This lesson contains copyright-restricted assets and cannot be exported.";
+  } else if (errorMessage.includes("content-guidance")) {
+    errorType = "restrictedContentGuidance";
+    errorMessage =
+      "This lesson contains restricted content-guidance themes and cannot be generated.";
   }
 
   // Update store with error information

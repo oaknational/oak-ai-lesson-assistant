@@ -10,8 +10,8 @@ const log = aiLogger("additional-materials");
 
 export const handleCreateMaterialSession =
   (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
-  async (docType: string | null) => {
-    set({ stepNumber: 1 });
+  async (docType: string | null, stepNumber?: number) => {
+    set({ stepNumber: stepNumber ?? 1 });
 
     log.info("Creating material session", { docType });
     const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
