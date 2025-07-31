@@ -96,7 +96,9 @@ const StepOne = ({
         <SharedNavigationButtons
           backLabel="Back a step"
           nextLabel={
-            lesson ? "Create teaching material" : "Next, provide lesson details"
+            lesson.lessonId
+              ? "Create teaching material"
+              : "Next, provide lesson details"
           }
           onBackClick={() => {}} // href used here instead
           backHref={getAilaUrl("start")}
