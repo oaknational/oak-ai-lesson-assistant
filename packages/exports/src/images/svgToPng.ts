@@ -6,19 +6,14 @@ const log = aiLogger("exports");
 
 export function svgToPng(
   svgString: string,
-  options: {
-    width?: number;
-    height?: number;
-  } = {},
-): Buffer {
+): { buffer: Buffer; width: number; height: number } {
   try {
+    log.info(`Converting SVG to PNG`);
     const resvg = new Resvg(svgString, {
-      fitTo: options.width
-        ? {
-            mode: "width",
-            value: options.width,
-          }
-        : undefined,
+      fitTo: {
+        mode: "zoom",
+        value: 3,
+      },
       background: "rgba(255, 255, 255, 0)",
       font: {
         loadSystemFonts: true,
@@ -29,7 +24,11 @@ export function svgToPng(
     const pngBuffer = pngData.asPng();
 
     log.info(`Converted SVG to PNG (${pngBuffer.length} bytes)`);
-    return pngBuffer;
+    return {
+      buffer: pngBuffer,
+      width: pngData.width,
+      height: pngData.height,
+    };
   } catch (error) {
     throw new Error("SVG to PNG conversion failed", { cause: error });
   }

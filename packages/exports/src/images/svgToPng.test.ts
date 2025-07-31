@@ -52,10 +52,10 @@ describe("svgToPng", () => {
     );
     const expectedPng = readFileSync("src/images/fixtures/simple-equation.png");
 
-    const result = svgToPng(svg, { width: 600 });
+    const result = svgToPng(svg);
 
-    expect(result).toBeInstanceOf(Buffer);
-    comparePngWithFixture(result, expectedPng, "simple-equation");
+    expect(result.buffer).toBeInstanceOf(Buffer);
+    comparePngWithFixture(result.buffer, expectedPng, "simple-equation");
   });
 
   it("converts quadratic formula SVG to PNG", () => {
@@ -67,10 +67,10 @@ describe("svgToPng", () => {
       "src/images/fixtures/quadratic-formula.png",
     );
 
-    const result = svgToPng(svg, { width: 600 });
+    const result = svgToPng(svg);
 
-    expect(result).toBeInstanceOf(Buffer);
-    comparePngWithFixture(result, expectedPng, "quadratic-formula");
+    expect(result.buffer).toBeInstanceOf(Buffer);
+    comparePngWithFixture(result.buffer, expectedPng, "quadratic-formula");
   });
 
   it("converts display mode fraction SVG to PNG", () => {
@@ -82,22 +82,10 @@ describe("svgToPng", () => {
       "src/images/fixtures/fraction-display.png",
     );
 
-    const result = svgToPng(svg, { width: 600 });
+    const result = svgToPng(svg);
 
-    expect(result).toBeInstanceOf(Buffer);
-    comparePngWithFixture(result, expectedPng, "fraction-display");
+    expect(result.buffer).toBeInstanceOf(Buffer);
+    comparePngWithFixture(result.buffer, expectedPng, "fraction-display");
   });
 
-  it("respects width option", () => {
-    const svg = readFileSync(
-      "src/images/fixtures/simple-equation.svg",
-      "utf-8",
-    );
-
-    const smallPng = svgToPng(svg, { width: 300 });
-    const largePng = svgToPng(svg, { width: 600 });
-
-    // Different widths should produce different size buffers
-    expect(smallPng.length).toBeLessThan(largePng.length);
-  });
 });
