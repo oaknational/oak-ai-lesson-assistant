@@ -1,5 +1,6 @@
 import { combinePrompts, quizToLLMMessages } from "./OpenAIRanker";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import type { QuizQuestionWithRawJson } from "./interfaces";
 
 describe("quizToLLMMessagesTest", () => {
   it("Should convert into valid OpenAI message format", () => {
@@ -51,7 +52,7 @@ describe("quizToLLMMessagesTest", () => {
         },
       ],
     };
-    const result = quizToLLMMessages(testInput);
+    const result = quizToLLMMessages(testInput as QuizQuestionWithRawJson);
     console.log(JSON.stringify(result));
     const ans = true;
     expect(ans).toBe(true);
@@ -109,7 +110,10 @@ describe("fullOpenAIQuiz", () => {
         },
       ],
     };
-    const result = combinePrompts(testLessonPlan, testInput);
+    const result = combinePrompts(
+      testLessonPlan,
+      testInput as QuizQuestionWithRawJson,
+    );
     console.log(JSON.stringify(result));
     const ans = true;
     expect(ans).toBe(true);
