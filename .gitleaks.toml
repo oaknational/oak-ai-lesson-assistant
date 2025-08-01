@@ -1,0 +1,27 @@
+# Title for the gitleaks configuration
+title = "Gitleaks Config"
+
+[allowlist]
+paths = [
+    "node_modules",
+    ".*\\.env$",
+    ".*\\.env\\..*$"
+]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|secret)["']?\s*[:=]\s*["']?([a-zA-Z0-9]{32,})["']?'''
+secret-group = 2
+
+[[rules]]
+id = "aws-access-key-id"
+description = "AWS Access Key ID"
+regex = '''(A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+secret-group = 1
+
+[[rules]]
+id = "elastic-key"
+description = "Elastic Key"
+regex = '''(?i)(?:elasticsearch|elastic)(?:[0-9a-z\-_\t .]{0,20})(?:[\s|']|[\s|"]){0,3}(?:=|>|:=|\|\|:|<=|=>|:)(?:'|"|\s|=|\x60){0,5}([a-z0-9]{20,50})(?:['|"|\n|\r|\s|\x60|;]|$)'''
+secret-group = 1
