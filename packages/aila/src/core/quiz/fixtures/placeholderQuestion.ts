@@ -30,7 +30,7 @@ export const placeholderQuiz: QuizQuestionWithRawJson[] = [
                   type: "text",
                 },
               ],
-              answerIsDefault: true,
+              answer_is_default: true,
             },
           ],
         },
