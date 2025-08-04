@@ -24,7 +24,6 @@ import {
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
 
-import { SurveyDialogLauncher } from "@/app/aila/lesson/[id]/download/SurveyDialogLauncher";
 import AiIcon from "@/components/AiIcon";
 import {
   useResourcesActions,
@@ -129,6 +128,13 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     }
   }, [isResourceRefining, refinementHistory.length]);
 
+  useEffect(() => {
+    if (isDownloading && !userHasSeenSurvey) {
+      setUserHasSeenSurvey(true);
+      setDialogWindow("additional-materials-user-feedback");
+    }
+  }, [isDownloading, setDialogWindow, userHasSeenSurvey]);
+
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {
       return;
@@ -177,11 +183,6 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
         source="teachingMaterial"
       />
     );
-  }
-
-  if (isDownloading && !userHasSeenSurvey) {
-    setUserHasSeenSurvey(true);
-    setDialogWindow("additional-materials-user-feedback");
   }
 
   return (
