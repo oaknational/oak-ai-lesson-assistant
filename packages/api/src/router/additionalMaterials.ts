@@ -27,7 +27,10 @@ import {
   lessonOverviewQuery,
   tcpWorksByLessonSlugQuery,
 } from "./owaLesson/queries";
-import { checkForRestrictedContentGuidance } from "./owaLesson/restrictionsHelper";
+import {
+  checkForRestrictedContentGuidance,
+  checkForRestrictedWorks,
+} from "./owaLesson/restrictionsHelper";
 import {
   lessonBrowseDataByKsSchema,
   lessonContentSchema,
@@ -169,16 +172,7 @@ export const additionalMaterialsRouter = router({
         // checkForRestrictedFeatures(parsedBrowseData);
 
         // Check for restricted works
-        const worksList =
-          tcpData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
-        const hasRestrictedWorks = worksList.length > 0;
-
-        log.info(
-          "Has restricted works:",
-          hasRestrictedWorks,
-          "Works list:",
-          worksList,
-        );
+        const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
 
         // Transform to lesson plan format
         const transformedLesson = transformOwaLessonToLessonPlan(

@@ -6,8 +6,6 @@ import React from "react";
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
-import { OakFlex } from "@oaknational/oak-components";
-
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
 import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
@@ -56,11 +54,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const year = useResourcesStore(yearSelector);
   const error = useResourcesStore((state) => state.error);
   const lessonPlan = useResourcesStore((state) => state.pageData.lessonPlan);
-  const source = useResourcesStore((state) => state.source);
-  const hasRestrictedWorks = useResourcesStore(
-    (state) => state.pageData.lessonPlan.hasRestrictedWorks,
-  );
-  const state = useResourcesStore((state) => state);
+
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
   const {
@@ -110,11 +104,6 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
   return (
     <>
-      {hasRestrictedWorks && (
-        <OakFlex $alignItems="center">
-          <span>Some works in this lesson are restricted. </span>
-        </OakFlex>
-      )}
       <ResourcesLayout
         title={title}
         subTitle={subTitle}

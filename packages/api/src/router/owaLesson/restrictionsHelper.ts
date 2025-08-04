@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 
 import type { LessonContentSchema } from "./schemas";
+import type { TRPCWorksResponse } from "./types";
 
 const log = aiLogger("additional-materials");
 
@@ -40,4 +41,29 @@ export function checkForRestrictedContentGuidance(
         "content-guidance: This lesson contains restricted content-guidance themes and cannot be exported.",
     });
   }
+}
+
+export function checkForRestrictedWorks(tcpData: TRPCWorksResponse): boolean {
+  const worksList = tcpData.data?.tcpWorksByLessonSlug?.[0]?.works_list ?? [];
+  const hasRestrictedWorks = worksList.length > 0;
+
+  if (hasRestrictedWorks) {
+    log.error("Restricted tpc", {
+      restrictedWorks: JSON.stringify(hasRestrictedWorks),
+    });
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "restricted-third-party-content: This lesson contains restricted content and cannot be exported.",
+    });
+  }
+
+  log.info(
+    "Has restricted works:",
+    hasRestrictedWorks,
+    "Works list:",
+    worksList,
+  );
+
+  return hasRestrictedWorks;
 }

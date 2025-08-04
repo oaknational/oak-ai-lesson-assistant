@@ -47,6 +47,10 @@ export const handleStoreError = (
     errorType = "restrictedContentGuidance";
     errorMessage =
       "This lesson contains restricted content-guidance themes and cannot be generated.";
+  } else if (errorMessage.includes("restricted-third-party-content")) {
+    errorType = "restrictedThirdPartyContent";
+    errorMessage =
+      "This lesson contains restricted third-party content and cannot be generated.";
   }
 
   // Update store with error information

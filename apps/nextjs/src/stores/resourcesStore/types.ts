@@ -37,6 +37,7 @@ const errorType = z.enum([
   "toxic",
   "restrictedContentGuidance",
   "copyright",
+  "restrictedThirdPartyContent",
   "unknown",
 ]);
 export type ErrorType = z.infer<typeof errorType>;
