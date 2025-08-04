@@ -8,6 +8,7 @@ import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
+import { ConsentDecorator } from "@/storybook/decorators/ConsentDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
@@ -20,6 +21,7 @@ const meta = {
     TeachingMaterialsStoreDecorator,
     DialogContentDecorator,
     AnalyticsDecorator,
+    ConsentDecorator,
   ],
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
