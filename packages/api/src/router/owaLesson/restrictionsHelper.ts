@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
 
+import { restrictedLessonIds } from "./restrictedLessonIds";
 import type { LessonContentSchema } from "./schemas";
 import type { TRPCWorksResponse } from "./types";
 
@@ -66,4 +67,15 @@ export function checkForRestrictedWorks(tcpData: TRPCWorksResponse): boolean {
   );
 
   return hasRestrictedWorks;
+}
+
+export function checkForRestrictedLessonId(lessonId: string) {
+  if (restrictedLessonIds.includes(lessonId)) {
+    log.error("Restricted lesson detected", { lessonId });
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "restricted-third-party-content: This lesson is restricted and cannot be exported.",
+    });
+  }
 }

@@ -24,7 +24,6 @@ export const lessonBrowseDataByKsSchema =
   syntheticUnitvariantLessonsSchema.omit({
     supplementary_data: true,
     null_unitvariant_id: true,
-    lesson_data: true,
   });
 
 export type LessonBrowseDataByKsSchema = z.infer<

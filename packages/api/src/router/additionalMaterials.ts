@@ -29,6 +29,7 @@ import {
 } from "./owaLesson/queries";
 import {
   checkForRestrictedContentGuidance,
+  checkForRestrictedLessonId,
   checkForRestrictedWorks,
 } from "./owaLesson/restrictionsHelper";
 import {
@@ -167,11 +168,10 @@ export const additionalMaterialsRouter = router({
 
         const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData);
 
-        // Check for restricted content
         checkForRestrictedContentGuidance(parsedLesson.content_guidance);
-        // checkForRestrictedFeatures(parsedBrowseData);
 
-        // Check for restricted works
+        checkForRestrictedLessonId(browseData.lesson_data.lesson_uid);
+
         const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
 
         // Transform to lesson plan format
