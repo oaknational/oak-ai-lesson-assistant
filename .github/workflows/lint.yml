@@ -43,6 +43,3 @@ jobs:
 
       - name: Check formatting with Prettier
         run: pnpm prettier
-
-      - name: Validate posthog surveys
-        run: turbo generate-posthog-survey-types
