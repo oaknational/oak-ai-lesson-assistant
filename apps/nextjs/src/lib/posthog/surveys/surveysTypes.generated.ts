@@ -1,6 +1,6 @@
 // This file is auto-generated. Do not edit manually.
 // Run 'pnpm run generate-survey-types' to regenerate.
-// Generated on: 2025-08-04T10:09:07.076Z
+// Generated on: 2025-08-04T10:41:37.431Z
 // Source: PostHog API (7 surveys found)
 
 /**

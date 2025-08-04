@@ -14,7 +14,7 @@
     "dev": "FORCE_COLOR=1 SENTRY_SUPPRESS_TURBOPACK_WARNING=1 pnpm with-env next dev --port 2525 --turbo | pino-pretty -C",
     "dev-trace-deprecation": "NODE_OPTIONS=\"--trace-deprecation\" next dev --port 2525 | pino-pretty -C",
     "dev:sentry": "FORCE_COLOR=1 pnpm with-env next dev --port 2525 | pino-pretty -C",
-    "generate-posthog-survey-types": "pnpm with-env pnpm --filter nextjs exec tsx ./scripts/generate-posthog-survey-types.ts",
+    "generate-posthog-survey-types": "pnpm with-env pnpm tsx ./scripts/generate-posthog-survey-types.ts",
     "lint": "eslint .",
     "lint-debug": "eslint --debug .",
     "lint:fix": "eslint . --fix",
