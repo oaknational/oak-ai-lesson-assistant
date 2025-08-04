@@ -39,10 +39,11 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       log.info("QUIZ BELOW");
       log.info(JSON.stringify(quiz));
       expect(quiz).toBeDefined();
-      expect(Array.isArray(quiz)).toBe(true);
-      expect(quiz[0]).toHaveProperty("question");
-      expect(quiz[0]).toHaveProperty("answers");
-      expect(quiz[0]).toHaveProperty("distractors");
+      expect(quiz.version).toBe("v2");
+      expect(Array.isArray(quiz.questions)).toBe(true);
+      expect(quiz.questions.length).toBeGreaterThan(0);
+      expect(quiz.questions[0]).toHaveProperty("question");
+      expect(quiz.questions[0]).toHaveProperty("questionType");
     });
 
     it("should create an exit quiz", async () => {
@@ -52,12 +53,11 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quiz).toBeDefined();
-      expect(Array.isArray(quiz)).toBe(true);
-      //   Once corrected make it length 6.
-      //   expect(quiz.length).toBe(1);
-      expect(quiz[0]).toHaveProperty("question");
-      expect(quiz[0]).toHaveProperty("answers");
-      expect(quiz[0]).toHaveProperty("distractors");
+      expect(quiz.version).toBe("v2");
+      expect(Array.isArray(quiz.questions)).toBe(true);
+      expect(quiz.questions.length).toBeGreaterThan(0);
+      expect(quiz.questions[0]).toHaveProperty("question");
+      expect(quiz.questions[0]).toHaveProperty("questionType");
     });
 
     it("should handle invalid quiz paths", async () => {
