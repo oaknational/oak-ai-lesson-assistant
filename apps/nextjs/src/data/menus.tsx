@@ -53,8 +53,9 @@ export const legalMenuItems: MenuItem[] = [
   },
   {
     title: "Cookie policy",
-    href: "/legal/cookies",
+    href: "https://www.thenational.academy/legal/cookie-policy",
     id: "cookies",
+    target: "_blank",
   },
   {
     title: "Manage cookie settings",
@@ -69,8 +70,9 @@ export const legalMenuItems: MenuItem[] = [
   },
   {
     title: "Accessibility statement",
-    href: "/legal/accessibility-statement",
+    href: "https://www.thenational.academy/legal/accessibility-statement",
     id: "accessibility-statement",
+    target: "_blank",
   },
   {
     title: "Safeguarding statement",
