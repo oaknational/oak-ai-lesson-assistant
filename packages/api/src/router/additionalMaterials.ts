@@ -30,6 +30,7 @@ import {
 import {
   checkForRestrictedContentGuidance,
   checkForRestrictedLessonId,
+  checkForRestrictedTranscript,
   checkForRestrictedWorks,
 } from "./owaLesson/restrictionsHelper";
 import {
@@ -70,7 +71,7 @@ export const additionalMaterialsRouter = router({
 
       try {
         // Fetch lesson data
-        const lessonResponse = await fetch(graphqlEndpoint, {
+        const lessonResponse = await fetch(String(graphqlEndpoint), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -100,7 +101,7 @@ export const additionalMaterialsRouter = router({
         }
 
         // Fetch TCP data`
-        const tcpResponse = await fetch(graphqlEndpoint, {
+        const tcpResponse = await fetch(String(graphqlEndpoint), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -174,6 +175,17 @@ export const additionalMaterialsRouter = router({
 
         const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
 
+        const hasRestrictedTranscript =
+          checkForRestrictedTranscript(parsedBrowseData);
+
+        if (parsedLesson.is_legacy) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message:
+              "This lesson is legacy lesson and cannot be used for a new teaching material.",
+          });
+        }
+
         // Transform to lesson plan format
         const transformedLesson = transformOwaLessonToLessonPlan(
           parsedLesson,
@@ -182,7 +194,7 @@ export const additionalMaterialsRouter = router({
 
         const lesson = {
           ...transformedLesson,
-          transcript: !hasRestrictedWorks
+          transcript: !hasRestrictedTranscript
             ? String(rawLesson.transcript_sentences)
             : undefined,
           hasRestrictedWorks,

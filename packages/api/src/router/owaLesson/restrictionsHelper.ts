@@ -1,9 +1,13 @@
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
+import { parse } from "next/dist/build/swc";
 
 import { restrictedLessonIds } from "./restrictedLessonIds";
-import type { LessonContentSchema } from "./schemas";
+import type {
+  LessonBrowseDataByKsSchema,
+  LessonContentSchema,
+} from "./schemas";
 import type { TRPCWorksResponse } from "./types";
 
 const log = aiLogger("additional-materials");
@@ -79,3 +83,16 @@ export function checkForRestrictedLessonId(lessonId: string) {
     });
   }
 }
+
+export const checkForRestrictedTranscript = (
+  parsedBrowseData: LessonBrowseDataByKsSchema,
+): boolean => {
+  if (
+    parsedBrowseData.programme_fields.subject === "English" ||
+    (parsedBrowseData.programme_fields.subject === "Geography" &&
+      parsedBrowseData.programme_fields.phase === "primary")
+  ) {
+    return true;
+  }
+  return false;
+};
