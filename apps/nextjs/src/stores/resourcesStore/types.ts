@@ -2,9 +2,8 @@ import type {
   AdditionalMaterialSchemas,
   AdditionalMaterialType,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { z } from "zod";
@@ -16,10 +15,11 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
+import type { LoadOwaDataParams } from "./actionFunctions/handleFetchOwaLesson";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
 
 export type PageData = {
-  lessonPlan: AilaPersistedChat["lessonPlan"] & { lessonId: string };
+  lessonPlan: LessonPlanSchemaTeachingMaterials;
   transcript?: string | null;
 };
 
@@ -31,17 +31,26 @@ export type StepOneFormState = {
   activeDropdown: string | null;
 };
 
-const errorType = z.enum(["rate_limit", "banned", "toxic", "unknown"]);
+const errorType = z.enum([
+  "rate_limit",
+  "banned",
+  "toxic",
+  "restrictedContentGuidance",
+  "copyright",
+  "restrictedThirdPartyContent",
+  "unknown",
+]);
 export type ErrorType = z.infer<typeof errorType>;
 
-export const errorResponse = z.object({
+export const teachingMaterialError = z.object({
   type: errorType,
   message: z.string(),
 });
-type ErrorResponse = z.infer<typeof errorResponse>;
+export type TeachingMaterialError = z.infer<typeof teachingMaterialError>;
 
 export type ResourcesState = {
   id: string | null;
+  source: "aila" | "owa";
   stepNumber: number;
   isLoadingLessonPlan: boolean;
   isResourcesLoading: boolean;
@@ -53,7 +62,7 @@ export type ResourcesState = {
   formState: StepOneFormState;
   moderation?: ModerationResult;
   threatDetection?: boolean;
-  error: ErrorResponse | null;
+  error: TeachingMaterialError | null;
   refinementGenerationHistory: AdditionalMaterialSchemas[];
 
   actions: {
@@ -65,6 +74,8 @@ export type ResourcesState = {
     setPageData: (pageData: PageData) => void;
     setGeneration: (generation: AdditionalMaterialSchemas | null) => void;
     setDocType: (docType: string | null) => void;
+    setSource: (source: "aila" | "owa") => void;
+    setId: (id: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
     setIsResourcesLoading: (isLoading: boolean) => void;
     setIsResourceRefining: (isRefining: boolean) => void;
@@ -81,11 +92,17 @@ export type ResourcesState = {
     resetFormState: () => void;
 
     // business logic actions
-    createMaterialSession: (docType: string | null) => Promise<void>;
+    createMaterialSession: (
+      docType: string | null,
+      stepNumber?: number,
+    ) => Promise<void>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: () => Promise<void>;
     refineMaterial: (refinementOption: RefinementOption) => Promise<void>;
     downloadMaterial: () => Promise<void>;
+
+    // OWA data loading
+    fetchOwaData: (params: LoadOwaDataParams) => Promise<void>;
 
     // History management actions
     undoRefinement: () => void;

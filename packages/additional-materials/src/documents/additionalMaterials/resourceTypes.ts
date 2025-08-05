@@ -104,6 +104,7 @@ export type BaseResourceTypeConfig = {
   promptContextSchema: ZodType;
   version: number;
   lessonParts: PartialLessonPlanFieldKeyArray;
+  owaLessonParts: PartialLessonPlanFieldKeyArray;
 };
 
 const refinementOptions: RefinementOption[] = Array.from(refinements).map(
@@ -136,6 +137,15 @@ export const resourceTypesConfig: Record<
       "misconceptions",
       "keywords",
     ],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
+    ],
   },
   "additional-comprehension": {
     // Backend config
@@ -154,6 +164,15 @@ export const resourceTypesConfig: Record<
       "keyLearningPoints",
       "misconceptions",
       "keywords",
+    ],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
     ],
   },
   "additional-starter-quiz": {
@@ -175,6 +194,15 @@ export const resourceTypesConfig: Record<
       "misconceptions",
       "keywords",
     ],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
+    ],
   },
   "additional-exit-quiz": {
     // Backend config
@@ -195,6 +223,15 @@ export const resourceTypesConfig: Record<
       "keyLearningPoints",
       "misconceptions",
       "keywords",
+    ],
+    owaLessonParts: [
+      "learningOutcome",
+      "keyLearningPoints",
+      "misconceptions",
+      "keywords",
+      "starterQuiz",
+      "exitQuiz",
+      "transcript",
     ],
   },
 } as const;
