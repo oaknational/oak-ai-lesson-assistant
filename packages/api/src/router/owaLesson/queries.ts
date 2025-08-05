@@ -23,7 +23,6 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
     where: { lesson_slug: { _eq: $lesson_slug } }
   ) {
     lesson_id
-    lesson_uid
     lesson_title
     lesson_slug
     is_legacy

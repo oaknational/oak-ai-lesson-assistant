@@ -92,6 +92,10 @@ export const checkForRestrictedTranscript = (
     (parsedBrowseData.programme_fields.subject === "Geography" &&
       parsedBrowseData.programme_fields.phase === "primary")
   ) {
+    log.info("Transcript is restricted for English or primary Geography", {
+      subject: parsedBrowseData.programme_fields.subject,
+      phase: parsedBrowseData.programme_fields.phase,
+    });
     return true;
   }
   return false;

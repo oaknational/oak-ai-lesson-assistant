@@ -2,7 +2,7 @@ import {
   lessonContentSchema as lessonContentSchemaFull,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
-import type { z } from "zod";
+import { string, z } from "zod";
 
 export const lessonContentSchema = lessonContentSchemaFull.pick({
   lesson_id: true,
@@ -20,11 +20,12 @@ export const lessonContentSchema = lessonContentSchemaFull.pick({
   exit_quiz: true,
 });
 
-export const lessonBrowseDataByKsSchema =
-  syntheticUnitvariantLessonsSchema.omit({
+export const lessonBrowseDataByKsSchema = syntheticUnitvariantLessonsSchema
+  .omit({
     supplementary_data: true,
     null_unitvariant_id: true,
-  });
+  })
+  .extend({ lesson_data: z.object({ lesson_uid: z.string().optional() }) });
 
 export type LessonBrowseDataByKsSchema = z.infer<
   typeof lessonBrowseDataByKsSchema
