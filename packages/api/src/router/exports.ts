@@ -6,7 +6,6 @@ import {
   exportDocsWorksheetSchema,
   exportSlidesFullLessonSchema,
 } from "@oakai/exports";
-import { exportableQuizAppStateSchema } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -20,7 +19,6 @@ import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterial
 import { getExistingExportData } from "../export/exportHelpers";
 import { exportLessonPlan } from "../export/exportLessonPlan";
 import { exportLessonSlides } from "../export/exportLessonSlides";
-import { exportQuizDesignerSlidesWrapper } from "../export/exportQuizDesignerSlides";
 import { exportQuizDoc } from "../export/exportQuizDoc";
 import { exportWorksheets } from "../export/exportWorksheets";
 import { protectedProcedure } from "../middleware/auth";
@@ -84,37 +82,6 @@ export async function ailaSaveExport({
   });
 }
 
-export async function qdSaveExport({
-  auth,
-  prisma,
-  snapshotId,
-  exportType,
-  data,
-}: {
-  auth: Pick<SignedInAuthObject, "userId">;
-  prisma: Pick<PrismaClientWithAccelerate, "qdExport">;
-  snapshotId: string;
-  exportType: LessonExportType;
-  data: {
-    templateId: string;
-    fileId: string;
-    fileUrl: string;
-    userCanViewGdriveFile: boolean;
-  };
-}) {
-  await prisma.qdExport.create({
-    data: {
-      snapshotId,
-      exportType,
-      templateGdriveFileId: data.templateId,
-      gdriveFileId: data.fileId,
-      gdriveFileUrl: data.fileUrl,
-      userCanViewGdriveFile: data.userCanViewGdriveFile,
-      userId: auth.userId,
-    },
-  });
-}
-
 export async function ailaGetExportBySnapshotId({
   prisma,
   snapshotId,
@@ -129,28 +96,6 @@ export async function ailaGetExportBySnapshotId({
       lessonSnapshotId: snapshotId,
       exportType,
       expiredAt: null,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  return exportData;
-}
-
-export async function qdGetExportBySnapshotId({
-  prisma,
-  snapshotId,
-  exportType,
-}: {
-  prisma: PrismaClientWithAccelerate;
-  snapshotId: string;
-  exportType: LessonExportType;
-}) {
-  const exportData = await prisma.qdExport.findFirst({
-    where: {
-      snapshotId: snapshotId,
-      exportType,
     },
     orderBy: {
       createdAt: "desc",
@@ -254,27 +199,6 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
-        return {
-          error,
-          message,
-        };
-      }
-    }),
-  exportQuizDesignerSlides: protectedProcedure
-    .input(
-      z.object({
-        data: exportableQuizAppStateSchema.passthrough(),
-        chatId: z.string(),
-        messageId: z.string(),
-      }),
-    )
-    .output(outputSchema)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        return await exportQuizDesignerSlidesWrapper({ input, ctx });
-      } catch (error) {
-        const message = "Failed to export quiz designer slides";
-        reportErrorResult({ error, message }, input);
         return {
           error,
           message,
