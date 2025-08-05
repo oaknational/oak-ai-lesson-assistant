@@ -37,7 +37,12 @@ const TermsContent = () => {
       <OakP $mb="space-between-s">
         This service is intended to be used by teachers and educators. To use
         this website, you must register for an account. Please see our{" "}
-        <OakLink element={Link} className="text-blue" href="/legal/privacy">
+        <OakLink
+          element={Link}
+          className="text-blue"
+          href="https://www.thenational.academy/legal/privacy-policy"
+          target="_blank"
+        >
           Privacy Policy
         </OakLink>{" "}
         for details of how we handle your personal data.
@@ -134,7 +139,12 @@ const TermsContent = () => {
             we work with in order to make them more accurate and better at
             providing content which is helpful to you. We store inputs you
             provide only for this purpose (see our{" "}
-            <OakLink element={Link} className="text-blue" href="/legal/privacy">
+            <OakLink
+              element={Link}
+              className="text-blue"
+              href="https://www.thenational.academy/legal/privacy-policy"
+              target="_blank"
+            >
               Privacy Policy
             </OakLink>{" "}
             for further details);
@@ -276,6 +286,7 @@ const TermsContent = () => {
           element={Link}
           className="text-blue"
           href="https://www.thenational.academy/legal/security-disclosure-policy"
+          target="_blank"
         >
           Security Disclosure Policy
         </OakLink>

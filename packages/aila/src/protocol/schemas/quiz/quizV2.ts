@@ -13,6 +13,11 @@ export const QUIZ_V2_DESCRIPTIONS = {
     "Copyright info for images. DO NOT hallucinate - only use existing attributions from source.",
 } as const;
 
+export const ImageAttributionSchema = z.object({
+  imageUrl: z.string().describe("The URL of the image"),
+  attribution: z.string().describe("Attribution text for the image"),
+});
+
 // Base question schema with common fields
 export const QuizV2QuestionBaseSchema = z.object({
   question: z.string().describe(QUIZ_V2_DESCRIPTIONS.question),
@@ -69,18 +74,14 @@ export const QuizV2Schema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
   imageAttributions: z
-    .array(
-      z.object({
-        imageUrl: z.string(),
-        attribution: z.string(),
-      }),
-    )
+    .array(ImageAttributionSchema)
     .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
 export const QuizV2SchemaWithoutLength = QuizV2Schema;
 export const QuizV2OptionalSchema = QuizV2Schema.optional();
 
+export type ImageAttribution = z.infer<typeof ImageAttributionSchema>;
 export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
 export type QuizV2 = z.infer<typeof QuizV2Schema>;
 export type QuizV2Optional = z.infer<typeof QuizV2OptionalSchema>;
@@ -109,12 +110,7 @@ export const QuizV2MultipleChoiceOnlySchema = z.object({
       `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
     ),
   imageAttributions: z
-    .array(
-      z.object({
-        imageUrl: z.string(),
-        attribution: z.string(),
-      }),
-    )
+    .array(ImageAttributionSchema)
     .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 
