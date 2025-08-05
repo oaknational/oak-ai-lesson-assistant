@@ -30,7 +30,7 @@ export const SubjectsDropDown = ({
       options={subjectOptions}
       dropdownType="subjects"
       placeholder="Subject"
-      customPlaceholder="Enter your custom subject"
+      customPlaceholder="Enter custom subject"
     />
   );
 };

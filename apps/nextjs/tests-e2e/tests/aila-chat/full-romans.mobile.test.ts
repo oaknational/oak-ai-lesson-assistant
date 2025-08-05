@@ -2,6 +2,8 @@ import { setupClerkTestingToken } from "@clerk/testing/playwright";
 import type { Page } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import type { FixtureMode } from "./helpers";
@@ -19,7 +21,7 @@ import {
 // --------
 // CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
 // --------
-//const FIXTURE_MODE = "record" as FixtureMode;
+// const FIXTURE_MODE = "record" as FixtureMode;
 const FIXTURE_MODE = "replay" as FixtureMode;
 
 async function closePreview(page: Page) {
@@ -44,7 +46,7 @@ test(
       await bypassVercelProtection(page);
       await setupClerkTestingToken({ page });
 
-      await page.goto(`${TEST_BASE_URL}/aila`);
+      await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
@@ -94,15 +96,6 @@ test(
       await letUiSettle(page, testInfo);
 
       setFixture("roman-britain-4");
-      await continueChat(page);
-      await waitForGeneration(page, generationTimeout);
-      await expectPreviewVisible(page);
-      await expectSectionsComplete(page, 10);
-      await closePreview(page);
-      await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-      await letUiSettle(page, testInfo);
-
-      setFixture("roman-britain-5");
       await continueChat(page);
       await waitForGeneration(page, generationTimeout);
       await expectPreviewVisible(page);

@@ -4,10 +4,8 @@ import { getResourceTypes } from "@oakai/additional-materials/src/documents/addi
 
 import {
   OakFlex,
-  OakIcon,
   OakLabel,
   OakP,
-  OakPrimaryButton,
   OakRadioButton,
   OakRadioGroup,
 } from "@oaknational/oak-components";
@@ -17,16 +15,18 @@ import {
   useResourcesStore,
 } from "@/stores/ResourcesStoreProvider";
 import { docTypeSelector } from "@/stores/resourcesStore/selectors";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 import FormValidationWarning from "../../FormValidationWarning";
 import ResourcesFooter from "../ResourcesFooter";
+import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 import { handleDialogSelection } from "./helpers";
 
 const StepOne = ({
   handleCreateSession,
 }: {
-  handleCreateSession: ({ documentType }: { documentType: string }) => void;
+  handleCreateSession: (docType: string | null) => Promise<void>;
 }) => {
   const { setDocType, setGeneration, setSubject, setTitle, setYear } =
     useResourcesActions();
@@ -97,29 +97,19 @@ const StepOne = ({
       </OakFlex>
 
       <ResourcesFooter>
-        <OakFlex $justifyContent="space-between" $width={"100%"}>
-          <button onClick={() => console.log("Back a step clicked")}>
-            {/* Todo: Link this up to the previous step when for launch */}
-            <OakFlex $alignItems="center" $gap="all-spacing-2">
-              <OakIcon iconName="chevron-left" />
-              Back a step
-            </OakFlex>
-          </button>
-          <OakPrimaryButton
-            onClick={() => {
-              if (!docType) {
-                setShowValidationError("Please select a teaching material.");
-                return;
-              }
-
-              handleCreateSession({ documentType: docType });
-            }}
-            iconName="arrow-right"
-            isTrailingIcon={true}
-          >
-            Next, provide lesson details
-          </OakPrimaryButton>
-        </OakFlex>
+        <SharedNavigationButtons
+          backLabel="Back a step"
+          nextLabel="Next, provide lesson details"
+          onBackClick={() => {}} // href used here instead
+          backHref={getAilaUrl("start")}
+          onNextClick={() => {
+            if (!docType) {
+              setShowValidationError("Please select a teaching material.");
+              return;
+            }
+            void handleCreateSession(docType);
+          }}
+        />
       </ResourcesFooter>
     </>
   );

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
@@ -38,7 +39,11 @@ export const InChatDownloadButtons = () => {
     <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
       {demo.isSharingEnabled && (
         <Link
-          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+          href={
+            demo.isSharingEnabled
+              ? `${getAilaUrl("lesson")}}/${id}/download/`
+              : "#"
+          }
           onClick={() => {
             if (!demo.isSharingEnabled) {
               setDialogWindow("demo-share-locked");
