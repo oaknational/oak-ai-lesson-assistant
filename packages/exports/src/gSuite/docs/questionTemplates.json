@@ -1,0 +1,1805 @@
+[
+  {
+    "tabName": "TEMPLATE-MULTIPLE-CHOICE",
+    "content": [
+      {
+        "endIndex": 1,
+        "sectionBreak": {
+          "sectionStyle": {
+            "columnSeparatorStyle": "NONE",
+            "contentDirection": "LEFT_TO_RIGHT",
+            "sectionType": "CONTINUOUS"
+          }
+        }
+      },
+      {
+        "startIndex": 1,
+        "endIndex": 2,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 1,
+              "endIndex": 2,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 2,
+        "endIndex": 103,
+        "table": {
+          "rows": 4,
+          "columns": 3,
+          "tableRows": [
+            {
+              "startIndex": 3,
+              "endIndex": 42,
+              "tableCells": [
+                {
+                  "startIndex": 4,
+                  "endIndex": 38,
+                  "content": [
+                    {
+                      "startIndex": 5,
+                      "endIndex": 38,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 5,
+                            "endIndex": 38,
+                            "textRun": {
+                              "content": "{{questionNumber}}. {{question}}\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "direction": "LEFT_TO_RIGHT"
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 3,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 38,
+                  "endIndex": 40,
+                  "content": [
+                    {
+                      "startIndex": 39,
+                      "endIndex": 40,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 39,
+                            "endIndex": 40,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 40,
+                  "endIndex": 42,
+                  "content": [
+                    {
+                      "startIndex": 41,
+                      "endIndex": 42,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 41,
+                            "endIndex": 42,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                }
+              ],
+              "tableRowStyle": {
+                "minRowHeight": {
+                  "unit": "PT"
+                }
+              }
+            },
+            {
+              "startIndex": 42,
+              "endIndex": 62,
+              "tableCells": [
+                {
+                  "startIndex": 43,
+                  "endIndex": 45,
+                  "content": [
+                    {
+                      "startIndex": 44,
+                      "endIndex": 45,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 44,
+                            "endIndex": 45,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 45,
+                  "endIndex": 59,
+                  "content": [
+                    {
+                      "startIndex": 46,
+                      "endIndex": 59,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 46,
+                            "endIndex": 59,
+                            "textRun": {
+                              "content": "{{answer_a}}\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "direction": "LEFT_TO_RIGHT"
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 59,
+                  "endIndex": 62,
+                  "content": [
+                    {
+                      "startIndex": 60,
+                      "endIndex": 62,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 60,
+                            "endIndex": 61,
+                            "inlineObjectElement": {
+                              "inlineObjectId": "kix.lisk4rj4qqjn",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "startIndex": 61,
+                            "endIndex": 62,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                }
+              ],
+              "tableRowStyle": {
+                "minRowHeight": {
+                  "unit": "PT"
+                }
+              }
+            },
+            {
+              "startIndex": 62,
+              "endIndex": 82,
+              "tableCells": [
+                {
+                  "startIndex": 63,
+                  "endIndex": 65,
+                  "content": [
+                    {
+                      "startIndex": 64,
+                      "endIndex": 65,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 64,
+                            "endIndex": 65,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 65,
+                  "endIndex": 79,
+                  "content": [
+                    {
+                      "startIndex": 66,
+                      "endIndex": 79,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 66,
+                            "endIndex": 79,
+                            "textRun": {
+                              "content": "{{answer_b}}\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "direction": "LEFT_TO_RIGHT"
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 79,
+                  "endIndex": 82,
+                  "content": [
+                    {
+                      "startIndex": 80,
+                      "endIndex": 82,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 80,
+                            "endIndex": 81,
+                            "inlineObjectElement": {
+                              "inlineObjectId": "kix.9kg9swsr2pma",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "startIndex": 81,
+                            "endIndex": 82,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                }
+              ],
+              "tableRowStyle": {
+                "minRowHeight": {
+                  "unit": "PT"
+                }
+              }
+            },
+            {
+              "startIndex": 82,
+              "endIndex": 102,
+              "tableCells": [
+                {
+                  "startIndex": 83,
+                  "endIndex": 85,
+                  "content": [
+                    {
+                      "startIndex": 84,
+                      "endIndex": 85,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 84,
+                            "endIndex": 85,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 85,
+                  "endIndex": 99,
+                  "content": [
+                    {
+                      "startIndex": 86,
+                      "endIndex": 99,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 86,
+                            "endIndex": 99,
+                            "textRun": {
+                              "content": "{{answer_c}}\n",
+                              "textStyle": {
+                                "fontSize": {
+                                  "magnitude": 12,
+                                  "unit": "PT"
+                                },
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "direction": "LEFT_TO_RIGHT"
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                },
+                {
+                  "startIndex": 99,
+                  "endIndex": 102,
+                  "content": [
+                    {
+                      "startIndex": 100,
+                      "endIndex": 102,
+                      "paragraph": {
+                        "elements": [
+                          {
+                            "startIndex": 100,
+                            "endIndex": 101,
+                            "inlineObjectElement": {
+                              "inlineObjectId": "kix.wnabh26kbjgb",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "startIndex": 101,
+                            "endIndex": 102,
+                            "textRun": {
+                              "content": "\n",
+                              "textStyle": {
+                                "weightedFontFamily": {
+                                  "fontFamily": "Lexend",
+                                  "weight": 400
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "paragraphStyle": {
+                          "namedStyleType": "NORMAL_TEXT",
+                          "lineSpacing": 100,
+                          "direction": "LEFT_TO_RIGHT",
+                          "avoidWidowAndOrphan": false
+                        }
+                      }
+                    }
+                  ],
+                  "tableCellStyle": {
+                    "rowSpan": 1,
+                    "columnSpan": 1,
+                    "backgroundColor": {},
+                    "paddingLeft": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingRight": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingTop": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "paddingBottom": {
+                      "magnitude": 5,
+                      "unit": "PT"
+                    },
+                    "contentAlignment": "TOP"
+                  }
+                }
+              ],
+              "tableRowStyle": {
+                "minRowHeight": {
+                  "unit": "PT"
+                }
+              }
+            }
+          ],
+          "tableStyle": {
+            "tableColumnProperties": [
+              {
+                "widthType": "FIXED_WIDTH",
+                "width": {
+                  "magnitude": 57.75,
+                  "unit": "PT"
+                }
+              },
+              {
+                "widthType": "FIXED_WIDTH",
+                "width": {
+                  "magnitude": 376.5,
+                  "unit": "PT"
+                }
+              },
+              {
+                "widthType": "FIXED_WIDTH",
+                "width": {
+                  "magnitude": 42,
+                  "unit": "PT"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "startIndex": 103,
+        "endIndex": 104,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 103,
+              "endIndex": 104,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {}
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT",
+            "indentFirstLine": {
+              "unit": "PT"
+            },
+            "indentStart": {
+              "unit": "PT"
+            }
+          }
+        }
+      },
+      {
+        "startIndex": 104,
+        "endIndex": 105,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 104,
+              "endIndex": 105,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {}
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT",
+            "indentFirstLine": {
+              "unit": "PT"
+            },
+            "indentStart": {
+              "unit": "PT"
+            }
+          }
+        }
+      },
+      {
+        "startIndex": 105,
+        "endIndex": 106,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 105,
+              "endIndex": 106,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {}
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 106,
+        "endIndex": 107,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 106,
+              "endIndex": 107,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {}
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 107,
+        "endIndex": 140,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 107,
+              "endIndex": 140,
+              "textRun": {
+                "content": "{{questionNumber}}. {{question}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 140,
+        "endIndex": 141,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 140,
+              "endIndex": 141,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 141,
+        "endIndex": 154,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 141,
+              "endIndex": 154,
+              "textRun": {
+                "content": "{{answer_a}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 154,
+        "endIndex": 155,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 154,
+              "endIndex": 155,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 155,
+        "endIndex": 168,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 155,
+              "endIndex": 168,
+              "textRun": {
+                "content": "{{answer_b}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 168,
+        "endIndex": 169,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 168,
+              "endIndex": 169,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 169,
+        "endIndex": 182,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 169,
+              "endIndex": 182,
+              "textRun": {
+                "content": "{{answer_c}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "tabName": "TEMPLATE-ORDER",
+    "content": [
+      {
+        "endIndex": 1,
+        "sectionBreak": {
+          "sectionStyle": {
+            "columnSeparatorStyle": "NONE",
+            "contentDirection": "LEFT_TO_RIGHT",
+            "sectionType": "CONTINUOUS"
+          }
+        }
+      },
+      {
+        "startIndex": 1,
+        "endIndex": 34,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 1,
+              "endIndex": 34,
+              "textRun": {
+                "content": "{{questionNumber}}. {{question}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 34,
+        "endIndex": 35,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 34,
+              "endIndex": 35,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 35,
+        "endIndex": 67,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 35,
+              "endIndex": 67,
+              "textRun": {
+                "content": "Put these in the correct order:\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 67,
+        "endIndex": 68,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 67,
+              "endIndex": 68,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 68,
+        "endIndex": 83,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 68,
+              "endIndex": 83,
+              "textRun": {
+                "content": "___ {{item_1}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 83,
+        "endIndex": 98,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 83,
+              "endIndex": 98,
+              "textRun": {
+                "content": "___ {{item_2}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 98,
+        "endIndex": 113,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 98,
+              "endIndex": 113,
+              "textRun": {
+                "content": "___ {{item_3}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 113,
+        "endIndex": 128,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 113,
+              "endIndex": 128,
+              "textRun": {
+                "content": "___ {{item_4}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 128,
+        "endIndex": 129,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 128,
+              "endIndex": 129,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "tabName": "TEMPLATE-SHORT-ANSWER",
+    "content": [
+      {
+        "endIndex": 1,
+        "sectionBreak": {
+          "sectionStyle": {
+            "columnSeparatorStyle": "NONE",
+            "contentDirection": "LEFT_TO_RIGHT",
+            "sectionType": "CONTINUOUS"
+          }
+        }
+      },
+      {
+        "startIndex": 1,
+        "endIndex": 34,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 1,
+              "endIndex": 34,
+              "textRun": {
+                "content": "{{questionNumber}}. {{question}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 34,
+        "endIndex": 35,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 34,
+              "endIndex": 35,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 35,
+        "endIndex": 67,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 35,
+              "endIndex": 67,
+              "textRun": {
+                "content": "Answer: _______________________\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 67,
+        "endIndex": 68,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 67,
+              "endIndex": 68,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "tabName": "TEMPLATE-MATCH",
+    "content": [
+      {
+        "endIndex": 1,
+        "sectionBreak": {
+          "sectionStyle": {
+            "columnSeparatorStyle": "NONE",
+            "contentDirection": "LEFT_TO_RIGHT",
+            "sectionType": "CONTINUOUS"
+          }
+        }
+      },
+      {
+        "startIndex": 1,
+        "endIndex": 34,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 1,
+              "endIndex": 34,
+              "textRun": {
+                "content": "{{questionNumber}}. {{question}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 34,
+        "endIndex": 35,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 34,
+              "endIndex": 35,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 35,
+        "endIndex": 56,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 35,
+              "endIndex": 56,
+              "textRun": {
+                "content": "Match the following:\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 56,
+        "endIndex": 57,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 56,
+              "endIndex": 57,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 57,
+        "endIndex": 95,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 57,
+              "endIndex": 95,
+              "textRun": {
+                "content": "{{left_1}}     ___     A. {{right_1}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 95,
+        "endIndex": 133,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 95,
+              "endIndex": 133,
+              "textRun": {
+                "content": "{{left_2}}     ___     B. {{right_2}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 133,
+        "endIndex": 171,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 133,
+              "endIndex": 171,
+              "textRun": {
+                "content": "{{left_3}}     ___     C. {{right_3}}\n",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      },
+      {
+        "startIndex": 171,
+        "endIndex": 209,
+        "paragraph": {
+          "elements": [
+            {
+              "startIndex": 171,
+              "endIndex": 208,
+              "textRun": {
+                "content": "{{left_4}}     ___     D. {{right_4}}",
+                "textStyle": {
+                  "fontSize": {
+                    "magnitude": 12,
+                    "unit": "PT"
+                  },
+                  "weightedFontFamily": {
+                    "fontFamily": "Lexend",
+                    "weight": 400
+                  }
+                }
+              }
+            },
+            {
+              "startIndex": 208,
+              "endIndex": 209,
+              "textRun": {
+                "content": "\n",
+                "textStyle": {}
+              }
+            }
+          ],
+          "paragraphStyle": {
+            "namedStyleType": "NORMAL_TEXT",
+            "direction": "LEFT_TO_RIGHT"
+          }
+        }
+      }
+    ]
+  }
+]
