@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import {
-  generateLatexImageFilename,
   getExistingImageUrl,
   uploadImageToGCS,
 } from "../../images/gcsUploader";
@@ -34,10 +33,8 @@ export async function latexToImageReplacements(
 
   // First pass: Prepare all images for upload
   const imagePromises = patterns.map(async (pattern) => {
-    const filename = generateLatexImageFilename(pattern.hash);
-
     // Check if image already exists
-    const existingUrl = await getExistingImageUrl(filename);
+    const existingUrl = await getExistingImageUrl(pattern.hash);
     if (existingUrl) {
       log.info(
         `Using existing LaTeX image: ${pattern.latex.substring(0, 30)}...`,
@@ -47,8 +44,13 @@ export async function latexToImageReplacements(
 
     // Generate and upload new image
     const svg = latexToSvg(pattern.latex, pattern.type === "display");
-    const pngBuffer = svgToPng(svg);
-    const url = await uploadImageToGCS(pngBuffer, filename);
+    const pngResult = svgToPng(svg);
+    const url = await uploadImageToGCS(
+      pngResult.buffer,
+      pattern.hash,
+      pngResult.width,
+      pngResult.height,
+    );
     log.info(`Uploaded new LaTeX image: ${pattern.latex.substring(0, 30)}...`);
     return url;
   });

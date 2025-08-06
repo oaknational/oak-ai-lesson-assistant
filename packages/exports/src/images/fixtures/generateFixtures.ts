@@ -27,8 +27,8 @@ fixtures.forEach(({ name, latex, display }) => {
     console.log(`✅ Generated ${name}.svg`);
 
     // Generate PNG
-    const pngBuffer = svgToPng(svg, { width: 600 });
-    writeFileSync(join(fixturesDir, `${name}.png`), pngBuffer);
+    const pngResult = svgToPng(svg);
+    writeFileSync(join(fixturesDir, `${name}.png`), pngResult.buffer);
     console.log(`✅ Generated ${name}.png`);
   } catch (error) {
     console.error(`❌ Failed to generate ${name}:`, error);
