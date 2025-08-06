@@ -1,21 +1,24 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
-import { fetchPolicyDocument } from "@/cms/data/fetchPolicyDocument";
+const LEGAL_REDIRECTS: Record<string, string> = {
+  privacy: "https://www.thenational.academy/legal/privacy-policy",
+  cookies: "https://www.thenational.academy/legal/cookie-policy",
+  terms: "https://www.thenational.academy/legal/terms-and-conditions",
+  "accessibility-statement":
+    "https://www.thenational.academy/legal/accessibility-statement",
+};
 
-import LegalContent from "./legal";
-
-export type PolicyContentPageProps = Readonly<{
-  params: { readonly slug: string };
-}>;
-
-export default async function PolicyContentPage({
+export default function LegalRedirectPage({
   params,
-}: PolicyContentPageProps) {
-  const pageData = await fetchPolicyDocument({ slug: params.slug });
+}: {
+  params: { slug: string };
+}) {
+  const redirectUrl = LEGAL_REDIRECTS[params.slug];
 
-  if (!pageData) {
-    notFound();
+  if (redirectUrl) {
+    redirect(redirectUrl);
   }
 
-  return <LegalContent pageData={pageData} />;
+  // If no redirect found, return 404
+  notFound();
 }
