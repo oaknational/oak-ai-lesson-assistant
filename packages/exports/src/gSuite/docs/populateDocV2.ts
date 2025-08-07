@@ -3,6 +3,8 @@ import { aiLogger } from "@oakai/logger";
 import { docs_v1 } from "@googleapis/docs";
 
 import type { Result } from "../../types";
+import { findMarkdownImages } from "./findMarkdownImages";
+import { imageReplacements } from "./imageReplacements";
 import type { QuestionData } from "./questionHandlers";
 import { getQuestionHandler } from "./questionHandlers";
 
@@ -75,7 +77,20 @@ export async function populateDocV2({
       requestBody: { requests },
     });
 
-    log.info(`Populated document with ${data.questions.length} questions`);
+    // Find and replace markdown images with inline images
+    const markdownImages = await findMarkdownImages(googleDocs, documentId);
+    const { requests: imageRequests } = imageReplacements(markdownImages);
+
+    if (imageRequests.length > 0) {
+      await googleDocs.documents.batchUpdate({
+        documentId,
+        requestBody: { requests: imageRequests },
+      });
+    }
+
+    log.info(
+      `Populated document with ${data.questions.length} questions, replaced ${markdownImages.length} images`,
+    );
 
     return {
       data: {

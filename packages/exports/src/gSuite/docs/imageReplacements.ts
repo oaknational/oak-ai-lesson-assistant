@@ -38,7 +38,7 @@ export function imageReplacements(
 
     function getDimensions(imageUrl: string) {
       // NOTE: dimensions are in pt. 1px is 0.75pt
-      const scale = 2.5;
+      const scale = 3.0;
       // Extract dimensions from URLs like "latex/abc123-100x100.png"
       const dimensions = imageUrl.match(/-(\d+)x(\d+)\.png$/);
       if (dimensions?.[1] && dimensions?.[2]) {

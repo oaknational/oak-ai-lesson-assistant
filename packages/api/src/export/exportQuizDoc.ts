@@ -1,5 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { exportDocQuiz } from "@oakai/exports";
+import { exportDocQuiz, exportDocQuizV2 } from "@oakai/exports";
 import type { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
 
@@ -58,7 +58,15 @@ export async function exportQuizDoc({
    * User hasn't yet exported the lesson in this state, so we'll do it now
    * and store the result in the database
    */
-  const result = await exportDocQuiz({
+
+  // Use V2 export with dynamic question types when enabled
+  const useV2Export = process.env.USE_QUIZ_EXPORT_V2 === "true";
+
+  const exportFunction = useV2Export ? exportDocQuizV2 : exportDocQuiz;
+
+  log.info(`Using ${useV2Export ? "V2" : "V1"} quiz export`);
+
+  const result = await exportFunction({
     snapshotId: lessonSnapshot.id,
     userEmail,
     onStateChange: (state) => {

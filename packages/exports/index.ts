@@ -1,6 +1,7 @@
 export { exportDocLessonPlan } from "./src/exportDocLessonPlan";
 export { exportSlidesFullLesson } from "./src/exportSlidesFullLesson";
 export { exportDocQuiz } from "./src/exportDocQuiz";
+export { exportDocQuizV2 } from "./src/exportDocQuizV2";
 export { downloadDriveFile } from "./src/downloadDriveFile";
 export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
