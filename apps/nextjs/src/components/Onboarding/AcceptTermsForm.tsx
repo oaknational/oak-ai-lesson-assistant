@@ -89,7 +89,11 @@ export const AcceptTermsForm = () => {
               Keep me updated with latest Oak AI experiments, resources and
               other helpful content by email. You can unsubscribe at any time.
               See our{" "}
-              <OakLink element={Link} href="/legal/privacy">
+              <OakLink
+                element={Link}
+                href="https://www.thenational.academy/legal/privacy-policy"
+                target="_blank"
+              >
                 privacy policy
               </OakLink>
               .

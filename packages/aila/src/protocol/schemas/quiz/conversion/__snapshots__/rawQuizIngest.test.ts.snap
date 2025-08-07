@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
+{
+  "imageAttributions": [
+    {
+      "attribution": "Photo by John Doe on Unsplash",
+      "imageUrl": "https://example.com/dog.jpg",
+    },
+    {
+      "attribution": "Image © Example Inc",
+      "imageUrl": "https://example.com/cat.jpg",
+    },
+  ],
+  "questions": [
+    {
+      "answers": [
+        "Paris",
+      ],
+      "distractors": [
+        "London",
+        "Berlin",
+      ],
+      "hint": "Think about the Eiffel Tower",
+      "question": "What is the capital of France?",
+      "questionType": "multiple-choice",
+    },
+    {
+      "answers": [
+        "red",
+        "blue",
+        "yellow",
+      ],
+      "hint": "These colors cannot be created by mixing other colors",
+      "question": "Name a primary color",
+      "questionType": "short-answer",
+    },
+    {
+      "answers": [
+        "Dog",
+      ],
+      "distractors": [
+        "Cat ![](https://example.com/cat.jpg)",
+      ],
+      "hint": "It barks",
+      "question": "Which animal is shown in the image? ![A friendly golden retriever sitting in a park](https://example.com/dog.jpg)",
+      "questionType": "multiple-choice",
+    },
+    {
+      "hint": "Think about European geography",
+      "pairs": [
+        {
+          "left": "France",
+          "right": "Paris",
+        },
+        {
+          "left": "Germany",
+          "right": "Berlin",
+        },
+      ],
+      "question": "Match the countries to their capitals",
+      "questionType": "match",
+    },
+    {
+      "hint": "Start with the smallest",
+      "items": [
+        "1",
+        "3",
+        "5",
+      ],
+      "question": "Put these numbers in ascending order",
+      "questionType": "order",
+    },
+  ],
+  "version": "v2",
+}
+`;

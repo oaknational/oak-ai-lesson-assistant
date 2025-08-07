@@ -48,6 +48,15 @@ const stemImageObjectSchema = z.object({
         usageRestriction: z.string().optional(),
       }),
     ]),
+    context: z
+      .object({
+        custom: z
+          .object({
+            alt: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
     public_id: z.string().optional(),
     version: z.number().optional(),
   }),

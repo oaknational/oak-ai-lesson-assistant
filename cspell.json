@@ -236,6 +236,8 @@
     "zadd",
     "zeroa",
     "zrange",
-    "zrem"
+    "zrem",
+    "mathjax",
+    "resvg"
   ]
 }

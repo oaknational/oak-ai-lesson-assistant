@@ -20,6 +20,7 @@ export type ReactMarkdownWithStylesProps = Readonly<{
   markdown: string;
   lessonPlanSectionDescription?: string;
   className?: string;
+  components?: Partial<Components>;
 }>;
 
 // This could do with further refactoring to make it more readable
@@ -89,10 +90,14 @@ const createComponents = (className?: string): Partial<Components> => ({
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
   className,
+  components: customComponents,
 }: ReactMarkdownWithStylesProps) => {
   const components: Partial<Components> = useMemo(() => {
-    return createComponents(className);
-  }, [className]);
+    const defaultComponents = createComponents(className);
+    return customComponents
+      ? { ...defaultComponents, ...customComponents }
+      : defaultComponents;
+  }, [className, customComponents]);
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

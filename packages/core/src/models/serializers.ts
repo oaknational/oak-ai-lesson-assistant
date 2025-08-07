@@ -13,8 +13,7 @@
  * As these grow we will likely want to either extract them to their own files, or
  * make them part of the models
  */
-import type { App, Generation, Prompt } from "@oakai/db";
-import { GenerationStatus } from "@oakai/db";
+import type { App, Prompt } from "@oakai/db";
 
 import { z } from "zod";
 
@@ -50,26 +49,4 @@ function serializePrompt(prompt: Prompt): SerializedPrompt {
     name: prompt.name,
     template: prompt.template,
   };
-}
-
-export const serializedGenerationSchema = z.object({
-  id: z.string(),
-  response: z
-    .object({})
-    .passthrough()
-    .or(z.array(z.object({}).passthrough()))
-    .nullable(),
-  status: z.nativeEnum(GenerationStatus),
-  error: z.string().nullable(),
-});
-
-export type SerializedGeneration = z.infer<typeof serializedGenerationSchema>;
-
-/**
- * Filter a Generation to only fields a user should be able to see
- */
-export function serializeGeneration(
-  generation: Generation,
-): SerializedGeneration {
-  return serializedGenerationSchema.parse(generation);
 }

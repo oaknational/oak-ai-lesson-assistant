@@ -1,3 +1,5 @@
+import type { QuizV1Question } from "@oakai/aila/src/protocol/schemas/quiz/quizV1";
+
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { chromaticParams } from "@/storybook/chromatic";
@@ -114,7 +116,23 @@ export const QuizWithImages: Story = {
     sectionKey: "starterQuiz",
     value: {
       version: "v2" as const,
-      imageAttributions: [],
+      imageAttributions: [
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png",
+          attribution: "Pixabay",
+        },
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png",
+          attribution: "Oak National Academy",
+        },
+        {
+          imageUrl:
+            "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png",
+          attribution: "Pixabay",
+        },
+      ],
       questions: [
         {
           questionType: "multiple-choice" as const,
@@ -156,6 +174,66 @@ export const QuizWithImages: Story = {
           hint: null,
         },
       ],
+    },
+  },
+};
+
+export const Cycle: Story = {
+  args: {
+    sectionKey: "cycle1",
+    value: {
+      title: "Understanding Photosynthesis",
+      durationInMinutes: 15,
+      explanation: {
+        spokenExplanation: `Photosynthesis is the process by which plants use sunlight, water, and carbon dioxide to create oxygen and energy in the form of sugar.
+
+The process occurs in two stages:
+- **Light-dependent reactions**: Occur in the thylakoid membranes
+- **Light-independent reactions** (Calvin cycle): Occur in the stroma
+
+The overall equation is:
+6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂`,
+      },
+      checkForUnderstanding: [
+        {
+          question: "What are the main inputs required for photosynthesis?",
+          answers: ["Sunlight, water, and carbon dioxide"],
+          distractors: [
+            "Oxygen and glucose",
+            "Sugar and minerals",
+            "Nitrogen and phosphorus",
+          ],
+        },
+        {
+          question: "Where do the light-dependent reactions occur?",
+          answers: ["In the thylakoid membranes"],
+          distractors: [
+            "In the stroma",
+            "In the cell nucleus",
+            "In the mitochondria",
+          ],
+        },
+      ] satisfies QuizV1Question[],
+      practice: `1. Draw a simple diagram of a chloroplast and label:
+   - Thylakoid membranes
+   - Stroma
+   - Outer membrane
+
+2. Create a flowchart showing the inputs and outputs of photosynthesis
+
+3. Explain why plants appear green to our eyes`,
+      feedback: `Well done! You've learned about photosynthesis. Remember:
+- Plants are producers that make their own food
+- Photosynthesis provides oxygen for all living things
+- The process converts light energy into chemical energy`,
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Shows how learning cycles are rendered with check for understanding quizzes using V2 components. Demonstrates the visual consistency with other sections through the prose styling.",
+      },
     },
   },
 };

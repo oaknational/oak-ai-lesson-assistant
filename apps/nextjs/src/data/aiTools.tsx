@@ -4,7 +4,7 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 export const aiTools: {
   title: string;
   href: string;
-  id: "lesson-planner" | "quiz-designer";
+  id: "lesson-planner";
   image: string;
   behindFeatureFlag: boolean;
   description: string;

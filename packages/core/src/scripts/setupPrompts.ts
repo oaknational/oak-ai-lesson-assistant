@@ -2,17 +2,12 @@ import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { PromptVariants } from "../models/promptVariants";
-import { lessonPlannerPrompts, quizGeneratorPrompts } from "../prompts";
+import { lessonPlannerPrompts } from "../prompts";
 import { ailaGenerate } from "../prompts/lesson-assistant/variants";
 
 const log = aiLogger("core");
 
 export const apps = [
-  {
-    name: "Quiz Generator",
-    slug: "quiz-generator",
-    id: "quiz-generator",
-  },
   {
     name: "Lesson planner",
     slug: "lesson-planner",
@@ -44,13 +39,6 @@ const main = async () => {
     for (const k of Object.keys(lessonPlannerPrompts)) {
       const prompt =
         lessonPlannerPrompts[k as keyof typeof lessonPlannerPrompts];
-      const prompts = new PromptVariants(prisma, prompt, "main");
-      await prompts.setCurrent("main");
-    }
-    log.info("Quiz Generator");
-    for (const k of Object.keys(quizGeneratorPrompts)) {
-      const prompt =
-        quizGeneratorPrompts[k as keyof typeof quizGeneratorPrompts];
       const prompts = new PromptVariants(prisma, prompt, "main");
       await prompts.setCurrent("main");
     }

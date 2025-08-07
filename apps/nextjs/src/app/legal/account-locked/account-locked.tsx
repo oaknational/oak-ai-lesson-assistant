@@ -13,7 +13,10 @@ export const AccountLocked = () => {
 
       <FullPageWarning.Content>
         Your activity may be in violation of our{" "}
-        <Link href="https://www.thenational.academy/legal/terms-and-conditions">
+        <Link
+          href="https://www.thenational.academy/legal/terms-and-conditions"
+          target="_blank"
+        >
           terms and conditions
         </Link>{" "}
         so your account has been locked. If this is an error, please contact us

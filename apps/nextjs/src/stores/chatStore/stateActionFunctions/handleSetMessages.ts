@@ -44,6 +44,7 @@ export function handleSetMessages(
         }),
         streamingMessage: null,
         ailaStreamingStatus: "RequestMade",
+        streamingError: false,
       });
     } else {
       // AI SDK is loading with a message from the API: we're streaming
