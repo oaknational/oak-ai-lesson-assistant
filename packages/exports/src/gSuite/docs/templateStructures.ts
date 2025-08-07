@@ -7,6 +7,7 @@ import {
   QuestionTemplatesSchema,
 } from "./questionTemplateSchema";
 import questionTemplatesJson from "./questionTemplates.json";
+import { generateCompleteTableRequests } from "./tableUtils";
 
 const log = aiLogger("exports");
 
@@ -134,26 +135,64 @@ export function generateInsertRequests(
         });
       }
     } else if (processedElement.table) {
-      // For tables, we need to create the table structure first
+      // For now, we'll convert tables to structured text
+      // TODO: Implement proper table population when we figure out cell indexing
       const table = processedElement.table;
 
-      requests.push({
-        insertTable: {
-          endOfSegmentLocation: {},
-          rows: table.rows || 0,
-          columns: table.columns || 0,
-        },
-      });
+      // Extract text from table cells and format as structured text
+      if (table.tableRows) {
+        for (const row of table.tableRows) {
+          if (row.tableCells) {
+            // First, collect all text and checkbox info from the row
+            let rowTexts: string[] = [];
+            let hasCheckboxInRow = false;
+            
+            for (const cell of row.tableCells) {
+              if (cell.content) {
+                for (const cellElement of cell.content) {
+                  if (cellElement.paragraph?.elements) {
+                    const cellText = cellElement.paragraph.elements
+                      .map((e) => e.textRun?.content || "")
+                      .join("");
 
-      // Then populate the cells
-      // This is simplified - in a real implementation we'd need to:
-      // 1. Execute the insert table request
-      // 2. Get the updated document to find cell indices
-      // 3. Insert text into each cell
-      // For now, we'll add a TODO comment
-
-      // TODO: Implement proper table cell population
-      // This requires multiple API calls or a different approach
+                    // Check for checkbox in this cell
+                    const hasCheckbox = cellElement.paragraph.elements.some(
+                      (e) => e.inlineObjectElement,
+                    );
+                    
+                    if (hasCheckbox) {
+                      hasCheckboxInRow = true;
+                    }
+                    
+                    if (cellText.trim()) {
+                      rowTexts.push(cellText);
+                    }
+                  }
+                }
+              }
+            }
+            
+            // Now output the row content
+            if (rowTexts.length > 0) {
+              const combinedText = rowTexts.join("");
+              const processedText = replacePlaceholdersInText(
+                combinedText,
+                replacements,
+              );
+              
+              // Add checkbox at the beginning if this row has one
+              const finalText = hasCheckboxInRow ? `☐ ${processedText}` : processedText;
+              
+              requests.push({
+                insertText: {
+                  endOfSegmentLocation: {},
+                  text: finalText,
+                },
+              });
+            }
+          }
+        }
+      }
     }
   }
 
