@@ -42,4 +42,4 @@ jobs:
         run: pnpm manypkg check
 
       - name: Check formatting with Prettier
-        run: pnpm prettier
+        run: pnpm prettier || (echo "::error::Formatting issues detected! Run 'pnpm prettier:fix' to fix them" && exit 1)
