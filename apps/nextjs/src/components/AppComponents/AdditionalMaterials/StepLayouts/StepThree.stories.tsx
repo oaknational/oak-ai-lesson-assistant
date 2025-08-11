@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { promise } from "zod";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
@@ -42,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     handleSubmit: () => {
-      console.log("Submitting step three");
+      return {} as Promise<void>;
     },
   },
   decorators: [

@@ -371,7 +371,7 @@ export const CompletedLessonPlanSchema = z.object({
   starterQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
-  cycle3: CycleSchema.describe("The third learning cycle"),
+  cycle3: CycleSchema.nullable().describe("The third learning cycle"),
   exitQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
@@ -521,7 +521,9 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
   cycle2: CycleSchemaWithoutLength.describe("The second learning cycle"),
-  cycle3: CycleSchemaWithoutLength.describe("The third learning cycle"),
+  cycle3: CycleSchemaWithoutLength.nullable().describe(
+    "The third learning cycle",
+  ),
   exitQuiz: QuizV2SchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),
