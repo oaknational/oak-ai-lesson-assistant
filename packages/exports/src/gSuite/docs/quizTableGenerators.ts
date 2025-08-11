@@ -2,16 +2,16 @@
  * Quiz table generators using element-based composition
  * Each element (text, table, spacer) is self-contained with all its operations
  */
-import { docs_v1 } from "@googleapis/docs";
+import type { docs_v1 } from "@googleapis/docs";
 
 // Standard column widths in points
 const COLUMN_WIDTHS = {
-  checkbox: 20,
-  letter: 25,
+  checkbox: 15, // Narrower for flush alignment
+  letter: 18, // Reduced to minimize space after letter
   spacer: 10,
   textNarrow: 140,
   textWide: 400,
-  textFull: 425,
+  textFull: 430, // Slightly wider to compensate
 } as const;
 
 /**
@@ -48,10 +48,7 @@ export function calculateCellIndices(
 /**
  * Create a text element (question text, instructions, etc.)
  */
-function createTextElement(
-  insertIndex: number,
-  text: string,
-): QuizElement {
+function createTextElement(insertIndex: number, text: string): QuizElement {
   return {
     type: "text",
     requests: [
@@ -106,7 +103,7 @@ function createTableElement(
 
   // 2. Populate cells (backwards to avoid index shifting)
   const cellIndices = calculateCellIndices(insertIndex, rows, columns);
-  
+
   for (let i = cellIndices.length - 1; i >= 0; i--) {
     const row = Math.floor(i / columns);
     const col = i % columns;
@@ -122,11 +119,13 @@ function createTableElement(
     }
   }
 
-  // 3. Remove borders
+  // 3. Remove borders and set horizontal padding only
   requests.push({
     updateTableCellStyle: {
       tableCellStyle: {
         contentAlignment: "MIDDLE",
+        paddingLeft: { magnitude: 0, unit: "PT" },
+        paddingRight: { magnitude: 5, unit: "PT" },
         borderTop: {
           width: { magnitude: 0, unit: "PT" },
           color: { color: { rgbColor: { red: 1, green: 1, blue: 1 } } },
@@ -157,7 +156,8 @@ function createTableElement(
         rowSpan: rows,
         columnSpan: columns,
       },
-      fields: "contentAlignment,borderTop,borderBottom,borderLeft,borderRight",
+      fields:
+        "contentAlignment,paddingLeft,paddingRight,borderTop,borderBottom,borderLeft,borderRight",
     },
   });
 
@@ -196,29 +196,27 @@ export function generateMultipleChoiceTable(
 
   // Question text element
   elements.push(
-    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+    createTextElement(insertIndex, `${questionNumber}. ${question}`),
   );
 
   // Answer table element
   const cellContent = (row: number, col: number): string => {
     if (col === 0) return "☐";
     if (col === 1) return `${String.fromCharCode(97 + row)})`;
-    return answers[row];
+    return answers[row] || "";
   };
 
   elements.push(
-    createTableElement(
-      insertIndex,
-      answers.length,
-      3,
-      cellContent,
-      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.letter, COLUMN_WIDTHS.textWide]
-    )
+    createTableElement(insertIndex, answers.length, 3, cellContent, [
+      COLUMN_WIDTHS.checkbox,
+      COLUMN_WIDTHS.letter,
+      COLUMN_WIDTHS.textWide,
+    ]),
   );
 
   // Reverse elements and flatten requests
   elements.reverse();
-  return elements.flatMap(e => e.requests);
+  return elements.flatMap((e) => e.requests);
 }
 
 /**
@@ -237,7 +235,7 @@ export function generateMatchingPairsTable(
 
   // Question text element
   elements.push(
-    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+    createTextElement(insertIndex, `${questionNumber}. ${question}`),
   );
 
   // Matching table element
@@ -246,37 +244,31 @@ export function generateMatchingPairsTable(
       return `${String.fromCharCode(97 + row)})`;
     }
     if (col === 1 && row < leftItems.length) {
-      return leftItems[row];
+      return leftItems[row] || "";
     }
     if (col === 2) return ""; // Spacer column
     if (col === 3 && row < rightItems.length) {
       return "☐";
     }
     if (col === 4 && row < rightItems.length) {
-      return rightItems[row];
+      return rightItems[row] || "";
     }
     return "";
   };
 
   elements.push(
-    createTableElement(
-      insertIndex,
-      rows,
-      5,
-      cellContent,
-      [
-        COLUMN_WIDTHS.letter,
-        COLUMN_WIDTHS.textNarrow,
-        COLUMN_WIDTHS.spacer,
-        COLUMN_WIDTHS.checkbox,
-        COLUMN_WIDTHS.textNarrow,
-      ]
-    )
+    createTableElement(insertIndex, rows, 5, cellContent, [
+      COLUMN_WIDTHS.letter,
+      COLUMN_WIDTHS.textNarrow,
+      COLUMN_WIDTHS.spacer,
+      COLUMN_WIDTHS.checkbox,
+      COLUMN_WIDTHS.textNarrow,
+    ]),
   );
 
   // Reverse elements and flatten requests
   elements.reverse();
-  return elements.flatMap(e => e.requests);
+  return elements.flatMap((e) => e.requests);
 }
 
 /**
@@ -293,28 +285,25 @@ export function generateOrderingTable(
 
   // Question text element
   elements.push(
-    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+    createTextElement(insertIndex, `${questionNumber}. ${question}`),
   );
 
   // Items table element
   const cellContent = (row: number, col: number): string => {
     if (col === 0) return "☐";
-    return items[row];
+    return items[row] || "";
   };
 
   elements.push(
-    createTableElement(
-      insertIndex,
-      items.length,
-      2,
-      cellContent,
-      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.textFull]
-    )
+    createTableElement(insertIndex, items.length, 2, cellContent, [
+      COLUMN_WIDTHS.checkbox,
+      COLUMN_WIDTHS.textFull,
+    ]),
   );
 
   // Reverse elements and flatten requests
   elements.reverse();
-  return elements.flatMap(e => e.requests);
+  return elements.flatMap((e) => e.requests);
 }
 
 /**
@@ -328,7 +317,7 @@ export function generateShortAnswerQuestion(
   isInline: boolean = false,
 ): docs_v1.Schema$Request[] {
   const answerLine = "▁".repeat(10);
-  
+
   if (isInline) {
     const placeholderPattern = /____+/;
     const text = question.replace(placeholderPattern, answerLine);
@@ -369,7 +358,7 @@ export function generateAllQuizTables(
   // Generate elements for each question in forward order
   questions.forEach((q, index) => {
     const questionNumber = index + 1;
-    
+
     // Add spacing before each question (except first)
     if (index > 0) {
       allElements.push(createSpacerElement(insertIndex));
@@ -377,17 +366,17 @@ export function generateAllQuizTables(
 
     // Generate question-specific elements
     let elements: QuizElement[] = [];
-    
+
     switch (q.type) {
       case "multiple-choice":
         // Create elements inline
         elements.push(
-          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`),
         );
         const mcCellContent = (row: number, col: number): string => {
           if (col === 0) return "☐";
           if (col === 1) return `${String.fromCharCode(97 + row)})`;
-          return q.data.answers[row];
+          return q.data.answers[row] || "";
         };
         elements.push(
           createTableElement(
@@ -395,58 +384,59 @@ export function generateAllQuizTables(
             q.data.answers.length,
             3,
             mcCellContent,
-            [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.letter, COLUMN_WIDTHS.textWide]
-          )
+            [
+              COLUMN_WIDTHS.checkbox,
+              COLUMN_WIDTHS.letter,
+              COLUMN_WIDTHS.textWide,
+            ],
+          ),
         );
         break;
-        
+
       case "match":
         // Create elements inline
-        const rows = Math.max(q.data.leftItems.length, q.data.rightItems.length);
+        const rows = Math.max(
+          q.data.leftItems.length,
+          q.data.rightItems.length,
+        );
         elements.push(
-          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`),
         );
         const matchCellContent = (row: number, col: number): string => {
           if (col === 0 && row < q.data.leftItems.length) {
             return `${String.fromCharCode(97 + row)})`;
           }
           if (col === 1 && row < q.data.leftItems.length) {
-            return q.data.leftItems[row];
+            return q.data.leftItems[row] || "";
           }
           if (col === 2) return "";
           if (col === 3 && row < q.data.rightItems.length) {
             return "☐";
           }
           if (col === 4 && row < q.data.rightItems.length) {
-            return q.data.rightItems[row];
+            return q.data.rightItems[row] || "";
           }
           return "";
         };
         elements.push(
-          createTableElement(
-            insertIndex,
-            rows,
-            5,
-            matchCellContent,
-            [
-              COLUMN_WIDTHS.letter,
-              COLUMN_WIDTHS.textNarrow,
-              COLUMN_WIDTHS.spacer,
-              COLUMN_WIDTHS.checkbox,
-              COLUMN_WIDTHS.textNarrow,
-            ]
-          )
+          createTableElement(insertIndex, rows, 5, matchCellContent, [
+            COLUMN_WIDTHS.letter,
+            COLUMN_WIDTHS.textNarrow,
+            COLUMN_WIDTHS.spacer,
+            COLUMN_WIDTHS.checkbox,
+            COLUMN_WIDTHS.textNarrow,
+          ]),
         );
         break;
-        
+
       case "order":
         // Create elements inline
         elements.push(
-          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`),
         );
         const orderCellContent = (row: number, col: number): string => {
           if (col === 0) return "☐";
-          return q.data.items[row];
+          return q.data.items[row] || "";
         };
         elements.push(
           createTableElement(
@@ -454,11 +444,11 @@ export function generateAllQuizTables(
             q.data.items.length,
             2,
             orderCellContent,
-            [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.textFull]
-          )
+            [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.textFull],
+          ),
         );
         break;
-        
+
       case "short-answer":
         // Short answer is just text, no table
         const answerLine = "▁".repeat(10);
@@ -466,25 +456,25 @@ export function generateAllQuizTables(
           const placeholderPattern = /____+/;
           const text = q.question.replace(placeholderPattern, answerLine);
           elements.push(
-            createTextElement(insertIndex, `${questionNumber}. ${text}\n`)
+            createTextElement(insertIndex, `${questionNumber}. ${text}\n`),
           );
         } else {
           elements.push(
             createTextElement(
               insertIndex,
-              `${questionNumber}. ${q.question}\n\n${answerLine}\n`
-            )
+              `${questionNumber}. ${q.question}\n\n${answerLine}\n`,
+            ),
           );
         }
         break;
     }
-    
+
     allElements.push(...elements);
   });
 
   // Reverse all elements for backwards insertion
   allElements.reverse();
-  
+
   // Flatten all requests from reversed elements
-  return allElements.flatMap(element => element.requests);
+  return allElements.flatMap((element) => element.requests);
 }

@@ -1,11 +1,9 @@
 import { aiLogger } from "@oakai/logger";
 
-import { docs_v1 } from "@googleapis/docs";
+import type { docs_v1 } from "@googleapis/docs";
 
-import {
-  QuestionTemplate,
-  QuestionTemplatesSchema,
-} from "./questionTemplateSchema";
+import type { QuestionTemplate } from "./questionTemplateSchema";
+import { QuestionTemplatesSchema } from "./questionTemplateSchema";
 import questionTemplatesJson from "./questionTemplates.json";
 import { generateCompleteTableRequests } from "./tableUtils";
 
@@ -135,64 +133,12 @@ export function generateInsertRequests(
         });
       }
     } else if (processedElement.table) {
-      // For now, we'll convert tables to structured text
-      // TODO: Implement proper table population when we figure out cell indexing
-      const table = processedElement.table;
-
-      // Extract text from table cells and format as structured text
-      if (table.tableRows) {
-        for (const row of table.tableRows) {
-          if (row.tableCells) {
-            // First, collect all text and checkbox info from the row
-            let rowTexts: string[] = [];
-            let hasCheckboxInRow = false;
-            
-            for (const cell of row.tableCells) {
-              if (cell.content) {
-                for (const cellElement of cell.content) {
-                  if (cellElement.paragraph?.elements) {
-                    const cellText = cellElement.paragraph.elements
-                      .map((e) => e.textRun?.content || "")
-                      .join("");
-
-                    // Check for checkbox in this cell
-                    const hasCheckbox = cellElement.paragraph.elements.some(
-                      (e) => e.inlineObjectElement,
-                    );
-                    
-                    if (hasCheckbox) {
-                      hasCheckboxInRow = true;
-                    }
-                    
-                    if (cellText.trim()) {
-                      rowTexts.push(cellText);
-                    }
-                  }
-                }
-              }
-            }
-            
-            // Now output the row content
-            if (rowTexts.length > 0) {
-              const combinedText = rowTexts.join("");
-              const processedText = replacePlaceholdersInText(
-                combinedText,
-                replacements,
-              );
-              
-              // Add checkbox at the beginning if this row has one
-              const finalText = hasCheckboxInRow ? `☐ ${processedText}` : processedText;
-              
-              requests.push({
-                insertText: {
-                  endOfSegmentLocation: {},
-                  text: finalText,
-                },
-              });
-            }
-          }
-        }
-      }
+      // Generate proper table requests instead of converting to text
+      const tableRequests = generateCompleteTableRequestsWithEndLocation(
+        processedElement.table,
+        replacements,
+      );
+      requests.push(...tableRequests);
     }
   }
 
