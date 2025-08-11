@@ -1,8 +1,7 @@
 /**
- * Quiz table generation functions using backwards insertion approach
- * Each function generates the requests needed to create and populate a table for a specific question type
+ * Quiz table generators using element-based composition
+ * Each element (text, table, spacer) is self-contained with all its operations
  */
-
 import { docs_v1 } from "@googleapis/docs";
 
 // Standard column widths in points
@@ -16,46 +15,115 @@ const COLUMN_WIDTHS = {
 } as const;
 
 /**
- * Generate a spacer between questions
+ * Base interface for all quiz elements
  */
-function generateQuestionSpacer(insertIndex: number): docs_v1.Schema$Request {
+interface QuizElement {
+  type: "text" | "table" | "spacer";
+  requests: docs_v1.Schema$Request[];
+}
+
+/**
+ * Calculate cell insertion indices for a table
+ * Formula verified: first cell at tableStart + 4, then +2 per cell, +1 per row
+ */
+export function calculateCellIndices(
+  tableStartIndex: number,
+  rows: number,
+  columns: number,
+): number[] {
+  const indices: number[] = [];
+  let idx = tableStartIndex + 4; // First cell's insertion point
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < columns; col++) {
+      indices.push(idx);
+      idx += 2; // Each cell takes 2 indices
+    }
+    idx += 1; // Row boundary adds 1
+  }
+
+  return indices;
+}
+
+/**
+ * Create a text element (question text, instructions, etc.)
+ */
+function createTextElement(
+  insertIndex: number,
+  text: string,
+): QuizElement {
   return {
-    insertText: {
-      location: { index: insertIndex },
-      text: "\n\n",
-    },
+    type: "text",
+    requests: [
+      {
+        insertText: {
+          location: { index: insertIndex },
+          text,
+        },
+      },
+    ],
   };
 }
 
 /**
- * Generate requests to set column widths for a table
+ * Create a spacer element for visual separation
  */
-function generateColumnWidthRequests(
-  tableStartIndex: number,
-  columnWidths: number[]
-): docs_v1.Schema$Request[] {
-  return columnWidths.map((width, index) => ({
-    updateTableColumnProperties: {
-      tableStartLocation: { index: tableStartIndex },
-      columnIndices: [index],
-      tableColumnProperties: {
-        widthType: "FIXED_WIDTH",
-        width: { magnitude: width, unit: "PT" },
+function createSpacerElement(insertIndex: number): QuizElement {
+  return {
+    type: "spacer",
+    requests: [
+      {
+        insertText: {
+          location: { index: insertIndex },
+          text: "\n\n",
+        },
       },
-      fields: "widthType,width",
-    },
-  }));
+    ],
+  };
 }
 
 /**
- * Generate a request to remove borders from table cells
+ * Create a complete table element with all its operations
+ * This includes table creation, cell population, and styling
  */
-function generateRemoveBordersRequest(
+function createTableElement(
   insertIndex: number,
   rows: number,
-  columns: number
-): docs_v1.Schema$Request {
-  return {
+  columns: number,
+  cellContent: (row: number, col: number) => string,
+  columnWidths: number[],
+): QuizElement {
+  const requests: docs_v1.Schema$Request[] = [];
+
+  // 1. Create the table structure
+  requests.push({
+    insertTable: {
+      location: { index: insertIndex },
+      rows,
+      columns,
+    },
+  });
+
+  // 2. Populate cells (backwards to avoid index shifting)
+  const cellIndices = calculateCellIndices(insertIndex, rows, columns);
+  
+  for (let i = cellIndices.length - 1; i >= 0; i--) {
+    const row = Math.floor(i / columns);
+    const col = i % columns;
+    const content = cellContent(row, col);
+
+    if (content) {
+      requests.push({
+        insertText: {
+          location: { index: cellIndices[i] },
+          text: content,
+        },
+      });
+    }
+  }
+
+  // 3. Remove borders
+  requests.push({
     updateTableCellStyle: {
       tableCellStyle: {
         contentAlignment: "MIDDLE",
@@ -91,30 +159,27 @@ function generateRemoveBordersRequest(
       },
       fields: "contentAlignment,borderTop,borderBottom,borderLeft,borderRight",
     },
-  };
-}
+  });
 
-/**
- * Calculate cell insertion indices for a table
- * Formula verified: first cell at tableStart + 4, then +2 per cell, +1 per row
- */
-export function calculateCellIndices(
-  tableStartIndex: number,
-  rows: number,
-  columns: number
-): number[] {
-  const indices: number[] = [];
-  let idx = tableStartIndex + 4; // First cell's insertion point
-  
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      indices.push(idx);
-      idx += 2; // Each cell takes 2 indices
-    }
-    idx += 1; // Row boundary adds 1
-  }
-  
-  return indices;
+  // 4. Set column widths
+  columnWidths.forEach((width, index) => {
+    requests.push({
+      updateTableColumnProperties: {
+        tableStartLocation: { index: insertIndex + 1 },
+        columnIndices: [index],
+        tableColumnProperties: {
+          widthType: "FIXED_WIDTH",
+          width: { magnitude: width, unit: "PT" },
+        },
+        fields: "widthType,width",
+      },
+    });
+  });
+
+  return {
+    type: "table",
+    requests,
+  };
 }
 
 /**
@@ -125,70 +190,35 @@ export function generateMultipleChoiceTable(
   insertIndex: number,
   question: string,
   questionNumber: number,
-  answers: string[]
+  answers: string[],
 ): docs_v1.Schema$Request[] {
-  const requests: docs_v1.Schema$Request[] = [];
-  const rows = answers.length;
-  const columns = 3;
-  
-  // Insert table first (backwards insertion approach)
-  requests.push({
-    insertTable: {
-      location: { index: insertIndex },
-      rows,
-      columns,
-    },
-  });
-  
-  // Calculate cell indices
-  const cellIndices = calculateCellIndices(insertIndex, rows, columns);
-  
-  // Populate cells backwards
-  for (let i = cellIndices.length - 1; i >= 0; i--) {
-    const row = Math.floor(i / columns);
-    const col = i % columns;
-    
-    let content = "";
-    if (col === 0) {
-      // Checkbox column
-      content = "☐";
-    } else if (col === 1) {
-      // Letter column
-      content = `${String.fromCharCode(97 + row)})`;  // a), b), c), etc.
-    } else {
-      // Answer text column
-      content = answers[row];
-    }
-    
-    if (content) {
-      requests.push({
-        insertText: {
-          location: { index: cellIndices[i] },
-          text: content,
-        },
-      });
-    }
-  }
-  
-  // Style table cells
-  requests.push(generateRemoveBordersRequest(insertIndex, rows, columns));
-  
-  // Set column widths
-  requests.push(...generateColumnWidthRequests(insertIndex + 1, [
-    COLUMN_WIDTHS.checkbox,
-    COLUMN_WIDTHS.letter,
-    COLUMN_WIDTHS.textWide,
-  ]));
-  
-  // Add question text
-  requests.push({
-    insertText: {
-      location: { index: insertIndex },
-      text: `${questionNumber}. ${question}`,
-    },
-  });
-  
-  return requests;
+  const elements: QuizElement[] = [];
+
+  // Question text element
+  elements.push(
+    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+  );
+
+  // Answer table element
+  const cellContent = (row: number, col: number): string => {
+    if (col === 0) return "☐";
+    if (col === 1) return `${String.fromCharCode(97 + row)})`;
+    return answers[row];
+  };
+
+  elements.push(
+    createTableElement(
+      insertIndex,
+      answers.length,
+      3,
+      cellContent,
+      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.letter, COLUMN_WIDTHS.textWide]
+    )
+  );
+
+  // Reverse elements and flatten requests
+  elements.reverse();
+  return elements.flatMap(e => e.requests);
 }
 
 /**
@@ -200,86 +230,53 @@ export function generateMatchingPairsTable(
   question: string,
   questionNumber: number,
   leftItems: string[],
-  rightItems: string[]
+  rightItems: string[],
 ): docs_v1.Schema$Request[] {
-  const requests: docs_v1.Schema$Request[] = [];
+  const elements: QuizElement[] = [];
   const rows = Math.max(leftItems.length, rightItems.length);
-  const columns = 5;
-  
-  // Insert table first (backwards insertion approach)
-  requests.push({
-    insertTable: {
-      location: { index: insertIndex },
+
+  // Question text element
+  elements.push(
+    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+  );
+
+  // Matching table element
+  const cellContent = (row: number, col: number): string => {
+    if (col === 0 && row < leftItems.length) {
+      return `${String.fromCharCode(97 + row)})`;
+    }
+    if (col === 1 && row < leftItems.length) {
+      return leftItems[row];
+    }
+    if (col === 2) return ""; // Spacer column
+    if (col === 3 && row < rightItems.length) {
+      return "☐";
+    }
+    if (col === 4 && row < rightItems.length) {
+      return rightItems[row];
+    }
+    return "";
+  };
+
+  elements.push(
+    createTableElement(
+      insertIndex,
       rows,
-      columns,
-    },
-  });
-  
-  // Calculate cell indices
-  const cellIndices = calculateCellIndices(insertIndex, rows, columns);
-  
-  // Populate cells backwards
-  for (let i = cellIndices.length - 1; i >= 0; i--) {
-    const row = Math.floor(i / columns);
-    const col = i % columns;
-    
-    let content = "";
-    if (col === 0) {
-      // Letter column (left side)
-      if (row < leftItems.length) {
-        content = `${String.fromCharCode(97 + row)})`;
-      }
-    } else if (col === 1) {
-      // Left text column
-      if (row < leftItems.length) {
-        content = leftItems[row];
-      }
-    } else if (col === 2) {
-      // Spacer column - leave empty
-      content = "";
-    } else if (col === 3) {
-      // Answer box column (between left and right)
-      if (row < rightItems.length) {
-        content = "☐";
-      }
-    } else if (col === 4) {
-      // Right text column
-      if (row < rightItems.length) {
-        content = rightItems[row];
-      }
-    }
-    
-    if (content) {
-      requests.push({
-        insertText: {
-          location: { index: cellIndices[i] },
-          text: content,
-        },
-      });
-    }
-  }
-  
-  // Style table cells
-  requests.push(generateRemoveBordersRequest(insertIndex, rows, columns));
-  
-  // Set column widths (matching pairs should have equal text widths)
-  requests.push(...generateColumnWidthRequests(insertIndex + 1, [
-    COLUMN_WIDTHS.letter,
-    COLUMN_WIDTHS.textNarrow,
-    COLUMN_WIDTHS.spacer,
-    COLUMN_WIDTHS.checkbox,
-    COLUMN_WIDTHS.textNarrow,
-  ]));
-  
-  // Add question text
-  requests.push({
-    insertText: {
-      location: { index: insertIndex },
-      text: `${questionNumber}. ${question}`,
-    },
-  });
-  
-  return requests;
+      5,
+      cellContent,
+      [
+        COLUMN_WIDTHS.letter,
+        COLUMN_WIDTHS.textNarrow,
+        COLUMN_WIDTHS.spacer,
+        COLUMN_WIDTHS.checkbox,
+        COLUMN_WIDTHS.textNarrow,
+      ]
+    )
+  );
+
+  // Reverse elements and flatten requests
+  elements.reverse();
+  return elements.flatMap(e => e.requests);
 }
 
 /**
@@ -290,66 +287,34 @@ export function generateOrderingTable(
   insertIndex: number,
   question: string,
   questionNumber: number,
-  items: string[]
+  items: string[],
 ): docs_v1.Schema$Request[] {
-  const requests: docs_v1.Schema$Request[] = [];
-  const rows = items.length;
-  const columns = 2;
-  
-  // Insert table first (backwards insertion approach)
-  requests.push({
-    insertTable: {
-      location: { index: insertIndex },
-      rows,
-      columns,
-    },
-  });
-  
-  // Calculate cell indices
-  const cellIndices = calculateCellIndices(insertIndex, rows, columns);
-  
-  // Populate cells backwards
-  for (let i = cellIndices.length - 1; i >= 0; i--) {
-    const row = Math.floor(i / columns);
-    const col = i % columns;
-    
-    let content = "";
-    if (col === 0) {
-      // Checkbox column
-      content = "☐";
-    } else {
-      // Item text column
-      content = items[row];
-    }
-    
-    if (content) {
-      requests.push({
-        insertText: {
-          location: { index: cellIndices[i] },
-          text: content,
-        },
-      });
-    }
-  }
-  
-  // Style table cells
-  requests.push(generateRemoveBordersRequest(insertIndex, rows, columns));
-  
-  // Set column widths
-  requests.push(...generateColumnWidthRequests(insertIndex + 1, [
-    COLUMN_WIDTHS.checkbox,
-    COLUMN_WIDTHS.textFull,
-  ]));
-  
-  // Add question text
-  requests.push({
-    insertText: {
-      location: { index: insertIndex },
-      text: `${questionNumber}. ${question}`,
-    },
-  });
-  
-  return requests;
+  const elements: QuizElement[] = [];
+
+  // Question text element
+  elements.push(
+    createTextElement(insertIndex, `${questionNumber}. ${question}`)
+  );
+
+  // Items table element
+  const cellContent = (row: number, col: number): string => {
+    if (col === 0) return "☐";
+    return items[row];
+  };
+
+  elements.push(
+    createTableElement(
+      insertIndex,
+      items.length,
+      2,
+      cellContent,
+      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.textFull]
+    )
+  );
+
+  // Reverse elements and flatten requests
+  elements.reverse();
+  return elements.flatMap(e => e.requests);
 }
 
 /**
@@ -360,39 +325,36 @@ export function generateShortAnswerQuestion(
   insertIndex: number,
   question: string,
   questionNumber: number,
-  isInline: boolean = false
+  isInline: boolean = false,
 ): docs_v1.Schema$Request[] {
-  const requests: docs_v1.Schema$Request[] = [];
-  const answerLine = "▁".repeat(10); // 10 low line characters
+  const answerLine = "▁".repeat(10);
   
   if (isInline) {
-    // Inline format: "The answer is ______"
-    // We need to find where to insert the line within the question
     const placeholderPattern = /____+/;
     const text = question.replace(placeholderPattern, answerLine);
-    
-    requests.push({
-      insertText: {
-        location: { index: insertIndex },
-        text: `${questionNumber}. ${text}\n`,
+    return [
+      {
+        insertText: {
+          location: { index: insertIndex },
+          text: `${questionNumber}. ${text}\n`,
+        },
       },
-    });
+    ];
   } else {
-    // Separate line format
-    requests.push({
-      insertText: {
-        location: { index: insertIndex },
-        text: `${questionNumber}. ${question}\n\n${answerLine}\n`,
+    return [
+      {
+        insertText: {
+          location: { index: insertIndex },
+          text: `${questionNumber}. ${question}\n\n${answerLine}\n`,
+        },
       },
-    });
+    ];
   }
-  
-  return requests;
 }
 
 /**
- * Generate all quiz tables using backwards insertion
- * Processes questions in reverse order to avoid index shifting
+ * Generate all quiz tables using element-based composition
+ * Processes questions in forward order, then reverses for execution
  */
 export function generateAllQuizTables(
   insertIndex: number,
@@ -400,63 +362,129 @@ export function generateAllQuizTables(
     type: "multiple-choice" | "match" | "order" | "short-answer";
     question: string;
     data: any;
-  }>
+  }>,
 ): docs_v1.Schema$Request[] {
-  const allRequests: docs_v1.Schema$Request[] = [];
-  
-  // Process questions backwards
-  for (let i = questions.length - 1; i >= 0; i--) {
-    const q = questions[i];
-    const questionNumber = i + 1;
+  const allElements: QuizElement[] = [];
+
+  // Generate elements for each question in forward order
+  questions.forEach((q, index) => {
+    const questionNumber = index + 1;
     
-    // Add spacing before each question (except the last one when working backwards)
-    if (i < questions.length - 1) {
-      allRequests.push(generateQuestionSpacer(insertIndex));
+    // Add spacing before each question (except first)
+    if (index > 0) {
+      allElements.push(createSpacerElement(insertIndex));
     }
-    
-    let requests: docs_v1.Schema$Request[] = [];
+
+    // Generate question-specific elements
+    let elements: QuizElement[] = [];
     
     switch (q.type) {
       case "multiple-choice":
-        requests = generateMultipleChoiceTable(
-          insertIndex,
-          q.question,
-          questionNumber,
-          q.data.answers
+        // Create elements inline
+        elements.push(
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+        );
+        const mcCellContent = (row: number, col: number): string => {
+          if (col === 0) return "☐";
+          if (col === 1) return `${String.fromCharCode(97 + row)})`;
+          return q.data.answers[row];
+        };
+        elements.push(
+          createTableElement(
+            insertIndex,
+            q.data.answers.length,
+            3,
+            mcCellContent,
+            [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.letter, COLUMN_WIDTHS.textWide]
+          )
         );
         break;
         
       case "match":
-        requests = generateMatchingPairsTable(
-          insertIndex,
-          q.question,
-          questionNumber,
-          q.data.leftItems,
-          q.data.rightItems
+        // Create elements inline
+        const rows = Math.max(q.data.leftItems.length, q.data.rightItems.length);
+        elements.push(
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+        );
+        const matchCellContent = (row: number, col: number): string => {
+          if (col === 0 && row < q.data.leftItems.length) {
+            return `${String.fromCharCode(97 + row)})`;
+          }
+          if (col === 1 && row < q.data.leftItems.length) {
+            return q.data.leftItems[row];
+          }
+          if (col === 2) return "";
+          if (col === 3 && row < q.data.rightItems.length) {
+            return "☐";
+          }
+          if (col === 4 && row < q.data.rightItems.length) {
+            return q.data.rightItems[row];
+          }
+          return "";
+        };
+        elements.push(
+          createTableElement(
+            insertIndex,
+            rows,
+            5,
+            matchCellContent,
+            [
+              COLUMN_WIDTHS.letter,
+              COLUMN_WIDTHS.textNarrow,
+              COLUMN_WIDTHS.spacer,
+              COLUMN_WIDTHS.checkbox,
+              COLUMN_WIDTHS.textNarrow,
+            ]
+          )
         );
         break;
         
       case "order":
-        requests = generateOrderingTable(
-          insertIndex,
-          q.question,
-          questionNumber,
-          q.data.items
+        // Create elements inline
+        elements.push(
+          createTextElement(insertIndex, `${questionNumber}. ${q.question}`)
+        );
+        const orderCellContent = (row: number, col: number): string => {
+          if (col === 0) return "☐";
+          return q.data.items[row];
+        };
+        elements.push(
+          createTableElement(
+            insertIndex,
+            q.data.items.length,
+            2,
+            orderCellContent,
+            [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.textFull]
+          )
         );
         break;
         
       case "short-answer":
-        requests = generateShortAnswerQuestion(
-          insertIndex,
-          q.question,
-          questionNumber,
-          q.data.isInline || false
-        );
+        // Short answer is just text, no table
+        const answerLine = "▁".repeat(10);
+        if (q.data.isInline) {
+          const placeholderPattern = /____+/;
+          const text = q.question.replace(placeholderPattern, answerLine);
+          elements.push(
+            createTextElement(insertIndex, `${questionNumber}. ${text}\n`)
+          );
+        } else {
+          elements.push(
+            createTextElement(
+              insertIndex,
+              `${questionNumber}. ${q.question}\n\n${answerLine}\n`
+            )
+          );
+        }
         break;
     }
     
-    allRequests.push(...requests);
-  }
+    allElements.push(...elements);
+  });
+
+  // Reverse all elements for backwards insertion
+  allElements.reverse();
   
-  return allRequests;
+  // Flatten all requests from reversed elements
+  return allElements.flatMap(element => element.requests);
 }
