@@ -7,6 +7,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
 import { chromaticParams } from "@/storybook/chromatic";
+import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
+import { ConsentDecorator } from "@/storybook/decorators/ConsentDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
@@ -15,7 +17,12 @@ import StepFour from "./StepFour";
 const meta = {
   title: "Components/AdditionalMaterials/StepLayouts/StepFour",
   component: StepFour,
-  decorators: [TeachingMaterialsStoreDecorator, DialogContentDecorator],
+  decorators: [
+    TeachingMaterialsStoreDecorator,
+    DialogContentDecorator,
+    AnalyticsDecorator,
+    ConsentDecorator,
+  ],
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
     layout: "fullscreen",

@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
 import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
 import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
-import { type AllowedRefinements } from "@oakai/additional-materials/src/documents/additionalMaterials/refinement/schema";
 import {
   type RefinementOption,
   getResourceType,
@@ -21,10 +20,12 @@ import {
   OakSecondaryButton,
   OakSmallTertiaryInvertedButton,
 } from "@oaknational/oak-components";
+import { useOakConsent } from "@oaknational/oak-consent-client";
 import * as Sentry from "@sentry/nextjs";
 import styled, { css } from "styled-components";
 
 import AiIcon from "@/components/AiIcon";
+import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
 import {
   useResourcesActions,
   useResourcesStore,
@@ -104,9 +105,12 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const { undoRefinement } = useResourcesActions();
   const moderation = useResourcesStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
+  const [userHasSeenSurvey, setUserHasSeenSurvey] = useState(false);
   const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
   const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
   const { setDialogWindow } = useDialog();
+  const { getConsent } = useOakConsent();
+  const posthogConsent = getConsent(ServicePolicyMap.POSTHOG);
 
   // Get resource type from configuration
   const resourceType = docType ? getResourceType(docType) : null;
@@ -126,6 +130,13 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
       btn?.focus();
     }
   }, [isResourceRefining, refinementHistory.length]);
+
+  useEffect(() => {
+    if (isDownloading && !userHasSeenSurvey && posthogConsent === "granted") {
+      setUserHasSeenSurvey(true);
+      setDialogWindow("additional-materials-user-feedback");
+    }
+  }, [isDownloading, posthogConsent, setDialogWindow, userHasSeenSurvey]);
 
   const handleDownloadMaterial = async () => {
     if (!generation || !docType) {

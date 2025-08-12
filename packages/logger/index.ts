@@ -67,6 +67,7 @@ export type LoggerKey =
   | "middleware:auth"
   | "moderation"
   | "moderation:store"
+  | "posthog-surveys"
   | "prompts"
   | "qd"
   | "quiz"
