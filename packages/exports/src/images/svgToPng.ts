@@ -13,7 +13,7 @@ export async function svgToPng(svgString: string): Promise<{
       },
       background: "rgba(255, 255, 255, 0)",
       font: {
-        loadSystemFonts: true,
+        loadSystemFonts: false, // MathJax embeds all glyphs, no system fonts needed
       },
     });
 
