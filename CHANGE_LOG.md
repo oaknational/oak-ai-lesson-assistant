@@ -1,3 +1,10 @@
+## [1.47.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.0...v1.47.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* tm post launch issues - AI-1428 ([#753](https://github.com/oaknational/oak-ai-lesson-assistant/issues/753)) ([44e7ce1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44e7ce1be3cdf9fe97d1293a00cc38e35a4a8eda))
+
 # [1.47.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.46.0...v1.47.0) (2025-08-11)
 
 
