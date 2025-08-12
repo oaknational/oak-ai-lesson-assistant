@@ -1,6 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
+import { createHash } from "crypto";
 
 import {
   getExistingImageUrl,
@@ -9,7 +10,6 @@ import {
 import { latexToSvg } from "../../../images/latexToSvg";
 import { svgToPng } from "../../../images/svgToPng";
 import { extractTextFromDocument } from "../extraction/extractTextFromDocument";
-import { generateLatexHash } from "../extraction/findLatexPatterns";
 
 const log = aiLogger("exports");
 
@@ -82,6 +82,13 @@ export async function replaceLatexInDocument(
 }
 
 /**
+ * Generate a hash for a LaTeX expression to use as a unique identifier
+ */
+function generateLatexHash(latex: string): string {
+  return createHash("md5").update(latex).digest("hex").substring(0, 12);
+}
+
+/**
  * Find unique LaTeX patterns in the document text
  */
 function findUniqueLatexPatterns(text: string): string[] {
@@ -106,36 +113,67 @@ async function generateLatexImages(
 ): Promise<Map<string, string>> {
   const imageMap = new Map<string, string>();
 
-  // Process all patterns in parallel
-  const imagePromises = patterns.map(async (pattern) => {
-    const hash = generateLatexHash(pattern);
+  log.info(
+    `Starting LaTeX image processing for ${patterns.length} unique patterns`,
+  );
 
-    // Check if image already exists
-    const existingUrl = await getExistingImageUrl(hash);
-    if (existingUrl) {
-      log.info(`Using existing LaTeX image: ${pattern.substring(0, 30)}...`);
-      return { pattern, url: existingUrl };
+  // Check existence for all patterns in parallel
+  log.info("Starting parallel existence checks");
+  const patternData = await Promise.all(
+    patterns.map(async (pattern) => {
+      const hash = generateLatexHash(pattern);
+      const existingUrl = await getExistingImageUrl(hash);
+
+      return {
+        pattern,
+        hash,
+        exists: existingUrl !== null,
+        url: existingUrl,
+      };
+    }),
+  );
+
+  // Partition results once
+  const existing = patternData.filter((p) => p.exists);
+  const missing = patternData.filter((p) => !p.exists);
+
+  log.info(
+    `Existence checks complete: ${existing.length} cached, ${missing.length} need generation`,
+  );
+
+  // Add existing images to map
+  for (const item of existing) {
+    if (item.url) {
+      imageMap.set(item.pattern, item.url);
     }
-
-    // Generate and upload new image
-    const svg = latexToSvg(pattern, false); // inline mode
-    const pngResult = svgToPng(svg);
-    const url = await uploadImageToGCS(
-      pngResult.buffer,
-      hash,
-      pngResult.width,
-      pngResult.height,
-    );
-    log.info(`Uploaded new LaTeX image: ${pattern.substring(0, 30)}...`);
-    return { pattern, url };
-  });
-
-  const results = await Promise.all(imagePromises);
-
-  // Build map
-  for (const { pattern, url } of results) {
-    imageMap.set(pattern, url);
   }
 
+  // Generate and upload missing PNGs in parallel
+  if (missing.length > 0) {
+    log.info(`Starting parallel PNG generation for ${missing.length} patterns`);
+
+    const pngPromises = missing.map(async (item) => {
+      const svg = latexToSvg(item.pattern, false);
+      const pngResult = await svgToPng(svg);
+      const url = await uploadImageToGCS(
+        pngResult.buffer,
+        item.hash,
+        pngResult.width,
+        pngResult.height,
+      );
+
+      return { pattern: item.pattern, url };
+    });
+
+    const results = await Promise.all(pngPromises);
+
+    for (const { pattern, url } of results) {
+      imageMap.set(pattern, url);
+    }
+
+    log.info("PNG generation complete");
+  }
+
+  log.info("LaTeX image processing complete");
   return imageMap;
 }

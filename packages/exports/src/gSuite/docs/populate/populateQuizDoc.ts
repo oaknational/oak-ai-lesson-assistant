@@ -30,44 +30,43 @@ export async function populateQuizDoc({
   data: PopulateDocV2Data;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    const requests: docs_v1.Schema$Request[] = [];
-
-    // 1. Replace title and quiz type placeholders
-    requests.push({
-      replaceAllText: {
-        containsText: {
-          text: "{{lesson_title}}",
-          matchCase: false,
-        },
-        replaceText: data.lesson_title,
-      },
-    });
-
-    requests.push({
-      replaceAllText: {
-        containsText: {
-          text: "{{quiz_type}}",
-          matchCase: false,
-        },
-        replaceText: data.quiz_type,
-      },
-    });
-
-    // 2. Get the document to find the end index
+    // Get the document to find the end index
     const doc = await googleDocs.documents.get({ documentId });
     if (!doc.data.body?.content) {
       throw new Error("Document has no body content");
     }
 
-    // Get the end index of the document (where we'll insert questions)
     const lastElement = doc.data.body.content[doc.data.body.content.length - 1];
-    const insertIndex = lastElement?.endIndex ?? 1;
+    // Subtract 1 since endIndex points after the last valid position
+    const insertIndex = (lastElement?.endIndex ?? 2) - 1;
 
-    // 3. Generate all quiz table requests (with raw LaTeX)
+    // Generate quiz tables and placeholder replacements
     const quizRequests = generateAllQuizTables(insertIndex, data.questions);
-    requests.push(...quizRequests);
 
-    // 4. Execute all requests to insert tables
+    const requests: docs_v1.Schema$Request[] = [
+      ...quizRequests,
+      // Replace placeholders after inserting content
+      {
+        replaceAllText: {
+          containsText: {
+            text: "{{lesson_title}}",
+            matchCase: false,
+          },
+          replaceText: data.lesson_title,
+        },
+      },
+      {
+        replaceAllText: {
+          containsText: {
+            text: "{{quiz_type}}",
+            matchCase: false,
+          },
+          replaceText: data.quiz_type,
+        },
+      },
+    ];
+
+    // Execute all requests
     await googleDocs.documents.batchUpdate({
       documentId,
       requestBody: {
@@ -75,7 +74,7 @@ export async function populateQuizDoc({
       },
     });
 
-    // 5. Post-process: Upload PNGs for LaTeX patterns, and insert markdown image tags
+    // Replace LaTeX patterns with markdown image syntax
     await replaceLatexInDocument(googleDocs, documentId);
 
     // 6. Insert image objects for markdown images

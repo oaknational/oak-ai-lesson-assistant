@@ -6,11 +6,10 @@ import { GCS_LATEX_BUCKET_NAME, gcsLatexCredentials } from "./gcsCredentials";
 
 const log = aiLogger("exports");
 
-function getStorageClient(): Storage {
-  return new Storage({
-    credentials: gcsLatexCredentials,
-  });
-}
+// Reuse a single Storage client instance
+const storage = new Storage({
+  credentials: gcsLatexCredentials,
+});
 
 /**
  * Upload an image buffer to GCS
@@ -24,11 +23,6 @@ export async function uploadImageToGCS(
 ): Promise<string> {
   const filename = generateLatexImageFilename(latexHash, width, height);
   try {
-    log.info(
-      `Uploading image ${filename} to GCS bucket ${GCS_LATEX_BUCKET_NAME}`,
-    );
-
-    const storage = getStorageClient();
     const bucket = storage.bucket(GCS_LATEX_BUCKET_NAME);
     const file = bucket.file(filename);
 
@@ -39,7 +33,6 @@ export async function uploadImageToGCS(
     });
 
     const publicUrl = file.publicUrl();
-    log.info(`Successfully uploaded ${filename} to ${publicUrl}`);
     return publicUrl;
   } catch (error) {
     log.error(`Failed to upload image ${filename}`, error);
@@ -51,7 +44,7 @@ export async function uploadImageToGCS(
  * Generate a filename for a LaTeX image
  * @returns A filename like "latex/abc123-100x100.png"
  */
-export function generateLatexImageFilename(
+function generateLatexImageFilename(
   hash: string,
   width: number,
   height: number,
@@ -67,18 +60,15 @@ export async function getExistingImageUrl(
   hash: string,
 ): Promise<string | null> {
   try {
-    const storage = getStorageClient();
     const bucket = storage.bucket(GCS_LATEX_BUCKET_NAME);
 
     const [files] = await bucket.getFiles({
-      prefix: `latex/${hash}.png`,
+      prefix: `latex/${hash}-`,
       maxResults: 1,
     });
 
     if (files[0]) {
-      const publicUrl = files[0].publicUrl();
-      log.info(`Image already exists: ${publicUrl}`);
-      return publicUrl;
+      return files[0].publicUrl();
     }
     return null;
   } catch (error) {
