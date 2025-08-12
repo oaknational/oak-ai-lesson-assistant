@@ -12,50 +12,56 @@ export function imageReplacements(
     return { requests: [] };
   }
 
-  let cumulativeShift = 0; // Tracks the total index shift from previous operations
+  // Sort images by startIndex in descending order (process from end to beginning)
+  const sortedImages = [...markdownImages].sort(
+    (a, b) => b.startIndex - a.startIndex,
+  );
 
   const requests: docs_v1.Schema$Request[] = [];
 
-  markdownImages.forEach((image) => {
+  // Helper function to extract dimensions from image URLs
+  function getDimensions(imageUrl: string) {
+    // NOTE: dimensions are in pt. 1px is 0.75pt
+    const scale = 3.0;
+    // Extract dimensions from URLs like "latex/abc123-100x100.png"
+    const dimensions = imageUrl.match(/-(\d+)x(\d+)\.png$/);
+    if (dimensions?.[1] && dimensions?.[2]) {
+      const width = parseInt(dimensions[1], 10) / scale;
+      const height = parseInt(dimensions[2], 10) / scale;
+      return { width, height };
+    }
+    return { width: 150, height: 150 };
+  }
+
+  // Process images backwards (from end of document to beginning)
+  // This way, replacing images doesn't affect the indices of earlier images
+  sortedImages.forEach((image) => {
     // Construct the full Markdown reference
     const markdownImageReference = `![${image.altText}](${image.url})`;
-
     const markdownLength = markdownImageReference.length;
 
-    // Adjust the start and end index dynamically based on the cumulative shift
-    const adjustedStartIndex = image.startIndex + cumulativeShift;
-    const adjustedEndIndex = adjustedStartIndex + markdownLength;
+    // Since we're processing backwards, we can use the original indices directly
+    const startIndex = image.startIndex;
+    const endIndex = startIndex + markdownLength;
 
     // Request to delete the exact range of the Markdown reference
     requests.push({
       deleteContentRange: {
         range: {
-          startIndex: adjustedStartIndex,
-          endIndex: adjustedEndIndex,
+          startIndex,
+          endIndex,
         },
       },
     });
 
-    function getDimensions(imageUrl: string) {
-      // NOTE: dimensions are in pt. 1px is 0.75pt
-      const scale = 3.0;
-      // Extract dimensions from URLs like "latex/abc123-100x100.png"
-      const dimensions = imageUrl.match(/-(\d+)x(\d+)\.png$/);
-      if (dimensions?.[1] && dimensions?.[2]) {
-        const width = parseInt(dimensions[1], 10) / scale;
-        const height = parseInt(dimensions[2], 10) / scale;
-        return { width, height };
-      }
-      return { width: 150, height: 150 };
-    }
     const dimensions = getDimensions(image.url);
 
-    // Request to insert the inline image at the adjusted startIndex
+    // Request to insert the inline image at the same position
     requests.push({
       insertInlineImage: {
         uri: image.url,
         location: {
-          index: adjustedStartIndex, // Insert at the same startIndex where the Markdown was removed
+          index: startIndex, // Insert at the same startIndex where the Markdown was removed
         },
         objectSize: {
           height: {
@@ -69,8 +75,6 @@ export function imageReplacements(
         },
       },
     });
-    const netShift = 1 - markdownLength; // Inline image adds 1, Markdown removes its length
-    cumulativeShift += netShift;
   });
 
   return { requests };
