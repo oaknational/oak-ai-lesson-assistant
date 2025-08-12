@@ -1,51 +1,52 @@
 import invariant from "tiny-invariant";
 
-import type { LooseLessonPlan } from "../../protocol/schema";
-import type { AgentDefinition, AgentRegistry } from "./agentRegistry";
+import type { AilaState } from "./agentRegistry";
 
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
-type AilaState = {
-  doc: LooseLessonPlan;
-  context: string[];
-  messages: ChatMessage[];
-  planner: AgentDefinition<AilaState, AilaState, Pick<AilaState, "plan">>;
-  plan: { agentId: string; action: "add" | "replace" | "delete" }[];
-  agents: AgentRegistry<AilaState>;
-  error?: string;
-};
 type AilaTurnArgs = {
   state: AilaState;
 };
 type AilaTurnResult = {
   state: AilaState;
 };
+
 export async function ailaTurn({
   state,
 }: AilaTurnArgs): Promise<AilaTurnResult> {
   const { planner, agents } = state;
   // Validate the agents
-  const chatMessageAgent = agents.find((agent) => agent.id === "messageToUser");
+  const chatMessageAgent = agents["messageToUser"];
   invariant(chatMessageAgent, "messageToUser agent must be defined");
 
   let currentState = { ...state };
   // Plan the turn
-  const plannerResult = await planner.handler(planner.selector(currentState));
+  const plannerResult = await planner.handler(currentState);
   currentState = { ...currentState, ...plannerResult };
   if (currentState.error) return await handleError(currentState);
   // Execute the plan
   for (const step of currentState.plan) {
-    const agent = currentState.agents.find(
-      (agent) => agent.id === step.agentId,
-    );
+    const agent = currentState.agents[step.agentId];
+
     if (!agent) {
       currentState.error = `Agent not found: ${step.agentId}`;
       return await handleError(currentState);
     }
-    const result = await agent.handler(agent.selector(currentState));
+
+    /**
+     * Handle agents that require arguments.
+     */
+    if (agent.id === "deleteSection") {
+      if (step.agentId !== "deleteSection") {
+        currentState.error = `Invalid agent for deleteSection: ${step.agentId}`;
+        return await handleError(currentState);
+      }
+      await agent.handler(state, step.args);
+      continue;
+    }
+
+    const result = await agent.handler(currentState);
     currentState = { ...currentState, ...result };
+
+    console.log(currentState);
     if (currentState.error) return await handleError(currentState);
   }
 
@@ -64,13 +65,9 @@ export async function ailaTurn({
 async function handleError(state: AilaState): Promise<AilaTurnResult> {
   try {
     console.error("Error during Aila turn:", state.error);
-    const chatMessageAgent = state.agents.find(
-      (agent) => agent.id === "messageToUser",
-    );
-    invariant(chatMessageAgent, "messageToUser agent must be defined");
+    const chatMessageAgent = state.agents["messageToUser"];
 
-    const { selector, handler } = chatMessageAgent;
-    const messageAgentResult = await handler(selector(state));
+    const messageAgentResult = await chatMessageAgent.handler(state);
 
     return { state: { ...state, ...messageAgentResult } };
   } catch (error) {

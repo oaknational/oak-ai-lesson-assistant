@@ -1,21 +1,6 @@
 import type { LooseLessonPlan } from "../../protocol/schema";
-import type { AgentDefinition, AgentRegistry } from "./agentRegistry";
-import { ailaTurn } from "./ailaTurn";
-
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
-
-type AilaState = {
-  doc: LooseLessonPlan;
-  context: string[];
-  messages: ChatMessage[];
-  planner: AgentDefinition<AilaState, AilaState, Pick<AilaState, "plan">>;
-  plan: { agentId: string; action: "add" | "replace" | "delete" }[];
-  agents: AgentRegistry<AilaState>;
-  error?: string;
-};
+import type { AgentDefinition } from "./agentRegistry";
+import { type AilaState, ailaTurn } from "./ailaTurn";
 
 // Mock console.error to avoid noise in tests
 const mockConsoleError = jest.spyOn(console, "error").mockImplementation();
@@ -37,27 +22,17 @@ describe("ailaTurn", () => {
       topic: "Addition",
     };
 
-    const mockPlanner: AgentDefinition<
-      AilaState,
-      AilaState,
-      Pick<AilaState, "plan">
-    > = {
+    const mockPlanner: AgentDefinition<AilaState> = {
       id: "planner",
       description: "Plans the turn",
-      selector: (state) => state,
       handler: jest.fn().mockResolvedValue({
         plan: [{ agentId: "testAgent", action: "add" as const }],
       }),
     };
 
-    const mockMessageAgent: AgentDefinition<
-      AilaState,
-      AilaState,
-      { messages: ChatMessage[] }
-    > = {
+    const mockMessageAgent: AgentDefinition<AilaState> = {
       id: "messageToUser",
       description: "Sends messages to user",
-      selector: (state) => state,
       handler: jest.fn().mockResolvedValue({
         messages: [
           ...(overrides?.messages ?? []),
@@ -73,6 +48,7 @@ describe("ailaTurn", () => {
       planner: mockPlanner,
       plan: [],
       agents: [mockMessageAgent],
+      error: null,
       ...overrides,
     };
   };
@@ -80,10 +56,9 @@ describe("ailaTurn", () => {
   const createMockAgent = <T extends Record<string, unknown>>(
     id: string,
     result: T,
-  ): AgentDefinition<AilaState, AilaState, T> => ({
+  ): AgentDefinition<AilaState> => ({
     id,
     description: `Mock agent ${id}`,
-    selector: (state) => state,
     handler: jest.fn().mockResolvedValue(result),
   });
 
@@ -100,7 +75,6 @@ describe("ailaTurn", () => {
           {
             id: "messageToUser",
             description: "Message agent",
-            selector: (state) => state,
             handler: jest.fn(),
           },
           mockAgent,
@@ -109,7 +83,7 @@ describe("ailaTurn", () => {
 
       const result = await ailaTurn({ state });
 
-      expect(result.state.error).toBeUndefined();
+      expect(result.state.error).toBeNull();
       expect(state.planner.handler).toHaveBeenCalledWith(state);
       expect(mockAgent.handler).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -131,7 +105,6 @@ describe("ailaTurn", () => {
           {
             id: "messageToUser",
             description: "Message agent",
-            selector: (state) => state,
             handler: jest.fn(),
           },
           mockAgent1,
@@ -149,7 +122,7 @@ describe("ailaTurn", () => {
 
       const result = await ailaTurn({ state });
 
-      expect(result.state.error).toBeUndefined();
+      expect(result.state.error).toBeNull();
       expect(mockAgent1.handler).toHaveBeenCalled();
       expect(mockAgent2.handler).toHaveBeenCalled();
       expect(result.state.context).toEqual([
@@ -171,7 +144,6 @@ describe("ailaTurn", () => {
           {
             id: "messageToUser",
             description: "Message agent",
-            selector: (state) => state,
             handler: jest.fn(),
           },
           mockAgent1,
@@ -188,7 +160,7 @@ describe("ailaTurn", () => {
 
       const result = await ailaTurn({ state });
 
-      expect(result.state.error).toBeUndefined();
+      expect(result.state.error).toBeNull();
       expect(result.state.doc.title).toBe("Updated by Agent 2");
     });
   });
@@ -294,14 +266,9 @@ describe("ailaTurn", () => {
     });
 
     it("should handle errors in messageToUser agent during error handling", async () => {
-      const mockMessageAgent: AgentDefinition<
-        AilaState,
-        AilaState,
-        { messages: ChatMessage[] }
-      > = {
+      const mockMessageAgent: AgentDefinition<AilaState> = {
         id: "messageToUser",
         description: "Message agent",
-        selector: (state) => state,
         handler: jest.fn().mockRejectedValue(new Error("Message agent failed")),
       };
 
@@ -337,14 +304,9 @@ describe("ailaTurn", () => {
     });
 
     it("should handle non-Error objects in messageToUser agent failure", async () => {
-      const mockMessageAgent: AgentDefinition<
-        AilaState,
-        AilaState,
-        { messages: ChatMessage[] }
-      > = {
+      const mockMessageAgent: AgentDefinition<AilaState> = {
         id: "messageToUser",
         description: "Message agent",
-        selector: (state) => state,
         handler: jest.fn().mockRejectedValue("String error"),
       };
 
@@ -437,7 +399,7 @@ describe("ailaTurn", () => {
 
       const result = await ailaTurn({ state });
 
-      expect(result.state.error).toBeUndefined();
+      expect(result.state.error).toBeNull();
     });
 
     it("should handle plan with mixed actions", async () => {
@@ -466,7 +428,7 @@ describe("ailaTurn", () => {
 
       const result = await ailaTurn({ state });
 
-      expect(result.state.error).toBeUndefined();
+      expect(result.state.error).toBeNull();
       expect(addAgent.handler).toHaveBeenCalled();
       expect(replaceAgent.handler).toHaveBeenCalled();
       expect(deleteAgent.handler).toHaveBeenCalled();

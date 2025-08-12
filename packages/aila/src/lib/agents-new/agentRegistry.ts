@@ -1,22 +1,67 @@
-type Agent<InputSlice, OutputSlice> = (
-  slice: InputSlice,
-) => Promise<OutputSlice & { error?: string }>;
+import type { LooseLessonPlan } from "../../protocol/schema";
+import type { SectionKey } from "./promptAgents";
 
-// Selector function for picking required state
-type Selector<FullState, Slice> = (state: FullState) => Slice;
-
-export type AgentDefinition<FullState, InputSlice, OutputSlice> = {
-  /** Unique identifier for the agent */
-  id: string;
-
-  /** Human-readable description of the agent's purpose */
-  description?: string;
-
-  /** Selects the slice of state required by the agent */
-  selector: Selector<FullState, InputSlice>;
-
-  /** The core logic handler of the agent */
-  handler: Agent<InputSlice, OutputSlice>;
+export type AgentDefinition<
+  TState,
+  TId extends string = string,
+  TArgs = void,
+> = {
+  id: TId;
+  description: string;
+  handler: TArgs extends void
+    ? (state: TState) => Promise<TState>
+    : (state: TState, args: TArgs) => Promise<TState>;
 };
 
-export type AgentRegistry<FullState> = AgentDefinition<FullState, any, any>[];
+export type AgentRegistry = {
+  [K in Exclude<AgentId, "deleteSection">]: AgentDefinition<AilaState, K>;
+} & {
+  deleteSection: AgentDefinition<
+    AilaState,
+    "deleteSection",
+    { sectionKey: SectionKey }
+  >;
+};
+
+export const AGENT_IDS = [
+  "title",
+  "subject",
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "starterQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "exitQuiz",
+  "additionalMaterials",
+  "messageToUser",
+  "deleteSection",
+] as const;
+
+export type AgentId = (typeof AGENT_IDS)[number];
+
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+type PlanStep<K extends AgentId = AgentId> = K extends keyof AgentRegistry
+  ? AgentRegistry[K] extends AgentDefinition<AilaState, infer _TId, infer TArgs>
+    ? TArgs extends void
+      ? { agentId: K; args?: never }
+      : { agentId: K; args: TArgs }
+    : never
+  : never;
+
+export type AilaState = {
+  doc: LooseLessonPlan;
+  context: string[];
+  messages: ChatMessage[];
+  planner: AgentDefinition<AilaState>;
+  plan: PlanStep[];
+  agents: AgentRegistry;
+  error: string | null;
+};
