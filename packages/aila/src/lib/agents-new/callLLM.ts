@@ -26,14 +26,6 @@ export async function callLLM<ResponseType>({
   });
   const responseFormat = zodTextFormat(schemaWrapped, `agent_response_schema`);
 
-  console.log(`
-    
-    
-   ${userPrompt} 
-    
-    
-    
-    `);
   const result = await openAIClient.responses.parse({
     instructions: systemPrompt,
     input: userPrompt,

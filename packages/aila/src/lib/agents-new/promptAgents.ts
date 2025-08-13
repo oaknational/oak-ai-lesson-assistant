@@ -1,5 +1,4 @@
 import { compare } from "fast-json-patch/index.mjs";
-// Use the ESM version for better compatibility
 import type OpenAI from "openai";
 import { z } from "zod";
 

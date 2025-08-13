@@ -1,6 +1,7 @@
 #!/usr/bin/env ts-node
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 
+import { compare } from "fast-json-patch/index.mjs";
 import readline from "readline";
 
 import type { AilaState } from "./agentRegistry";
@@ -67,8 +68,6 @@ async function main() {
     error: null,
   };
 
-  console.log(currentState);
-
   // Optionally, let user enter a starting message
 
   let shouldContinue = true;
@@ -78,11 +77,8 @@ async function main() {
     const result = await ailaTurn({
       state: currentState,
     });
-    console.log(result);
-    console.log(
-      "AILA:",
-      result.state.messages.findLast((m) => m.role === "assistant")?.content,
-    );
+
+    console.log(compare(currentState, result.state));
 
     // Update the document with the latest version
     currentState = result.state;

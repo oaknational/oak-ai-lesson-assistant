@@ -23,12 +23,10 @@ export async function ailaTurn({
   };
   // Plan the turn
   const plannerResult = await planner.handler(currentState);
-  console.log(plannerResult.plan);
   currentState = { ...currentState, ...plannerResult };
   if (currentState.error) return await handleError(currentState);
   // Execute the plan
   for (const step of currentState.plan) {
-    console.log(currentState.currentTurn.stepsExecuted, "this step:", step);
     const agent = currentState.agents[step.agentId];
 
     if (!agent) {
