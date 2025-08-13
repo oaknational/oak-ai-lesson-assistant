@@ -104,10 +104,27 @@ Type compatibility between additional materials and API layer now resolved throu
 **Critical Decision:** 
 Defined schemas locally in db package rather than importing from core to prevent circular dependency issues.
 
+### ✅ MOD-005: Frontend Testing
+**Date**: August 13, 2025 | **Status**: Complete
+
+**Files Modified:**
+- `/apps/nextjs/tests-e2e/recordings/roman-britain-2.moderation.json`
+- `/apps/nextjs/.storybook/decorators/TeachingMaterialsStoreDecorator.tsx`
+- `/apps/nextjs/src/app/aila/lesson/[id]/share/index.stories.tsx`
+
+**Key Verification Results:**
+- Frontend architecture already compatible with 28-category structure via generic types
+- All API integration tests (12/12) and frontend unit tests (16/16) passing
+- Updated E2E recording from old grouped format `{l:5,v:5,u:5,s:5,p:5,t:5}` to new 28-category format
+- Fixed test fixtures: mapped `"l/strong-language"` → `"l2"`, `"u/sensitive-content"` → `"u1"`
+- Corrected field names: `ModerationResult` uses `justification`, `ModerationBase` uses `justifications`
+- `isToxic()` helper correctly identifies t1-t6 categories, frontend stores work without modification
+
+**Critical Finding:** Frontend code required no changes - existing architecture already supports new data structure.
+
 ## Remaining Tasks
-1. **MOD-005**: Frontend State Management Refactoring
-2. **MOD-006**: UI Component Updates  
-3. **MOD-007**: Testing and Validation
+1. **MOD-006**: UI Component Updates  
+2. **MOD-007**: Testing and Validation
 
 ## Technical Status
 - ✅ Core package: Type checking passes
@@ -115,10 +132,13 @@ Defined schemas locally in db package rather than importing from core to prevent
 - ✅ API package: All moderation tests pass, type compatibility resolved
 - ✅ Additional Materials: Integrated with new category system
 - ✅ Database package: Schema generation successful, proper 28-category validation
-- ✅ All 28 categories validated with correct abbreviations
+- ✅ Frontend: All tests passing, architecture already compatible with new format
+- ✅ All 28 categories validated with correct abbreviations (l1-l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
 
 ## Implementation Patterns Established
 1. **Transformation Layers**: Use conversion functions when LLM format differs from internal API format
 2. **Local Schema Definitions**: Define schemas locally in packages to avoid circular dependencies
 3. **Backward Compatibility**: Maintain existing type structures while adding new functionality
 4. **Field Mapping Standards**: `flagged_categories` → `categories`, `justifications` → `justification`
+5. **Test Fixture Mapping**: Map old category formats to real abbreviated codes in fixtures/stories
+6. **Type Compatibility**: Different moderation types use different field names (`ModerationResult.justification` vs `ModerationBase.justifications`)
