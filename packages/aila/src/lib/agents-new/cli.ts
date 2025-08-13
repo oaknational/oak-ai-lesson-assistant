@@ -4,8 +4,12 @@ import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import readline from "readline";
 
 import type { AilaState } from "./agentRegistry";
-import { ailaTurn } from "./ailaTurn";
-import { getPromptAgents, getRoutingAgent } from "./promptAgents";
+import { type AilaTurnArgs, ailaTurn } from "./ailaTurn";
+import {
+  getMessageToUserAgent,
+  getPromptAgents,
+  getRoutingAgent,
+} from "./promptAgents";
 
 // Helper to prompt for input
 function ask(query: string): Promise<string> {
@@ -37,20 +41,33 @@ async function main() {
       userId: "test-user",
     },
   });
-  let currentState: AilaState = {
+  const agents = getPromptAgents({ openAIClient });
+  let currentState: AilaTurnArgs["state"] = {
+    docAtStartOfTurn: {},
     doc: {},
-    context: [],
+    contextNotes: null,
+    relevantLessons: null,
     messages: [
       {
         role: "user",
         content: initialUserMessage,
       },
     ],
-    planner: getRoutingAgent({ openAIClient }),
+    planner: getRoutingAgent({
+      openAIClient,
+      subAgents: Object.values(agents).map((agent) => ({
+        id: agent.id,
+        description: agent.description,
+      })),
+    }),
     plan: [],
-    agents: getPromptAgents({ openAIClient }), // Replace with actual OpenAI client
+    agents,
+    messageToUser: getMessageToUserAgent({ openAIClient }),
+    refusal: null,
     error: null,
   };
+
+  console.log(currentState);
 
   // Optionally, let user enter a starting message
 
@@ -61,6 +78,7 @@ async function main() {
     const result = await ailaTurn({
       state: currentState,
     });
+    console.log(result);
     console.log(
       "AILA:",
       result.state.messages.findLast((m) => m.role === "assistant")?.content,
@@ -68,9 +86,8 @@ async function main() {
 
     // Update the document with the latest version
     currentState = result.state;
-
+    currentState.docAtStartOfTurn = { ...currentState.doc };
     // Ask if the user wants to continue
-
     const userInput = await ask("USER: ");
     currentState.messages.push({
       role: "user",

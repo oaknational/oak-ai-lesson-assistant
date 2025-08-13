@@ -1,9 +1,9 @@
-import invariant from "tiny-invariant";
-
 import type { AilaState } from "./agentRegistry";
 
-type AilaTurnArgs = {
-  state: AilaState;
+export type { AilaState };
+
+export type AilaTurnArgs = {
+  state: Omit<AilaState, "currentTurn">;
 };
 type AilaTurnResult = {
   state: AilaState;
@@ -12,42 +12,87 @@ type AilaTurnResult = {
 export async function ailaTurn({
   state,
 }: AilaTurnArgs): Promise<AilaTurnResult> {
-  const { planner, agents } = state;
-  // Validate the agents
-  const chatMessageAgent = agents["messageToUser"];
-  invariant(chatMessageAgent, "messageToUser agent must be defined");
+  const { planner, messageToUser } = state;
 
-  let currentState = { ...state };
+  let currentState: AilaState = {
+    ...state,
+    currentTurn: {
+      stepsExecuted: [],
+      directResponse: null,
+    },
+  };
   // Plan the turn
   const plannerResult = await planner.handler(currentState);
+  console.log(plannerResult.plan);
   currentState = { ...currentState, ...plannerResult };
   if (currentState.error) return await handleError(currentState);
   // Execute the plan
   for (const step of currentState.plan) {
+    console.log(currentState.currentTurn.stepsExecuted, "this step:", step);
     const agent = currentState.agents[step.agentId];
 
     if (!agent) {
-      currentState.error = `Agent not found: ${step.agentId}`;
+      currentState.error = {
+        message: `Agent not found: ${step.agentId}`,
+      };
       return await handleError(currentState);
     }
 
-    /**
-     * Handle agents that require arguments.
-     */
-    if (agent.id === "deleteSection") {
-      if (step.agentId !== "deleteSection") {
-        currentState.error = `Invalid agent for deleteSection: ${step.agentId}`;
-        return await handleError(currentState);
-      }
-      await agent.handler(state, step.args);
-      continue;
+    switch (agent.id) {
+      /**
+       * Handle agents that require arguments (needs to be separate to satisfy TypeScript)
+       */
+      case "deleteSection":
+        if (step.agentId !== "deleteSection") {
+          currentState.error = {
+            message: `Invalid agent for deleteSection: ${step.agentId}`,
+          };
+          return await handleError(currentState);
+        }
+        currentState = await agent.handler(currentState, step.args);
+        break;
+
+      case "fetchRelevantLessons":
+        if (step.agentId !== "fetchRelevantLessons") {
+          currentState.error = {
+            message: `Invalid agent for fetchRelevantLessons: ${step.agentId}`,
+          };
+          return await handleError(currentState);
+        }
+        currentState = await agent.handler(currentState);
+        break;
+
+      default:
+        /**
+         * Handle all other agents
+         */
+        currentState = await agent.handler(currentState);
+        break;
     }
 
-    const result = await agent.handler(currentState);
-    currentState = { ...currentState, ...result };
+    if (currentState.error) {
+      return await handleError(currentState);
+    }
 
-    console.log(currentState);
-    if (currentState.error) return await handleError(currentState);
+    // Register the step execution
+    currentState = {
+      ...currentState,
+      currentTurn: {
+        ...currentState.currentTurn,
+        stepsExecuted: [...currentState.currentTurn.stepsExecuted, step],
+      },
+    };
+  }
+
+  /**
+   * Sign off with the message to the user.
+   * It is done conditionally as currently the Retrieval agent adds its own custom message.
+   */
+  if (
+    currentState.messages[currentState.messages.length - 1]?.role !==
+    "assistant"
+  ) {
+    currentState = await messageToUser.handler(currentState);
   }
 
   return {
@@ -65,24 +110,22 @@ export async function ailaTurn({
 async function handleError(state: AilaState): Promise<AilaTurnResult> {
   try {
     console.error("Error during Aila turn:", state.error);
-    const chatMessageAgent = state.agents["messageToUser"];
+    const { messageToUser } = state;
 
-    const messageAgentResult = await chatMessageAgent.handler(state);
+    const messageAgentResult = await messageToUser.handler(state);
 
     return { state: { ...state, ...messageAgentResult } };
   } catch (error) {
+    /**
+     * TODO confirm that this doesn't leave state in a weird place re error and assistant message
+     */
     console.error("Error in messageToUser agent:", error);
     return {
       state: {
         ...state,
-        messages: [
-          ...state.messages,
-          {
-            role: "assistant",
-            content: `Something went wrong while processing your request. Please try again later.`,
-          },
-        ],
-        error: `Failed to handle error: ${error instanceof Error ? error.message : String(error)}`,
+        error: {
+          message: `Failed to handle error: ${error instanceof Error ? error.message : String(error)}`,
+        },
       },
     };
   }

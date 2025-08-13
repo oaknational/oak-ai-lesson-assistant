@@ -1,3 +1,5 @@
+import { compare } from "fast-json-patch/index.mjs";
+// Use the ESM version for better compatibility
 import type OpenAI from "openai";
 import { z } from "zod";
 
@@ -19,13 +21,17 @@ import {
   type AgentDefinition,
   type AgentRegistry,
   type AilaState,
+  errorSchema,
+  refusalSchema,
 } from "./agentRegistry";
 import { callLLM } from "./callLLM";
+import { getStepsExecutedAsText } from "./getStepsExecutedAsText";
 import { messageToUserInstructions, routerInstructions } from "./prompts";
 import { additionalMaterialsInstructions } from "./prompts/additionalMaterialsInstructions";
 import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
 import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
 import { keywordsInstructions } from "./prompts/keywordsInstructions";
+import { learningCycleTitlesInstructions } from "./prompts/learningCycleTitlesInstructions";
 import { learningCyclesInstructions } from "./prompts/learningCyclesInstructions";
 import { learningOutcomeInstructions } from "./prompts/learningOutcomeInstructions";
 import { misconceptionsInstructions } from "./prompts/misconceptionsInstructions";
@@ -73,6 +79,32 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
         };
       },
     }),
+    keyStage: createPromptAgent({
+      id: "keyStage",
+      description: "Determines the key stage for the lesson plan",
+      responseSchema: z
+        .enum([
+          "early-years",
+          "key-stage-1",
+          "key-stage-2",
+          "key-stage-3",
+          "key-stage-4",
+          "key-stage-5",
+        ])
+        .or(z.string())
+        .describe("Key stage for the lesson plan"),
+      instructions: "Determine the key stage for the lesson plan.",
+      openAIClient,
+      mergeFunction: (state, output) => {
+        return {
+          ...state,
+          doc: {
+            ...state.doc,
+            keyStage: output,
+          },
+        };
+      },
+    }),
     subject: createPromptAgent({
       id: "subject",
       description: "Determines the subject for the lesson plan",
@@ -109,7 +141,7 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
       id: "learningCycles",
       description: "Generates learning cycle titles for the lesson",
       responseSchema: LearningCyclesSchema,
-      instructions: learningCyclesInstructions,
+      instructions: learningCycleTitlesInstructions,
       openAIClient,
       mergeFunction: (state, output) => {
         return {
@@ -281,24 +313,6 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
         };
       },
     }),
-    messageToUser: createPromptAgent({
-      id: "messageToUser",
-      description: "Sends a message to the user with the current state",
-      responseSchema: z.object({
-        message: z.string().describe("Message to the user"),
-      }),
-      instructions: messageToUserInstructions,
-      mergeFunction: (state, output) => {
-        return {
-          ...state,
-          messages: [
-            ...state.messages,
-            { role: "assistant", content: output.message },
-          ],
-        };
-      },
-      openAIClient,
-    }),
     deleteSection: {
       id: "deleteSection",
       description: "Deletes a section from the lesson plan",
@@ -312,44 +326,486 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
         });
       },
     },
+    fetchRelevantLessons: {
+      id: "fetchRelevantLessons",
+      description: "Fetches relevant lessons based on the current state.",
+      handler: async (state) => {
+        // This is a placeholder for the actual implementation
+        // In a real application, this would query a database or API
+        const relevantLessons = [
+          {
+            id: "ID-software-testing-techniques",
+            title: "Software Testing Techniques",
+            topic: "Testing methodologies and practices",
+            cycle1: {
+              title: "Identifying Software Testing Techniques",
+              feedback:
+                "Model answer: Black-box testing is matched with 'testing based on inputs and outputs', white-box with 'testing internal structures', manual with 'checking without tools', and automated with 'using software tools'.",
+              practice:
+                "Match the definitions to the correct testing technique: black-box, white-box, manual, or automated.",
+              explanation: {
+                slideText:
+                  "Learn about black-box and white-box testing techniques and their roles in software testing.",
+                imagePrompt: "black-box vs white-box testing diagram",
+                spokenExplanation: [
+                  "Explain the role of software testing in ensuring application quality.",
+                  "Introduce black-box and white-box testing as key techniques.",
+                  "Define black-box testing: focuses on inputs and outputs without knowledge of internal code.",
+                  "Define white-box testing: involves testing internal structures of the application.",
+                  "Discuss manual testing: manually checking the software for defects without tools.",
+                  "Introduce automated testing: using software tools to execute tests automatically.",
+                ],
+                accompanyingSlideDetails:
+                  "A diagram comparing black-box and white-box testing techniques.",
+              },
+              durationInMinutes: 15,
+              checkForUnderstanding: [
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is black-box testing?",
+                  answers: ["Testing based on inputs and outputs"],
+                  distractors: [
+                    "Testing internal structures",
+                    "Testing with software tools",
+                  ],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What does white-box testing involve?",
+                  answers: ["Testing internal structures"],
+                  distractors: [
+                    "Testing inputs and outputs",
+                    "Testing without tools",
+                  ],
+                  hint: null,
+                },
+              ],
+            },
+            cycle2: {
+              title: "Explaining Purposes of Testing Techniques",
+              feedback:
+                "Model answer: Black-box testing is best for testing user interfaces, white-box for code correctness, manual for exploratory tasks, and automated for repetitive tests.",
+              practice:
+                "Explain, in your own words, when it would be most advantageous to use each testing technique: black-box, white-box, manual, and automated.",
+              explanation: {
+                slideText:
+                  "Understand the purposes and advantages of different testing techniques.",
+                imagePrompt: "testing techniques purposes table",
+                spokenExplanation: [
+                  "Discuss the purpose of black-box testing: validating software functionality from an end-user perspective.",
+                  "Explain white-box testing purpose: ensuring internal code correctness and structure integrity.",
+                  "Introduce the advantages of manual testing: flexibility and human insight in exploratory testing.",
+                  "Discuss the purpose of automated testing: efficiency in repetitive test cases and regression testing.",
+                  "Highlight scenarios where each technique is most effective.",
+                ],
+                accompanyingSlideDetails:
+                  "A table listing testing techniques with their purposes and advantages.",
+              },
+              durationInMinutes: 15,
+              checkForUnderstanding: [
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is the purpose of black-box testing?",
+                  answers: [
+                    "Validating functionality from an end-user perspective",
+                  ],
+                  distractors: [
+                    "Ensuring code correctness",
+                    "Testing with automation tools",
+                  ],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "Why is manual testing beneficial?",
+                  answers: ["Provides flexibility and human insight"],
+                  distractors: [
+                    "Ensures internal code correctness",
+                    "Automates repetitive tasks",
+                  ],
+                  hint: null,
+                },
+              ],
+            },
+            cycle3: {
+              title: "Evaluating Testing Effectiveness",
+              feedback:
+                "Model answer: User interfaces benefit from black-box testing, code quality from white-box, usability from manual, and regression from automated testing.",
+              practice:
+                "Given a set of scenarios, evaluate and justify which testing technique would be most effective for each.",
+              explanation: {
+                slideText:
+                  "Evaluate the effectiveness of testing techniques in various scenarios.",
+                imagePrompt: "testing scenarios evaluation",
+                spokenExplanation: [
+                  "Present scenarios where different testing techniques are applied.",
+                  "Evaluate the effectiveness of black-box testing for user interface scenarios.",
+                  "Discuss white-box testing's effectiveness for code quality assurance.",
+                  "Examine manual testing's role in usability testing.",
+                  "Consider automated testing's efficiency in regression testing.",
+                ],
+                accompanyingSlideDetails:
+                  "Scenarios with testing techniques applied and their evaluations.",
+              },
+              durationInMinutes: 15,
+              checkForUnderstanding: [
+                {
+                  questionType: "multiple-choice" as const,
+                  question:
+                    "In which scenario is black-box testing most effective?",
+                  answers: ["User interface testing"],
+                  distractors: ["Code quality assurance", "Regression testing"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question:
+                    "Which testing is efficient for regression testing?",
+                  answers: ["Automated testing"],
+                  distractors: ["Manual testing", "Black-box testing"],
+                  hint: null,
+                },
+              ],
+            },
+            subject: "computing",
+            exitQuiz: {
+              version: "v2" as const,
+              imageAttributions: [],
+              questions: [
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is the main focus of black-box testing?",
+                  answers: ["Inputs and outputs"],
+                  distractors: ["Internal code", "Testing tools"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question:
+                    "Which technique involves testing internal structures?",
+                  answers: ["White-box testing"],
+                  distractors: ["Black-box testing", "Manual testing"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "Why is automated testing used?",
+                  answers: ["For efficiency in repetitive tasks"],
+                  distractors: [
+                    "For human insight",
+                    "For testing inputs and outputs",
+                  ],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "When is manual testing most beneficial?",
+                  answers: ["In exploratory tasks"],
+                  distractors: ["In repetitive tasks", "In regression testing"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question:
+                    "Which testing technique validates functionality from an end-user perspective?",
+                  answers: ["Black-box testing"],
+                  distractors: ["White-box testing", "Automated testing"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is the role of white-box testing?",
+                  answers: ["Ensuring code correctness"],
+                  distractors: ["Testing user interfaces", "Automating tasks"],
+                  hint: null,
+                },
+              ],
+            },
+            keyStage: "key-stage-4",
+            keywords: [
+              {
+                keyword: "Quality assurance",
+                definition:
+                  "A systematic process to ensure products meet specified requirements and customer expectations.",
+              },
+              {
+                keyword: "Black-box testing",
+                definition:
+                  "A testing technique that examines the functionality without looking into internal structures.",
+              },
+              {
+                keyword: "White-box testing",
+                definition:
+                  "A testing technique that examines the internal structures or workings of an application.",
+              },
+              {
+                keyword: "Automated testing",
+                definition:
+                  "The use of software tools to execute tests automatically, often for repetitive tasks.",
+              },
+              {
+                keyword: "Manual testing",
+                definition:
+                  "The process of manually checking software for defects without the use of tools or scripts.",
+              },
+            ],
+            starterQuiz: {
+              version: "v2" as const,
+              imageAttributions: [],
+              questions: [
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is the software development lifecycle?",
+                  answers: ["A series of phases in software development"],
+                  distractors: [
+                    "A single stage process in software creation",
+                    "An unrelated sequence of steps",
+                  ],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question:
+                    "Why is quality assurance important in software development?",
+                  answers: ["To ensure products meet requirements"],
+                  distractors: [
+                    "To reduce the cost of software",
+                    "To increase the complexity of software",
+                  ],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is debugging?",
+                  answers: ["Finding and fixing errors in code"],
+                  distractors: ["Writing new code", "Testing user interfaces"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "Name a type of software application.",
+                  answers: ["Web application"],
+                  distractors: ["Hardware device", "Network cable"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is a basic programming concept?",
+                  answers: ["Loops"],
+                  distractors: ["Photoshop filters", "Network routers"],
+                  hint: null,
+                },
+                {
+                  questionType: "multiple-choice" as const,
+                  question: "What is the purpose of testing?",
+                  answers: ["To ensure functionality and reliability"],
+                  distractors: [
+                    "To increase the price",
+                    "To make the software more colourful",
+                  ],
+                  hint: null,
+                },
+              ],
+            },
+            learningCycles: [
+              "Identify various software testing techniques and their definitions",
+              "Explain the purposes of different software testing techniques",
+              "Evaluate the effectiveness of different software testing techniques for specific scenarios",
+            ],
+            misconceptions: [
+              {
+                description:
+                  "Testing should occur at multiple stages throughout the software development lifecycle to catch issues early.",
+                misconception: "Testing is only done after development",
+              },
+              {
+                description:
+                  "Both automated and manual testing have their roles; manual testing is still necessary for exploratory and usability testing.",
+                misconception:
+                  "Automated testing eliminates the need for manual testing",
+              },
+              {
+                description:
+                  "Testing reduces the number of bugs but cannot guarantee a completely bug-free application.",
+                misconception: "Testing guarantees bug-free software",
+              },
+            ],
+            priorKnowledge: [
+              "Understand the software development lifecycle",
+              "Recognise the importance of quality assurance in software development",
+              "Familiarity with basic programming concepts",
+              "Awareness of different types of software applications",
+              "Basic knowledge of debugging techniques",
+            ],
+            learningOutcome:
+              "I can explain different software testing techniques and their purposes.",
+            keyLearningPoints: [
+              "Software testing ensures the functionality and reliability of applications",
+              "Different testing techniques are used depending on the objectives",
+              "Manual and automated testing have distinct advantages and disadvantages",
+              "Black-box testing focuses on input and output without considering internal code structure",
+              "White-box testing involves testing the internal structures and workings of an application",
+            ],
+            additionalMaterials: "None",
+          },
+        ];
+        return Promise.resolve({
+          ...state,
+          relevantLessons,
+          messages: [
+            ...state.messages,
+            {
+              role: "assistant",
+              content: `I have fetched relevant lessons based on the current state. You can now use these lessons to base your lesson plan on:
+${relevantLessons.map((lesson) => `- ${lesson.title}`).join("\n")}`,
+              // @todo this is quite brittle. Better for the messageToUser agent to be adding this message
+              stepsExecuted: [
+                ...state.currentTurn.stepsExecuted,
+                { agentId: "fetchRelevantLessons" },
+              ],
+            },
+          ],
+        });
+      },
+    },
+    basedOn: createPromptAgent({
+      id: "basedOn",
+      description:
+        "Updates the 'based on' field of the lesson plan. Return null if the user does not want to base this lesson on an existing lesson plan. This means they will be creating one from scratch.",
+      responseSchema: z
+        .object({
+          id: z.string().describe("ID of the lesson plan"),
+          title: z
+            .string()
+            .describe(
+              "Title of the RAG lesson that we are basing this lesson on",
+            ),
+        })
+        .nullable(),
+      instructions:
+        "Generate a lesson plan based on the provided existing lesson plan.",
+      openAIClient,
+      mergeFunction: (state, output) => {
+        return {
+          ...state,
+          doc: {
+            ...state.doc,
+            basedOn: output,
+          },
+        };
+      },
+      additionalContextFromState: (state) => {
+        return `## RAG lesson plans
+These are the lesson plans the user was given the option to base this lesson on. Check their last message, and respond accordingly.
+
+${state.relevantLessons?.map((lesson) => `- ${lesson.title}`).join("\n")}
+`;
+      },
+    }),
   };
 
   return agents;
 }
 
-export function getRoutingAgent({
+export function getMessageToUserAgent({
   openAIClient,
 }: {
   openAIClient: OpenAI;
+}): AgentDefinition<AilaState, "messageToUser"> {
+  return createPromptAgent({
+    id: "messageToUser",
+    description: "Sends a message to the user with the current state",
+    responseSchema: z.object({
+      message: z.string().describe("Message to the user"),
+    }),
+    instructions: messageToUserInstructions,
+    mergeFunction: (state, output) => {
+      return {
+        ...state,
+        messages: [
+          ...state.messages,
+          {
+            role: "assistant",
+            content: output.message,
+            stepsExecuted: state.currentTurn.stepsExecuted,
+          },
+        ],
+      };
+    },
+    openAIClient,
+    additionalContextFromState: (state) => {
+      const error = state.error
+        ? `## Error
+An error occurred during processing, let the user know -- but don't give them the details:
+\`\`\`json
+${JSON.stringify(state.error, null, 2)}
+\`\`\`
+`
+        : "";
+      const refusalText = state.refusal
+        ? `## Refusal
+The agent refused to complete the request for the following reason:
+${JSON.stringify(state.refusal, null, 2)}
+`
+        : "";
+
+      const jsonDiff = compare(state.docAtStartOfTurn, state.doc);
+      const jsonDiffText = `## Changes
+${jsonDiff.length === 0 ? "Since the last user message, no changes have been made." : JSON.stringify(jsonDiff, null, 2)}
+`;
+
+      return [error, refusalText, jsonDiffText].join("\n\n");
+    },
+  });
+}
+
+export function getRoutingAgent({
+  openAIClient,
+  subAgents,
+}: {
+  openAIClient: OpenAI;
+  subAgents: { id: string; description: string }[];
 }): AgentDefinition<AilaState, "router"> {
   return createPromptAgent({
     id: "router",
     description:
       "Routes messages to the appropriate agents based on user input",
     responseSchema: z.object({
-      plan: z.array(
-        z.union([
-          z.object({
-            agentId: z.literal("deleteSection"),
-            args: z.object({
-              sectionKey: sectionKeysSchema,
+      plan: z
+        .array(
+          z.union([
+            z.object({
+              agentId: z.enum(AGENT_IDS.filter((id) => id !== "deleteSection")),
             }),
-          }),
-          z.object({
-            agentId: z.enum(
-              AGENT_IDS.filter((id) => id !== "deleteSection") as [
-                string,
-                ...string[],
-              ],
-            ),
-          }),
-        ]),
-      ),
-      error: z.string().nullable(),
+            z.object({
+              agentId: z.enum(["deleteSection"]),
+              args: z.object({
+                sectionKey: sectionKeysSchema,
+              }),
+            }),
+          ]),
+        )
+        .describe("Plan of actions for the agents"),
+      refusal: refusalSchema.nullable(),
+      error: errorSchema.nullable(),
     }), // This agent does not return a specific schema
-    instructions: routerInstructions,
+    instructions: routerInstructions.replace(
+      "{{agents_list}}",
+      subAgents
+        .map((agent) => `- ${agent.id}: ${agent.description}`)
+        .join("\n"),
+    ),
     openAIClient,
-    mergeFunction: (state) => state,
+    mergeFunction: (state, output) => ({
+      ...state,
+      plan: output.plan,
+      refusal: output.refusal,
+      error: output.error,
+    }),
+    additionalContextFromState: (state) => {
+      return getStepsExecutedAsText(state);
+    },
   });
 }
 
@@ -358,7 +814,7 @@ function createPromptAgent<OutputType, TId extends string>(props: {
   description: string;
   responseSchema: z.ZodType<OutputType>;
   instructions: string; // these are the instructions that do not change between sessions or interactions
-  // contextFromState: (state: AilaState) => string; // this is anything that could change, current doc state, relevant messages, relevant lesson content, retry error context
+  additionalContextFromState?: (state: AilaState) => string; // this is anything that could change, current doc state, relevant messages, relevant lesson content, retry error context
   openAIClient: OpenAI;
   mergeFunction: (state: AilaState, response: OutputType) => AilaState;
 }): AgentDefinition<AilaState, TId> {
@@ -369,15 +825,22 @@ function createPromptAgent<OutputType, TId extends string>(props: {
     responseSchema,
     instructions,
     mergeFunction,
+    additionalContextFromState,
   } = props;
 
   return {
     id,
     description,
     handler: async (state) => {
+      const userPrompt =
+        contextFromState(state) +
+        (additionalContextFromState
+          ? "\n\n" + additionalContextFromState(state)
+          : "");
+
       const res = await callLLM({
         systemPrompt: decorateInstructionsWithRole({ instructions }),
-        userPrompt: contextFromState(state),
+        userPrompt: userPrompt,
         responseSchema,
         openAIClient,
         model: "gpt-4o",
@@ -393,12 +856,26 @@ function createPromptAgent<OutputType, TId extends string>(props: {
 }
 
 function contextFromState(state: AilaState): string {
-  return `## Current lesson plan
-${JSON.stringify(state.doc)}
+  const contextNotes = state.contextNotes
+    ? `## Context Notes
+${state.contextNotes}`
+    : "";
 
-## Relevant messages
-${state.messages.map((m) => `- ${m.role}: ${m.content}`).join("\n")}
-`;
+  const messages = state.messages
+    ? `## Relevant messages
+
+This is the conversation with the user. The **last message** is the most recent user input:
+
+${state.messages.map((m) => `- ${m.role}: ${m.content}`).join("\n")}`
+    : "";
+
+  const currentDoc = state.doc
+    ? `## Current lesson plan
+
+${JSON.stringify(state.doc, null, 2)}`
+    : "";
+
+  return [contextNotes, messages, currentDoc].filter(Boolean).join("\n\n");
 }
 
 function decorateInstructionsWithRole({

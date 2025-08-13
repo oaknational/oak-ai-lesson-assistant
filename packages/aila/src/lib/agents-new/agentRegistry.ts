@@ -1,4 +1,7 @@
+import { z } from "zod";
+
 import type { LooseLessonPlan } from "../../protocol/schema";
+import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
 import type { SectionKey } from "./promptAgents";
 
 export type AgentDefinition<
@@ -24,8 +27,10 @@ export type AgentRegistry = {
 };
 
 export const AGENT_IDS = [
-  "title",
+  "keyStage",
   "subject",
+  "title",
+  "basedOn",
   "learningOutcome",
   "learningCycles",
   "priorKnowledge",
@@ -38,16 +43,22 @@ export const AGENT_IDS = [
   "cycle3",
   "exitQuiz",
   "additionalMaterials",
-  "messageToUser",
   "deleteSection",
+  "fetchRelevantLessons",
 ] as const;
 
 export type AgentId = (typeof AGENT_IDS)[number];
 
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
+type ChatMessage =
+  | {
+      role: "user";
+      content: string;
+    }
+  | {
+      role: "assistant";
+      content: string;
+      stepsExecuted: PlanStep[];
+    };
 type PlanStep<K extends AgentId = AgentId> = K extends keyof AgentRegistry
   ? AgentRegistry[K] extends AgentDefinition<AilaState, infer _TId, infer TArgs>
     ? TArgs extends void
@@ -56,12 +67,37 @@ type PlanStep<K extends AgentId = AgentId> = K extends keyof AgentRegistry
     : never
   : never;
 
+export const refusalSchema = z.object({
+  reason: z
+    .enum(["out_of_scope", "ethical_concern"])
+    .describe("Reason for refusal"),
+});
+
+export const directResponseSchema = z.object({
+  type: z
+    .enum(["answer", "clarification_request", "capability_explanation"])
+    .describe("Type of direct response"),
+  content: z.string().describe("The response content to send to the user"),
+});
+
+export const errorSchema = z.object({
+  message: z.string().describe("Error message"),
+});
+
 export type AilaState = {
+  docAtStartOfTurn: LooseLessonPlan;
   doc: LooseLessonPlan;
-  context: string[];
   messages: ChatMessage[];
-  planner: AgentDefinition<AilaState>;
+  messageToUser: AgentDefinition<AilaState, "messageToUser">;
+  planner: AgentDefinition<AilaState, "router">;
   plan: PlanStep[];
   agents: AgentRegistry;
-  error: string | null;
+  error: z.infer<typeof errorSchema> | null;
+  refusal: z.infer<typeof refusalSchema> | null;
+  contextNotes: string | null;
+  relevantLessons: RagLessonPlan[] | null;
+  currentTurn: {
+    stepsExecuted: PlanStep[];
+    directResponse: z.infer<typeof directResponseSchema> | null;
+  };
 };

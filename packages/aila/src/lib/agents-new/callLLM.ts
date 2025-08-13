@@ -1,8 +1,12 @@
 import type OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod.mjs";
-import type { z } from "zod";
+import { z } from "zod";
 
-type WithError<T> = { error: null; data: T } | { error: string };
+import type { errorSchema } from "./agentRegistry";
+
+type WithError<T> =
+  | { error: null; data: T }
+  | { error: z.infer<typeof errorSchema> };
 
 export async function callLLM<ResponseType>({
   systemPrompt,
@@ -17,8 +21,19 @@ export async function callLLM<ResponseType>({
   openAIClient: OpenAI;
   model: string; // TODO type this properly
 }): Promise<WithError<ResponseType>> {
-  const responseFormat = zodTextFormat(responseSchema, `agent_response_schema`);
+  const schemaWrapped = z.object({
+    value: responseSchema,
+  });
+  const responseFormat = zodTextFormat(schemaWrapped, `agent_response_schema`);
 
+  console.log(`
+    
+    
+   ${userPrompt} 
+    
+    
+    
+    `);
   const result = await openAIClient.responses.parse({
     instructions: systemPrompt,
     input: userPrompt,
@@ -33,13 +48,17 @@ export async function callLLM<ResponseType>({
     result.output[0]?.type === "message" &&
     result.output[0]?.content[0]?.type === "refusal"
   ) {
-    return { error: result.output[0]?.content[0]?.refusal };
+    return { error: { message: result.output[0]?.content[0]?.refusal } };
   }
 
-  if (!result.output_parsed) {
+  if (!result.output_parsed || result.output_parsed.value === undefined) {
     // TODO log error
-    return { error: "An unknown error occurred" };
+    return {
+      error: {
+        message: "An unknown error occurred\n\n" + JSON.stringify(result),
+      },
+    };
   }
 
-  return { error: null, data: result.output_parsed };
+  return { error: null, data: result.output_parsed.value };
 }
