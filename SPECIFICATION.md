@@ -1,3 +1,103 @@
+# Aila Moderation System Restructure Specification
+
+## Overview
+
+This specification details the complete restructuring of the Aila moderation system from a grouped category approach to individual, independent category assessments. The changes remove the concept of "category groups" and implement each moderation category as a standalone entity with its own scoring criteria and justifications.
+
+## Key Changes Summary
+
+### Current System (Legacy)
+- 6 category groups: Language & Discrimination, Violence & Crime, Upsetting/Disturbing/Sensitive, Nudity & Sex, Physical, Toxic
+- Each group has multiple sub-categories
+- Single score per group with collective justification
+- Groups use prefixes (l/, v/, u/, s/, p/, t/)
+
+### New System (Target)
+- 28 individual moderation categories
+- Each category has its own 1-5 Likert scale score
+- Individual justifications for categories scoring < 5
+- Abbreviated category codes (l1, l2, u1, u2, etc.)
+- No grouping structure - each category is completely independent
+
+## New Category Structure
+
+The new system implements 28 independent categories organized as follows:
+
+### Language Categories (l1-l2)
+1. **l1** - Discriminatory behaviour or language
+2. **l2** - Language may offend
+
+### Upsetting/Sensitive Categories (u1-u5)
+3. **u1** - Sensitive or upsetting content
+4. **u2** - Violence or suffering
+5. **u3** - Mental health challenges
+6. **u4** - Crime or illegal activities  
+7. **u5** - Sexual violence
+
+### Sexual Content (s1)
+8. **s1** - Nudity or sexual content
+
+### Physical Categories (p2-p5)
+9. **p2** - Equipment required
+10. **p3** - Risk assessment required
+11. **p4** - Outdoor learning
+12. **p5** - Additional qualifications required
+
+### Educational Categories (e1)
+13. **e1** - RSHE content
+
+### Recent Content Categories (r1-r2)
+14. **r1** - Recent content (Post-December 2023 Events)
+15. **r2** - Recent or Current Conflicts
+
+### Not-to-be-Planned Categories (n1-n7)
+16. **n1** - Self-harm and Suicide
+17. **n2** - History of Homosexuality and Gender Identity
+18. **n3** - Child specific advice
+19. **n4** - Specific Laws
+20. **n5** - Health and Safety
+21. **n6** - First Aid
+22. **n7** - Current Conflicts
+
+### Toxic Categories (t1-t6)
+23. **t1** - Guides self-harm or suicide
+24. **t2** - Encourages harmful behaviour
+25. **t3** - Encourages illegal activity
+26. **t4** - Encourages violence or harm to others
+27. **t5** - Using or creating weapons
+28. **t6** - Using or creating harmful substances
+
+**CRITICAL NOTE**: Categories with prefixes 'n/' and 't/' are binary (score 1 or 5 only). A score of 1-4 on these categories indicates content that should be blocked or flagged as severely non-compliant.
+
+## Implementation Requirements
+
+### Data Structure Changes
+
+#### Core Configuration Structure
+
+**Current Structure (to be removed)**:
+```json
+[
+  {
+    "title": "Language and discrimination",
+    "codePrefix": "l",
+    "criteria5": "(Fully compliant): ...",
+    "criteria1": "(Severely non-compliant): ...",
+    "note": "...",
+    "categories": [
+      {
+        "code": "l/discriminatory-behaviour",
+        "title": "Discriminatory Behaviour",
+        "userDescription": "...",
+        "llmDescription": "..."
+      }
+    ]
+  }
+]
+```
+
+**New Structure (to implement)**:
+```json
 [
   {
     "code": "l/discriminatory-language",
@@ -11,7 +111,7 @@
     "criteria1": "Heavily involved: Content is focused on depicting or analyzing overt, strong, or frequent discriminatory behaviour or language related to race, gender, disability, religion, or sexual orientation. Includes prominent use of slurs or epithets."
   },
   {
-    "code": "l/offensive-language",
+    "code": "l/offensive-language", 
     "title": "Language may offend",
     "llmDescription": "Flag content containing offensive language. This includes swear words, curse words, and terms of racist, ethnic, sexual, or sexist abuse, as well as pejorative terms related to disability, sexuality, or religion. Exclude any language that is used to incite hatred.",
     "abbreviation": "l2",
@@ -269,3 +369,414 @@
     "criteria1": "Severely non-compliant: lesson contains any guides, recipes, or instructions for creating harmful substances like illegal drugs or poisons."
   }
 ]
+```
+
+**Key Changes Required**:
+- Remove all 6 group objects with nested categories arrays
+- Create 28 individual category objects with complete structure shown above
+- Each category must include all 5 criteria levels (criteria1-criteria5)
+- Use exact abbreviations from notebook (l1, l2, u1, u2, etc.)
+- Copy exact criteria text from notebook data source
+
+##### `/packages/core/src/utils/ailaModeration/moderationPrompt.ts`
+- **Action**: Complete rewrite
+- **Description**: Replace grouped prompt generation with individual category assessment
+
+**Current Implementation (to be replaced)**:
+```typescript
+export const moderationPrompt = `
+OBJECTIVE:
+You are a content moderation supervisor examining a lesson plan document...
+For each category group, you must determine the degree to which the lesson plan is compliant...
+
+CATEGORY GROUPS:
+${moderationCategories
+  .map(
+    (categoryGroup) => `<category-group>
+'${categoryGroup.title}' contains the following categories:${categoryGroup.categories
+      .map(
+        (category) => `
+- ${category.title}: ${category.llmDescription}`,
+      )
+      .join("")}
+...
+`;
+```
+
+**New Implementation (to implement)**:
+```typescript
+export function generateNewModerationPrompt(categories: Array<{
+  title: string;
+  abbreviation: string; 
+  code: string;
+  llmDescription: string;
+  criteria5: string;
+  criteria4: string;
+  criteria3: string;
+  criteria2: string;
+  criteria1: string;
+}>): string {
+  const categoryDetailsText = categories.map(cat => `
+<category>
+Category Title: '${cat.title}'
+Output Score Code (Abbreviation): '${cat.abbreviation}'
+Original Full Code (for context): '${cat.code}'
+Description for Assessment: ${cat.llmDescription}
+Rating Criteria:
+- 5: ${cat.criteria5}
+- 4: ${cat.criteria4}
+- 3: ${cat.criteria3}
+- 2: ${cat.criteria2}
+- 1: ${cat.criteria1}
+</category>`).join('\n\n');
+
+  return `OBJECTIVE:
+You are a content moderation supervisor examining a lesson plan document. Your job is to:
+1. Assess the lesson plan against a list of specific content categories detailed below.
+2. Provide a 1-5 Likert score for EACH category. A score of 5 means the content is not present or not involved at all.
+3. For ANY category that scores less than 5, provide a concise justification explaining why it received that score.
+
+CATEGORIES FOR ASSESSMENT:
+${categoryDetailsText}
+
+IMPORTANT NOTES ON SCORING AND JUSTIFICATION:
+
+*   Your primary goal is to provide content guidance. The score for each category must reflect the presence and significance of relevant content.
+*   Pay close attention to the 'Original Full Code' provided for each category, especially for those starting with 'n/' (Not to be planned by Aila) or 't/' (Toxic). A score of 1-4 on these indicates serious issues and requires careful justification.
+*   For all other categories, when determining a score, consider the Key Stage (age group) of the pupils if Key Stage is specified within the lesson plan.
+
+INSTRUCTION:
+
+Your response MUST be a valid JSON object.
+Use the 'Output Score Code (Abbreviation)' provided for each category as the key in your JSON response. All categories listed above MUST be included in your response, even if they score 5. Any category that scores less than 5 must have a justification provided in the 'justifications' object, using the same 'Output Score Code (Abbreviation)' as the key. If all categories score 5, the 'justifications' object must be empty: {}.
+
+Provide a JSON response with the following top-level keys:
+
+1.  'scores': An object.
+    *   Keys: The 'Output Score Code (Abbreviation)' (e.g., 'l1, 'u2') for EACH category listed above.
+    *   Values: The 1-5 Likert scale rating for that category. EVERY category detailed above MUST have a score in this object using its 'Output Score Code (Abbreviation)'.
+
+2.  'justifications': An object (dictionary).
+    *   Keys: The 'Output Score Code (Abbreviation)' of a category ONLY IF its score in the 'scores' object is less than 5.
+    *   Values: A string containing a concise, precise justification.
+    *   If all categories score 5, this field MUST be an empty object: {}.
+
+3.  'flagged_categories': A list of strings.
+    *   Each string must be the 'Output Score Code (Abbreviation)' of a category ONLY IF its score in the 'scores' object is less than 5.
+    *   If all categories score 5, this field MUST be an empty list: [].
+`;
+}
+
+export const moderationPrompt = generateNewModerationPrompt(moderationCategories);
+```
+
+##### `/packages/core/src/utils/ailaModeration/moderationSchema.ts`
+- **Action**: Major restructure
+- **Description**: Update all schemas to support individual category scoring
+
+**Current Schema (to be replaced)**:
+```typescript
+const moderationScoresSchema = z.object({
+  l: likertScale.describe("Language and discrimination score"),
+  v: likertScale.describe("Violence and crime score"),
+  u: likertScale.describe("Upsetting, disturbing and sensitive score"),
+  s: likertScale.describe("Nudity and sex score"),
+  p: likertScale.describe("Physical activity and safety score"),
+  t: likertScale.describe("Toxic score"),
+});
+
+export const moderationCategoriesSchema = z.array(
+  z.union([
+    z.literal("l/discriminatory-behaviour"),
+    z.literal("l/language-may-offend"),
+    // ... existing category codes
+  ])
+);
+```
+
+**New Schema (to implement)**:
+```typescript
+// Dynamic schema generation based on categories
+const likertScale = z.number().int().min(1).max(5);
+
+// Generate individual score fields dynamically (28 total categories)
+// Generate dynamic score fields from all 28 categories
+const scoreFields = {
+  l1: likertScale.describe("Discriminatory behaviour or language score"),
+  l2: likertScale.describe("Language may offend score"),
+  u1: likertScale.describe("Sensitive or upsetting content score"),
+  u2: likertScale.describe("Violence or suffering score"),
+  u3: likertScale.describe("Mental health challenges score"),
+  u4: likertScale.describe("Crime or illegal activities score"),
+  u5: likertScale.describe("Sexual violence score"),
+  s1: likertScale.describe("Nudity or sexual content score"),
+  p2: likertScale.describe("Equipment required score"),
+  p3: likertScale.describe("Risk assessment required score"),
+  p4: likertScale.describe("Outdoor learning score"),
+  p5: likertScale.describe("Additional qualifications required score"),
+  e1: likertScale.describe("RSHE content score"),
+  r1: likertScale.describe("Recent content score"),
+  r2: likertScale.describe("Recent or Current Conflicts score"),
+  n1: likertScale.describe("Self-harm and Suicide score"),
+  n2: likertScale.describe("History of Homosexuality and Gender Identity score"),
+  n3: likertScale.describe("Child specific advice score"),
+  n4: likertScale.describe("Specific Laws score"),
+  n5: likertScale.describe("Health and Safety score"),
+  n6: likertScale.describe("First Aid score"),
+  n7: likertScale.describe("Current Conflicts score"),
+  t1: likertScale.describe("Guides self-harm or suicide score"),
+  t2: likertScale.describe("Encourages harmful behaviour score"),
+  t3: likertScale.describe("Encourages illegal activity score"),
+  t4: likertScale.describe("Encourages violence or harm to others score"),
+  t5: likertScale.describe("Using or creating weapons score"),
+  t6: likertScale.describe("Using or creating harmful substances score")
+};
+
+const moderationScoresSchema = z.object(scoreFields);
+
+// Create union type for all 28 category abbreviations
+export const moderationCategoriesSchema = z.array(
+  z.union([
+    z.literal("l1"), z.literal("l2"),
+    z.literal("u1"), z.literal("u2"), z.literal("u3"), z.literal("u4"), z.literal("u5"),
+    z.literal("s1"),
+    z.literal("p2"), z.literal("p3"), z.literal("p4"), z.literal("p5"),
+    z.literal("e1"),
+    z.literal("r1"), z.literal("r2"),
+    z.literal("n1"), z.literal("n2"), z.literal("n3"), z.literal("n4"),
+    z.literal("n5"), z.literal("n6"), z.literal("n7"),
+    z.literal("t1"), z.literal("t2"), z.literal("t3"), z.literal("t4"),
+    z.literal("t5"), z.literal("t6")
+  ])
+);
+
+export const moderationResponseSchema = z.object({
+  scores: moderationScoresSchema,
+  justifications: z.record(z.string(), z.string()).describe("Justifications for scores < 5"),
+  flagged_categories: moderationCategoriesSchema,
+});
+```
+
+#### 2. Frontend Components
+
+##### `/apps/nextjs/src/components/AppComponents/Chat/toxic-moderation-view.tsx`
+- **Action**: Update to handle new category structure
+- **Description**: Modify component to work with individual categories instead of groups
+- **Changes**:
+  - Update props to accept individual category data
+  - Modify display logic for new category structure
+  - Handle abbreviated codes in UI
+
+##### `/apps/nextjs/src/components/AppComponents/FeedbackForms/ModerationFeedbackForm.tsx`
+- **Action**: Update form fields and validation
+- **Description**: Adapt form to work with new category structure
+- **Changes**:
+  - Update form fields for individual categories
+  - Modify validation logic
+  - Handle new API response format
+
+##### `/apps/nextjs/src/components/AppComponents/FeedbackForms/ModerationFeedbackModal.tsx`
+- **Action**: Update modal content structure
+- **Description**: Adapt modal to display individual category results
+- **Changes**:
+  - Update display components for new data structure
+  - Modify modal layout for individual categories
+
+##### `/apps/nextjs/src/components/ContextProviders/ChatModerationContext.tsx`
+- **Action**: Update context to handle new data structure
+- **Description**: Modify context provider for individual categories
+- **Changes**:
+  - Update context type definitions
+  - Modify state management for new structure
+  - Update context methods
+
+#### 3. Store Management
+
+##### `/apps/nextjs/src/stores/moderationStore/types.ts`
+- **Action**: Complete type definition overhaul
+- **Description**: Update all types for individual category structure
+- **Changes**:
+  - Define new interfaces for individual categories
+  - Update moderation result types
+  - Remove group-based type definitions
+  - Add types for abbreviated codes
+
+##### `/apps/nextjs/src/stores/moderationStore/actionFunctions/handleFetchModeration.tsx`
+- **Action**: Update API integration
+- **Description**: Modify to handle new API response format
+- **Changes**:
+  - Update API call expectations
+  - Modify response parsing logic
+  - Handle new category structure in state updates
+
+##### `/apps/nextjs/src/stores/moderationStore/actionFunctions/handleToxicModeration.tsx`
+- **Action**: Update toxic content handling
+- **Description**: Adapt to new toxic category structure (t1-t6)
+- **Changes**:
+  - Update logic to check individual toxic categories
+  - Modify toxic content detection
+  - Handle new abbreviated codes
+
+##### `/apps/nextjs/src/stores/moderationStore/actionFunctions/handleUpdateModerationState.tsx`
+- **Action**: Update state management
+- **Description**: Modify state updates for new structure
+- **Changes**:
+  - Update state update logic
+  - Handle individual category results
+  - Modify state shape for new data structure
+
+#### 4. API Integration
+
+##### `/packages/aila/src/features/moderation/AilaModeration.ts`
+- **Action**: Major refactor
+- **Description**: Update core moderation logic for individual categories
+- **Changes**:
+  - Modify prompt generation for new structure
+  - Update LLM response parsing
+  - Handle new schema validation
+  - Update error handling for new format
+
+##### `/packages/api/src/router/moderations.ts`
+- **Action**: Update API endpoints
+- **Description**: Modify tRPC endpoints for new data structure
+- **Changes**:
+  - Update input/output schemas
+  - Modify endpoint logic for individual categories
+  - Update database interactions
+  - Handle new response format
+
+#### 5. Database Integration
+
+##### `/packages/core/src/models/moderations.ts`
+- **Action**: Update database models
+- **Description**: Modify models to support new category structure
+- **Changes**:
+  - Update Prisma model interactions
+  - Modify database query logic
+  - Handle new data structure in persistence
+  - Update model type definitions
+
+##### `/packages/db/prisma/zod-schemas/moderation.ts`
+- **Action**: Update Zod schemas
+- **Description**: Modify schemas for new database structure
+- **Changes**:
+  - Update Zod validation schemas
+  - Modify field definitions
+  - Handle new category structure
+  - Update type generation
+
+#### 6. Additional Materials Integration
+
+##### `/packages/additional-materials/src/moderation/moderationPrompt.ts`
+- **Action**: Update additional materials moderation
+- **Description**: Align with new moderation structure
+- **Changes**:
+  - Update prompt generation
+  - Modify category assessment logic
+  - Handle new response format
+  - Update integration with core moderation
+
+##### `/packages/additional-materials/src/moderation/generateAdditionalMaterialModeration.ts`
+- **Action**: Update generation logic
+- **Description**: Modify to work with new category structure
+- **Changes**:
+  - Update moderation generation
+  - Handle new API responses
+  - Modify result processing
+  - Update error handling
+
+#### 7. Testing Infrastructure
+
+##### Test Files to Update:
+- All E2E test recordings in `/apps/nextjs/tests-e2e/recordings/`
+- Unit tests in store action functions
+- API integration tests
+- Component tests that interact with moderation data
+
+### API Response Changes
+
+**Current API Response Format**:
+```json
+{
+  "scores": {
+    "l": 5,
+    "v": 3,
+    "u": 4,
+    "s": 5,
+    "p": 5,
+    "t": 5
+  },
+  "justifications": {
+    "v": "Content discusses historical violence in educational context"
+  },
+  "flagged_categories": ["v"]
+}
+```
+
+**New API Response Format**:
+```json
+{
+  "scores": {
+    "l1": 5, "l2": 5,
+    "u1": 4, "u2": 3, "u3": 5, "u4": 5, "u5": 5,
+    "s1": 5,
+    "p2": 5, "p3": 5, "p4": 5, "p5": 5,
+    "e1": 5,
+    "r1": 5, "r2": 5,
+    "n1": 5, "n2": 5, "n3": 5, "n4": 5, "n5": 5, "n6": 5, "n7": 5,
+    "t1": 5, "t2": 5, "t3": 5, "t4": 5, "t5": 5, "t6": 5
+  },
+  "justifications": {
+    "u1": "Content discusses sensitive topic in educational context",
+    "u2": "Historical violence discussed as core lesson content"
+  },
+  "flagged_categories": ["u1", "u2"]
+}
+```
+
+## Implementation Scope
+
+This restructure affects multiple layers of the application:
+
+### Core Data Layer
+- Configuration files (JSON category definitions)
+- Schema definitions (Zod validation schemas)
+- TypeScript type definitions
+
+### AI Integration Layer  
+- Prompt generation for LLM assessment
+- Response parsing and validation
+- Error handling for new format
+
+### API Layer
+- tRPC endpoint input/output schemas
+- Database model interactions
+- Response serialization
+
+### Frontend Layer
+- State management (Zustand stores)
+- UI components displaying moderation results
+- Form validation and user feedback
+
+### Testing Layer
+- Unit tests for new schemas and logic
+- Integration tests for API changes
+- E2E test recordings with new format
+
+## Implementation Tasks
+
+Detailed implementation tasks, dependencies, testing requirements, and validation criteria are provided in `TODO.md`. The implementation must be completed in the specified sequence due to critical dependencies between components.
+
+## Success Criteria
+
+The implementation will be considered successful when:
+1. All 28 categories are assessed independently with individual scores
+2. LLM generates proper justifications for categories scoring < 5
+3. API responses use abbreviated codes (l1, l2, etc.)
+4. Frontend displays individual category results clearly
+5. All existing functionality continues to work
+6. Performance remains acceptable
+7. All tests pass with new implementation
+8. No regression in moderation accuracy or user experience
+
+This specification defines the requirements for transitioning from the grouped moderation system to 28 individual category assessments while maintaining system reliability and user experience. Implementation details and task breakdown are available in `TODO.md`.

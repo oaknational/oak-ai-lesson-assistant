@@ -182,3 +182,108 @@ These IDs are stored in `.claude/env.local.json`:
 - **Merged**: Code merged to main branch
 - **Done**: Task completed
 - **Blocked**: Cannot proceed due to dependencies
+
+## Key File Locations
+
+### Moderation System Files (Critical for Current Work)
+
+- **Core Configuration**: `/packages/core/src/utils/ailaModeration/moderationCategories.json`
+- **Schema Definitions**: `/packages/core/src/utils/ailaModeration/moderationSchema.ts`
+- **Prompt Generation**: `/packages/core/src/utils/ailaModeration/moderationPrompt.ts`
+- **AI Processing**: `/packages/aila/src/features/moderation/AilaModeration.ts`
+- **API Endpoints**: `/packages/api/src/router/moderations.ts`
+- **Database Models**: `/packages/core/src/models/moderations.ts`
+- **Frontend Components**: 
+  - `/apps/nextjs/src/components/AppComponents/Chat/toxic-moderation-view.tsx`
+  - `/apps/nextjs/src/components/AppComponents/FeedbackForms/ModerationFeedbackForm.tsx`
+- **Store Management**: `/apps/nextjs/src/stores/moderationStore/`
+
+### Development Configuration
+
+- **Turborepo Config**: `/turbo.json` (defines build tasks and dependencies)
+- **Package Configs**: Each package has its own `package.json` with specific scripts
+- **ESLint Config**: `/packages/eslint-config/` (shared across monorepo)
+- **Prettier Config**: `/packages/prettier-config/` (shared formatting rules)
+- **TypeScript**: Root `tsconfig.json` extended by each package
+- **Environment**: Use Doppler CLI for secrets management
+
+## Testing Strategy
+
+### Unit Tests
+- **Framework**: Jest with TypeScript support
+- **Coverage**: Aim for high coverage on business logic
+- **Location**: Co-located with source files or in `__tests__` directories
+- **Mocking**: Use MSW for API mocking, Jest mocks for utilities
+
+### E2E Tests
+- **Framework**: Playwright with TypeScript
+- **Location**: `/apps/nextjs/tests-e2e/`
+- **Tags**: 
+  - `@common-auth`: Tests using shared test user (run concurrently)
+  - `@openai`: Tests calling OpenAI API (excluded from CI)
+- **Recordings**: Fixtures for AI responses in `/tests-e2e/recordings/`
+
+## Development Environment
+
+### Prerequisites
+1. **Node.js**: >=20.9.0 (specified in package.json engines)
+2. **pnpm**: >=8 (packageManager: "pnpm@8.6.12")
+3. **Docker**: For PostgreSQL database
+4. **Doppler CLI**: For secrets management
+
+### Setup Process
+1. Clone repository and install dependencies: `pnpm install -r`
+2. Install Turbo globally: `pnpm install turbo --global`
+3. Set up database: `cd packages/db && pnpm run docker-bootstrap`
+4. Configure secrets: `doppler setup && pnpm doppler:pull:dev`
+5. Generate Prisma client: `pnpm db-generate`
+6. Start development: `pnpm dev`
+
+## Production Considerations
+
+### Performance
+- **Bundle Analysis**: Monitor Next.js bundle size
+- **Database**: Use Prisma Accelerate for connection pooling
+- **Caching**: Leverage tRPC and TanStack Query caching
+- **Streaming**: AI responses stream to improve perceived performance
+
+### Security
+- **Content Security Policy**: Strict CSP headers implemented
+- **API Rate Limiting**: Configured rate limits per user
+- **Input Validation**: Comprehensive Zod schemas throughout
+- **Authentication**: Clerk handles auth with webhook verification
+- **Moderation**: Multi-layer content moderation system
+
+### Monitoring
+- **Error Tracking**: Sentry for production error monitoring
+- **Performance**: Datadog for application observability
+- **Analytics**: PostHog for user behavior tracking
+- **Logging**: Structured logging with correlation IDs
+
+## Current Priority: Moderation System Restructure
+
+**Status**: MOD-001 Complete, MOD-002 Complete, MOD-003 Next
+
+The moderation system restructure is underway. Progress:
+
+**✅ MOD-001 (Core Data Structure)**:
+1. **✅ Data Structure**: 28 individual categories implemented (was 6 groups)
+2. **✅ Scoring**: Individual 1-5 Likert scale scores for each category
+3. **✅ Abbreviations**: Short codes implemented (l1, l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
+4. **✅ Schema Updates**: All core schemas and types updated
+
+**✅ MOD-002 (Prompt and LLM Integration)**:
+1. **✅ Prompt Generation**: Individual category assessment for all 28 categories
+2. **✅ LLM Response Parsing**: Updated to handle new JSON structure
+3. **✅ Field Mapping**: LLM `flagged_categories` → internal `categories`
+4. **✅ Helper Functions**: Updated for new category structure
+
+**Next**: MOD-003 (API and Database Layer Updates) - update tRPC endpoints and database interactions.
+
+Refer to `SPECIFICATION.md` for complete details and `HISTORY.md` for progress tracking.
+
+# Important Instructions
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
