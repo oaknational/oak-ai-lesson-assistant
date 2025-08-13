@@ -69,15 +69,20 @@ type PlanStep<K extends AgentId = AgentId> = K extends keyof AgentRegistry
 
 export const refusalSchema = z.object({
   reason: z
-    .enum(["out_of_scope", "ethical_concern"])
+    .enum([
+      "out_of_scope",
+      "capability_limitation",
+      "clarification_needed",
+      "ethical_concern",
+    ])
     .describe("Reason for refusal"),
 });
 
 export const directResponseSchema = z.object({
-  type: z
+  reason: z
     .enum(["answer", "clarification_request", "capability_explanation"])
     .describe("Type of direct response"),
-  content: z.string().describe("The response content to send to the user"),
+  context: z.string().describe("The context to provide to the next agent"),
 });
 
 export const errorSchema = z.object({
@@ -90,14 +95,14 @@ export type AilaState = {
   messages: ChatMessage[];
   messageToUser: AgentDefinition<AilaState, "messageToUser">;
   planner: AgentDefinition<AilaState, "router">;
-  plan: PlanStep[];
   agents: AgentRegistry;
-  error: z.infer<typeof errorSchema> | null;
-  refusal: z.infer<typeof refusalSchema> | null;
-  contextNotes: string | null;
   relevantLessons: RagLessonPlan[] | null;
   currentTurn: {
-    stepsExecuted: PlanStep[];
+    plan: PlanStep[];
+    error: z.infer<typeof errorSchema> | null;
+    refusal: z.infer<typeof refusalSchema> | null;
     directResponse: z.infer<typeof directResponseSchema> | null;
+    contextNotes: string | null;
+    stepsExecuted: PlanStep[];
   };
 };

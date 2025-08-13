@@ -46,7 +46,6 @@ async function main() {
   let currentState: AilaTurnArgs["state"] = {
     docAtStartOfTurn: {},
     doc: {},
-    contextNotes: null,
     relevantLessons: null,
     messages: [
       {
@@ -61,11 +60,8 @@ async function main() {
         description: agent.description,
       })),
     }),
-    plan: [],
     agents,
     messageToUser: getMessageToUserAgent({ openAIClient }),
-    refusal: null,
-    error: null,
   };
 
   // Optionally, let user enter a starting message
@@ -79,6 +75,7 @@ async function main() {
     });
 
     console.log(compare(currentState, result.state));
+    console.log("ASSISTANT:", result.state.messages.slice(-1)[0]?.content);
 
     // Update the document with the latest version
     currentState = result.state;

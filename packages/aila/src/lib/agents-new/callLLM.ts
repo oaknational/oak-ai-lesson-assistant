@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import type OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod.mjs";
 import { z } from "zod";
@@ -25,6 +26,9 @@ export async function callLLM<ResponseType>({
     value: responseSchema,
   });
   const responseFormat = zodTextFormat(schemaWrapped, `agent_response_schema`);
+
+  fs.writeFileSync(`./${Date.now()}_systemPrompt.log`, systemPrompt);
+  fs.writeFileSync(`./${Date.now()}_userPrompt.log`, userPrompt);
 
   const result = await openAIClient.responses.parse({
     instructions: systemPrompt,

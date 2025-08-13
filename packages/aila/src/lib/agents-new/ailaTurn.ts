@@ -17,6 +17,10 @@ export async function ailaTurn({
   let currentState: AilaState = {
     ...state,
     currentTurn: {
+      plan: [],
+      error: null,
+      refusal: null,
+      contextNotes: null,
       stepsExecuted: [],
       directResponse: null,
     },
@@ -24,13 +28,13 @@ export async function ailaTurn({
   // Plan the turn
   const plannerResult = await planner.handler(currentState);
   currentState = { ...currentState, ...plannerResult };
-  if (currentState.error) return await handleError(currentState);
+  if (currentState.currentTurn.error) return await handleError(currentState);
   // Execute the plan
-  for (const step of currentState.plan) {
+  for (const step of currentState.currentTurn.plan) {
     const agent = currentState.agents[step.agentId];
 
     if (!agent) {
-      currentState.error = {
+      currentState.currentTurn.error = {
         message: `Agent not found: ${step.agentId}`,
       };
       return await handleError(currentState);
@@ -42,7 +46,7 @@ export async function ailaTurn({
        */
       case "deleteSection":
         if (step.agentId !== "deleteSection") {
-          currentState.error = {
+          currentState.currentTurn.error = {
             message: `Invalid agent for deleteSection: ${step.agentId}`,
           };
           return await handleError(currentState);
@@ -52,7 +56,7 @@ export async function ailaTurn({
 
       case "fetchRelevantLessons":
         if (step.agentId !== "fetchRelevantLessons") {
-          currentState.error = {
+          currentState.currentTurn.error = {
             message: `Invalid agent for fetchRelevantLessons: ${step.agentId}`,
           };
           return await handleError(currentState);
@@ -68,7 +72,7 @@ export async function ailaTurn({
         break;
     }
 
-    if (currentState.error) {
+    if (currentState.currentTurn.error) {
       return await handleError(currentState);
     }
 
@@ -107,7 +111,7 @@ export async function ailaTurn({
  */
 async function handleError(state: AilaState): Promise<AilaTurnResult> {
   try {
-    console.error("Error during Aila turn:", state.error);
+    console.error("Error during Aila turn:", state.currentTurn.error);
     const { messageToUser } = state;
 
     const messageAgentResult = await messageToUser.handler(state);
@@ -121,8 +125,11 @@ async function handleError(state: AilaState): Promise<AilaTurnResult> {
     return {
       state: {
         ...state,
-        error: {
-          message: `Failed to handle error: ${error instanceof Error ? error.message : String(error)}`,
+        currentTurn: {
+          ...state.currentTurn,
+          error: {
+            message: `Failed to handle error: ${error instanceof Error ? error.message : String(error)}`,
+          },
         },
       },
     };

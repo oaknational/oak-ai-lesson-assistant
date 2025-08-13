@@ -254,8 +254,7 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     })}`,
   keyStage:
     "The lesson's Key Stage as defined by UK educational standards. In slug format (kebab-case).",
-  subject:
-    "The subject that this lesson is included within, for instance English or Geography.",
+  subject: "The subject that this lesson is included within.",
   topic:
     "A topic that this lesson would sit within, which might cover several lessons with a shared theme.",
   learningOutcome: dedent`What the pupils will have learnt by the end of the lesson.

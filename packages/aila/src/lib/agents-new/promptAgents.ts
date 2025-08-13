@@ -20,15 +20,20 @@ import {
   type AgentDefinition,
   type AgentRegistry,
   type AilaState,
+  directResponseSchema,
   errorSchema,
   refusalSchema,
 } from "./agentRegistry";
+import { basedOnInstructions } from "./agents/basedOn/basedOn.instructions";
+import { subjectsByKeyStage } from "./agents/subject/subject.examples";
+import { titleExamples } from "./agents/title/title.examples";
 import { callLLM } from "./callLLM";
 import { getStepsExecutedAsText } from "./getStepsExecutedAsText";
 import { messageToUserInstructions, routerInstructions } from "./prompts";
 import { additionalMaterialsInstructions } from "./prompts/additionalMaterialsInstructions";
 import { exitQuizInstructions } from "./prompts/exitQuizInstructions";
 import { keyLearningPointsInstructions } from "./prompts/keyLearningPointsInstructions";
+import { keyStageInstructions } from "./prompts/keyStageInstructions";
 import { keywordsInstructions } from "./prompts/keywordsInstructions";
 import { learningCycleTitlesInstructions } from "./prompts/learningCycleTitlesInstructions";
 import { learningCyclesInstructions } from "./prompts/learningCyclesInstructions";
@@ -38,6 +43,7 @@ import { priorKnowledgeInstructions } from "./prompts/priorKnowledgeInstructions
 import { starterQuizInstructions } from "./prompts/starterQuizInstructions";
 import { subjectInstructions } from "./prompts/subjectInstructions";
 import { titleInstructions } from "./prompts/titleInstructions";
+import { stringListToText } from "./utils/stringListToText";
 
 const sectionKeysSchema = z.union([
   z.literal("title"),
@@ -77,22 +83,20 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
           },
         };
       },
+      additionalContextFromState: (state) => {
+        return `## Example titles
+
+${stringListToText(titleExamples[state.doc.subject ?? ""]?.[state.doc.keyStage ?? ""] ?? [])}`;
+      },
     }),
     keyStage: createPromptAgent({
       id: "keyStage",
       description: "Determines the key stage for the lesson plan",
       responseSchema: z
-        .enum([
-          "early-years",
-          "key-stage-1",
-          "key-stage-2",
-          "key-stage-3",
-          "key-stage-4",
-          "key-stage-5",
-        ])
+        .enum(["early-years-foundation-stage", "ks1", "ks2", "ks3", "ks4"])
         .or(z.string())
         .describe("Key stage for the lesson plan"),
-      instructions: "Determine the key stage for the lesson plan.",
+      instructions: keyStageInstructions,
       openAIClient,
       mergeFunction: (state, output) => {
         return {
@@ -118,6 +122,11 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
             subject: output,
           },
         };
+      },
+      additionalContextFromState: (state) => {
+        return `## Example subjects
+
+${state.doc.keyStage ? stringListToText(subjectsByKeyStage[state.doc.keyStage]) : stringListToText(Array.from(new Set(Object.values(subjectsByKeyStage).flat())))}`;
       },
     }),
     learningOutcome: createPromptAgent({
@@ -656,8 +665,9 @@ export function getPromptAgents({ openAIClient }: { openAIClient: OpenAI }) {
             ...state.messages,
             {
               role: "assistant",
-              content: `I have fetched relevant lessons based on the current state. You can now use these lessons to base your lesson plan on:
-${relevantLessons.map((lesson) => `- ${lesson.title}`).join("\n")}`,
+              content: `I have fetched the following existing Oak lessons that look relevant:
+${relevantLessons.map((lesson) => `- ${lesson.title}`).join("\n")}
+Would you like to base your lesson on one of these? Otherwise we can create one from scratch!`,
               // @todo this is quite brittle. Better for the messageToUser agent to be adding this message
               stepsExecuted: [
                 ...state.currentTurn.stepsExecuted,
@@ -682,8 +692,7 @@ ${relevantLessons.map((lesson) => `- ${lesson.title}`).join("\n")}`,
             ),
         })
         .nullable(),
-      instructions:
-        "Generate a lesson plan based on the provided existing lesson plan.",
+      instructions: basedOnInstructions,
       openAIClient,
       mergeFunction: (state, output) => {
         return {
@@ -698,7 +707,7 @@ ${relevantLessons.map((lesson) => `- ${lesson.title}`).join("\n")}`,
         return `## RAG lesson plans
 These are the lesson plans the user was given the option to base this lesson on. Check their last message, and respond accordingly.
 
-${state.relevantLessons?.map((lesson) => `- ${lesson.title}`).join("\n")}
+${state.relevantLessons?.map((lesson) => `- ${JSON.stringify({ id: lesson.id, title: lesson.title })}`).join("\n")}
 `;
       },
     }),
@@ -734,18 +743,25 @@ export function getMessageToUserAgent({
     },
     openAIClient,
     additionalContextFromState: (state) => {
-      const error = state.error
+      const error = state.currentTurn.error
         ? `## Error
-An error occurred during processing, let the user know -- but don't give them the details:
+An error occurred during processing -- it's up to you to write a message to the user in the correct voice (only give them details if the error is due to their input):
 \`\`\`json
-${JSON.stringify(state.error, null, 2)}
+${JSON.stringify(state.currentTurn.error, null, 2)}
 \`\`\`
 `
         : "";
-      const refusalText = state.refusal
+      const refusalText = state.currentTurn.refusal
         ? `## Refusal
-The agent refused to complete the request for the following reason:
-${JSON.stringify(state.refusal, null, 2)}
+The agent refused to complete the request for the following reason -- it's up to you to write a message to the user in the correct voice:
+${JSON.stringify(state.currentTurn.refusal, null, 2)}
+`
+        : "";
+
+      const directResponseText = state.currentTurn.directResponse
+        ? `## Direct Response
+It looks like know action was required, here's some context -- it's up to you to write a message to the user in the correct voice:
+${JSON.stringify(state.currentTurn.directResponse, null, 2)}
 `
         : "";
 
@@ -754,7 +770,9 @@ ${JSON.stringify(state.refusal, null, 2)}
 ${jsonDiff.length === 0 ? "Since the last user message, no changes have been made." : JSON.stringify(jsonDiff, null, 2)}
 `;
 
-      return [error, refusalText, jsonDiffText].join("\n\n");
+      return [error, refusalText, directResponseText, jsonDiffText].join(
+        "\n\n",
+      );
     },
   });
 }
@@ -775,7 +793,12 @@ export function getRoutingAgent({
         .array(
           z.union([
             z.object({
-              agentId: z.enum(AGENT_IDS.filter((id) => id !== "deleteSection")),
+              agentId: z.enum(
+                AGENT_IDS.filter((id) => id !== "deleteSection") as [
+                  string,
+                  ...string[],
+                ],
+              ),
             }),
             z.object({
               agentId: z.enum(["deleteSection"]),
@@ -788,6 +811,7 @@ export function getRoutingAgent({
         .describe("Plan of actions for the agents"),
       refusal: refusalSchema.nullable(),
       error: errorSchema.nullable(),
+      directResponse: directResponseSchema.nullable(),
     }), // This agent does not return a specific schema
     instructions: routerInstructions.replace(
       "{{agents_list}}",
@@ -798,9 +822,13 @@ export function getRoutingAgent({
     openAIClient,
     mergeFunction: (state, output) => ({
       ...state,
-      plan: output.plan,
-      refusal: output.refusal,
-      error: output.error,
+      currentTurn: {
+        ...state.currentTurn,
+        plan: output.plan as AilaState["currentTurn"]["plan"], // @todo plan steps should be defined schema first
+        refusal: output.refusal,
+        error: output.error,
+        directResponse: output.directResponse,
+      },
     }),
     additionalContextFromState: (state) => {
       return getStepsExecutedAsText(state);
@@ -831,22 +859,69 @@ function createPromptAgent<OutputType, TId extends string>(props: {
     id,
     description,
     handler: async (state) => {
-      const userPrompt =
-        contextFromState(state) +
-        (additionalContextFromState
-          ? "\n\n" + additionalContextFromState(state)
-          : "");
+      let basedOnText = "";
+      let relevantExamplesText = "";
+      const sectionKey = sectionKeysSchema.safeParse(id).data;
+      if (sectionKey) {
+        const basedOnId = state.doc.basedOn?.id;
+        const basedOnDocument = state.relevantLessons?.find(
+          (lesson) => lesson.id === basedOnId,
+        );
+
+        basedOnText = basedOnDocument
+          ? `## Based on
+  
+The user is basing this lesson plan on the lesson "${basedOnDocument.title}". Meaning you should only deviate from the content in that lesson where necessary or the user explicitly asks you to.
+  
+### Example ${sectionKey}
+
+${JSON.stringify(state.doc[sectionKey])}
+  `
+          : "";
+
+        relevantExamplesText = state.relevantLessons?.length
+          ? `## Relevant examples
+  
+The following are example ${sectionKey} sections from exemplar lessons that the user has been given the option to base this lesson on. You can use these as inspiration for your response, to help make your response more pedagogically sound.
+  
+  ${state.relevantLessons
+    .map(
+      (
+        lesson,
+        i,
+      ) => `### Example '${sectionKey}' ${i + 1} from lesson "${lesson.title}"
+
+${JSON.stringify(lesson[sectionKey])}
+
+  `,
+    )
+    .join("\n")}`
+          : "";
+      }
+
+      const userPrompt = [
+        contextFromState(state),
+        additionalContextFromState ? additionalContextFromState(state) : "",
+        basedOnText,
+        relevantExamplesText,
+      ].join("\n");
 
       const res = await callLLM({
         systemPrompt: decorateInstructionsWithRole({ instructions }),
-        userPrompt: userPrompt,
+        userPrompt,
         responseSchema,
         openAIClient,
         model: "gpt-4o",
       });
 
       if (res.error !== null) {
-        return { ...state, error: res.error };
+        return {
+          ...state,
+          currentTurn: {
+            ...state.currentTurn,
+            error: res.error,
+          },
+        };
       }
 
       return mergeFunction(state, res.data);
@@ -855,13 +930,19 @@ function createPromptAgent<OutputType, TId extends string>(props: {
 }
 
 function contextFromState(state: AilaState): string {
-  const contextNotes = state.contextNotes
+  const contextNotes = state.currentTurn.contextNotes
     ? `## Context Notes
-${state.contextNotes}`
+${state.currentTurn.contextNotes}`
     : "";
 
   const messages = state.messages
-    ? `## Relevant messages
+    ? `## User message
+
+The user has said:
+
+${state.messages.findLast((m) => m.role === "user")?.content}
+
+## Relevant messages
 
 This is the conversation with the user. The **last message** is the most recent user input:
 
