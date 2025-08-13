@@ -15,3 +15,6 @@ export const COLUMN_WIDTHS = {
 // Answer box dimensions and URL
 export const ANSWER_BOX_SIZE = 28; // Base size in pixels (1x dimensions)
 export const ANSWER_BOX_IMAGE_URL = `https://storage.googleapis.com/${process.env.GCS_LATEX_BUCKET_NAME}/static/answer-box.png`;
+
+// Unicode characters
+export const CHECKBOX_PLACEHOLDER = "☐";

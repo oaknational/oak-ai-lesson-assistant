@@ -6,21 +6,31 @@ import { GCS_LATEX_BUCKET_NAME, gcsLatexCredentials } from "./gcsCredentials";
 
 const log = aiLogger("exports");
 
+// Constants
+const LATEX_PREFIX = "latex/";
+
 // Reuse a single Storage client instance
 const storage = new Storage({
   credentials: gcsLatexCredentials,
 });
 
+interface UploadImageParams {
+  buffer: Buffer;
+  latexHash: string;
+  width: number;
+  height: number;
+}
+
 /**
  * Upload an image buffer to GCS
  * @returns The public URL of the uploaded image
  */
-export async function uploadImageToGCS(
-  buffer: Buffer,
-  latexHash: string,
-  width: number,
-  height: number,
-): Promise<string> {
+export async function uploadImageToGCS({
+  buffer,
+  latexHash,
+  width,
+  height,
+}: UploadImageParams): Promise<string> {
   const filename = generateLatexImageFilename(latexHash, width, height);
   try {
     const bucket = storage.bucket(GCS_LATEX_BUCKET_NAME);
@@ -49,7 +59,7 @@ function generateLatexImageFilename(
   width: number,
   height: number,
 ): string {
-  return `latex/${hash}-${width}x${height}.png`;
+  return `${LATEX_PREFIX}${hash}-${width}x${height}.png`;
 }
 
 /**
@@ -63,7 +73,7 @@ export async function getExistingImageUrl(
     const bucket = storage.bucket(GCS_LATEX_BUCKET_NAME);
 
     const [files] = await bucket.getFiles({
-      prefix: `latex/${hash}-`,
+      prefix: `${LATEX_PREFIX}${hash}-`,
       maxResults: 1,
     });
 

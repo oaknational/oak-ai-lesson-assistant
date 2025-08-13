@@ -3,7 +3,7 @@
  */
 import { addInstruction } from "../../../../../quiz-utils/formatting";
 import { shuffleMatchItems } from "../../../../../quiz-utils/shuffle";
-import { COLUMN_WIDTHS } from "../constants";
+import { CHECKBOX_PLACEHOLDER, COLUMN_WIDTHS } from "../constants";
 import { createTableElement, createTextElement } from "../elements";
 import type { QuizElement } from "../types";
 
@@ -20,16 +20,16 @@ export function generateMatchingPairsTable(
 ): QuizElement[] {
   const elements: QuizElement[] = [];
 
-  // Shuffle right items deterministically
-  const shuffledRightItems = shuffleMatchItems(rightItems);
-  const rows = Math.max(leftItems.length, shuffledRightItems.length);
-
   // Question text element with properly formatted instruction
   const instruction = "Write the matching letter in each box.";
   const formattedQuestion = addInstruction(question, instruction);
   elements.push(
     createTextElement(insertIndex, `${questionNumber}. ${formattedQuestion}`),
   );
+
+  // Shuffle right items deterministically and calculate table dimensions
+  const shuffledRightItems = shuffleMatchItems(rightItems);
+  const rows = Math.max(leftItems.length, shuffledRightItems.length);
 
   // Matching table element
   const cellContent = (row: number, col: number): string => {
@@ -41,7 +41,7 @@ export function generateMatchingPairsTable(
     }
     if (col === 2) return ""; // Spacer column
     if (col === 3 && row < shuffledRightItems.length) {
-      return "☐";
+      return CHECKBOX_PLACEHOLDER;
     }
     if (col === 4 && row < shuffledRightItems.length) {
       return shuffledRightItems[row]?.text ?? "";

@@ -4,7 +4,7 @@ import type { docs_v1 } from "@googleapis/docs";
 
 import type { QuizV2Question } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
-import { generateAllQuizTables } from "../quiz/table-generators";
+import { generateAllQuizElements } from "../quiz/table-generators";
 import { findMarkdownImages } from "../replacements/findMarkdownImages";
 import { imageReplacements } from "../replacements/imageReplacements";
 import { replaceLatexInDocument } from "../replacements/replaceLatexInDocument";
@@ -30,22 +30,22 @@ export async function populateQuizDoc({
   data: PopulateDocV2Data;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
-    // Get the document to find the end index
+    // Get document to find insertion point
     const doc = await googleDocs.documents.get({ documentId });
     if (!doc.data.body?.content) {
       throw new Error("Document has no body content");
     }
 
     const lastElement = doc.data.body.content[doc.data.body.content.length - 1];
-    // Subtract 1 since endIndex points after the last valid position
+    // Adjust for endIndex pointing after last valid position
     const insertIndex = (lastElement?.endIndex ?? 2) - 1;
 
-    // Generate quiz tables and placeholder replacements
-    const quizRequests = generateAllQuizTables(insertIndex, data.questions);
+    // Generate quiz elements for insertion
+    const quizRequests = generateAllQuizElements(insertIndex, data.questions);
 
     const requests: docs_v1.Schema$Request[] = [
       ...quizRequests,
-      // Replace placeholders after inserting content
+      // Replace placeholders after inserting content to keep indexes stable
       {
         replaceAllText: {
           containsText: {
@@ -66,7 +66,7 @@ export async function populateQuizDoc({
       },
     ];
 
-    // Execute all requests
+    // Execute batch update
     await googleDocs.documents.batchUpdate({
       documentId,
       requestBody: {
@@ -74,10 +74,10 @@ export async function populateQuizDoc({
       },
     });
 
-    // Replace LaTeX patterns with markdown image syntax
+    // Convert LaTeX to markdown images
     await replaceLatexInDocument(googleDocs, documentId);
 
-    // 6. Insert image objects for markdown images
+    // Insert image objects for markdown images
     const markdownImages = await findMarkdownImages(googleDocs, documentId);
     const { requests: imageRequests } = imageReplacements(markdownImages);
 
@@ -99,8 +99,10 @@ export async function populateQuizDoc({
     };
   } catch (error) {
     log.error("Error populating quiz document", error);
+    const errorObj =
+      error instanceof Error ? error : new Error("Unknown error");
     return {
-      error: error instanceof Error ? error : new Error("Unknown error"),
+      error: errorObj,
       message:
         error instanceof Error ? error.message : "Failed to populate document",
     };

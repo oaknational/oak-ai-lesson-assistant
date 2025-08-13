@@ -3,7 +3,11 @@
  */
 import type { docs_v1 } from "@googleapis/docs";
 
-import { ANSWER_BOX_IMAGE_URL, ANSWER_BOX_SIZE } from "./constants";
+import {
+  ANSWER_BOX_IMAGE_URL,
+  ANSWER_BOX_SIZE,
+  CHECKBOX_PLACEHOLDER,
+} from "./constants";
 import { calculateCellIndices, pxToPt } from "./helpers";
 import type { QuizElement } from "./types";
 
@@ -74,8 +78,8 @@ export function createTableElement(
     const col = i % columns;
     const content = cellContent(row, col);
 
-    if (content === "☐") {
-      // Insert answer box image instead of checkbox character
+    if (content === CHECKBOX_PLACEHOLDER) {
+      // Replace checkbox placeholder with answer box image
       requests.push({
         insertInlineImage: {
           location: { index: cellIndices[i] },

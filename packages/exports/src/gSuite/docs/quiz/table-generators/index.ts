@@ -62,7 +62,7 @@ function getQuestionElements(
 
     case "short-answer": {
       // Check if question contains inline placeholder
-      const isInline = q.question.includes("_{{}}");
+      const isInline = q.question.includes("{{}}");
       return generateShortAnswerQuestion(
         insertIndex,
         q.question,
@@ -74,10 +74,10 @@ function getQuestionElements(
 }
 
 /**
- * Generate all quiz tables using individual generator functions
+ * Generate all quiz elements using individual generator functions
  * Processes questions in forward order, then reverses for execution
  */
-export function generateAllQuizTables(
+export function generateAllQuizElements(
   insertIndex: number,
   questions: QuizV2Question[],
 ): docs_v1.Schema$Request[] {

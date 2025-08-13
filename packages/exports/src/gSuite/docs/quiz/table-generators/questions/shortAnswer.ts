@@ -13,13 +13,13 @@ export function generateShortAnswerQuestion(
   insertIndex: number,
   question: string,
   questionNumber: number,
-  isInline: boolean = false,
+  isInline: boolean,
 ): QuizElement[] {
   const answerLine = "▁".repeat(10);
   const instruction = "Fill in the blank.";
 
   if (isInline) {
-    const placeholderPattern = /____+/;
+    const placeholderPattern = /\{\{\}\}/g;
     const textWithLine = question.replace(placeholderPattern, answerLine);
     const formattedQuestion = addInstruction(textWithLine, instruction);
     return [

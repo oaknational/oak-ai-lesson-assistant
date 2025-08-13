@@ -11,7 +11,7 @@ const QUIZ_TYPE_LABELS = {
 };
 
 /**
- * Quiz export that supports all question types (multiple-choice, order, match, short-answer)
+ * Export quiz documents with support for all question types
  */
 export const exportDocQuiz = async ({
   snapshotId,
@@ -56,10 +56,12 @@ export const exportDocQuiz = async ({
     onStateChange({ status: "success", data: result.data });
     return result;
   } catch (error) {
+    const errorObj =
+      error instanceof Error ? error : new Error("Unknown error");
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     const errorResult: Result<OutputData> = {
-      error: error instanceof Error ? error : new Error(errorMessage),
+      error: errorObj,
       message: errorMessage,
     };
     onStateChange({ status: "error", error: errorMessage });

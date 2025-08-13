@@ -16,10 +16,6 @@ const log = aiLogger("exports");
 /**
  * Replace LaTeX patterns in a Google Doc with markdown image syntax
  * This prepares LaTeX for the existing markdown image replacement pipeline
- *
- * @param googleDocs - Google Docs API client
- * @param documentId - ID of the document to process
- * @returns Promise that resolves when replacements are complete
  */
 export async function replaceLatexInDocument(
   googleDocs: docs_v1.Docs,
@@ -52,7 +48,7 @@ export async function replaceLatexInDocument(
     const imageUrl = imageUrls.get(pattern);
     if (!imageUrl) continue;
 
-    const altText = `LaTeX: ${pattern.substring(0, 50)}${pattern.length > 50 ? "..." : ""}`;
+    const altText = `LaTeX: ${pattern.substring(0, 50)}${pattern.length > 50 ? "…" : ""}`;
     const markdownImage = `![${altText}](${imageUrl})`;
 
     // Replace ALL occurrences of this LaTeX pattern in the document
@@ -155,12 +151,12 @@ async function generateLatexImages(
     const pngPromises = missing.map(async (item) => {
       const svg = latexToSvg(item.pattern, false);
       const pngResult = await svgToPng(svg);
-      const url = await uploadImageToGCS(
-        pngResult.buffer,
-        item.hash,
-        pngResult.width,
-        pngResult.height,
-      );
+      const url = await uploadImageToGCS({
+        buffer: pngResult.buffer,
+        latexHash: item.hash,
+        width: pngResult.width,
+        height: pngResult.height,
+      });
 
       return { pattern: item.pattern, url };
     });

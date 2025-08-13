@@ -3,7 +3,7 @@
  */
 import { addInstruction } from "../../../../../quiz-utils/formatting";
 import { shuffleMultipleChoiceAnswers } from "../../../../../quiz-utils/shuffle";
-import { COLUMN_WIDTHS } from "../constants";
+import { CHECKBOX_PLACEHOLDER, COLUMN_WIDTHS } from "../constants";
 import { createTableElement, createTextElement } from "../elements";
 import type { QuizElement } from "../types";
 
@@ -16,16 +16,13 @@ export function generateMultipleChoiceTable(
   question: string,
   questionNumber: number,
   answers: string[],
-  correctAnswerCount: number = 1,
-  distractors: string[] = [],
+  correctAnswerCount: number,
+  distractors: string[],
 ): QuizElement[] {
   const elements: QuizElement[] = [];
 
-  // Shuffle answers and distractors deterministically if distractors provided
-  const shuffledChoices =
-    distractors.length > 0
-      ? shuffleMultipleChoiceAnswers(answers, distractors)
-      : answers.map((text) => ({ text, isCorrect: true }));
+  // Shuffle answers and distractors deterministically
+  const shuffledChoices = shuffleMultipleChoiceAnswers(answers, distractors);
 
   // Add instruction based on number of correct answers
   const instruction =
@@ -41,7 +38,7 @@ export function generateMultipleChoiceTable(
 
   // Answer table element
   const cellContent = (row: number, col: number): string => {
-    if (col === 0) return "☐";
+    if (col === 0) return CHECKBOX_PLACEHOLDER;
     if (col === 1) return `${String.fromCharCode(97 + row)})`;
     return shuffledChoices[row]?.text ?? "";
   };

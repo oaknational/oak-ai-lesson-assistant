@@ -58,7 +58,6 @@ export async function exportQuizDoc({
    * User hasn't yet exported the lesson in this state, so we'll do it now
    * and store the result in the database
    */
-
   const result = await exportDocQuiz({
     snapshotId: lessonSnapshot.id,
     userEmail,
