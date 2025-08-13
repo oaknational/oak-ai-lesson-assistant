@@ -11,6 +11,13 @@
 export const IMAGE_SCALE_FACTOR = 3.0;
 
 /**
+ * MathJax scaling factor for LaTeX rendering.
+ * Controls the base size of LaTeX equations before PNG scaling.
+ * 1.0 = normal size, 1.2 = 20% larger, etc.
+ */
+export const MATHJAX_SCALE = 1.2;
+
+/**
  * Convert pixels to points for Google Docs dimensions.
  * Google Docs uses points (pt) for measurements where 1px = 0.75pt
  * 
