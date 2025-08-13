@@ -2,6 +2,8 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
+import { getGoogleDocsDimensions } from "../../../images/constants";
+
 const log = aiLogger("exports");
 
 export function imageReplacements(
@@ -21,16 +23,14 @@ export function imageReplacements(
 
   // Helper function to extract dimensions from image URLs
   function getDimensions(imageUrl: string) {
-    // NOTE: dimensions are in pt. 1px is 0.75pt
-    const scale = 3.0;
     // Extract dimensions from URLs like "latex/abc123-100x100.png"
     const dimensions = imageUrl.match(/-(\d+)x(\d+)\.png$/);
     if (dimensions?.[1] && dimensions?.[2]) {
-      const width = parseInt(dimensions[1], 10) / scale;
-      const height = parseInt(dimensions[2], 10) / scale;
-      return { width, height };
+      const scaledWidth = parseInt(dimensions[1], 10);
+      const scaledHeight = parseInt(dimensions[2], 10);
+      return getGoogleDocsDimensions(scaledWidth, scaledHeight);
     }
-    return { width: 150, height: 150 };
+    throw new Error(`Unable to extract dimensions from image URL: ${imageUrl}`);
   }
 
   // Process images backwards (from end of document to beginning)

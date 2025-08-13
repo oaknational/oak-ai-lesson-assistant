@@ -1,5 +1,7 @@
 import { renderAsync } from "@resvg/resvg-js";
 
+import { IMAGE_SCALE_FACTOR } from "./constants";
+
 export async function svgToPng(svgString: string): Promise<{
   buffer: Buffer;
   width: number;
@@ -9,7 +11,7 @@ export async function svgToPng(svgString: string): Promise<{
     const resvg = await renderAsync(svgString, {
       fitTo: {
         mode: "zoom",
-        value: 3,
+        value: IMAGE_SCALE_FACTOR,
       },
       background: "rgba(255, 255, 255, 0)",
       font: {
