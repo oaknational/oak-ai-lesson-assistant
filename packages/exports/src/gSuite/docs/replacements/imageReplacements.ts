@@ -28,6 +28,7 @@ export function imageReplacements(
     if (dimensions?.[1] && dimensions?.[2]) {
       const scaledWidth = parseInt(dimensions[1], 10);
       const scaledHeight = parseInt(dimensions[2], 10);
+      
       return getGoogleDocsDimensions(scaledWidth, scaledHeight);
     }
     throw new Error(`Unable to extract dimensions from image URL: ${imageUrl}`);

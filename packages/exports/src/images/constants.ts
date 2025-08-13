@@ -3,17 +3,18 @@
  */
 
 /**
- * Scale factor used for PNG generation and dimension calculations.
+ * DPI scaling factor for PNG generation - affects resolution, not visual size.
  * Current value of 3.0 produces ~288 DPI images (assuming 96 DPI base).
+ * This gets divided out in getGoogleDocsDimensions() so visual size stays the same.
  */
-export const IMAGE_SCALE_FACTOR = 3.0;
+export const DPI_SCALE_FACTOR = 3.0;
 
 /**
- * MathJax scaling factor for LaTeX rendering.
- * Controls the base size of LaTeX equations before PNG scaling.
- * 1.0 = normal size, 1.2 = 20% larger, etc.
+ * Visual scaling factor for LaTeX images - makes them appear larger in documents.
+ * This does NOT get divided out, so it actually makes the images visually bigger.
+ * 2.0 = twice as large, 1.5 = 50% larger, etc.
  */
-export const MATHJAX_SCALE = 1.2;
+export const LATEX_VISUAL_SCALE = 1.5;
 
 /**
  * Convert pixels to points for Google Docs dimensions.
@@ -39,8 +40,9 @@ export function getGoogleDocsDimensions(
   scaledWidth: number,
   scaledHeight: number,
 ): { width: number; height: number } {
-  const actualWidth = scaledWidth / IMAGE_SCALE_FACTOR;
-  const actualHeight = scaledHeight / IMAGE_SCALE_FACTOR;
+  // Only divide out the DPI scaling, not the visual scaling
+  const actualWidth = scaledWidth / DPI_SCALE_FACTOR;
+  const actualHeight = scaledHeight / DPI_SCALE_FACTOR;
 
   return {
     width: pxToPt(actualWidth),

@@ -5,7 +5,6 @@ import { TeX } from "mathjax-full/js/input/tex";
 import { mathjax } from "mathjax-full/js/mathjax";
 import { SVG } from "mathjax-full/js/output/svg";
 
-import { MATHJAX_SCALE } from "./constants";
 
 // Following mathjax direct pattern: https://github.com/mathjax/MathJax-demos-node/blob/master/direct/tex2svg
 
@@ -35,7 +34,6 @@ function createMathJaxInitializer(): () => MathJaxContext {
 
       const svg = new SVG({
         fontCache: "local",
-        scale: MATHJAX_SCALE,
       });
 
       const document = mathjax.document("", { InputJax: tex, OutputJax: svg });

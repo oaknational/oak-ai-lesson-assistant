@@ -1,17 +1,23 @@
 import { renderAsync } from "@resvg/resvg-js";
 
-import { IMAGE_SCALE_FACTOR } from "./constants";
+import { DPI_SCALE_FACTOR } from "./constants";
 
-export async function svgToPng(svgString: string): Promise<{
+export async function svgToPng(
+  svgString: string, 
+  additionalScale = 1.0
+): Promise<{
   buffer: Buffer;
   width: number;
   height: number;
 }> {
   try {
+    // Apply DPI scaling and any additional visual scaling
+    const scaleFactor = DPI_SCALE_FACTOR * additionalScale;
+    
     const resvg = await renderAsync(svgString, {
       fitTo: {
         mode: "zoom",
-        value: IMAGE_SCALE_FACTOR,
+        value: scaleFactor,
       },
       background: "rgba(255, 255, 255, 0)",
       font: {

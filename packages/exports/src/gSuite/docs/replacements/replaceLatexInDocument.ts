@@ -10,6 +10,7 @@ import {
 import { latexToSvg } from "../../../images/latexToSvg";
 import { svgToPng } from "../../../images/svgToPng";
 import { extractTextFromDocument } from "../extraction/extractTextFromDocument";
+import { LATEX_VISUAL_SCALE } from "../../../images/constants";
 
 const log = aiLogger("exports");
 
@@ -150,7 +151,7 @@ async function generateLatexImages(
 
     const pngPromises = missing.map(async (item) => {
       const svg = latexToSvg(item.pattern, false);
-      const pngResult = await svgToPng(svg);
+      const pngResult = await svgToPng(svg, LATEX_VISUAL_SCALE); // Make LaTeX visually larger
       const url = await uploadImageToGCS({
         buffer: pngResult.buffer,
         latexHash: item.hash,
