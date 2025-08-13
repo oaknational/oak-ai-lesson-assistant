@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
-import { createHash } from "crypto";
 
 import {
   getExistingImageUrl,
@@ -10,6 +9,7 @@ import {
 import { latexToSvg } from "../../../images/latexToSvg";
 import { svgToPng } from "../../../images/svgToPng";
 import { extractTextFromDocument } from "../extraction/extractTextFromDocument";
+import { generateLatexHash } from "../extraction/findLatexPatterns";
 import { LATEX_VISUAL_SCALE } from "../../../images/constants";
 
 const log = aiLogger("exports");
@@ -76,13 +76,6 @@ export async function replaceLatexInDocument(
       `Replaced ${requests.length} unique LaTeX patterns with markdown images`,
     );
   }
-}
-
-/**
- * Generate a hash for a LaTeX expression to use as a unique identifier
- */
-function generateLatexHash(latex: string): string {
-  return createHash("md5").update(latex).digest("hex").substring(0, 12);
 }
 
 /**
