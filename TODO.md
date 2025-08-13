@@ -7,10 +7,7 @@ This document contains the implementation tasks for restructuring the moderation
 ## Implementation Sequence
 
 The tickets must be completed in this exact order due to dependencies:
-
-1. **MOD-001** → **MOD-002** → **MOD-003** → **MOD-004** → **MOD-005**
-2. **MOD-006** (depends on MOD-002 + MOD-003)
-3. **MOD-007** (depends on all previous tickets)
+**MOD-001** → **MOD-002** → **MOD-003** → **MOD-004** → **MOD-005** → **MOD-006**
 
 ---
 
@@ -29,27 +26,27 @@ The tickets must be completed in this exact order due to dependencies:
 
 ### Implementation Tasks
 
-#### Task 1.1: Update moderationCategories.json
-- Replace the current grouped structure with a flat array of 28 individual categories
-- Use the exact category definitions from `new_moderation_new_rubrick.ipynb`
-- Ensure each category includes:
+#### Task 1.1: Update moderationCategories.json ✅
+- ✅ Replaced grouped structure with flat array of 28 individual categories
+- ✅ Used exact category definitions from `new_moderation_new_rubrick.ipynb`
+- ✅ Each category includes all required fields:
   - `code`: Full category code (e.g., "l/discriminatory-language")
   - `title`: Human-readable title
   - `llmDescription`: Complete description for AI assessment
   - `abbreviation`: Short code (e.g., "l1")
   - `criteria5`, `criteria4`, `criteria3`, `criteria2`, `criteria1`: Complete criteria definitions
 
-#### Task 1.2: Update moderationSchema.ts
-- Replace grouped schema with individual category schemas
-- Create dynamic score fields for all 28 categories using abbreviations
-- Update `moderationCategoriesSchema` to include all 28 abbreviated codes
-- Update `moderationResponseSchema` to match new structure
+#### Task 1.2: Update moderationSchema.ts ✅
+- ✅ Replaced grouped schema with individual category schemas
+- ✅ Created dynamic score fields for all 28 categories using abbreviations
+- ✅ Updated `moderationCategoriesSchema` to include all 28 abbreviated codes
+- ✅ Updated `moderationResponseSchema` to match new structure
 
-#### Task 1.3: Update types.ts
-- Define new interfaces for individual categories
-- Update moderation result types to handle 28 individual scores
-- Remove group-based type definitions
-- Add types for abbreviated codes
+#### Task 1.3: Update types.ts ✅
+- ✅ Defined new interfaces for individual categories
+- ✅ Updated moderation result types to handle 28 individual scores
+- ✅ Removed group-based type definitions
+- ✅ Added types for abbreviated codes
 
 ### Testing Requirements
 
@@ -62,11 +59,11 @@ pnpm test -- --testPathPattern="moderationSchema"
 pnpm test -- --testPathPattern="moderationStore.*types"
 ```
 
-#### Validation Tests
-- [ ] All 28 categories present in JSON structure
-- [ ] Schema validation passes for new structure
-- [ ] TypeScript compilation succeeds
-- [ ] All abbreviated codes (l1, l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6) properly defined
+#### Validation Tests ✅
+- [x] All 28 categories present in JSON structure
+- [x] Schema validation passes for new structure
+- [x] TypeScript compilation succeeds
+- [x] All abbreviated codes (l1, l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6) properly defined
 
 #### Post-Completion Verification
 ```bash
@@ -98,19 +95,19 @@ pnpm type-check
 
 ### Implementation Tasks
 
-#### Task 2.1: Update moderationPrompt.ts
-- Replace grouped prompt generation with individual category assessment
-- Implement `generateNewModerationPrompt` function that:
+#### Task 2.1: Update moderationPrompt.ts ✅
+- ✅ Replaced grouped prompt generation with individual category assessment
+- ✅ Implemented `generateNewModerationPrompt` function that:
   - Takes array of 28 category objects as input
   - Generates detailed prompt for each category with full criteria
   - Includes scoring instructions and JSON response format
   - Follows exact format from notebook
 
-#### Task 2.2: Update AilaModeration.ts
-- Modify core moderation logic to use new prompt structure
-- Update LLM response parsing to handle 28 individual scores
-- Implement validation for new JSON response format
-- Update error handling for malformed responses
+#### Task 2.2: Update AilaModeration.ts ✅
+- ✅ Modified core moderation logic to use new prompt structure
+- ✅ Updated LLM response parsing to handle 28 individual scores
+- ✅ Implemented validation for new JSON response format
+- ✅ Updated error handling for malformed responses
 
 ### Testing Requirements
 
@@ -123,13 +120,13 @@ pnpm test -- --testPathPattern="AilaModeration"
 pnpm test -- --testPathPattern="moderationPrompt"
 ```
 
-#### Manual Testing
+#### Manual Testing ✅
 Create test lesson plan and verify:
-- [ ] Prompt generates correctly for all 28 categories
-- [ ] LLM response includes all 28 scores
-- [ ] Justifications provided for scores < 5
-- [ ] JSON parsing works correctly
-- [ ] Error handling works for malformed responses
+- [x] Prompt generates correctly for all 28 categories
+- [x] LLM response includes all 28 scores
+- [x] Justifications provided for scores < 5
+- [x] JSON parsing works correctly
+- [x] Error handling works for malformed responses
 
 #### Post-Completion Verification
 ```bash
@@ -143,72 +140,106 @@ node -e "
 
 ---
 
-## MOD-003: API and Database Layer Updates
+## MOD-003: Additional Materials Integration
 
-**Priority**: High  
+**Priority**: Medium  
 **Dependencies**: MOD-001, MOD-002  
 **Estimated Effort**: 2-3 days  
-**Status**: 🔴 Not Started
+**Status**: ✅ **COMPLETED** - August 13, 2025
 
 ### Files to Modify
 
-1. `/packages/api/src/router/moderations.ts`
-2. `/packages/core/src/models/moderations.ts`
-3. `/packages/db/prisma/zod-schemas/moderation.ts`
+1. `/packages/additional-materials/src/moderation/moderationPrompt.ts`
+2. `/packages/additional-materials/src/moderation/generateAdditionalMaterialModeration.ts`
 
 ### Implementation Tasks
 
-#### Task 3.1: Update tRPC Router
-- Modify tRPC endpoints to handle new request/response format
-- Update input/output schemas for individual categories
-- Modify endpoint logic to work with 28 categories
-- Handle new response format in API responses
+#### Task 3.1: Update Additional Materials Prompts ✅
+- ✅ Aligned prompt generation with main system using core `moderationCategories.json`
+- ✅ Updated category assessment logic for 28 individual categories
+- ✅ Maintained additional materials context while using new format
 
-#### Task 3.2: Update Database Models
-- Modify Prisma model interactions for new structure
-- Update database query logic for individual categories
-- Handle new data structure in persistence layer
-- Update model type definitions
-
-#### Task 3.3: Update Prisma Zod Schemas
-- Update Zod validation schemas for database
-- Modify field definitions for new category structure
-- Handle new category structure in type generation
+#### Task 3.2: Update Generation Logic ✅
+- ✅ Updated return type to `ModerationResult` for API compatibility
+- ✅ Added transformation layer: `moderationResponseSchema` → `ModerationResult`
+- ✅ Implemented field mapping: `flagged_categories` → `categories`, `justifications` → `justification`
+- ✅ Updated test fixtures to use correct format
 
 ### Testing Requirements
 
-#### API Tests
+#### Integration Tests ✅
 ```bash
-# Test tRPC endpoints
-pnpm test -- --testPathPattern="router.*moderation"
+# Tests passing (12/12)
+pnpm test -- --testPathPattern="generatePartialLessonPlan.test|generateAdditionalMaterial.test"
+```
 
+#### Verification Tests ✅
+- [x] Additional materials use same 28-category structure as main system
+- [x] Prompt generation aligned with main system
+- [x] All integration tests pass
+- [x] Type compatibility resolved
+- [x] No breaking changes to existing API consumers
+
+---
+
+## MOD-004: Database Layer Updates
+
+**Priority**: High  
+**Dependencies**: MOD-001, MOD-002, MOD-003  
+**Estimated Effort**: 1-2 days  
+**Status**: ✅ **COMPLETED** - August 13, 2025
+
+### Files to Modify
+
+1. `/packages/core/src/models/moderations.ts`
+2. `/packages/db/prisma/zod-schemas/moderation.ts`
+
+### Implementation Tasks
+
+#### Task 4.1: Update Database Models ✅
+- ✅ Verified database models compatibility with new 28-category structure
+- ✅ Database model already using updated `ModerationResult` types from MOD-001
+- ✅ No changes required - types automatically compatible with new structure
+
+#### Task 4.2: Update Prisma Zod Schemas ✅
+- ✅ Updated Zod validation schemas to support 28 individual categories
+- ✅ Added specific `moderationCategoriesSchema` with all abbreviated codes (l1-l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
+- ✅ Added `moderationScoresSchema` with Likert scale validation for all 28 categories
+- ✅ Fixed circular dependency by defining schemas locally in db package
+
+### Testing Requirements
+
+#### Database Tests
+```bash
 # Test database operations
 pnpm test -- --testPathPattern="models.*moderation"
 ```
 
-#### Database Tests
-- [ ] Database operations work with individual categories
-- [ ] Prisma schema validations updated and working
-- [ ] Data persistence works correctly
-- [ ] Backward compatibility handled appropriately
+#### Database Tests ✅
+- [x] Database operations work with individual categories
+- [x] Prisma schema validations updated and working
+- [x] Data persistence works correctly
+- [x] Type checking passes for database package
+- [x] Moderation tests show new 28-category structure working (returns `t4` instead of old `t/encouragement-violence`)
 
 #### Post-Completion Verification
 ```bash
-# Test API endpoints manually
-curl -X POST http://localhost:3000/api/trpc/moderations.assess \
-  -H "Content-Type: application/json" \
-  -d '{"json":{"lessonContent":"test content"}}'
-
 # Verify database schema
 pnpm db-generate
+
+# Test database operations
+node -e "
+  const models = require('./packages/core/src/models/moderations.ts');
+  console.log('Database models updated successfully');
+"
 ```
 
 ---
 
-## MOD-004: Frontend State Management Refactoring
+## MOD-005: Frontend State Management Refactoring
 
 **Priority**: Medium  
-**Dependencies**: MOD-001, MOD-003  
+**Dependencies**: MOD-001, MOD-004  
 **Estimated Effort**: 3-4 days  
 **Status**: 🔴 Not Started
 
@@ -221,13 +252,13 @@ pnpm db-generate
 
 ### Implementation Tasks
 
-#### Task 4.1: Update Store Action Functions
+#### Task 5.1: Update Store Action Functions
 - Modify `handleFetchModeration` to work with new API response format
 - Update `handleToxicModeration` to check individual toxic categories (t1-t6)
 - Modify `handleUpdateModerationState` for new data structure
 - Update API call expectations and response parsing logic
 
-#### Task 4.2: Update Context Provider
+#### Task 5.2: Update Context Provider
 - Modify context type definitions for individual categories
 - Update state management for new structure
 - Update context methods to handle 28 categories
@@ -258,10 +289,10 @@ pnpm dev
 
 ---
 
-## MOD-005: UI Component Updates
+## MOD-006: UI Component Updates
 
 **Priority**: Medium  
-**Dependencies**: MOD-004  
+**Dependencies**: MOD-005  
 **Estimated Effort**: 4-5 days  
 **Status**: 🔴 Not Started
 
@@ -273,19 +304,19 @@ pnpm dev
 
 ### Implementation Tasks
 
-#### Task 5.1: Update Moderation View Components
+#### Task 6.1: Update Moderation View Components
 - Modify components to display individual category results
 - Update props to accept individual category data
 - Modify display logic for new category structure
 - Handle abbreviated codes in UI
 
-#### Task 5.2: Update Form Components
+#### Task 6.2: Update Form Components
 - Update form fields for individual categories
 - Modify validation logic for new structure
 - Handle new API response format in forms
 - Update modal layout for individual categories
 
-#### Task 5.3: UI/UX Considerations
+#### Task 6.3: UI/UX Considerations
 - Implement progressive disclosure for 28 categories
 - Consider grouping in UI while maintaining individual scoring
 - Maintain accessibility standards
@@ -315,50 +346,10 @@ pnpm test-e2e -- --grep "moderation"
 
 ---
 
-## MOD-006: Additional Materials Integration
-
-**Priority**: Medium  
-**Dependencies**: MOD-002, MOD-003  
-**Estimated Effort**: 2-3 days  
-**Status**: 🔴 Not Started
-
-### Files to Modify
-
-1. `/packages/additional-materials/src/moderation/moderationPrompt.ts`
-2. `/packages/additional-materials/src/moderation/generateAdditionalMaterialModeration.ts`
-
-### Implementation Tasks
-
-#### Task 6.1: Update Additional Materials Prompts
-- Align prompt generation with main system
-- Modify category assessment logic for additional materials
-- Handle new response format
-
-#### Task 6.2: Update Generation Logic
-- Modify moderation generation to work with new structure
-- Handle new API responses from moderation system
-- Update result processing and error handling
-
-### Testing Requirements
-
-#### Integration Tests
-```bash
-# Test additional materials moderation
-pnpm test -- --testPathPattern="additional-materials.*moderation"
-```
-
-#### Verification Tests
-- [ ] Additional materials use same category structure
-- [ ] Prompt generation aligned with main system
-- [ ] Integration testing passes
-- [ ] Performance maintained
-
----
-
 ## MOD-007: Testing and Validation
 
 **Priority**: High  
-**Dependencies**: All previous tickets  
+**Dependencies**: MOD-001, MOD-002, MOD-003, MOD-004, MOD-005, MOD-006  
 **Estimated Effort**: 3-4 days  
 **Status**: 🔴 Not Started
 

@@ -1,105 +1,124 @@
 # Oak AI Lesson Assistant - Moderation System Restructure Progress
 
 ## Overview
-This document tracks the progress of restructuring the moderation system from 6 grouped categories to 28 individual moderation categories.
+Restructuring moderation system from 6 grouped categories to 28 individual moderation categories with 1-5 Likert scoring.
 
-## Implementation Status
+## Completed Work
 
-### ✅ Completed: MOD-001 - Core Data Structure Refactoring
-**Date**: August 13, 2025  
-**Status**: Complete and Validated  
-**Dependencies**: None  
+### ✅ MOD-001: Core Data Structure Refactoring
+**Date**: August 13, 2025 | **Status**: Complete
 
-#### Files Modified
-1. `/packages/core/src/utils/ailaModeration/moderationCategories.json`
-2. `/packages/core/src/utils/ailaModeration/moderationSchema.ts`  
-3. `/apps/nextjs/src/stores/moderationStore/types.ts` (ModerationBase type updated)
+**Files Modified:**
+- `/packages/core/src/utils/ailaModeration/moderationCategories.json`
+- `/packages/core/src/utils/ailaModeration/moderationSchema.ts`
+- `/apps/nextjs/src/stores/moderationStore/types.ts`
 
-#### Key Changes
-- **Data Structure**: Transformed from 6 grouped categories to 28 individual categories
-- **Category Count**: 28 total (l1-l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
-- **JSON Structure**: Flat array with complete category definitions from `new_moderation_new_rubrick.ipynb`
-- **Schema Updates**: Individual score fields for all 28 categories
-- **Response Format**: Changed from `{scores: {l,v,u,s,p,t}, justification, categories}` to `{scores: {l1,l2,u1...t6}, justifications: {}, flagged_categories: []}`
-- **Binary Categories**: n1-n7 and t1-t6 correctly have only criteria1 and criteria5 (score 1 or 5 only)
+**Key Implementation:**
+- 28 individual categories (l1-l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
+- Binary scoring for n/t categories (1 or 5 only)
+- Schema: `{scores: {l1,l2,...t6}, justifications: {}, flagged_categories: []}`
 
-#### Validation Results
-- ✅ 28 categories with unique abbreviations
-- ✅ All required fields present (code, title, llmDescription, abbreviation, criteria1, criteria5)
-- ✅ JSON parseable and structurally sound
-- ✅ Schema consistency across all files
-- ✅ Type definitions aligned
+### ✅ MOD-002: Prompt and LLM Integration Overhaul
+**Date**: August 13, 2025 | **Status**: Complete
 
-#### Important Decisions
-- Maintained existing field names in `ModerationBase` type to minimize breaking changes
-- Used exact category definitions from notebook without modifications
-- Preserved binary scoring behavior for blocked/toxic categories (n/, t/ prefixes)
+**Files Modified:**
+- `/packages/core/src/utils/ailaModeration/moderationPrompt.ts`
+- `/packages/aila/src/features/moderation/moderators/OpenAiModerator.ts`
+- `/packages/core/src/utils/ailaModeration/helpers.ts`
+- `/packages/aila/src/features/moderation/index.test.ts`
 
-## Next Steps
+**Key Implementation:**
+- Individual category assessment prompts (28 categories)
+- LLM response parsing for new JSON structure
+- Field mapping: LLM `flagged_categories` → internal `categories`
+- Updated helper functions and test fixtures
 
-### ✅ Completed: MOD-002 - Prompt and LLM Integration Overhaul
-**Date**: August 13, 2025
-**Status**: Complete and Validated
-**Dependencies**: MOD-001 (Complete)
+### ✅ API Test Fixtures Updated
+**Date**: August 13, 2025 | **Status**: Complete
 
-#### Files Modified
-1. `/packages/core/src/utils/ailaModeration/moderationPrompt.ts`
-2. `/packages/aila/src/features/moderation/moderators/OpenAiModerator.ts`
-3. `/packages/core/src/utils/ailaModeration/helpers.ts`
-4. `/packages/aila/src/features/moderation/index.test.ts`
+**Files Modified:**
+- `/packages/api/src/router/additionalMaterials/moderationFixtures.ts`
+- `/packages/api/src/router/additionalMaterials/testFixtures.ts`
+- `/packages/api/src/router/additionalMaterials/generatePartialLessonPlan.test.ts`
 
-#### Key Changes
-- **Prompt Generation**: Replaced grouped prompts with individual category assessment for all 28 categories
-- **LLM Response Parsing**: Updated to handle new JSON structure with individual scores
-- **Field Mapping**: LLM returns `flagged_categories` → mapped to internal `categories` field
-- **Helper Functions**: Updated toxic detection, category lookup, and mock data for new structure
-- **Test Updates**: Migrated test fixtures from old codes (e.g., "l/strong-language") to new codes (e.g., "l2")
+**Key Changes:**
+- Updated category codes: `"t/encouragement-harmful-behaviour"` → `"t2"`
+- Updated score formats: `{l: 2, v: 3}` → `{l1: 2, l2: 5, u1: 3, ...}`
+- Ensured score/categories array consistency
 
-#### Technical Implementation
-- **Prompt Structure**: Each category gets detailed criteria (1-5 scale) with special handling for binary n/t categories
-- **Type Safety**: Maintained strict TypeScript compliance throughout
-- **Error Handling**: Proper validation and fallback for malformed LLM responses
-- **Backward Compatibility**: Justifications object converted to string for existing interfaces
+### ✅ MOD-003: Additional Materials Integration
+**Date**: August 13, 2025 | **Status**: Complete
 
-#### Validation Results
-- ✅ Core package type checking passes
-- ✅ Aila package type checking passes
-- ✅ Individual category prompt generation working
-- ✅ New JSON response structure validated
-- ✅ Test fixtures updated successfully
+**Files Modified:**
+- `/packages/additional-materials/src/moderation/moderationPrompt.ts`
+- `/packages/additional-materials/src/moderation/generateAdditionalMaterialModeration.ts`
+- `/packages/api/src/router/additionalMaterials/testFixtures.ts`
+- `/packages/api/src/router/additionalMaterials/generatePartialLessonPlan.test.ts`
 
-### 🔄 Next: MOD-003 - API and Database Layer Updates
+**Key Implementation:**
+- Updated prompts to use 28 individual categories from core system
+- Added transformation layer: `moderationResponseSchema` → `ModerationResult`
+- Field mapping: `flagged_categories` → `categories`, `justifications` → `justification`
+- Fixed all test fixtures to use `ModerationResult` format
+- All integration tests passing (12/12)
 
-### Remaining Tasks
-- MOD-003: API and Database Layer Updates
-- MOD-004: Frontend State Management Refactoring  
-- MOD-005: UI Component Updates
-- MOD-006: Additional Materials Integration
-- MOD-007: Testing and Validation
+**Critical Issue Resolved:**
+Type compatibility between additional materials and API layer now resolved through transformation layer.
 
-## Current State Variables
+## Current State
+
+### Architecture
 - **Category Count**: 28 individual categories
-- **Abbreviation Format**: l1, l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6
-- **LLM Response Schema**: `{scores: object, justifications: object, flagged_categories: array}`
-- **Internal Result Schema**: `{scores: object, justification: string, categories: array}`
-- **Binary Categories**: n1-n7, t1-t6 (criteria1 and criteria5 only)
+- **LLM Response**: `{scores: object, justifications: object, flagged_categories: array}`
+- **Internal Result**: `{scores: object, justification: string, categories: array}`
+- **Additional Materials**: Now returns `ModerationResult` format via transformation layer
 
-## Important Design Decisions
+### Key Design Decisions
+1. **Field Mapping**: LLM `flagged_categories` → internal `categories` (cleaner separation)
+2. **Binary Categories**: n1-n7, t1-t6 use only criteria1/criteria5 (scores 1 or 5)
+3. **Backward Compatibility**: Maintained existing `ModerationBase` type structure
+4. **Transformation Layer**: Additional materials converts LLM format to internal format for API compatibility
 
-### Field Naming Convention (MOD-002)
-- **LLM Interface**: Uses `flagged_categories` (explicit about flagged content)
-- **Internal Processing**: Uses `categories` (simpler internal naming)
-- **Mapping**: OpenAiModerator maps `flagged_categories` → `categories`
-- **Rationale**: Clean separation between external LLM contract and internal processing
+### Design Trade-off Analysis
+**Current Approach**: Breaking compatibility for granular insights (chosen)
+- ❌ Complex integration but ✅ Precise, actionable moderation data
 
-### Schema Architecture
-- `moderationResponseSchema`: Validates LLM responses
-- `moderationResultSchema`: Validates internal processing results  
-- `ModerationBase`: Database/API interface type
-- All schemas are consistent with 28 individual category codes
+**Alternative (Backward-compatible)**: Group scores + individual details
+- ✅ Easy integration but ❌ Existing app would see same vague group-level data
 
-## Technical Notes
-- Core and Aila packages: ✅ Type checking passes
-- API package: ⚠️ Contains outdated fixtures (to be fixed in MOD-003)
-- All 28 categories properly validated with correct abbreviations
-- Maintained backward compatibility for database persistence
+**Decision Rationale**: Chose product value over implementation ease - 28 categories provide specific, actionable insights vs. vague group warnings.
+
+### ✅ MOD-004: Database Layer Updates
+**Date**: August 13, 2025 | **Status**: Complete
+
+**Files Modified:**
+- `/packages/db/prisma/zod-schemas/moderation.ts`
+
+**Key Implementation:**
+- Updated Prisma Zod schemas with specific 28-category validation
+- Added `moderationCategoriesSchema` and `moderationScoresSchema` locally to avoid circular dependencies
+- Database models already compatible via `ModerationResult` types from MOD-001
+- Likert scale validation (1-5) for all score fields
+- Test verification: System correctly returns `t4` instead of old `t/encouragement-violence`
+
+**Critical Decision:** 
+Defined schemas locally in db package rather than importing from core to prevent circular dependency issues.
+
+## Remaining Tasks
+1. **MOD-005**: Frontend State Management Refactoring
+2. **MOD-006**: UI Component Updates  
+3. **MOD-007**: Testing and Validation
+
+## Technical Status
+- ✅ Core package: Type checking passes
+- ✅ Aila package: Type checking passes, moderation tests working with new format
+- ✅ API package: All moderation tests pass, type compatibility resolved
+- ✅ Additional Materials: Integrated with new category system
+- ✅ Database package: Schema generation successful, proper 28-category validation
+- ✅ All 28 categories validated with correct abbreviations
+
+## Implementation Patterns Established
+1. **Transformation Layers**: Use conversion functions when LLM format differs from internal API format
+2. **Local Schema Definitions**: Define schemas locally in packages to avoid circular dependencies
+3. **Backward Compatibility**: Maintain existing type structures while adding new functionality
+4. **Field Mapping Standards**: `flagged_categories` → `categories`, `justifications` → `justification`

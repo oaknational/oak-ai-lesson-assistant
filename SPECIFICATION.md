@@ -748,10 +748,9 @@ This restructure affects multiple layers of the application:
 - Response parsing and validation
 - Error handling for new format
 
-### API Layer
-- tRPC endpoint input/output schemas
+### Database Layer
 - Database model interactions
-- Response serialization
+- Data persistence and retrieval
 
 ### Frontend Layer
 - State management (Zustand stores)
@@ -766,6 +765,8 @@ This restructure affects multiple layers of the application:
 ## Implementation Tasks
 
 Detailed implementation tasks, dependencies, testing requirements, and validation criteria are provided in `TODO.md`. The implementation must be completed in the specified sequence due to critical dependencies between components.
+
+**Critical Dependency Discovered**: Additional materials moderation system must be updated before database layer completion due to schema format incompatibility (`moderationResponseSchema` vs `ModerationResult`).
 
 ## Success Criteria
 

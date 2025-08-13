@@ -120,6 +120,21 @@
   - User-friendly error messages
   - Proper logging
 
+### Test Fixture Standards
+
+- **Consistency**: Ensure fixture scores/categories arrays match exactly (score < 5 = flagged)
+- **Format Alignment**: Use correct schema format for context (LLM response vs internal result)
+- **Type Safety**: Fixtures must match expected schema types without conversion
+- **Completeness**: Include all required fields for the target schema
+
+### Data Format Compatibility Patterns
+
+- **Transformation Layers**: When LLM response format differs from internal API format, implement transformation functions that convert between schemas
+- **Field Mapping**: Document explicit field mappings (e.g., `flagged_categories` → `categories`, `justifications` → `justification`)
+- **Backward Compatibility**: When restructuring data formats, consider transformation layers over breaking changes to maintain API compatibility
+- **Schema Validation**: Use separate schemas for LLM responses and internal results when formats differ
+- **Circular Dependency Resolution**: Define schemas locally in packages rather than importing across package boundaries to prevent dependency cycles
+
 ### tRPC Implementation
 
 - **Router Organization**: By domain/feature
@@ -191,6 +206,9 @@ These IDs are stored in `.claude/env.local.json`:
 - **Schema Definitions**: `/packages/core/src/utils/ailaModeration/moderationSchema.ts`
 - **Prompt Generation**: `/packages/core/src/utils/ailaModeration/moderationPrompt.ts`
 - **AI Processing**: `/packages/aila/src/features/moderation/AilaModeration.ts`
+- **Additional Materials Integration**: 
+  - `/packages/additional-materials/src/moderation/moderationPrompt.ts`
+  - `/packages/additional-materials/src/moderation/generateAdditionalMaterialModeration.ts`
 - **API Endpoints**: `/packages/api/src/router/moderations.ts`
 - **Database Models**: `/packages/core/src/models/moderations.ts`
 - **Frontend Components**: 
@@ -262,23 +280,16 @@ These IDs are stored in `.claude/env.local.json`:
 
 ## Current Priority: Moderation System Restructure
 
-**Status**: MOD-001 Complete, MOD-002 Complete, MOD-003 Next
+**Status**: MOD-001 ✅, MOD-002 ✅, MOD-003 ✅, MOD-004 ✅
 
-The moderation system restructure is underway. Progress:
+**Progress Summary**: Core restructure, additional materials integration, and database layer complete.
 
-**✅ MOD-001 (Core Data Structure)**:
-1. **✅ Data Structure**: 28 individual categories implemented (was 6 groups)
-2. **✅ Scoring**: Individual 1-5 Likert scale scores for each category
-3. **✅ Abbreviations**: Short codes implemented (l1, l2, u1-u5, s1, p2-p5, e1, r1-r2, n1-n7, t1-t6)
-4. **✅ Schema Updates**: All core schemas and types updated
+**✅ Completed**: 28 individual categories, new prompts/parsing, additional materials integration, database validation, all tests passing
+**🔄 Next**: MOD-005 (Frontend State Management Refactoring)
 
-**✅ MOD-002 (Prompt and LLM Integration)**:
-1. **✅ Prompt Generation**: Individual category assessment for all 28 categories
-2. **✅ LLM Response Parsing**: Updated to handle new JSON structure
-3. **✅ Field Mapping**: LLM `flagged_categories` → internal `categories`
-4. **✅ Helper Functions**: Updated for new category structure
-
-**Next**: MOD-003 (API and Database Layer Updates) - update tRPC endpoints and database interactions.
+**Critical Issues Resolved**: 
+- Type compatibility between additional materials and API resolved via transformation layer
+- Circular dependencies resolved by defining schemas locally in packages
 
 Refer to `SPECIFICATION.md` for complete details and `HISTORY.md` for progress tracking.
 
