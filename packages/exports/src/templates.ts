@@ -87,17 +87,6 @@ export function getDocsTemplateIdWorksheet() {
   return process.env.GOOGLE_DOCS_WORKSHEET_TEMPLATE_ID as string;
 }
 
-/*
- * Quiz Designer Slides
- */
-invariant(
-  process.env.GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID,
-  "GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID is required",
-);
-export function getQuizDesignerSlidesTemplateIdWorksheet() {
-  return process.env.GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID as string;
-}
-
 /**
  * Additional Resources
  */

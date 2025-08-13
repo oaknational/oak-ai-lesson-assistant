@@ -170,36 +170,3 @@ export const quizDocInputSchema = z.object({
 export type QuizDocInputData = z.infer<typeof quizDocInputSchema>;
 
 export type LessonDeepPartial = DeepPartial<LessonSlidesInputData>;
-
-export enum QuizAppStatus {
-  Initial = "Initial",
-  EditingSubjectAndKS = "EditingSubjectAndKS",
-  ResettingQuiz = "ResettingQuiz",
-  EditingQuestions = "EditingQuestions",
-  NonRecoverableError = "NonRecoverableError",
-}
-
-export const quizAppStatusSchema = z.nativeEnum(QuizAppStatus);
-
-export const exportableQuizQuestionSchema = z.object({
-  question: z.string(),
-  answers: z.array(z.string()),
-  distractors: z.array(z.string()),
-  allOptions: z.array(z.string()),
-});
-
-export const exportableQuizAppStateSchema = z.object({
-  status: quizAppStatusSchema,
-  keyStage: z.string(),
-  subject: z.string(),
-  topic: z.string().nullish(),
-  questions: z.array(exportableQuizQuestionSchema),
-});
-
-export type ExportableQuizQuestion = z.infer<
-  typeof exportableQuizQuestionSchema
->;
-
-export type ExportableQuizAppState = z.infer<
-  typeof exportableQuizAppStateSchema
->;

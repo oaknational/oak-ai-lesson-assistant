@@ -4,7 +4,6 @@ export { exportDocQuiz } from "./src/exportDocQuiz";
 export { downloadDriveFile } from "./src/downloadDriveFile";
 export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
-export { exportQuizDesignerSlides } from "./src/exportQuizDesignerSlides";
 
 export {
   quizDocInputSchema as exportDocQuizSchema,

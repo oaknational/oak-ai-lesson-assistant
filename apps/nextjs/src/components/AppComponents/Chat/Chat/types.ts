@@ -13,4 +13,5 @@ export type DialogTypes =
   | "additional-materials-threat-detected"
   | "additional-materials-rate-limit"
   | "additional-materials-error"
-  | "additional-materials-start-again";
+  | "additional-materials-start-again"
+  | "additional-materials-user-feedback";
