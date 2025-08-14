@@ -8,7 +8,7 @@
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan is fully compliant across all categories. It does not contain any discriminatory language, offensive language, or strong language. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence. The content does not include any upsetting, sensitive, or distressing topics. There is no discussion or depiction of nudity or sexual content. The lesson plan does not involve any physical activities, exploration of objects, or use of equipment that requires supervision. Finally, the lesson plan contains no toxic content such as guides or encouragement of harmful or illegal activities.\",\"categories\":[]}",
+        "content": "{\"scores\":{\"l1\":5,\"l2\":5,\"u1\":5,\"u2\":5,\"u3\":5,\"u4\":5,\"u5\":5,\"s1\":5,\"p2\":5,\"p3\":5,\"p4\":5,\"p5\":5,\"e1\":5,\"r1\":5,\"r2\":5,\"n1\":5,\"n2\":5,\"n3\":5,\"n4\":5,\"n5\":5,\"n6\":5,\"n7\":5,\"t1\":5,\"t2\":5,\"t3\":5,\"t4\":5,\"t5\":5,\"t6\":5},\"justifications\":{},\"flagged_categories\":[]}",
         "refusal": null,
         "annotations": []
       },
