@@ -1,19 +1,18 @@
-"use client";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-import ChatPageContents from "../page-contents";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
-interface ChatPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function ChatPage({ params }: Readonly<ChatPageProps>) {
-  const { id } = params;
-  // For local development so that we can warm up the server
-  if (id === "health") {
-    return <>OK</>;
+// redirect page in case a user tries to access aila/[id] directly (the old lesson route )
+// we don't want to redirect aila/lesson
+export default function AilaIdPage({ params }: { params: { id: string } }) {
+  const clerkAuthentication = auth();
+  const { userId }: { userId: string | null } = clerkAuthentication;
+  if (!userId) {
+    redirect("/sign-in?next=/aila");
   }
-
-  return <ChatPageContents id={id} />;
+  if (params.id === "lesson") {
+    return null;
+  }
+  redirect(`${getAilaUrl("lesson")}/${params.id}`);
 }

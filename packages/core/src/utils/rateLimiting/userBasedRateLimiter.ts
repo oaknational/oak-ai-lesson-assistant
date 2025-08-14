@@ -6,6 +6,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
 import { kv } from "@vercel/kv";
 
+import { isOakEmail } from "../isOakEmail";
 import { RateLimitExceededError } from "./errors";
 import type { RateLimitDuration, RateLimiter } from "./types";
 
@@ -99,7 +100,7 @@ export const userBasedRateLimiter = ({
 function userHasOakEmail(user: User) {
   return user.emailAddresses.some(
     (email) =>
-      email.emailAddress.endsWith("@thenational.academy") &&
+      isOakEmail(email.emailAddress) &&
       !email.emailAddress.includes("rate-limit-me") &&
       !email.emailAddress.includes("rate-limited") &&
       !email.emailAddress.includes("demo"),

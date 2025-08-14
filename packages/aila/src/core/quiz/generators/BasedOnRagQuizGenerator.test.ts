@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { LooseLessonPlan } from "../../../protocol/schema";
-import { QuizSchema } from "../../../protocol/schema";
+import { QuizV1Schema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
@@ -23,6 +23,6 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
     log.info(JSON.stringify(quiz));
     log.info("QUIZ ABOVE");
-    expect(QuizSchema.safeParse(quiz[0]).success).toBe(true);
+    expect(QuizV1Schema.safeParse(quiz[0]).success).toBe(true);
   });
 });

@@ -13,6 +13,7 @@ export const exportGeneric = async <InputData, TemplateData>({
   populateTemplate,
   userEmail,
   onStateChange,
+  folderId = process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID,
 }: {
   newFileName: string;
   data: InputData;
@@ -25,7 +26,11 @@ export const exportGeneric = async <InputData, TemplateData>({
   }) => Promise<Result<{ missingData: string[] }>>;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
+  folderId?: string;
 }): Promise<Result<OutputData>> => {
+  if (!folderId) {
+    throw new Error("GOOGLE_DRIVE_OUTPUT_FOLDER_ID is not set");
+  }
   try {
     let userCanViewGdriveFile = false;
     onStateChange({ status: "loading", message: "Copying template..." });
@@ -33,6 +38,7 @@ export const exportGeneric = async <InputData, TemplateData>({
       drive: googleDrive,
       templateId,
       newFileName,
+      folderId,
     });
     if ("error" in copyResult) {
       onStateChange({ status: "error", error: copyResult.error });
@@ -43,8 +49,9 @@ export const exportGeneric = async <InputData, TemplateData>({
 
     onStateChange({
       status: "loading",
-      message: "Converting lesson plan to template data...",
+      message: "Converting document to template data...",
     });
+
     const templateData = await prepData(inputData);
 
     if (updateTemplate) {

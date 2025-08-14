@@ -56,16 +56,9 @@ export const AilaStoresProvider: React.FC<AilaStoresProviderProps> = ({
     const stores: Partial<AilaStores> = {};
     const getStore = buildStoreGetter(stores);
 
-    stores.moderation = createModerationStore({
-      id,
-      trpcUtils,
-      getStore,
-    });
+    stores.moderation = createModerationStore({ id, trpcUtils, getStore });
     stores.chat = createChatStore(id, getStore, trpcUtils);
-    stores.lessonPlan = createLessonPlanStore({
-      id,
-      trpcUtils,
-    });
+    stores.lessonPlan = createLessonPlanStore({ id, trpcUtils });
     stores.lessonPlanTracking = createLessonPlanTrackingStore({
       id,
       getStore,

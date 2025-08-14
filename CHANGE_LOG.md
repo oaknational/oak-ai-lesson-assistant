@@ -1,3 +1,195 @@
+## [1.47.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.0...v1.47.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* tm post launch issues - AI-1428 ([#753](https://github.com/oaknational/oak-ai-lesson-assistant/issues/753)) ([44e7ce1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44e7ce1be3cdf9fe97d1293a00cc38e35a4a8eda))
+
+# [1.47.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.46.0...v1.47.0) (2025-08-11)
+
+
+### Bug Fixes
+
+* [AI-1381] prevent analytics tracking on useChat errors ([#732](https://github.com/oaknational/oak-ai-lesson-assistant/issues/732)) ([fe6c2c7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fe6c2c7e662532cc5293cfc3ea8267864a5f2faa))
+* rag lesson schema - cycle3 optional and all without length ([#758](https://github.com/oaknational/oak-ai-lesson-assistant/issues/758)) ([4b4e832](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4b4e832aa5219368aed449759cd32e571d72d325))
+* remove handwriting wobble effect from quiz answer boxes ([#754](https://github.com/oaknational/oak-ai-lesson-assistant/issues/754)) ([7600ad0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7600ad0208c75d601f41fce75b5950683a2e4a3d))
+* update legal page links to point to thenational.academy ([#760](https://github.com/oaknational/oak-ai-lesson-assistant/issues/760)) ([2b008c5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2b008c55fd889e985b42bb73fe13ccc0c3286d67))
+
+
+### Features
+
+* [AI-1377] add image attribution support to quiz V2 schema ([#738](https://github.com/oaknational/oak-ai-lesson-assistant/issues/738)) ([af0dcf2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/af0dcf266360db3d50d33f6f35882b0f1e35cf2a))
+* [AI-1383] render checkForUnderstanding in cycles using V2 quiz components ([#737](https://github.com/oaknational/oak-ai-lesson-assistant/issues/737)) ([45b1ef6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/45b1ef65f856b766974cdd2ecfc699c73f33be3b))
+* add all quiz v2 question types ([#750](https://github.com/oaknational/oak-ai-lesson-assistant/issues/750)) ([fd2493f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fd2493fe8b624354a3fe247f4481dd037523bece))
+* add convertRawQuizToV2 function for quiz format conversion ([#739](https://github.com/oaknational/oak-ai-lesson-assistant/issues/739)) ([89f4d8f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/89f4d8fa432d250707a4f57a619ae708ed2b2490))
+* add GCS upload infrastructure for LaTeX images ([#757](https://github.com/oaknational/oak-ai-lesson-assistant/issues/757)) ([b695974](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b69597498ce4b70a68e36fed66b7067a0e3bf013))
+* add LaTeX to image rendering for exports ([#756](https://github.com/oaknational/oak-ai-lesson-assistant/issues/756)) ([22eccbd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/22eccbdc39e99760ff64846d2276720fb6a2e842))
+
+# [1.46.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.45.0...v1.46.0) (2025-07-17)
+
+
+### Features
+
+* launch teaching materials -  AI-857 AI-1340 ([#729](https://github.com/oaknational/oak-ai-lesson-assistant/issues/729)) ([70b8fd1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/70b8fd1c60c0a210a7de27092c5ef22d4fa34604))
+* remove legacy experimental quiz sections ([#744](https://github.com/oaknational/oak-ai-lesson-assistant/issues/744)) ([704612f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/704612f9ed5ee5ffc7034a6ba8a04291196934b0))
+
+# [1.45.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.44.0...v1.45.0) (2025-07-16)
+
+
+### Bug Fixes
+
+* fix broken parsing of nested patch keys [AI-1099] ([#747](https://github.com/oaknational/oak-ai-lesson-assistant/issues/747)) ([bb3e899](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bb3e89987df6b78678cc8065666d9490f2459a34))
+
+
+### Features
+
+* [AI-1367] migrate internal quiz generation to V2 format ([#735](https://github.com/oaknational/oak-ai-lesson-assistant/issues/735)) ([1f2fc8e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1f2fc8e2a199e2d6a3366398e426a7848a65526d))
+
+# [1.44.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.43.0...v1.44.0) (2025-07-14)
+
+
+### Bug Fixes
+
+* preserve keyword definition casing [AI-1322] ([#725](https://github.com/oaknational/oak-ai-lesson-assistant/issues/725)) ([08c18d0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/08c18d0a4b4dc9b206a736c026b8cfa98bb39536))
+
+
+### Features
+
+* [AI-1374] implement quiz v2 multiple choice components ([#733](https://github.com/oaknational/oak-ai-lesson-assistant/issues/733)) ([60bae59](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60bae59d9ab729ec9ac049ce46b345c65f7a4013))
+* send messages to user via the 'messaging' agent [AI-1211] ([#722](https://github.com/oaknational/oak-ai-lesson-assistant/issues/722)) ([3cbf7a0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3cbf7a0549eb1c86bdcbce5dcd3917e2b7b44074))
+
+# [1.43.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.42.0...v1.43.0) (2025-06-26)
+
+
+### Bug Fixes
+
+* configure MathJax $$ delimiters as inline math ([#726](https://github.com/oaknational/oak-ai-lesson-assistant/issues/726)) ([bbba493](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bbba493847300c6eae93db5308779280baa2799c))
+
+
+### Features
+
+* improve search params prompt wording AI-1313 ([#721](https://github.com/oaknational/oak-ai-lesson-assistant/issues/721)) ([1011a11](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1011a117962b69c7c2284a1ab8b89662d8c2caa6))
+* introduce quiz schema versioning with V1/V2 split ([#727](https://github.com/oaknational/oak-ai-lesson-assistant/issues/727)) ([6fbe075](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6fbe075ebfb34c57e8be1f22d4a4c87be4812204))
+
+# [1.42.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.41.0...v1.42.0) (2025-06-19)
+
+
+### Bug Fixes
+
+* moderation retry ([#715](https://github.com/oaknational/oak-ai-lesson-assistant/issues/715)) ([718fd4c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/718fd4ce37d755d7743f7ab5d6afbbf0f24a1aca))
+
+
+### Features
+
+* add form validation ([#703](https://github.com/oaknational/oak-ai-lesson-assistant/issues/703)) ([cbd944b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cbd944b24f23e0fde6d102df1592bd1bac727c69))
+* teaching materials avo AI-1285 AI-1286 ([#713](https://github.com/oaknational/oak-ai-lesson-assistant/issues/713)) ([0775fb2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0775fb24e9bb7dca8a9dd28d57e0522659ee5062))
+* teaching materials dialog modals and slack notifications - AI-1255 ([#694](https://github.com/oaknational/oak-ai-lesson-assistant/issues/694)) ([15864e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/15864e45ac2f7695db8a65f212571a169a147587))
+
+# [1.41.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.1...v1.41.0) (2025-06-12)
+
+
+### Bug Fixes
+
+* continue button case inconsistency and regenerate action bugs (AI-1261) ([#704](https://github.com/oaknational/oak-ai-lesson-assistant/issues/704)) ([f9a843f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f9a843ff5cff70d150696799c0e9c2a5f005f9ca))
+* remove helicone threat detection from moderation calls ([#683](https://github.com/oaknational/oak-ai-lesson-assistant/issues/683)) ([fa37fb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fa37fb984cbba22d91f11553a4115623a1f971d1))
+
+
+### Features
+
+* improvements to glossary prompt and download file names AI-1264 ([#705](https://github.com/oaknational/oak-ai-lesson-assistant/issues/705)) ([edde171](https://github.com/oaknational/oak-ai-lesson-assistant/commit/edde171939cbf02dff5109abf6fb2b7188dfc786))
+* starter and exit quiz in slides ([#643](https://github.com/oaknational/oak-ai-lesson-assistant/issues/643)) ([b6a45fc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b6a45fc11b1f859db861b1ec6ad476501c4bf1a1))
+* title, subject, key-stage, topic agents, and error handling [AI-1217] ([#684](https://github.com/oaknational/oak-ai-lesson-assistant/issues/684)) ([e802922](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e802922e346eb1716092075c5f6638c8cc7c8be5))
+* use fixed window rate limiting for demo users ([#699](https://github.com/oaknational/oak-ai-lesson-assistant/issues/699)) ([7c6cbc2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c6cbc2ffd83ed526ef36fad3770366577a18e4f))
+
+
+### Performance Improvements
+
+* add Sentry Tracing for Performance Monitoring ([#708](https://github.com/oaknational/oak-ai-lesson-assistant/issues/708)) ([d007aac](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d007aac3af01722b50224620851019270d89f465))
+
+## [1.40.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.40.0...v1.40.1) (2025-06-05)
+
+
+### Bug Fixes
+
+* force dynamic rendering for cron job routes ([#700](https://github.com/oaknational/oak-ai-lesson-assistant/issues/700)) ([79e280c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/79e280ca04b4b0d8552734340baf52d07b6a99c1))
+
+# [1.40.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.39.0...v1.40.0) (2025-06-05)
+
+
+### Bug Fixes
+
+* add admin user button to slack alert when user banned ([#691](https://github.com/oaknational/oak-ai-lesson-assistant/issues/691)) ([d4ab295](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d4ab29534dc3555329ceb42196dd9251cd14c820))
+
+
+### Features
+
+* add scheduled clerk user cleanup cron job - AI-1245 ([#693](https://github.com/oaknational/oak-ai-lesson-assistant/issues/693)) ([cc8b7d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cc8b7d90fc9a25983164339fa6bceddce7496d3a))
+* agentic maths quiz [AI-1189] [AI-1152] ([#677](https://github.com/oaknational/oak-ai-lesson-assistant/issues/677)) ([3b7725c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3b7725ced2453c96f1d40701801e4b85915075b4))
+* am mobile implementation ([#696](https://github.com/oaknational/oak-ai-lesson-assistant/issues/696)) ([c87981f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c87981f7ac730e4e36e81148630b56d456abe16a))
+* change the steps ([#685](https://github.com/oaknational/oak-ai-lesson-assistant/issues/685)) ([e48d5f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e48d5f768908181430953b64ac78eea9ad4b6024))
+* update modify hover states copy - AI-1246 ([#692](https://github.com/oaknational/oak-ai-lesson-assistant/issues/692)) ([a3e3424](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a3e342457d4b3edd5dea8079f305f1b4d9ef15f3))
+
+# [1.39.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.38.0...v1.39.0) (2025-05-29)
+
+
+### Bug Fixes
+
+* lakera payload only to send message text [AI-1062] ([#679](https://github.com/oaknational/oak-ai-lesson-assistant/issues/679)) ([0dc574c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0dc574c22ad614a234c7340c67b3fece7d305eb9))
+
+
+### Features
+
+* am safety violation - AI-1107 [MIGRATION] ([#676](https://github.com/oaknational/oak-ai-lesson-assistant/issues/676)) ([3deb0e1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3deb0e186fddc63fbb2d1c19256cbf434b243d2a))
+* download am ([#678](https://github.com/oaknational/oak-ai-lesson-assistant/issues/678)) ([70145f3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/70145f324e81d4bd7bf12151161c40350cf01e94))
+
+# [1.38.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.37.0...v1.38.0) (2025-05-22)
+
+
+### Features
+
+* admin user safety violations [AI-1113] ([#662](https://github.com/oaknational/oak-ai-lesson-assistant/issues/662)) ([ba4bee5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ba4bee5ebb07dcf872f06ce58cbf40d8e32d561d))
+* am add exit quiz ([#673](https://github.com/oaknational/oak-ai-lesson-assistant/issues/673)) ([09ff4bc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/09ff4bc95c25a8c6f77d82985114af749555a383))
+* connect additional materials moderation and threat to modals and zustand ([#668](https://github.com/oaknational/oak-ai-lesson-assistant/issues/668)) ([1b3869a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1b3869a682cb9dd1f43d613d5bba27fb23c2b685))
+* quasi agentic first iteration [AI-1109] ([#671](https://github.com/oaknational/oak-ai-lesson-assistant/issues/671)) ([b44a02d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b44a02dc6e80d06163180c68726727df9728d8b5))
+
+# [1.37.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.36.0...v1.37.0) (2025-05-20)
+
+
+### Bug Fixes
+
+* lakera persistence issue ([#656](https://github.com/oaknational/oak-ai-lesson-assistant/issues/656)) ([2bcd20a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2bcd20aa1858579caf6b5b76282d891eeb5ffe4d))
+
+
+### Features
+
+* add components for all quiz types ([#652](https://github.com/oaknational/oak-ai-lesson-assistant/issues/652)) ([26fd496](https://github.com/oaknational/oak-ai-lesson-assistant/commit/26fd496fa7c08f40b9716a87f198be07015138ac))
+* additional materials - connect frontend to exports - AI-1082 ([#667](https://github.com/oaknational/oak-ai-lesson-assistant/issues/667)) ([9d1f6eb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9d1f6eb437f86ca861cfb7e9a090e5dc839c34cf))
+* additional resources - threat detection and moderation - AI-1061 AI-1013 AI-860 [MIGRATION] ([#657](https://github.com/oaknational/oak-ai-lesson-assistant/issues/657)) ([63b9763](https://github.com/oaknational/oak-ai-lesson-assistant/commit/63b97632c3e3f0aca01f9576fdee89f98789573b))
+* styling to match designs ([#665](https://github.com/oaknational/oak-ai-lesson-assistant/issues/665)) ([86b5197](https://github.com/oaknational/oak-ai-lesson-assistant/commit/86b519711b863c24dc0746275a4c5dfd7574d6ad))
+
+# [1.36.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.35.0...v1.36.0) (2025-05-08)
+
+
+### Bug Fixes
+
+* clean up typos and linting issues in codebase ([#631](https://github.com/oaknational/oak-ai-lesson-assistant/issues/631)) ([3e82e69](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e82e6938495b739569a496c297b48734d1678b4))
+* prisma schema drift [AI-1111] ([#663](https://github.com/oaknational/oak-ai-lesson-assistant/issues/663)) ([778fd41](https://github.com/oaknational/oak-ai-lesson-assistant/commit/778fd4195fa6019486dd98f59c709500540341da))
+
+
+### Features
+
+* add the hubspot contact record id to posthog ([#650](https://github.com/oaknational/oak-ai-lesson-assistant/issues/650)) ([5fe9373](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5fe93737c5b5b6ac8d51f2c7d94a86fd7791d224))
+* additional material exports - AI-916 ([#654](https://github.com/oaknational/oak-ai-lesson-assistant/issues/654)) ([0a2558e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0a2558e50890f5e97e24ad512ff5780efdbbe8bb))
+* am styling ([#655](https://github.com/oaknational/oak-ai-lesson-assistant/issues/655)) ([78b87bf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/78b87bf5bfb7f33bc2f374af9e1e7c84fd38ff81))
+* prettier editor config for vscode ([#609](https://github.com/oaknational/oak-ai-lesson-assistant/issues/609)) ([60bb769](https://github.com/oaknational/oak-ai-lesson-assistant/commit/60bb769708f05be2c82e862b9446e7637b936442))
+
+# [1.35.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.34.0...v1.35.0) (2025-04-30)
+
+
+### Features
+
+* banner implementaion ([#647](https://github.com/oaknational/oak-ai-lesson-assistant/issues/647)) ([441c311](https://github.com/oaknational/oak-ai-lesson-assistant/commit/441c311a5586e1f75414830e1eea3b636e566f9b))
+
 # [1.34.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.33.0...v1.34.0) (2025-04-23)
 
 

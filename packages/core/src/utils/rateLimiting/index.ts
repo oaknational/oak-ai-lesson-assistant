@@ -1,4 +1,4 @@
-import { slidingWindowRateLimiter } from "./slidingWindowRateLimiter";
+import { fixedWindowRateLimiter } from "./fixedWindowRateLimiter";
 import { userBasedRateLimiter } from "./userBasedRateLimiter";
 
 if (!process.env.RATELIMIT_GENERATIONS_PER_24H) {
@@ -43,16 +43,44 @@ export const rateLimits = {
       },
       window: "24 h",
     }),
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:generations:demo",
       limit: DEMO_GENERATIONS_PER_30D,
       window: "30 d",
     }),
   },
   appSessions: {
-    demo: slidingWindowRateLimiter({
+    demo: fixedWindowRateLimiter({
       prefix: "rateLimit:lessons:demo",
       limit: DEMO_APP_SESSIONS_PER_30D,
+      window: "30 d",
+    }),
+  },
+  additionalMaterialSessions: {
+    demo: fixedWindowRateLimiter({
+      prefix: "rateLimit:additionalMaterial:demo",
+      limit: DEMO_APP_SESSIONS_PER_30D,
+      window: "30 d",
+    }),
+  },
+  additionalMaterial: {
+    standard: userBasedRateLimiter({
+      prefix: "rateLimit:additionalMaterial:standard",
+      limit: (isOakUser, privateMetadata) => {
+        const customRateLimit = privateMetadata["customRateLimit"];
+        if (typeof customRateLimit === "number") {
+          return customRateLimit;
+        }
+        if (isOakUser) {
+          return 1000;
+        }
+        return GENERATIONS_PER_24H;
+      },
+      window: "24 h",
+    }),
+    demo: fixedWindowRateLimiter({
+      prefix: "rateLimit:additionalMaterial:demo",
+      limit: DEMO_GENERATIONS_PER_30D,
       window: "30 d",
     }),
   },

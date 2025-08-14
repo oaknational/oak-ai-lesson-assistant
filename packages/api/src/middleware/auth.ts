@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { TRPCError } from "@trpc/server";
 
-import { t } from "../trpc";
+import { publicProcedure, t } from "../trpc";
 import { applyApiKeyMiddleware } from "./apiKeyAuth";
 
 const log = aiLogger("auth");
@@ -29,4 +29,4 @@ export const isLoggedInMiddleware = t.middleware(async ({ next, ctx }) => {
 export const isAuthedMiddleware =
   applyApiKeyMiddleware.unstable_pipe(isLoggedInMiddleware);
 
-export const protectedProcedure = t.procedure.use(isAuthedMiddleware);
+export const protectedProcedure = publicProcedure.use(isAuthedMiddleware);

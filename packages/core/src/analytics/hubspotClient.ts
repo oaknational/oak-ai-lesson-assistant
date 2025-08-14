@@ -1,5 +1,8 @@
+import { aiLogger } from "@oakai/logger";
+
 import { Client } from "@hubspot/api-client";
 import { ApiException } from "@hubspot/api-client/lib/codegen/crm/contacts/apis/exception";
+import type { SimplePublicObject } from "@hubspot/api-client/lib/codegen/crm/contacts/models/SimplePublicObject";
 
 const accessToken = process.env.HUBSPOT_ACCESS_TOKEN;
 if (!accessToken) {
@@ -7,6 +10,7 @@ if (!accessToken) {
 }
 
 const hubspotClient = new Client({ accessToken });
+const log = aiLogger("analytics");
 
 interface CreateHubspotCustomerInput {
   email: string;
@@ -14,13 +18,33 @@ interface CreateHubspotCustomerInput {
   lastName: string | null;
   marketingAccepted: boolean;
 }
+// New function to get HubSpot contact by email
+export const getHubspotContactByEmail = async (email: string) => {
+  try {
+    const result = await hubspotClient.crm.contacts.basicApi.getById(
+      email,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      "email",
+    );
+    return result;
+  } catch (e) {
+    const isNotFoundError = e instanceof ApiException && e.code === 404;
+    if (isNotFoundError) {
+      return null;
+    }
+    throw e;
+  }
+};
 
 export const createHubspotCustomer = async ({
   email,
   firstName,
   lastName,
   marketingAccepted,
-}: CreateHubspotCustomerInput) => {
+}: CreateHubspotCustomerInput): Promise<SimplePublicObject> => {
   let id: string | undefined;
   try {
     const result = await hubspotClient.crm.contacts.basicApi.getById(
@@ -51,13 +75,17 @@ export const createHubspotCustomer = async ({
   };
 
   if (id) {
-    return await hubspotClient.crm.contacts.basicApi.update(id, {
+    const response = await hubspotClient.crm.contacts.basicApi.update(id, {
       properties,
     });
+
+    return response;
   }
 
-  return await hubspotClient.crm.contacts.basicApi.create({
+  const response = await hubspotClient.crm.contacts.basicApi.create({
     properties,
     associations: [],
   });
+
+  return response;
 };

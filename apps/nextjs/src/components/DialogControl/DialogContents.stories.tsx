@@ -7,6 +7,7 @@ import type { PostHog } from "posthog-js";
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
+import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
@@ -104,6 +105,77 @@ export const DemoInterstitialLimited: Story = {
       </DemoProvider>
     ),
   ],
+};
+
+export const AdditionalMaterialsModeration: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-moderation",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const AdditionalMaterialsThreatDetected: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-threat-detected",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const AdditionalMaterialsRateLimit: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-rate-limit",
+  },
+  decorators: [
+    TeachingMaterialsStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const AdditionalMaterialsRateLimitDemo: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-rate-limit",
+    auth: "signedInDemo",
+  },
+  decorators: [
+    TeachingMaterialsStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const AdditionalMaterialsInappropriateContent: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-toxic-moderation",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const AdditionalMaterialsStartAgain: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-start-again",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const AdditionalMaterialsError: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "additional-materials-error",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const Feedback: Story = {

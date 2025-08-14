@@ -1,13 +1,9 @@
-import type { Action, ContextByMaterialType } from "../configSchema";
-import { getLessonDetails } from "../promptHelpers";
-import {
-  type AllowedReadingAgeRefinement,
-  readingAgeRefinementMap,
-} from "./schema";
+import type { ContextByMaterialType } from "../configSchema";
+import { getLessonDetails, language } from "../promptHelpers";
+import { refinementMap } from "../refinement/schema";
 
 export const buildGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
-  action: Action,
 ) => {
   const { lessonPlan } = context;
 
@@ -27,13 +23,17 @@ const refineGlossaryPrompt = (
   context: ContextByMaterialType["additional-glossary"],
 ) => {
   const { lessonPlan, previousOutput } = context;
+  const userRequest = context.refinement
+    ?.map((r) => (r.type === "custom" ? r.payload : refinementMap[r.type]))
+    .join("\n");
+
   return `Modify the following glossary based on user feedback.
   
   **Previous Output**:  
   ${JSON.stringify(previousOutput, null, 2)}
   
   **User Request**:  
-  ${context.refinement && context.refinement.map((r) => readingAgeRefinementMap[r.type as AllowedReadingAgeRefinement]).join("\n")}
+  ${userRequest}
   
   Adapt the glossary to reflect the request while ensuring it continues to aligns with the following lesson details:
   
@@ -56,20 +56,13 @@ For example, "Cell Membrane": "A semi-permeable membrane that surrounds the cell
 Try to make your definitions as succinct as possible.
 The definition should be no longer than 200 characters.
 
-**c. Example:**
-
-Carbon dioxide: A gas absorbed by plants from the air, used in photosynthesis.
-Chlorophyll: A green pigment in chloroplasts that captures light energy.
-Glucose: A simple sugar produced by plants during photosynthesis, used for energy.
-Light: Energy from the sun that powers photosynthesis.
-Photosynthesis: The process by which plants make their own food using sunlight.
-Producers: Organisms that create their own food, forming the base of food chains.
-Reactants: Substances that start a chemical reaction to form new products.
-Water: A liquid absorbed by roots, vital for plant processes.
-
 **Rules**:
 - **Do not** include markdown in your response.
-- **Do not** include any americanisms.
-- definitions start with lower case (unless it is a known acronym or proper noun).
+- definitions start with lower case (unless it is a known acronym, proper noun or city or country name) and end with a full stop.
+- terms start with capital letter.
+- minimum of 5 terms, maximum of 15 terms.
+- include the key words from the lesson plan.
+
+${language}
   `;
 };

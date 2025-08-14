@@ -2,6 +2,7 @@ import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
+import type { AilaTracingService } from "../features/tracing";
 import type {
   AilaAnalyticsFeature,
   AilaModerationFeature,
@@ -45,8 +46,8 @@ export interface AilaChatService {
   readonly iteration: number | undefined;
   readonly createdAt: Date | undefined;
   readonly persistedChat: AilaPersistedChat | undefined;
-  get relevantLessons(): AilaRagRelevantLesson[];
-  set relevantLessons(lessons: AilaRagRelevantLesson[]);
+  get relevantLessons(): AilaRagRelevantLesson[] | null;
+  set relevantLessons(lessons: AilaRagRelevantLesson[] | null);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
   readonly fullQuizService: FullQuizService;
@@ -70,4 +71,5 @@ export interface AilaServices {
   readonly moderation?: AilaModerationFeature;
   readonly plugins: AilaPlugin[];
   readonly americanisms: AilaAmericanismsFeature;
+  readonly tracing: AilaTracingService;
 }

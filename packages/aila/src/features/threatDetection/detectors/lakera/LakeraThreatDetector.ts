@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
+import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
 import {
   AilaThreatDetector,
   type ThreatCategory,
@@ -16,18 +17,20 @@ const log = aiLogger("aila:threat");
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;
   private readonly projectId?: string;
-  private readonly apiUrl = "https://api.lakera.ai/v2/guard";
+  private readonly apiUrl?: string;
 
   constructor() {
     super();
     const apiKey = process.env.LAKERA_GUARD_API_KEY;
     const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
+    const apiUrl = process.env.LAKERA_GUARD_URL;
 
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
 
     this.apiKey = apiKey;
     this.projectId = projectId;
+    this.apiUrl = apiUrl;
   }
 
   protected async authenticate(): Promise<void> {
@@ -101,7 +104,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       })),
     });
 
-    const response = await fetch(this.apiUrl, {
+    const response = await fetch("https://api.lakera.ai/v2/guard", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -110,7 +113,6 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       body: JSON.stringify(parsedBody),
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const responseData = await response.json();
 
     if (!response.ok) {
@@ -190,7 +192,9 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       throw new Error("Input must be an array of Messages");
     }
 
-    const data = await this.callLakeraAPI(content);
+    const data = await this.callLakeraAPI(
+      extractPromptTextFromMessages(content),
+    );
 
     if (!data.flagged) {
       return {

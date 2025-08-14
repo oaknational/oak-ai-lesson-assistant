@@ -17,8 +17,8 @@ import {
   useChatActions,
   useChatStore,
   useLessonPlanActions,
-  useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { findMessageIdFromContent } from "./Chat/utils";
 import { isAccountLocked } from "./chat-message/protocol";
@@ -50,7 +50,6 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const path = usePathname();
 
   const initialMessages = useChatStore((state) => state.initialMessages);
-  const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
   const chatActions = useChatActions();
   const lessonPlanActions = useLessonPlanActions();
 
@@ -85,6 +84,9 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         extra: { originalError: error },
       });
       log.error("UseChat error", { error, messages });
+
+      // Mark that an error occurred to prevent analytics tracking
+      chatActions.streamingFailed();
     },
     onResponse(response) {
       log.info("Chat: On Response");
@@ -96,7 +98,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
         toast.error(response.statusText);
       }
       if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `/aila/${id}`);
+        window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
       }
     },
     onFinish(response) {

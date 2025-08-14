@@ -18,7 +18,7 @@ describe("handleStop", () => {
 
   test("should clear queued action if one exists", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
-      queuedUserAction: "Some action",
+      queuedUserAction: { type: "message", content: "Some action" },
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
     store.getState().actions.stop();

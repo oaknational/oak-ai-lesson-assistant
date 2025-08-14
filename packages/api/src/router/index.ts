@@ -1,11 +1,11 @@
 import { router } from "../trpc";
 import { additionalMaterialsRouter } from "./additionalMaterials";
 import { adminRouter } from "./admin";
+import { analyticsRouter } from "./analytics";
 import { appRouter } from "./app";
 import { authRouter } from "./auth";
 import { cloudinaryRouter } from "./cloudinary";
 import { exportsRouter } from "./exports";
-import { generationRouter } from "./generations";
 import { healthRouter } from "./health";
 import { judgementRouter } from "./judgements";
 import { lessonRouter } from "./lesson";
@@ -17,7 +17,6 @@ import { subjectAndKeyStagesRouter } from "./subjectsAndKeyStage";
 
 export const oakAppRouter = router({
   app: appRouter,
-  generations: generationRouter,
   auth: authRouter,
   lesson: lessonRouter,
   subjectsAndKeyStages: subjectAndKeyStagesRouter,
@@ -31,6 +30,7 @@ export const oakAppRouter = router({
   health: healthRouter,
   admin: adminRouter,
   additionalMaterials: additionalMaterialsRouter,
+  analytics: analyticsRouter,
 });
 
 // export type definition of API

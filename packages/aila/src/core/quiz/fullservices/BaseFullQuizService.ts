@@ -5,7 +5,7 @@ import type { z } from "zod";
 import type {
   AilaRagRelevantLesson,
   LooseLessonPlan,
-  QuizQuestion,
+  QuizV1Question,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import type {
@@ -27,7 +27,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizQuestion[]> {
+  ): Promise<QuizV1Question[]> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(

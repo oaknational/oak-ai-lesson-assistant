@@ -49,12 +49,10 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
       await ailaInstance.generateSync({ input: "Continue" });
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _secondParsedMessage = checkLastMessage(ailaInstance);
 
       await ailaInstance.generateSync({ input: "Continue" });
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _thirdParsedMessage = checkLastMessage(ailaInstance);
 
       // Check that the title is set appropriately

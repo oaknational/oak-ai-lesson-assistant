@@ -118,7 +118,7 @@ export class OpenAiModerator extends AilaModerator {
       {
         headers: {
           // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.
-          "Helicone-LLM-Security-Enabled": "false",
+          "Helicone-LLM-Security-Enabled": undefined,
         },
       },
     );
@@ -173,9 +173,6 @@ export class OpenAiModerator extends AilaModerator {
       return await this._moderate(input, 0);
     } catch (error) {
       log.error("Moderation error: ", error);
-      if (error instanceof AilaModerationError) {
-        throw error;
-      }
       return await this._moderate(input, 1);
     }
   }

@@ -1,8 +1,15 @@
 import { aiLogger } from "@oakai/logger";
+import { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import {
+  createInteractStreamHandler,
+  streamInteractResultToClient,
+} from "../../lib/agents/compatibility/streamHandling";
+import { interact } from "../../lib/agents/interact";
+import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -30,8 +37,10 @@ export class AilaStreamHandler {
     });
   }
 
-  private logStreamingStep(step: string) {
-    log.info(`Streaming step: ${step}`);
+  private async span(step: string, handler: () => Promise<void>) {
+    log.info(`${step} started`);
+    await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
+    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
@@ -76,29 +85,39 @@ export class AilaStreamHandler {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
-      log.info("Setting up generation");
-      await this._chat.setupGeneration();
-      this.logStreamingStep("Setup generation complete");
+      if (!this._chat.aila.options.useAgenticAila) {
+        await this.span("set-up-generation", async () => {
+          await this._chat.setupGeneration();
+        });
+      } else {
+        await this.span("initialise-chunks", async () => {
+          this._chat.initialiseChunks();
+        });
+      }
 
-      log.info("Checking for threats for the user input");
-      await this.checkForThreats();
-      this.logStreamingStep("Check for threats complete");
+      await this.span("check-threats", async () => {
+        await this.checkForThreats();
+      });
 
-      log.info("Setting initial state");
-      await this._chat.handleSettingInitialState();
-      this.logStreamingStep("Handle initial state complete");
+      if (this._chat.aila.options.useAgenticAila) {
+        await this.span("start-agent-stream", async () => {
+          await this.startAgentStream();
+        });
+      } else {
+        await this.span("set-initial-state", async () => {
+          await this._chat.handleSettingInitialState();
+        });
 
-      log.info("Handling subject warning");
-      await this._chat.handleSubjectWarning();
-      this.logStreamingStep("Handle subject warning complete");
-
-      log.info("Starting LLM stream");
-      await this.startLLMStream();
-      this.logStreamingStep("Start LLM stream complete");
-
-      log.info("Reading from stream");
-      await this.readFromStream(abortController);
-      this.logStreamingStep("Read from stream complete");
+        await this.span("handle-subject-warning", async () => {
+          await this._chat.handleSubjectWarning();
+        });
+        await this.span("start-llm-stream", async () => {
+          await this.startLLMStream();
+        });
+        await this.span("read-from-stream", async () => {
+          await this.readFromStream(abortController);
+        });
+      }
 
       log.info(
         "Finished reading from stream",
@@ -112,6 +131,7 @@ export class AilaStreamHandler {
       });
       if (e instanceof AilaThreatDetectionError) {
         log.info("Handling threat detection error");
+
         await this._chat.generationFailed(e);
         throw e;
       }
@@ -120,10 +140,11 @@ export class AilaStreamHandler {
     } finally {
       const status = this._chat.generation?.status;
       log.info("In finally block", { status, chatId: this._chat.id });
-      if (!(status === "FAILED")) {
+      if (status !== "FAILED") {
         try {
-          log.info("Completing chat");
-          await this._chat.complete();
+          await this.span("chat-completion", async () => {
+            await this._chat.complete();
+          });
           log.info("Chat completed", this._chat.iteration, this._chat.id);
         } catch (e) {
           log.error("Error in complete", e);
@@ -141,6 +162,85 @@ export class AilaStreamHandler {
   private setupController(controller: ReadableStreamDefaultController) {
     this._controller = controller;
     this._patchEnqueuer.setController(controller);
+  }
+
+  private async startAgentStream() {
+    await this._chat.enqueue({
+      type: "comment",
+      value: "CHAT_START",
+    });
+
+    const initialDocument = {
+      ...this._chat.aila.document.content,
+    };
+
+    // Create a stream handler
+    const streamHandler = createInteractStreamHandler(
+      this._chat,
+      this._controller!,
+    );
+
+    // Call interact with the stream handler
+    const interactResult = await interact({
+      userId: this._chat.userId ?? "anonymous",
+      chatId: this._chat.id,
+      initialDocument: initialDocument,
+      messageHistoryWithProtocol: this._chat.messages
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .map((m) => {
+          log.info(m);
+          return m;
+        }) as { role: "user" | "assistant"; content: string }[],
+      onUpdate: streamHandler, // This is the new part
+      customAgents: {
+        mathsStarterQuiz: async ({ document }) => {
+          const quiz = await this._chat.fullQuizService.createBestQuiz(
+            "/starterQuiz",
+            document,
+          );
+
+          return quiz;
+        },
+        mathsExitQuiz: async ({ document }) => {
+          const quiz = await this._chat.fullQuizService.createBestQuiz(
+            "/exitQuiz",
+            document,
+          );
+
+          return quiz;
+        },
+        fetchRagData: async ({ document }) => {
+          if (this._chat.relevantLessons) {
+            const results = await getRagLessonPlansByIds({
+              lessonPlanIds: this._chat.relevantLessons.map(
+                (lesson) => lesson.lessonPlanId,
+              ),
+            });
+            return results;
+          }
+          const lessonPlanResults = await fetchRelevantLessonPlans({
+            document,
+          });
+
+          const relevantLessons = lessonPlanResults.map((result) => ({
+            lessonPlanId: result.ragLessonPlanId,
+            title: result.lessonPlan.title,
+          }));
+          this._chat.relevantLessons = relevantLessons;
+
+          return lessonPlanResults.map((l) => l.lessonPlan);
+        },
+      },
+      relevantLessons: this._chat.relevantLessons,
+    });
+
+    // Stream the final result to the client
+    await streamInteractResultToClient(
+      this._chat,
+      this._controller!,
+      initialDocument,
+      interactResult,
+    );
   }
 
   private async startLLMStream() {

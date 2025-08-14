@@ -11,6 +11,8 @@ import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
 import { AilaCategorisation } from "../features/categorisation";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
+import type { AilaTracingService } from "../features/tracing";
+import { NullTracingService } from "../features/tracing";
 import type {
   AilaAnalyticsFeature,
   AilaErrorReportingFeature,
@@ -58,6 +60,7 @@ export class Aila implements AilaServices {
   private readonly _userId!: string | undefined;
   private readonly _chatId!: string;
   private readonly _americanisms: AilaAmericanismsFeature;
+  private readonly _tracing: AilaTracingService;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
@@ -113,6 +116,8 @@ export class Aila implements AilaServices {
     this._americanisms =
       options.services?.americanismsService?.(this) ??
       new NullAilaAmericanisms();
+    this._tracing =
+      options.services?.tracingService ?? new NullTracingService();
 
     if (this._analytics) {
       this._analytics.initialiseAnalyticsContext();
@@ -143,7 +148,9 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._document.content = persistedLessonPlan;
     }
-    await this._document.initialiseContentFromMessages(this._chat.messages);
+    if (!this.options.useAgenticAila) {
+      await this._document.initialiseContentFromMessages(this._chat.messages);
+    }
 
     this._initialised = true;
   }
@@ -161,6 +168,7 @@ export class Aila implements AilaServices {
       useModeration: options?.useModeration ?? true,
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
+      useAgenticAila: options?.useAgenticAila ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
     };
@@ -235,6 +243,10 @@ export class Aila implements AilaServices {
 
   public get americanisms() {
     return this._americanisms;
+  }
+
+  public get tracing() {
+    return this._tracing;
   }
 
   public get prisma() {

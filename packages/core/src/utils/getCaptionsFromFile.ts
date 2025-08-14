@@ -106,7 +106,7 @@ export const getCaptionsFromFile = async (fileName: string) => {
 export const formatSentences = (sentences: Array<string>): Array<string> => {
   // The sentences retrieved may be split in the middle and put onto multiple lines, this roughly puts them back together
   // with a crude hack to ignore full stops following Mr or Mrs
-  // also ignoring full stops before quotation, whuich has the undesired effect of grouping near quotes
+  // also ignoring full stops before quotation, which has the undesired effect of grouping near quotes
   const joined = sentences.join(" ");
   const splitOnFullStop = joined.split(/(?<!Mr|Mrs|Ms)\.(?!")/gi);
   return splitOnFullStop

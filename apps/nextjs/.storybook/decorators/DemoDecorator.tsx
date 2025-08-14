@@ -30,6 +30,7 @@ export const DemoDecorator: Decorator = (Story, { parameters }) => {
 
 const demoBase: DemoContextProps["demo"] = {
   appSessionsRemaining: 2,
+  additionalMaterialsSessionsRemaining: 1,
   appSessionsPerMonth: 3,
   contactHref: "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
 };

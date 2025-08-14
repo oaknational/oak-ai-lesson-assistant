@@ -1,26 +1,22 @@
 import { z } from "zod";
 
-import { LessonPlanSchema } from "../../../../../aila/src/protocol/schema";
-
-export const baseContext = {
-  lessonPlan: LessonPlanSchema,
-  transcript: z.string().nullish(),
-  message: z.string().nullish(),
-};
+import { refinementSchema } from "../refinement/schema";
+import { baseContext } from "../sharedSchema";
 
 export const comprehensionTaskSchema = z.object({
   comprehension: z.object({
-    title: z.string().min(3).max(100),
-    passage: z.string().min(20),
+    lessonTitle: z.string().min(3).max(100),
+    yearGroup: z.string(),
+    subject: z.string(),
+    instructions: z.string(),
+    text: z.string().min(20),
     questions: z.array(
       z.object({
+        questionNumber: z.number(),
         questionText: z.string().min(5),
-        type: z.enum(["multiple-choice", "open-ended"]),
-        options: z.array(z.string()).optional(),
-        correctAnswer: z.union([z.string(), z.array(z.string())]),
+        answer: z.string(),
       }),
     ),
-    difficulty: z.enum(["easy", "medium", "hard"]).optional(),
   }),
 });
 
@@ -32,13 +28,6 @@ export const isComprehensionTask = (
   const result = comprehensionTaskSchema.safeParse(data);
   return result.success;
 };
-
-const refinementTypes = z.enum(["custom"]);
-
-const refinementSchema = z.object({
-  type: refinementTypes,
-  payload: z.string().optional(),
-});
 
 const optionsSchema = z.object({
   difficulty: z.enum(["easy", "medium", "hard"]),

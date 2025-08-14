@@ -91,6 +91,18 @@
     },
     "storybook": {
       "cache": false
+    },
+
+    "generate-posthog-survey-types": {
+      "cache": false,
+      "env": [
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "POSTHOG_PERSONAL_KEY_FLAGS",
+        "NEXT_PUBLIC_POSTHOG_PROJECT"
+      ],
+      "outputs": [
+        "apps/nextjs/src/lib/posthog/surveys/surveysTypes.generated.ts"
+      ]
     }
   },
   "globalEnv": [
@@ -109,6 +121,9 @@
     "DEMO_ACCOUNTS_ENABLED",
     "DEVELOPMENT_USER_REGION",
     "DIRECT_DATABASE_URL",
+    "GCS_LATEX_BUCKET_NAME",
+    "GCS_LATEX_SERVICE_ACCOUNT_EMAIL",
+    "GCS_LATEX_SERVICE_ACCOUNT_PRIVATE_KEY",
     "GLEAP_FEEDBACK_EMAIL_ADDR",
     "GOOGLE_DOCS_*",
     "GOOGLE_DRIVE_OUTPUT_FOLDER_ID",

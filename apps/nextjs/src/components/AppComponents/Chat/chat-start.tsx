@@ -15,9 +15,11 @@ import { useDemoUser } from "@/components/ContextProviders/Demo";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
+import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordion";
@@ -92,7 +94,7 @@ export function ChatStart({
           message,
         });
 
-        router.push(`/aila/${result.id}`);
+        router.push(`${getAilaUrl("lesson")}/${result.id}`);
       } catch (error) {
         log.error("Error creating app session:", error);
         Sentry.captureException(error);
@@ -213,33 +215,4 @@ export function ChatStart({
       </Flex>
     </DialogRoot>
   );
-}
-
-function createStartingPromptFromSearchParams(
-  keyStage?: string,
-  subject?: string,
-  unitTitle?: string,
-  searchExpression?: string,
-): string {
-  let prompt = "Create a lesson plan";
-
-  if (keyStage) {
-    prompt += ` for ${keyStage}`;
-  }
-
-  if (subject) {
-    prompt += ` about ${subject}`;
-  }
-
-  if (unitTitle) {
-    prompt += `, focusing on the unit "${unitTitle}"`;
-  }
-
-  if (searchExpression) {
-    prompt += ` titled "${searchExpression}"`;
-  }
-
-  prompt += ".";
-
-  return prompt.trim();
 }

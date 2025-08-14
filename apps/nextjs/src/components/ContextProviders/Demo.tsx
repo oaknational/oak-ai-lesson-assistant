@@ -15,6 +15,7 @@ const DEMO_APP_SESSIONS_PER_30D = parseInt(
 
 type Demo = {
   appSessionsRemaining: number | undefined;
+  additionalMaterialsSessionsRemaining: number | undefined;
   appSessionsPerMonth: number;
   contactHref: string;
 };
@@ -37,12 +38,22 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
     { enabled: clerkMetadata.isSet && isDemoUser },
   );
 
+  const remainingAdditionalMaterialsSessions =
+    trpc.additionalMaterials.remainingLimit.useQuery(undefined, {
+      enabled: clerkMetadata.isSet && isDemoUser,
+    });
+
   const isSharingEnabled =
     !isDemoUser || process.env.NEXT_PUBLIC_DEMO_SHARING_ENABLED === "true";
 
   const appSessionsRemaining = remainingAppSessions.isSuccess
     ? remainingAppSessions.data.remaining
     : undefined;
+
+  const additionalMaterialsSessionsRemaining =
+    remainingAdditionalMaterialsSessions.isSuccess
+      ? remainingAdditionalMaterialsSessions.data.remaining
+      : undefined;
 
   const value: DemoContextProps = useMemo(
     () =>
@@ -51,6 +62,7 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
             isDemoUser,
             demo: {
               appSessionsRemaining,
+              additionalMaterialsSessionsRemaining,
               appSessionsPerMonth: DEMO_APP_SESSIONS_PER_30D,
               contactHref:
                 "https://share.hsforms.com/1R9ulYSNPQgqElEHde3KdhAbvumd",
@@ -62,7 +74,12 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
             demo: undefined,
             isSharingEnabled,
           },
-    [isDemoUser, appSessionsRemaining, isSharingEnabled],
+    [
+      isDemoUser,
+      appSessionsRemaining,
+      additionalMaterialsSessionsRemaining,
+      isSharingEnabled,
+    ],
   );
 
   return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>;

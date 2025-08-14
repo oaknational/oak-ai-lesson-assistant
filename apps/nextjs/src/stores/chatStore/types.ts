@@ -7,6 +7,11 @@ import type { StoreApi } from "zustand";
 
 export { AiMessage };
 
+export type ChatAction =
+  | { type: "message"; content: string }
+  | { type: "continue" }
+  | { type: "regenerate" };
+
 export type AiSdkActions = {
   stop: () => void;
   reload: () => Promise<string | null | undefined>;
@@ -21,18 +26,18 @@ export type AilaStreamingStatus =
   | "RequestMade"
   | "StreamingLessonPlan"
   | "StreamingChatResponse"
-  | "StreamingExperimentalPatches"
   | "Moderating"
   | "Idle";
 
 export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
+  streamingError: boolean;
 
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
-  queuedUserAction: string | null;
+  queuedUserAction: ChatAction | null;
   lessonPlan: LooseLessonPlan | null;
   input: string;
   chatAreaRef: React.RefObject<HTMLDivElement> | null;
@@ -50,9 +55,10 @@ export type ChatState = {
 
     // Action functions
     executeQueuedAction: () => void;
-    append: (message: string) => void;
+    append: (action: ChatAction) => void;
     stop: () => void;
     streamingFinished: () => void;
+    streamingFailed: () => void;
     scrollToBottom: () => void;
     fetchInitialMessages: () => Promise<void>;
     ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => void;

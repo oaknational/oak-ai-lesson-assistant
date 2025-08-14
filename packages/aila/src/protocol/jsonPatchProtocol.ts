@@ -23,9 +23,11 @@ import {
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
-  QuizOptionalSchema,
-  QuizSchema,
-  QuizSchemaWithoutLength,
+  QuizV1OptionalSchema,
+  QuizV1Schema,
+  QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  QuizV2OptionalSchema,
+  QuizV2Schema,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -119,25 +121,48 @@ export const PatchCycleForLLM = z.object({
   ),
 });
 
-export const PatchQuizOptional = z.object({
+/**
+ * @deprecated Use PatchQuizV2Optional instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
+export const PatchQuizV1Optional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizOptionalSchema,
+  value: QuizV1OptionalSchema,
 });
 
-export const PatchQuiz = z.object({
+/**
+ * @deprecated Use PatchQuizV2 instead. V1 quiz format is deprecated in favor of V2.
+ * This is only kept for backward compatibility with existing quiz generators.
+ */
+export const PatchQuizV1 = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizSchema,
+  value: QuizV1Schema,
 });
 
 // When using Structured Outputs we cannot specify the length of arrays or strings
 // so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchQuizForLLM = z.object({
+
+// V2 Quiz Patch Schemas
+export const PatchQuizV2Optional = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2OptionalSchema,
+});
+
+export const PatchQuizV2 = z.object({
+  op: z.union([z.literal("add"), z.literal("replace")]),
+  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
+  value: QuizV2Schema,
+});
+
+// For LLM - multiple choice only since LLM can only generate those
+export const PatchQuizV2ForLLM = z.object({
   type: z.literal("quiz"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizSchemaWithoutLength,
+  value: QuizV2MultipleChoiceOnlySchemaWithoutLength,
 });
 
 export const PatchBasedOnOptional = z.object({
@@ -238,7 +263,8 @@ export const JsonPatchValueSchema = z.union([
   PatchString,
   PatchStringArray,
   PatchCycle,
-  PatchQuiz,
+  PatchQuizV1,
+  PatchQuizV2,
   PatchMisconceptions,
   PatchKeywords,
 ]);
@@ -253,7 +279,7 @@ export const JsonPatchValueForLLMSchema = z.union([
   PatchStringForLLM,
   PatchStringArrayForLLM,
   PatchCycleForLLM,
-  PatchQuizForLLM,
+  PatchQuizV2ForLLM,
   PatchMisconceptionsForLLM,
   PatchKeywordsForLLM,
 ]);
@@ -272,7 +298,8 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchString,
   PatchStringArray,
   PatchCycleOptional,
-  PatchQuizOptional,
+  PatchQuizV1Optional,
+  PatchQuizV2Optional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
 ]);
@@ -299,7 +326,7 @@ export const LLMPatchDocumentSchema = z.object({
     PatchStringForLLM,
     PatchBasedOnForLLM,
     PatchMisconceptionsForLLM,
-    PatchQuizForLLM,
+    PatchQuizV2ForLLM,
     PatchKeywordsForLLM,
     PatchCycleForLLM,
     JsonPatchRemoveSchemaForLLM,
@@ -309,36 +336,7 @@ export const LLMPatchDocumentSchema = z.object({
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 
-const ExperimentalPatchMessagePartSchema = z.union([
-  z.object({
-    op: z.union([z.literal("add"), z.literal("replace")]),
-    path: z.union([
-      z.literal("/_experimental_starterQuizMathsV0"),
-      z.literal("/_experimental_exitQuizMathsV0"),
-    ]),
-    value: z.array(z.object({}).passthrough()),
-  }),
-  z.object({
-    op: z.literal("remove"),
-    path: z.union([
-      z.literal("/_experimental_starterQuizMathsV0"),
-      z.literal("/_experimental_exitQuizMathsV0"),
-    ]),
-  }),
-]);
-// This is the schema for experimental patches, which are part of our prototype agent system
-const ExperimentalPatchDocumentSchema = z.object({
-  type: z.literal("experimentalPatch"),
-  value: ExperimentalPatchMessagePartSchema,
-});
-export type ExperimentalPatchDocument = z.infer<
-  typeof ExperimentalPatchDocumentSchema
->;
-
-export const ValidPatchDocumentSchema = z.union([
-  PatchDocumentSchema,
-  ExperimentalPatchDocumentSchema,
-]);
+export const ValidPatchDocumentSchema = PatchDocumentSchema;
 export type ValidPatchDocument = z.infer<typeof ValidPatchDocumentSchema>;
 
 const PatchDocumentOptionalSchema = z.object({
@@ -459,7 +457,6 @@ export const JsonPatchDocumentOptionalSchema = z.discriminatedUnion("type", [
   ActionDocumentSchema,
   ModerationDocumentSchema,
   MessageIdDocumentSchema,
-  ExperimentalPatchDocumentSchema,
 ]);
 
 export type JsonPatchDocumentOptional = z.infer<
@@ -490,7 +487,6 @@ export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
-  ExperimentalPatchDocumentSchema,
   StateDocumentSchema,
   CommentDocumentSchema,
   PromptDocumentSchema,
@@ -507,7 +503,6 @@ export type MessagePartType =
   | "moderation"
   | "error"
   | "patch"
-  | "experimentalPatch"
   | "state"
   | "comment"
   | "prompt"
@@ -524,7 +519,6 @@ export const MessagePartDocumentSchemaByType: {
   moderation: ModerationDocumentSchema,
   error: ErrorDocumentSchema,
   patch: PatchDocumentSchema,
-  experimentalPatch: ExperimentalPatchDocumentSchema,
   state: StateDocumentSchema,
   comment: CommentDocumentSchema,
   prompt: PromptDocumentSchema,
@@ -657,7 +651,6 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 // Each Message that is sent back from the server contains the following
 // (separated by the record-separator character and a newline):
 // * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
-// * An experimentalPatch messagePart
 // * A moderation messagePart
 // * An ID messagePart
 // * A state messagePart
@@ -788,8 +781,7 @@ export function extractPatches(edit: string): {
     }
 
     const patchMessageParts: MessagePart[] = parts.filter(
-      (p) =>
-        p.document.type === "patch" || p.document.type === "experimentalPatch",
+      (p) => p.document.type === "patch",
     );
     const validPatches: PatchDocument[] = patchMessageParts
       .filter((p) => !p.isPartial)
@@ -822,11 +814,11 @@ function isValidPatch(patch: Operation): boolean {
 }
 export function applyLessonPlanPatch(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument | ExperimentalPatchDocument,
+  command: JsonPatchDocument,
 ) {
   log.info("Apply patch (old)", JSON.stringify(command));
   let updatedLessonPlan = { ...lessonPlan };
-  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+  if (command.type !== "patch") {
     log.error("Invalid patch document type", command.type);
     return lessonPlan;
   }
@@ -875,10 +867,10 @@ export function applyLessonPlanPatch(
  */
 export function applyLessonPlanPatchImmutable(
   lessonPlan: LooseLessonPlan,
-  command: JsonPatchDocument | ExperimentalPatchDocument,
+  command: JsonPatchDocument,
 ) {
   log.info("Apply patch (immutable)", JSON.stringify(command));
-  if (command.type !== "patch" && command.type !== "experimentalPatch") {
+  if (command.type !== "patch") {
     log.error("Invalid patch document type", command.type);
     return;
   }

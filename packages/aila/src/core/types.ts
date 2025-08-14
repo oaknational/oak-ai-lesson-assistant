@@ -7,6 +7,7 @@ import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerat
 import type { AilaPersistence } from "../features/persistence";
 import type { AilaRagFeature } from "../features/rag";
 import type { AilaThreatDetector } from "../features/threatDetection";
+import type { AilaTracingService } from "../features/tracing";
 import type {
   AilaAnalyticsFeature,
   AilaCategorisationFeature,
@@ -45,6 +46,7 @@ export type AilaOptions = AilaPublicChatOptions & {
   useModeration?: boolean;
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
+  useAgenticAila?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
 };
@@ -82,5 +84,6 @@ export type AilaInitializationOptions = {
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];
     threatDetectors?: (aila: AilaServices) => AilaThreatDetector[];
+    tracingService?: AilaTracingService;
   };
 };

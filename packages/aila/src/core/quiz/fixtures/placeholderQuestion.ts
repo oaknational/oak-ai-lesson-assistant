@@ -1,6 +1,6 @@
-import type { QuizQuestion } from "../../../protocol/schema";
+import type { QuizV1Question } from "../../../protocol/schema";
 
-export const placeholderQuiz: QuizQuestion[] = [
+export const placeholderQuiz: QuizV1Question[] = [
   {
     question: "No questions found",
     answers: [

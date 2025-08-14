@@ -16,6 +16,7 @@ import {
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 import Layout from "@/components/Layout";
 import { OakBoxCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const FAQPageContent = () => {
   const startingRef = useRef(null);
@@ -121,7 +122,7 @@ export const FAQPageContent = () => {
             </OakHeading>
             <OakP>
               You can sign up to access Aila and our other AI experiments{" "}
-              <OakLink href="/aila">here</OakLink>.
+              <OakLink href={getAilaUrl("start")}>here</OakLink>.
             </OakP>
             <OakHeading
               tag="h3"
@@ -455,7 +456,10 @@ export const FAQPageContent = () => {
               of the website using speech recognition software; listen to most
               of the website using a screen reader (including the most recent
               versions of JAWS, NVDA, and VoiceOver). View our{" "}
-              <OakLink href="https://labs.thenational.academy/legal/accessibility-statement">
+              <OakLink
+                href="https://www.thenational.academy/legal/accessibility-statement"
+                target="_blank"
+              >
                 full accessibility statement
               </OakLink>
               .

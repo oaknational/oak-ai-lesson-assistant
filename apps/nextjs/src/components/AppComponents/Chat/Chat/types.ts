@@ -7,4 +7,11 @@ export type DialogTypes =
   | "demo-interstitial"
   | "demo-share-locked"
   | "clear-history"
-  | "clear-single-chat";
+  | "clear-single-chat"
+  | "additional-materials-moderation"
+  | "additional-materials-toxic-moderation"
+  | "additional-materials-threat-detected"
+  | "additional-materials-rate-limit"
+  | "additional-materials-error"
+  | "additional-materials-start-again"
+  | "additional-materials-user-feedback";

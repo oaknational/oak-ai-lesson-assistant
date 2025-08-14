@@ -52,7 +52,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
 
       trackEvent("chat:send_message", { id, message: value });
 
-      append(value);
+      append({ type: "message", content: value });
     },
     [lessonPlanTracking, setInput, sidebar, trackEvent, id, append],
   );

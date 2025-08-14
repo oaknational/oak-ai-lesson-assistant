@@ -10,6 +10,13 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
+import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialsError";
+import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
+import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
+import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
+import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
+import AdditionalMaterialsUserFeedback from "./ContentOptions/AdditionalMaterialsUserFeedback";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -20,7 +27,7 @@ import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
-  { title: string; iconName: OakIconName | null }
+  { title: string; iconName: OakIconName | null; hideClosedButton?: boolean }
 > = {
   "share-chat": {
     title: "Share lesson",
@@ -52,6 +59,35 @@ const dialogTitlesAndIcons: Record<
   },
   "clear-single-chat": {
     title: "Are you absolutely sure?",
+    iconName: null,
+  },
+  "additional-materials-moderation": {
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-threat-detected": {
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-rate-limit": {
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-toxic-moderation": {
+    title: "",
+    iconName: null,
+    hideClosedButton: true,
+  },
+  "additional-materials-error": {
+    title: "An error occurred",
+    iconName: "warning",
+  },
+  "additional-materials-start-again": {
+    title: "",
+    iconName: null,
+  },
+  "additional-materials-user-feedback": {
+    title: "",
     iconName: null,
   },
 };
@@ -87,7 +123,13 @@ const DialogContents = ({
   return (
     <>
       {dialogWindow !== "" && (
-        <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
+        <OakModalAtTheFront
+          hideCloseButton={
+            dialogTitlesAndIcons[dialogWindow].hideClosedButton ?? false
+          }
+          isOpen={!!dialogWindow}
+          onClose={closeDialog}
+        >
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
             iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
@@ -126,6 +168,29 @@ const DialogContents = ({
             )}
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-moderation" && (
+              <AdditionalMaterialsModeration closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-threat-detected" && (
+              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-rate-limit" && (
+              <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-toxic-moderation" && (
+              <AdditionalMaterialsInappropriateContent
+                closeDialog={closeDialog}
+              />
+            )}
+            {dialogWindow === "additional-materials-start-again" && (
+              <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-error" && (
+              <AdditionalMaterialsError closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "additional-materials-user-feedback" && (
+              <AdditionalMaterialsUserFeedback closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>
