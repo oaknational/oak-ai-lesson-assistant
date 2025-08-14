@@ -1,12 +1,16 @@
 import invariant from "tiny-invariant";
+import type { z } from "zod";
 
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
+  DbQuiz,
+  DbQuizQuestion,
   RawQuiz,
   StemImageObject,
   StemObject,
   StemTextObject,
 } from "../rawQuiz";
+import { dbQuizSchema } from "../rawQuiz";
 
 /**
  * Check if an item is a text item
@@ -73,7 +77,13 @@ function extractMarkdownFromContent(
  * Convert raw quiz from Oak curriculum format to Quiz V2 format
  */
 export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
+  console.log(
+    "DEBUG: convertRawQuizToV2 input:",
+    JSON.stringify(rawQuiz, null, 2),
+  );
+
   if (!rawQuiz || !Array.isArray(rawQuiz)) {
+    console.log("DEBUG: Raw quiz is not an array, returning empty quiz");
     return {
       version: "v2",
       questions: [],
@@ -88,6 +98,11 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
   const questions = rawQuiz
     .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
     .map((rawQuestion): QuizV2Question => {
+      console.log(
+        "DEBUG: Processing raw question:",
+        JSON.stringify(rawQuestion, null, 2),
+      );
+
       // Early return for explanatory-text (should be filtered out already)
       if (rawQuestion.question_type === "explanatory-text") {
         throw new Error("Explanatory text questions should be filtered out");
@@ -231,4 +246,42 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
     questions,
     imageAttributions: allImageAttributions,
   };
+}
+
+/**
+ * Convert camelCase database format to snake_case raw quiz format
+ */
+export function convertCamelCaseToSnakeCase(dbQuiz: DbQuiz): RawQuiz {
+  invariant(dbQuiz, "dbQuiz is required");
+
+  return dbQuiz.map((dbQuestion: DbQuizQuestion) => ({
+    question_id: dbQuestion.questionId,
+    question_uid: dbQuestion.questionUid,
+    question_type: dbQuestion.questionType,
+    question_stem: dbQuestion.questionStem,
+    answers: dbQuestion.answers,
+    feedback: dbQuestion.feedback,
+    hint: dbQuestion.hint,
+    active: dbQuestion.active,
+  })) as RawQuiz;
+}
+
+/**
+ * Convert snake_case raw quiz format to camelCase database format
+ */
+export function convertSnakeCaseToCamelCase(rawQuiz: RawQuiz): unknown[] {
+  if (!rawQuiz || !Array.isArray(rawQuiz)) {
+    return [];
+  }
+
+  return rawQuiz.map((rawQuestion) => ({
+    questionId: rawQuestion.question_id,
+    questionUid: rawQuestion.question_uid,
+    questionType: rawQuestion.question_type,
+    questionStem: rawQuestion.question_stem,
+    answers: rawQuestion.answers,
+    feedback: rawQuestion.feedback,
+    hint: rawQuestion.hint,
+    active: rawQuestion.active,
+  }));
 }

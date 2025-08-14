@@ -2,9 +2,14 @@ import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
-import type { SearchHitsMetadata } from "@elastic/elasticsearch/lib/api/types";
+import type {
+  SearchHit,
+  SearchHitsMetadata,
+} from "@elastic/elasticsearch/lib/api/types";
 import { CohereClient } from "cohere-ai";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import OpenAI from "openai";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
@@ -19,15 +24,18 @@ import type {
   QuizPath,
   QuizV1,
   QuizV1Question,
+  QuizV2Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
+import { convertRawQuizToV2 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import type { DbQuiz, RawQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
-  CustomHit,
   CustomSource,
   LessonSlugQuizLookup,
   QuizQuestionTextOnlySource,
+  QuizQuestionWithRawJson,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
@@ -42,6 +50,7 @@ const log = aiLogger("aila:quiz");
 export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   protected client: Client;
   protected cohere: CohereClient;
+  public openai: OpenAI;
   protected rerankService: CohereReranker;
   protected quizLookup: LessonSlugQuizLookup;
 
@@ -68,6 +77,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       token: process.env.COHERE_API_KEY as string,
     });
 
+    // Direct OpenAI client for embeddings (bypassing Helicone proxy)
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
     // This can be changed to use our hosted models - use this for dev simplicity.
     this.rerankService = new CohereReranker();
     this.quizLookup = new ElasticLessonQuizLookup();
@@ -77,11 +91,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   abstract generateMathsStarterQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizV1[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
   abstract generateMathsExitQuizPatch(
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizV1[]>;
+  ): Promise<QuizQuestionWithRawJson[][]>;
 
   public async generateMathsQuizFromRagPlanId(
     planIds: string,
@@ -116,16 +130,16 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     // Converts a lesson slug to a question ID via searching in index
     try {
       const response = await this.client.search<CustomSource>({
-        index: "oak-vector",
+        index: "oak-vector-2025-04-16",
         body: {
           query: {
             bool: {
               must: [
-                { exists: { field: "metadata.lessonSlug" } },
-                { exists: { field: "metadata.questionUid" } },
+                { exists: { field: "lessonSlug" } },
+                { exists: { field: "questionUid" } },
                 {
                   terms: {
-                    "metadata.lessonSlug.keyword": lessonSlugs,
+                    "lessonSlug.keyword": lessonSlugs,
                   },
                 },
               ],
@@ -135,7 +149,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       });
 
       return response.hits.hits
-        .map((hit) => hit._source?.metadata.questionUid)
+        .map((hit) => hit._source?.questionUid)
         .filter((id): id is string => id !== undefined);
     } catch (error) {
       log.error("Error searching for questions:", error);
@@ -167,9 +181,9 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   public async questionArrayFromCustomIds(
     questionUids: string[],
-  ): Promise<QuizV1Question[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
-      index: "quiz-questions-text-only",
+      index: "quiz-questions-text-only-2025-04-16",
       body: {
         query: {
           bool: {
@@ -189,16 +203,22 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       return Promise.resolve([]);
     } else {
       // Gives us an array of quiz questions or null, which are then filtered out.
-      const filteredQuizQuestions: QuizV1Question[] = response.hits.hits
-        .map((hit) => {
-          if (!hit._source) {
-            log.error("Hit source is undefined");
-            return null;
-          }
-          const quizQuestion = this.parseQuizQuestion(hit._source.text);
-          return quizQuestion;
-        })
-        .filter((item): item is QuizV1Question => item !== null);
+      // We convert the raw json to a quiz question with raw json object
+      const filteredQuizQuestions: QuizQuestionWithRawJson[] =
+        response.hits.hits
+          .map((hit) => {
+            if (!hit._source) {
+              log.error("Hit source is undefined");
+              return null;
+            }
+            // const quizQuestion = this.parseQuizQuestion(hit._source.text);
+            const quizQuestion = this.parseQuizQuestionWithRawJson(
+              hit._source.text,
+              hit._source.metadata.raw_json,
+            );
+            return quizQuestion;
+          })
+          .filter((item): item is QuizQuestionWithRawJson => item !== null);
       return Promise.resolve(filteredQuizQuestions);
     }
   }
@@ -206,7 +226,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizV1Question[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
@@ -223,7 +243,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath = "/starterQuiz",
-  ): Promise<QuizV1Question[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
@@ -275,15 +295,21 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     }
     return unpackedList.join("");
   }
-  protected transformHits(hits: CustomHit[]): SimplifiedResult[] {
+  protected transformHits(hits: SearchHit<CustomSource>[]): SimplifiedResult[] {
     return hits
       .map((hit) => {
         const source = hit._source;
 
+        // First check if source exists
+        if (!source) {
+          log.warn("Hit source is undefined:", hit);
+          return null;
+        }
+
         // Check if the required fields exist
         if (
           typeof source.text !== "string" ||
-          typeof source.metadata?.custom_id !== "string"
+          typeof source.questionUid !== "string"
         ) {
           log.warn("Hit is missing required fields:", hit);
           return null;
@@ -291,7 +317,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
         return {
           text: source.text,
-          custom_id: source.metadata.custom_id,
+          custom_id: source.questionUid,
         };
       })
       .filter((item): item is SimplifiedResult => item !== null);
@@ -308,7 +334,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       const parsedQuestion = this.parseQuizQuestion(hit._source.text);
 
       return {
-        questionUid: hit._source.metadata.questionUid,
+        questionUid: hit._source.questionUid,
         ...(parsedQuestion
           ? { quizQuestion: parsedQuestion }
           : { text: hit._source.text }),
@@ -321,19 +347,19 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     field: string,
     query: string,
     _size: number = 10,
-  ): Promise<SearchHitsMetadata<CustomHit>> {
+  ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
-      const response = await this.client.search<CustomHit>({
-        index: "oak-vector",
+      const response = await this.client.search<CustomSource>({
+        index: "oak-vector-2025-04-16",
         query: {
           bool: {
             must: [{ match: { text: query } }],
-            filter: [{ exists: { field: "metadata.is_question_description" } }],
+            filter: [{ term: { isLegacy: false } }], // filter out legacy items
           },
         },
       });
-
+      log.info(`search response found ${response.hits.hits.length} hits`);
       if (!response.hits) {
         throw new Error("No hits property in the search response");
       }
@@ -348,12 +374,119 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       throw error;
     }
   }
+
+  /**
+   * Creates text embeddings using OpenAI
+   */
+  public async createEmbedding(text: string): Promise<number[]> {
+    try {
+      const response = await this.openai.embeddings.create({
+        model: "text-embedding-3-large",
+        input: text,
+        encoding_format: "float",
+        dimensions: 768,
+      });
+
+      return response.data[0]?.embedding || [];
+    } catch (error) {
+      log.error("Error creating embedding:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Performs hybrid search combining BM25 and vector similarity
+   */
+  protected async searchWithHybrid(
+    index: string,
+    query: string,
+    size: number = 100,
+    hybridWeight: number = 0.5,
+  ): Promise<SearchHitsMetadata<CustomSource>> {
+    try {
+      log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
+
+      // Create embedding for the query
+      const queryEmbedding = await this.createEmbedding(query);
+
+      const response = await this.client.search<CustomSource>({
+        index,
+        size,
+        query: {
+          bool: {
+            must: [
+              {
+                // Hybrid query combining BM25 and vector search
+                function_score: {
+                  query: {
+                    bool: {
+                      should: [
+                        // BM25 text search
+                        {
+                          match: {
+                            text: {
+                              query,
+                              boost: 1 - hybridWeight,
+                            },
+                          },
+                        },
+                        // Vector similarity search
+                        {
+                          script_score: {
+                            query: { match_all: {} },
+                            script: {
+                              source: `
+                                if (doc['embedding'].size() == 0) {
+                                  return 0;
+                                }
+                                return cosineSimilarity(params.query_vector, 'embedding') + 1.0;
+                              `,
+                              params: {
+                                query_vector: queryEmbedding,
+                              },
+                            },
+                            boost: hybridWeight,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  boost_mode: "sum",
+                },
+              },
+            ],
+            filter: [{ term: { isLegacy: false } }], // filter out legacy items
+          },
+        },
+      });
+
+      if (!response.hits) {
+        throw new Error("No hits property in the search response");
+      }
+
+      log.info(`Hybrid search found ${response.hits.hits.length} hits`);
+
+      return response.hits;
+    } catch (error) {
+      log.error("Error performing hybrid search:", error);
+      if (error instanceof Error) {
+        log.error("Error message:", error.message);
+        log.error("Error stack:", error.stack);
+      }
+      throw error;
+    }
+  }
+
   // TODO: GCLOMAX abstract this into the reranker service / class so can easily swap out for hybrid once re-ingested.
   protected async rerankDocuments(
     query: string,
     docs: SimplifiedResult[],
     topN: number = 10,
   ) {
+    if (docs.length === 0) {
+      log.error("No documents to rerank");
+      return [];
+    }
     // conforming to https://github.com/cohere-ai/cohere-typescript/blob/2e1c087ed0ec7eacd39ad062f7293fb15e453f33/src/api/client/requests/RerankRequest.ts#L15
     try {
       const jsonDocs = docs.map((doc) =>
@@ -364,7 +497,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       );
       // this should have na error below - https://github.com/cohere-ai/cohere-typescript/blob/499bde51cee5d1f2ea2068580f938123297515f9/src/api/client/requests/RerankRequest.ts#L31
       const response = await this.cohere.rerank({
-        model: "rerank-english-v2.0",
+        model: "rerank-v3.5",
         query: query,
         documents: jsonDocs,
         topN: topN,
@@ -383,23 +516,25 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   protected extractCustomId(doc: RerankResponseResultsItem): string {
     try {
-      const parsedText = JSON.parse(doc.document?.text || "");
-      if (
-        typeof parsedText !== "object" ||
-        parsedText === null ||
-        !("custom_id" in parsedText)
-      ) {
-        throw new Error("Parsed text is not an object or missing custom_id");
+      const parsedText = JSON.parse(
+        doc.document?.text || "",
+      ) as SimplifiedResult;
+      if (!parsedText || typeof parsedText !== "object") {
+        throw new Error("Parsed text is not an object");
       }
 
-      throw new Error("Invalid document format");
+      if (!parsedText.custom_id || typeof parsedText.custom_id !== "string") {
+        throw new Error("custom_id is not a string");
+      }
+
+      return parsedText.custom_id;
     } catch (error) {
       log.error("Error in extractCustomId:", error);
       throw new Error("Failed to extract custom_id");
     }
   }
   protected async rerankAndExtractCustomIds(
-    hits: CustomHit[],
+    hits: SearchHit<CustomSource>[],
     query: string,
   ): Promise<string[]> {
     const simplifiedResults = this.transformHits(hits);
@@ -412,7 +547,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   protected async retrieveAndProcessQuestions(
     customIds: string[],
-  ): Promise<QuizV1Question[]> {
+  ): Promise<QuizQuestionWithRawJson[]> {
     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
   }
@@ -472,5 +607,113 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       }
       return null;
     }
+  }
+  private parseQuizQuestionWithRawJson(
+    jsonString: string,
+    rawQuizString: string,
+  ): QuizQuestionWithRawJson | null {
+    const quizQuestion = this.parseQuizQuestion(jsonString);
+    if (!quizQuestion) {
+      return null;
+    }
+    if (!rawQuizString) {
+      return null;
+    }
+    const parsedRawQuiz = JSON.parse(rawQuizString) as DbQuiz;
+    invariant(parsedRawQuiz, "Parsed raw quiz is null");
+
+    // Handle case where rawQuiz is a single object instead of an array
+    const normalizedRawQuiz = Array.isArray(parsedRawQuiz)
+      ? parsedRawQuiz
+      : [parsedRawQuiz];
+
+    return {
+      ...quizQuestion,
+      rawQuiz: normalizedRawQuiz,
+    };
+  }
+
+  public unpackLessonPlanForPrompt(lessonPlan: LooseLessonPlan): string {
+    const sections: string[] = [];
+
+    // Basic information
+    if (lessonPlan.title) sections.push(`Title: ${lessonPlan.title}`);
+    if (lessonPlan.subject) sections.push(`Subject: ${lessonPlan.subject}`);
+    if (lessonPlan.keyStage) sections.push(`Key Stage: ${lessonPlan.keyStage}`);
+    if (lessonPlan.topic) sections.push(`Topic: ${lessonPlan.topic}`);
+
+    // Learning outcomes and objectives
+    if (lessonPlan.learningOutcome)
+      sections.push(`Learning Outcome: ${lessonPlan.learningOutcome}`);
+
+    if (
+      Array.isArray(lessonPlan.learningCycles) &&
+      lessonPlan.learningCycles.length > 0
+    ) {
+      sections.push("Learning Cycles:");
+      lessonPlan.learningCycles.forEach((cycle, index) => {
+        sections.push(`${index + 1}. ${cycle}`);
+      });
+    }
+
+    // Knowledge and understanding
+    if (
+      Array.isArray(lessonPlan.priorKnowledge) &&
+      lessonPlan.priorKnowledge.length > 0
+    ) {
+      sections.push("Prior Knowledge:");
+      lessonPlan.priorKnowledge.forEach((knowledge, index) => {
+        sections.push(`${index + 1}. ${knowledge}`);
+      });
+    }
+
+    if (
+      Array.isArray(lessonPlan.keyLearningPoints) &&
+      lessonPlan.keyLearningPoints.length > 0
+    ) {
+      sections.push("Key Learning Points:");
+      lessonPlan.keyLearningPoints.forEach((point, index) => {
+        sections.push(`${index + 1}. ${point}`);
+      });
+    }
+
+    // Misconceptions
+    if (
+      Array.isArray(lessonPlan.misconceptions) &&
+      lessonPlan.misconceptions.length > 0
+    ) {
+      sections.push("Misconceptions:");
+      lessonPlan.misconceptions.forEach((misconception, index) => {
+        sections.push(`${index + 1}. ${misconception.misconception}`);
+        if (misconception.description) {
+          sections.push(`   Description: ${misconception.description}`);
+        }
+      });
+    }
+
+    // Keywords
+    if (Array.isArray(lessonPlan.keywords) && lessonPlan.keywords.length > 0) {
+      sections.push("Keywords:");
+      lessonPlan.keywords.forEach((keyword, index) => {
+        sections.push(`${index + 1}. ${keyword.keyword}`);
+        if (keyword.definition) {
+          sections.push(`   Definition: ${keyword.definition}`);
+        }
+      });
+    }
+
+    // Additional materials
+    if (lessonPlan.additionalMaterials) {
+      sections.push(`Additional Materials: ${lessonPlan.additionalMaterials}`);
+    }
+
+    // Reference information
+    if (lessonPlan.basedOn) {
+      sections.push(
+        `Based On: ${lessonPlan.basedOn.title} (ID: ${lessonPlan.basedOn.id})`,
+      );
+    }
+
+    return sections.join("\n\n");
   }
 }
