@@ -63,7 +63,9 @@ const moderationScoresSchema = z.object({
   r1: likertScale.describe("Recent content score"),
   r2: likertScale.describe("Recent or Current Conflicts score"),
   n1: likertScale.describe("Self-harm and Suicide score"),
-  n2: likertScale.describe("History of Homosexuality and Gender Identity score"),
+  n2: likertScale.describe(
+    "History of Homosexuality and Gender Identity score",
+  ),
   n3: likertScale.describe("Child specific advice score"),
   n4: likertScale.describe("Specific Laws score"),
   n5: likertScale.describe("Health and Safety score"),
@@ -83,7 +85,9 @@ const moderationScoresSchema = z.object({
  */
 export const moderationResponseSchema = z.object({
   scores: moderationScoresSchema,
-  justifications: z.record(z.string(), z.string()).describe("Justifications for scores < 5"),
+  justifications: z
+    .record(z.string(), z.string())
+    .describe("Justifications for scores < 5"),
   flagged_categories: moderationCategoriesSchema,
 });
 

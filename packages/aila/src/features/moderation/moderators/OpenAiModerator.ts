@@ -149,7 +149,9 @@ export class OpenAiModerator extends AilaModerator {
     const { flagged_categories, justifications, scores } = response.data;
 
     return {
-      justification: justifications ? JSON.stringify(justifications) : undefined,
+      justification: justifications
+        ? JSON.stringify(justifications)
+        : undefined,
       scores,
       categories: flagged_categories,
     };

@@ -1,6 +1,6 @@
-import { 
+import {
+  type ModerationResult,
   moderationResponseSchema,
-  type ModerationResult
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { ProviderKey } from "../aiProviders";
@@ -29,9 +29,10 @@ export const generateAdditionalMaterialModeration = async ({
   const result: ModerationResult = {
     scores: moderationResponse.scores,
     categories: moderationResponse.flagged_categories,
-    justification: Object.keys(moderationResponse.justifications).length > 0 
-      ? JSON.stringify(moderationResponse.justifications)
-      : undefined,
+    justification:
+      Object.keys(moderationResponse.justifications).length > 0
+        ? JSON.stringify(moderationResponse.justifications)
+        : undefined,
   };
 
   return result;

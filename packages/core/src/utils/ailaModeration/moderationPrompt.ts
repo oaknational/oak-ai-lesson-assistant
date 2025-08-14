@@ -2,7 +2,7 @@ import moderationCategories from "./moderationCategories.json";
 
 type ModerationCategory = {
   title: string;
-  abbreviation: string; 
+  abbreviation: string;
   code: string;
   llmDescription: string;
   criteria5: string;
@@ -12,20 +12,38 @@ type ModerationCategory = {
   criteria1: string;
 };
 
-export function generateNewModerationPrompt(categories: ModerationCategory[]): string {
-  const categoryDetailsText = categories.map(cat => `
+export function generateNewModerationPrompt(
+  categories: ModerationCategory[],
+): string {
+  const categoryDetailsText = categories
+    .map(
+      (cat) => `
 <category>
 Category Title: '${cat.title}'
 Output Score Code (Abbreviation): '${cat.abbreviation}'
 Original Full Code (for context): '${cat.code}'
 Description for Assessment: ${cat.llmDescription}
 Rating Criteria:
-- 5: ${cat.criteria5}${cat.criteria4 ? `
-- 4: ${cat.criteria4}` : ""}${cat.criteria3 ? `
-- 3: ${cat.criteria3}` : ""}${cat.criteria2 ? `
-- 2: ${cat.criteria2}` : ""}
+- 5: ${cat.criteria5}${
+        cat.criteria4
+          ? `
+- 4: ${cat.criteria4}`
+          : ""
+      }${
+        cat.criteria3
+          ? `
+- 3: ${cat.criteria3}`
+          : ""
+      }${
+        cat.criteria2
+          ? `
+- 2: ${cat.criteria2}`
+          : ""
+      }
 - 1: ${cat.criteria1}
-</category>`).join('\n\n');
+</category>`,
+    )
+    .join("\n\n");
 
   return `OBJECTIVE:
 You are a content moderation supervisor examining a lesson plan document. Your job is to:
@@ -64,4 +82,6 @@ Provide a JSON response with the following top-level keys:
 `;
 }
 
-export const moderationPrompt = generateNewModerationPrompt(moderationCategories as ModerationCategory[]);
+export const moderationPrompt = generateNewModerationPrompt(
+  moderationCategories as ModerationCategory[],
+);

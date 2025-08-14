@@ -46,7 +46,7 @@ export function getCategoryGroup(category: string) {
   // With individual categories, we can determine the group from the prefix
   const prefix = category?.[0];
   if (!prefix) return null;
-  
+
   const groupMap: { [key: string]: string } = {
     l: "Language and discrimination",
     u: "Upsetting, disturbing and sensitive",
