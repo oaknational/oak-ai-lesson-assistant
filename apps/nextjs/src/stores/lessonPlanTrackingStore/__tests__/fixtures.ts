@@ -41,7 +41,7 @@ export const messages = {
       {
         document: {
           type: "moderation",
-          categories: ["t/encouragement-violence"],
+          categories: ["t4"],
         },
       },
     ],

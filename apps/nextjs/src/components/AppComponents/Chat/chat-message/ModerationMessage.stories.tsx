@@ -47,7 +47,7 @@ const meta = {
         {
           messageId: "test-message-id",
           id: "test-moderation-id",
-          categories: ["l/strong-language"],
+          categories: ["l2"],
         } as unknown as ModerationType,
       ],
     },

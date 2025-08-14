@@ -166,7 +166,7 @@ describe("AilaModeration", () => {
       expect(result).toEqual({
         type: "moderation",
         id: undefined, // We are not testing persistence
-        categories: ["t/encouragement-violence"],
+        categories: ["t4"],
       });
     });
 
