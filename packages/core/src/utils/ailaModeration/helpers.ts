@@ -6,7 +6,7 @@ import type { ModerationBase, ModerationResult } from "./moderationSchema";
 const log = aiLogger("aila:moderation");
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>
-    typeof category === "string" ? category.startsWith("t/") : false,
+    typeof category === "string" ? category.startsWith("t") : false,
   );
 }
 
@@ -35,31 +35,38 @@ export function getSafetyResult(
 export function moderationSlugToDescription(
   slug: ModerationBase["categories"][number],
 ): string {
-  const allCategories = moderationCategories.flatMap(
-    (category) => category.categories,
+  const category = moderationCategories.find(
+    (category) => category.abbreviation === slug,
   );
 
-  return (
-    allCategories.find((category) => category.code === slug)?.userDescription ??
-    "Unknown category"
-  );
+  return category?.title ?? "Unknown category";
 }
 
 export function getCategoryGroup(category: string) {
-  return (
-    moderationCategories.find((group) =>
-      group.categories.some((c) => c.code === category),
-    ) ?? null
-  );
+  // With individual categories, we can determine the group from the prefix
+  const prefix = category?.[0];
+  if (!prefix) return null;
+  
+  const groupMap: { [key: string]: string } = {
+    l: "Language and discrimination",
+    u: "Upsetting, disturbing and sensitive",
+    s: "Nudity and sex",
+    p: "Physical activity and safety",
+    e: "Education",
+    r: "Recent content",
+    n: "Not to be planned",
+    t: "Toxic",
+  };
+  return groupMap[prefix] ?? null;
 }
 
 const MOCK_TOXIC_RESULT: ModerationResult = {
-  categories: ["t/encouragement-violence"],
+  categories: ["t4"],
   justification: "Mock toxic result",
 };
 
 const MOCK_SENSITIVE_RESULT: ModerationResult = {
-  categories: ["l/strong-language"],
+  categories: ["l2"],
   justification: "Mock sensitive result",
 };
 

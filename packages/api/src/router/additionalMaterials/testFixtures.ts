@@ -1,8 +1,7 @@
-import type { moderationResponseSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
-import type { z } from "zod";
 
 // Shared mock data
 export const mockGlossaryResult = {
@@ -22,29 +21,31 @@ export const mockGlossaryResult = {
 export const mockModerationResult = {
   justification: "Content is safe for educational use",
   scores: {
-    l: 5,
-    v: 5,
-    u: 5,
-    s: 5,
-    p: 5,
-    t: 5,
+    l1: 5, l2: 5,
+    u1: 5, u2: 5, u3: 5, u4: 5, u5: 5,
+    s1: 5,
+    p2: 5, p3: 5, p4: 5, p5: 5,
+    e1: 5,
+    r1: 5, r2: 5,
+    n1: 5, n2: 5, n3: 5, n4: 5, n5: 5, n6: 5, n7: 5,
+    t1: 5, t2: 5, t3: 5, t4: 5, t5: 5, t6: 5,
   },
   categories: [],
 };
 
-export const mockToxicModerationResult: z.infer<
-  typeof moderationResponseSchema
-> = {
+export const mockToxicModerationResult: ModerationResult = {
   scores: {
-    l: 2,
-    v: 3,
-    u: 2,
-    s: 5,
-    p: 5,
-    t: 1,
+    l1: 2, l2: 5,
+    u1: 2, u2: 3, u3: 5, u4: 5, u5: 5,
+    s1: 5,
+    p2: 5, p3: 5, p4: 5, p5: 5,
+    e1: 5,
+    r1: 5, r2: 5,
+    n1: 5, n2: 5, n3: 5, n4: 5, n5: 5, n6: 5, n7: 5,
+    t1: 5, t2: 1, t3: 5, t4: 5, t5: 5, t6: 5,
   },
-  justification: "Content contains inappropriate material",
-  categories: ["t/encouragement-harmful-behaviour"],
+  justification: JSON.stringify({"l1": "Contains discriminatory language", "u1": "Contains sensitive content", "u2": "Contains moderate violence", "t2": "Encourages harmful behavior"}),
+  categories: ["l1", "u1", "u2", "t2"],
 };
 
 export const mockPrismaInteraction = {

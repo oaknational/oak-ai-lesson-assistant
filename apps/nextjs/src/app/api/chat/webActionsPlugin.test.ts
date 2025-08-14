@@ -28,7 +28,7 @@ describe("webActionsPlugin", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
       const moderation = {
         id: "ABC",
-        categories: ["t/encouragement-illegal-activity"],
+        categories: ["t3"],
         justification: "Test justification",
       } as Moderation;
       const mockEnqueue = jest.fn();
@@ -58,7 +58,7 @@ describe("webActionsPlugin", () => {
       const prisma = {} as unknown as PrismaClientWithAccelerate;
       const moderation = {
         id: "ABC",
-        categories: ["t/encouragement-illegal-activity"],
+        categories: ["t3"],
         justification: "Test justification",
       } as Moderation;
       const mockEnqueue = jest.fn();
@@ -81,7 +81,7 @@ describe("webActionsPlugin", () => {
         data: {
           chatId: "chat_abc",
           justification: "Test justification",
-          categories: ["t/encouragement-illegal-activity"],
+          categories: ["t3"],
         },
       });
     });
@@ -98,7 +98,7 @@ describe("webActionsPlugin", () => {
     const prisma = {} as unknown as PrismaClientWithAccelerate;
     const moderation = {
       id: "ABC",
-      categories: ["t/encouragement-illegal-activity"],
+      categories: ["t3"],
       justification: "Test justification",
     } as Moderation;
     const mockEnqueue = jest.fn();
