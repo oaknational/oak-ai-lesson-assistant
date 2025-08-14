@@ -70,7 +70,7 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
     };
 
     // Create the store with merged initial values from parameters
-    const resourcesStore = createResourcesStore(trackEvents, mockTrpc, {
+    const resourcesStore = createResourcesStore({}, trackEvents, mockTrpc, {
       ...defaultState,
       ...parameters.resourcesStoreState,
     });

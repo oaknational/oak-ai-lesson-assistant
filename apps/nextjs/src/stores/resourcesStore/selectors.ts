@@ -32,6 +32,12 @@ export const isResourcesLoadingSelector = (state: ResourcesState) =>
   state.isResourcesLoading;
 
 /**
+ * Selector for the source in the resources workflow
+ * @example const source = useResourcesStore(sourceSelector);
+ */
+export const sourceSelector = (state: ResourcesState) => state.source;
+
+/**
  * Selector for the is resources loading in the resources workflow
  * @example const isResourcesDownloading = useResourcesStore(isResourcesLoadingSelector);
  */
