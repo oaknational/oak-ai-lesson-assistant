@@ -117,7 +117,8 @@ describe('Parameter Validation and Error Handling', () => {
 
       testCases.forEach(({ model, expected }) => {
         try {
-          const result = isGPT5Model(model);
+          // Type assertion for test cases that intentionally pass invalid types
+          const result = isGPT5Model(model as string);
           expect(result).toBe(expected);
         } catch (error) {
           // For null/undefined cases, we expect them to be handled gracefully

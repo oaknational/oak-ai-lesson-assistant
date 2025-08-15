@@ -49,15 +49,6 @@ export class OpenAIService implements LLMService {
     const typedParams = createModelParams(model, messages, options, isGPT5Model);
     const apiParams = extractAPIParams(typedParams);
 
-    const streamParams = {
-      model: this._openAIProvider(model),
-      messages: messages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-      ...apiParams,
-    };
-
     // Remove model and messages from apiParams to avoid duplication
     const { model: _, messages: __, ...additionalParams } = apiParams;
     const finalParams = {

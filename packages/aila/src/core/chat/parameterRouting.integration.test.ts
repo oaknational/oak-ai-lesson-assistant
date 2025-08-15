@@ -160,9 +160,9 @@ describe('AilaChat Parameter Routing Integration', () => {
 
       partialScenarios.forEach(scenario => {
         const options: ModelOptions = {
-          temperature: 'temperature' in scenario.providedParams ? scenario.providedParams.temperature : undefined,
-          reasoning_effort: 'reasoning_effort' in scenario.providedParams ? scenario.providedParams.reasoning_effort : undefined,
-          verbosity: 'verbosity' in scenario.providedParams ? scenario.providedParams.verbosity : undefined,
+          temperature: 'temperature' in scenario.providedParams ? scenario.providedParams.temperature as number : undefined,
+          reasoning_effort: 'reasoning_effort' in scenario.providedParams ? scenario.providedParams.reasoning_effort as ReasoningEffort : undefined,
+          verbosity: 'verbosity' in scenario.providedParams ? scenario.providedParams.verbosity as Verbosity : undefined,
         };
 
         const typedParams = createModelParams(scenario.model, [], options, isGPT5Model);

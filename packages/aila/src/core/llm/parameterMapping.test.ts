@@ -2,10 +2,11 @@ import { isGPT5Model } from '../../constants';
 import { 
   createModelParams, 
   extractAPIParams,
-  type ModelOptions 
+  type ModelOptions,
+  type ReasoningEffort,
+  type Verbosity
 } from '../types/modelParameters';
 import type { 
-  TypedTestParams,
   TestModelOptions 
 } from '../types/testTypes';
 
@@ -49,12 +50,11 @@ describe('Parameter Mapping Logic', () => {
         // Use type-safe parameter creation instead of manual branching
         const options: ModelOptions = {
           temperature: testCase.temperature,
-          reasoning_effort: testCase.reasoning_effort,
-          verbosity: testCase.verbosity,
+          reasoning_effort: testCase.reasoning_effort as ReasoningEffort | undefined,
+          verbosity: testCase.verbosity as Verbosity | undefined,
         };
 
         const typedParams = createModelParams(testCase.model, [], options, isGPT5Model);
-        const apiParams = extractAPIParams(typedParams);
 
         if (testCase.expectGPT5Params) {
           expect(typedParams.type).toBe("gpt5");
@@ -92,9 +92,9 @@ describe('Parameter Mapping Logic', () => {
 
       testCases.forEach(testCase => {
         const options: ModelOptions = {
-          temperature: 'temperature' in testCase ? testCase.temperature : undefined,
-          reasoning_effort: 'reasoning_effort' in testCase ? testCase.reasoning_effort : undefined,
-          verbosity: 'verbosity' in testCase ? testCase.verbosity : undefined,
+          temperature: 'temperature' in testCase ? testCase.temperature as number : undefined,
+          reasoning_effort: 'reasoning_effort' in testCase ? testCase.reasoning_effort as ReasoningEffort : undefined,
+          verbosity: 'verbosity' in testCase ? testCase.verbosity as Verbosity : undefined,
         };
 
         const typedParams = createModelParams(testCase.model, [], options, isGPT5Model);
