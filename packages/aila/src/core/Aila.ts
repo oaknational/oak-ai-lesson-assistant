@@ -5,7 +5,9 @@ import { aiLogger } from "@oakai/logger";
 import {
   DEFAULT_MODEL,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-  DEFAULT_TEMPERATURE,
+  DEFAULT_LEGACY_TEMPERATURE,
+  DEFAULT_REASONING_EFFORT,
+  DEFAULT_VERBOSITY,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
@@ -160,7 +162,9 @@ export class Aila implements AilaServices {
   ): AilaOptionsWithDefaultFallbackValues {
     return {
       useRag: options?.useRag ?? true,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
+      temperature: options?.temperature ?? DEFAULT_LEGACY_TEMPERATURE,
+      reasoning_effort: options?.reasoning_effort ?? DEFAULT_REASONING_EFFORT,
+      verbosity: options?.verbosity ?? DEFAULT_VERBOSITY,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
       usePersistence: options?.usePersistence ?? true,

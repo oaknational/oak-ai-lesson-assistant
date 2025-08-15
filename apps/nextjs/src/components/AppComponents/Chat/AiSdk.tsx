@@ -27,6 +27,9 @@ const log = aiLogger("chat");
 
 export type AiSdkProps = {
   id: string;
+  reasoning_effort?: "low" | "medium" | "high";
+  verbosity?: "low" | "medium" | "high";
+  temperature?: number;
 };
 
 function useActionMessages() {
@@ -46,7 +49,12 @@ function useActionMessages() {
   };
 }
 
-export function AiSdk({ id }: Readonly<AiSdkProps>) {
+export function AiSdk({ 
+  id, 
+  reasoning_effort, 
+  verbosity, 
+  temperature = 0.7 
+}: Readonly<AiSdkProps>) {
   const path = usePathname();
 
   const initialMessages = useChatStore((state) => state.initialMessages);
@@ -72,7 +80,9 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       id,
       options: {
         useRag: true,
-        temperature: 0.7,
+        temperature,
+        reasoning_effort,
+        verbosity,
       },
     },
     fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {

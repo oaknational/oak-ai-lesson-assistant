@@ -15,6 +15,9 @@ import { AilaModerationError, AilaModerator } from ".";
 import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,
+  DEFAULT_REASONING_EFFORT,
+  DEFAULT_VERBOSITY,
+  isGPT5Model,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 
@@ -24,6 +27,8 @@ export type OpenAiModeratorArgs = {
   chatId: string;
   userId: string | undefined;
   temperature?: number;
+  reasoning_effort?: "low" | "medium" | "high";
+  verbosity?: "low" | "medium" | "high";
   model?: OpenAI.Chat.ChatModel;
   aila?: AilaServices;
   openAiClient?: OpenAILike;
@@ -43,6 +48,8 @@ export interface OpenAILike {
 export class OpenAiModerator extends AilaModerator {
   protected _openAIClient: OpenAILike;
   private readonly _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
+  private readonly _reasoning_effort: "low" | "medium" | "high" = DEFAULT_REASONING_EFFORT;
+  private readonly _verbosity: "low" | "medium" | "high" = DEFAULT_VERBOSITY;
   private readonly _model: string = DEFAULT_MODERATION_MODEL;
   private readonly _aila?: AilaServices;
 
@@ -50,6 +57,8 @@ export class OpenAiModerator extends AilaModerator {
     chatId,
     userId,
     temperature = DEFAULT_MODERATION_TEMPERATURE,
+    reasoning_effort = DEFAULT_REASONING_EFFORT,
+    verbosity = DEFAULT_VERBOSITY,
     model = DEFAULT_MODERATION_MODEL,
     aila,
     openAiClient,
@@ -69,6 +78,8 @@ export class OpenAiModerator extends AilaModerator {
       throw new Error("Temperature must be between 0 and 2.");
     }
     this._temperature = temperature;
+    this._reasoning_effort = reasoning_effort;
+    this._verbosity = verbosity;
     this._model = model;
     this._aila = aila;
   }
@@ -90,31 +101,39 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
-    const moderationResponse = await this._callOpenAi(
-      {
-        model: this._model,
-        messages: [
-          {
-            role: "system",
-            content: moderationPrompt,
-          },
-          { role: "user", content: input },
-        ],
-        temperature: this._temperature,
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "moderationResponse",
-            /**
-             * Currently `strict` mode does not support minimum/maximum integer types, which
-             * we use for the likert scale in the moderation schema.
-             * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
-             */
-            // strict: true,
-            schema,
-          },
+    const modelParams: any = {
+      model: this._model,
+      messages: [
+        {
+          role: "system",
+          content: moderationPrompt,
+        },
+        { role: "user", content: input },
+      ],
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "moderationResponse",
+          /**
+           * Currently `strict` mode does not support minimum/maximum integer types, which
+           * we use for the likert scale in the moderation schema.
+           * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
+           */
+          // strict: true,
+          schema,
         },
       },
+    };
+
+    if (isGPT5Model(this._model)) {
+      modelParams.reasoning_effort = this._reasoning_effort;
+      modelParams.verbosity = this._verbosity;
+    } else {
+      modelParams.temperature = this._temperature;
+    }
+
+    const moderationResponse = await this._callOpenAi(
+      modelParams,
       {
         headers: {
           // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.

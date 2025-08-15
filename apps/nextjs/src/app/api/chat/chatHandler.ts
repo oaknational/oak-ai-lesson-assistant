@@ -69,6 +69,8 @@ async function setupChatHandler(req: NextRequest) {
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
+        reasoning_effort: chatOptions.reasoning_effort,
+        verbosity: chatOptions.verbosity,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         usePersistence: true,
         useModeration: true,

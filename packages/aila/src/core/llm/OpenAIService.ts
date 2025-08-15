@@ -6,6 +6,7 @@ import type { OpenAIProvider } from "@ai-sdk/openai";
 import { streamObject, streamText } from "ai";
 import type { ZodSchema } from "zod";
 
+import { isGPT5Model } from "../../constants";
 import type { Message } from "../chat";
 import type { LLMService } from "./LLMService";
 
@@ -28,17 +29,28 @@ export class OpenAIService implements LLMService {
   async createChatCompletionStream(params: {
     model: string;
     messages: Message[];
-    temperature: number;
+    temperature?: number;
+    reasoning_effort?: "low" | "medium" | "high";
+    verbosity?: "low" | "medium" | "high";
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { textStream: stream } = streamText({
-      model: this._openAIProvider(params.model),
-      messages: params.messages.map((m) => ({
+    const { model, messages, temperature, reasoning_effort, verbosity } = params;
+    
+    const modelParams: any = {
+      model: this._openAIProvider(model),
+      messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: params.temperature,
-    });
+    };
 
+    if (isGPT5Model(model)) {
+      if (reasoning_effort) modelParams.reasoning_effort = reasoning_effort;
+      if (verbosity) modelParams.verbosity = verbosity;
+    } else {
+      if (temperature !== undefined) modelParams.temperature = temperature;
+    }
+
+    const { textStream: stream } = streamText(modelParams);
     return Promise.resolve(stream.getReader());
   }
 
@@ -47,14 +59,17 @@ export class OpenAIService implements LLMService {
     schema: ZodSchema;
     schemaName: string;
     messages: Message[];
-    temperature: number;
+    temperature?: number;
+    reasoning_effort?: "low" | "medium" | "high";
+    verbosity?: "low" | "medium" | "high";
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { model, messages, temperature, schema, schemaName } = params;
+    const { model, messages, temperature, reasoning_effort, verbosity, schema, schemaName } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {
-      return this.createChatCompletionStream({ model, messages, temperature });
+      return this.createChatCompletionStream({ model, messages, temperature, reasoning_effort, verbosity });
     }
     const startTime = Date.now();
-    const { textStream: stream } = streamObject({
+
+    const modelParams: any = {
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
       schema,
@@ -63,8 +78,16 @@ export class OpenAIService implements LLMService {
         role: m.role,
         content: m.content,
       })),
-      temperature,
-    });
+    };
+
+    if (isGPT5Model(model)) {
+      if (reasoning_effort) modelParams.reasoning_effort = reasoning_effort;
+      if (verbosity) modelParams.verbosity = verbosity;
+    } else {
+      if (temperature !== undefined) modelParams.temperature = temperature;
+    }
+
+    const { textStream: stream } = streamObject(modelParams);
 
     const reader = stream.getReader();
     const { value } = await reader.read();
