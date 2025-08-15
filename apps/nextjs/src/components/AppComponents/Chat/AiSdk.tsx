@@ -49,11 +49,11 @@ function useActionMessages() {
   };
 }
 
-export function AiSdk({ 
-  id, 
-  reasoning_effort, 
-  verbosity, 
-  temperature = 0.7 
+export function AiSdk({
+  id,
+  reasoning_effort,
+  verbosity,
+  temperature = 0.7,
 }: Readonly<AiSdkProps>) {
   const path = usePathname();
 
