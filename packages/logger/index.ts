@@ -7,8 +7,7 @@ import structuredLogger from "./structuredLogger";
 
 if (typeof window !== "undefined") {
   invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
-  // debug.enable(process.env.NEXT_PUBLIC_DEBUG);
-  debug.enable("ai*, -ai:db");
+  debug.enable(process.env.NEXT_PUBLIC_DEBUG);
 }
 
 const debugBase = debug("ai");

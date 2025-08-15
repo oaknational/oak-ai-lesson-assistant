@@ -1,6 +1,8 @@
 import invariant from "tiny-invariant";
 import type { z } from "zod";
 
+import { aiLogger } from "@oakai/logger";
+
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
   DbQuiz,
@@ -11,6 +13,8 @@ import type {
   StemTextObject,
 } from "../rawQuiz";
 import { dbQuizSchema } from "../rawQuiz";
+
+const log = aiLogger("aila:quiz");
 
 /**
  * Check if an item is a text item
@@ -77,13 +81,10 @@ function extractMarkdownFromContent(
  * Convert raw quiz from Oak curriculum format to Quiz V2 format
  */
 export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
-  console.log(
-    "DEBUG: convertRawQuizToV2 input:",
-    JSON.stringify(rawQuiz, null, 2),
-  );
+  log.info("convertRawQuizToV2 input:", { rawQuiz });
 
   if (!rawQuiz || !Array.isArray(rawQuiz)) {
-    console.log("DEBUG: Raw quiz is not an array, returning empty quiz");
+    log.info("Raw quiz is not an array, returning empty quiz");
     return {
       version: "v2",
       questions: [],
@@ -98,10 +99,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
   const questions = rawQuiz
     .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
     .map((rawQuestion): QuizV2Question => {
-      console.log(
-        "DEBUG: Processing raw question:",
-        JSON.stringify(rawQuestion, null, 2),
-      );
+      log.info("Processing raw question:", { rawQuestion });
 
       // Early return for explanatory-text (should be filtered out already)
       if (rawQuestion.question_type === "explanatory-text") {

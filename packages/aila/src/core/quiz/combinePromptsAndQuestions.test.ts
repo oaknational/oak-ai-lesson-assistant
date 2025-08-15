@@ -75,7 +75,6 @@ describe("combinePromptsAndQuestions", () => {
       QuizInspectionSystemPrompt,
       "priorKnowledge",
     );
-    console.log(JSON.stringify(openAIMessage));
     const ans = true;
     expect(ans).toBe(true);
   });
@@ -136,7 +135,6 @@ describe("Test OpenAI Image Reranker with online image and quiz questions", () =
       ],
     };
     const result = combinePrompts(testLessonPlan, testInput);
-    console.log(JSON.stringify(result));
     const ans = true;
     expect(ans).toBe(true);
   });
