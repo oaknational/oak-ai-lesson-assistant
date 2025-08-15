@@ -16,7 +16,8 @@ type ShortAnswerQuestionProps = {
 // Create custom components for inline answer rendering
 const getInlineAnswerComponents = (answer: string): Partial<Components> => ({
   em: ({ children }) => {
-    const isInlineAnswer = children?.toString() === "{{}}";
+    const content = children?.toString();
+    const isInlineAnswer = content === "{{ }}" || content === "{{}}";
     if (isInlineAnswer) {
       return (
         <OakSpan
@@ -42,12 +43,13 @@ export const ShortAnswerQuestion = ({
   question,
   questionNumber,
 }: ShortAnswerQuestionProps) => {
-  const hasInlineAnswer = question.question.includes("{{}}");
+  const hasInlineAnswer =
+    question.question.includes("{{}}") || question.question.includes("{{ }}");
   const answer = question.answers?.[0] ?? "";
 
   const questionText = addInstruction(
-    // Wrap {{}} in italics. We can intercept with a custom em component
-    question.question.replace("{{}}", "_{{}}_ "),
+    // Wrap {{}} and {{ }} in italics. We can intercept with a custom em component
+    question.question.replace(/\{\{ ?\}\}/g, "_{{}}_"),
     "Fill in the blank.",
   );
 
