@@ -179,6 +179,10 @@ describe("Aila", () => {
 
     // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
+      const mockCategoriser = {
+        categorise: jest.fn().mockResolvedValue({}),
+      };
+      
       const ailaInstance = new Aila({
         document: {
           content: {},
@@ -191,6 +195,9 @@ describe("Aila", () => {
           useRag: false,
         },
         plugins: [],
+        services: {
+          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
+        },
       });
 
       await ailaInstance.initialise();
