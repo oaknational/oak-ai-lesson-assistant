@@ -9,8 +9,8 @@ import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import {
-  DEFAULT_MODEL,
   DEFAULT_LEGACY_TEMPERATURE,
+  DEFAULT_MODEL,
   DEFAULT_REASONING_EFFORT,
   DEFAULT_VERBOSITY,
   isGPT5Model,
@@ -402,10 +402,12 @@ export class AilaChat implements AilaChatService {
     };
 
     if (isGPT5Model(model)) {
-      params.reasoning_effort = this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
+      params.reasoning_effort =
+        this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
       params.verbosity = this._aila.options.verbosity ?? DEFAULT_VERBOSITY;
     } else {
-      params.temperature = this._aila.options.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
+      params.temperature =
+        this._aila.options.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
     }
 
     return this._llmService.createChatCompletionStream(params);
@@ -429,10 +431,12 @@ export class AilaChat implements AilaChatService {
     };
 
     if (isGPT5Model(model)) {
-      params.reasoning_effort = this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
+      params.reasoning_effort =
+        this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
       params.verbosity = this._aila.options.verbosity ?? DEFAULT_VERBOSITY;
     } else {
-      params.temperature = this._aila.options.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
+      params.temperature =
+        this._aila.options.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
     }
 
     return this._llmService.createChatCompletionObjectStream(params);

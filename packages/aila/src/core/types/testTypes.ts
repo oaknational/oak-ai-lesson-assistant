@@ -1,7 +1,6 @@
 /**
  * Type utilities for testing parameter routing logic
  */
-
 import type { ReasoningEffort, Verbosity } from "./modelParameters";
 
 /**
@@ -46,7 +45,7 @@ export interface EdgeCaseTestParams {
  */
 export interface InvalidParameterTestCase {
   reasoning_effort?: string; // Intentionally broader than ReasoningEffort
-  verbosity?: string; // Intentionally broader than Verbosity  
+  verbosity?: string; // Intentionally broader than Verbosity
   temperature?: number | string; // Intentionally broader for invalid cases
 }
 

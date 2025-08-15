@@ -1,10 +1,10 @@
 import {
-  isGPT5Model,
-  DEFAULT_REASONING_EFFORT,
-  DEFAULT_VERBOSITY,
   DEFAULT_LEGACY_TEMPERATURE,
   DEFAULT_MODEL,
   DEFAULT_MODERATION_MODEL,
+  DEFAULT_REASONING_EFFORT,
+  DEFAULT_VERBOSITY,
+  isGPT5Model,
 } from "./constants";
 
 describe("GPT-5 Constants and Model Detection", () => {
@@ -57,15 +57,23 @@ describe("GPT-5 Constants and Model Detection", () => {
 
   describe("Parameter Types", () => {
     it("should accept valid reasoning effort values", () => {
-      const validValues: Array<"low" | "medium" | "high"> = ["low", "medium", "high"];
-      validValues.forEach(value => {
+      const validValues: Array<"low" | "medium" | "high"> = [
+        "low",
+        "medium",
+        "high",
+      ];
+      validValues.forEach((value) => {
         expect(["low", "medium", "high"]).toContain(value);
       });
     });
 
     it("should accept valid verbosity values", () => {
-      const validValues: Array<"low" | "medium" | "high"> = ["low", "medium", "high"];
-      validValues.forEach(value => {
+      const validValues: Array<"low" | "medium" | "high"> = [
+        "low",
+        "medium",
+        "high",
+      ];
+      validValues.forEach((value) => {
         expect(["low", "medium", "high"]).toContain(value);
       });
     });
@@ -92,9 +100,15 @@ describe("GPT-5 Constants and Model Detection", () => {
     it("should use environment variables when set", () => {
       // Note: Environment variables are read at module load time,
       // so we test the pattern rather than dynamic behavior
-      const envReasoning = process.env.OPENAI_DEFAULT_REASONING_EFFORT as "low" | "medium" | "high";
-      const envVerbosity = process.env.OPENAI_DEFAULT_VERBOSITY as "low" | "medium" | "high";
-      
+      const envReasoning = process.env.OPENAI_DEFAULT_REASONING_EFFORT as
+        | "low"
+        | "medium"
+        | "high";
+      const envVerbosity = process.env.OPENAI_DEFAULT_VERBOSITY as
+        | "low"
+        | "medium"
+        | "high";
+
       if (envReasoning) {
         expect(["low", "medium", "high"]).toContain(envReasoning);
       }

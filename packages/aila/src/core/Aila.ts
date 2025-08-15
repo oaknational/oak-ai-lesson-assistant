@@ -3,9 +3,9 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import {
+  DEFAULT_LEGACY_TEMPERATURE,
   DEFAULT_MODEL,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-  DEFAULT_LEGACY_TEMPERATURE,
   DEFAULT_REASONING_EFFORT,
   DEFAULT_VERBOSITY,
 } from "../constants";

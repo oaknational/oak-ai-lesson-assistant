@@ -20,10 +20,10 @@ import {
   isGPT5Model,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
-import { 
-  createModelParams, 
-  extractAPIParams, 
-  type ModelOptions 
+import {
+  type ModelOptions,
+  createModelParams,
+  extractAPIParams,
 } from "../../../core/types/modelParameters";
 
 const log = aiLogger("aila:moderation");
@@ -53,7 +53,8 @@ export interface OpenAILike {
 export class OpenAiModerator extends AilaModerator {
   protected _openAIClient: OpenAILike;
   private readonly _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
-  private readonly _reasoning_effort: "low" | "medium" | "high" = DEFAULT_REASONING_EFFORT;
+  private readonly _reasoning_effort: "low" | "medium" | "high" =
+    DEFAULT_REASONING_EFFORT;
   private readonly _verbosity: "low" | "medium" | "high" = DEFAULT_VERBOSITY;
   private readonly _model: string = DEFAULT_MODERATION_MODEL;
   private readonly _aila?: AilaServices;
@@ -120,7 +121,12 @@ export class OpenAiModerator extends AilaModerator {
       verbosity: this._verbosity,
     };
 
-    const typedParams = createModelParams(this._model, messages, options, isGPT5Model);
+    const typedParams = createModelParams(
+      this._model,
+      messages,
+      options,
+      isGPT5Model,
+    );
     const apiParams = extractAPIParams(typedParams);
 
     // Remove model and messages from apiParams to avoid duplication
@@ -145,15 +151,12 @@ export class OpenAiModerator extends AilaModerator {
       ...additionalParams,
     };
 
-    const moderationResponse = await this._callOpenAi(
-      modelParams,
-      {
-        headers: {
-          // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.
-          "Helicone-LLM-Security-Enabled": undefined,
-        },
+    const moderationResponse = await this._callOpenAi(modelParams, {
+      headers: {
+        // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.
+        "Helicone-LLM-Security-Enabled": undefined,
       },
-    );
+    });
 
     const log = aiLogger("aila:moderation:response");
     log.info(JSON.stringify(moderationResponse));

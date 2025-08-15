@@ -23,7 +23,8 @@ export interface BaseModelParams<T = GenericMessage[]> {
 /**
  * GPT-5 specific parameters using reasoning_effort and verbosity
  */
-export interface GPT5ModelParams<T = GenericMessage[]> extends BaseModelParams<T> {
+export interface GPT5ModelParams<T = GenericMessage[]>
+  extends BaseModelParams<T> {
   type: "gpt5";
   reasoning_effort?: ReasoningEffort;
   verbosity?: Verbosity;
@@ -33,7 +34,8 @@ export interface GPT5ModelParams<T = GenericMessage[]> extends BaseModelParams<T
 /**
  * Legacy model parameters using temperature
  */
-export interface LegacyModelParams<T = GenericMessage[]> extends BaseModelParams<T> {
+export interface LegacyModelParams<T = GenericMessage[]>
+  extends BaseModelParams<T> {
   type: "legacy";
   temperature?: number;
   reasoning_effort?: never;
@@ -43,7 +45,9 @@ export interface LegacyModelParams<T = GenericMessage[]> extends BaseModelParams
 /**
  * Union type for all model parameters
  */
-export type ModelParams<T = GenericMessage[]> = GPT5ModelParams<T> | LegacyModelParams<T>;
+export type ModelParams<T = GenericMessage[]> =
+  | GPT5ModelParams<T>
+  | LegacyModelParams<T>;
 
 /**
  * Input options that can be provided by users (before model detection)
@@ -57,11 +61,15 @@ export interface ModelOptions {
 /**
  * Type guards for model parameter types
  */
-export function isGPT5Params<T>(params: ModelParams<T>): params is GPT5ModelParams<T> {
+export function isGPT5Params<T>(
+  params: ModelParams<T>,
+): params is GPT5ModelParams<T> {
   return params.type === "gpt5";
 }
 
-export function isLegacyParams<T>(params: ModelParams<T>): params is LegacyModelParams<T> {
+export function isLegacyParams<T>(
+  params: ModelParams<T>,
+): params is LegacyModelParams<T> {
   return params.type === "legacy";
 }
 
@@ -75,7 +83,7 @@ export function createModelParams<T extends GenericMessage[]>(
   isGPT5Model: (model: string) => boolean,
 ): ModelParams<T> {
   const baseParams = { model, messages };
-  
+
   if (isGPT5Model(model)) {
     return {
       ...baseParams,
@@ -95,7 +103,9 @@ export function createModelParams<T extends GenericMessage[]>(
 /**
  * Type-safe parameter extraction for external APIs
  */
-export function extractAPIParams<T>(params: ModelParams<T>): Record<string, unknown> {
+export function extractAPIParams<T>(
+  params: ModelParams<T>,
+): Record<string, unknown> {
   const baseParams = {
     model: params.model,
     messages: params.messages,
@@ -104,13 +114,17 @@ export function extractAPIParams<T>(params: ModelParams<T>): Record<string, unkn
   if (isGPT5Params(params)) {
     return {
       ...baseParams,
-      ...(params.reasoning_effort && { reasoning_effort: params.reasoning_effort }),
+      ...(params.reasoning_effort && {
+        reasoning_effort: params.reasoning_effort,
+      }),
       ...(params.verbosity && { verbosity: params.verbosity }),
     };
   } else {
     return {
       ...baseParams,
-      ...(params.temperature !== undefined && { temperature: params.temperature }),
+      ...(params.temperature !== undefined && {
+        temperature: params.temperature,
+      }),
     };
   }
 }

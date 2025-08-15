@@ -182,7 +182,7 @@ describe("Aila", () => {
       const mockCategoriser = {
         categorise: jest.fn().mockResolvedValue({}),
       };
-      
+
       const ailaInstance = new Aila({
         document: {
           content: {},

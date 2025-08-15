@@ -8,12 +8,12 @@ import type { ZodSchema } from "zod";
 
 import { isGPT5Model } from "../../constants";
 import type { Message } from "../chat";
-import type { LLMService } from "./LLMService";
-import { 
-  createModelParams, 
-  extractAPIParams, 
-  type ModelOptions 
+import {
+  type ModelOptions,
+  createModelParams,
+  extractAPIParams,
 } from "../types/modelParameters";
+import type { LLMService } from "./LLMService";
 
 const log = aiLogger("aila:llm");
 
@@ -38,15 +38,21 @@ export class OpenAIService implements LLMService {
     reasoning_effort?: "low" | "medium" | "high";
     verbosity?: "low" | "medium" | "high";
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { model, messages, temperature, reasoning_effort, verbosity } = params;
-    
+    const { model, messages, temperature, reasoning_effort, verbosity } =
+      params;
+
     const options: ModelOptions = {
       temperature,
       reasoning_effort,
       verbosity,
     };
 
-    const typedParams = createModelParams(model, messages, options, isGPT5Model);
+    const typedParams = createModelParams(
+      model,
+      messages,
+      options,
+      isGPT5Model,
+    );
     const apiParams = extractAPIParams(typedParams);
 
     // Remove model and messages from apiParams to avoid duplication
@@ -73,9 +79,23 @@ export class OpenAIService implements LLMService {
     reasoning_effort?: "low" | "medium" | "high";
     verbosity?: "low" | "medium" | "high";
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { model, messages, temperature, reasoning_effort, verbosity, schema, schemaName } = params;
+    const {
+      model,
+      messages,
+      temperature,
+      reasoning_effort,
+      verbosity,
+      schema,
+      schemaName,
+    } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {
-      return this.createChatCompletionStream({ model, messages, temperature, reasoning_effort, verbosity });
+      return this.createChatCompletionStream({
+        model,
+        messages,
+        temperature,
+        reasoning_effort,
+        verbosity,
+      });
     }
     const startTime = Date.now();
 
@@ -85,12 +105,17 @@ export class OpenAIService implements LLMService {
       verbosity,
     };
 
-    const typedParams = createModelParams(model, messages, options, isGPT5Model);
+    const typedParams = createModelParams(
+      model,
+      messages,
+      options,
+      isGPT5Model,
+    );
     const apiParams = extractAPIParams(typedParams);
 
     // Remove model and messages from apiParams to avoid duplication
     const { model: _, messages: __, ...additionalParams } = apiParams;
-    
+
     const modelParams = {
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object" as const,
