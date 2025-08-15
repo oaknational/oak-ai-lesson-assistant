@@ -101,14 +101,7 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
-    const modelParams: {
-      model: string;
-      messages: Array<{ role: string; content: string }>;
-      response_format: unknown;
-      temperature?: number;
-      reasoning_effort?: "low" | "medium" | "high";
-      verbosity?: "low" | "medium" | "high";
-    } = {
+    const modelParams = {
       model: this._model,
       messages: [
         {
@@ -133,14 +126,14 @@ export class OpenAiModerator extends AilaModerator {
     };
 
     if (isGPT5Model(this._model)) {
-      modelParams.reasoning_effort = this._reasoning_effort;
-      modelParams.verbosity = this._verbosity;
+      (modelParams as any).reasoning_effort = this._reasoning_effort;
+      (modelParams as any).verbosity = this._verbosity;
     } else {
-      modelParams.temperature = this._temperature;
+      (modelParams as any).temperature = this._temperature;
     }
 
     const moderationResponse = await this._callOpenAi(
-      modelParams,
+      modelParams as any,
       {
         headers: {
           // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.

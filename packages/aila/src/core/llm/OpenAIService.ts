@@ -35,13 +35,7 @@ export class OpenAIService implements LLMService {
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { model, messages, temperature, reasoning_effort, verbosity } = params;
     
-    const modelParams: {
-      model: unknown;
-      messages: Array<{ role: string; content: string }>;
-      temperature?: number;
-      reasoning_effort?: "low" | "medium" | "high";
-      verbosity?: "low" | "medium" | "high";
-    } = {
+    const modelParams = {
       model: this._openAIProvider(model),
       messages: messages.map((m) => ({
         role: m.role,
@@ -50,13 +44,13 @@ export class OpenAIService implements LLMService {
     };
 
     if (isGPT5Model(model)) {
-      if (reasoning_effort) modelParams.reasoning_effort = reasoning_effort;
-      if (verbosity) modelParams.verbosity = verbosity;
+      if (reasoning_effort) (modelParams as any).reasoning_effort = reasoning_effort;
+      if (verbosity) (modelParams as any).verbosity = verbosity;
     } else {
-      if (temperature !== undefined) modelParams.temperature = temperature;
+      if (temperature !== undefined) (modelParams as any).temperature = temperature;
     }
 
-    const { textStream: stream } = streamText(modelParams);
+    const { textStream: stream } = streamText(modelParams as any);
     return Promise.resolve(stream.getReader());
   }
 
@@ -75,16 +69,7 @@ export class OpenAIService implements LLMService {
     }
     const startTime = Date.now();
 
-    const modelParams: {
-      model: unknown;
-      output: string;
-      schema: unknown;
-      schemaName: string;
-      messages: Array<{ role: string; content: string }>;
-      temperature?: number;
-      reasoning_effort?: "low" | "medium" | "high";
-      verbosity?: "low" | "medium" | "high";
-    } = {
+    const modelParams = {
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
       schema,
@@ -96,13 +81,13 @@ export class OpenAIService implements LLMService {
     };
 
     if (isGPT5Model(model)) {
-      if (reasoning_effort) modelParams.reasoning_effort = reasoning_effort;
-      if (verbosity) modelParams.verbosity = verbosity;
+      if (reasoning_effort) (modelParams as any).reasoning_effort = reasoning_effort;
+      if (verbosity) (modelParams as any).verbosity = verbosity;
     } else {
-      if (temperature !== undefined) modelParams.temperature = temperature;
+      if (temperature !== undefined) (modelParams as any).temperature = temperature;
     }
 
-    const { textStream: stream } = streamObject(modelParams);
+    const { textStream: stream } = streamObject(modelParams as any);
 
     const reader = stream.getReader();
     const { value } = await reader.read();
