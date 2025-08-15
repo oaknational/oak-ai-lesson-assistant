@@ -75,16 +75,16 @@ const answersSchema = z.object({
 });
 
 export const rawQuizQuestionSchema = z.object({
-  question_id: z.number(),
-  question_uid: z.string(),
-  question_type: z.enum([
+  questionId: z.number(),
+  questionUid: z.string(),
+  questionType: z.enum([
     "multiple-choice",
     "match",
     "order",
     "short-answer",
     "explanatory-text",
   ]),
-  question_stem: z
+  questionStem: z
     .array(z.union([stemTextObjectSchema, stemImageObjectSchema]))
     .min(1),
   answers: answersSchema.nullable().optional(),
@@ -92,6 +92,8 @@ export const rawQuizQuestionSchema = z.object({
   hint: z.string(),
   active: z.boolean(),
 });
+
+// Raw quiz schema represents the actual database format (camelCase)
 
 export const rawQuizSchema = z
   .array(rawQuizQuestionSchema)

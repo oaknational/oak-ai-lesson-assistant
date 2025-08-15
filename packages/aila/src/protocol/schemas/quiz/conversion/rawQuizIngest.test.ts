@@ -31,10 +31,10 @@ describe("convertRawQuizToV2", () => {
   it("should filter out explanatory-text questions", () => {
     const explanatoryOnlyQuiz: RawQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "explanatory-text",
-        question_stem: [{ text: "Just text", type: "text" }],
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "explanatory-text",
+        questionStem: [{ text: "Just text", type: "text" }],
         answers: { "explanatory-text": null },
         feedback: "",
         hint: "",
@@ -48,10 +48,10 @@ describe("convertRawQuizToV2", () => {
   it("should extract image attributions correctly", () => {
     const quizWithImages: RawQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           {
             image_object: {
               secure_url: "https://example.com/image1.jpg",
@@ -90,10 +90,10 @@ describe("convertRawQuizToV2", () => {
   it("should convert images to markdown syntax", () => {
     const quizWithImages: RawQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           { text: "Look at", type: "text" },
           {
             image_object: {
@@ -126,10 +126,10 @@ describe("convertRawQuizToV2", () => {
   it("should extract alt text from images when available", () => {
     const quizWithAltText: RawQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           {
             image_object: {
               secure_url: "https://example.com/dog.jpg",
@@ -165,10 +165,10 @@ describe("convertRawQuizToV2", () => {
   it("should throw error for unknown question type", () => {
     const unknownTypeQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "unknown-type" as unknown as "multiple-choice",
-        question_stem: [{ text: "Question", type: "text" }],
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "unknown-type" as unknown as "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
         answers: {},
         feedback: "",
         hint: "",

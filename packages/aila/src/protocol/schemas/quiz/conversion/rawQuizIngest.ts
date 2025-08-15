@@ -1,4 +1,7 @@
+import { aiLogger } from "@oakai/logger";
+
 import invariant from "tiny-invariant";
+import type { z } from "zod";
 
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
@@ -7,6 +10,9 @@ import type {
   StemObject,
   StemTextObject,
 } from "../rawQuiz";
+import { rawQuizSchema } from "../rawQuiz";
+
+const log = aiLogger("aila:quiz");
 
 /**
  * Check if an item is a text item
@@ -73,7 +79,10 @@ function extractMarkdownFromContent(
  * Convert raw quiz from Oak curriculum format to Quiz V2 format
  */
 export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
+  log.info("convertRawQuizToV2 input:", { rawQuiz });
+
   if (!rawQuiz || !Array.isArray(rawQuiz)) {
+    log.info("Raw quiz is not an array, returning empty quiz");
     return {
       version: "v2",
       questions: [],
@@ -86,20 +95,22 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
     [];
 
   const questions = rawQuiz
-    .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
+    .filter((rawQuestion) => rawQuestion.questionType !== "explanatory-text")
     .map((rawQuestion): QuizV2Question => {
+      log.info("Processing raw question:", { rawQuestion });
+
       // Early return for explanatory-text (should be filtered out already)
-      if (rawQuestion.question_type === "explanatory-text") {
+      if (rawQuestion.questionType === "explanatory-text") {
         throw new Error("Explanatory text questions should be filtered out");
       }
       // Extract question stem as markdown with inlined images
       const { markdown: questionStem, attributions } =
-        extractMarkdownFromContent(rawQuestion.question_stem);
+        extractMarkdownFromContent(rawQuestion.questionStem);
 
       const hint = rawQuestion.hint ?? null;
 
       // Handle different question types based on Oak's schema
-      switch (rawQuestion.question_type) {
+      switch (rawQuestion.questionType) {
         case "multiple-choice": {
           const mcAnswers = rawQuestion.answers?.["multiple-choice"] ?? [];
 
@@ -218,7 +229,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
         }
 
         default: {
-          const _exhaustiveCheck: never = rawQuestion.question_type;
+          const _exhaustiveCheck: never = rawQuestion.questionType;
           throw new Error(
             `Unknown question type: ${_exhaustiveCheck as string}`,
           );

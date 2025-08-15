@@ -62,7 +62,8 @@ function getQuestionElements(
 
     case "short-answer": {
       // Check if question contains inline placeholder
-      const isInline = q.question.includes("{{}}");
+      const isInline =
+        q.question.includes("{{ }}") || q.question.includes("{{}}");
       return generateShortAnswerQuestion(
         insertIndex,
         q.question,
