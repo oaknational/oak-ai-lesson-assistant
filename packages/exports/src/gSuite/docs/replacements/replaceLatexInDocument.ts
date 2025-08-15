@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
+import { LATEX_VISUAL_SCALE } from "../../../images/constants";
 import {
   getExistingImageUrl,
   uploadImageToGCS,
@@ -10,7 +11,6 @@ import { latexToSvg } from "../../../images/latexToSvg";
 import { svgToPng } from "../../../images/svgToPng";
 import { extractTextFromDocument } from "../extraction/extractTextFromDocument";
 import { generateLatexHash } from "../extraction/findLatexPatterns";
-import { LATEX_VISUAL_SCALE } from "../../../images/constants";
 
 const log = aiLogger("exports");
 
