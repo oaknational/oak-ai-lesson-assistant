@@ -38,7 +38,7 @@ describe('Parameter Mapping Logic', () => {
         expect(isGPT5).toBe(testCase.expectGPT5Params);
 
         // Simulate parameter branching logic
-        const params: any = {
+        const params: Record<string, any> = {
           model: testCase.model,
           messages: [],
         };
@@ -80,7 +80,7 @@ describe('Parameter Mapping Logic', () => {
 
       testCases.forEach(testCase => {
         const isGPT5 = isGPT5Model(testCase.model);
-        const params: any = {
+        const params: Record<string, any> = {
           model: testCase.model,
           messages: [],
         };
@@ -148,7 +148,7 @@ describe('Parameter Mapping Logic', () => {
 
       // GPT-5 model should use reasoning parameters
       if (isGPT5Model(gpt5Model)) {
-        const gpt5Params: any = { model: gpt5Model, messages: [] };
+        const gpt5Params: Record<string, any> = { model: gpt5Model, messages: [] };
         gpt5Params.reasoning_effort = mixedParams.reasoning_effort;
         gpt5Params.verbosity = mixedParams.verbosity;
         
@@ -159,7 +159,7 @@ describe('Parameter Mapping Logic', () => {
 
       // Legacy model should use temperature parameter
       if (!isGPT5Model(legacyModel)) {
-        const legacyParams: any = { model: legacyModel, messages: [] };
+        const legacyParams: Record<string, any> = { model: legacyModel, messages: [] };
         legacyParams.temperature = mixedParams.temperature;
         
         expect(legacyParams.temperature).toBe(0.8);

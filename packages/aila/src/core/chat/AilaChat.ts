@@ -390,10 +390,16 @@ export class AilaChat implements AilaChatService {
 
   public async createChatCompletionStream(messages: Message[]) {
     const model = this._aila.options.model ?? DEFAULT_MODEL;
-    const params = {
+    const params: {
+      model: string;
+      messages: Message[];
+      temperature?: number;
+      reasoning_effort?: "low" | "medium" | "high";
+      verbosity?: "low" | "medium" | "high";
+    } = {
       model,
       messages,
-    } as any;
+    };
 
     if (isGPT5Model(model)) {
       params.reasoning_effort = this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
@@ -407,12 +413,20 @@ export class AilaChat implements AilaChatService {
 
   public async createChatCompletionObjectStream(messages: Message[]) {
     const model = this._aila.options.model ?? DEFAULT_MODEL;
-    const params = {
+    const params: {
+      model: string;
+      schema: typeof LLMMessageSchema;
+      schemaName: string;
+      messages: Message[];
+      temperature?: number;
+      reasoning_effort?: "low" | "medium" | "high";
+      verbosity?: "low" | "medium" | "high";
+    } = {
       model,
       schema: LLMMessageSchema,
       schemaName: "response",
       messages,
-    } as any;
+    };
 
     if (isGPT5Model(model)) {
       params.reasoning_effort = this._aila.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;

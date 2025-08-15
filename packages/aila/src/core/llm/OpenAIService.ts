@@ -35,7 +35,13 @@ export class OpenAIService implements LLMService {
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { model, messages, temperature, reasoning_effort, verbosity } = params;
     
-    const modelParams: any = {
+    const modelParams: {
+      model: unknown;
+      messages: Array<{ role: string; content: string }>;
+      temperature?: number;
+      reasoning_effort?: "low" | "medium" | "high";
+      verbosity?: "low" | "medium" | "high";
+    } = {
       model: this._openAIProvider(model),
       messages: messages.map((m) => ({
         role: m.role,
@@ -69,7 +75,16 @@ export class OpenAIService implements LLMService {
     }
     const startTime = Date.now();
 
-    const modelParams: any = {
+    const modelParams: {
+      model: unknown;
+      output: string;
+      schema: unknown;
+      schemaName: string;
+      messages: Array<{ role: string; content: string }>;
+      temperature?: number;
+      reasoning_effort?: "low" | "medium" | "high";
+      verbosity?: "low" | "medium" | "high";
+    } = {
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
       schema,

@@ -35,7 +35,13 @@ describe('AilaChat Parameter Routing Integration', () => {
         expect(isGPT5).toBe(scenario.expectGPT5);
 
         // Simulate the parameter routing logic from AilaChat
-        const params: any = {
+        const params: {
+          model: string;
+          messages: unknown[];
+          temperature?: number;
+          reasoning_effort?: "low" | "medium" | "high";
+          verbosity?: "low" | "medium" | "high";
+        } = {
           model: scenario.model,
           messages: [],
         };
@@ -79,7 +85,13 @@ describe('AilaChat Parameter Routing Integration', () => {
         expect(isGPT5).toBe(scenario.expectGPT5);
 
         // Simulate default parameter assignment
-        const params: any = {
+        const params: {
+          model: string;
+          messages: unknown[];
+          temperature?: number;
+          reasoning_effort?: "low" | "medium" | "high";
+          verbosity?: "low" | "medium" | "high";
+        } = {
           model: scenario.model,
           messages: [],
         };
@@ -111,7 +123,7 @@ describe('AilaChat Parameter Routing Integration', () => {
       expect(isGPT5).toBe(true);
 
       // Should route to GPT-5 parameters when using default model
-      const params: any = { model, messages: [] };
+      const params: Record<string, any> = { model, messages: [] };
       params.reasoning_effort = DEFAULT_REASONING_EFFORT;
       params.verbosity = DEFAULT_VERBOSITY;
 
@@ -141,13 +153,15 @@ describe('AilaChat Parameter Routing Integration', () => {
 
       partialScenarios.forEach(scenario => {
         const isGPT5 = isGPT5Model(scenario.model);
-        const params: any = { model: scenario.model, messages: [] };
+        const params: Record<string, any> = { model: scenario.model, messages: [] };
 
         if (isGPT5) {
-          params.reasoning_effort = (scenario.providedParams as any).reasoning_effort ?? DEFAULT_REASONING_EFFORT;
-          params.verbosity = (scenario.providedParams as any).verbosity ?? DEFAULT_VERBOSITY;
+          const providedParams = scenario.providedParams as Record<string, unknown>;
+          params.reasoning_effort = providedParams.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
+          params.verbosity = providedParams.verbosity ?? DEFAULT_VERBOSITY;
         } else {
-          params.temperature = (scenario.providedParams as any).temperature ?? DEFAULT_LEGACY_TEMPERATURE;
+          const providedParams = scenario.providedParams as Record<string, unknown>;
+          params.temperature = providedParams.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
         }
 
         Object.entries(scenario.expectedParams).forEach(([key, value]) => {
@@ -169,7 +183,7 @@ describe('AilaChat Parameter Routing Integration', () => {
         const isGPT5 = isGPT5Model(testCase.model);
         expect(isGPT5).toBe(testCase.expectGPT5);
 
-        const params: any = { model: testCase.model, messages: [] };
+        const params: Record<string, any> = { model: testCase.model, messages: [] };
 
         if (isGPT5) {
           params.reasoning_effort = DEFAULT_REASONING_EFFORT;
@@ -216,7 +230,7 @@ describe('AilaChat Parameter Routing Integration', () => {
         const isGPT5 = isGPT5Model(scenario.model);
         expect(isGPT5).toBe(scenario.shouldUseGPT5);
 
-        const params: any = { model: scenario.model, messages: [] };
+        const params: Record<string, any> = { model: scenario.model, messages: [] };
 
         // Apply the parameter routing logic
         if (isGPT5) {

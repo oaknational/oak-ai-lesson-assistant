@@ -101,7 +101,14 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
-    const modelParams: any = {
+    const modelParams: {
+      model: string;
+      messages: Array<{ role: string; content: string }>;
+      response_format: unknown;
+      temperature?: number;
+      reasoning_effort?: "low" | "medium" | "high";
+      verbosity?: "low" | "medium" | "high";
+    } = {
       model: this._model,
       messages: [
         {
