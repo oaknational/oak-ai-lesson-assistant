@@ -12,6 +12,10 @@ jest.mock('@oakai/logger', () => ({
 
 import { isGPT5Model } from '../constants';
 import type { AilaPublicChatOptions } from '../core/types';
+import type { 
+  EdgeCaseTestParams,
+  InvalidParameterTestCase 
+} from './types/testTypes';
 
 describe('Parameter Validation and Error Handling', () => {
   describe('Parameter Type Validation', () => {
@@ -107,8 +111,8 @@ describe('Parameter Validation and Error Handling', () => {
         { model: 'custom-gpt-5', expected: false }, // Doesn't start with gpt-5
         { model: 'gpt-4.5', expected: false }, // Not gpt-5 prefix
         { model: 'gpt-55', expected: true }, // Should match gpt-5* pattern
-        { model: null as any, expected: false }, // Null handling
-        { model: undefined as any, expected: false }, // Undefined handling
+        { model: null, expected: false } satisfies EdgeCaseTestParams, // Null handling
+        { model: undefined, expected: false } satisfies EdgeCaseTestParams, // Undefined handling
       ];
 
       testCases.forEach(({ model, expected }) => {
@@ -231,11 +235,11 @@ describe('Parameter Validation and Error Handling', () => {
     it('should validate parameter combinations at runtime', () => {
       const invalidCombinations = [
         // These would be caught by TypeScript, but test runtime validation
-        { reasoning_effort: 'invalid' as any },
-        { verbosity: 'extreme' as any },
-        { temperature: -1 },
-        { temperature: 5.0 },
-        { temperature: 'high' as any },
+        { reasoning_effort: 'invalid' } satisfies InvalidParameterTestCase,
+        { verbosity: 'extreme' } satisfies InvalidParameterTestCase,
+        { temperature: -1 } satisfies InvalidParameterTestCase,
+        { temperature: 5.0 } satisfies InvalidParameterTestCase,
+        { temperature: 'high' } satisfies InvalidParameterTestCase,
       ];
 
       invalidCombinations.forEach(params => {
@@ -260,7 +264,7 @@ describe('Parameter Validation and Error Handling', () => {
       const invalidEnvValues = ['', 'invalid', 'MEDIUM', '1', 'high-quality'];
       
       invalidEnvValues.forEach(value => {
-        const isValid = ['low', 'medium', 'high'].includes(value as any);
+        const isValid = (['low', 'medium', 'high'] as readonly string[]).includes(value);
         expect(isValid).toBe(false);
         
         // The system should fall back to defaults for invalid env values

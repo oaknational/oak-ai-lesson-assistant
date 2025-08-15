@@ -20,6 +20,11 @@ import {
   isGPT5Model,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
+import { 
+  createModelParams, 
+  extractAPIParams, 
+  type ModelOptions 
+} from "../../../core/types/modelParameters";
 
 const log = aiLogger("aila:moderation");
 
@@ -101,17 +106,31 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
+    const messages = [
+      {
+        role: "system" as const,
+        content: moderationPrompt,
+      },
+      { role: "user" as const, content: input },
+    ];
+
+    const options: ModelOptions = {
+      temperature: this._temperature,
+      reasoning_effort: this._reasoning_effort,
+      verbosity: this._verbosity,
+    };
+
+    const typedParams = createModelParams(this._model, messages, options, isGPT5Model);
+    const apiParams = extractAPIParams(typedParams);
+
+    // Remove model and messages from apiParams to avoid duplication
+    const { model: _, messages: __, ...additionalParams } = apiParams;
+
     const modelParams = {
       model: this._model,
-      messages: [
-        {
-          role: "system",
-          content: moderationPrompt,
-        },
-        { role: "user", content: input },
-      ],
+      messages,
       response_format: {
-        type: "json_schema",
+        type: "json_schema" as const,
         json_schema: {
           name: "moderationResponse",
           /**
@@ -123,17 +142,11 @@ export class OpenAiModerator extends AilaModerator {
           schema,
         },
       },
+      ...additionalParams,
     };
 
-    if (isGPT5Model(this._model)) {
-      (modelParams as any).reasoning_effort = this._reasoning_effort;
-      (modelParams as any).verbosity = this._verbosity;
-    } else {
-      (modelParams as any).temperature = this._temperature;
-    }
-
     const moderationResponse = await this._callOpenAi(
-      modelParams as any,
+      modelParams,
       {
         headers: {
           // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.

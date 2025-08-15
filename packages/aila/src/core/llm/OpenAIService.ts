@@ -9,6 +9,11 @@ import type { ZodSchema } from "zod";
 import { isGPT5Model } from "../../constants";
 import type { Message } from "../chat";
 import type { LLMService } from "./LLMService";
+import { 
+  createModelParams, 
+  extractAPIParams, 
+  type ModelOptions 
+} from "../types/modelParameters";
 
 const log = aiLogger("aila:llm");
 
@@ -35,22 +40,36 @@ export class OpenAIService implements LLMService {
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { model, messages, temperature, reasoning_effort, verbosity } = params;
     
-    const modelParams = {
+    const options: ModelOptions = {
+      temperature,
+      reasoning_effort,
+      verbosity,
+    };
+
+    const typedParams = createModelParams(model, messages, options, isGPT5Model);
+    const apiParams = extractAPIParams(typedParams);
+
+    const streamParams = {
       model: this._openAIProvider(model),
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
+      ...apiParams,
     };
 
-    if (isGPT5Model(model)) {
-      if (reasoning_effort) (modelParams as any).reasoning_effort = reasoning_effort;
-      if (verbosity) (modelParams as any).verbosity = verbosity;
-    } else {
-      if (temperature !== undefined) (modelParams as any).temperature = temperature;
-    }
+    // Remove model and messages from apiParams to avoid duplication
+    const { model: _, messages: __, ...additionalParams } = apiParams;
+    const finalParams = {
+      model: this._openAIProvider(model),
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      ...additionalParams,
+    };
 
-    const { textStream: stream } = streamText(modelParams as any);
+    const { textStream: stream } = streamText(finalParams);
     return Promise.resolve(stream.getReader());
   }
 
@@ -69,25 +88,31 @@ export class OpenAIService implements LLMService {
     }
     const startTime = Date.now();
 
+    const options: ModelOptions = {
+      temperature,
+      reasoning_effort,
+      verbosity,
+    };
+
+    const typedParams = createModelParams(model, messages, options, isGPT5Model);
+    const apiParams = extractAPIParams(typedParams);
+
+    // Remove model and messages from apiParams to avoid duplication
+    const { model: _, messages: __, ...additionalParams } = apiParams;
+    
     const modelParams = {
       model: this._openAIProvider(model, { structuredOutputs: true }),
-      output: "object",
+      output: "object" as const,
       schema,
       schemaName,
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
+      ...additionalParams,
     };
 
-    if (isGPT5Model(model)) {
-      if (reasoning_effort) (modelParams as any).reasoning_effort = reasoning_effort;
-      if (verbosity) (modelParams as any).verbosity = verbosity;
-    } else {
-      if (temperature !== undefined) (modelParams as any).temperature = temperature;
-    }
-
-    const { textStream: stream } = streamObject(modelParams as any);
+    const { textStream: stream } = streamObject(modelParams);
 
     const reader = stream.getReader();
     const { value } = await reader.read();

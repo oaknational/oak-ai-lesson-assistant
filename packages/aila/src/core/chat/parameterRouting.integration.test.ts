@@ -5,6 +5,12 @@ import {
   DEFAULT_VERBOSITY,
   isGPT5Model,
 } from '../../constants';
+import { 
+  createModelParams, 
+  type ModelOptions,
+  type ReasoningEffort,
+  type Verbosity 
+} from '../types/modelParameters';
 
 describe('AilaChat Parameter Routing Integration', () => {
   describe('Parameter Routing Logic', () => {
@@ -34,33 +40,29 @@ describe('AilaChat Parameter Routing Integration', () => {
         const isGPT5 = isGPT5Model(scenario.model);
         expect(isGPT5).toBe(scenario.expectGPT5);
 
-        // Simulate the parameter routing logic from AilaChat
-        const params: {
-          model: string;
-          messages: unknown[];
-          temperature?: number;
-          reasoning_effort?: "low" | "medium" | "high";
-          verbosity?: "low" | "medium" | "high";
-        } = {
-          model: scenario.model,
-          messages: [],
+        // Simulate the parameter routing logic from AilaChat using type-safe system
+        const options: ModelOptions = {
+          temperature: scenario.options.temperature,
+          reasoning_effort: scenario.options.reasoning_effort,
+          verbosity: scenario.options.verbosity,
         };
 
-        if (isGPT5) {
-          params.reasoning_effort = scenario.options.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
-          params.verbosity = scenario.options.verbosity ?? DEFAULT_VERBOSITY;
-        } else {
-          params.temperature = scenario.options.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
-        }
+        const typedParams = createModelParams(scenario.model, [], options, isGPT5Model);
 
         if (scenario.expectGPT5) {
-          expect(params.reasoning_effort).toBe(scenario.options.reasoning_effort);
-          expect(params.verbosity).toBe(scenario.options.verbosity);
-          expect(params.temperature).toBeUndefined();
+          expect(typedParams.type).toBe("gpt5");
+          if (typedParams.type === "gpt5") {
+            expect(typedParams.reasoning_effort).toBe(scenario.options.reasoning_effort);
+            expect(typedParams.verbosity).toBe(scenario.options.verbosity);
+            expect(typedParams.temperature).toBeUndefined();
+          }
         } else {
-          expect(params.temperature).toBe(scenario.options.temperature);
-          expect(params.reasoning_effort).toBeUndefined();
-          expect(params.verbosity).toBeUndefined();
+          expect(typedParams.type).toBe("legacy");
+          if (typedParams.type === "legacy") {
+            expect(typedParams.temperature).toBe(scenario.options.temperature);
+            expect(typedParams.reasoning_effort).toBeUndefined();
+            expect(typedParams.verbosity).toBeUndefined();
+          }
         }
       });
     });
@@ -123,13 +125,18 @@ describe('AilaChat Parameter Routing Integration', () => {
       expect(isGPT5).toBe(true);
 
       // Should route to GPT-5 parameters when using default model
-      const params: Record<string, any> = { model, messages: [] };
-      params.reasoning_effort = DEFAULT_REASONING_EFFORT;
-      params.verbosity = DEFAULT_VERBOSITY;
+      const options: ModelOptions = {
+        reasoning_effort: DEFAULT_REASONING_EFFORT,
+        verbosity: DEFAULT_VERBOSITY,
+      };
+      const typedParams = createModelParams(model, [], options, isGPT5Model);
 
-      expect(params.reasoning_effort).toBe('medium');
-      expect(params.verbosity).toBe('medium');
-      expect(params.temperature).toBeUndefined();
+      expect(typedParams.type).toBe("gpt5");
+      if (typedParams.type === "gpt5") {
+        expect(typedParams.reasoning_effort).toBe('medium');
+        expect(typedParams.verbosity).toBe('medium');
+        expect(typedParams.temperature).toBeUndefined();
+      }
     });
 
     it('should handle partial parameter sets correctly', () => {
@@ -146,27 +153,28 @@ describe('AilaChat Parameter Routing Integration', () => {
         },
         {
           model: 'gpt-4o-2024-08-06',
-          providedParams: {} as any,
+          providedParams: {},
           expectedParams: { temperature: DEFAULT_LEGACY_TEMPERATURE },
         },
       ];
 
       partialScenarios.forEach(scenario => {
-        const isGPT5 = isGPT5Model(scenario.model);
-        const params: Record<string, any> = { model: scenario.model, messages: [] };
+        const options: ModelOptions = {
+          temperature: 'temperature' in scenario.providedParams ? scenario.providedParams.temperature : undefined,
+          reasoning_effort: 'reasoning_effort' in scenario.providedParams ? scenario.providedParams.reasoning_effort : undefined,
+          verbosity: 'verbosity' in scenario.providedParams ? scenario.providedParams.verbosity : undefined,
+        };
 
-        if (isGPT5) {
-          const providedParams = scenario.providedParams as Record<string, unknown>;
-          params.reasoning_effort = providedParams.reasoning_effort ?? DEFAULT_REASONING_EFFORT;
-          params.verbosity = providedParams.verbosity ?? DEFAULT_VERBOSITY;
+        const typedParams = createModelParams(scenario.model, [], options, isGPT5Model);
+
+        if (typedParams.type === "gpt5") {
+          const expected = scenario.expectedParams as { reasoning_effort?: ReasoningEffort; verbosity?: Verbosity };
+          expect(typedParams.reasoning_effort ?? DEFAULT_REASONING_EFFORT).toBe(expected.reasoning_effort);
+          expect(typedParams.verbosity ?? DEFAULT_VERBOSITY).toBe(expected.verbosity);
         } else {
-          const providedParams = scenario.providedParams as Record<string, unknown>;
-          params.temperature = providedParams.temperature ?? DEFAULT_LEGACY_TEMPERATURE;
+          const expected = scenario.expectedParams as { temperature?: number };
+          expect(typedParams.temperature ?? DEFAULT_LEGACY_TEMPERATURE).toBe(expected.temperature);
         }
-
-        Object.entries(scenario.expectedParams).forEach(([key, value]) => {
-          expect(params[key]).toBe(value);
-        });
       });
     });
 
@@ -183,19 +191,26 @@ describe('AilaChat Parameter Routing Integration', () => {
         const isGPT5 = isGPT5Model(testCase.model);
         expect(isGPT5).toBe(testCase.expectGPT5);
 
-        const params: Record<string, any> = { model: testCase.model, messages: [] };
+        const options: ModelOptions = isGPT5 
+          ? { reasoning_effort: DEFAULT_REASONING_EFFORT, verbosity: DEFAULT_VERBOSITY }
+          : { temperature: DEFAULT_LEGACY_TEMPERATURE };
+
+        const typedParams = createModelParams(testCase.model, [], options, isGPT5Model);
 
         if (isGPT5) {
-          params.reasoning_effort = DEFAULT_REASONING_EFFORT;
-          params.verbosity = DEFAULT_VERBOSITY;
-          expect(params.reasoning_effort).toBeDefined();
-          expect(params.verbosity).toBeDefined();
-          expect(params.temperature).toBeUndefined();
+          expect(typedParams.type).toBe("gpt5");
+          if (typedParams.type === "gpt5") {
+            expect(typedParams.reasoning_effort).toBeDefined();
+            expect(typedParams.verbosity).toBeDefined();
+            expect(typedParams.temperature).toBeUndefined();
+          }
         } else {
-          params.temperature = DEFAULT_LEGACY_TEMPERATURE;
-          expect(params.temperature).toBeDefined();
-          expect(params.reasoning_effort).toBeUndefined();
-          expect(params.verbosity).toBeUndefined();
+          expect(typedParams.type).toBe("legacy");
+          if (typedParams.type === "legacy") {
+            expect(typedParams.temperature).toBeDefined();
+            expect(typedParams.reasoning_effort).toBeUndefined();
+            expect(typedParams.verbosity).toBeUndefined();
+          }
         }
       });
     });
@@ -230,26 +245,28 @@ describe('AilaChat Parameter Routing Integration', () => {
         const isGPT5 = isGPT5Model(scenario.model);
         expect(isGPT5).toBe(scenario.shouldUseGPT5);
 
-        const params: Record<string, any> = { model: scenario.model, messages: [] };
+        const options: ModelOptions = {
+          temperature: scenario.allParams.temperature,
+          reasoning_effort: scenario.allParams.reasoning_effort,
+          verbosity: scenario.allParams.verbosity,
+        };
 
-        // Apply the parameter routing logic
-        if (isGPT5) {
-          if (scenario.allParams.reasoning_effort) params.reasoning_effort = scenario.allParams.reasoning_effort;
-          if (scenario.allParams.verbosity) params.verbosity = scenario.allParams.verbosity;
-          // temperature should NOT be applied
-        } else {
-          if (scenario.allParams.temperature !== undefined) params.temperature = scenario.allParams.temperature;
-          // reasoning parameters should NOT be applied
-        }
+        const typedParams = createModelParams(scenario.model, [], options, isGPT5Model);
 
         if (scenario.shouldUseGPT5) {
-          expect(params.reasoning_effort).toBe(scenario.allParams.reasoning_effort);
-          expect(params.verbosity).toBe(scenario.allParams.verbosity);
-          expect(params.temperature).toBeUndefined();
+          expect(typedParams.type).toBe("gpt5");
+          if (typedParams.type === "gpt5") {
+            expect(typedParams.reasoning_effort).toBe(scenario.allParams.reasoning_effort);
+            expect(typedParams.verbosity).toBe(scenario.allParams.verbosity);
+            expect(typedParams.temperature).toBeUndefined();
+          }
         } else {
-          expect(params.temperature).toBe(scenario.allParams.temperature);
-          expect(params.reasoning_effort).toBeUndefined();
-          expect(params.verbosity).toBeUndefined();
+          expect(typedParams.type).toBe("legacy");
+          if (typedParams.type === "legacy") {
+            expect(typedParams.temperature).toBe(scenario.allParams.temperature);
+            expect(typedParams.reasoning_effort).toBeUndefined();
+            expect(typedParams.verbosity).toBeUndefined();
+          }
         }
       });
     });

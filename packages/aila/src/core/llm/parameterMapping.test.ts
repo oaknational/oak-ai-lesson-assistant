@@ -1,4 +1,13 @@
 import { isGPT5Model } from '../../constants';
+import { 
+  createModelParams, 
+  extractAPIParams,
+  type ModelOptions 
+} from '../types/modelParameters';
+import type { 
+  TypedTestParams,
+  TestModelOptions 
+} from '../types/testTypes';
 
 describe('Parameter Mapping Logic', () => {
   describe('Model Detection and Parameter Routing', () => {
@@ -37,27 +46,30 @@ describe('Parameter Mapping Logic', () => {
         const isGPT5 = isGPT5Model(testCase.model);
         expect(isGPT5).toBe(testCase.expectGPT5Params);
 
-        // Simulate parameter branching logic
-        const params: Record<string, any> = {
-          model: testCase.model,
-          messages: [],
+        // Use type-safe parameter creation instead of manual branching
+        const options: ModelOptions = {
+          temperature: testCase.temperature,
+          reasoning_effort: testCase.reasoning_effort,
+          verbosity: testCase.verbosity,
         };
 
-        if (isGPT5) {
-          if (testCase.reasoning_effort) params.reasoning_effort = testCase.reasoning_effort;
-          if (testCase.verbosity) params.verbosity = testCase.verbosity;
-        } else {
-          if (testCase.temperature !== undefined) params.temperature = testCase.temperature;
-        }
+        const typedParams = createModelParams(testCase.model, [], options, isGPT5Model);
+        const apiParams = extractAPIParams(typedParams);
 
         if (testCase.expectGPT5Params) {
-          expect(params.reasoning_effort).toBe(testCase.reasoning_effort);
-          expect(params.verbosity).toBe(testCase.verbosity);
-          expect(params.temperature).toBeUndefined();
+          expect(typedParams.type).toBe("gpt5");
+          if (typedParams.type === "gpt5") {
+            expect(typedParams.reasoning_effort).toBe(testCase.reasoning_effort);
+            expect(typedParams.verbosity).toBe(testCase.verbosity);
+            expect(typedParams.temperature).toBeUndefined();
+          }
         } else {
-          expect(params.temperature).toBe(testCase.temperature);
-          expect(params.reasoning_effort).toBeUndefined();
-          expect(params.verbosity).toBeUndefined();
+          expect(typedParams.type).toBe("legacy");
+          if (typedParams.type === "legacy") {
+            expect(typedParams.temperature).toBe(testCase.temperature);
+            expect(typedParams.reasoning_effort).toBeUndefined();
+            expect(typedParams.verbosity).toBeUndefined();
+          }
         }
       });
     });
@@ -79,24 +91,19 @@ describe('Parameter Mapping Logic', () => {
       ];
 
       testCases.forEach(testCase => {
-        const isGPT5 = isGPT5Model(testCase.model);
-        const params: Record<string, any> = {
-          model: testCase.model,
-          messages: [],
+        const options: ModelOptions = {
+          temperature: 'temperature' in testCase ? testCase.temperature : undefined,
+          reasoning_effort: 'reasoning_effort' in testCase ? testCase.reasoning_effort : undefined,
+          verbosity: 'verbosity' in testCase ? testCase.verbosity : undefined,
         };
 
-        if (isGPT5) {
-          if ('reasoning_effort' in testCase) params.reasoning_effort = testCase.reasoning_effort;
-          if ('verbosity' in testCase) params.verbosity = testCase.verbosity;
-        } else {
-          if ('temperature' in testCase) params.temperature = testCase.temperature;
-        }
+        const typedParams = createModelParams(testCase.model, [], options, isGPT5Model);
 
-        if (isGPT5) {
-          expect(params.reasoning_effort).toBe(testCase.expectReasoningEffort);
-          expect(params.verbosity).toBe(testCase.expectVerbosity);
+        if (typedParams.type === "gpt5") {
+          expect(typedParams.reasoning_effort).toBe(testCase.expectReasoningEffort);
+          expect(typedParams.verbosity).toBe(testCase.expectVerbosity);
         } else {
-          expect(params.temperature).toBe(testCase.expectTemperature);
+          expect(typedParams.temperature).toBe(testCase.expectTemperature);
         }
       });
     });
@@ -137,31 +144,28 @@ describe('Parameter Mapping Logic', () => {
 
     it('should demonstrate parameter precedence', () => {
       // When both parameter sets are provided, the model type determines which is used
-      const mixedParams = {
+      const mixedOptions: TestModelOptions = {
         temperature: 0.8,
-        reasoning_effort: 'high' as const,
-        verbosity: 'low' as const,
+        reasoning_effort: 'high',
+        verbosity: 'low',
       };
 
       const gpt5Model = 'gpt-5';
       const legacyModel = 'gpt-4o-2024-08-06';
 
       // GPT-5 model should use reasoning parameters
-      if (isGPT5Model(gpt5Model)) {
-        const gpt5Params: Record<string, any> = { model: gpt5Model, messages: [] };
-        gpt5Params.reasoning_effort = mixedParams.reasoning_effort;
-        gpt5Params.verbosity = mixedParams.verbosity;
-        
+      const gpt5Params = createModelParams(gpt5Model, [], mixedOptions, isGPT5Model);
+      expect(gpt5Params.type).toBe("gpt5");
+      if (gpt5Params.type === "gpt5") {
         expect(gpt5Params.reasoning_effort).toBe('high');
         expect(gpt5Params.verbosity).toBe('low');
         expect(gpt5Params.temperature).toBeUndefined();
       }
 
       // Legacy model should use temperature parameter
-      if (!isGPT5Model(legacyModel)) {
-        const legacyParams: Record<string, any> = { model: legacyModel, messages: [] };
-        legacyParams.temperature = mixedParams.temperature;
-        
+      const legacyParams = createModelParams(legacyModel, [], mixedOptions, isGPT5Model);
+      expect(legacyParams.type).toBe("legacy");
+      if (legacyParams.type === "legacy") {
         expect(legacyParams.temperature).toBe(0.8);
         expect(legacyParams.reasoning_effort).toBeUndefined();
         expect(legacyParams.verbosity).toBeUndefined();
