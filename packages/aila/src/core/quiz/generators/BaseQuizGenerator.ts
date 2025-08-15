@@ -28,7 +28,7 @@ import type {
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import { convertRawQuizToV2 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { DbQuiz, RawQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
+import type { RawQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
@@ -619,7 +619,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     if (!rawQuizString) {
       return null;
     }
-    const parsedRawQuiz = JSON.parse(rawQuizString) as DbQuiz;
+    const parsedRawQuiz = JSON.parse(rawQuizString) as RawQuiz;
     invariant(parsedRawQuiz, "Parsed raw quiz is null");
 
     // Handle case where rawQuiz is a single object instead of an array

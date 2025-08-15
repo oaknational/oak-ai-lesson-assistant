@@ -5,7 +5,6 @@ import { TeX } from "mathjax-full/js/input/tex";
 import { mathjax } from "mathjax-full/js/mathjax";
 import { SVG } from "mathjax-full/js/output/svg";
 
-
 // Following mathjax direct pattern: https://github.com/mathjax/MathJax-demos-node/blob/master/direct/tex2svg
 
 type MathJaxContext = {

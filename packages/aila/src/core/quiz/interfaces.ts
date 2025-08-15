@@ -12,7 +12,7 @@ import type {
   QuizV2,
   QuizV2Question,
 } from "../../protocol/schemas/quiz/quizV2";
-import type { DbQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type { RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
@@ -144,7 +144,7 @@ export interface QuizQuestionTextOnlySource {
 }
 
 export interface QuizQuestionWithRawJson extends QuizV1Question {
-  rawQuiz: NonNullable<DbQuiz>;
+  rawQuiz: NonNullable<RawQuiz>;
 }
 
 export interface CustomHit {

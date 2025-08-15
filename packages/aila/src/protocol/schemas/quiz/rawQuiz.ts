@@ -75,27 +75,6 @@ const answersSchema = z.object({
 });
 
 export const rawQuizQuestionSchema = z.object({
-  question_id: z.number(),
-  question_uid: z.string(),
-  question_type: z.enum([
-    "multiple-choice",
-    "match",
-    "order",
-    "short-answer",
-    "explanatory-text",
-  ]),
-  question_stem: z
-    .array(z.union([stemTextObjectSchema, stemImageObjectSchema]))
-    .min(1),
-  answers: answersSchema.nullable().optional(),
-  feedback: z.string(),
-  hint: z.string(),
-  active: z.boolean(),
-});
-
-// This is the schema for the quiz questions in the oak hasura db
-// These are coerced into the rawQuizQuestionSchema.
-export const dbQuizQuestionSchema = z.object({
   questionId: z.number(),
   questionUid: z.string(),
   questionType: z.enum([
@@ -114,9 +93,7 @@ export const dbQuizQuestionSchema = z.object({
   active: z.boolean(),
 });
 
-export type DbQuizQuestion = z.infer<typeof dbQuizQuestionSchema>;
-export const dbQuizSchema = z.array(dbQuizQuestionSchema).nullable().optional();
-export type DbQuiz = z.infer<typeof dbQuizSchema>;
+// Raw quiz schema represents the actual database format (camelCase)
 
 export const rawQuizSchema = z
   .array(rawQuizQuestionSchema)

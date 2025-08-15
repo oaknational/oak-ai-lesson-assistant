@@ -1,5 +1,4 @@
-import { convertSnakeCaseToCamelCase } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { DbQuiz, RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type { RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
@@ -56,7 +55,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<RawQuiz>,
       },
       {
         question:
@@ -66,7 +65,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<RawQuiz>,
       },
     ];
     const openAIMessage = combinePromptsAndQuestions(
