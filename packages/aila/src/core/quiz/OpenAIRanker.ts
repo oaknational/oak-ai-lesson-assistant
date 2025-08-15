@@ -76,11 +76,13 @@ export class OpenAIRanker {
 }
 
 function processStringWithImages(text: string): ChatContent[] {
-  const parts = text.split(/(![.*?]\(.*?\))/);
+  // Split by markdown image patterns: ![alt](url) - secure regex prevents ReDoS
+  const parts = text.split(/(!\[[^\]]*\]\([^)]*\))/);
   return parts
     .map((part): ChatContent | null => {
       if (part.startsWith("![")) {
-        const imageUrl = part.match(/\((.*?)\)/)?.[1];
+        // Extract URL from markdown image: ![alt](url)
+        const imageUrl = part.match(/\(([^)]*)\)/)?.[1];
         return imageUrl
           ? { type: "image_url" as const, image_url: { url: imageUrl } }
           : null;
