@@ -53,7 +53,6 @@ describe("quizToLLMMessagesTest", () => {
       ],
     };
     const result = quizToLLMMessages(testInput as QuizQuestionWithRawJson);
-    console.log(JSON.stringify(result));
     const ans = true;
     expect(ans).toBe(true);
   });
@@ -114,7 +113,6 @@ describe("fullOpenAIQuiz", () => {
       testLessonPlan,
       testInput as QuizQuestionWithRawJson,
     );
-    console.log(JSON.stringify(result));
     const ans = true;
     expect(ans).toBe(true);
   });

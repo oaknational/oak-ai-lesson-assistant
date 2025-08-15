@@ -33,7 +33,6 @@ describe("MLQuizGenerator", () => {
   it("should generate a starter quiz", async () => {
     const result =
       await mlQuizGenerator.generateMathsStarterQuizPatch(CircleTheoremLesson);
-    console.log("starter quiz result", JSON.stringify(result));
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
 
@@ -45,7 +44,6 @@ describe("MLQuizGenerator", () => {
   it("should generate an exit quiz", async () => {
     const result =
       await mlQuizGenerator.generateMathsExitQuizPatch(CircleTheoremLesson);
-    console.log("exit quiz result", JSON.stringify(result));
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
@@ -79,8 +77,6 @@ describe("MLQuizGenerator", () => {
       expect(query.length).toBeGreaterThan(0);
     });
 
-    // Log the queries for debugging
-    console.log("Generated semantic search queries:", result);
   });
 
   it("should generate semantic search queries with real API call", async () => {
@@ -101,8 +97,6 @@ describe("MLQuizGenerator", () => {
       expect(query.length).toBeGreaterThan(0);
     });
 
-    // Log the actual queries for inspection
-    console.log("Generated semantic search queries:", result);
   });
 
   it("should generate quiz questions using semantic search queries", async () => {
@@ -130,13 +124,6 @@ describe("MLQuizGenerator", () => {
       expect(question.distractors.length).toBeGreaterThan(0);
     });
 
-    // Log the first question for inspection
-    if (result[0]) {
-      console.log(
-        "First generated question:",
-        JSON.stringify(result[0], null, 2),
-      );
-    }
   });
 
   it("should correctly unpack lesson plan for prompt", () => {
