@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
-    "@googleapis/docs": "^3.0.0",
+    "@googleapis/docs": "^5.0.1",
     "@googleapis/drive": "^8.7.0",
     "@googleapis/slides": "^1.0.5",
     "@hubspot/api-client": "^11.2.0",

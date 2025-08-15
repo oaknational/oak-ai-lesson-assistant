@@ -2,13 +2,13 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import type { Result } from "../../types";
-import type { ValueToString } from "../../utils";
-import { defaultValueToString } from "../../utils";
+import type { Result } from "../../../types";
+import type { ValueToString } from "../../../utils";
+import { defaultValueToString } from "../../../utils";
+import { findMarkdownImages } from "../replacements/findMarkdownImages";
+import { imageReplacements } from "../replacements/imageReplacements";
+import { textReplacements } from "../replacements/textReplacements";
 import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRequests";
-import { findMarkdownImages } from "./findMarkdownImages";
-import { imageReplacements } from "./imageReplacements";
-import { textReplacements } from "./textReplacements";
 
 const log = aiLogger("exports");
 

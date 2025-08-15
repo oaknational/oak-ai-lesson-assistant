@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { prepLessonForAdditionalMaterialsDoc } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
 import type { LessonInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdAdditionalMaterials as getDocsTemplateIdAdditionalMaterials } from "./templates";
 import type { OutputData, Result, State } from "./types";

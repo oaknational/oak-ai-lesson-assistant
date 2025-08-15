@@ -1,3 +1,11 @@
+/**
+ * Deterministic shuffling utilities for quiz questions
+ * Uses hash-based approach to ensure consistent ordering
+ */
+
+/**
+ * Create a simple hash from a string for deterministic shuffling
+ */
 function simpleHash(str: string): number {
   let hash = 0;
   if (str.length === 0) return hash;
@@ -47,6 +55,10 @@ export interface ShuffledOrderItem {
   correctIndex: number;
 }
 
+/**
+ * Shuffle items for ordering questions deterministically
+ * Returns items with their original 1-based index
+ */
 export function shuffleOrderItems(items: string[]): ShuffledOrderItem[] {
   const itemsWithKeys = items.map((item, index) => ({
     text: item,
@@ -69,6 +81,7 @@ export interface ShuffledMatchItem {
 
 /**
  * Shuffle match question right-side items deterministically
+ * Assigns lowercase letters as labels
  */
 export function shuffleMatchItems(items: string[]): ShuffledMatchItem[] {
   const itemsWithLabels = items.map((item, index) => ({
