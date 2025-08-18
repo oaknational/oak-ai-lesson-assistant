@@ -82,7 +82,8 @@ function processStringWithImages(text: string): ChatContent[] {
     .map((part): ChatContent | null => {
       if (part.startsWith("![")) {
         // Extract URL from markdown image: ![alt](url)
-        const imageUrl = part.match(/\(([^)]*)\)/)?.[1];
+        // Use bounded quantifier to prevent ReDoS vulnerability
+        const imageUrl = part.match(/\(([^)]{0,2000})\)/)?.[1];
         return imageUrl
           ? { type: "image_url" as const, image_url: { url: imageUrl } }
           : null;
