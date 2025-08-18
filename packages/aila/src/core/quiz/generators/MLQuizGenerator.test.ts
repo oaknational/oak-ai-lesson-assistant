@@ -76,7 +76,6 @@ describe("MLQuizGenerator", () => {
       expect(typeof query).toBe("string");
       expect(query.length).toBeGreaterThan(0);
     });
-
   });
 
   it("should generate semantic search queries with real API call", async () => {
@@ -96,7 +95,6 @@ describe("MLQuizGenerator", () => {
       expect(typeof query).toBe("string");
       expect(query.length).toBeGreaterThan(0);
     });
-
   });
 
   it("should generate quiz questions using semantic search queries", async () => {
@@ -123,7 +121,6 @@ describe("MLQuizGenerator", () => {
       expect(question.answers.length).toBeGreaterThan(0);
       expect(question.distractors.length).toBeGreaterThan(0);
     });
-
   });
 
   it("should correctly unpack lesson plan for prompt", () => {
