@@ -28,6 +28,18 @@ export const InlineAnswer: Story = {
   },
 };
 
+export const InlineAnswerWithSpaces: Story = {
+  args: {
+    question: {
+      questionType: "short-answer",
+      question: "The capital of France is {{ }}.",
+      answers: ["Paris"],
+      hint: null,
+    },
+    questionNumber: 2,
+  },
+};
+
 export const SeparateAnswer: Story = {
   args: {
     question: {
