@@ -64,22 +64,34 @@ async function main() {
       messageHistoryWithProtocol,
       customAgents: {
         mathsStarterQuiz: () => {
-          return Promise.resolve([
-            {
-              question: "What is 2 + 2?",
-              answers: ["1", "2", "3", "4"],
-              distractors: ["4"],
-            },
-          ]);
+          return Promise.resolve({
+            version: "v2" as const,
+            questions: [
+              {
+                question: "What is 2 + 2?",
+                questionType: "multiple-choice" as const,
+                answers: ["4"],
+                distractors: ["1", "2", "3"],
+                hint: null,
+              },
+            ],
+            imageAttributions: [],
+          });
         },
         mathsExitQuiz: () => {
-          return Promise.resolve([
-            {
-              question: "What is 2 + 3?",
-              answers: ["2", "3", "4", "5"],
-              distractors: ["5"],
-            },
-          ]);
+          return Promise.resolve({
+            version: "v2" as const,
+            questions: [
+              {
+                question: "What is 2 + 3?",
+                questionType: "multiple-choice" as const,
+                answers: ["5"],
+                distractors: ["2", "3", "4"],
+                hint: null,
+              },
+            ],
+            imageAttributions: [],
+          });
         },
         fetchRagData: () => {
           // Simulate fetching RAG data
