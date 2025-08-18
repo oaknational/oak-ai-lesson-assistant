@@ -2,12 +2,13 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import type { QuizV2Question } from "../../../schema/input.schema";
+import type { ImageAttribution, QuizV2Question } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
 import { generateAllQuizElements } from "../quiz/table-generators";
 import { findMarkdownImages } from "../replacements/findMarkdownImages";
 import { imageReplacements } from "../replacements/imageReplacements";
 import { replaceLatexInDocument } from "../replacements/replaceLatexInDocument";
+import { addFooterAttribution } from "../quiz/footerAttribution";
 
 const log = aiLogger("exports");
 
@@ -15,6 +16,7 @@ interface PopulateDocV2Data {
   lesson_title: string;
   quiz_type: string;
   questions: QuizV2Question[];
+  imageAttributions: ImageAttribution[];
 }
 
 /**
@@ -89,6 +91,8 @@ export async function populateQuizDoc({
         },
       });
     }
+
+    await addFooterAttribution(googleDocs, documentId, data.questions, data.imageAttributions);
 
     log.info(`Quiz populated with ${data.questions.length} questions`);
 

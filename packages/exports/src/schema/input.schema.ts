@@ -55,10 +55,17 @@ export const quizV2QuestionSchema = z.discriminatedUnion("questionType", [
   quizV2QuestionOrderSchema,
 ]);
 
+const imageAttributionSchema = z.object({
+  imageUrl: z.string(),
+  attribution: z.string(),
+});
+
 export const quizV2Schema = z.object({
   version: z.literal("v2"),
   questions: z.array(quizV2QuestionSchema).min(1),
+  imageAttributions: z.array(imageAttributionSchema),
 });
+export type ImageAttribution = z.infer<typeof imageAttributionSchema>;
 export type QuizV2 = z.infer<typeof quizV2Schema>;
 export type QuizV2Question = z.infer<typeof quizV2QuestionSchema>;
 export type QuizV2QuestionMultipleChoice = z.infer<

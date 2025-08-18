@@ -5,6 +5,8 @@ export { downloadDriveFile } from "./src/downloadDriveFile";
 export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 
+export * from "./src/quiz-utils/attribution";
+
 export {
   quizDocInputSchema as exportDocQuizSchema,
   lessonPlanDocInputSchema as exportDocLessonPlanSchema,
