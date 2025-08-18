@@ -7,17 +7,13 @@ import type { Survey } from "posthog-js";
 import { SurveyType } from "posthog-js";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import type { PostHogSurveyName } from "@/lib/posthog/surveys/surveysTypes.generated";
 
 const log = aiLogger("feedback");
 
 type UsePosthogFeedbackSurveyProps = {
   closeDialog?: () => void;
-  surveyName:
-    | "Chat Feedback"
-    | "Moderation feedback"
-    | "Chat Feedback With Stats"
-    | "Report Content"
-    | "End of Aila generation survey launch aug24";
+  surveyName: PostHogSurveyName;
 };
 export const usePosthogFeedbackSurvey = ({
   closeDialog,

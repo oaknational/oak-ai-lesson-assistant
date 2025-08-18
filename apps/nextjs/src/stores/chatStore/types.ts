@@ -32,6 +32,7 @@ export type AilaStreamingStatus =
 export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
+  streamingError: boolean;
 
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
@@ -57,6 +58,7 @@ export type ChatState = {
     append: (action: ChatAction) => void;
     stop: () => void;
     streamingFinished: () => void;
+    streamingFailed: () => void;
     scrollToBottom: () => void;
     fetchInitialMessages: () => Promise<void>;
     ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => void;
