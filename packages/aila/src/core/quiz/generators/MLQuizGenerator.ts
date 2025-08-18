@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
+import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import type {
   CustomHit,
   CustomSource,
@@ -148,7 +149,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     lessonPlan: LooseLessonPlan,
     quizType: QuizPath,
   ): Promise<z.infer<typeof SemanticSearchSchema>> {
-    const unpackedContent = this.unpackLessonPlanForPrompt(lessonPlan);
+    const unpackedContent = unpackLessonPlanForPrompt(lessonPlan);
 
     const prompt = `Based on the following lesson plan content, generate a series of semantic search queries that could be used to find relevant quiz questions from a question bank for questions from the UK mathematics curriculum.
 
