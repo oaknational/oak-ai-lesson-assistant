@@ -10,12 +10,12 @@ import { z } from "zod";
 
 import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
-import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import type {
   CustomHit,
   CustomSource,
   QuizQuestionWithRawJson,
 } from "../interfaces";
+import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");

@@ -27,8 +27,7 @@ import type {
   QuizV2Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import { convertRawQuizToV2 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { HasuraQuiz, RawQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizGeneratorService,
@@ -40,7 +39,6 @@ import type {
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
 import type { SearchResponseBody } from "../types";
-import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 const log = aiLogger("aila:quiz");
 

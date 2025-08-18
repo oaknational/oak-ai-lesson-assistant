@@ -74,26 +74,6 @@ const answersSchema = z.object({
   "explanatory-text": z.null().optional(),
 });
 
-export const rawQuizQuestionSchema = z.object({
-  question_id: z.number(),
-  question_uid: z.string(),
-  question_type: z.enum([
-    "multiple-choice",
-    "match",
-    "order",
-    "short-answer",
-    "explanatory-text",
-  ]),
-  question_stem: z
-    .array(z.union([stemTextObjectSchema, stemImageObjectSchema]))
-    .min(1),
-  answers: answersSchema.nullable().optional(),
-  feedback: z.string(),
-  hint: z.string(),
-  active: z.boolean(),
-});
-
-// This is the schema for the quiz questions from Oak Hasura database
 export const hasuraQuizQuestionSchema = z.object({
   questionId: z.number(),
   questionUid: z.string(),
@@ -114,17 +94,8 @@ export const hasuraQuizQuestionSchema = z.object({
 });
 
 export type HasuraQuizQuestion = z.infer<typeof hasuraQuizQuestionSchema>;
-export const hasuraQuizSchema = z.array(hasuraQuizQuestionSchema).nullable().optional();
-export type HasuraQuiz = z.infer<typeof hasuraQuizSchema>;
-
-export const rawQuizSchema = z
-  .array(rawQuizQuestionSchema)
+export const hasuraQuizSchema = z
+  .array(hasuraQuizQuestionSchema)
   .nullable()
   .optional();
-
-export type RawQuiz = z.infer<typeof rawQuizSchema>;
-export type QuizProps = {
-  questions: NonNullable<RawQuiz>;
-  imageAttribution: { attribution: string; questionNumber: string }[];
-  isMathJaxLesson: boolean;
-};
+export type HasuraQuiz = z.infer<typeof hasuraQuizSchema>;

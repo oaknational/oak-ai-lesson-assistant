@@ -1,6 +1,5 @@
 import type { HasuraQuiz } from "../rawQuiz";
 
-// This fixture is based on real Hasura data structure
 export const rawQuizFixture: HasuraQuiz = [
   {
     questionId: 1,

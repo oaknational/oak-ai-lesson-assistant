@@ -1,18 +1,14 @@
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
-import type { z } from "zod";
 
 import type { QuizV2, QuizV2Question } from "../quizV2";
 import type {
-  DbQuiz,
-  DbQuizQuestion,
-  RawQuiz,
+  HasuraQuiz,
   StemImageObject,
   StemObject,
   StemTextObject,
 } from "../rawQuiz";
-import { dbQuizSchema } from "../rawQuiz";
 
 const log = aiLogger("aila:quiz");
 
@@ -78,13 +74,13 @@ function extractMarkdownFromContent(
 }
 
 /**
- * Convert raw quiz from Oak curriculum format to Quiz V2 format
+ * Convert Hasura quiz format to Quiz V2 format
  */
-export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
-  log.info("convertRawQuizToV2 input:", { rawQuiz });
+export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
+  log.info("convertHasuraQuizToV2 input:", { hasuraQuiz });
 
-  if (!rawQuiz || !Array.isArray(rawQuiz)) {
-    log.info("Raw quiz is not an array, returning empty quiz");
+  if (!hasuraQuiz || !Array.isArray(hasuraQuiz)) {
+    log.info("Hasura quiz is not an array, returning empty quiz");
     return {
       version: "v2",
       questions: [],
@@ -96,25 +92,27 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
   const allImageAttributions: Array<{ imageUrl: string; attribution: string }> =
     [];
 
-  const questions = rawQuiz
-    .filter((rawQuestion) => rawQuestion.question_type !== "explanatory-text")
-    .map((rawQuestion): QuizV2Question => {
-      log.info("Processing raw question:", { rawQuestion });
+  const questions = hasuraQuiz
+    .filter(
+      (hasuraQuestion) => hasuraQuestion.questionType !== "explanatory-text",
+    )
+    .map((hasuraQuestion): QuizV2Question => {
+      log.info("Processing hasura question:", { hasuraQuestion });
 
       // Early return for explanatory-text (should be filtered out already)
-      if (rawQuestion.question_type === "explanatory-text") {
+      if (hasuraQuestion.questionType === "explanatory-text") {
         throw new Error("Explanatory text questions should be filtered out");
       }
       // Extract question stem as markdown with inlined images
       const { markdown: questionStem, attributions } =
-        extractMarkdownFromContent(rawQuestion.question_stem);
+        extractMarkdownFromContent(hasuraQuestion.questionStem);
 
-      const hint = rawQuestion.hint ?? null;
+      const hint = hasuraQuestion.hint ?? null;
 
       // Handle different question types based on Oak's schema
-      switch (rawQuestion.question_type) {
+      switch (hasuraQuestion.questionType) {
         case "multiple-choice": {
-          const mcAnswers = rawQuestion.answers?.["multiple-choice"] ?? [];
+          const mcAnswers = hasuraQuestion.answers?.["multiple-choice"] ?? [];
 
           const correctAnswerResults = mcAnswers
             .filter((answer) => answer.answer_is_correct)
@@ -159,7 +157,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
         }
 
         case "short-answer": {
-          const saAnswers = rawQuestion.answers?.["short-answer"] ?? [];
+          const saAnswers = hasuraQuestion.answers?.["short-answer"] ?? [];
           const answerResults = saAnswers.map((answer) => {
             invariant(answer.answer, "Short answer missing 'answer' field");
             return extractMarkdownFromContent(answer.answer);
@@ -180,7 +178,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
         }
 
         case "match": {
-          const matchAnswers = rawQuestion.answers?.match ?? [];
+          const matchAnswers = hasuraQuestion.answers?.match ?? [];
           const pairs = matchAnswers.map((matchItem) => {
             const leftResult = extractMarkdownFromContent(
               matchItem.match_option ?? [],
@@ -211,7 +209,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
         }
 
         case "order": {
-          const orderAnswers = rawQuestion.answers?.order ?? [];
+          const orderAnswers = hasuraQuestion.answers?.order ?? [];
           const itemResults = orderAnswers.map((orderItem) =>
             extractMarkdownFromContent(orderItem.answer || []),
           );
@@ -231,7 +229,7 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
         }
 
         default: {
-          const _exhaustiveCheck: never = rawQuestion.question_type;
+          const _exhaustiveCheck: never = hasuraQuestion.questionType;
           throw new Error(
             `Unknown question type: ${_exhaustiveCheck as string}`,
           );
@@ -244,42 +242,4 @@ export function convertRawQuizToV2(rawQuiz: RawQuiz): QuizV2 {
     questions,
     imageAttributions: allImageAttributions,
   };
-}
-
-/**
- * Convert camelCase database format to snake_case raw quiz format
- */
-export function convertCamelCaseToSnakeCase(dbQuiz: DbQuiz): RawQuiz {
-  invariant(dbQuiz, "dbQuiz is required");
-
-  return dbQuiz.map((dbQuestion: DbQuizQuestion) => ({
-    question_id: dbQuestion.questionId,
-    question_uid: dbQuestion.questionUid,
-    question_type: dbQuestion.questionType,
-    question_stem: dbQuestion.questionStem,
-    answers: dbQuestion.answers,
-    feedback: dbQuestion.feedback,
-    hint: dbQuestion.hint,
-    active: dbQuestion.active,
-  })) as RawQuiz;
-}
-
-/**
- * Convert snake_case raw quiz format to camelCase database format
- */
-export function convertSnakeCaseToCamelCase(rawQuiz: RawQuiz): unknown[] {
-  if (!rawQuiz || !Array.isArray(rawQuiz)) {
-    return [];
-  }
-
-  return rawQuiz.map((rawQuestion) => ({
-    questionId: rawQuestion.question_id,
-    questionUid: rawQuestion.question_uid,
-    questionType: rawQuestion.question_type,
-    questionStem: rawQuestion.question_stem,
-    answers: rawQuestion.answers,
-    feedback: rawQuestion.feedback,
-    hint: rawQuestion.hint,
-    active: rawQuestion.active,
-  }));
 }

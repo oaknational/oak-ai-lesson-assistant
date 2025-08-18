@@ -1,19 +1,14 @@
-import {
-  convertCamelCaseToSnakeCase,
-  convertRawQuizToV2,
-} from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import { convertHasuraQuizToV2 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type {
   QuizV2,
   QuizV2Question,
 } from "../../protocol/schemas/quiz/quizV2";
-import type { RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type { QuizQuestionWithRawJson } from "./interfaces";
 
 export function coerceQuizQuestionWithJson(
   quizQuestion: QuizQuestionWithRawJson,
 ): QuizV2 {
-  const snakeCaseQuiz = convertCamelCaseToSnakeCase(quizQuestion.rawQuiz);
-  return convertRawQuizToV2(snakeCaseQuiz);
+  return convertHasuraQuizToV2(quizQuestion.rawQuiz);
 }
 
 export function coerceQuizQuestionWithJsonArray(
@@ -25,10 +20,7 @@ export function coerceQuizQuestionWithJsonArray(
 
   // Merge all QuizV2 objects into a single one
   const mergedQuestions: QuizV2Question[] = [];
-  const mergedImageAttributions: Array<{
-    imageUrl: string;
-    attribution: string;
-  }> = [];
+  const mergedImageAttributions: QuizV2["imageAttributions"] = [];
 
   for (const quizV2 of quizV2s) {
     mergedQuestions.push(...quizV2.questions);

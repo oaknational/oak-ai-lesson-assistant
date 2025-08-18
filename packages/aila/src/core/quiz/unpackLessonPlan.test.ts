@@ -72,10 +72,14 @@ describe("unpackLessonPlanForPrompt", () => {
     // Check keywords
     expect(result).toContain("Keywords:");
     expect(result).toContain("1. Variable");
-    expect(result).toContain("   Definition: A letter representing an unknown number");
+    expect(result).toContain(
+      "   Definition: A letter representing an unknown number",
+    );
 
     // Check additional materials
-    expect(result).toContain("Additional Materials: Algebra worksheets and manipulatives");
+    expect(result).toContain(
+      "Additional Materials: Algebra worksheets and manipulatives",
+    );
 
     // Check based on
     expect(result).toContain("Based On: Algebra Basics (ID: test-123)");

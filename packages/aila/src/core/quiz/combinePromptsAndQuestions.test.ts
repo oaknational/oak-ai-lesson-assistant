@@ -1,9 +1,7 @@
-import { convertSnakeCaseToCamelCase } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { DbQuiz, RawQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
-import { QuizQuestionWithRawJson } from "./interfaces";
 
 const parsedRawQuiz = [
   {
@@ -56,7 +54,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<HasuraQuiz>,
       },
       {
         question:
@@ -66,7 +64,7 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<DbQuiz>,
+        rawQuiz: parsedRawQuiz as NonNullable<HasuraQuiz>,
       },
     ];
     const openAIMessage = combinePromptsAndQuestions(
