@@ -93,9 +93,8 @@ export const rawQuizQuestionSchema = z.object({
   active: z.boolean(),
 });
 
-// This is the schema for the quiz questions in the oak hasura db
-// These are coerced into the rawQuizQuestionSchema.
-export const dbQuizQuestionSchema = z.object({
+// This is the schema for the quiz questions from Oak Hasura database
+export const hasuraQuizQuestionSchema = z.object({
   questionId: z.number(),
   questionUid: z.string(),
   questionType: z.enum([
@@ -114,9 +113,9 @@ export const dbQuizQuestionSchema = z.object({
   active: z.boolean(),
 });
 
-export type DbQuizQuestion = z.infer<typeof dbQuizQuestionSchema>;
-export const dbQuizSchema = z.array(dbQuizQuestionSchema).nullable().optional();
-export type DbQuiz = z.infer<typeof dbQuizSchema>;
+export type HasuraQuizQuestion = z.infer<typeof hasuraQuizQuestionSchema>;
+export const hasuraQuizSchema = z.array(hasuraQuizQuestionSchema).nullable().optional();
+export type HasuraQuiz = z.infer<typeof hasuraQuizSchema>;
 
 export const rawQuizSchema = z
   .array(rawQuizQuestionSchema)
