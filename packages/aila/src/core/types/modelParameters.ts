@@ -116,6 +116,7 @@ export function extractAPIParams<T>(
       ...baseParams,
       reasoning_effort: params.reasoning_effort ?? "medium",
       verbosity: params.verbosity ?? "medium",
+      temperature: 1, // GPT-5 requires exactly temperature: 1
     };
   } else {
     return {
