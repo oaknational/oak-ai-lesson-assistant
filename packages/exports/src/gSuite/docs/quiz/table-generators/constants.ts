@@ -5,7 +5,7 @@
 // Standard column widths in points
 export const COLUMN_WIDTHS = {
   checkbox: 32, // 21pt for image + spacing on right
-  letter: 18, // Reduced to minimize space after letter
+  letter: 19,
   spacer: 10,
   textNarrow: 140,
   textWide: 400,
