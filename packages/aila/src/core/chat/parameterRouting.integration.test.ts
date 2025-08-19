@@ -130,20 +130,21 @@ describe("AilaChat Parameter Routing Integration", () => {
       const model = DEFAULT_MODEL;
       const isGPT5 = isGPT5Model(model);
 
-      expect(model).toBe("gpt-4o-2024-08-06");
-      expect(isGPT5).toBe(false);
+      expect(model).toBe("gpt-5-2025-08-07");
+      expect(isGPT5).toBe(true);
 
-      // Should route to legacy parameters when using default model
+      // Should route to GPT-5 parameters when using default model
       const options: ModelOptions = {
-        temperature: DEFAULT_LEGACY_TEMPERATURE,
+        reasoning_effort: DEFAULT_REASONING_EFFORT,
+        verbosity: DEFAULT_VERBOSITY,
       };
       const typedParams = createModelParams(model, [], options, isGPT5Model);
 
-      expect(typedParams.type).toBe("legacy");
-      if (typedParams.type === "legacy") {
-        expect(typedParams.temperature).toBe(0.7);
-        expect(typedParams.reasoning_effort).toBeUndefined();
-        expect(typedParams.verbosity).toBeUndefined();
+      expect(typedParams.type).toBe("gpt5");
+      if (typedParams.type === "gpt5") {
+        expect(typedParams.reasoning_effort).toBe("medium");
+        expect(typedParams.verbosity).toBe("medium");
+        expect(typedParams.temperature).toBeUndefined();
       }
     });
 
