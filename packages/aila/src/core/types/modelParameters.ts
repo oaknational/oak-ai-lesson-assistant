@@ -114,10 +114,8 @@ export function extractAPIParams<T>(
   if (isGPT5Params(params)) {
     return {
       ...baseParams,
-      ...(params.reasoning_effort && {
-        reasoning_effort: params.reasoning_effort,
-      }),
-      ...(params.verbosity && { verbosity: params.verbosity }),
+      reasoning_effort: params.reasoning_effort ?? "medium",
+      verbosity: params.verbosity ?? "medium",
     };
   } else {
     return {
