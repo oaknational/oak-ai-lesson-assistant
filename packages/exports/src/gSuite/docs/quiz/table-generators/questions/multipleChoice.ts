@@ -47,7 +47,7 @@ export function generateMultipleChoiceTable(
     createTableElement(insertIndex, shuffledChoices.length, 3, cellContent, [
       COLUMN_WIDTHS.checkbox,
       COLUMN_WIDTHS.letter,
-      COLUMN_WIDTHS.textWide,
+      COLUMN_WIDTHS.auto,
     ]),
   );
 

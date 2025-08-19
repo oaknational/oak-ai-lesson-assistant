@@ -52,10 +52,10 @@ export function generateMatchingPairsTable(
   elements.push(
     createTableElement(insertIndex, rows, 5, cellContent, [
       COLUMN_WIDTHS.letter,
-      COLUMN_WIDTHS.textNarrow,
+      COLUMN_WIDTHS.auto,
       COLUMN_WIDTHS.spacer,
       COLUMN_WIDTHS.checkbox,
-      COLUMN_WIDTHS.textNarrow,
+      COLUMN_WIDTHS.auto,
     ]),
   );
 

@@ -148,8 +148,11 @@ export function createTableElement(
     },
   });
 
-  // 4. Set column widths
+  // 4. Set column widths (skip AUTO columns to let them fill remaining space)
   columnWidths.forEach((width, index) => {
+    // Skip AUTO columns - let them fill remaining space
+    if (width === "AUTO") return;
+
     requests.push({
       updateTableColumnProperties: {
         tableStartLocation: { index: insertIndex + 1 },
