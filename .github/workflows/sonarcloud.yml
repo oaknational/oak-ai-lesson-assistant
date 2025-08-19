@@ -22,10 +22,10 @@ jobs:
         with:
           version: 8
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "pnpm"
 
       - name: Install deps (with cache)
