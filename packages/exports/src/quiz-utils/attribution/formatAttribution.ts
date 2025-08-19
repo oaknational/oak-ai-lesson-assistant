@@ -1,3 +1,4 @@
+import { extractImagesFromQuestion } from "./extractImages";
 import type {
   AttributionSegment,
   FormattedAttribution,
@@ -5,7 +6,6 @@ import type {
   ImageWithAttribution,
   QuizV2Question,
 } from "./types";
-import { extractImagesFromQuestion } from "./extractImages";
 
 /**
  * Groups quiz questions with their image attributions
@@ -65,14 +65,16 @@ export function formatAttributionText(
   });
 
   // Sort questions by number
-  const sortedQuestions = Array.from(questionGroups.keys()).sort((a, b) => a - b);
+  const sortedQuestions = Array.from(questionGroups.keys()).sort(
+    (a, b) => a - b,
+  );
 
   const segments: AttributionSegment[] = [];
   let plainText = "";
 
   sortedQuestions.forEach((questionNumber, questionIndex) => {
     const images = questionGroups.get(questionNumber)!;
-    
+
     // Sort images by index within question
     images.sort((a, b) => a.imageIndex - b.imageIndex);
 
@@ -90,10 +92,11 @@ export function formatAttributionText(
       }
 
       // Question and image identifier (bold)
-      const identifier = imageIndex === 0 
-        ? `Q${questionNumber} Image ${image.imageIndex}`
-        : `Image ${image.imageIndex}`;
-      
+      const identifier =
+        imageIndex === 0
+          ? `Q${questionNumber} Image ${image.imageIndex}`
+          : `Image ${image.imageIndex}`;
+
       segments.push({ text: identifier, bold: true });
       plainText += identifier;
 
@@ -117,6 +120,9 @@ export function formatQuizAttributions(
   questions: QuizV2Question[],
   imageAttributions: ImageAttribution[],
 ): FormattedAttribution {
-  const imagesWithAttributions = mapQuestionImages(questions, imageAttributions);
+  const imagesWithAttributions = mapQuestionImages(
+    questions,
+    imageAttributions,
+  );
   return formatAttributionText(imagesWithAttributions);
 }

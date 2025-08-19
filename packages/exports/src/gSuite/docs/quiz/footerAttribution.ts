@@ -1,11 +1,16 @@
 /**
  * Utility for adding attribution text to document footers with proper formatting
  */
-import type { docs_v1 } from "@googleapis/docs";
-import type { ImageAttribution, QuizV2Question } from "../../../schema/input.schema";
-import { formatQuizAttributions } from "../../../quiz-utils/attribution/formatAttribution";
-import { getFooterStrategy } from "./line-counter";
 import { aiLogger } from "@oakai/logger";
+
+import type { docs_v1 } from "@googleapis/docs";
+
+import { formatQuizAttributions } from "../../../quiz-utils/attribution/formatAttribution";
+import type {
+  ImageAttribution,
+  QuizV2Question,
+} from "../../../schema/input.schema";
+import { getFooterStrategy } from "./line-counter";
 
 const log = aiLogger("exports");
 
@@ -28,9 +33,9 @@ function generateFooterAttributionRequests(
     .reverse()
     .map((segment) => ({
       insertText: {
-        location: { 
+        location: {
           index: 0,
-          segmentId: footerId 
+          segmentId: footerId,
         },
         text: segment.text,
       },
@@ -52,7 +57,7 @@ function generateFooterAttributionRequests(
           textStyle: {
             bold: true,
           },
-          fields: 'bold',
+          fields: "bold",
         },
       });
     }
@@ -74,14 +79,16 @@ export async function addFooterAttribution(
   // Get document style to access footer IDs
   const doc = await googleDocs.documents.get({ documentId });
   const documentStyle = doc.data.documentStyle;
-  
+
   if (!documentStyle?.defaultFooterId) {
-    throw new Error("Document template missing default footer - cannot add attribution");
+    throw new Error(
+      "Document template missing default footer - cannot add attribution",
+    );
   }
 
   // Generate attribution data
   const attributionData = formatQuizAttributions(questions, imageAttributions);
-  
+
   if (attributionData.segments.length === 0) {
     log.info("No image attributions to add");
     return;
@@ -91,21 +98,30 @@ export async function addFooterAttribution(
   const footerStrategy = getFooterStrategy(questions);
   const footerRequests: docs_v1.Schema$Request[] = [];
 
-  if (footerStrategy === 'both-footers') {
+  if (footerStrategy === "both-footers") {
     // Add to both first page and default footers (single page content)
     if (documentStyle.firstPageFooterId) {
       footerRequests.push(
-        ...generateFooterAttributionRequests(documentStyle.firstPageFooterId, attributionData)
+        ...generateFooterAttributionRequests(
+          documentStyle.firstPageFooterId,
+          attributionData,
+        ),
       );
     }
     footerRequests.push(
-      ...generateFooterAttributionRequests(documentStyle.defaultFooterId, attributionData)
+      ...generateFooterAttributionRequests(
+        documentStyle.defaultFooterId,
+        attributionData,
+      ),
     );
     log.info("Added attribution to both footers (single page strategy)");
   } else {
     // Add only to default footer (multi-page content)
     footerRequests.push(
-      ...generateFooterAttributionRequests(documentStyle.defaultFooterId, attributionData)
+      ...generateFooterAttributionRequests(
+        documentStyle.defaultFooterId,
+        attributionData,
+      ),
     );
     log.info("Added attribution to global footer only (multi-page strategy)");
   }

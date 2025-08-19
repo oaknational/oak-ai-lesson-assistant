@@ -4,14 +4,18 @@ import type { ExtractedImage, QuizV2Question } from "./types";
  * Extracts image URLs from markdown text
  * Matches format: ![alt text](url)
  */
-export function extractImageUrlsFromText(text: string): Array<{ url: string; altText: string }> {
+export function extractImageUrlsFromText(
+  text: string,
+): Array<{ url: string; altText: string }> {
   const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
   const matches = Array.from(text.matchAll(imageRegex));
-  
-  return matches.map((match) => ({
-    url: match[2] || "",
-    altText: match[1] || "image",
-  })).filter((item) => item.url);
+
+  return matches
+    .map((match) => ({
+      url: match[2] || "",
+      altText: match[1] || "image",
+    }))
+    .filter((item) => item.url);
 }
 
 /**

@@ -1,11 +1,15 @@
 import { describe, expect, it } from "@jest/globals";
 
-import type { ImageAttribution, ImageWithAttribution, QuizV2Question } from "./types";
 import {
   formatAttributionText,
   formatQuizAttributions,
   mapQuestionImages,
 } from "./formatAttribution";
+import type {
+  ImageAttribution,
+  ImageWithAttribution,
+  QuizV2Question,
+} from "./types";
 
 describe("mapQuestionImages", () => {
   const mockAttributions: ImageAttribution[] = [
@@ -51,7 +55,8 @@ describe("mapQuestionImages", () => {
     const questions: QuizV2Question[] = [
       {
         questionType: "multiple-choice",
-        question: "Compare ![first](https://example.com/image1.jpg) and ![second](https://example.com/image2.jpg)",
+        question:
+          "Compare ![first](https://example.com/image1.jpg) and ![second](https://example.com/image2.jpg)",
         answers: ["Same"],
         distractors: ["Different"],
         hint: null,
@@ -119,7 +124,8 @@ describe("mapQuestionImages", () => {
     const questions: QuizV2Question[] = [
       {
         questionType: "multiple-choice",
-        question: "What is ![known](https://example.com/image1.jpg) vs ![unknown](https://example.com/unknown.jpg)?",
+        question:
+          "What is ![known](https://example.com/image1.jpg) vs ![unknown](https://example.com/unknown.jpg)?",
         answers: ["Answer"],
         distractors: ["Distractor"],
         hint: null,
@@ -280,7 +286,7 @@ describe("formatAttributionText", () => {
     const result = formatAttributionText(images);
 
     expect(result.plainText).toBe(
-      "Q1 Image 1 Pixabay Q2 Image 1 Shutterstock; Image 2 Oak National Academy Q3 Image 1 CIEC"
+      "Q1 Image 1 Pixabay Q2 Image 1 Shutterstock; Image 2 Oak National Academy Q3 Image 1 CIEC",
     );
     expect(result.segments).toEqual([
       { text: "Q1 Image 1", bold: true },
@@ -324,7 +330,9 @@ describe("formatAttributionText", () => {
 
     const result = formatAttributionText(images);
 
-    expect(result.plainText).toBe("Q1 Image 1 First Q2 Image 1 Second Q3 Image 1 Third");
+    expect(result.plainText).toBe(
+      "Q1 Image 1 First Q2 Image 1 Second Q3 Image 1 Third",
+    );
   });
 
   it("should sort images within question by index", () => {
@@ -354,7 +362,9 @@ describe("formatAttributionText", () => {
 
     const result = formatAttributionText(images);
 
-    expect(result.plainText).toBe("Q1 Image 1 First; Image 2 Second; Image 3 Third");
+    expect(result.plainText).toBe(
+      "Q1 Image 1 First; Image 2 Second; Image 3 Third",
+    );
   });
 });
 
@@ -383,7 +393,9 @@ describe("formatQuizAttributions", () => {
 
     const result = formatQuizAttributions(questions, mockAttributions);
 
-    expect(result.plainText).toBe("Q1 Image 1 Pixabay; Image 2 Shutterstock / Jane Doe");
+    expect(result.plainText).toBe(
+      "Q1 Image 1 Pixabay; Image 2 Shutterstock / Jane Doe",
+    );
     expect(result.segments).toEqual([
       { text: "Q1 Image 1", bold: true },
       { text: " Pixabay", bold: false },

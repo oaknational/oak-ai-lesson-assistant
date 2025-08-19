@@ -1,9 +1,13 @@
 /**
  * Unit tests for footer attribution functionality
  */
-import { describe, expect, it, jest } from "@jest/globals";
 import type { docs_v1 } from "@googleapis/docs";
-import type { ImageAttribution, QuizV2Question } from "../../../schema/input.schema";
+import { describe, expect, it, jest } from "@jest/globals";
+
+import type {
+  ImageAttribution,
+  QuizV2Question,
+} from "../../../schema/input.schema";
 import { addFooterAttribution } from "./footerAttribution";
 
 // Mock the Google Docs API
@@ -54,7 +58,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions
+      imageAttributions,
     );
 
     expect(mockGet).toHaveBeenCalledWith({ documentId: "doc123" });
@@ -111,7 +115,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions
+      imageAttributions,
     );
 
     expect(mockBatchUpdate).toHaveBeenCalledWith({
@@ -134,7 +138,7 @@ describe("addFooterAttribution", () => {
     const batchUpdateCall = mockBatchUpdate.mock.calls[0][0];
     const requests = batchUpdateCall.requestBody.requests;
     const firstPageRequests = requests.filter(
-      (req: any) => req.insertText?.location?.segmentId === "footer2"
+      (req: any) => req.insertText?.location?.segmentId === "footer2",
     );
     expect(firstPageRequests).toHaveLength(0);
   });
@@ -163,7 +167,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions
+      imageAttributions,
     );
 
     expect(mockGet).toHaveBeenCalledWith({ documentId: "doc123" });
@@ -200,7 +204,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions
+      imageAttributions,
     );
 
     const batchUpdateCall = mockBatchUpdate.mock.calls[0][0];
