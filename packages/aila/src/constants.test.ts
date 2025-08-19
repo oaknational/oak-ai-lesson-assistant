@@ -50,7 +50,7 @@ describe("GPT-5 Constants and Model Detection", () => {
     });
 
     it("should have correct model defaults", () => {
-      expect(DEFAULT_MODEL).toBe("gpt-5");
+      expect(DEFAULT_MODEL).toBe("gpt-4o-2024-08-06");
       expect(DEFAULT_MODERATION_MODEL).toBe("gpt-4.1-2025-04-14");
     });
   });
