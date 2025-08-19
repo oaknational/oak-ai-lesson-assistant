@@ -5,6 +5,8 @@ import { TeX } from "mathjax-full/js/input/tex";
 import { mathjax } from "mathjax-full/js/mathjax";
 import { SVG } from "mathjax-full/js/output/svg";
 
+import { LATEX_USE_BOLD } from "./constants";
+
 // Following mathjax direct pattern: https://github.com/mathjax/MathJax-demos-node/blob/master/direct/tex2svg
 
 type MathJaxContext = {
@@ -33,6 +35,7 @@ function createMathJaxInitializer(): () => MathJaxContext {
 
       const svg = new SVG({
         fontCache: "local",
+        // fontWeight: "bold",
       });
 
       const document = mathjax.document("", { InputJax: tex, OutputJax: svg });
@@ -48,7 +51,9 @@ const getMathJaxContext = createMathJaxInitializer();
 
 export function latexToSvg(latex: string, isDisplay = false): string {
   const { adaptor, document } = getMathJaxContext();
-  const node = document.convert(latex, { display: isDisplay });
+  // Optionally wrap the latex in \mathbf{} to make it bold
+  const processedLatex = LATEX_USE_BOLD ? `\\mathbf{${latex}}` : latex;
+  const node = document.convert(processedLatex, { display: isDisplay });
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return adaptor.innerHTML(node);
 }

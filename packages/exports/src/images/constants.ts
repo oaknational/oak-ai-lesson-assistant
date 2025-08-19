@@ -14,7 +14,12 @@ export const DPI_SCALE_FACTOR = 3.0;
  * This does NOT get divided out, so it actually makes the images visually bigger.
  * 2.0 = twice as large, 1.5 = 50% larger, etc.
  */
-export const LATEX_VISUAL_SCALE = 1.5;
+export const LATEX_VISUAL_SCALE = 1.3;
+
+/**
+ * Whether to render LaTeX expressions in bold
+ */
+export const LATEX_USE_BOLD = false;
 
 /**
  * Convert pixels to points for Google Docs dimensions.
