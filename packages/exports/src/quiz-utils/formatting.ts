@@ -16,7 +16,7 @@ export function ensureEndsWithPeriod(text: string): string {
   }
 
   // Check if it already ends with punctuation
-  if (trimmed.match(/[.!?]$/)) {
+  if (trimmed.match(/[.!?:]$/)) {
     return trimmed;
   }
 
