@@ -220,7 +220,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         detectedElements: data.payload?.map((p) => p.text) ?? [],
         detectorName,
         recordPolicyViolation
-      } as any, // Type assertion to allow additional properties
+      } as Record<string, unknown>, // Type assertion to allow additional properties
     };
   }
 
@@ -271,7 +271,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           return {
             isThreat: false,
             message: "No threats detected (quaternary negative)",
-            details: { detectorName: quaternaryConfig.name, step: 'quaternary_negative' } as any
+            details: { detectorName: quaternaryConfig.name, step: 'quaternary_negative' } as Record<string, unknown>
           };
         }
       } catch (error) {
@@ -284,7 +284,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         return {
           isThreat: false,
           message: "Quaternary Detector failed - assuming no threat",
-          details: { detectorName: quaternaryConfig.name, error: true, step: 'quaternary_error' } as any
+          details: { detectorName: quaternaryConfig.name, error: true, step: 'quaternary_error' } as Record<string, unknown>
         };
       }
     }
@@ -388,7 +388,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           return {
             isThreat: false,
             message: "No threats detected (tertiary negative)",
-            details: { detectorName: tertiaryConfig.name, step: 'tertiary_negative' } as any
+            details: { detectorName: tertiaryConfig.name, step: 'tertiary_negative' } as Record<string, unknown>
           };
         }
 
@@ -400,7 +400,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           details: { 
             ...tertiaryResult.details,
             step: 'tertiary_positive_extra_step_needed'
-          } as any
+          } as Record<string, unknown>
         };
       } catch (error) {
         log.error("Error running Tertiary Detector", {
@@ -412,7 +412,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         return {
           isThreat: false,
           message: "Tertiary Detector failed - assuming no threat",
-          details: { detectorName: tertiaryConfig.name, error: true, step: 'tertiary_error' } as any
+          details: { detectorName: tertiaryConfig.name, error: true, step: 'tertiary_error' } as Record<string, unknown>
         };
       }
     }
@@ -422,7 +422,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     return {
       isThreat: false,
       message: "No threats detected (fallback)",
-      details: { fallback: true, step: 'no_detectors_ran' } as any
+      details: { fallback: true, step: 'no_detectors_ran' } as Record<string, unknown>
     };
   }
 
