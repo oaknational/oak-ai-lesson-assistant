@@ -6,7 +6,7 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "agents-cli": "pnpm with-env tsx src/lib/agents-new/cli.ts",
+    "agents-cli": "pnpm with-env tsx src/lib/agents-new-new/cli.ts",
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
