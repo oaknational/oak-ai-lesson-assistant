@@ -37,6 +37,8 @@ export type AilaGenerateDocumentOptions = {
 export type AilaPublicChatOptions = {
   useRag?: boolean;
   temperature?: number;
+  reasoning_effort?: "low" | "medium" | "high";
+  verbosity?: "low" | "medium" | "high";
   numberOfRecordsInRag?: number;
 };
 
