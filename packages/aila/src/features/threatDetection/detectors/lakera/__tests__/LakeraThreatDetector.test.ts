@@ -40,7 +40,7 @@ describe("LakeraThreatDetector", () => {
       expect(result.details).toEqual({
         detectedElements: [],
         detectorName: "Primary Detector",
-        recordPolicyViolation: true
+        recordPolicyViolation: true,
       });
       expect(result).toMatchSnapshot();
     });

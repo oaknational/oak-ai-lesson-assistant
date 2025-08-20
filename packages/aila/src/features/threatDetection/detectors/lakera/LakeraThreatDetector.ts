@@ -19,7 +19,11 @@ interface LakeraDetectorConfig {
   projectId: string;
   name: string;
   recordPolicyViolation: boolean; // Whether to record policy violations for this detector
-  runCondition?: 'always' | 'on_quaternary_positive' | 'on_primary_negative' | 'on_secondary_negative'; // When to run this detector
+  runCondition?:
+    | "always"
+    | "on_quaternary_positive"
+    | "on_primary_negative"
+    | "on_secondary_negative"; // When to run this detector
 }
 
 export class LakeraThreatDetector extends AilaThreatDetector {
@@ -41,30 +45,33 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     // Configure multiple detectors with their project IDs
     this.detectorConfigs = [
       {
-        projectId: process.env.LAKERA_GUARD_PROJECT_ID_4 || '',
-        name: 'Quaternary Detector (First)',
+        projectId: process.env.LAKERA_GUARD_PROJECT_ID_4 || "",
+        name: "Quaternary Detector (First)",
         recordPolicyViolation: false,
-        runCondition: 'always' as const
+        runCondition: "always" as const,
       },
       {
-        projectId: process.env.LAKERA_GUARD_PROJECT_ID_1 || process.env.LAKERA_GUARD_PROJECT_ID || '',
-        name: 'Primary Detector',
+        projectId:
+          process.env.LAKERA_GUARD_PROJECT_ID_1 ||
+          process.env.LAKERA_GUARD_PROJECT_ID ||
+          "",
+        name: "Primary Detector",
         recordPolicyViolation: true,
-        runCondition: 'on_quaternary_positive' as const
+        runCondition: "on_quaternary_positive" as const,
       },
       {
-        projectId: process.env.LAKERA_GUARD_PROJECT_ID_2 || '',
-        name: 'Secondary Detector',
+        projectId: process.env.LAKERA_GUARD_PROJECT_ID_2 || "",
+        name: "Secondary Detector",
         recordPolicyViolation: true,
-        runCondition: 'on_primary_negative' as const
+        runCondition: "on_primary_negative" as const,
       },
       {
-        projectId: process.env.LAKERA_GUARD_PROJECT_ID_3 || '',
-        name: 'Tertiary Detector',
+        projectId: process.env.LAKERA_GUARD_PROJECT_ID_3 || "",
+        name: "Tertiary Detector",
         recordPolicyViolation: false,
-        runCondition: 'on_secondary_negative' as const
-      }
-    ].filter(config => config.projectId) as LakeraDetectorConfig[]; // Only include detectors with valid project IDs
+        runCondition: "on_secondary_negative" as const,
+      },
+    ].filter((config) => config.projectId) as LakeraDetectorConfig[]; // Only include detectors with valid project IDs
 
     if (this.detectorConfigs.length === 0) {
       throw new Error("No valid Lakera project IDs configured");
@@ -72,7 +79,11 @@ export class LakeraThreatDetector extends AilaThreatDetector {
 
     log.info("Lakera detector initialized", {
       detectorCount: this.detectorConfigs.length,
-      detectors: this.detectorConfigs.map(d => ({ name: d.name, projectId: d.projectId, recordPolicyViolation: d.recordPolicyViolation }))
+      detectors: this.detectorConfigs.map((d) => ({
+        name: d.name,
+        projectId: d.projectId,
+        recordPolicyViolation: d.recordPolicyViolation,
+      })),
     });
   }
 
@@ -116,7 +127,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
   private async callLakeraAPI(
     messages: Message[],
     projectId: string,
-    detectorName: string
+    detectorName: string,
   ): Promise<LakeraGuardResponse> {
     const requestBody = {
       messages,
@@ -159,7 +170,9 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         responseBody: responseData,
         requestBody: parsedBody,
       });
-      throw new Error(`Lakera API error (${detectorName}): ${response.statusText}`);
+      throw new Error(
+        `Lakera API error (${detectorName}): ${response.statusText}`,
+      );
     }
 
     const parsed = lakeraGuardResponseSchema.parse(responseData);
@@ -198,7 +211,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     data: LakeraGuardResponse,
     highestThreat: BreakdownItem | undefined,
     detectorName: string,
-    recordPolicyViolation: boolean
+    recordPolicyViolation: boolean,
   ): ThreatDetectionResult {
     return {
       isThreat: data.flagged,
@@ -214,12 +227,12 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       rawResponse: {
         ...data,
         detectorName,
-        recordPolicyViolation
+        recordPolicyViolation,
       },
       details: {
         detectedElements: data.payload?.map((p) => p.text) ?? [],
         detectorName,
-        recordPolicyViolation
+        recordPolicyViolation,
       } as Record<string, unknown>, // Type assertion to allow additional properties
     };
   }
@@ -247,22 +260,33 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     let tertiaryResult: ThreatDetectionResult | null = null;
 
     // Step 1: Run Quaternary Detector (project_id_4) first
-    const quaternaryConfig = this.detectorConfigs.find(c => c.name === 'Quaternary Detector (First)');
+    const quaternaryConfig = this.detectorConfigs.find(
+      (c) => c.name === "Quaternary Detector (First)",
+    );
     if (quaternaryConfig) {
       try {
         log.info("Step 1: Running Quaternary Detector", {
           detectorName: quaternaryConfig.name,
-          projectId: quaternaryConfig.projectId
+          projectId: quaternaryConfig.projectId,
         });
 
-        const data = await this.callLakeraAPI(messages, quaternaryConfig.projectId, quaternaryConfig.name);
+        const data = await this.callLakeraAPI(
+          messages,
+          quaternaryConfig.projectId,
+          quaternaryConfig.name,
+        );
         const highestThreat = this.getHighestThreatFromBreakdown(data);
-        quaternaryResult = this.buildThreatResult(data, highestThreat, quaternaryConfig.name, quaternaryConfig.recordPolicyViolation);
+        quaternaryResult = this.buildThreatResult(
+          data,
+          highestThreat,
+          quaternaryConfig.name,
+          quaternaryConfig.recordPolicyViolation,
+        );
 
         log.info("Quaternary Detector completed", {
           isThreat: quaternaryResult.isThreat,
           severity: quaternaryResult.severity,
-          category: quaternaryResult.category
+          category: quaternaryResult.category,
         });
 
         // If quaternary returns false, do nothing
@@ -271,46 +295,66 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           return {
             isThreat: false,
             message: "No threats detected (quaternary negative)",
-            details: { detectorName: quaternaryConfig.name, step: 'quaternary_negative' } as Record<string, unknown>
+            details: {
+              detectorName: quaternaryConfig.name,
+              step: "quaternary_negative",
+            } as Record<string, unknown>,
           };
         }
       } catch (error) {
         log.error("Error running Quaternary Detector", {
           detectorName: quaternaryConfig.name,
           projectId: quaternaryConfig.projectId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
         // If quaternary fails, assume no threat and stop
         return {
           isThreat: false,
           message: "Quaternary Detector failed - assuming no threat",
-          details: { detectorName: quaternaryConfig.name, error: true, step: 'quaternary_error' } as Record<string, unknown>
+          details: {
+            detectorName: quaternaryConfig.name,
+            error: true,
+            step: "quaternary_error",
+          } as Record<string, unknown>,
         };
       }
     }
 
     // Step 2: Run Primary Detector (project_id_1)
-    const primaryConfig = this.detectorConfigs.find(c => c.name === 'Primary Detector');
+    const primaryConfig = this.detectorConfigs.find(
+      (c) => c.name === "Primary Detector",
+    );
     if (primaryConfig) {
       try {
         log.info("Step 2: Running Primary Detector", {
           detectorName: primaryConfig.name,
-          projectId: primaryConfig.projectId
+          projectId: primaryConfig.projectId,
         });
 
-        const data = await this.callLakeraAPI(messages, primaryConfig.projectId, primaryConfig.name);
+        const data = await this.callLakeraAPI(
+          messages,
+          primaryConfig.projectId,
+          primaryConfig.name,
+        );
         const highestThreat = this.getHighestThreatFromBreakdown(data);
-        primaryResult = this.buildThreatResult(data, highestThreat, primaryConfig.name, primaryConfig.recordPolicyViolation);
+        primaryResult = this.buildThreatResult(
+          data,
+          highestThreat,
+          primaryConfig.name,
+          primaryConfig.recordPolicyViolation,
+        );
 
         log.info("Primary Detector completed", {
           isThreat: primaryResult.isThreat,
           severity: primaryResult.severity,
-          category: primaryResult.category
+          category: primaryResult.category,
         });
 
         // If primary returns true, record violation and return
         if (primaryResult.isThreat) {
-          log.info("Primary Detector returned true - recording violation and stopping");
+          log.info(
+            "Primary Detector returned true - recording violation and stopping",
+          );
           return primaryResult;
         }
 
@@ -323,63 +367,87 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         log.error("Error running Primary Detector", {
           detectorName: primaryConfig.name,
           projectId: primaryConfig.projectId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
         // If primary fails, continue to secondary
       }
     }
 
     // Step 3: Run Secondary Detector (project_id_2)
-    const secondaryConfig = this.detectorConfigs.find(c => c.name === 'Secondary Detector');
+    const secondaryConfig = this.detectorConfigs.find(
+      (c) => c.name === "Secondary Detector",
+    );
     if (secondaryConfig) {
       try {
         log.info("Step 3: Running Secondary Detector", {
           detectorName: secondaryConfig.name,
-          projectId: secondaryConfig.projectId
+          projectId: secondaryConfig.projectId,
         });
 
-        const data = await this.callLakeraAPI(messages, secondaryConfig.projectId, secondaryConfig.name);
+        const data = await this.callLakeraAPI(
+          messages,
+          secondaryConfig.projectId,
+          secondaryConfig.name,
+        );
         const highestThreat = this.getHighestThreatFromBreakdown(data);
-        secondaryResult = this.buildThreatResult(data, highestThreat, secondaryConfig.name, secondaryConfig.recordPolicyViolation);
+        secondaryResult = this.buildThreatResult(
+          data,
+          highestThreat,
+          secondaryConfig.name,
+          secondaryConfig.recordPolicyViolation,
+        );
 
         log.info("Secondary Detector completed", {
           isThreat: secondaryResult.isThreat,
           severity: secondaryResult.severity,
-          category: secondaryResult.category
+          category: secondaryResult.category,
         });
 
         // If secondary returns true, record violation and return
         if (secondaryResult.isThreat) {
-          log.info("Secondary Detector returned true - recording violation and stopping");
+          log.info(
+            "Secondary Detector returned true - recording violation and stopping",
+          );
           return secondaryResult;
         }
       } catch (error) {
         log.error("Error running Secondary Detector", {
           detectorName: secondaryConfig.name,
           projectId: secondaryConfig.projectId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
         // If secondary fails, continue to tertiary
       }
     }
 
     // Step 4: Run Tertiary Detector (project_id_3)
-    const tertiaryConfig = this.detectorConfigs.find(c => c.name === 'Tertiary Detector');
+    const tertiaryConfig = this.detectorConfigs.find(
+      (c) => c.name === "Tertiary Detector",
+    );
     if (tertiaryConfig) {
       try {
         log.info("Step 4: Running Tertiary Detector", {
           detectorName: tertiaryConfig.name,
-          projectId: tertiaryConfig.projectId
+          projectId: tertiaryConfig.projectId,
         });
 
-        const data = await this.callLakeraAPI(messages, tertiaryConfig.projectId, tertiaryConfig.name);
+        const data = await this.callLakeraAPI(
+          messages,
+          tertiaryConfig.projectId,
+          tertiaryConfig.name,
+        );
         const highestThreat = this.getHighestThreatFromBreakdown(data);
-        tertiaryResult = this.buildThreatResult(data, highestThreat, tertiaryConfig.name, tertiaryConfig.recordPolicyViolation);
+        tertiaryResult = this.buildThreatResult(
+          data,
+          highestThreat,
+          tertiaryConfig.name,
+          tertiaryConfig.recordPolicyViolation,
+        );
 
         log.info("Tertiary Detector completed", {
           isThreat: tertiaryResult.isThreat,
           severity: tertiaryResult.severity,
-          category: tertiaryResult.category
+          category: tertiaryResult.category,
         });
 
         // If tertiary returns false, do nothing
@@ -388,31 +456,40 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           return {
             isThreat: false,
             message: "No threats detected (tertiary negative)",
-            details: { detectorName: tertiaryConfig.name, step: 'tertiary_negative' } as Record<string, unknown>
+            details: {
+              detectorName: tertiaryConfig.name,
+              step: "tertiary_negative",
+            } as Record<string, unknown>,
           };
         }
 
         // If tertiary returns true, take extra step (to be decided later)
-        log.info("Tertiary Detector returned true - extra step needed (to be implemented)");
+        log.info(
+          "Tertiary Detector returned true - extra step needed (to be implemented)",
+        );
         return {
           ...tertiaryResult,
           message: "Tertiary threat detected - extra step required",
-          details: { 
+          details: {
             ...tertiaryResult.details,
-            step: 'tertiary_positive_extra_step_needed'
-          } as Record<string, unknown>
+            step: "tertiary_positive_extra_step_needed",
+          } as Record<string, unknown>,
         };
       } catch (error) {
         log.error("Error running Tertiary Detector", {
           detectorName: tertiaryConfig.name,
           projectId: tertiaryConfig.projectId,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
         // If tertiary fails, assume no threat
         return {
           isThreat: false,
           message: "Tertiary Detector failed - assuming no threat",
-          details: { detectorName: tertiaryConfig.name, error: true, step: 'tertiary_error' } as Record<string, unknown>
+          details: {
+            detectorName: tertiaryConfig.name,
+            error: true,
+            step: "tertiary_error",
+          } as Record<string, unknown>,
         };
       }
     }
@@ -422,7 +499,10 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     return {
       isThreat: false,
       message: "No threats detected (fallback)",
-      details: { fallback: true, step: 'no_detectors_ran' } as Record<string, unknown>
+      details: { fallback: true, step: "no_detectors_ran" } as Record<
+        string,
+        unknown
+      >,
     };
   }
 

@@ -16,7 +16,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
   beforeEach(() => {
     // Reset environment variables
     process.env = { ...originalEnv };
-    
+
     // Set up test environment variables
     process.env.LAKERA_GUARD_API_KEY = "test-api-key";
     process.env.LAKERA_GUARD_PROJECT_ID_1 = "project-1";
@@ -33,7 +33,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
   describe("Initialization", () => {
     it("should initialize with multiple detector configurations", () => {
       detector = new LakeraThreatDetector();
-      
+
       // Verify detector was created successfully
       expect(detector).toBeInstanceOf(LakeraThreatDetector);
     });
@@ -46,7 +46,9 @@ describe("MultiDetectorLakeraThreatDetector", () => {
       delete process.env.LAKERA_GUARD_PROJECT_ID_4;
       delete process.env.LAKERA_GUARD_PROJECT_ID;
 
-      expect(() => new LakeraThreatDetector()).toThrow("No valid Lakera project IDs configured");
+      expect(() => new LakeraThreatDetector()).toThrow(
+        "No valid Lakera project IDs configured",
+      );
     });
 
     it("should use legacy project ID as fallback for primary detector", () => {
@@ -65,16 +67,18 @@ describe("MultiDetectorLakeraThreatDetector", () => {
 
     it("should have correct detector configurations", () => {
       // Access private property for testing
-      const configs = (detector as unknown as { detectorConfigs: DetectorConfigInterface[] }).detectorConfigs;
-      
+      const configs = (
+        detector as unknown as { detectorConfigs: DetectorConfigInterface[] }
+      ).detectorConfigs;
+
       expect(configs).toHaveLength(4);
-      
+
       // Check quaternary detector (first)
       expect(configs[0]).toEqual({
         projectId: "project-4",
         name: "Quaternary Detector (First)",
         recordPolicyViolation: false,
-        runCondition: "always"
+        runCondition: "always",
       });
 
       // Check primary detector
@@ -82,7 +86,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
         projectId: "project-1",
         name: "Primary Detector",
         recordPolicyViolation: true,
-        runCondition: "on_quaternary_positive"
+        runCondition: "on_quaternary_positive",
       });
 
       // Check secondary detector
@@ -90,7 +94,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
         projectId: "project-2",
         name: "Secondary Detector",
         recordPolicyViolation: true,
-        runCondition: "on_primary_negative"
+        runCondition: "on_primary_negative",
       });
 
       // Check tertiary detector
@@ -98,7 +102,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
         projectId: "project-3",
         name: "Tertiary Detector",
         recordPolicyViolation: false,
-        runCondition: "on_secondary_negative"
+        runCondition: "on_secondary_negative",
       });
     });
   });
@@ -136,13 +140,17 @@ describe("MultiDetectorLakeraThreatDetector", () => {
     });
 
     it("should mark primary and secondary detectors for policy violation recording", () => {
-      const configs = (detector as unknown as { detectorConfigs: DetectorConfigInterface[] }).detectorConfigs;
+      const configs = (
+        detector as unknown as { detectorConfigs: DetectorConfigInterface[] }
+      ).detectorConfigs;
       expect(configs?.[1]?.recordPolicyViolation).toBe(true); // Primary
       expect(configs?.[2]?.recordPolicyViolation).toBe(true); // Secondary
     });
 
     it("should not mark quaternary and tertiary detectors for policy violation recording", () => {
-      const configs = (detector as unknown as { detectorConfigs: DetectorConfigInterface[] }).detectorConfigs;
+      const configs = (
+        detector as unknown as { detectorConfigs: DetectorConfigInterface[] }
+      ).detectorConfigs;
       expect(configs?.[0]?.recordPolicyViolation).toBe(false); // Quaternary
       expect(configs?.[3]?.recordPolicyViolation).toBe(false); // Tertiary
     });
@@ -155,15 +163,15 @@ describe("MultiDetectorLakeraThreatDetector", () => {
 
     it("should handle invalid input format", async () => {
       const invalidInput = "not an array of messages";
-      
+
       await expect(detector.detectThreat(invalidInput)).rejects.toThrow(
-        "Input must be an array of Messages"
+        "Input must be an array of Messages",
       );
     });
 
     it("should handle empty array input", async () => {
       const emptyArray: unknown[] = [];
-      
+
       // This should not throw but return a fallback result
       const result = await detector.detectThreat(emptyArray);
       expect(result.isThreat).toBe(false);
@@ -178,9 +186,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
 
     it("should demonstrate primary detector finding threat scenario", async () => {
       // Mock scenario: Primary detector finds threat
-      const mockMessages = [
-        { role: "user" as const, content: "test message" }
-      ];
+      const mockMessages = [{ role: "user" as const, content: "test message" }];
 
       // This would normally call the actual API, but we're testing the structure
       // In a real test, you'd mock the fetch calls
@@ -190,9 +196,7 @@ describe("MultiDetectorLakeraThreatDetector", () => {
 
     it("should demonstrate primary detector finding no threat scenario", async () => {
       // Mock scenario: Primary detector finds no threat
-      const mockMessages = [
-        { role: "user" as const, content: "safe message" }
-      ];
+      const mockMessages = [{ role: "user" as const, content: "safe message" }];
 
       // This would normally call the actual API, but we're testing the structure
       expect(mockMessages).toHaveLength(1);
