@@ -1,10 +1,10 @@
 import type OpenAI from "openai";
 
-export const DEFAULT_MODEL = "gpt-5-2025-08-07" as OpenAI.Chat.ChatModel;
+export const DEFAULT_MODEL = "gpt-5-mini-2025-08-07" as OpenAI.Chat.ChatModel;
 export const DEFAULT_MODERATION_MODEL =
-  "gpt-5-2025-08-07" as OpenAI.Chat.ChatModel;
+  "gpt-5-mini-2025-08-07" as OpenAI.Chat.ChatModel;
 export const DEFAULT_CATEGORISE_MODEL =
-  "gpt-4o-2024-08-06" as OpenAI.Chat.ChatModel;
+  "gpt-5-mini-2025-08-07" as OpenAI.Chat.ChatModel;
 
 export const DEFAULT_REASONING_EFFORT: "low" | "medium" | "high" =
   (process.env.OPENAI_DEFAULT_REASONING_EFFORT as "low" | "medium" | "high") ||

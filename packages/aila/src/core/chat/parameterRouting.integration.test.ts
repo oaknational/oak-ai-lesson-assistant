@@ -130,7 +130,7 @@ describe("AilaChat Parameter Routing Integration", () => {
       const model = DEFAULT_MODEL;
       const isGPT5 = isGPT5Model(model);
 
-      expect(model).toBe("gpt-5-2025-08-07");
+      expect(model).toBe("gpt-5-mini-2025-08-07");
       expect(isGPT5).toBe(true);
 
       // Should route to GPT-5 parameters when using default model
