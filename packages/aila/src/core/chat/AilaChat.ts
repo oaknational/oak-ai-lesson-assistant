@@ -88,8 +88,7 @@ export class AilaChat implements AilaChatService {
       quizRatingSchema: testRatingSchema,
       quizSelector: "simple",
       quizReranker: "schema-reranker", // "return-first"
-      // quizGenerators: ["rag", "basedOnRag", "ml"],
-      quizGenerators: ["ml", "rag", "basedOnRag"],
+      quizGenerators: aila.options.quizGenerators,
     });
   }
 
