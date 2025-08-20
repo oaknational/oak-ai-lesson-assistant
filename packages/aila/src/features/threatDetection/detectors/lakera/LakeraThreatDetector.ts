@@ -313,6 +313,12 @@ export class LakeraThreatDetector extends AilaThreatDetector {
           log.info("Primary Detector returned true - recording violation and stopping");
           return primaryResult;
         }
+
+        // Handle single-detector mode - if no quaternary detector ran, return primary result
+        if (!quaternaryResult) {
+          log.info("Single detector mode - returning primary result");
+          return primaryResult;
+        }
       } catch (error) {
         log.error("Error running Primary Detector", {
           detectorName: primaryConfig.name,

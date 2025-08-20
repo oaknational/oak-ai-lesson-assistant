@@ -37,7 +37,11 @@ describe("LakeraThreatDetector", () => {
       const result = await detector.detectThreat(messages);
       expect(result.isThreat).toBe(false);
       expect(result.message).toBe("No threats detected");
-      expect(result.details).toEqual({});
+      expect(result.details).toEqual({
+        detectedElements: [],
+        detectorName: "Primary Detector",
+        recordPolicyViolation: true
+      });
       expect(result).toMatchSnapshot();
     });
 
