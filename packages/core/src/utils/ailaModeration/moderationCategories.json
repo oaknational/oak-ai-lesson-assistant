@@ -8,7 +8,7 @@
     "criteria4": "Minimally involved: Content makes a brief, passing reference to a discriminatory concept or an outdated social attitude.",
     "criteria3": "Moderately involved: Content includes isolated or historical examples of discriminatory behaviour or language, clearly contextualized for educational or analytical purposes (e.g., studying historical injustice).",
     "criteria2": "Significantly involved: Content centrally discusses or depicts specific instances of discriminatory behaviour or historical injustice as a core part of the lesson.",
-    "criteria1": "Heavily involved: Content is focused on depicting or analyzing overt, strong, or frequent discriminatory behaviour or language related to race, gender, disability, religion, or sexual orientation. Includes prominent use of slurs or epithets.",
+    "criteria1": "Heavily involved: Content is focused on depicting or analyzing overt, strong, or frequent discriminatory behaviour or language related to race, gender, disability, religion, or sexual orientation. Includes prominent use of slurs or epithets."
   },
   {
     "code": "l/offensive-language",
@@ -19,7 +19,7 @@
     "criteria4": "Minimally involved: Content contains a single, mild swear word or a term that could be considered mildly offensive.",
     "criteria3": "Moderately involved: Content contains isolated swear words or offensive terms, often for literary or characterization purposes, and not used gratuitously.",
     "criteria2": "Significantly involved: Content contains multiple instances of offensive language, or a single instance of a particularly strong swear word or abusive term.",
-    "criteria1": "Heavily involved: Content contains frequent or strong use of offensive swear words, or terms of racist, sexist, or other abuse.",
+    "criteria1": "Heavily involved: Content contains frequent or strong use of offensive swear words, or terms of racist, sexist, or other abuse."
   },
   {
     "code": "u/sensitive-content",
@@ -30,7 +30,7 @@
     "criteria4": "Minimally involved: Content has a brief, non-graphic, or passing reference to a sensitive topic. This could be a mention of smoking, vaping, alcohol use, a reference to blood, or household items which could pose a risk.",
     "criteria3": "Moderately involved: Content mentions sensitive topics, but they are handled with care, are not graphic, and are not the sole focus. Examples include adoption, migration, peer pressure, vaccinations, organ donation, or genetics and inheritance.",
     "criteria2": "Content directly discusses or depicts sensitive topics that are central to the lesson. This includes themes like divorce, consent, substance abuse, climate change, extinction, extremism, or radicalisation.",
-    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of highly upsetting themes. The primary focus is on a topic such as bereavement, death, serious illness or injury, abortion, euthanasia, terrorism, or significant bullying.",
+    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of highly upsetting themes. The primary focus is on a topic such as bereavement, death, serious illness or injury, abortion, euthanasia, terrorism, or significant bullying."
   },
   {
     "code": "u/violence-or-suffering",
@@ -41,7 +41,7 @@
     "criteria4": "Minimally involved: Content has a brief, non-graphic, or passing reference to violence or suffering (e.g., a character in a story was in a past war).",
     "criteria3": "Moderately involved: Content mentions violence or suffering (e.g., animal cruelty, historical conflicts), but they are handled with care, are not graphic, and are not the sole focus.",
     "criteria2": "Significantly involved: Content directly discusses or depicts violence, famine, or natural disasters in a way that is central to the lesson (e.g., a history lesson on a specific war).",
-    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of violence, war, genocide, or intense suffering.",
+    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of violence, war, genocide, or intense suffering."
   },
   {
     "code": "u/mental-health-challenges",
@@ -52,7 +52,7 @@
     "criteria4": "Minimally involved: Content has a brief, non-detailed, or passing reference to a mental health challenge.",
     "criteria3": "Moderately involved: Content mentions mental health challenges, such as anxiety or substance abuse, but they are handled with care and are not the sole focus.",
     "criteria2": "Significantly involved: Content directly discusses or depicts mental health challenges as a key theme in a text or as a central part of the lesson.",
-    "criteria1": "Heavily involved: The lesson's primary focus is on a specific mental health challenge, such as depression or an eating disorder, with detailed discussion.",
+    "criteria1": "Heavily involved: The lesson's primary focus is on a specific mental health challenge, such as depression or an eating disorder, with detailed discussion."
   },
   {
     "code": "u/crime-or-illegal-activities",
@@ -63,7 +63,7 @@
     "criteria4": "Minimally involved: Content has a brief, non-graphic, or passing reference to a crime or illegal act.",
     "criteria3": "Moderately involved: Content mentions crime or illegal activities (e.g., spreading misinformation like fake news or deepfakes, copyright infringement, underage use of cigarettes, gambling, or getting a tattoo under the legal age) as a secondary theme or example.",
     "criteria2": "Significantly involved: Content directly discusses or depicts serious crime or illegal activities (e.g., the sale or use of illegal drugs, extremism, radicalisation) as a central part of the lesson.",
-    "criteria1": "Heavily involved: The lesson's primary focus is on a specific, serious crime or illegal activity, such as murder, terrorism, knife crime, gangs, child criminal exploitation, or honour-based violence, with direct and detailed discussion.",
+    "criteria1": "Heavily involved: The lesson's primary focus is on a specific, serious crime or illegal activity, such as murder, terrorism, knife crime, gangs, child criminal exploitation, or honour-based violence, with direct and detailed discussion."
   },
   {
     "code": "u/sexual-violence",
@@ -74,7 +74,7 @@
     "criteria4": "Minimally involved: Content has a brief, non-graphic, or passing reference to a related topic, such as grooming.",
     "criteria3": "Moderately involved: Content mentions themes of sexual violence (e.g., coercion, harassment) in a non-graphic, contextualized way (e.g., analyzing a literary text).",
     "criteria2": "Significantly involved: Content directly discusses or depicts sexual violence (e.g., forced marriage, domestic abuse, FGM) as a central part of the lesson.",
-    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of sexual violence, abuse, or exploitation.",
+    "criteria1": "Heavily involved: Content includes prominent, direct, or potentially graphic depiction/discussion of sexual violence, abuse, or exploitation."
   },
   {
     "code": "s/nudity-or-sexual-content",
@@ -85,7 +85,7 @@
     "criteria4": "Minimally involved: An incidental or brief mention of related topics (e.g., a single non-explicit line in a novel about a relationship).",
     "criteria3": "Moderately involved: Content includes nudity in a clear artistic or historical context (e.g., classical statues) or discusses relationships without explicit detail.",
     "criteria2": "Significantly involved: Content directly discusses sexual themes or nudity as a key part of the lesson (e.g., puberty, reproduction, anatomy).",
-    "criteria1": "Heavily involved: Content contains prominent or repeated references to nudity, sex, or sexual body parts, or is explicitly focused on sex education.",
+    "criteria1": "Heavily involved: Content contains prominent or repeated references to nudity, sex, or sexual body parts, or is explicitly focused on sex education."
   },
   {
     "code": "p/equipment-required",
@@ -96,7 +96,7 @@
     "criteria4": "Minimally involved: Requires only one or two simple items beyond stationery (e.g., a ruler, glue stick).",
     "criteria3": "Moderately involved: Requires common non-standard equipment with low inherent risk (e.g., basic art supplies like paint, sports balls, calculators).",
     "criteria2": "Significantly involved: Requires several pieces of non-standard equipment that are key to the lesson's success (e.g., a range of art supplies, specific PE equipment like cones and bibs).",
-    "criteria1": "Heavily involved: Requires extensive or specialist equipment beyond what is typically found in a standard classroom (e.g., full science lab apparatus, specific sports kits).",
+    "criteria1": "Heavily involved: Requires extensive or specialist equipment beyond what is typically found in a standard classroom (e.g., full science lab apparatus, specific sports kits)."
   },
   {
     "code": "p/equipment-risk-assessment",
@@ -107,7 +107,7 @@
     "criteria4": "Minimally involved: Suggests minor physical movement within the classroom where risk is negligible but should be supervised.",
     "criteria3": "Moderately involved: Involves low-risk equipment or activities where a brief, informal risk assessment is advisable (e.g., use of scissors, potential allergens in food tech).",
     "criteria2": "Significantly involved: Involves activities or equipment requiring a formal risk assessment due to potential hazards (e.g., science experiments with heat, use of sharp tools, outdoor fieldwork).",
-    "criteria1": "Heavily involved: Involves activities or equipment with high inherent risk requiring a formal, detailed risk assessment (e.g., use of hazardous chemicals, power tools, contact sports).",
+    "criteria1": "Heavily involved: Involves activities or equipment with high inherent risk requiring a formal, detailed risk assessment (e.g., use of hazardous chemicals, power tools, contact sports)."
   },
   {
     "code": "p/outdoor-learning",
@@ -118,7 +118,7 @@
     "criteria4": "Minimally involved: A brief activity is suggested that could take place just outside the classroom door or by a window.",
     "criteria3": "Moderately involved: The lesson suggests an optional or supplementary outdoor activity.",
     "criteria2": "Significantly involved: A major component of the lesson requires being outdoors or in a non-classroom environment on school grounds (e.g., a PE lesson, a science experiment in the playground).",
-    "criteria1": "Heavily involved: The entire lesson is designed as an off-site or adventurous outdoor activity (e.g., a geography field trip, a nature walk in a forest).",
+    "criteria1": "Heavily involved: The entire lesson is designed as an off-site or adventurous outdoor activity (e.g., a geography field trip, a nature walk in a forest)."
   },
   {
     "code": "p/additional-qualifications",
@@ -126,7 +126,7 @@
     "llmDescription": "Flag content that includes activities requiring additional qualifications beyond standard teaching certifications (e.g., swimming, trampolining, contact rugby, gymnastics vaulting, leading complex drama exercises, using specific D&T equipment).",
     "abbreviation": "p5",
     "criteria5": "Not involved: Involves no activities that require qualifications beyond standard teaching certifications.",
-    "criteria1": "Heavily involved: Requires specialist teacher qualifications and certifications for high-risk activities (e.g., swimming, trampolining).",
+    "criteria1": "Heavily involved: Requires specialist teacher qualifications and certifications for high-risk activities (e.g., swimming, trampolining)."
   },
   {
     "code": "e/rshe-content",
@@ -137,7 +137,7 @@
     "criteria4": "Minimally involved: A brief, passing reference to an RSHE topic (e.g., a character in a story deals with a relationship issue).",
     "criteria3": "Moderately involved: RSHE content is discussed as a secondary topic or example (e.g., discussing healthy eating in a science lesson).",
     "criteria2": "Significantly involved: RSHE content is a key component of the lesson, even if the subject is not RSHE (e.g., a drama lesson about bullying).",
-    "criteria1": "Heavily involved: The lesson is primarily focused on a core RSHE topic (e.g., consent, puberty, mental wellbeing, online harms).",
+    "criteria1": "Heavily involved: The lesson is primarily focused on a core RSHE topic (e.g., consent, puberty, mental wellbeing, online harms)."
   },
   {
     "code": "r/recent-content",
@@ -148,7 +148,7 @@
     "criteria4": "Minimally involved: An incidental or minor reference is made to an event that occurred after December 2023.",
     "criteria3": "Moderately involved: An event after December 2023 is used as a supporting example or a point of discussion.",
     "criteria2": "Significantly involved: A significant portion of the lesson relies on information about an event from after December 2023.",
-    "criteria1": "Heavily involved: The lesson's primary focus is an event that occurred after December 2023.",
+    "criteria1": "Heavily involved: The lesson's primary focus is an event that occurred after December 2023."
   },
   {
     "code": "r/recent-conflicts",
@@ -159,7 +159,7 @@
     "criteria4": "Minimally involved: An incidental or minor reference is made to an armed conflict from this period.",
     "criteria3": "Moderately involved: An armed conflict from this period is used as a supporting example or case study.",
     "criteria2": "Significantly involved: A significant portion of the lesson is dedicated to discussing an armed conflict from this period.",
-    "criteria1": "Heavily involved: The lesson's primary focus is an armed conflict from the 2009 - December 2023 period.",
+    "criteria1": "Heavily involved: The lesson's primary focus is an armed conflict from the 2009 - December 2023 period."
   },
   {
     "code": "n/self-harm-suicide",
@@ -167,7 +167,7 @@
     "llmDescription": "Block any content that depicts, discusses, guides, or could encourage ideation of self-harm or suicide.",
     "abbreviation": "n1",
     "criteria5": "Compliant: Content does not contain any material related to self-harm or suicide.",
-    "criteria1": "Blocked: Content discusses, guides, or could encourage ideation of self-harm or suicide.",
+    "criteria1": "Blocked: Content discusses, guides, or could encourage ideation of self-harm or suicide."
   },
   {
     "code": "n/history-homosexuality-gender-identity",
@@ -175,7 +175,7 @@
     "llmDescription": "Block content that depicts or discusses the history of homosexuality or historical/societal views on gender identity.",
     "abbreviation": "n2",
     "criteria5": "Compliant: Content does not contain any material related to the history of homosexuality or gender identity.",
-    "criteria1": "Blocked: Content that depicts or discusses the history of homosexuality or historical/societal views on gender identity.",
+    "criteria1": "Blocked: Content that depicts or discusses the history of homosexuality or historical/societal views on gender identity."
   },
   {
     "code": "n/child-specific-advice",
@@ -183,7 +183,7 @@
     "llmDescription": "Block content that provides guidance or advice for specific children or responds to disclosures.",
     "abbreviation": "n3",
     "criteria5": "Compliant: Content is general and does not provide child-specific advice.",
-    "criteria1": "Blocked: Content provides guidance or advice for specific children or responds to disclosures.",
+    "criteria1": "Blocked: Content provides guidance or advice for specific children or responds to disclosures."
   },
   {
     "code": "n/specific-laws",
@@ -191,7 +191,7 @@
     "llmDescription": "Block content that discusses or provides specific legal guidance or advice.",
     "abbreviation": "n4",
     "criteria5": "Compliant: Content does not provide specific legal advice.",
-    "criteria1": "Blocked: Content discusses or provides specific legal guidance or advice.",
+    "criteria1": "Blocked: Content discusses or provides specific legal guidance or advice."
   },
   {
     "code": "n/health-and-safety",
@@ -199,7 +199,7 @@
     "llmDescription": "Block content that provides specific health and safety guidance or instructions.",
     "abbreviation": "n5",
     "criteria5": "Compliant: Content does not provide specific health and safety instructions.",
-    "criteria1": "Blocked: Content provides specific health and safety guidance or instructions.",
+    "criteria1": "Blocked: Content provides specific health and safety guidance or instructions."
   },
   {
     "code": "n/first-aid",
@@ -207,7 +207,7 @@
     "llmDescription": "Block content that provides first aid instructions or guidance.",
     "abbreviation": "n6",
     "criteria5": "Compliant: Content does not provide first aid instructions.",
-    "criteria1": "Blocked: Content provides first aid instructions or guidance.",
+    "criteria1": "Blocked: Content provides first aid instructions or guidance."
   },
   {
     "code": "n/current-conflicts",
@@ -215,7 +215,7 @@
     "llmDescription": "Block content that depicts or discusses armed conflicts that started or were ongoing after December 2023. Such as India-Pakistan Conflict, Israel–Hamas War & Regional Escalatio, Russia-Ukraine, Sudan Civil War and Syria civil war",
     "abbreviation": "n7",
     "criteria5": "Compliant: Content does not depict or discuss armed conflicts post-dating December 2023.",
-    "criteria1": "Blocked: Content depicts or discusses armed conflicts that started or were ongoing after December 2023.",
+    "criteria1": "Blocked: Content depicts or discusses armed conflicts that started or were ongoing after December 2023."
   },
   {
     "code": "t/guides-self-harm-suicide",
@@ -223,7 +223,7 @@
     "llmDescription": "Block any content that encourages, guides, promotes or provides instructions, or learning materials  on how to self-harm or commit suicide.",
     "abbreviation": "t1",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains content that encourages or promotes harming oneself, including self harm or suicide, or provides guides, instructions or learning material on how to do this.",
+    "criteria1": "Severely non-compliant: lesson contains content that encourages or promotes harming oneself, including self harm or suicide, or provides guides, instructions or learning material on how to do this."
   },
   {
     "code": "t/encourages-harmful-behaviour",
@@ -231,7 +231,7 @@
     "llmDescription": "Block content that encourages, guides, promotes or provides instructions, or learning materials  for harmful behaviour. This includes harming others via offesive language, using weapons, engaging in risky sexual behaviour, harassment, spreading misinformation, or using pornography.",
     "abbreviation": "t2",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains content that encourages or promotes harmful or dangerous behaviour, unwanted sexual behaviour, harassment, or misinformation or provides guides, instructions or learning material on how to do.",
+    "criteria1": "Severely non-compliant: lesson contains content that encourages or promotes harmful or dangerous behaviour, unwanted sexual behaviour, harassment, or misinformation or provides guides, instructions or learning material on how to do."
   },
   {
     "code": "t/encourages-illegal-activity",
@@ -239,7 +239,7 @@
     "llmDescription": "Block content that encourages, guides, promotes or provides instructions on illegal activities for minors (under 18). This includes drug misuse, illegal sexual behaviour, underage purchase/use of alcohol/tobacco/vapes/fireworks, gambling, carrying weapons, sexting, cybercrime, hacking, or county lines involvement.",
     "abbreviation": "t3",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains encouragement of illegal activity for minors (under 18), such as drug misuse, underage drinking, gambling, or cybercrime.",
+    "criteria1": "Severely non-compliant: lesson contains encouragement of illegal activity for minors (under 18), such as drug misuse, underage drinking, gambling, or cybercrime."
   },
   {
     "code": "t/encourages-violence-harm-others",
@@ -247,7 +247,7 @@
     "llmDescription": "Block content that encourages, guides, promotes or provides instructions violent behaviour including sexual violence, carrying a weapon, assault, domestic violence, hate crimes, honour-based violence, harassment, stalking, extortion, threats of violence, indecent exposure, revenge porn, gang involvement, county lines, rioting, arson, cyberbullying, doxxing, or inciting violence online.",
     "abbreviation": "t4",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains any encouragement of violent behaviour, including sexual violence, assault, hate crimes, or inciting violence.",
+    "criteria1": "Severely non-compliant: lesson contains any encouragement of violent behaviour, including sexual violence, assault, hate crimes, or inciting violence."
   },
   {
     "code": "t/using-creating-weapons",
@@ -255,7 +255,7 @@
     "llmDescription": "Block content that encourages, guides, promotes or provides instructions, recipes or learning materials  for creating or using weapons (including chemical, biological, explosive, or conventional weapons).",
     "abbreviation": "t5",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains any guides, recipes, or instructions for creating or using weapons.",
+    "criteria1": "Severely non-compliant: lesson contains any guides, recipes, or instructions for creating or using weapons."
   },
   {
     "code": "t/using-creating-harmful-substances",
@@ -263,6 +263,6 @@
     "llmDescription": "Block content that encourages, guides, promotes or provides instructions, recipes or learning materials  for creating harmful substances like illegal drugs, poisons, or non-weaponized explosives.",
     "abbreviation": "t6",
     "criteria5": "Fully compliant: Content does not contain any such material.",
-    "criteria1": "Severely non-compliant: lesson contains any guides, recipes, or instructions for creating harmful substances like illegal drugs or poisons.",
+    "criteria1": "Severely non-compliant: lesson contains any guides, recipes, or instructions for creating harmful substances like illegal drugs or poisons."
   }
 ]
