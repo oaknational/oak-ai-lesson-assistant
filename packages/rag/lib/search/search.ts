@@ -58,7 +58,9 @@ export async function vectorSearch({
 
   // Throw if we have at least 3 rows but all failed to parse
   if (queryResponse.length >= 3 && results.length === 0) {
-    throw new Error(`All RAG results failed to parse. Found ${queryResponse.length} results but all ${parseErrors.length} failed validation. Check logs above for details.`);
+    throw new Error(
+      `All RAG results failed to parse. Found ${queryResponse.length} results but all ${parseErrors.length} failed validation. Check logs above for details.`,
+    );
   }
 
   const endAt = new Date();
