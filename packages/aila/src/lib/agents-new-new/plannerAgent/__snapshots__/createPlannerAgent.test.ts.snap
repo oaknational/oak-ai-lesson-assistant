@@ -65,17 +65,18 @@ You must respond with **exactly one of two decision types**:
 
 ---
 
-### 🔹 AVAILABLE SECTIONS:
-- \`title\`, \`keyStage\`, \`subject\`
-- \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-- \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-- \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-- \`additionalMaterials\`  
+### 🔹 SECTION GROUPS:
+1. \`title\`, \`keyStage\`, \`subject\`
+2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
+3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+5. \`additionalMaterials\` (optional)
 
-### 🔹 SECTION ACTIONS:
-- \`create\` - Generate new content for an empty section
-- \`refine\` - Modify existing content in a section  
-- \`delete\` - Remove a section entirely
+Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+#### basedOn
+- \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
+- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
 
 ---
 
@@ -120,41 +121,9 @@ You must respond with **exactly one of two decision types**:
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in logical order**: Basic info → Learning content → Activities → Materials
-- **Only include 'basedOn'** if user has been shown relevant lessons to choose from
-- **Be specific**: Each plan step must target exactly one section with one action
-- **Context awareness**: Consider what's already complete vs. what needs work
+- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
+- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
-
----
-
-### 🔹 OUTPUT FORMAT
-
-**For "plan" decisions:**
-\`\`\`json
-{
-  "decision": "plan",
-  "parsedUserMessage": "Clear description of user intent",
-  "plan": [
-    {
-      "type": "section",
-      "sectionKey": "title",
-      "action": "create"
-    }
-  ]
-}
-\`\`\`
-
-**For "exit" decisions:**
-\`\`\`json
-{
-  "decision": "exit", 
-  "parsedUserMessage": "Clear description of user intent",
-  "reasonType": "clarification_needed",
-  "reasonJustification": "Detailed explanation of why exiting",
-  "additionalInfo": "Context for presentation agent (nullable)"
-}
-\`\`\`
 
 ---
 
@@ -276,17 +245,18 @@ You must respond with **exactly one of two decision types**:
 
 ---
 
-### 🔹 AVAILABLE SECTIONS:
-- \`title\`, \`keyStage\`, \`subject\`
-- \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-- \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-- \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-- \`additionalMaterials\`  
+### 🔹 SECTION GROUPS:
+1. \`title\`, \`keyStage\`, \`subject\`
+2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
+3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+5. \`additionalMaterials\` (optional)
 
-### 🔹 SECTION ACTIONS:
-- \`create\` - Generate new content for an empty section
-- \`refine\` - Modify existing content in a section  
-- \`delete\` - Remove a section entirely
+Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+#### basedOn
+- \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
+- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
 
 ---
 
@@ -331,41 +301,9 @@ You must respond with **exactly one of two decision types**:
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in logical order**: Basic info → Learning content → Activities → Materials
-- **Only include 'basedOn'** if user has been shown relevant lessons to choose from
-- **Be specific**: Each plan step must target exactly one section with one action
-- **Context awareness**: Consider what's already complete vs. what needs work
+- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
+- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
-
----
-
-### 🔹 OUTPUT FORMAT
-
-**For "plan" decisions:**
-\`\`\`json
-{
-  "decision": "plan",
-  "parsedUserMessage": "Clear description of user intent",
-  "plan": [
-    {
-      "type": "section",
-      "sectionKey": "title",
-      "action": "create"
-    }
-  ]
-}
-\`\`\`
-
-**For "exit" decisions:**
-\`\`\`json
-{
-  "decision": "exit", 
-  "parsedUserMessage": "Clear description of user intent",
-  "reasonType": "clarification_needed",
-  "reasonJustification": "Detailed explanation of why exiting",
-  "additionalInfo": "Context for presentation agent (nullable)"
-}
-\`\`\`
 
 ---
 
@@ -510,17 +448,18 @@ You must respond with **exactly one of two decision types**:
 
 ---
 
-### 🔹 AVAILABLE SECTIONS:
-- \`title\`, \`keyStage\`, \`subject\`
-- \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-- \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-- \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-- \`additionalMaterials\`  
+### 🔹 SECTION GROUPS:
+1. \`title\`, \`keyStage\`, \`subject\`
+2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
+3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+5. \`additionalMaterials\` (optional)
 
-### 🔹 SECTION ACTIONS:
-- \`create\` - Generate new content for an empty section
-- \`refine\` - Modify existing content in a section  
-- \`delete\` - Remove a section entirely
+Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+#### basedOn
+- \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
+- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
 
 ---
 
@@ -565,41 +504,9 @@ You must respond with **exactly one of two decision types**:
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in logical order**: Basic info → Learning content → Activities → Materials
-- **Only include 'basedOn'** if user has been shown relevant lessons to choose from
-- **Be specific**: Each plan step must target exactly one section with one action
-- **Context awareness**: Consider what's already complete vs. what needs work
+- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
+- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
-
----
-
-### 🔹 OUTPUT FORMAT
-
-**For "plan" decisions:**
-\`\`\`json
-{
-  "decision": "plan",
-  "parsedUserMessage": "Clear description of user intent",
-  "plan": [
-    {
-      "type": "section",
-      "sectionKey": "title",
-      "action": "create"
-    }
-  ]
-}
-\`\`\`
-
-**For "exit" decisions:**
-\`\`\`json
-{
-  "decision": "exit", 
-  "parsedUserMessage": "Clear description of user intent",
-  "reasonType": "clarification_needed",
-  "reasonJustification": "Detailed explanation of why exiting",
-  "additionalInfo": "Context for presentation agent (nullable)"
-}
-\`\`\`
 
 ---
 
@@ -716,17 +623,18 @@ You must respond with **exactly one of two decision types**:
 
 ---
 
-### 🔹 AVAILABLE SECTIONS:
-- \`title\`, \`keyStage\`, \`subject\`
-- \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-- \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-- \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-- \`additionalMaterials\`  
+### 🔹 SECTION GROUPS:
+1. \`title\`, \`keyStage\`, \`subject\`
+2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
+3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+5. \`additionalMaterials\` (optional)
 
-### 🔹 SECTION ACTIONS:
-- \`create\` - Generate new content for an empty section
-- \`refine\` - Modify existing content in a section  
-- \`delete\` - Remove a section entirely
+Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+#### basedOn
+- \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
+- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
 
 ---
 
@@ -771,41 +679,9 @@ You must respond with **exactly one of two decision types**:
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in logical order**: Basic info → Learning content → Activities → Materials
-- **Only include 'basedOn'** if user has been shown relevant lessons to choose from
-- **Be specific**: Each plan step must target exactly one section with one action
-- **Context awareness**: Consider what's already complete vs. what needs work
+- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
+- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
-
----
-
-### 🔹 OUTPUT FORMAT
-
-**For "plan" decisions:**
-\`\`\`json
-{
-  "decision": "plan",
-  "parsedUserMessage": "Clear description of user intent",
-  "plan": [
-    {
-      "type": "section",
-      "sectionKey": "title",
-      "action": "create"
-    }
-  ]
-}
-\`\`\`
-
-**For "exit" decisions:**
-\`\`\`json
-{
-  "decision": "exit", 
-  "parsedUserMessage": "Clear description of user intent",
-  "reasonType": "clarification_needed",
-  "reasonJustification": "Detailed explanation of why exiting",
-  "additionalInfo": "Context for presentation agent (nullable)"
-}
-\`\`\`
 
 ---
 
@@ -934,17 +810,18 @@ You must respond with **exactly one of two decision types**:
 
 ---
 
-### 🔹 AVAILABLE SECTIONS:
-- \`title\`, \`keyStage\`, \`subject\`
-- \`basedOn\`, \`learningOutcome\`, \`learningCycles\`  
-- \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-- \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\`, \`exitQuiz\`  
-- \`additionalMaterials\`  
+### 🔹 SECTION GROUPS:
+1. \`title\`, \`keyStage\`, \`subject\`
+2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
+3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+5. \`additionalMaterials\` (optional)
 
-### 🔹 SECTION ACTIONS:
-- \`create\` - Generate new content for an empty section
-- \`refine\` - Modify existing content in a section  
-- \`delete\` - Remove a section entirely
+Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+#### basedOn
+- \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
+- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
 
 ---
 
@@ -989,41 +866,9 @@ You must respond with **exactly one of two decision types**:
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in logical order**: Basic info → Learning content → Activities → Materials
-- **Only include 'basedOn'** if user has been shown relevant lessons to choose from
-- **Be specific**: Each plan step must target exactly one section with one action
-- **Context awareness**: Consider what's already complete vs. what needs work
+- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
+- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
-
----
-
-### 🔹 OUTPUT FORMAT
-
-**For "plan" decisions:**
-\`\`\`json
-{
-  "decision": "plan",
-  "parsedUserMessage": "Clear description of user intent",
-  "plan": [
-    {
-      "type": "section",
-      "sectionKey": "title",
-      "action": "create"
-    }
-  ]
-}
-\`\`\`
-
-**For "exit" decisions:**
-\`\`\`json
-{
-  "decision": "exit", 
-  "parsedUserMessage": "Clear description of user intent",
-  "reasonType": "clarification_needed",
-  "reasonJustification": "Detailed explanation of why exiting",
-  "additionalInfo": "Context for presentation agent (nullable)"
-}
-\`\`\`
 
 ---
 
