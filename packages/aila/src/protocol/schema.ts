@@ -8,7 +8,7 @@ import {
   QuizV2Schema,
   QuizV2SchemaWithoutLength,
 } from "./schemas/quiz";
-import { type RawQuiz } from "./schemas/quiz/rawQuiz";
+import { type HasuraQuiz } from "./schemas/quiz/rawQuiz";
 
 // ********** BASED_ON **********
 export const BASED_ON_DESCRIPTIONS = {
@@ -503,7 +503,7 @@ export type LessonPlanSectionWhileStreaming =
   | string
   | string[]
   | number
-  | NonNullable<RawQuiz[]>;
+  | NonNullable<HasuraQuiz[]>;
 
 export const CompletedLessonPlanSchemaWithoutLength = z.object({
   title: LessonTitleSchema,

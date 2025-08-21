@@ -1,17 +1,17 @@
 import { describe, expect, it } from "@jest/globals";
 
 import { rawQuizFixture } from "../fixtures/rawQuizFixture";
-import type { RawQuiz } from "../rawQuiz";
-import { convertRawQuizToV2 } from "./rawQuizIngest";
+import type { HasuraQuiz } from "../rawQuiz";
+import { convertHasuraQuizToV2 } from "./rawQuizIngest";
 
-describe("convertRawQuizToV2", () => {
-  it("should convert raw quiz to V2 format", () => {
-    const result = convertRawQuizToV2(rawQuizFixture);
+describe("convertHasuraQuizToV2", () => {
+  it("should convert Hasura quiz to V2 format", () => {
+    const result = convertHasuraQuizToV2(rawQuizFixture);
     expect(result).toMatchSnapshot();
   });
 
   it("should handle empty quiz", () => {
-    const result = convertRawQuizToV2([]);
+    const result = convertHasuraQuizToV2([]);
     expect(result).toEqual({
       version: "v2",
       questions: [],
@@ -20,7 +20,7 @@ describe("convertRawQuizToV2", () => {
   });
 
   it("should handle null quiz", () => {
-    const result = convertRawQuizToV2(null);
+    const result = convertHasuraQuizToV2(null);
     expect(result).toEqual({
       version: "v2",
       questions: [],
@@ -29,29 +29,29 @@ describe("convertRawQuizToV2", () => {
   });
 
   it("should filter out explanatory-text questions", () => {
-    const explanatoryOnlyQuiz: RawQuiz = [
+    const explanatoryOnlyQuiz: HasuraQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "explanatory-text",
-        question_stem: [{ text: "Just text", type: "text" }],
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "explanatory-text",
+        questionStem: [{ text: "Just text", type: "text" }],
         answers: { "explanatory-text": null },
         feedback: "",
         hint: "",
         active: true,
       },
     ];
-    const result = convertRawQuizToV2(explanatoryOnlyQuiz);
+    const result = convertHasuraQuizToV2(explanatoryOnlyQuiz);
     expect(result.questions).toHaveLength(0);
   });
 
   it("should extract image attributions correctly", () => {
-    const quizWithImages: RawQuiz = [
+    const quizWithImages: HasuraQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           {
             image_object: {
               secure_url: "https://example.com/image1.jpg",
@@ -75,7 +75,7 @@ describe("convertRawQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertRawQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV2(quizWithImages);
     expect(result.questions[0]?.question).toContain(
       "![](https://example.com/image1.jpg)",
     );
@@ -88,12 +88,12 @@ describe("convertRawQuizToV2", () => {
   });
 
   it("should convert images to markdown syntax", () => {
-    const quizWithImages: RawQuiz = [
+    const quizWithImages: HasuraQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           { text: "Look at", type: "text" },
           {
             image_object: {
@@ -117,19 +117,19 @@ describe("convertRawQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertRawQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV2(quizWithImages);
     expect(result.questions[0]?.question).toBe(
       "Look at ![](https://example.com/image.jpg) What is it?",
     );
   });
 
   it("should extract alt text from images when available", () => {
-    const quizWithAltText: RawQuiz = [
+    const quizWithAltText: HasuraQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "multiple-choice",
-        question_stem: [
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
           {
             image_object: {
               secure_url: "https://example.com/dog.jpg",
@@ -156,7 +156,7 @@ describe("convertRawQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertRawQuizToV2(quizWithAltText);
+    const result = convertHasuraQuizToV2(quizWithAltText);
     expect(result.questions[0]?.question).toBe(
       "![A golden retriever sitting in a park](https://example.com/dog.jpg)",
     );
@@ -165,17 +165,17 @@ describe("convertRawQuizToV2", () => {
   it("should throw error for unknown question type", () => {
     const unknownTypeQuiz = [
       {
-        question_id: 1,
-        question_uid: "test-uid-1",
-        question_type: "unknown-type" as unknown as "multiple-choice",
-        question_stem: [{ text: "Question", type: "text" }],
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "unknown-type" as unknown as "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
         answers: {},
         feedback: "",
         hint: "",
         active: true,
       },
-    ] as RawQuiz;
-    expect(() => convertRawQuizToV2(unknownTypeQuiz)).toThrow(
+    ] as HasuraQuiz;
+    expect(() => convertHasuraQuizToV2(unknownTypeQuiz)).toThrow(
       "Unknown question type: unknown-type",
     );
   });

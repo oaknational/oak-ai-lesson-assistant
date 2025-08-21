@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`convertRawQuizToV2 should convert raw quiz to V2 format 1`] = `
+exports[`convertHasuraQuizToV2 should convert Hasura quiz to V2 format 1`] = `
 {
   "imageAttributions": [
     {

@@ -21,6 +21,7 @@ import type { AilaDocumentContent } from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
+import type { QuizGeneratorType } from "./quiz/schema";
 
 export type AilaGenerateDocumentMode = "interactive" | "generate";
 
@@ -38,6 +39,7 @@ export type AilaPublicChatOptions = {
   useRag?: boolean;
   temperature?: number;
   numberOfRecordsInRag?: number;
+  quizGenerators?: QuizGeneratorType[];
 };
 
 export type AilaOptions = AilaPublicChatOptions & {

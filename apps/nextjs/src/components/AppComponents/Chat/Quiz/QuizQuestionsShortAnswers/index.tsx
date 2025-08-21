@@ -1,1 +1,0 @@
-export { QuizQuestionsShortAnswers } from "./QuizQuestionsShortAnswers";
