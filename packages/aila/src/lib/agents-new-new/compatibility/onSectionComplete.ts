@@ -7,7 +7,7 @@ export const createOnSectionComplete =
     // Add comma if not the first patch
     if (!patchState.isFirstSection) {
       textStreamer(",");
-      patchState.isFirstSection = true;
+      patchState.isFirstSection = false;
     }
 
     // let isFirstPatch = true;
