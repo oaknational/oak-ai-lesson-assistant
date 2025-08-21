@@ -67,7 +67,7 @@ describe("AilaModeration", () => {
   describe("moderate", () => {
     it("should respond with appropriate moderation categories based on the content of the chat", async () => {
       const moderationResult: ModerationResult = {
-        categories: ["l/strong-language"],
+        categories: ["l2"],
         justification: "Test justification",
       };
       const moderator = new MockModerator([moderationResult]);
@@ -106,7 +106,7 @@ describe("AilaModeration", () => {
 
     it("should skip moderation when there are no user messages", async () => {
       const moderationResult: ModerationResult = {
-        categories: ["l/strong-language"],
+        categories: ["l2"],
         justification: "Test justification",
       };
       const moderator = new MockModerator([moderationResult]);
@@ -166,13 +166,13 @@ describe("AilaModeration", () => {
       expect(result).toEqual({
         type: "moderation",
         id: undefined, // We are not testing persistence
-        categories: ["t/encouragement-violence"],
+        categories: ["t4"],
       });
     });
 
     it("calls any Aila plugins on a toxic moderation", async () => {
       const moderationResult: ModerationResult = {
-        categories: ["t/encouragement-illegal-activity"],
+        categories: ["t3"],
         justification: "Test justification",
       };
       const moderator = new MockModerator([moderationResult]);
@@ -220,7 +220,7 @@ describe("AilaModeration", () => {
 
       expect(mockPlugin.onToxicModeration).toHaveBeenCalledWith(
         expect.objectContaining({
-          categories: ["t/encouragement-illegal-activity"],
+          categories: ["t3"],
           justification: "Test justification",
         }),
         pluginContext,
