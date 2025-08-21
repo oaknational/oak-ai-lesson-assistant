@@ -1,6 +1,6 @@
 import type OpenAI from "openai";
 
-import type { SectionAgentRegistry, WithError } from "../types";
+import type { SectionAgentRegistry } from "../types";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
 import { cycleAgent } from "./cycleAgent";
@@ -24,101 +24,101 @@ export const createSectionAgentRegistry = ({
   "keyStage--default": keyStageAgent({
     id: "keyStage--default",
     description: "",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.keyStage,
   }),
   "subject--default": subjectAgent({
     id: "subject--default",
     description: "Generates the subject for the lesson",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.subject,
   }),
   "title--default": titleAgent({
     id: "title--default",
     description: "Generates the title for the lesson",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.title,
   }),
   "basedOn--default": basedOnAgent({
     id: "basedOn--default",
     description: "Generates what the lesson is based on",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.basedOn ?? undefined,
   }),
   "learningOutcome--default": learningOutcomeAgent({
     id: "learningOutcome--default",
     description: "Generates the learning outcome for the lesson",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.learningOutcome,
   }),
   "learningCycleOutcomes--default": learningCycleOutcomesAgent({
     id: "learningCycleOutcomes--default",
     description: "Generates learning cycle outcomes",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.learningCycles,
   }),
   "priorKnowledge--default": priorKnowledgeAgent({
     id: "priorKnowledge--default",
     description: "Generates prior knowledge requirements",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.priorKnowledge,
   }),
   "keyLearningPoints--default": keyLearningPointsAgent({
     id: "keyLearningPoints--default",
     description: "Generates key learning points",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.keyLearningPoints,
   }),
   "misconceptions--default": misconceptionsAgent({
     id: "misconceptions--default",
     description: "Generates common misconceptions",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.misconceptions,
   }),
   "keywords--default": keywordsAgent({
     id: "keywords--default",
     description: "Generates keywords for the lesson",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.keywords,
   }),
   "starterQuiz--default": starterQuizAgent({
     id: "starterQuiz--default",
     description: "Generates starter quiz questions",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) =>
       "starterQuiz" in document ? document.starterQuiz : undefined,
   }),
   "starterQuiz--maths": starterQuizAgent({
     id: "starterQuiz--maths",
     description: "Generates starter quiz questions for maths",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) =>
       "starterQuiz" in document ? document.starterQuiz : undefined,
   }),
   "cycle--default": cycleAgent({
     id: "cycle--default",
     description: "Generates learning cycle content",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) => document.cycle1,
   }),
   "exitQuiz--default": exitQuizAgent({
     id: "exitQuiz--default",
     description: "Generates exit quiz questions",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) =>
       "exitQuiz" in document ? document.exitQuiz : undefined,
   }),
   "exitQuiz--maths": exitQuizAgent({
     id: "exitQuiz--maths",
     description: "Generates exit quiz questions for maths",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) =>
       "exitQuiz" in document ? document.exitQuiz : undefined,
   }),
   "additionalMaterials--default": additionalMaterialsAgent({
     id: "additionalMaterials--default",
     description: "Provides additional materials for the lesson",
-    openAIClient: openai,
+    openai,
     contentFromDocument: (document) =>
       document.additionalMaterials ?? undefined,
   }),

@@ -1,3 +1,5 @@
+import { isTruthy } from "remeda";
+
 import { buildPatches } from "./helpers/buildPatches";
 import type { TextStreamer } from "./helpers/createTextStreamer";
 
@@ -6,11 +8,16 @@ export const createOnTurnComplete =
   <T extends object>(props: {
     prevDoc: T;
     nextDoc: T;
-    sectionKeys: (keyof T)[];
     ailaMessage: string;
   }) => {
-    const { prevDoc, nextDoc, sectionKeys, ailaMessage } = props;
+    const { prevDoc, nextDoc, ailaMessage } = props;
     const patches = buildPatches(prevDoc, nextDoc);
+    const sectionKeys = patches
+      .map((patch) =>
+        "path" in patch && typeof patch.path === "string" ? patch.path : null,
+      )
+      .map((path) => path?.split("/")[1])
+      .filter(isTruthy);
 
     // Create the llmMessage
     const llmMessage = {

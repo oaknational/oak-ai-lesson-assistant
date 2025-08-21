@@ -28,12 +28,12 @@ export function createSectionAgent<ResponseType>({
   return ({
     id,
     description,
-    openAIClient,
+    openai,
     contentFromDocument,
   }: {
     id: string;
     description: string;
-    openAIClient: OpenAI;
+    openai: OpenAI;
     contentFromDocument: (
       document: LooseLessonPlan | RagLessonPlan,
     ) => ResponseType | undefined;
@@ -61,7 +61,7 @@ export function createSectionAgent<ResponseType>({
 
       return executeGenericPromptAgent({
         agent: genericPromptAgent,
-        openAIClient,
+        openai,
       });
     },
   });

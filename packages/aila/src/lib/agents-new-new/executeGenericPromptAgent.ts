@@ -7,10 +7,10 @@ import type { WithError } from "./types";
 
 export async function executeGenericPromptAgent<ResponseType>({
   agent,
-  openAIClient,
+  openai,
 }: {
   agent: GenericPromptAgentPrompt<ResponseType>;
-  openAIClient: OpenAI;
+  openai: OpenAI;
 }): Promise<WithError<ResponseType>> {
   console.log("⏳ Executing agent");
   const schemaWrapped = z.object({
@@ -18,7 +18,7 @@ export async function executeGenericPromptAgent<ResponseType>({
   });
   const responseFormat = zodTextFormat(schemaWrapped, `agent_response_schema`);
 
-  const result = await openAIClient.responses.parse({
+  const result = await openai.responses.parse({
     input: agent.input,
     stream: false,
     model: "gpt-4o-2024-11-20",

@@ -54,16 +54,23 @@ export type AilaRuntimeContext = {
   };
 };
 
+export type AilaTurnCallbacks = {
+  onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
+  onSectionComplete: (
+    prevDoc: LooseLessonPlan,
+    nextDoc: LooseLessonPlan,
+  ) => void;
+  onTurnComplete: (props: {
+    prevDoc: LooseLessonPlan;
+    nextDoc: LooseLessonPlan;
+    ailaMessage: string;
+  }) => void;
+};
+
 export type AilaTurnArgs = {
   persistedState: AilaPersistedState;
   runtime: AilaRuntimeContext;
-  callbacks: {
-    onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
-    onSectionComplete: (
-      prevDoc: LooseLessonPlan,
-      nextDoc: LooseLessonPlan,
-    ) => void;
-  };
+  callbacks: AilaTurnCallbacks;
 };
 
 export type AilaTurnResult = {
@@ -75,6 +82,7 @@ export type AilaExecutionContext = {
   persistedState: AilaPersistedState;
   runtime: AilaRuntimeContext;
   currentTurn: AilaCurrentTurn;
+  callbacks: AilaTurnCallbacks;
 };
 
 export type SectionPromptAgentProps<ResponseType> = {

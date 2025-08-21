@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
 import { ailaTurn } from "lib/agents-new-new/ailaTurn";
-import { createAilaTurnCallbacks } from "lib/agents-new-new/compatibility/createAilaTurnCallbacks";
+import { createAilaTurnCallbacks } from "lib/agents-new-new/compatibility/ailaTurnCallbacks";
 import { createOpenAIPlannerAgent } from "lib/agents-new-new/plannerAgent";
 import { createOpenAIPresentationAgent } from "lib/agents-new-new/presentationAgent";
 import { createSectionAgentRegistry } from "lib/agents-new-new/sectionAgent/sectionAgentRegistry";

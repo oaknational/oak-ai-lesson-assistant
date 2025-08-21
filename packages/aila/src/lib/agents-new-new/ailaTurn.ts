@@ -2,6 +2,7 @@ import { sectionStepToAgentId } from "./sectionAgent/sectionStepToAgentId";
 import type {
   AilaExecutionContext,
   AilaTurnArgs,
+  AilaTurnCallbacks,
   AilaTurnResult,
 } from "./types";
 
@@ -20,10 +21,11 @@ export async function ailaTurn({
       stepsExecuted: [],
       relevantLessonsFetched: false,
     },
+    callbacks,
   };
 
   /**
-   * 1. Otherwise, we call the planner agent which will output the plan for Aila's turn
+   * 1. We call the planner agent which will output the plan for Aila's turn
    */
   const plannerResponse = await context.runtime.plannerAgent({
     messages: context.persistedState.messages,
@@ -36,9 +38,9 @@ export async function ailaTurn({
      * 👉 The turn ends here.
      */
     return endWithError(plannerResponse.error, context);
-  } else {
-    context.currentTurn.plannerOutput = plannerResponse.data;
   }
+  context.currentTurn.plannerOutput = plannerResponse.data;
+
   /**
    * 2. If the planner outputs an 'exit' decision, we pass that directly to the presentation agent to write an appropriate response.
    * 👉 The turn ends here.
@@ -46,16 +48,25 @@ export async function ailaTurn({
   if (context.currentTurn.plannerOutput.decision === "exit") {
     return endWithMessage(context);
   }
+
+  callbacks.onPlannerComplete({
+    sectionKeys: context.currentTurn.plannerOutput.plan.map(
+      (item) => item.sectionKey,
+    ),
+  });
+
   /**
    * 5. If the planner outputs a 'plan' decision, we loop through the plan steps, executing them sequentially.
    * Each step (section, action) is handled by the appropriate agent.
    */
   for (const step of context.currentTurn.plannerOutput.plan) {
+    const prevDoc = { ...context.currentTurn.document };
     context.currentTurn.stepsExecuted.push(step);
 
     if (step.action === "delete") {
       // delete!
       delete context.currentTurn.document[step.sectionKey];
+      callbacks.onSectionComplete(prevDoc, context.currentTurn.document);
       continue;
     }
 
@@ -73,6 +84,7 @@ export async function ailaTurn({
       ...context.currentTurn.document,
       [step.sectionKey]: result.data,
     };
+    callbacks.onSectionComplete(prevDoc, context.currentTurn.document);
   }
   /**
    * 1. If the RAG input hash is stale AND no 'based on' lesson is set, we need to re-fetch the relevant lessons.
@@ -93,7 +105,7 @@ export async function ailaTurn({
       context.currentTurn.relevantLessonsFetched = true;
 
       if (context.persistedState.relevantLessons.length > 0) {
-        return endWithMessage(context);
+        return endWithMessage(context, callbacks);
       }
     }
   }
@@ -101,7 +113,7 @@ export async function ailaTurn({
    * 6. After the plan is executed, we call the presentation agent.
    * 👉 The turn ends here.
    */
-  return endWithMessage(context);
+  return endWithMessage(context, callbacks);
 }
 
 /**
@@ -130,9 +142,6 @@ async function endWithError(
   });
 
   if (messageAgentResult.error) {
-    context.currentTurn.errors.push({
-      message: "Error in presentation agent during error handling",
-    });
     return appendGenericErrorToState(context);
   }
 
@@ -157,30 +166,27 @@ async function endWithMessage(
   });
 
   if (messageAgentResult.error) {
-    context.currentTurn.errors.push({ message: "Error in presentation agent" });
     return appendGenericErrorToState(context);
-  } else {
-    // MUTATES persistedState
-    context.persistedState.messages.push({
-      role: "assistant",
-      content: messageAgentResult.data.message,
-    });
   }
 
-  return {
-    persistedState: context.persistedState,
-    currentTurn: context.currentTurn,
-  };
+  return appendAssistantMessageToState(
+    context,
+    messageAgentResult.data.message,
+  );
 }
 
 function appendAssistantMessageToState(
   context: AilaExecutionContext,
   message: string,
 ): AilaTurnResult {
-  // MUTATES persistedState
   context.persistedState.messages.push({
     role: "assistant",
     content: message,
+  });
+  context.callbacks.onTurnComplete({
+    prevDoc: context.persistedState.initialDocument,
+    nextDoc: context.currentTurn.document,
+    ailaMessage: message,
   });
   return {
     persistedState: context.persistedState,

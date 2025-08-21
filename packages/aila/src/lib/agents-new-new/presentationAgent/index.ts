@@ -8,5 +8,5 @@ export const createOpenAIPresentationAgent =
   (openai: OpenAI) => (props: PresentationAgentProps) =>
     executeGenericPromptAgent({
       agent: createPresentationAgent(props),
-      openAIClient: openai,
+      openai,
     });

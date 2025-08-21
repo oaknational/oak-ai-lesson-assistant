@@ -5,7 +5,7 @@ import { compare } from "fast-json-patch/index.mjs";
 import readline from "readline";
 
 import { ailaTurn } from "./ailaTurn";
-import { createAilaTurnCallbacks } from "./compatibility/createAilaTurnCallbacks";
+import { createAilaTurnCallbacks } from "./compatibility/ailaTurnCallbacks";
 import { executeGenericPromptAgent } from "./executeGenericPromptAgent";
 import { createPlannerAgent } from "./plannerAgent/createPlannerAgent";
 import { createPresentationAgent } from "./presentationAgent/createPresentationAgent";
@@ -41,7 +41,7 @@ async function main() {
 
   const initialUserMessage = `Create a lesson plan with subject: ${subject} for key stage: ${keyStage}, with title "${title}"`;
 
-  const openAIClient = createOpenAIClient({
+  const openai = createOpenAIClient({
     app: "lesson-assistant",
     chatMeta: {
       chatId: "test-chat",
@@ -52,17 +52,17 @@ async function main() {
   const plannerAgent = (props: PlannerAgentProps) =>
     executeGenericPromptAgent({
       agent: createPlannerAgent(props),
-      openAIClient,
+      openai,
     });
 
   const presentationAgent = (props: PresentationAgentProps) =>
     executeGenericPromptAgent({
       agent: createPresentationAgent(props),
-      openAIClient,
+      openai,
     });
 
   const sectionAgents = createSectionAgentRegistry({
-    openai: openAIClient,
+    openai,
   });
 
   let persistedState: AilaPersistedState = {

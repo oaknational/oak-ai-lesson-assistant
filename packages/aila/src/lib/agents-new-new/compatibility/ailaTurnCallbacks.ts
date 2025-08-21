@@ -1,3 +1,4 @@
+import type { AilaTurnCallbacks } from "../types";
 import { createTextStreamer } from "./helpers/createTextStreamer";
 import { createOnPlannerComplete } from "./onPlannerComplete";
 import { createOnSectionComplete } from "./onSectionComplete";
@@ -9,11 +10,11 @@ export function createAilaTurnCallbacks({
 }: {
   chat: { appendChunk: (chunk: string) => void };
   controller: ReadableStreamDefaultController;
-}) {
-  let isFirstPatch = true;
+}): AilaTurnCallbacks {
+  const patchState = { isFirstPatch: true };
   const textStreamer = createTextStreamer(controller, chat);
   const onPlannerComplete = createOnPlannerComplete(textStreamer);
-  const onSectionComplete = createOnSectionComplete(textStreamer, isFirstPatch);
+  const onSectionComplete = createOnSectionComplete(textStreamer, patchState);
   const onTurnComplete = createOnTurnComplete(textStreamer);
 
   return {

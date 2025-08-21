@@ -19,9 +19,9 @@ describe("createPlannerAgent", () => {
     };
 
     const mockRelevantLessons = [
-      { title: "Introduction to Plants" },
-      { title: "Plant Cells and Structure" },
-      { title: "How Plants Make Food" },
+      { id: 1, title: "Introduction to Plants" },
+      { id: 2, title: "Plant Cells and Structure" },
+      { id: 3, title: "How Plants Make Food" },
     ];
 
     const agent = createPlannerAgent({
