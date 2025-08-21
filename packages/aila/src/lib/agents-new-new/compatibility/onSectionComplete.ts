@@ -7,14 +7,11 @@ export const createOnSectionComplete =
     // Add comma if not the first patch
     if (!patchState.isFirstSection) {
       textStreamer(",");
-      patchState.isFirstSection = false;
     }
 
     // let isFirstPatch = true;
     const patches = buildPatches(prevDoc, nextDoc);
     for (const patch of patches) {
-      console.log(patchState);
-      console.log(patch.type);
       const patchJson = JSON.stringify(patch);
       textStreamer(patchJson);
       // if (isFirstPatch) {
@@ -23,4 +20,7 @@ export const createOnSectionComplete =
       //   textStreamer(",");
       // }
     }
+
+    // Mark that we've processed the first section
+    patchState.isFirstSection = false;
   };

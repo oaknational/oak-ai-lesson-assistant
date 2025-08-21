@@ -63,7 +63,7 @@ describe("ailaTurnCallbacks", () => {
     );
   });
 
-  test.only("all callbacks together", () => {
+  test("all callbacks together", () => {
     let chunks = "";
     const { onPlannerComplete, onSectionComplete, onTurnComplete } =
       createAilaTurnCallbacks({
@@ -111,6 +111,18 @@ describe("ailaTurnCallbacks", () => {
           type: "patch",
           reasoning: "Updated subject based on user request",
           value: { op: "add", path: "/subject", value: "art" },
+          status: "complete",
+        },
+        {
+          type: "patch",
+          reasoning: "Updated title based on user request",
+          value: { op: "add", path: "/title", value: "Goethe's Colour Wheel" },
+          status: "complete",
+        },
+        {
+          type: "patch",
+          reasoning: "Updated keyLearningPoints based on user request",
+          value: { op: "add", path: "/keyLearningPoints", value: ["An introduction to Goethe's Colour Wheel"] },
           status: "complete",
         },
       ],
