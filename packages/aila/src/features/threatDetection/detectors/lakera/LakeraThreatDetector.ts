@@ -301,7 +301,7 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
     };
   }
 
-  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
+  private validateAndExtractMessages(content: unknown): Message[] {
     log.info("Detecting threat", {
       contentType: typeof content,
       isArray: Array.isArray(content),
@@ -316,7 +316,78 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
       throw new Error("Input must be an array of Messages");
     }
 
-    const messages = extractPromptTextFromMessages(content);
+    return extractPromptTextFromMessages(content);
+  }
+
+  private handleHighConfidenceThreat(guardData: LakeraGuardResponse): never {
+    log.info("High confidence prompt attack - proceeding with policy violation");
+    const highestThreat = this.getHighestThreatFromBreakdown(guardData);
+    const threatResult = this.buildThreatResult(guardData, highestThreat, true);
+    
+    // Throw error to trigger violation recording
+    throw new AilaThreatDetectionError(
+      "unknown", // userId will be set by the calling context
+      "High confidence prompt injection attack detected",
+      { cause: threatResult },
+    );
+  }
+
+  private async handleMediumConfidenceThreat(
+    messages: Message[], 
+    promptAttackResult: string, 
+    guardData: LakeraGuardResponse
+  ): Promise<ThreatDetectionResult> {
+    log.info("Medium confidence prompt attack - verifying with OpenAI");
+    const isConfirmed = await this.verifyWithOpenAI(messages, promptAttackResult);
+    const highestThreat = this.getHighestThreatFromBreakdown(guardData);
+    
+    if (isConfirmed) {
+      // OpenAI confirmed it's a threat - throw error to trigger violation recording
+      const threatResult = this.buildThreatResult(guardData, highestThreat, true);
+      throw new AilaThreatDetectionError(
+        "unknown", // userId will be set by the calling context
+        "OpenAI confirmed prompt injection attack",
+        { cause: threatResult },
+      );
+    } else {
+      // OpenAI said it's not a threat - return unconfirmed result
+      return this.buildThreatResult(guardData, highestThreat, false);
+    }
+  }
+
+  private createNoThreatResult(guardData?: LakeraGuardResponse): ThreatDetectionResult {
+    return {
+      isThreat: false,
+      message: "No threats detected",
+      details: {},
+      rawResponse: guardData || null,
+    };
+  }
+
+  private async handlePromptAttackResult(
+    promptAttackResult: string,
+    messages: Message[],
+    guardData: LakeraGuardResponse
+  ): Promise<ThreatDetectionResult> {
+    log.info("Prompt attack detected", { promptAttackResult });
+    
+    // Handle different threat levels
+    if (promptAttackResult === "l1_confident" || promptAttackResult === "l2_very_likely") {
+      this.handleHighConfidenceThreat(guardData);
+    } else if (promptAttackResult === "l3_likely" || promptAttackResult === "l4_less_likely") {
+      return await this.handleMediumConfidenceThreat(messages, promptAttackResult, guardData);
+    } else if (promptAttackResult === "l5_unlikely") {
+      // Low confidence - no action needed
+      log.info("Low confidence prompt attack - no action needed");
+      return this.createNoThreatResult(guardData);
+    }
+    
+    // This should never be reached, but provide a fallback
+    return this.createNoThreatResult(guardData);
+  }
+
+  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
+    const messages = this.validateAndExtractMessages(content);
 
     try {
       // Make both API calls in parallel
@@ -326,61 +397,14 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
       ]);
 
       if (!guardData.flagged) {
-        return {
-          isThreat: false,
-          message: "No threats detected",
-          details: {},
-          rawResponse: guardData,
-        };
+        return this.createNoThreatResult(guardData);
       }
 
       // Check for prompt_attack result
       const promptAttackResult = this.getPromptAttackResult(resultsData.results);
       
       if (promptAttackResult) {
-        log.info("Prompt attack detected", { promptAttackResult });
-        
-        // Handle different threat levels
-        if (promptAttackResult === "l1_confident" || promptAttackResult === "l2_very_likely") {
-          // High confidence - proceed with policy violation
-          log.info("High confidence prompt attack - proceeding with policy violation");
-          const highestThreat = this.getHighestThreatFromBreakdown(guardData);
-          const threatResult = this.buildThreatResult(guardData, highestThreat, true);
-          
-          // Throw error to trigger violation recording
-          throw new AilaThreatDetectionError(
-            "unknown", // userId will be set by the calling context
-            "High confidence prompt injection attack detected",
-            { cause: threatResult },
-          );
-        } else if (promptAttackResult === "l3_likely" || promptAttackResult === "l4_less_likely") {
-          // Medium confidence - verify with OpenAI
-          log.info("Medium confidence prompt attack - verifying with OpenAI");
-          const isConfirmed = await this.verifyWithOpenAI(messages, promptAttackResult);
-          const highestThreat = this.getHighestThreatFromBreakdown(guardData);
-          
-          if (isConfirmed) {
-            // OpenAI confirmed it's a threat - throw error to trigger violation recording
-            const threatResult = this.buildThreatResult(guardData, highestThreat, true);
-            throw new AilaThreatDetectionError(
-              "unknown", // userId will be set by the calling context
-              "OpenAI confirmed prompt injection attack",
-              { cause: threatResult },
-            );
-          } else {
-            // OpenAI said it's not a threat - return unconfirmed result
-            return this.buildThreatResult(guardData, highestThreat, false);
-          }
-        } else if (promptAttackResult === "l5_unlikely") {
-          // Low confidence - no action needed
-          log.info("Low confidence prompt attack - no action needed");
-          return {
-            isThreat: false,
-            message: "No threats detected",
-            details: {},
-            rawResponse: guardData,
-          };
-        }
+        return await this.handlePromptAttackResult(promptAttackResult, messages, guardData);
       }
 
       // If no prompt_attack result or other threat types, proceed normally
@@ -396,8 +420,8 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
       log.error("Error in threat detection", { error });
       return {
         isThreat: false,
-        message: "Error occurred during threat detection",
-        details: { error: error instanceof Error ? error.message : "Unknown error" },
+        message: `Error occurred during threat detection: ${error instanceof Error ? error.message : "Unknown error"}`,
+        details: {},
         rawResponse: null,
       };
     }
