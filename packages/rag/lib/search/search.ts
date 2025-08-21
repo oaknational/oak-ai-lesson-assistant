@@ -51,6 +51,18 @@ export async function vectorSearch({
   log.info(`Invalid results: ${queryResponse.length - results.length}`);
   log.info(`Valid results: ${results.length}`);
 
+  // Log first 3 parse errors for debugging
+  parseErrors.slice(0, 3).forEach((error, index) => {
+    log.error(`Parse error ${index + 1}:`, error);
+  });
+
+  // Throw if we have at least 3 rows but all failed to parse
+  if (queryResponse.length >= 3 && results.length === 0) {
+    throw new Error(
+      `All RAG results failed to parse. Found ${queryResponse.length} results but all ${parseErrors.length} failed validation. Check logs above for details.`,
+    );
+  }
+
   const endAt = new Date();
   log.info(
     `Fetched ${results.length} lesson plans in ${endAt.getTime() - startAt.getTime()}ms`,
