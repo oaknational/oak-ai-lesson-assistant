@@ -50,6 +50,11 @@ export async function vectorSearch({
   log.info(`Parse errors: ${parseErrors.length}`);
   log.info(`Invalid results: ${queryResponse.length - results.length}`);
   log.info(`Valid results: ${results.length}`);
+  
+  // Log first 3 parse errors for debugging
+  parseErrors.slice(0, 3).forEach((error, index) => {
+    log.error(`Parse error ${index + 1}:`, error);
+  });
 
   const endAt = new Date();
   log.info(
