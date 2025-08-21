@@ -2,10 +2,10 @@ import type { z } from "zod";
 
 import type { GenericPromptAgentPrompt } from "../schema";
 import { plannerOutputSchema } from "../schema";
-import { currentDocumentPromptPart } from "../shared-prompt-parts/currentDocument.part";
-import { messageHistoryPromptPart } from "../shared-prompt-parts/messageHistory.part";
-import { relevantLessonsPromptPart } from "../shared-prompt-parts/relevantLessons.part";
-import { userMessagePromptPart } from "../shared-prompt-parts/userMessage.part";
+import { currentDocumentPromptPart } from "../sharedPromptParts/currentDocument.part";
+import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
+import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
+import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
 import type { PlannerAgentProps } from "../types";
 import { plannerInstructions } from "./plannerInstructions";
 

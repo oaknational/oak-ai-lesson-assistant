@@ -1,14 +1,14 @@
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgentPrompt, SectionKey } from "../schema";
-import { changesMadePromptPart } from "../shared-prompt-parts/changesMade.part";
-import { errorsPromptPart } from "../shared-prompt-parts/errors.part";
-import { messageHistoryPromptPart } from "../shared-prompt-parts/messageHistory.part";
-import { plannerAgentResponsePromptPart } from "../shared-prompt-parts/plannerAgentResponse.part";
-import { relevantLessonsPromptPart } from "../shared-prompt-parts/relevantLessons.part";
-import { stepsExecutedPromptPart } from "../shared-prompt-parts/stepsExecuted.part";
-import { unplannedSectionsPromptPart } from "../shared-prompt-parts/unplannedSections.part";
-import { userMessagePromptPart } from "../shared-prompt-parts/userMessage.part";
+import { changesMadePromptPart } from "../sharedPromptParts/changesMade.part";
+import { errorsPromptPart } from "../sharedPromptParts/errors.part";
+import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
+import { plannerAgentResponsePromptPart } from "../sharedPromptParts/plannerAgentResponse.part";
+import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
+import { stepsExecutedPromptPart } from "../sharedPromptParts/stepsExecuted.part";
+import { unplannedSectionsPromptPart } from "../sharedPromptParts/unplannedSections.part";
+import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
 import type { PresentationAgentProps } from "../types";
 import { presentationAgentInstructions } from "./presentationAgent.instructions";
 import {

@@ -1,11 +1,11 @@
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgentPrompt } from "../schema";
-import { basedOnContentPromptPart } from "../shared-prompt-parts/basedOnContent.part";
-import { currentSectionValuePromptPart } from "../shared-prompt-parts/currentSectionValue.part";
-import { exemplarContentPromptPart } from "../shared-prompt-parts/exemplarContent.part";
-import { messageHistoryPromptPart } from "../shared-prompt-parts/messageHistory.part";
-import { userMessagePromptPart } from "../shared-prompt-parts/userMessage.part";
+import { basedOnContentPromptPart } from "../sharedPromptParts/basedOnContent.part";
+import { currentSectionValuePromptPart } from "../sharedPromptParts/currentSectionValue.part";
+import { exemplarContentPromptPart } from "../sharedPromptParts/exemplarContent.part";
+import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
+import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
 import type { SectionPromptAgentProps } from "../types";
 
 export function sectionToGenericAgent<T>({
