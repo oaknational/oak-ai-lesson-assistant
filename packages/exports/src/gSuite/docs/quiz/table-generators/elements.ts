@@ -57,7 +57,7 @@ export function createTableElement(
   rows: number,
   columns: number,
   cellContent: (row: number, col: number) => string,
-  columnWidths: number[],
+  columnWidths: (number | "AUTO")[],
 ): QuizElement {
   const requests: docs_v1.Schema$Request[] = [];
 

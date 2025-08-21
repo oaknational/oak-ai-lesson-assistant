@@ -11,8 +11,13 @@ import type {
 import { addFooterAttribution } from "./footerAttribution";
 
 // Mock the Google Docs API
-const mockBatchUpdate = jest.fn();
-const mockGet = jest.fn();
+const mockBatchUpdate =
+  jest.fn<
+    (
+      params: docs_v1.Params$Resource$Documents$Batchupdate,
+    ) => Promise<docs_v1.Schema$BatchUpdateDocumentResponse>
+  >();
+const mockGet = jest.fn<() => Promise<{ data: docs_v1.Schema$Document }>>();
 
 const mockGoogleDocs = {
   documents: {
@@ -135,10 +140,10 @@ describe("addFooterAttribution", () => {
     });
 
     // Verify no requests for firstPageFooterId
-    const batchUpdateCall = mockBatchUpdate.mock.calls[0][0];
-    const requests = batchUpdateCall.requestBody.requests;
+    const batchUpdateCall = mockBatchUpdate.mock.calls[0]![0];
+    const requests = batchUpdateCall.requestBody!.requests!;
     const firstPageRequests = requests.filter(
-      (req: any) => req.insertText?.location?.segmentId === "footer2",
+      (req) => req.insertText?.location?.segmentId === "footer2",
     );
     expect(firstPageRequests).toHaveLength(0);
   });
@@ -207,8 +212,8 @@ describe("addFooterAttribution", () => {
       imageAttributions,
     );
 
-    const batchUpdateCall = mockBatchUpdate.mock.calls[0][0];
-    const requests = batchUpdateCall.requestBody.requests;
+    const batchUpdateCall = mockBatchUpdate.mock.calls[0]![0];
+    const requests = batchUpdateCall.requestBody!.requests;
 
     // Should have requests in exact order: text insertions (reverse), then formatting
     expect(requests).toEqual([
