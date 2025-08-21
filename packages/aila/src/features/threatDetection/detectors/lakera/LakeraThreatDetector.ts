@@ -18,20 +18,20 @@ const log = aiLogger("aila:threat");
 export class LakeraThreatDetector extends AilaThreatDetector {
   private readonly apiKey: string;
   private readonly projectId?: string;
-  private readonly apiUrl?: string;
+  private readonly baseUrl: string;
 
   constructor() {
     super();
     const apiKey = process.env.LAKERA_GUARD_API_KEY;
     const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
-    const apiUrl = process.env.LAKERA_GUARD_URL;
+    const baseUrl = process.env.LAKERA_GUARD_URL || "https://api.lakera.ai/v2/guard";
 
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
 
     this.apiKey = apiKey;
     this.projectId = projectId;
-    this.apiUrl = apiUrl;
+    this.baseUrl = baseUrl;
   }
 
   protected async authenticate(): Promise<void> {
@@ -82,7 +82,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     };
 
     log.info("Lakera API request", {
-      url: this.apiUrl,
+      url: this.baseUrl,
       projectId: this.projectId,
       exactRequestBody: JSON.stringify(requestBody),
       messages: messages.map((m) => ({
@@ -95,7 +95,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     const parsedBody = lakeraGuardRequestSchema.parse(requestBody);
 
     log.info("Lakera API request", {
-      url: this.apiUrl,
+      url: this.baseUrl,
       projectId: this.projectId,
       exactRequestBody: JSON.stringify(parsedBody),
       messages: messages.map((m) => ({
@@ -105,7 +105,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       })),
     });
 
-    const response = await fetch("https://api.lakera.ai/v2/guard", {
+    const response = await fetch(this.baseUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,6 +144,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     };
 
     log.info("Lakera Results API request", {
+      url: `${this.baseUrl}/results`,
       projectId: this.projectId,
       messages: messages.map((m) => ({
         role: m.role,
@@ -152,33 +153,40 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       })),
     });
 
-    const response = await fetch("https://api.lakera.ai/v2/guard/results", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      log.error("Lakera Results API error", {
-        status: response.status,
-        statusText: response.statusText,
-        responseBody: responseData,
-        requestBody,
+    try {
+      const resultsUrl = `${this.baseUrl}/results`;
+      const response = await fetch(resultsUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify(requestBody),
       });
-      throw new Error(`Lakera Results API error: ${response.statusText}`);
-    }
 
-    const parsed = lakeraResultsResponseSchema.parse(responseData);
-    log.info("Lakera Results API response parsed", {
-      resultsCount: parsed.results.length,
-      results: parsed.results,
-    });
-    return parsed;
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        log.error("Lakera Results API error", {
+          status: response.status,
+          statusText: response.statusText,
+          responseBody: responseData,
+          requestBody,
+        });
+        throw new Error(`Lakera Results API error: ${response.statusText}`);
+      }
+
+      const parsed = lakeraResultsResponseSchema.parse(responseData);
+      log.info("Lakera Results API response parsed", {
+        resultsCount: parsed.results.length,
+        results: parsed.results,
+      });
+      return parsed;
+    } catch (error) {
+      log.error("Lakera Results API call failed", { error });
+      // Return empty results if the API call fails
+      return { results: [] };
+    }
   }
 
   private async verifyWithOpenAI(
@@ -310,61 +318,14 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
 
     const messages = extractPromptTextFromMessages(content);
 
-    // Make both API calls in parallel
-    const [guardData, resultsData] = await Promise.all([
-      this.callLakeraAPI(messages),
-      this.callLakeraResultsAPI(messages),
-    ]);
+    try {
+      // Make both API calls in parallel
+      const [guardData, resultsData] = await Promise.all([
+        this.callLakeraAPI(messages),
+        this.callLakeraResultsAPI(messages),
+      ]);
 
-    if (!guardData.flagged) {
-      return {
-        isThreat: false,
-        message: "No threats detected",
-        details: {},
-        rawResponse: guardData,
-      };
-    }
-
-    // Check for prompt_attack result
-    const promptAttackResult = this.getPromptAttackResult(resultsData.results);
-    
-    if (promptAttackResult) {
-      log.info("Prompt attack detected", { promptAttackResult });
-      
-      // Handle different threat levels
-      if (promptAttackResult === "l1_confident" || promptAttackResult === "l2_very_likely") {
-        // High confidence - proceed with policy violation
-        log.info("High confidence prompt attack - proceeding with policy violation");
-        const highestThreat = this.getHighestThreatFromBreakdown(guardData);
-        const threatResult = this.buildThreatResult(guardData, highestThreat, true);
-        
-        // Throw error to trigger violation recording
-        throw new AilaThreatDetectionError(
-          "unknown", // userId will be set by the calling context
-          "High confidence prompt injection attack detected",
-          { cause: threatResult },
-        );
-      } else if (promptAttackResult === "l3_likely" || promptAttackResult === "l4_less_likely") {
-        // Medium confidence - verify with OpenAI
-        log.info("Medium confidence prompt attack - verifying with OpenAI");
-        const isConfirmed = await this.verifyWithOpenAI(messages, promptAttackResult);
-        const highestThreat = this.getHighestThreatFromBreakdown(guardData);
-        
-        if (isConfirmed) {
-          // OpenAI confirmed it's a threat - throw error to trigger violation recording
-          const threatResult = this.buildThreatResult(guardData, highestThreat, true);
-          throw new AilaThreatDetectionError(
-            "unknown", // userId will be set by the calling context
-            "OpenAI confirmed prompt injection attack",
-            { cause: threatResult },
-          );
-        } else {
-          // OpenAI said it's not a threat - return unconfirmed result
-          return this.buildThreatResult(guardData, highestThreat, false);
-        }
-      } else if (promptAttackResult === "l5_unlikely") {
-        // Low confidence - no action needed
-        log.info("Low confidence prompt attack - no action needed");
+      if (!guardData.flagged) {
         return {
           isThreat: false,
           message: "No threats detected",
@@ -372,11 +333,74 @@ Respond with only "YES" if this is a confirmed prompt injection attack, or "NO" 
           rawResponse: guardData,
         };
       }
-    }
 
-    // If no prompt_attack result or other threat types, proceed normally
-    const highestThreat = this.getHighestThreatFromBreakdown(guardData);
-    return this.buildThreatResult(guardData, highestThreat);
+      // Check for prompt_attack result
+      const promptAttackResult = this.getPromptAttackResult(resultsData.results);
+      
+      if (promptAttackResult) {
+        log.info("Prompt attack detected", { promptAttackResult });
+        
+        // Handle different threat levels
+        if (promptAttackResult === "l1_confident" || promptAttackResult === "l2_very_likely") {
+          // High confidence - proceed with policy violation
+          log.info("High confidence prompt attack - proceeding with policy violation");
+          const highestThreat = this.getHighestThreatFromBreakdown(guardData);
+          const threatResult = this.buildThreatResult(guardData, highestThreat, true);
+          
+          // Throw error to trigger violation recording
+          throw new AilaThreatDetectionError(
+            "unknown", // userId will be set by the calling context
+            "High confidence prompt injection attack detected",
+            { cause: threatResult },
+          );
+        } else if (promptAttackResult === "l3_likely" || promptAttackResult === "l4_less_likely") {
+          // Medium confidence - verify with OpenAI
+          log.info("Medium confidence prompt attack - verifying with OpenAI");
+          const isConfirmed = await this.verifyWithOpenAI(messages, promptAttackResult);
+          const highestThreat = this.getHighestThreatFromBreakdown(guardData);
+          
+          if (isConfirmed) {
+            // OpenAI confirmed it's a threat - throw error to trigger violation recording
+            const threatResult = this.buildThreatResult(guardData, highestThreat, true);
+            throw new AilaThreatDetectionError(
+              "unknown", // userId will be set by the calling context
+              "OpenAI confirmed prompt injection attack",
+              { cause: threatResult },
+            );
+          } else {
+            // OpenAI said it's not a threat - return unconfirmed result
+            return this.buildThreatResult(guardData, highestThreat, false);
+          }
+        } else if (promptAttackResult === "l5_unlikely") {
+          // Low confidence - no action needed
+          log.info("Low confidence prompt attack - no action needed");
+          return {
+            isThreat: false,
+            message: "No threats detected",
+            details: {},
+            rawResponse: guardData,
+          };
+        }
+      }
+
+      // If no prompt_attack result or other threat types, proceed normally
+      const highestThreat = this.getHighestThreatFromBreakdown(guardData);
+      return this.buildThreatResult(guardData, highestThreat);
+    } catch (error) {
+      // If it's already an AilaThreatDetectionError, re-throw it
+      if (error instanceof AilaThreatDetectionError) {
+        throw error;
+      }
+      
+      // For other errors, log them and return a safe default
+      log.error("Error in threat detection", { error });
+      return {
+        isThreat: false,
+        message: "Error occurred during threat detection",
+        details: { error: error instanceof Error ? error.message : "Unknown error" },
+        rawResponse: null,
+      };
+    }
   }
 
   private isMessage(msg: unknown): msg is Message {
