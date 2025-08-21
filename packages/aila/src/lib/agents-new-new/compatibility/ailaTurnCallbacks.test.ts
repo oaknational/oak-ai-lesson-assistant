@@ -104,32 +104,35 @@ describe("ailaTurnCallbacks", () => {
 
     onSectionComplete(prevDoc, nextDoc);
 
-    // Parse the result to check it's valid JSON
-    const patches = chunks
-      .split('{"type":"patch"')
-      .slice(1)
-      .map((chunk) => {
-        return JSON.parse('{"type":"patch"' + chunk);
-      });
+    // The raw chunks should be valid JSON patches separated by commas
+    // Let's parse them as a JSON array by wrapping in brackets
+    const patchesJson = `[${chunks}]`;
+    const patches = JSON.parse(patchesJson);
 
     // Should have multiple patches for the various changes
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(patches.length).toBeGreaterThan(1);
 
     // Check that we have patches for different types of operations
-    const operations = patches.map((patch) => patch.value.op);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    const operations = patches.map((patch: any) => patch.value.op);
     expect(operations).toContain("replace"); // subject change
     expect(operations).toContain("add"); // new fields
 
     // Check that nested paths are handled correctly
-    const paths = patches.map((patch) => patch.value.path);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+    const paths = patches.map((patch: any) => patch.value.path);
     expect(paths).toContain("/subject");
     expect(paths).toContain("/title");
     expect(paths).toContain("/keyLearningPoints");
 
     // Should have nested paths for learningObjective changes
-    const nestedPaths = paths.filter((path) =>
-      path.startsWith("/learningObjective"),
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const nestedPaths = paths.filter(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
+      (path: any) => path.startsWith("/learningObjective"),
     );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(nestedPaths.length).toBeGreaterThan(0);
   });
 
@@ -150,11 +153,6 @@ describe("ailaTurnCallbacks", () => {
     onPlannerComplete({
       sectionKeys: ["subject", "title", "keyLearningPoints"],
     });
-    onSectionComplete({}, { subject: "art" });
-    onSectionComplete(
-      { subject: "art" },
-      { subject: "art", title: "Goethe's Colour Wheel" },
-    );
     onSectionComplete(
       {},
       {
