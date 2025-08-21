@@ -1,6 +1,13 @@
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
+import { ailaTurn } from "lib/agents-new-new/ailaTurn";
+import { createAilaTurnCallbacks } from "lib/agents-new-new/compatibility/createAilaTurnCallbacks";
+import { createOpenAIPlannerAgent } from "lib/agents-new-new/plannerAgent";
+import { createOpenAIPresentationAgent } from "lib/agents-new-new/presentationAgent";
+import { createSectionAgentRegistry } from "lib/agents-new-new/sectionAgent/sectionAgentRegistry";
+import type { JsonPatchDocumentOptional } from "protocol/jsonPatchProtocol";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
@@ -174,73 +181,110 @@ export class AilaStreamHandler {
       ...this._chat.aila.document.content,
     };
 
-    // Create a stream handler
-    const streamHandler = createInteractStreamHandler(
-      this._chat,
-      this._controller!,
-    );
+    // // Create a stream handler
+    // const streamHandler = createInteractStreamHandler(
+    //   this._chat,
+    //   this._controller!,
+    // );
 
-    // Call interact with the stream handler
-    const interactResult = await interact({
-      userId: this._chat.userId ?? "anonymous",
-      chatId: this._chat.id,
-      initialDocument: initialDocument,
-      messageHistoryWithProtocol: this._chat.messages
-        .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => {
-          log.info(m);
-          return m;
-        }) as { role: "user" | "assistant"; content: string }[],
-      onUpdate: streamHandler, // This is the new part
-      customAgents: {
-        mathsStarterQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.createBestQuiz(
-            "/starterQuiz",
-            document,
-          );
+    // // Call interact with the stream handler
+    // const interactResult = await interact({
+    //   userId: this._chat.userId ?? "anonymous",
+    //   chatId: this._chat.id,
+    //   initialDocument: initialDocument,
+    //   messageHistoryWithProtocol: this._chat.messages
+    //     .filter((m) => m.role === "user" || m.role === "assistant")
+    //     .map((m) => {
+    //       log.info(m);
+    //       return m;
+    //     }) as { role: "user" | "assistant"; content: string }[],
+    //   onUpdate: streamHandler, // This is the new part
+    //   customAgents: {
+    //     mathsStarterQuiz: async ({ document }) => {
+    //       const quiz = await this._chat.fullQuizService.createBestQuiz(
+    //         "/starterQuiz",
+    //         document,
+    //       );
 
-          return quiz;
-        },
-        mathsExitQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.createBestQuiz(
-            "/exitQuiz",
-            document,
-          );
+    //       return quiz;
+    //     },
+    //     mathsExitQuiz: async ({ document }) => {
+    //       const quiz = await this._chat.fullQuizService.createBestQuiz(
+    //         "/exitQuiz",
+    //         document,
+    //       );
 
-          return quiz;
-        },
-        fetchRagData: async ({ document }) => {
-          if (this._chat.relevantLessons) {
-            const results = await getRagLessonPlansByIds({
-              lessonPlanIds: this._chat.relevantLessons.map(
-                (lesson) => lesson.lessonPlanId,
-              ),
-            });
-            return results;
-          }
-          const lessonPlanResults = await fetchRelevantLessonPlans({
-            document,
-          });
+    //       return quiz;
+    //     },
+    //     fetchRagData: async ({ document }) => {
+    //       if (this._chat.relevantLessons) {
+    //         const results = await getRagLessonPlansByIds({
+    //           lessonPlanIds: this._chat.relevantLessons.map(
+    //             (lesson) => lesson.lessonPlanId,
+    //           ),
+    //         });
+    //         return results;
+    //       }
+    //       const lessonPlanResults = await fetchRelevantLessonPlans({
+    //         document,
+    //       });
 
-          const relevantLessons = lessonPlanResults.map((result) => ({
-            lessonPlanId: result.ragLessonPlanId,
-            title: result.lessonPlan.title,
-          }));
-          this._chat.relevantLessons = relevantLessons;
+    //       const relevantLessons = lessonPlanResults.map((result) => ({
+    //         lessonPlanId: result.ragLessonPlanId,
+    //         title: result.lessonPlan.title,
+    //       }));
+    //       this._chat.relevantLessons = relevantLessons;
 
-          return lessonPlanResults.map((l) => l.lessonPlan);
-        },
+    //       return lessonPlanResults.map((l) => l.lessonPlan);
+    //     },
+    //   },
+    //   relevantLessons: this._chat.relevantLessons,
+    // });
+
+    // // Stream the final result to the client
+    // await streamInteractResultToClient(
+    //   this._chat,
+    //   this._controller!,
+    //   initialDocument,
+    //   interactResult,
+    // );
+
+    const openai = createOpenAIClient({
+      app: "lesson-assistant",
+      chatMeta: {
+        chatId: this._chat.id,
+        userId: this._chat.userId,
       },
-      relevantLessons: this._chat.relevantLessons,
     });
 
-    // Stream the final result to the client
-    await streamInteractResultToClient(
-      this._chat,
-      this._controller!,
-      initialDocument,
-      interactResult,
-    );
+    const ailaTurnCallbacks = createAilaTurnCallbacks({
+      chat: this._chat,
+      controller: this._controller!,
+    });
+
+    const ailaTurnResult = await ailaTurn({
+      callbacks: ailaTurnCallbacks,
+      persistedState: {
+        messages: this._chat.messages,
+        initialDocument,
+        relevantLessons: [],
+      },
+      runtime: {
+        config: {
+          mathsQuizEnabled: true, // @todo check feature flag
+        },
+        plannerAgent: createOpenAIPlannerAgent(openai),
+        sectionAgents: createSectionAgentRegistry({ openai }),
+        presentationAgent: createOpenAIPresentationAgent(openai),
+        fetchRelevantLessons: () => Promise.resolve([]),
+      },
+    });
+
+    await this._chat.enqueue({
+      type: "state",
+      reasoning: "final",
+      value: ailaTurnResult.currentTurn.document,
+    } as JsonPatchDocumentOptional);
   }
 
   private async startLLMStream() {

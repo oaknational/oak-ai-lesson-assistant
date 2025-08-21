@@ -18,9 +18,21 @@ import type {
 } from "../../protocol/schema";
 import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
 import type { PresentationAgentOutput } from "./presentationAgent/presentationAgent.schema";
-import type { PlanStep, PlannerOutput, errorSchema } from "./schema";
+import type {
+  PlanStep,
+  PlannerOutput,
+  SectionKey,
+  errorSchema,
+} from "./schema";
 
-export type ChatMessage = { role: "assistant" | "user"; content: string };
+export type ChatMessage = {
+  role:
+    | "data" // compatibility
+    | "system" // keeping system in to support legacy chats
+    | "assistant"
+    | "user";
+  content: string;
+};
 
 // Serializable state that gets persisted (input + output, can be mutated)
 export type AilaPersistedState = {
@@ -45,6 +57,13 @@ export type AilaRuntimeContext = {
 export type AilaTurnArgs = {
   persistedState: AilaPersistedState;
   runtime: AilaRuntimeContext;
+  callbacks: {
+    onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
+    onSectionComplete: (
+      prevDoc: LooseLessonPlan,
+      nextDoc: LooseLessonPlan,
+    ) => void;
+  };
 };
 
 export type AilaTurnResult = {

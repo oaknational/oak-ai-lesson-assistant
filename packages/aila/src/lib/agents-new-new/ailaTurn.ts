@@ -8,6 +8,7 @@ import type {
 export async function ailaTurn({
   persistedState,
   runtime,
+  callbacks,
 }: AilaTurnArgs): Promise<AilaTurnResult> {
   const context: AilaExecutionContext = {
     persistedState,

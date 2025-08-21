@@ -5,6 +5,7 @@ import { compare } from "fast-json-patch/index.mjs";
 import readline from "readline";
 
 import { ailaTurn } from "./ailaTurn";
+import { createAilaTurnCallbacks } from "./compatibility/createAilaTurnCallbacks";
 import { executeGenericPromptAgent } from "./executeGenericPromptAgent";
 import { createPlannerAgent } from "./plannerAgent/createPlannerAgent";
 import { createPresentationAgent } from "./presentationAgent/createPresentationAgent";
@@ -80,11 +81,18 @@ async function main() {
 
   let shouldContinue = true;
 
+  const chunks = [];
+  const callbacks = createAilaTurnCallbacks({
+    chat: { appendChunk: (chunk) => chunks.push(chunk) },
+    controller: new ReadableStreamDefaultController(),
+  });
+
   while (shouldContinue) {
     // Run the interactive agent loop
     const result = await ailaTurn({
       persistedState,
       runtime,
+      callbacks,
     });
 
     // eslint-disable-next-line no-console
