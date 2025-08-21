@@ -1,7 +1,7 @@
 import { prepLessonPlanForDocs } from "./dataHelpers/prepLessonPlanForDocs";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
 import type { LessonPlanDocInputData } from "./schema/input.schema";
 import { getDocsTemplateIdLessonPlan } from "./templates";
 import type { OutputData, Result, State } from "./types";

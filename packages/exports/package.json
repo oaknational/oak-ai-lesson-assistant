@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "generate:answer-box": "pnpm with-env tsx scripts/generate-answer-box.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "pnpm with-env jest --config jest.config.mjs",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
+    "@googleapis/docs": "^5.0.1",
     "@oakai/additional-materials": "*",
     "@oakai/logger": "*",
     "@resvg/resvg-js": "^2.6.2",

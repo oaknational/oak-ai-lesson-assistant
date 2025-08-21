@@ -1,6 +1,6 @@
 import type { docs_v1 } from "@googleapis/docs";
 
-import type { ValueToString } from "../../utils";
+import type { ValueToString } from "../../../utils";
 
 export function textReplacements<
   Data extends Record<string, string | string[] | null | undefined>,
