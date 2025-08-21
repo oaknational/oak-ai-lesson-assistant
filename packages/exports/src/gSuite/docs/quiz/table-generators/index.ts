@@ -102,6 +102,8 @@ export function generateAllQuizElements(
   });
 
   // Reverse all elements for backwards insertion
+  // This allows us to use the same insertIndex for all operations in the batch
+  // without recalculating progressive insert positions for each element
   allElements.reverse();
 
   // Flatten all requests from reversed elements

@@ -1,6 +1,8 @@
 /**
  * Matching pairs question generator
  */
+import invariant from "tiny-invariant";
+
 import { addInstruction } from "../../../../../quiz-utils/formatting";
 import { shuffleMatchItems } from "../../../../../quiz-utils/shuffle";
 import { CHECKBOX_PLACEHOLDER, COLUMN_WIDTHS } from "../constants";
@@ -27,22 +29,33 @@ export function generateMatchingPairsTable(
     createTextElement(insertIndex, `${questionNumber}. ${formattedQuestion}`),
   );
 
+  // Validate that left and right items match in count
+  invariant(
+    leftItems.length === rightItems.length,
+    `Matching pairs question must have equal left and right items. Got ${leftItems.length} left, ${rightItems.length} right`,
+  );
+
   // Shuffle right items deterministically and calculate table dimensions
   const shuffledRightItems = shuffleMatchItems(rightItems);
-  const rows = Math.max(leftItems.length, shuffledRightItems.length);
+  const rows = leftItems.length;
 
   // Matching table element
   const cellContent = (row: number, col: number): string => {
+    // Column 0: Letter labels (a), b), c), etc.)
     if (col === 0 && row < leftItems.length) {
       return `${String.fromCharCode(97 + row)})`;
     }
+    // Column 1: Left side text content
     if (col === 1 && row < leftItems.length) {
       return leftItems[row] ?? "";
     }
-    if (col === 2) return ""; // Spacer column
+    // Column 2: Spacer column
+    if (col === 2) return "";
+    // Column 3: Answer checkboxes
     if (col === 3 && row < shuffledRightItems.length) {
       return CHECKBOX_PLACEHOLDER;
     }
+    // Column 4: Right side text content
     if (col === 4 && row < shuffledRightItems.length) {
       return shuffledRightItems[row]?.text ?? "";
     }

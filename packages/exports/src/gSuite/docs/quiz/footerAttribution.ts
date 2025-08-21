@@ -10,7 +10,7 @@ import type {
   ImageAttribution,
   QuizV2Question,
 } from "../../../schema/input.schema";
-import { getFooterStrategy } from "./line-counter";
+import { getFooterStrategy } from "./estimate-page-breaks";
 
 const log = aiLogger("exports");
 

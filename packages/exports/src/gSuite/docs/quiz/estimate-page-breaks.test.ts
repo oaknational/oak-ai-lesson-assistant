@@ -1,12 +1,12 @@
 /**
- * Unit tests for quiz line counting utility
+ * Unit tests for page break estimation utility
  */
 import type { QuizV2Question } from "../../../schema/input.schema";
 import {
   LINE_COUNT_THRESHOLD,
   countQuizLines,
   getFooterStrategy,
-} from "./line-counter";
+} from "./estimate-page-breaks";
 
 describe("countQuizLines", () => {
   it("should count single multiple choice question correctly", () => {

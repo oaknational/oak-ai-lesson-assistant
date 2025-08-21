@@ -31,7 +31,9 @@ export function generateOrderingTable(
 
   // Items table element
   const cellContent = (row: number, col: number): string => {
+    // Column 0: Answer input boxes
     if (col === 0) return "☐";
+    // Column 1: Item text content
     return shuffledItems[row]?.text ?? "";
   };
 

@@ -1,5 +1,12 @@
 /**
  * Generate answer box image and upload to GCS
+ * 
+ * Google Docs can't embed SVG images, so we generate a high-quality PNG
+ * from an SVG definition. The PNG is uploaded to GCS for use in quiz exports.
+ * 
+ * Run this script when:
+ * - Changing the design/appearance of answer boxes
+ * - Setting up a new environment (populating the GCS bucket)
  */
 import { aiLogger } from "@oakai/logger";
 

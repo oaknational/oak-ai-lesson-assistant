@@ -1,5 +1,16 @@
 /**
- * Quiz line counting utility for determining footer placement strategy
+ * Page break estimation utility for determining footer placement strategy
+ * 
+ * Google Docs has different footer types:
+ * - First page footer: Only appears on page 1
+ * - Document footer: Appears on all pages
+ * 
+ * We only need to show attribution on the last footer. For single-page quizzes,
+ * we can use both footers. For multi-page quizzes, we skip the first page footer
+ * and only use the document footer so attribution appears on the final page.
+ * 
+ * This module estimates quiz content height to determine the appropriate
+ * footer strategy based on whether content will span multiple pages.
  */
 import type { QuizV2Question } from "../../../schema/input.schema";
 
@@ -46,9 +57,11 @@ export function countQuizLines(
       height += q.items.length;
       if (debug) console.log(`  Q${index + 1} items: +${q.items.length}`);
     } else if (q.questionType === "short-answer") {
-      // Short answer effectively takes 2 rows (question + answer space or text wrapping)
+      // Short answer has two forms, both needing extra space:
+      // 1. Separate answer line below the question
+      // 2. Inline answer space that makes the question wrap to multiple lines
       height += 1;
-      if (debug) console.log(`  Q${index + 1} answer space: +1`);
+      if (debug) console.log(`  Q${index + 1} answer space/wrapping: +1`);
     }
 
     // Add spacing between questions (except last one)
