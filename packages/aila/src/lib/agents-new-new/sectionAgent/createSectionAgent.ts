@@ -4,7 +4,7 @@ import type { z } from "zod";
 
 import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
-import type { AilaState, SectionAgentHandlerProps } from "../types";
+import type { AilaExecutionContext } from "../types";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
 import { sectionToGenericAgent } from "./sectionToGenericPromptAgent";
 
@@ -16,13 +16,13 @@ export function createSectionAgent<ResponseType>({
   responseSchema,
   instructions,
   contentToString = defaultContentToString,
-  extraInputFromState,
+  extraInputFromCtx,
 }: {
   responseSchema: z.ZodType<ResponseType>;
   instructions: string;
   contentToString?: (content: ResponseType) => string;
-  extraInputFromState?: (
-    state: AilaState,
+  extraInputFromCtx?: (
+    state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
 }) {
   return ({
@@ -40,24 +40,23 @@ export function createSectionAgent<ResponseType>({
   }) => ({
     id,
     description,
-    handler: ({ state, currentTurn }: SectionAgentHandlerProps) => {
+    handler: (ctx: AilaExecutionContext) => {
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
-          state,
-          currentTurn,
+          ctx,
           contentFromDocument,
         });
 
       const genericPromptAgent = sectionToGenericAgent<ResponseType>({
         responseSchema,
         instructions,
-        messages: state.messages,
+        messages: ctx.persistedState.messages,
         contentToString,
         basedOnContent,
         exemplarContent,
         currentValue,
-        state,
-        extraInputFromState,
+        ctx,
+        extraInputFromCtx,
       });
 
       return executeGenericPromptAgent({

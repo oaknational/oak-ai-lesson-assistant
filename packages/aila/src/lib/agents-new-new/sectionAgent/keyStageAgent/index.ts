@@ -1,8 +1,8 @@
 import { createSectionAgent } from "../createSectionAgent";
 import { keyStageInstructions } from "./keyStageInstructions";
-import { KeyStageSchema } from "./keyStageSchema";
+import { keyStageSchema } from "./keyStageSchema";
 
 export const keyStageAgent = createSectionAgent({
-  responseSchema: KeyStageSchema,
+  responseSchema: keyStageSchema,
   instructions: keyStageInstructions,
 });

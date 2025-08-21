@@ -10,7 +10,8 @@ import { createPlannerAgent } from "./plannerAgent/createPlannerAgent";
 import { createPresentationAgent } from "./presentationAgent/createPresentationAgent";
 import { createSectionAgentRegistry } from "./sectionAgent/sectionAgentRegistry";
 import type {
-  AilaState,
+  AilaPersistedState,
+  AilaRuntimeContext,
   PlannerAgentProps,
   PresentationAgentProps,
 } from "./types";
@@ -30,6 +31,7 @@ function ask(query: string): Promise<string> {
 }
 
 async function main() {
+  // eslint-disable-next-line no-console
   console.log("Welcome to the Aila Lesson Plan CLI\n");
 
   const subject = await ask("Subject: ");
@@ -62,33 +64,44 @@ async function main() {
     openai: openAIClient,
   });
 
-  let state: AilaState = {
+  let persistedState: AilaPersistedState = {
     initialDocument: {},
     messages: [{ role: "user", content: initialUserMessage }],
+    relevantLessons: null,
+  };
+
+  const runtime: AilaRuntimeContext = {
     plannerAgent,
     presentationAgent,
     sectionAgents,
-    relevantLessons: null,
     fetchRelevantLessons: () => Promise.resolve([]),
+    config: { mathsQuizEnabled: true },
   };
+
   let shouldContinue = true;
 
   while (shouldContinue) {
     // Run the interactive agent loop
     const result = await ailaTurn({
-      state,
-      config: { mathsQuizEnabled: true },
+      persistedState,
+      runtime,
     });
 
-    console.log(compare(state, result.state));
-    console.log("ASSISTANT:", result.state.messages.slice(-1)[0]?.content);
+    // eslint-disable-next-line no-console
+    console.log(compare(persistedState, result.persistedState));
+    // eslint-disable-next-line no-console
+    console.log(
+      "ASSISTANT:",
+      result.persistedState.messages.slice(-1)[0]?.content,
+    );
 
     // Update the document with the latest version
-    state = result.state;
-    state.initialDocument = result.currentTurn.document;
+    persistedState = result.persistedState;
+    persistedState.initialDocument = result.currentTurn.document;
+
     // Ask if the user wants to continue
     const userInput = await ask("USER: ");
-    state.messages.push({
+    persistedState.messages.push({
       role: "user",
       content: userInput,
     });
@@ -96,6 +109,7 @@ async function main() {
 }
 
 main().catch((err) => {
+  // eslint-disable-next-line no-console
   console.error("Error:", err);
   process.exit(1);
 });

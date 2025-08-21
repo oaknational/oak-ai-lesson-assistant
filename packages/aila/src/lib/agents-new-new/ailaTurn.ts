@@ -1,80 +1,75 @@
 import { sectionStepToAgentId } from "./sectionAgent/sectionStepToAgentId";
-import type { AilaCurrentTurn, AilaState } from "./types";
-
-export type AilaTurnArgs = {
-  config: {
-    mathsQuizEnabled: boolean;
-  };
-  state: Omit<AilaState, "currentTurn">;
-};
-type AilaTurnResult = {
-  state: AilaState;
-  currentTurn: AilaCurrentTurn;
-};
+import type {
+  AilaExecutionContext,
+  AilaTurnArgs,
+  AilaTurnResult,
+} from "./types";
 
 export async function ailaTurn({
-  config,
-  state,
+  persistedState,
+  runtime,
 }: AilaTurnArgs): Promise<AilaTurnResult> {
-  const { plannerAgent, sectionAgents, initialDocument } = state;
-
-  const currentTurn: AilaCurrentTurn = {
-    document: initialDocument,
-    plannerOutput: null,
-    errors: [],
-    stepsExecuted: [],
-    relevantLessonsFetched: false,
+  const context: AilaExecutionContext = {
+    persistedState,
+    runtime,
+    currentTurn: {
+      document: persistedState.initialDocument,
+      plannerOutput: null,
+      errors: [],
+      stepsExecuted: [],
+      relevantLessonsFetched: false,
+    },
   };
 
   /**
    * 1. Otherwise, we call the planner agent which will output the plan for Aila's turn
    */
-  const plannerResponse = await plannerAgent({
-    messages: state.messages,
-    document: state.initialDocument,
-    relevantLessons: state.relevantLessons,
+  const plannerResponse = await context.runtime.plannerAgent({
+    messages: context.persistedState.messages,
+    document: context.persistedState.initialDocument,
+    relevantLessons: context.persistedState.relevantLessons,
   });
   if (plannerResponse.error) {
     /**
      * If the planner agent encounters an error, we pass that to the presentation agent.
      * 👉 The turn ends here.
      */
-    return endWithError(plannerResponse.error, { state, currentTurn });
+    return endWithError(plannerResponse.error, context);
   } else {
-    currentTurn.plannerOutput = plannerResponse.data;
+    context.currentTurn.plannerOutput = plannerResponse.data;
   }
   /**
    * 2. If the planner outputs an 'exit' decision, we pass that directly to the presentation agent to write an appropriate response.
    * 👉 The turn ends here.
    */
-  if (currentTurn.plannerOutput.decision === "exit") {
-    return endWithMessage({ state, currentTurn });
+  if (context.currentTurn.plannerOutput.decision === "exit") {
+    return endWithMessage(context);
   }
   /**
    * 5. If the planner outputs a 'plan' decision, we loop through the plan steps, executing them sequentially.
    * Each step (section, action) is handled by the appropriate agent.
    */
-  for (const step of currentTurn.plannerOutput.plan) {
-    currentTurn.stepsExecuted.push(step);
+  for (const step of context.currentTurn.plannerOutput.plan) {
+    context.currentTurn.stepsExecuted.push(step);
 
     if (step.action === "delete") {
       // delete!
-      delete currentTurn.document[step.sectionKey];
+      delete context.currentTurn.document[step.sectionKey];
       continue;
     }
 
     // generate!
     const agentId = sectionStepToAgentId(step, {
-      config,
-      document: currentTurn.document,
+      config: context.runtime.config,
+      document: context.currentTurn.document,
     });
-    const agent = sectionAgents[agentId];
-    const result = await agent.handler({ state, currentTurn });
+    const agent = context.runtime.sectionAgents[agentId];
+    const result = await agent.handler(context);
     if (result.error) {
-      return endWithError(result.error, { state, currentTurn });
+      return endWithError(result.error, context);
     }
-    currentTurn.document = {
-      ...currentTurn.document,
+    context.currentTurn.document = {
+      ...context.currentTurn.document,
       [step.sectionKey]: result.data,
     };
   }
@@ -83,20 +78,21 @@ export async function ailaTurn({
    * We then show the relevant lessons to the user to choose a 'based on' lesson.
    * 👉 The turn ends here.
    */
-  const { title, subject, keyStage, basedOn } = currentTurn.document;
+  const { title, subject, keyStage, basedOn } = context.currentTurn.document;
   if (title && subject && keyStage && !basedOn) {
     // We should do a hash with fuzzy similarity, but for now just check for changes
     if (
-      title !== currentTurn.document.title ||
-      subject !== currentTurn.document.subject ||
-      keyStage !== currentTurn.document.keyStage
+      title !== context.currentTurn.document.title ||
+      subject !== context.currentTurn.document.subject ||
+      keyStage !== context.currentTurn.document.keyStage
     ) {
-      // Fetch and show relevant lessons
-      state.relevantLessons = await state.fetchRelevantLessons();
-      currentTurn.relevantLessonsFetched = true;
+      // Fetch and show relevant lessons - MUTATES persistedState
+      context.persistedState.relevantLessons =
+        await context.runtime.fetchRelevantLessons();
+      context.currentTurn.relevantLessonsFetched = true;
 
-      if (state.relevantLessons.length > 0) {
-        return endWithMessage({ state, currentTurn });
+      if (context.persistedState.relevantLessons.length > 0) {
+        return endWithMessage(context);
       }
     }
   }
@@ -104,111 +100,98 @@ export async function ailaTurn({
    * 6. After the plan is executed, we call the presentation agent.
    * 👉 The turn ends here.
    */
-  return endWithMessage({ state, currentTurn });
+  return endWithMessage(context);
 }
 
 /**
  * Handle errors that occur during the Aila turn.
- * @param state The current state of the Aila turn.
+ * @param error The error that occurred.
+ * @param context The current execution context.
  * @returns A promise that resolves with the current state.
  * Should always be returned from the main function to ensure
  * that errors are handled gracefully.
  */
 async function endWithError(
   error: { message: string },
-  { state, currentTurn }: { state: AilaState; currentTurn: AilaCurrentTurn },
+  context: AilaExecutionContext,
 ): Promise<AilaTurnResult> {
-  try {
-    console.error("Error during Aila turn:", error.message);
-    currentTurn.errors.push(error);
+  context.currentTurn.errors.push(error);
 
-    const messageAgentResult = await state.presentationAgent({
-      messages: state.messages,
-      prevDoc: state.initialDocument,
-      nextDoc: currentTurn.document,
-      stepsExecuted: currentTurn.stepsExecuted,
-      errors: currentTurn.errors,
-      plannerOutput: currentTurn.plannerOutput,
-      relevantLessons: state.relevantLessons,
-      relevantLessonsFetched: currentTurn.relevantLessonsFetched,
+  const messageAgentResult = await context.runtime.presentationAgent({
+    messages: context.persistedState.messages,
+    prevDoc: context.persistedState.initialDocument,
+    nextDoc: context.currentTurn.document,
+    stepsExecuted: context.currentTurn.stepsExecuted,
+    errors: context.currentTurn.errors,
+    plannerOutput: context.currentTurn.plannerOutput,
+    relevantLessons: context.persistedState.relevantLessons,
+    relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
+  });
+
+  if (messageAgentResult.error) {
+    context.currentTurn.errors.push({
+      message: "Error in presentation agent during error handling",
     });
-
-    if (messageAgentResult.error) {
-      throw new Error(error.message);
-    }
-
-    return appendAssistantMessageToState(
-      {
-        state,
-        currentTurn,
-      },
-      messageAgentResult.data.message,
-    );
-  } catch (error) {
-    console.error("Error in messageToUser agent:", error);
-    return appendGenericErrorToState({
-      state,
-      currentTurn,
-    });
+    return appendGenericErrorToState(context);
   }
+
+  return appendAssistantMessageToState(
+    context,
+    messageAgentResult.data.message,
+  );
 }
 
-/**
- * Convenience function to end the turn with a message.
- * Calls presentation agent to get a response message, and appends it to the state.
- */
-async function endWithMessage({
-  state,
-  currentTurn,
-}: {
-  state: AilaState;
-  currentTurn: AilaCurrentTurn;
-}): Promise<AilaTurnResult> {
-  try {
-    const messageAgentResult = await state.presentationAgent({
-      messages: state.messages,
-      prevDoc: state.initialDocument,
-      nextDoc: currentTurn.document,
-      stepsExecuted: currentTurn.stepsExecuted,
-      errors: currentTurn.errors,
-      plannerOutput: currentTurn.plannerOutput,
-      relevantLessons: state.relevantLessons,
-      relevantLessonsFetched: currentTurn.relevantLessonsFetched,
-    });
+async function endWithMessage(
+  context: AilaExecutionContext,
+): Promise<AilaTurnResult> {
+  const messageAgentResult = await context.runtime.presentationAgent({
+    messages: context.persistedState.messages,
+    prevDoc: context.persistedState.initialDocument,
+    nextDoc: context.currentTurn.document,
+    stepsExecuted: context.currentTurn.stepsExecuted,
+    errors: context.currentTurn.errors,
+    plannerOutput: context.currentTurn.plannerOutput,
+    relevantLessons: context.persistedState.relevantLessons,
+    relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
+  });
 
-    if (messageAgentResult.error) {
-      throw new Error(messageAgentResult.error.message);
-    } else {
-      state.messages.push({
-        role: "assistant",
-        content: messageAgentResult.data.message,
-      });
-    }
-
-    return { state, currentTurn };
-  } catch (error) {
-    console.error("Error in messageToUser agent:", error);
-    return appendGenericErrorToState({
-      state,
-      currentTurn,
+  if (messageAgentResult.error) {
+    context.currentTurn.errors.push({ message: "Error in presentation agent" });
+    return appendGenericErrorToState(context);
+  } else {
+    // MUTATES persistedState
+    context.persistedState.messages.push({
+      role: "assistant",
+      content: messageAgentResult.data.message,
     });
   }
+
+  return {
+    persistedState: context.persistedState,
+    currentTurn: context.currentTurn,
+  };
 }
 
-function appendAssistantMessageToState<T extends { state: AilaState }>(
-  props: T,
+function appendAssistantMessageToState(
+  context: AilaExecutionContext,
   message: string,
-) {
-  props.state.messages.push({
+): AilaTurnResult {
+  // MUTATES persistedState
+  context.persistedState.messages.push({
     role: "assistant",
     content: message,
   });
-  return props;
+  return {
+    persistedState: context.persistedState,
+    currentTurn: context.currentTurn,
+  };
 }
 
-function appendGenericErrorToState<T extends { state: AilaState }>(props: T) {
+function appendGenericErrorToState(
+  context: AilaExecutionContext,
+): AilaTurnResult {
   return appendAssistantMessageToState(
-    props,
+    context,
     "We encountered an error while processing your request.",
   );
 }

@@ -22,6 +22,42 @@ import type { PlanStep, PlannerOutput, errorSchema } from "./schema";
 
 export type ChatMessage = { role: "assistant" | "user"; content: string };
 
+// Serializable state that gets persisted (input + output, can be mutated)
+export type AilaPersistedState = {
+  messages: ChatMessage[];
+  initialDocument: LooseLessonPlan;
+  relevantLessons: RagLessonPlan[] | null;
+};
+
+// Runtime context with agents and config (input only, not serializable)
+export type AilaRuntimeContext = {
+  plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
+  sectionAgents: SectionAgentRegistry;
+  presentationAgent: (
+    props: PresentationAgentProps,
+  ) => Promise<WithError<PresentationAgentOutput>>;
+  fetchRelevantLessons: () => Promise<RagLessonPlan[]>;
+  config: {
+    mathsQuizEnabled: boolean;
+  };
+};
+
+export type AilaTurnArgs = {
+  persistedState: AilaPersistedState;
+  runtime: AilaRuntimeContext;
+};
+
+export type AilaTurnResult = {
+  persistedState: AilaPersistedState; // Can be mutated during execution
+  currentTurn: AilaCurrentTurn; // Generated during execution
+};
+
+export type AilaExecutionContext = {
+  persistedState: AilaPersistedState;
+  runtime: AilaRuntimeContext;
+  currentTurn: AilaCurrentTurn;
+};
+
 export type SectionPromptAgentProps<ResponseType> = {
   responseSchema: z.ZodType<ResponseType>;
   messages: ChatMessage[];
@@ -30,22 +66,16 @@ export type SectionPromptAgentProps<ResponseType> = {
   exemplarContent: ResponseType[] | undefined;
   basedOnContent: ResponseType | undefined;
   contentToString: (content: ResponseType) => string;
-  state: AilaState;
-  extraInputFromState?: (
-    state: AilaState,
+  ctx: AilaExecutionContext;
+  extraInputFromCtx?: (
+    ctx: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
 };
 
-export type SectionAgentHandlerProps = {
-  state: AilaState;
-  currentTurn: AilaCurrentTurn;
-};
 export type SectionAgent<ResponseType> = {
   id: string;
   description: string;
-  handler: (
-    props: SectionAgentHandlerProps,
-  ) => Promise<WithError<ResponseType>>;
+  handler: (ctx: AilaExecutionContext) => Promise<WithError<ResponseType>>;
 };
 
 export type SectionAgentResponseMap = {

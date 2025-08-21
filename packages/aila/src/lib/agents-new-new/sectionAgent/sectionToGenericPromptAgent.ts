@@ -16,8 +16,8 @@ export function sectionToGenericAgent<T>({
   basedOnContent,
   currentValue,
   contentToString,
-  state,
-  extraInputFromState,
+  ctx,
+  extraInputFromCtx,
 }: SectionPromptAgentProps<T>): GenericPromptAgentPrompt<T> {
   return {
     responseSchema: responseSchema,
@@ -49,7 +49,7 @@ export function sectionToGenericAgent<T>({
         role: "user" as const,
         content: userMessagePromptPart(messages),
       },
-      ...(extraInputFromState ? extraInputFromState(state) : []),
+      ...(extraInputFromCtx ? extraInputFromCtx(ctx) : []),
     ].filter(isTruthy),
   };
 }

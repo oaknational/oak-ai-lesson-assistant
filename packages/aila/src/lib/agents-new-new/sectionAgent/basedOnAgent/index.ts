@@ -7,7 +7,7 @@ import { basedOnInstructions } from "./basedOn.instructions";
 export const basedOnAgent = createSectionAgent({
   responseSchema: BasedOnSchema.nullable(),
   instructions: basedOnInstructions,
-  extraInputFromState: (state) => {
+  extraInputFromCtx: (state) => {
     return [
       state.relevantLessons && {
         role: "developer" as const,

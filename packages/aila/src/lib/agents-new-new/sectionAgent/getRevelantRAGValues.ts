@@ -2,15 +2,13 @@ import { isTruthy } from "remeda";
 
 import type { LooseLessonPlan } from "../../../protocol/schema";
 import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
-import type { AilaCurrentTurn, AilaState } from "../types";
+import type { AilaExecutionContext } from "../types";
 
 export function getRelevantRAGValues<ResponseType>({
-  state,
-  currentTurn,
+  ctx,
   contentFromDocument,
 }: {
-  state: AilaState;
-  currentTurn: AilaCurrentTurn;
+  ctx: AilaExecutionContext;
   contentFromDocument: (
     document: LooseLessonPlan | RagLessonPlan,
   ) => ResponseType | undefined;
@@ -20,14 +18,16 @@ export function getRelevantRAGValues<ResponseType>({
   currentValue: ResponseType | undefined;
 } {
   const exemplarContent =
-    state.relevantLessons?.map(contentFromDocument).filter(isTruthy) ?? [];
-  const basedOnLesson = state.relevantLessons?.find(
-    (lesson) => lesson.id === currentTurn.document.basedOn?.id,
+    ctx.persistedState.relevantLessons
+      ?.map(contentFromDocument)
+      .filter(isTruthy) ?? [];
+  const basedOnLesson = ctx.persistedState.relevantLessons?.find(
+    (lesson) => lesson.id === ctx.currentTurn.document.basedOn?.id,
   );
   const basedOnContent = basedOnLesson
     ? contentFromDocument(basedOnLesson)
     : undefined;
-  const currentValue = contentFromDocument(currentTurn.document);
+  const currentValue = contentFromDocument(ctx.currentTurn.document);
 
   return {
     exemplarContent,
