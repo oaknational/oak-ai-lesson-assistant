@@ -72,6 +72,7 @@ export const additionalMaterialsRouter = router({
 
       try {
         // Fetch lesson data
+        const isCanonicalLesson = !input.programmeSlug;
 
         const lessonResponse = await fetch(String(graphqlEndpoint), {
           method: "POST",
@@ -81,12 +82,12 @@ export const additionalMaterialsRouter = router({
             "x-oak-auth-type": authType,
           },
           body: JSON.stringify({
-            query: input.programmeSlug
-              ? lessonOverviewQuery
-              : lessonOverviewQueryCanonical,
+            query: isCanonicalLesson
+              ? lessonOverviewQueryCanonical
+              : lessonOverviewQuery,
             variables: {
               lesson_slug: input.lessonSlug,
-              ...(input.programmeSlug
+              ...(isCanonicalLesson
                 ? { programme_slug: input.programmeSlug }
                 : {}),
             },
@@ -162,6 +163,15 @@ export const additionalMaterialsRouter = router({
         const parsedLesson = lessonContentSchema.parse(rawLesson);
 
         const browseDataArray = lessonData.data.browseData;
+        const pathways = isCanonicalLesson
+          ? Array.from(
+              new Set(
+                browseDataArray.map((item) =>
+                  String(item.programme_fields?.subject),
+                ),
+              ),
+            )
+          : [];
         const browseData = browseDataArray.find(
           (item) => item.lesson_slug === parsedLesson.lesson_slug,
         );
@@ -196,6 +206,7 @@ export const additionalMaterialsRouter = router({
         const transformedLesson = transformOwaLessonToLessonPlan(
           parsedLesson,
           parsedBrowseData,
+          pathways,
         );
 
         const lesson = {

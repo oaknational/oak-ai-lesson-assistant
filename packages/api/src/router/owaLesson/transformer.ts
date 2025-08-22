@@ -219,13 +219,17 @@ export function transformKeywords(keywordsData: OwaKeyword[]): Keyword[] {
 export function transformOwaLessonToLessonPlan(
   owaLesson: LessonContentSchema,
   owaBrowseData: LessonBrowseDataByKsSchema,
+  pathways: string[],
 ): LessonPlanSchemaTeachingMaterials {
+  const isCanonicalLesson = pathways.length > 0;
   // Create a base lesson plan object
   const lessonPlan: LessonPlanSchemaTeachingMaterials = {
     title: owaLesson.lesson_title ?? "",
-    subject: owaBrowseData.programme_fields.subject ?? "",
+    subject: isCanonicalLesson
+      ? pathways.join(", ")
+      : (owaBrowseData.programme_fields.subject ?? ""),
     keyStage: owaBrowseData.programme_fields.keystage ?? "",
-    topic: owaBrowseData.unit_data.title ?? "",
+    topic: isCanonicalLesson ? "" : (owaBrowseData.unit_data.title ?? ""),
     year: owaBrowseData.programme_fields.year ?? "",
     // Learning outcome
     learningOutcome: owaLesson.pupil_lesson_outcome ?? "",
