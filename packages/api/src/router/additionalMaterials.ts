@@ -25,6 +25,7 @@ import {
 } from "./additionalMaterials/helpers";
 import {
   lessonOverviewQuery,
+  lessonOverviewQueryCanonical,
   tcpWorksByLessonSlugQuery,
 } from "./owaLesson/queries";
 import {
@@ -50,7 +51,7 @@ export const additionalMaterialsRouter = router({
     .input(
       z.object({
         lessonSlug: z.string(),
-        programmeSlug: z.string(),
+        programmeSlug: z.string().nullish(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -71,6 +72,7 @@ export const additionalMaterialsRouter = router({
 
       try {
         // Fetch lesson data
+
         const lessonResponse = await fetch(String(graphqlEndpoint), {
           method: "POST",
           headers: {
@@ -79,10 +81,14 @@ export const additionalMaterialsRouter = router({
             "x-oak-auth-type": authType,
           },
           body: JSON.stringify({
-            query: lessonOverviewQuery,
+            query: input.programmeSlug
+              ? lessonOverviewQuery
+              : lessonOverviewQueryCanonical,
             variables: {
               lesson_slug: input.lessonSlug,
-              programme_slug: input.programmeSlug,
+              ...(input.programmeSlug
+                ? { programme_slug: input.programmeSlug }
+                : {}),
             },
           }),
         });

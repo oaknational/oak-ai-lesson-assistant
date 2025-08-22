@@ -1,13 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
-
 import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
 
-export default async function AdditionalMaterialsTestPage({
+export default function AdditionalMaterialsTestPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
@@ -17,7 +15,6 @@ export default async function AdditionalMaterialsTestPage({
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
-  const canUseOWALink = await serverSideFeatureFlag("additional-materials");
 
   const lessonSlug = searchParams?.lessonSlug;
   const programmeSlug = searchParams?.programmeSlug;
@@ -27,7 +24,7 @@ export default async function AdditionalMaterialsTestPage({
     source: "aila",
   };
 
-  if (lessonSlug && programmeSlug && docType && canUseOWALink) {
+  if (lessonSlug && docType) {
     pageProps = {
       source: "owa",
       initialStep: 3,
