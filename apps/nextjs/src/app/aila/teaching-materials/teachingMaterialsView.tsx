@@ -17,6 +17,7 @@ import {
 } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+import { OakMathJaxContext } from "@/components/MathJax";
 import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
@@ -122,7 +123,9 @@ const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
-          <TeachingMaterialsViewInner {...props} />
+          <OakMathJaxContext>
+            <TeachingMaterialsViewInner {...props} />
+          </OakMathJaxContext>
         </DialogRoot>
       </DialogProvider>
     </ResourcesStoresProvider>

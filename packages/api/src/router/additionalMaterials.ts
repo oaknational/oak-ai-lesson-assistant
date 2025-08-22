@@ -87,7 +87,7 @@ export const additionalMaterialsRouter = router({
               : lessonOverviewQuery,
             variables: {
               lesson_slug: input.lessonSlug,
-              ...(isCanonicalLesson
+              ...(!isCanonicalLesson
                 ? { programme_slug: input.programmeSlug }
                 : {}),
             },
