@@ -25,9 +25,9 @@ export const generatePartialLessonPlanObject = async ({
 
   const derivedKeystage = getKeystageFromYearGroup(year);
 
-  const sortedLessonParts = context.lessonParts.sort(
-    (a, b) => lessonFieldKeys.indexOf(a) - lessonFieldKeys.indexOf(b),
-  );
+  const sortedLessonParts = context.lessonParts
+    .sort((a, b) => lessonFieldKeys.indexOf(a) - lessonFieldKeys.indexOf(b))
+    .filter((field) => field !== "transcript");
 
   const orderedLessonParts = Object.fromEntries(
     sortedLessonParts.map((field) => [field, LessonPlanSchema.shape[field]]),

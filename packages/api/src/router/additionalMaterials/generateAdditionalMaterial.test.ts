@@ -2,7 +2,10 @@ import { generateAdditionalMaterialModeration } from "@oakai/additional-material
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 
-import { generateAdditionalMaterial } from "./generateAdditionalMaterial";
+import {
+  type GenerateAdditionalMaterialParams,
+  generateAdditionalMaterial,
+} from "./generateAdditionalMaterial";
 import {
   mockAuth,
   mockGlossaryResult,
@@ -78,11 +81,12 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should log and call prisma.create when resourceId is not provided", async () => {
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
         documentType: "additional-glossary" as const,
+        source: "aila",
         context: {
           lessonPlan: {
             title: "Test Lesson",
@@ -107,11 +111,12 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should log and call prisma.update when resourceId is provided", async () => {
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
         documentType: "additional-glossary" as const,
+        source: "aila",
         context: {
           lessonPlan: {
             title: "Test Lesson",
@@ -142,11 +147,12 @@ describe("generateAdditionalMaterial", () => {
     );
     mockIsToxic.mockReturnValueOnce(true); // Mock isToxic to return true for this test
 
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
         documentType: "additional-glossary" as const,
+        source: "aila",
         context: {
           lessonPlan: {
             title: "Test Lesson",
@@ -170,11 +176,12 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should include lessonId when provided in input", async () => {
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
         documentType: "additional-glossary" as const,
+        source: "aila",
         context: {
           lessonPlan: {
             title: "Test Lesson",
@@ -209,11 +216,12 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should include adaptsOutputId when provided in input", async () => {
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
         documentType: "additional-glossary" as const,
+        source: "aila",
         context: {
           lessonPlan: {
             title: "Test Lesson",
@@ -248,10 +256,11 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should handle null adaptsOutputId", async () => {
-    const params = {
+    const params: GenerateAdditionalMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
+        source: "aila",
         documentType: "additional-glossary" as const,
         context: {
           lessonPlan: {

@@ -27,6 +27,8 @@ export const handleDialogSelection = ({
       case "toxic":
         setDialogWindow("additional-materials-toxic-moderation");
         break;
+      case "copyright":
+      case "restrictedContentGuidance":
       default:
         setDialogWindow("additional-materials-error");
         break;

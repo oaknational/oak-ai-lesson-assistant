@@ -4,14 +4,6 @@ import {
   generateAdditionalMaterialInputSchema,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import {
-  type OakOpenAiLessonSummary,
-  type OakOpenAiTranscript,
-  type OakOpenApiSearchSchema,
-  oakOpenAiLessonSummarySchema,
-  oakOpenAiTranscriptSchema,
-  oakOpenApiSearchSchema,
-} from "@oakai/additional-materials/src/schemas/oakOpenApi";
 import { demoUsers } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
@@ -29,12 +21,235 @@ import { router } from "../trpc";
 import {
   generateAdditionalMaterial,
   generatePartialLessonPlan,
+  validateCurriculumApiEnv,
 } from "./additionalMaterials/helpers";
+import {
+  lessonOverviewQuery,
+  lessonOverviewQueryCanonical,
+  tcpWorksByLessonSlugQuery,
+} from "./owaLesson/queries";
+import {
+  checkForRestrictedContentGuidance,
+  checkForRestrictedLessonId,
+  checkForRestrictedTranscript,
+  checkForRestrictedWorks,
+} from "./owaLesson/restrictionsHelper";
+import {
+  lessonBrowseDataByKsSchema,
+  lessonContentSchema,
+} from "./owaLesson/schemas";
+import { transformOwaLessonToLessonPlan } from "./owaLesson/transformer";
+import type {
+  LessonOverviewResponse,
+  TRPCWorksResponse,
+} from "./owaLesson/types";
 
 const log = aiLogger("additional-materials");
-const OPENAI_AUTH_TOKEN = process.env.OPENAI_AUTH_TOKEN;
 
 export const additionalMaterialsRouter = router({
+  handleFetchOwaLesson: protectedProcedure
+    .input(
+      z.object({
+        lessonSlug: z.string(),
+        programmeSlug: z.string().nullish(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      log.info("Fetching OWA lesson overview", {
+        lessonSlug: input.lessonSlug,
+        programmeSlug: input.programmeSlug,
+        userId: ctx.auth.userId,
+      });
+
+      const { authKey, authType, graphqlEndpoint } = validateCurriculumApiEnv();
+
+      if (!ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      try {
+        // Fetch lesson data
+        const isCanonicalLesson = !input.programmeSlug;
+
+        const lessonResponse = await fetch(String(graphqlEndpoint), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-oak-auth-key": authKey,
+            "x-oak-auth-type": authType,
+          },
+          body: JSON.stringify({
+            query: isCanonicalLesson
+              ? lessonOverviewQueryCanonical
+              : lessonOverviewQuery,
+            variables: {
+              lesson_slug: input.lessonSlug,
+              ...(!isCanonicalLesson
+                ? { programme_slug: input.programmeSlug }
+                : {}),
+            },
+          }),
+        });
+
+        if (!lessonResponse.ok) {
+          log.error("Failed to fetch lesson data", {
+            status: lessonResponse.status,
+            statusText: lessonResponse.statusText,
+            lessonSlug: input.lessonSlug,
+            programmeSlug: input.programmeSlug,
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch lesson data from curriculum API",
+          });
+        }
+
+        // Fetch TCP data`
+        const tcpResponse = await fetch(String(graphqlEndpoint), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-oak-auth-key": authKey,
+            "x-oak-auth-type": authType,
+          },
+          body: JSON.stringify({
+            query: tcpWorksByLessonSlugQuery,
+            variables: {
+              lesson_slug: input.lessonSlug,
+            },
+          }),
+        });
+
+        if (!tcpResponse.ok) {
+          log.error("Failed to fetch TCP data", {
+            status: tcpResponse.status,
+            statusText: tcpResponse.statusText,
+          });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch TCP data",
+          });
+        }
+
+        let lessonData: LessonOverviewResponse;
+        let tcpData: TRPCWorksResponse;
+
+        try {
+          lessonData = await lessonResponse.json();
+          tcpData = await tcpResponse.json();
+        } catch (jsonError) {
+          log.error("Failed to parse API responses", { jsonError });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Invalid response format from API",
+          });
+        }
+
+        // Validate lesson data
+        if (
+          !lessonData.data?.content?.[0] ||
+          !lessonData.data?.browseData?.[0]
+        ) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Lesson not found",
+          });
+        }
+
+        const rawLesson = lessonData.data.content[0];
+        const parsedLesson = lessonContentSchema.parse(rawLesson);
+
+        const browseDataArray = lessonData.data.browseData;
+        const pathways = isCanonicalLesson
+          ? Array.from(
+              new Set(
+                browseDataArray.map((item) =>
+                  String(item.programme_fields?.subject),
+                ),
+              ),
+            )
+          : [];
+        const browseData = browseDataArray.find(
+          (item) => item.lesson_slug === parsedLesson.lesson_slug,
+        );
+
+        if (!browseData) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Lesson not found in browse data",
+          });
+        }
+
+        const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData);
+
+        checkForRestrictedContentGuidance(parsedLesson.content_guidance);
+
+        checkForRestrictedLessonId(browseData.lesson_data.lesson_uid);
+
+        const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
+
+        const hasRestrictedTranscript =
+          checkForRestrictedTranscript(parsedBrowseData);
+
+        if (parsedLesson.is_legacy) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message:
+              "This lesson is legacy lesson and cannot be used for a new teaching material.",
+          });
+        }
+
+        // Transform to lesson plan format
+        const transformedLesson = transformOwaLessonToLessonPlan(
+          parsedLesson,
+          parsedBrowseData,
+          pathways,
+        );
+
+        const lesson = {
+          ...transformedLesson,
+          transcript: !hasRestrictedTranscript
+            ? String(rawLesson.transcript_sentences)
+            : undefined,
+          hasRestrictedWorks,
+        };
+
+        // Create lesson plan interaction
+        const interaction =
+          await ctx.prisma.additionalMaterialInteraction.create({
+            data: {
+              userId: ctx.auth.userId,
+              config: {
+                resourceType: "partial-lesson-plan-owa",
+                resourceTypeVersion: 1,
+              },
+              output: lesson,
+            },
+          });
+
+        return {
+          lesson: {
+            ...lesson,
+            lessonId: interaction.id,
+          },
+        };
+      } catch (error) {
+        log.error("Error fetching OWA lesson", { error });
+        Sentry.captureException(error);
+
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch lesson data",
+        });
+      }
+    }),
   createMaterialSession: protectedProcedure
     .input(
       z.object({
@@ -141,6 +356,7 @@ export const additionalMaterialsRouter = router({
         resourceId: z.string().nullish(),
         adaptsOutputId: z.string().nullish(),
         lessonId: z.string().nullish(),
+        source: z.enum(["aila", "owa"]),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -324,102 +540,4 @@ export const additionalMaterialsRouter = router({
       await rateLimits.additionalMaterialSessions.demo.getRemaining(userId);
     return { remaining };
   }),
-
-  fetchOWALessonData: protectedProcedure
-    .input(
-      z.object({
-        lessonSlug: z.string(),
-      }),
-    )
-    .query(
-      async ({
-        ctx,
-        input,
-      }): Promise<{
-        lessonSummary: OakOpenAiLessonSummary;
-        lessonTranscript: OakOpenAiTranscript;
-      }> => {
-        const { lessonSlug } = input;
-        log.info("Fetch oak lesson from oak open api", ctx);
-
-        try {
-          const [summaryRes, transcriptRes] = await Promise.all([
-            fetch(
-              `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/summary`,
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-                  Accept: "application/json",
-                },
-              },
-            ),
-            fetch(
-              `https://open-api.thenational.academy/api/v0/lessons/${lessonSlug}/transcript`,
-              {
-                method: "GET",
-                headers: {
-                  Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-                  Accept: "application/json",
-                },
-              },
-            ),
-          ]);
-
-          const summaryData = oakOpenAiLessonSummarySchema.parse(
-            await summaryRes.json(),
-          );
-          const transcriptData = oakOpenAiTranscriptSchema.parse(
-            await transcriptRes.json(),
-          );
-
-          return {
-            lessonSummary: summaryData,
-            lessonTranscript: transcriptData,
-          };
-        } catch (cause) {
-          const TrpcError = new Error("Failed to fetch oak open ai lesson", {
-            cause,
-          });
-          log.error("Failed to fetch oak open ai lesson", cause);
-          Sentry.captureException(TrpcError);
-          throw TrpcError;
-        }
-      },
-    ),
-
-  searchOWALesson: protectedProcedure
-    .input(
-      z.object({
-        query: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }): Promise<OakOpenApiSearchSchema> => {
-      const { query } = input;
-      log.info("Fetch oak lesson from oak open api");
-
-      try {
-        const response = await fetch(
-          `https://open-api.thenational.academy/api/v0/search/lessons?q=${query}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${OPENAI_AUTH_TOKEN}`,
-              Accept: "application/json",
-            },
-          },
-        );
-
-        const data = await response.json();
-
-        return oakOpenApiSearchSchema.parse(data);
-      } catch (cause) {
-        const TrpcError = new Error("Failed to search oak open ai lesson", {
-          cause,
-        });
-        log.error("Failed to search oak open ai lesson", cause);
-        Sentry.captureException(TrpcError);
-        throw TrpcError;
-      }
-    }),
 });
