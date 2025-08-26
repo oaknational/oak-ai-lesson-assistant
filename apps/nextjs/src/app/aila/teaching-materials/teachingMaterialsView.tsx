@@ -104,16 +104,14 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
   const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
   return (
-    <>
-      <ResourcesLayout
-        title={title}
-        subTitle={subTitle}
-        step={stepNumber + 1}
-        docTypeName={docTypeName}
-      >
-        {stepComponents[stepNumber]}
-      </ResourcesLayout>
-    </>
+    <ResourcesLayout
+      title={title}
+      subTitle={subTitle}
+      step={stepNumber + 1}
+      docTypeName={docTypeName}
+    >
+      {stepComponents[stepNumber]}
+    </ResourcesLayout>
   );
 };
 

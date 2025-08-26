@@ -1,13 +1,6 @@
 "use server";
 
-import {
-  additionalMaterialTypeEnum,
-  additionalMaterialsConfigMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type {
-  AilaPersistedChat,
-  LooseLessonPlan,
-} from "@oakai/aila/src/protocol/schema";
+import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { chatSchema } from "@oakai/aila/src/protocol/schema";
 import type { Prisma } from "@oakai/db";
 import { prisma } from "@oakai/db";

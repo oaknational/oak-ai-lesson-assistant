@@ -9,14 +9,19 @@ import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/mode
 import { z } from "zod";
 import type { StoreApi } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type {
   ComponentTypeValueType,
   ResourceFileTypeValueType,
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
-import type { LoadOwaDataParams } from "./actionFunctions/handleFetchOwaLesson";
 import type { SubmitLessonPlanParams } from "./actionFunctions/handleSubmitLessonPlan";
+
+export type LoadOwaDataParams = Pick<
+  TeachingMaterialsPageProps,
+  "lesson" | "initialStep" | "id" | "lessonId" | "error" | "queryParams"
+>;
 
 export type PageData = {
   lessonPlan: LessonPlanSchemaTeachingMaterials;

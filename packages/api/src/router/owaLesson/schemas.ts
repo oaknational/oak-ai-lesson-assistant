@@ -2,7 +2,7 @@ import {
   lessonContentSchema as lessonContentSchemaFull,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
-import { string, z } from "zod";
+import { z } from "zod";
 
 export const lessonContentSchema = lessonContentSchemaFull.pick({
   lesson_id: true,

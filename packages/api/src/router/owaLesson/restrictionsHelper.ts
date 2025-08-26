@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
-import { parse } from "next/dist/build/swc";
 
 import { restrictedLessonIds } from "./restrictedLessonIds";
 import type {

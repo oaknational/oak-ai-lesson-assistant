@@ -8,7 +8,7 @@ import TeachingMaterialsView, {
 export default function AdditionalMaterialsTestPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  readonly searchParams: { [key: string]: string | undefined };
 }) {
   const clerkAuthentication = auth();
   const { userId }: { userId: string | null } = clerkAuthentication;

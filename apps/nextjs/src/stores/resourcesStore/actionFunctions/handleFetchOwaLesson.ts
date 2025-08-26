@@ -3,18 +3,16 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
-import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  LoadOwaDataParams,
+  ResourcesGetter,
+  ResourcesSetter,
+} from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
-
-export type LoadOwaDataParams = Pick<
-  TeachingMaterialsPageProps,
-  "lesson" | "initialStep" | "id" | "lessonId" | "error" | "queryParams"
->;
 
 export const handleFetchOwaLesson =
   (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
