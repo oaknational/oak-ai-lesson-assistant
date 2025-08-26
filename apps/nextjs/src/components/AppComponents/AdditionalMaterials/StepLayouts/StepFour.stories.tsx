@@ -599,6 +599,7 @@ export const LoadingState: Story = {
   },
   parameters: {
     resourcesStoreState: {
+      source: "aila",
       pageData: {
         lessonPlan: {
           lessonId: "lesson-123",

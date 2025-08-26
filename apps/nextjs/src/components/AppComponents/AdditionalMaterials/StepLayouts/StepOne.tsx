@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 

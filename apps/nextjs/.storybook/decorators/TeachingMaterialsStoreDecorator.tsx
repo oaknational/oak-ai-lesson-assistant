@@ -56,6 +56,7 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
     const defaultState: Partial<ResourcesState> = {
       stepNumber: 0,
       docType: "additional-glossary",
+      source: "aila",
       pageData: {
         lessonPlan: {
           lessonId: "mock-lesson-id",
