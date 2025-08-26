@@ -40,6 +40,18 @@ export const InlineAnswerWithSpaces: Story = {
   },
 };
 
+export const InlineAnswerWithDegrees: Story = {
+  args: {
+    question: {
+      questionType: "short-answer",
+      question: "The size of angle C° is {{}}°",
+      answers: ["120"],
+      hint: null,
+    },
+    questionNumber: 2,
+  },
+};
+
 export const SeparateAnswer: Story = {
   args: {
     question: {

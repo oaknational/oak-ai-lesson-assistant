@@ -61,3 +61,16 @@ export const MultipleCorrectAnswers: Story = {
     questionNumber: 3,
   },
 };
+
+export const WithUnfilledBlanks: Story = {
+  args: {
+    question: {
+      questionType: "multiple-choice",
+      question: "A full rotation is {{}}° around a circle.",
+      answers: ["360"],
+      distractors: ["180", "90", "45"],
+      hint: null,
+    },
+    questionNumber: 4,
+  },
+};

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { Components } from "react-markdown";
 
-import { OakSpan } from "@oaknational/oak-components";
+import { OakBox } from "@oaknational/oak-components";
 
 // Blank patterns that we support
 const BLANK_PATTERNS = {
@@ -51,20 +51,21 @@ export const createBlankComponents = (
 
       return (
         <>
-          <OakSpan
+          <OakBox
             $ba="border-solid-m"
             $borderColor="border-primary"
             $font="body-2-bold"
             $color={answer ? "text-success" : "text-primary"}
             $borderStyle="none none solid none"
-            $minWidth="all-spacing-5"
-            $display="inline-block"
+            {...(!answer && { $pl: "inner-padding-xl5" })}
+            $display="inline"
             $textAlign="center"
             aria-label={ariaLabel}
             role="insertion"
+            as="span"
           >
             {answer}
-          </OakSpan>
+          </OakBox>
           {hasDegreeSymbol ? "°" : ""}
         </>
       );
