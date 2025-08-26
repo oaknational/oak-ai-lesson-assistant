@@ -27,6 +27,11 @@ export const Default: Story = {
       return Promise.resolve();
     },
   },
+  parameters: {
+    resourcesStoreState: {
+      source: "aila",
+    },
+  },
   decorators: [
     (Story) => (
       <DemoProvider>

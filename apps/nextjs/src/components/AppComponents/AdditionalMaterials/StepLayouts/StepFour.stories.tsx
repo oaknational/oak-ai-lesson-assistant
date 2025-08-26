@@ -613,6 +613,7 @@ export const LoadingState: Story = {
       docType: "additional-starter-quiz",
       generation: null,
       isResourcesLoading: true,
+      isResourceRefining: false,
     },
   },
   decorators: [
