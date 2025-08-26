@@ -18,12 +18,18 @@ export const hasBlankSpaces = (text: string): boolean => {
 
 /**
  * Prepares text for markdown processing by standardizing all blanks to {{}}
- * and wrapping them in italic markers so they can be intercepted by custom components
+ * and wrapping them in emphasis markers so they can be intercepted by custom components.
+ * Handles special cases where adjacent symbols would break markdown parsing.
  */
 export const prepareTextWithBlanks = (text: string): string => {
-  return text
+  // 1: wrap all blanks in emphasis markers
+  let result = text
     .replace(BLANK_PATTERNS.CURLY_BRACES, "_{{}}_")
     .replace(BLANK_PATTERNS.UNDERSCORES, "_{{}}_");
+
+  // 2: move degree symbol inside emphasis markers so markdown parser recognizes them.
+  // _{{}}_° becomes _{{}}°_ because markdown requires word boundaries around markers
+  return result.replaceAll("_{{}}_°", "_{{}}°_");
 };
 
 /**
@@ -35,29 +41,32 @@ export const createBlankComponents = (
   em: ({ children }) => {
     const content = children?.toString();
 
-    const isBlank = content === "{{}}";
+    const isBlank = content === "{{}}" || content === "{{}}°";
 
     if (isBlank) {
-      const displayText = answer || "";
+      const hasDegreeSymbol = content === "{{}}°";
       const ariaLabel = answer
-        ? `blank filled with: ${answer}`
+        ? `blank filled with: ${answer}${hasDegreeSymbol ? "°" : ""}`
         : "blank to be filled";
 
       return (
-        <OakSpan
-          $ba="border-solid-m"
-          $borderColor="border-primary"
-          $font="body-2-bold"
-          $color={answer ? "text-success" : "text-primary"}
-          $borderStyle="none none solid none"
-          $minWidth="all-spacing-5"
-          $display="inline-block"
-          $textAlign="center"
-          aria-label={ariaLabel}
-          role="insertion"
-        >
-          {displayText}
-        </OakSpan>
+        <>
+          <OakSpan
+            $ba="border-solid-m"
+            $borderColor="border-primary"
+            $font="body-2-bold"
+            $color={answer ? "text-success" : "text-primary"}
+            $borderStyle="none none solid none"
+            $minWidth="all-spacing-5"
+            $display="inline-block"
+            $textAlign="center"
+            aria-label={ariaLabel}
+            role="insertion"
+          >
+            {answer}
+          </OakSpan>
+          {hasDegreeSymbol ? "°" : ""}
+        </>
       );
     }
 
