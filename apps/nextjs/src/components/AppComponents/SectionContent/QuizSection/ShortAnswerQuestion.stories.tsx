@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["desktop"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof ShortAnswerQuestion>;
 
 export default meta;

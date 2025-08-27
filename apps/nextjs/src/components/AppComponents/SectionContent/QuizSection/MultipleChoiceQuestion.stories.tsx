@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["desktop", "mobile"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof MultipleChoiceQuestion>;
 
 export default meta;
