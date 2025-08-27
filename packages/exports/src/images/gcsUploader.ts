@@ -18,8 +18,11 @@ function getStorageClient(): Storage {
  */
 export async function uploadImageToGCS(
   buffer: Buffer,
-  filename: string,
+  latexHash: string,
+  width: number,
+  height: number,
 ): Promise<string> {
+  const filename = generateLatexImageFilename(latexHash, width, height);
   try {
     log.info(
       `Uploading image ${filename} to GCS bucket ${GCS_LATEX_BUCKET_NAME}`,
@@ -35,8 +38,7 @@ export async function uploadImageToGCS(
       },
     });
 
-    const publicUrl = `https://storage.googleapis.com/${GCS_LATEX_BUCKET_NAME}/${filename}`;
-
+    const publicUrl = file.publicUrl();
     log.info(`Successfully uploaded ${filename} to ${publicUrl}`);
     return publicUrl;
   } catch (error) {
@@ -47,10 +49,14 @@ export async function uploadImageToGCS(
 
 /**
  * Generate a filename for a LaTeX image
- * @returns A filename like "latex-abc123.png"
+ * @returns A filename like "latex/abc123-100x100.png"
  */
-export function generateLatexImageFilename(hash: string): string {
-  return `latex-${hash}.png`;
+export function generateLatexImageFilename(
+  hash: string,
+  width: number,
+  height: number,
+): string {
+  return `latex/${hash}-${width}x${height}.png`;
 }
 
 /**
@@ -58,23 +64,25 @@ export function generateLatexImageFilename(hash: string): string {
  * @returns The public URL if exists, null if not exists
  */
 export async function getExistingImageUrl(
-  filename: string,
+  hash: string,
 ): Promise<string | null> {
   try {
     const storage = getStorageClient();
     const bucket = storage.bucket(GCS_LATEX_BUCKET_NAME);
-    const file = bucket.file(filename);
 
-    const [exists] = await file.exists();
-    if (exists) {
-      const publicUrl = `https://storage.googleapis.com/${GCS_LATEX_BUCKET_NAME}/${filename}`;
+    const [files] = await bucket.getFiles({
+      prefix: `latex/${hash}.png`,
+      maxResults: 1,
+    });
+
+    if (files[0]) {
+      const publicUrl = files[0].publicUrl();
       log.info(`Image already exists: ${publicUrl}`);
       return publicUrl;
     }
     return null;
   } catch (error) {
-    log.error(`Error checking if image exists: ${filename}`, error);
-    throw new Error(`Failed to check image existence for ${filename}`, {
+    throw new Error(`Failed to check image existence for ${hash}`, {
       cause: error,
     });
   }

@@ -1,11 +1,11 @@
-import type { RawQuiz } from "../rawQuiz";
+import type { HasuraQuiz } from "../rawQuiz";
 
-export const rawQuizFixture: RawQuiz = [
+export const rawQuizFixture: HasuraQuiz = [
   {
-    question_id: 1,
-    question_uid: "test-uid-1",
-    question_type: "multiple-choice",
-    question_stem: [
+    questionId: 1,
+    questionUid: "test-uid-1",
+    questionType: "multiple-choice",
+    questionStem: [
       {
         text: "What is the capital of France?",
         type: "text",
@@ -32,10 +32,10 @@ export const rawQuizFixture: RawQuiz = [
     active: true,
   },
   {
-    question_id: 2,
-    question_uid: "test-uid-2",
-    question_type: "short-answer",
-    question_stem: [
+    questionId: 2,
+    questionUid: "test-uid-2",
+    questionType: "short-answer",
+    questionStem: [
       {
         text: "Name a primary color",
         type: "text",
@@ -56,10 +56,10 @@ export const rawQuizFixture: RawQuiz = [
     active: true,
   },
   {
-    question_id: 3,
-    question_uid: "test-uid-3",
-    question_type: "multiple-choice",
-    question_stem: [
+    questionId: 3,
+    questionUid: "test-uid-3",
+    questionType: "multiple-choice",
+    questionStem: [
       {
         text: "Which animal is shown in the image?",
         type: "text",
@@ -112,10 +112,10 @@ export const rawQuizFixture: RawQuiz = [
     active: true,
   },
   {
-    question_id: 4,
-    question_uid: "test-uid-4",
-    question_type: "match",
-    question_stem: [
+    questionId: 4,
+    questionUid: "test-uid-4",
+    questionType: "match",
+    questionStem: [
       {
         text: "Match the countries to their capitals",
         type: "text",
@@ -138,10 +138,10 @@ export const rawQuizFixture: RawQuiz = [
     active: true,
   },
   {
-    question_id: 5,
-    question_uid: "test-uid-5",
-    question_type: "order",
-    question_stem: [
+    questionId: 5,
+    questionUid: "test-uid-5",
+    questionType: "order",
+    questionStem: [
       {
         text: "Put these numbers in ascending order",
         type: "text",
@@ -159,10 +159,10 @@ export const rawQuizFixture: RawQuiz = [
     active: true,
   },
   {
-    question_id: 6,
-    question_uid: "test-uid-6",
-    question_type: "explanatory-text",
-    question_stem: [
+    questionId: 6,
+    questionUid: "test-uid-6",
+    questionType: "explanatory-text",
+    questionStem: [
       {
         text: "This is just explanatory text",
         type: "text",

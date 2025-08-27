@@ -1,3 +1,30 @@
+## [1.47.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.0...v1.47.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* tm post launch issues - AI-1428 ([#753](https://github.com/oaknational/oak-ai-lesson-assistant/issues/753)) ([44e7ce1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/44e7ce1be3cdf9fe97d1293a00cc38e35a4a8eda))
+
+# [1.47.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.46.0...v1.47.0) (2025-08-11)
+
+
+### Bug Fixes
+
+* [AI-1381] prevent analytics tracking on useChat errors ([#732](https://github.com/oaknational/oak-ai-lesson-assistant/issues/732)) ([fe6c2c7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fe6c2c7e662532cc5293cfc3ea8267864a5f2faa))
+* rag lesson schema - cycle3 optional and all without length ([#758](https://github.com/oaknational/oak-ai-lesson-assistant/issues/758)) ([4b4e832](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4b4e832aa5219368aed449759cd32e571d72d325))
+* remove handwriting wobble effect from quiz answer boxes ([#754](https://github.com/oaknational/oak-ai-lesson-assistant/issues/754)) ([7600ad0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7600ad0208c75d601f41fce75b5950683a2e4a3d))
+* update legal page links to point to thenational.academy ([#760](https://github.com/oaknational/oak-ai-lesson-assistant/issues/760)) ([2b008c5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2b008c55fd889e985b42bb73fe13ccc0c3286d67))
+
+
+### Features
+
+* [AI-1377] add image attribution support to quiz V2 schema ([#738](https://github.com/oaknational/oak-ai-lesson-assistant/issues/738)) ([af0dcf2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/af0dcf266360db3d50d33f6f35882b0f1e35cf2a))
+* [AI-1383] render checkForUnderstanding in cycles using V2 quiz components ([#737](https://github.com/oaknational/oak-ai-lesson-assistant/issues/737)) ([45b1ef6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/45b1ef65f856b766974cdd2ecfc699c73f33be3b))
+* add all quiz v2 question types ([#750](https://github.com/oaknational/oak-ai-lesson-assistant/issues/750)) ([fd2493f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fd2493fe8b624354a3fe247f4481dd037523bece))
+* add convertRawQuizToV2 function for quiz format conversion ([#739](https://github.com/oaknational/oak-ai-lesson-assistant/issues/739)) ([89f4d8f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/89f4d8fa432d250707a4f57a619ae708ed2b2490))
+* add GCS upload infrastructure for LaTeX images ([#757](https://github.com/oaknational/oak-ai-lesson-assistant/issues/757)) ([b695974](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b69597498ce4b70a68e36fed66b7067a0e3bf013))
+* add LaTeX to image rendering for exports ([#756](https://github.com/oaknational/oak-ai-lesson-assistant/issues/756)) ([22eccbd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/22eccbdc39e99760ff64846d2276720fb6a2e842))
+
 # [1.46.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.45.0...v1.46.0) (2025-07-17)
 
 

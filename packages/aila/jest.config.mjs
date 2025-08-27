@@ -1,8 +1,11 @@
-import { readFile } from "fs/promises";
+import { readFileSync } from "fs";
+import { dirname, join } from "path";
 import { pathsToModuleNameMapper } from "ts-jest";
+import { fileURLToPath } from "url";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const tsconfig = JSON.parse(
-  await readFile(new URL("./tsconfig.test.json", import.meta.url)),
+  readFileSync(join(__dirname, "./tsconfig.test.json"), "utf-8"),
 );
 // prettier-ignore
 const moduleNameMapper = Object.assign(

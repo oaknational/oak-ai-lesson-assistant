@@ -91,10 +91,23 @@
     },
     "storybook": {
       "cache": false
+    },
+
+    "generate-posthog-survey-types": {
+      "cache": false,
+      "env": [
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "POSTHOG_PERSONAL_KEY_FLAGS",
+        "NEXT_PUBLIC_POSTHOG_PROJECT"
+      ],
+      "outputs": [
+        "apps/nextjs/src/lib/posthog/surveys/surveysTypes.generated.ts"
+      ]
     }
   },
   "globalEnv": [
     "AILA_FIXTURES_ENABLED",
+    "AILA_QUIZ_GENERATORS",
     "CLERK_*",
     "CLERK_WEBHOOK_SECRET",
     "CLOUDINARY_*",
