@@ -52,8 +52,7 @@ const AdditionalMaterialsStartAgain = ({
       // Reset the dialog state
       closeDialog();
     } else if (selectedOption === "new-lesson") {
-      resetToDefault();
-      closeDialog();
+      router.push("/aila");
     }
   };
 
