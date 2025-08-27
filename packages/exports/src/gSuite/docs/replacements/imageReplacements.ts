@@ -31,7 +31,9 @@ export function imageReplacements(
 
       return getGoogleDocsDimensions(scaledWidth, scaledHeight);
     }
-    throw new Error(`Unable to extract dimensions from image URL: ${imageUrl}`);
+
+    // Handle a markdown image that didn't come from a latex replacement. We don't know the dimensions
+    return null;
   }
 
   // Process images backwards (from end of document to beginning)
@@ -64,16 +66,18 @@ export function imageReplacements(
         location: {
           index: startIndex, // Insert at the same startIndex where the Markdown was removed
         },
-        objectSize: {
-          height: {
-            magnitude: dimensions.height,
-            unit: "PT",
+        ...(dimensions && {
+          objectSize: {
+            height: {
+              magnitude: dimensions.height,
+              unit: "PT",
+            },
+            width: {
+              magnitude: dimensions.width,
+              unit: "PT",
+            },
           },
-          width: {
-            magnitude: dimensions.width,
-            unit: "PT",
-          },
-        },
+        }),
       },
     });
   });
