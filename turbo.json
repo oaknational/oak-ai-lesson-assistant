@@ -107,6 +107,7 @@
   },
   "globalEnv": [
     "AILA_FIXTURES_ENABLED",
+    "AILA_QUIZ_GENERATORS",
     "CLERK_*",
     "CLERK_WEBHOOK_SECRET",
     "CLOUDINARY_*",
