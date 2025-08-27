@@ -4,9 +4,10 @@ import type { Components } from "react-markdown";
 import { OakBox } from "@oaknational/oak-components";
 
 // Blank patterns that we support
+// NOTE: Don't use /g flags as they are stateful when tested multiple times
 const BLANK_PATTERNS = {
-  CURLY_BRACES: /\{\{ ?\}\}/g,
-  UNDERSCORES: /_{4,}/g,
+  CURLY_BRACES: /\{\{ ?\}\}/,
+  UNDERSCORES: /_{4,}/,
 } as const;
 
 export const hasBlankSpaces = (text: string): boolean => {
@@ -29,7 +30,7 @@ export const prepareTextWithBlanks = (text: string): string => {
 
   // 2: move degree symbol inside emphasis markers so markdown parser recognizes them.
   // _{{}}_° becomes _{{}}°_ because markdown requires word boundaries around markers
-  return result.replaceAll("_{{}}_°", "_{{}}°_");
+  return result.replace("_{{}}_°", "_{{}}°_");
 };
 
 /**
