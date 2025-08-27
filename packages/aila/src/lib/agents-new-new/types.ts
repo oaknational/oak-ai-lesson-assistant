@@ -26,6 +26,7 @@ import type {
 } from "./schema";
 
 export type ChatMessage = {
+  id: string;
   role:
     | "data" // compatibility
     | "system" // keeping system in to support legacy chats

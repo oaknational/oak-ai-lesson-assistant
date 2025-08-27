@@ -105,7 +105,7 @@ export async function ailaTurn({
       context.currentTurn.relevantLessonsFetched = true;
 
       if (context.persistedState.relevantLessons.length > 0) {
-        return endWithMessage(context, callbacks);
+        return endWithMessage(context);
       }
     }
   }
@@ -113,7 +113,7 @@ export async function ailaTurn({
    * 6. After the plan is executed, we call the presentation agent.
    * 👉 The turn ends here.
    */
-  return endWithMessage(context, callbacks);
+  return endWithMessage(context);
 }
 
 /**

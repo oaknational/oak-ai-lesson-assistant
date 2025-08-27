@@ -1,5 +1,9 @@
+import { aiLogger } from "@oakai/logger";
+
 import { buildPatches } from "./helpers/buildPatches";
 import { type TextStreamer } from "./helpers/createTextStreamer";
+
+const log = aiLogger("aila:agents");
 
 export const createOnSectionComplete =
   (textStreamer: TextStreamer, patchState: { isFirstSection: boolean }) =>
@@ -16,6 +20,7 @@ export const createOnSectionComplete =
       textStreamer(patchJson);
     }
 
+    log.info("onSectionComplete: ", patches);
     // Mark that we've processed the first section
     patchState.isFirstSection = false;
   };
