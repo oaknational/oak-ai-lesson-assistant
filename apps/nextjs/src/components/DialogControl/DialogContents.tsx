@@ -81,6 +81,7 @@ const dialogTitlesAndIcons: Record<
   "additional-materials-error": {
     title: "An error occurred",
     iconName: "warning",
+    hideClosedButton: true,
   },
   "additional-materials-start-again": {
     title: "",
