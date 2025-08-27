@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["desktop", "mobile"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof MultipleChoiceQuestion>;
 
 export default meta;
@@ -59,5 +60,18 @@ export const MultipleCorrectAnswers: Story = {
       hint: null,
     },
     questionNumber: 3,
+  },
+};
+
+export const WithUnfilledBlanks: Story = {
+  args: {
+    question: {
+      questionType: "multiple-choice",
+      question: "A full rotation is {{}}° around a circle.",
+      answers: ["360"],
+      distractors: ["180", "90", "45"],
+      hint: null,
+    },
+    questionNumber: 4,
   },
 };

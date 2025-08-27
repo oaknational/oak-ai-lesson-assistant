@@ -9,6 +9,7 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import { AnswerBox } from "./AnswerBox";
 import { addInstruction } from "./helpers";
 import { shuffleOrderItems } from "./shuffle";
+import { useTextWithBlanks } from "./textWithBlanks";
 
 type OrderQuestionProps = {
   question: QuizV2QuestionOrder;
@@ -30,6 +31,10 @@ export const OrderQuestion = ({
     "Write the correct number in each box.",
   );
 
+  const { processedText, components } = useTextWithBlanks({
+    questionText: questionWithInstruction,
+  });
+
   return (
     <OakBox
       $mb="space-between-l"
@@ -39,8 +44,9 @@ export const OrderQuestion = ({
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
-          markdown={questionWithInstruction}
+          markdown={processedText}
           className="[&>p]:mb-0"
+          components={components}
         />
       </OakFlex>
 
