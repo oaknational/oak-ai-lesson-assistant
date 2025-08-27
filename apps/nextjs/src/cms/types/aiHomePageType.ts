@@ -25,6 +25,7 @@ interface HomePageData {
   heading: string;
   heroVideo: VideoData;
   belowTheFoldVideo: VideoData;
+  belowTheFoldVideo2?: VideoData;
   seo: SeoData;
 }
 
