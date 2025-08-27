@@ -9,6 +9,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "./AnswerBox";
+import { useTextWithBlanks } from "./textWithBlanks";
 
 type MatchQuestionProps = {
   question: QuizV2QuestionMatch;
@@ -31,6 +32,10 @@ export const MatchQuestion = ({
     "Write the matching letter in each box.",
   );
 
+  const { processedText, components } = useTextWithBlanks({
+    questionText: questionWithInstruction,
+  });
+
   return (
     <OakBox
       $mb="space-between-l"
@@ -40,8 +45,9 @@ export const MatchQuestion = ({
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
-          markdown={questionWithInstruction}
+          markdown={processedText}
           className="[&>p]:mb-0"
+          components={components}
         />
       </OakFlex>
 

@@ -1,14 +1,14 @@
 /**
  * Page break estimation utility for determining footer placement strategy
- * 
+ *
  * Google Docs has different footer types:
  * - First page footer: Only appears on page 1
  * - Document footer: Appears on all pages
- * 
+ *
  * We only need to show attribution on the last footer. For single-page quizzes,
  * we can use both footers. For multi-page quizzes, we skip the first page footer
  * and only use the document footer so attribution appears on the final page.
- * 
+ *
  * This module estimates quiz content height to determine the appropriate
  * footer strategy based on whether content will span multiple pages.
  */

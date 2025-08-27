@@ -38,7 +38,7 @@ export function generateMultipleChoiceTable(
 
   // Answer table element
   const cellContent = (row: number, col: number): string => {
-    // Column 0: Answer checkboxes  
+    // Column 0: Answer checkboxes
     if (col === 0) return CHECKBOX_PLACEHOLDER;
     // Column 1: Letter labels (a), b), c), etc.)
     if (col === 1) return `${String.fromCharCode(97 + row)})`;

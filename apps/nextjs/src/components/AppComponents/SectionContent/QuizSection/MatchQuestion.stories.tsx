@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["mobile", "desktop"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof MatchQuestion>;
 
 export default meta;
