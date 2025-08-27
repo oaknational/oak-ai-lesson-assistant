@@ -24,6 +24,18 @@ export const homePageQuery = `*[_type == "aiHomepage"] {
         }
       }
     },
+    belowTheFoldVideo2->{
+      _id,
+      title,
+      url,
+      video {
+        asset->{
+          assetId,
+          thumbTime,
+          playbackId
+        }
+      }
+    },
     "seo": {
       "metaTitle": seo.metaTitle,
       "metaDescription": seo.metaDescription,

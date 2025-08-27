@@ -15,10 +15,8 @@ import {
   OakGridArea,
   OakHeading,
   OakIcon,
-  OakImage,
   OakLI,
   OakP,
-  OakPrimaryInvertedButton,
   OakQuote,
   OakSecondaryButton,
   OakSmallPrimaryInvertedButton,
@@ -303,6 +301,7 @@ function HomePageHero({ pageData }: HomePageProps) {
         >
           <StyledMuxPlayer
             playbackId={pageData?.heroVideo.video.asset.playbackId}
+            thumbnailTime={6.32}
           />
         </OakFlexCustomMaxWidthWithHalfWidth>
       </OakFlex>
@@ -338,9 +337,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         </OakBoxCustomMaxWidth>
         <OakP $font={"body-2"}>
           Aila, your AI-powered lesson assistant, can help you create
-          high-quality lessons and additional teaching materials in minutes.
-          When you&apos;re ready, you can download everything in several
-          editable formats to adapt as you like.
+          high-quality lessons and teaching materials in minutes. When
+          you&apos;re ready, you can download everything in several editable
+          formats to adapt as you like.
         </OakP>
         <OakP $font={"body-2-bold"}>Lessons created with Aila include:</OakP>
 
@@ -370,7 +369,8 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         </OakHeading>
         <OakP $font={"body-2"}>
           Explore sample lessons created with Aila by teachers like you to see
-          what&apos;s possible.
+          what&apos;s possible. We don&apos;t currently include images in our AI
+          lessons, but you can add your own once downloaded.
         </OakP>
         <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
           <IconInfoCardLink
@@ -411,7 +411,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
                 playbackId={
                   pageData?.belowTheFoldVideo2?.video.asset.playbackId
                 }
-                thumbnailTime={3.67}
+                thumbnailTime={6.32}
               />
             </OakBoxCustomMaxWidth>
           )}
