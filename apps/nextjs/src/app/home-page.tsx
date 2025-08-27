@@ -48,24 +48,28 @@ export const metadata: Metadata = {
 function SubjectIcon({
   iconName,
   background,
-  width = "all-spacing-12",
-  height = "all-spacing-12",
+  iconWidth = "all-spacing-12",
+  iconHeight = "all-spacing-12",
+  containerWidth = "all-spacing-15",
+  containerHeight = "all-spacing-15",
 }: {
   iconName: OakIconName;
   background: OakUiRoleToken;
-  width?: OakAllSpacingToken;
-  height?: OakAllSpacingToken;
+  iconWidth?: OakAllSpacingToken;
+  iconHeight?: OakAllSpacingToken;
+  containerWidth?: OakAllSpacingToken;
+  containerHeight?: OakAllSpacingToken;
 }) {
   return (
     <OakFlex
       $background={background}
       $borderRadius={"border-radius-m"}
-      $minWidth="all-spacing-15"
-      $minHeight="all-spacing-15"
+      $minWidth={containerWidth}
+      $minHeight={containerHeight}
       $justifyContent={"center"}
       $alignItems={"center"}
     >
-      <OakIcon $width={width} $height={height} iconName={iconName} />
+      <OakIcon $width={iconWidth} $height={iconHeight} iconName={iconName} />
     </OakFlex>
   );
 }
@@ -73,34 +77,67 @@ function SubjectIcon({
 function IconInfoCardLink({
   iconName,
   background,
-  subTitle,
+  buttonLabelMobile,
+  buttonLabel,
   title,
   fileName,
+  href,
 }: {
   iconName: OakIconName;
   background: OakUiRoleToken;
-  subTitle: string;
   title: string;
+  buttonLabelMobile?: string;
+  buttonLabel: string;
   fileName: string;
+  href: string;
 }) {
   return (
-    <OakFlex $alignItems="center" $gap="all-spacing-6">
-      <SubjectIcon iconName={iconName} background={background} />
+    <OakFlex
+      $width={"100%"}
+      $alignItems="center"
+      $gap={["all-spacing-3", "all-spacing-6"]}
+    >
+      <OakBox $display={["none", "flex"]}>
+        <SubjectIcon iconName={iconName} background={background} />
+      </OakBox>
+      <OakBox $display={["flex", "none"]}>
+        <SubjectIcon
+          iconHeight="all-spacing-10"
+          iconWidth="all-spacing-10"
+          containerWidth="all-spacing-12"
+          containerHeight="all-spacing-12"
+          iconName={iconName}
+          background={background}
+        />
+      </OakBox>
 
       <OakFlex $flexDirection="column" $gap="space-between-sssx" $width="100%">
         <OakHeading $font="heading-6" tag="h4" $color="black">
-          {subTitle}
+          {title}
         </OakHeading>
+
         <OakSmallPrimaryInvertedButton
           $textAlign={"start"}
           iconName="download"
+          element={"a"}
           isTrailingIcon
+          $wordWrap={"break-word"}
+          $whiteSpace={"normal"}
           $pl={"inner-padding-none"}
           $mh={"space-between-none"}
+          href={href}
+          target="_blank"
         >
-          <OakP $font="body-3" $color="black">
-            {title} ({fileName})
-          </OakP>
+          <OakFlex $display={["flex", "none"]} $width={"100%"}>
+            <OakP $font="body-3">
+              {buttonLabelMobile} ({fileName})
+            </OakP>
+          </OakFlex>
+          <OakFlex $display={["none", "flex"]} $alignItems="center">
+            <OakP $font="body-3">
+              {buttonLabel} ({fileName})
+            </OakP>
+          </OakFlex>
         </OakSmallPrimaryInvertedButton>
       </OakFlex>
     </OakFlex>
@@ -301,7 +338,6 @@ function HomePageHero({ pageData }: HomePageProps) {
         >
           <StyledMuxPlayer
             playbackId={pageData?.heroVideo.video.asset.playbackId}
-            thumbnailTime={6.32}
           />
         </OakFlexCustomMaxWidthWithHalfWidth>
       </OakFlex>
@@ -376,17 +412,21 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           <IconInfoCardLink
             iconName="subject-history"
             background="bg-decorative5-subdued"
-            subTitle="KS2 • History"
-            title="Why was the discovery of the Rosetta Stone so important"
+            title="KS2 • History"
+            buttonLabel="Why was the discovery of the Rosetta Stone so important"
+            buttonLabelMobile="Rosetta Stone"
             fileName=".zip"
+            href="https://drive.google.com/file/d/1KqGIPrCIz3s-gpS4O_kyDBef_OUP_FIt/view?usp=drive_link"
           />
 
           <IconInfoCardLink
             iconName="subject-geography"
             background="border-decorative4"
-            subTitle="KS4 • Geography"
-            title="Demographic transition model"
+            title="KS4 • Geography"
+            buttonLabel="Demographic transition model"
+            buttonLabelMobile="Demographic transition"
             fileName=".zip"
+            href="https://drive.google.com/file/d/1LvFNQ7OH6rS02BBftSCxVKOtRWM688ml/view?usp=drive_link"
           />
         </OakFlex>
         <OakHeading
@@ -398,7 +438,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           Creating a lesson
         </OakHeading>
         <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
-          {pageData?.belowTheFoldVideo2 && (
+          {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
             <OakBoxCustomMaxWidth
               $display={["flex"]}
               $borderColor="black"
@@ -428,9 +468,11 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           <IconInfoCardLink
             iconName="ai-worksheet"
             background="bg-decorative3-subdued"
-            subTitle="A guide to creating a lesson with example prompts"
+            buttonLabel="A guide to creating a lesson with example prompts"
+            buttonLabelMobile="Example prompts"
             title="Getting started with Aila"
             fileName=".pdf"
+            href="/"
           />
 
           <OakSecondaryButton
