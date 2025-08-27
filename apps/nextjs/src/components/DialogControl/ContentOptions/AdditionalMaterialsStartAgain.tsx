@@ -62,7 +62,7 @@ const AdditionalMaterialsStartAgain = ({
       $width="100%"
       $height="100%"
       $flexDirection="column"
-      $ph="inner-padding-xl8"
+      $ph={["inner-padding-m", "inner-padding-xl8"]}
       $mb="space-between-m"
     >
       <OakFlex
