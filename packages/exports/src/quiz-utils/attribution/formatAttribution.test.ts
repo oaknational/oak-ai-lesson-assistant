@@ -6,13 +6,13 @@ import {
   mapQuestionImages,
 } from "./formatAttribution";
 import type {
-  ImageAttribution,
+  ImageMetadata,
   ImageWithAttribution,
   QuizV2Question,
 } from "./types";
 
 describe("mapQuestionImages", () => {
-  const mockAttributions: ImageAttribution[] = [
+  const mockMetadata: ImageMetadata[] = [
     {
       imageUrl: "https://example.com/image1.jpg",
       attribution: "Pixabay",
@@ -38,7 +38,7 @@ describe("mapQuestionImages", () => {
       },
     ];
 
-    const result = mapQuestionImages(questions, mockAttributions);
+    const result = mapQuestionImages(questions, mockMetadata);
 
     expect(result).toEqual([
       {
@@ -63,7 +63,7 @@ describe("mapQuestionImages", () => {
       },
     ];
 
-    const result = mapQuestionImages(questions, mockAttributions);
+    const result = mapQuestionImages(questions, mockMetadata);
 
     expect(result).toEqual([
       {
@@ -100,7 +100,7 @@ describe("mapQuestionImages", () => {
       },
     ];
 
-    const result = mapQuestionImages(questions, mockAttributions);
+    const result = mapQuestionImages(questions, mockMetadata);
 
     expect(result).toEqual([
       {
@@ -132,7 +132,7 @@ describe("mapQuestionImages", () => {
       },
     ];
 
-    const result = mapQuestionImages(questions, mockAttributions);
+    const result = mapQuestionImages(questions, mockMetadata);
 
     expect(result).toEqual([
       {
@@ -155,7 +155,7 @@ describe("mapQuestionImages", () => {
       },
     ];
 
-    const result = mapQuestionImages(questions, mockAttributions);
+    const result = mapQuestionImages(questions, mockMetadata);
 
     expect(result).toEqual([]);
   });
@@ -369,7 +369,7 @@ describe("formatAttributionText", () => {
 });
 
 describe("formatQuizAttributions", () => {
-  const mockAttributions: ImageAttribution[] = [
+  const mockMetadata: ImageMetadata[] = [
     {
       imageUrl: "https://example.com/pixabay.jpg",
       attribution: "Pixabay",
@@ -391,7 +391,7 @@ describe("formatQuizAttributions", () => {
       },
     ];
 
-    const result = formatQuizAttributions(questions, mockAttributions);
+    const result = formatQuizAttributions(questions, mockMetadata);
 
     expect(result.plainText).toBe(
       "Q1 Image 1 Pixabay; Image 2 Shutterstock / Jane Doe",
@@ -415,7 +415,7 @@ describe("formatQuizAttributions", () => {
       },
     ];
 
-    const result = formatQuizAttributions(questions, mockAttributions);
+    const result = formatQuizAttributions(questions, mockMetadata);
 
     expect(result).toEqual({
       plainText: "",
@@ -434,7 +434,7 @@ describe("formatQuizAttributions", () => {
       },
     ];
 
-    const result = formatQuizAttributions(questions, mockAttributions);
+    const result = formatQuizAttributions(questions, mockMetadata);
 
     expect(result).toEqual({
       plainText: "",

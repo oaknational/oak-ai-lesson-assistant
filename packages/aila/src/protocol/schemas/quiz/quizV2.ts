@@ -13,9 +13,14 @@ export const QUIZ_V2_DESCRIPTIONS = {
     "Copyright info for images. DO NOT hallucinate - only use existing attributions from source.",
 } as const;
 
-export const ImageAttributionSchema = z.object({
+// Stores image metadata including attribution and dimensions.
+// Extended from attribution-only to include width/height for Google Docs API.
+// All fields optional for backward compatibility.
+export const ImageMetadataSchema = z.object({
   imageUrl: z.string().describe("The URL of the image"),
-  attribution: z.string().describe("Attribution text for the image"),
+  attribution: z.string().optional().describe("Attribution text for the image"),
+  width: z.number().optional().describe("Width of the image in pixels"),
+  height: z.number().optional().describe("Height of the image in pixels"),
 });
 
 // Base question schema with common fields
@@ -73,15 +78,21 @@ export const QuizV2QuestionSchema = z.discriminatedUnion("questionType", [
 export const QuizV2Schema = z.object({
   version: z.literal("v2").describe("Schema version identifier"),
   questions: z.array(QuizV2QuestionSchema).describe("Array of quiz questions"),
+  /**
+   * Image metadata including attribution and dimensions.
+   * Named "imageAttributions" for backward compatibility - originally stored only
+   * attribution data, now extended to include width/height for Google Docs API.
+   */
   imageAttributions: z
-    .array(ImageAttributionSchema)
-    .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
+    .array(ImageMetadataSchema)
+    .describe("Image metadata including attribution and dimensions"),
 });
 
 export const QuizV2SchemaWithoutLength = QuizV2Schema;
 export const QuizV2OptionalSchema = QuizV2Schema.optional();
 
-export type ImageAttribution = z.infer<typeof ImageAttributionSchema>;
+export type ImageMetadata = z.infer<typeof ImageMetadataSchema>;
+
 export type QuizV2Question = z.infer<typeof QuizV2QuestionSchema>;
 export type QuizV2 = z.infer<typeof QuizV2Schema>;
 export type QuizV2Optional = z.infer<typeof QuizV2OptionalSchema>;
@@ -109,8 +120,13 @@ export const QuizV2MultipleChoiceOnlySchema = z.object({
     .describe(
       `Array of multiple choice quiz questions. ${minMaxText({ min: 1, entity: "elements" })}`,
     ),
+  /**
+   * Image metadata including attribution and dimensions.
+   * Named "imageAttributions" for backward compatibility - originally stored only
+   * attribution data, now extended to include width/height for Google Docs API.
+   */
   imageAttributions: z
-    .array(ImageAttributionSchema)
+    .array(ImageMetadataSchema)
     .describe(QUIZ_V2_DESCRIPTIONS.imageAttributions),
 });
 

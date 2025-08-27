@@ -7,7 +7,7 @@ import type { docs_v1 } from "@googleapis/docs";
 
 import { formatQuizAttributions } from "../../../quiz-utils/attribution/formatAttribution";
 import type {
-  ImageAttribution,
+  ImageMetadata,
   QuizV2Question,
 } from "../../../schema/input.schema";
 import { getFooterStrategy } from "./estimate-page-breaks";
@@ -74,7 +74,7 @@ export async function addFooterAttribution(
   googleDocs: docs_v1.Docs,
   documentId: string,
   questions: QuizV2Question[],
-  imageAttributions: ImageAttribution[],
+  imageMetadata: ImageMetadata[],
 ): Promise<void> {
   // Get document style to access footer IDs
   const doc = await googleDocs.documents.get({ documentId });
@@ -87,7 +87,7 @@ export async function addFooterAttribution(
   }
 
   // Generate attribution data
-  const attributionData = formatQuizAttributions(questions, imageAttributions);
+  const attributionData = formatQuizAttributions(questions, imageMetadata);
 
   if (attributionData.segments.length === 0) {
     log.info("No image attributions to add");

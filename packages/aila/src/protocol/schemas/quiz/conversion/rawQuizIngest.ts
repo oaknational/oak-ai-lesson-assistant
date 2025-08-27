@@ -28,15 +28,25 @@ function isImageItem(item: StemObject): item is StemImageObject {
 
 /**
  * Extract markdown content from Oak's content items array, inlining images
- * Returns both the markdown content and attribution metadata
+ * Returns both the markdown content and image metadata
  */
 function extractMarkdownFromContent(
   contentItems: Array<StemObject | undefined>,
 ): {
   markdown: string;
-  attributions: Array<{ imageUrl: string; attribution: string }>;
+  metadata: Array<{
+    imageUrl: string;
+    attribution?: string;
+    width?: number;
+    height?: number;
+  }>;
 } {
-  const attributions: Array<{ imageUrl: string; attribution: string }> = [];
+  const metadata: Array<{
+    imageUrl: string;
+    attribution?: string;
+    width?: number;
+    height?: number;
+  }> = [];
 
   const markdownParts = contentItems
     .filter((item): item is StemObject => item !== undefined)
@@ -45,9 +55,19 @@ function extractMarkdownFromContent(
         return item.text || "";
       } else if (isImageItem(item)) {
         const imageUrl = item.image_object.secure_url;
+        const width = item.image_object.width;
+        const height = item.image_object.height;
 
         // Extract alt text from context if available
         const altText = item.image_object.context?.custom?.alt ?? "";
+
+        // Build metadata object for this image
+        const imageMetadata: {
+          imageUrl: string;
+          attribution?: string;
+          width?: number;
+          height?: number;
+        } = { imageUrl };
 
         // Extract attribution if available
         if (
@@ -57,8 +77,21 @@ function extractMarkdownFromContent(
         ) {
           const attribution = item.image_object.metadata.attribution;
           if (attribution) {
-            attributions.push({ imageUrl, attribution });
+            imageMetadata.attribution = attribution;
           }
+        }
+
+        // Add dimensions if available
+        if (width) imageMetadata.width = width;
+        if (height) imageMetadata.height = height;
+
+        // Push metadata if we have any useful information (attribution OR dimensions)
+        if (
+          imageMetadata.attribution ||
+          imageMetadata.width ||
+          imageMetadata.height
+        ) {
+          metadata.push(imageMetadata);
         }
 
         // Return markdown image syntax with alt text
@@ -69,7 +102,7 @@ function extractMarkdownFromContent(
 
   return {
     markdown: markdownParts.join(" ").trim(),
-    attributions,
+    metadata,
   };
 }
 
@@ -88,9 +121,13 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
     };
   }
 
-  // Collect all image attributions from all questions
-  const allImageAttributions: Array<{ imageUrl: string; attribution: string }> =
-    [];
+  // Collect all image metadata from all questions
+  const allImageMetadata: Array<{
+    imageUrl: string;
+    attribution?: string;
+    width?: number;
+    height?: number;
+  }> = [];
 
   const questions = hasuraQuiz
     .filter(
@@ -104,8 +141,9 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         throw new Error("Explanatory text questions should be filtered out");
       }
       // Extract question stem as markdown with inlined images
-      const { markdown: questionStem, attributions } =
-        extractMarkdownFromContent(hasuraQuestion.questionStem);
+      const { markdown: questionStem, metadata } = extractMarkdownFromContent(
+        hasuraQuestion.questionStem,
+      );
 
       const hint = hasuraQuestion.hint ?? null;
 
@@ -140,11 +178,11 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
             (result) => result.markdown,
           );
 
-          // Collect all attributions from question and answers
-          allImageAttributions.push(
-            ...attributions,
-            ...correctAnswerResults.flatMap((result) => result.attributions),
-            ...distractorResults.flatMap((result) => result.attributions),
+          // Collect all metadata from question and answers
+          allImageMetadata.push(
+            ...metadata,
+            ...correctAnswerResults.flatMap((result) => result.metadata),
+            ...distractorResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -164,9 +202,9 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
           });
           const answers = answerResults.map((result) => result.markdown);
 
-          allImageAttributions.push(
-            ...attributions,
-            ...answerResults.flatMap((result) => result.attributions),
+          allImageMetadata.push(
+            ...metadata,
+            ...answerResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -187,9 +225,9 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
               matchItem.correct_choice || [],
             );
 
-            allImageAttributions.push(
-              ...leftResult.attributions,
-              ...rightResult.attributions,
+            allImageMetadata.push(
+              ...leftResult.metadata,
+              ...rightResult.metadata,
             );
 
             return {
@@ -198,7 +236,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
             };
           });
 
-          allImageAttributions.push(...attributions);
+          allImageMetadata.push(...metadata);
 
           return {
             questionType: "match" as const,
@@ -215,9 +253,9 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
           );
           const items = itemResults.map((result) => result.markdown);
 
-          allImageAttributions.push(
-            ...attributions,
-            ...itemResults.flatMap((result) => result.attributions),
+          allImageMetadata.push(
+            ...metadata,
+            ...itemResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -240,6 +278,6 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
   return {
     version: "v2",
     questions,
-    imageAttributions: allImageAttributions,
+    imageAttributions: allImageMetadata,
   };
 }

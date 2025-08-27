@@ -5,7 +5,7 @@ import type { docs_v1 } from "@googleapis/docs";
 import { describe, expect, it, jest } from "@jest/globals";
 
 import type {
-  ImageAttribution,
+  ImageMetadata,
   QuizV2Question,
 } from "../../../schema/input.schema";
 import { addFooterAttribution } from "./footerAttribution";
@@ -52,7 +52,7 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageMetadata: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
@@ -63,7 +63,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions,
+      imageMetadata,
     );
 
     expect(mockGet).toHaveBeenCalledWith({ documentId: "doc123" });
@@ -111,7 +111,7 @@ describe("addFooterAttribution", () => {
       hint: null,
     }));
 
-    const imageAttributions: ImageAttribution[] = questions.map((_, i) => ({
+    const imageMetadata: ImageMetadata[] = questions.map((_, i) => ({
       imageUrl: `https://example.com/image${i + 1}.jpg`,
       attribution: "Pixabay",
     }));
@@ -120,7 +120,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions,
+      imageMetadata,
     );
 
     expect(mockBatchUpdate).toHaveBeenCalledWith({
@@ -166,13 +166,13 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [];
+    const imageMetadata: ImageMetadata[] = [];
 
     await addFooterAttribution(
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions,
+      imageMetadata,
     );
 
     expect(mockGet).toHaveBeenCalledWith({ documentId: "doc123" });
@@ -198,7 +198,7 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageMetadata: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
@@ -209,7 +209,7 @@ describe("addFooterAttribution", () => {
       mockGoogleDocs,
       "doc123",
       questions,
-      imageAttributions,
+      imageMetadata,
     );
 
     const batchUpdateCall = mockBatchUpdate.mock.calls[0]![0];

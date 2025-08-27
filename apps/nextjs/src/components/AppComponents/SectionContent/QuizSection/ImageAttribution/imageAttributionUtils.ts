@@ -31,8 +31,8 @@ export function getAttributionsForQuestion(
   const allImageUrls = [...questionImageUrls, ...answerImageUrls];
 
   const attributions = quizAttributions
-    .filter((attr) => allImageUrls.includes(attr.imageUrl))
-    .map((attr) => attr.attribution);
+    .filter((attr) => allImageUrls.includes(attr.imageUrl) && attr.attribution)
+    .map((attr) => attr.attribution!);
 
   // Return unique attributions
   return Array.from(new Set(attributions));

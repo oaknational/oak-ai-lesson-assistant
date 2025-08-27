@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { docs_v1 } from "@googleapis/docs";
 
 import type {
-  ImageAttribution,
+  ImageMetadata,
   QuizV2Question,
 } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
@@ -19,7 +19,7 @@ interface PopulateDocV2Data {
   lesson_title: string;
   quiz_type: string;
   questions: QuizV2Question[];
-  imageAttributions: ImageAttribution[];
+  imageAttributions: ImageMetadata[];
 }
 
 /**
@@ -84,7 +84,10 @@ export async function populateQuizDoc({
 
     // Insert image objects for markdown images
     const markdownImages = await findMarkdownImages(googleDocs, documentId);
-    const { requests: imageRequests } = imageReplacements(markdownImages);
+    const { requests: imageRequests } = imageReplacements(
+      markdownImages,
+      data.imageAttributions,
+    );
 
     if (imageRequests.length > 0) {
       await googleDocs.documents.batchUpdate({
