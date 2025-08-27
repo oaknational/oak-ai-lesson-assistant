@@ -7,7 +7,7 @@ import { OakBox } from "@oaknational/oak-components";
 // NOTE: Don't use /g flags as they are stateful when tested multiple times
 const BLANK_PATTERNS = {
   CURLY_BRACES: /\{\{ ?\}\}/,
-  UNDERSCORES: /_{4,}/,
+  UNDERSCORES: /_{3,}/,
 } as const;
 
 export const hasBlankSpaces = (text: string): boolean => {
