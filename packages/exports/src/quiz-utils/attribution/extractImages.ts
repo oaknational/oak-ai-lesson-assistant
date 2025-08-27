@@ -7,8 +7,8 @@ import type { ExtractedImage, QuizV2Question } from "./types";
 export function extractImageUrlsFromText(
   text: string,
 ): Array<{ url: string; altText: string }> {
-  // Prevent catastrophic backtracking by limiting URL length
-  const imageRegex = /!\[([^\]]*)\]\((https?:\/\/[^)\s]{1,1000})\)/g;
+  // Prevent catastrophic backtracking by limiting match lengths
+  const imageRegex = /!\[([^\]]{0,300}?)\]\((https?:\/\/[^)\s]{1,1000})\)/g;
   const matches = Array.from(text.matchAll(imageRegex));
 
   return matches
