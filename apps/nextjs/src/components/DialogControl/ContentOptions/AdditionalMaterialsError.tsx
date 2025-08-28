@@ -1,7 +1,6 @@
 import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
-import invariant from "tiny-invariant";
 
 import {
   useResourcesActions,
@@ -17,9 +16,12 @@ const AdditionalMaterialsError = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsErrorProps>) => {
   const docType = useResourcesStore(docTypeSelector);
-  invariant(docType, "docType must be defined");
-  const docTypeDisplayName =
-    resourceTypesConfig[docType].displayName.toLowerCase();
+  const error = useResourcesStore((state) => state.error);
+
+  const docTypeDisplayName = docType
+    ? resourceTypesConfig[docType].displayName
+    : null;
+
   const { resetToDefault } = useResourcesActions();
   return (
     <OakFlex
@@ -30,8 +32,13 @@ const AdditionalMaterialsError = ({
       $gap={"space-between-m2"}
     >
       <OakP $textAlign={"center"} $font="body-2">
-        {`An error occurred while generating your ${docTypeDisplayName}.`}
+        {`An error occurred while generating your ${docTypeDisplayName ?? "teaching material"}.`}
       </OakP>
+      {error?.message && (
+        <OakP $textAlign={"center"} $font="body-2" $color="text-error">
+          {error.message}
+        </OakP>
+      )}
       <OakFlex
         $width={"100%"}
         $flexDirection={"column"}

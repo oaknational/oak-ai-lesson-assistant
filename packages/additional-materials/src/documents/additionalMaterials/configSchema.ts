@@ -153,6 +153,7 @@ function makeInputVariant<T extends AdditionalMaterialType>(
     resourceId: z.string().nullish(),
     lessonId: z.string().nullish(),
     adaptsOutputId: z.string().nullish(),
+    source: z.enum(["aila", "owa"]),
   });
 }
 

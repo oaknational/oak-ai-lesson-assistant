@@ -5,6 +5,7 @@ import {
   additionalMaterialsConfigMap,
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -12,13 +13,14 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
+import { pick } from "remeda";
 
 import type { RateLimitInfo } from "../../types";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
 
-type GenerateAdditionalMaterialParams = {
+export type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
   rateLimit: RateLimitInfo;
@@ -45,12 +47,31 @@ export async function generateAdditionalMaterial({
   rateLimit,
 }: GenerateAdditionalMaterialParams) {
   log.info("Generating additional material");
+  const resourceTypes = resourceTypesConfig[input.documentType];
+  const lessonPartsToUse =
+    input.source === "aila"
+      ? resourceTypes.lessonParts
+      : resourceTypes.owaLessonParts;
+
+  const lesson = pick(input.context.lessonPlan, [
+    "title",
+    "year",
+    "keyStage",
+    "subject",
+    "topic",
+    ...lessonPartsToUse,
+  ]);
+
+  log.info(
+    "Lesson parts  used in generation",
+    JSON.stringify(lessonPartsToUse),
+  );
 
   const result = await generateAdditionalMaterialObject({
     provider: "openai",
     parsedInput: {
       documentType: input.documentType,
-      context: input.context,
+      context: { ...input.context, lessonPlan: lesson },
     },
   });
 
@@ -93,6 +114,7 @@ export async function generateAdditionalMaterial({
         adaptsOutputId: adaptsOutputId ?? null,
         output: result,
         outputModeration: moderation,
+        derivedFromId: input.lessonId,
       },
     });
   } else {

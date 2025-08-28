@@ -1,5 +1,6 @@
 import { create } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import type { TrpcUtils } from "@/utils/trpc";
 
@@ -7,6 +8,7 @@ import { logStoreUpdates } from "../zustandHelpers";
 import { handleAnalytics } from "./actionFunctions/handleAnalytics";
 import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
 import { handleDownload } from "./actionFunctions/handleDownload";
+import { handleFetchOwaLesson } from "./actionFunctions/handleFetchOwaLesson";
 import {
   handleResetFormState,
   handleSetActiveDropdown,
@@ -31,10 +33,12 @@ import type { ResourcesState } from "./types";
 export * from "./types";
 
 const DEFAULT_STATE = {
+  id: null,
   stepNumber: 0,
   isLoadingLessonPlan: false,
   isResourcesLoading: false,
   isResourceRefining: false,
+  source: "aila" as const,
   isDownloading: false,
   error: null,
   pageData: {
@@ -72,22 +76,26 @@ const DEFAULT_STATE = {
 };
 
 export const createResourcesStore = (
+  props: TeachingMaterialsPageProps,
   track: TrackFns,
   trpc: TrpcUtils,
   initState?: Partial<ResourcesState>,
 ) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
-    id: null,
     ...DEFAULT_STATE,
+    source: props.source ?? "aila",
+    stepNumber: props.initialStep ?? 0,
+    isResourcesLoading: props.source === "owa" && props.initialStep === 3,
     ...initState,
-
     actions: {
       // Setters
       setStepNumber: handleSetStepNumber(set, get),
       setPageData: handleSetPageData(set, get),
       setGeneration: handleSetGeneration(set, get),
       setDocType: handleSetDocType(set, get),
+      setId: (id: string | null) => set({ id }),
       setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
+      setSource: (source: "aila" | "owa") => set({ source }),
       setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
       setIsResourceRefining: handleSetIsResourceRefining(set, get),
       setIsResourceDownloading: (isDownloading: boolean) =>
@@ -108,6 +116,9 @@ export const createResourcesStore = (
       refineMaterial: handleRefineMaterial(set, get, trpc),
       downloadMaterial: handleDownload(set, get),
 
+      // OWA data loading
+      fetchOwaData: handleFetchOwaLesson(set, get, trpc),
+
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
@@ -117,8 +128,7 @@ export const createResourcesStore = (
       analytics: handleAnalytics(set, get, track),
 
       // Reset store to default state
-      resetToDefault: () =>
-        set((state) => ({ ...DEFAULT_STATE, id: state.id })),
+      resetToDefault: () => set(() => ({ ...DEFAULT_STATE })),
     },
   }));
 
