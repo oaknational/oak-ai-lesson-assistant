@@ -65,7 +65,7 @@ export type AilaTurnCallbacks = {
     prevDoc: LooseLessonPlan;
     nextDoc: LooseLessonPlan;
     ailaMessage: string;
-  }) => void;
+  }) => Promise<void>;
 };
 
 export type AilaTurnArgs = {

@@ -1,16 +1,11 @@
 import { sectionStepToAgentId } from "./sectionAgent/sectionStepToAgentId";
-import type {
-  AilaExecutionContext,
-  AilaTurnArgs,
-  AilaTurnCallbacks,
-  AilaTurnResult,
-} from "./types";
+import type { AilaExecutionContext, AilaTurnArgs } from "./types";
 
 export async function ailaTurn({
   persistedState,
   runtime,
   callbacks,
-}: AilaTurnArgs): Promise<AilaTurnResult> {
+}: AilaTurnArgs): Promise<void> {
   const context: AilaExecutionContext = {
     persistedState,
     runtime,
@@ -24,113 +19,183 @@ export async function ailaTurn({
     callbacks,
   };
 
-  /**
-   * 1. We call the planner agent which will output the plan for Aila's turn
-   */
+  try {
+    /**
+     * 1. Execute the planning phase
+     */
+    const shouldContinue = await executePlanningPhase(context);
+    if (!shouldContinue) return;
+
+    /**
+     * 2. Execute the planned steps sequentially
+     */
+    const planExecuted = await executePlanSteps(context);
+    if (!planExecuted) return;
+
+    /**
+     * 3. Handle relevant lessons fetching if needed
+     */
+    const lessonsHandled = await handleRelevantLessons(context);
+    if (!lessonsHandled) return;
+
+    /**
+     * 4. Generate and deliver the final response
+     */
+    await generateFinalResponse(context);
+  } catch (error) {
+    const errorContext = {
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    context.currentTurn.errors.push(errorContext);
+    // Handle unexpected errors
+    await terminateWithGenericError(context);
+  }
+}
+
+/**
+ * Execute the planning phase using the planner agent
+ * @returns false if the turn should end, true if it should continue
+ */
+async function executePlanningPhase(
+  context: AilaExecutionContext,
+): Promise<boolean> {
   const plannerResponse = await context.runtime.plannerAgent({
     messages: context.persistedState.messages,
     document: context.persistedState.initialDocument,
     relevantLessons: context.persistedState.relevantLessons,
   });
+
   if (plannerResponse.error) {
-    /**
-     * If the planner agent encounters an error, we pass that to the presentation agent.
-     * 👉 The turn ends here.
-     */
-    return endWithError(plannerResponse.error, context);
+    await terminateWithError(plannerResponse.error, context);
+    return false;
   }
+
   context.currentTurn.plannerOutput = plannerResponse.data;
 
-  /**
-   * 2. If the planner outputs an 'exit' decision, we pass that directly to the presentation agent to write an appropriate response.
-   * 👉 The turn ends here.
-   */
   if (context.currentTurn.plannerOutput.decision === "exit") {
-    return endWithMessage(context);
+    await terminateWithResponse(context);
+    return false;
   }
 
-  callbacks.onPlannerComplete({
+  context.callbacks.onPlannerComplete({
     sectionKeys: context.currentTurn.plannerOutput.plan.map(
-      (item) => item.sectionKey,
+      (step) => step.sectionKey,
     ),
   });
 
-  /**
-   * 5. If the planner outputs a 'plan' decision, we loop through the plan steps, executing them sequentially.
-   * Each step (section, action) is handled by the appropriate agent.
-   */
-  for (const step of context.currentTurn.plannerOutput.plan) {
+  return true;
+}
+
+/**
+ * Execute each step in the plan sequentially
+ * @returns false if the turn should end due to error, true if successful
+ */
+async function executePlanSteps(
+  context: AilaExecutionContext,
+): Promise<boolean> {
+  const plannerDecision = context.currentTurn.plannerOutput;
+  if (!plannerDecision || plannerDecision.decision !== "plan") {
+    return true; // No plan to execute
+  }
+
+  for (const step of plannerDecision.plan) {
     const prevDoc = { ...context.currentTurn.document };
     context.currentTurn.stepsExecuted.push(step);
 
     if (step.action === "delete") {
-      // delete!
       delete context.currentTurn.document[step.sectionKey];
-      callbacks.onSectionComplete(prevDoc, context.currentTurn.document);
+      context.callbacks.onSectionComplete(
+        prevDoc,
+        context.currentTurn.document,
+      );
       continue;
     }
 
-    // generate!
+    // Execute generation step
     const agentId = sectionStepToAgentId(step, {
       config: context.runtime.config,
       document: context.currentTurn.document,
     });
     const agent = context.runtime.sectionAgents[agentId];
     const result = await agent.handler(context);
+
     if (result.error) {
-      return endWithError(result.error, context);
+      await terminateWithError(result.error, context);
+      return false;
     }
+
     context.currentTurn.document = {
       ...context.currentTurn.document,
       [step.sectionKey]: result.data,
     };
-    callbacks.onSectionComplete(prevDoc, context.currentTurn.document);
-  }
-  /**
-   * 1. If the RAG input hash is stale AND no 'based on' lesson is set, we need to re-fetch the relevant lessons.
-   * We then show the relevant lessons to the user to choose a 'based on' lesson.
-   * 👉 The turn ends here.
-   */
-  const { title, subject, keyStage, basedOn } = context.currentTurn.document;
-  if (title && subject && keyStage && !basedOn) {
-    // We should do a hash with fuzzy similarity, but for now just check for changes
-    if (
-      title !== context.currentTurn.document.title ||
-      subject !== context.currentTurn.document.subject ||
-      keyStage !== context.currentTurn.document.keyStage
-    ) {
-      // Fetch and show relevant lessons - MUTATES persistedState
-      context.persistedState.relevantLessons =
-        await context.runtime.fetchRelevantLessons();
-      context.currentTurn.relevantLessonsFetched = true;
 
-      if (context.persistedState.relevantLessons.length > 0) {
-        return endWithMessage(context);
-      }
-    }
+    context.callbacks.onSectionComplete(prevDoc, context.currentTurn.document);
   }
-  /**
-   * 6. After the plan is executed, we call the presentation agent.
-   * 👉 The turn ends here.
-   */
-  return endWithMessage(context);
+
+  return true;
 }
 
 /**
- * Handle errors that occur during the Aila turn.
- * @param error The error that occurred.
- * @param context The current execution context.
- * @returns A promise that resolves with the current state.
- * Should always be returned from the main function to ensure
- * that errors are handled gracefully.
+ * Handle fetching relevant lessons if document metadata has changed
+ * @returns false if the turn should end to show lessons, true if it should continue
  */
-async function endWithError(
+async function handleRelevantLessons(
+  context: AilaExecutionContext,
+): Promise<boolean> {
+  const { title, subject, keyStage, basedOn } = context.currentTurn.document;
+
+  if (!(title && subject && keyStage && !basedOn)) {
+    return true;
+  }
+
+  const hasDocumentMetadataChanged =
+    title !== context.persistedState.initialDocument.title ||
+    subject !== context.persistedState.initialDocument.subject ||
+    keyStage !== context.persistedState.initialDocument.keyStage;
+
+  if (hasDocumentMetadataChanged) {
+    // Fetch relevant lessons and update state
+    context.persistedState.relevantLessons =
+      await context.runtime.fetchRelevantLessons();
+    context.currentTurn.relevantLessonsFetched = true;
+
+    if (context.persistedState.relevantLessons.length > 0) {
+      await terminateWithResponse(context);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Generate the final response using the presentation agent
+ */
+async function generateFinalResponse(
+  context: AilaExecutionContext,
+): Promise<void> {
+  await terminateWithResponse(context);
+}
+
+/**
+ * Handle errors that occur during the turn execution
+ */
+async function terminateWithError(
   error: { message: string },
   context: AilaExecutionContext,
-): Promise<AilaTurnResult> {
+): Promise<void> {
   context.currentTurn.errors.push(error);
+  await terminateWithResponse(context);
+}
 
-  const messageAgentResult = await context.runtime.presentationAgent({
+/**
+ * Generate a response message using the presentation agent
+ */
+async function terminateWithResponse(
+  context: AilaExecutionContext,
+): Promise<void> {
+  const messageResult = await context.runtime.presentationAgent({
     messages: context.persistedState.messages,
     prevDoc: context.persistedState.initialDocument,
     nextDoc: context.currentTurn.document,
@@ -141,64 +206,30 @@ async function endWithError(
     relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
   });
 
-  if (messageAgentResult.error) {
-    return appendGenericErrorToState(context);
+  if (messageResult.error) {
+    await terminateWithGenericError(context);
+    return;
   }
 
-  return appendAssistantMessageToState(
-    context,
-    messageAgentResult.data.message,
-  );
-}
-
-async function endWithMessage(
-  context: AilaExecutionContext,
-): Promise<AilaTurnResult> {
-  const messageAgentResult = await context.runtime.presentationAgent({
-    messages: context.persistedState.messages,
+  await context.callbacks.onTurnComplete({
     prevDoc: context.persistedState.initialDocument,
     nextDoc: context.currentTurn.document,
-    stepsExecuted: context.currentTurn.stepsExecuted,
-    errors: context.currentTurn.errors,
-    plannerOutput: context.currentTurn.plannerOutput,
-    relevantLessons: context.persistedState.relevantLessons,
-    relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
+    ailaMessage: messageResult.data.message,
   });
-
-  if (messageAgentResult.error) {
-    return appendGenericErrorToState(context);
-  }
-
-  return appendAssistantMessageToState(
-    context,
-    messageAgentResult.data.message,
-  );
 }
 
-function appendAssistantMessageToState(
+/**
+ * Handle cases where the presentation agent itself fails
+ */
+async function terminateWithGenericError(
   context: AilaExecutionContext,
-  message: string,
-): AilaTurnResult {
-  context.persistedState.messages.push({
-    role: "assistant",
-    content: message,
-  });
-  context.callbacks.onTurnComplete({
+): Promise<void> {
+  const genericErrorMessage =
+    "We encountered an error while processing your request.";
+
+  await context.callbacks.onTurnComplete({
     prevDoc: context.persistedState.initialDocument,
     nextDoc: context.currentTurn.document,
-    ailaMessage: message,
+    ailaMessage: genericErrorMessage,
   });
-  return {
-    persistedState: context.persistedState,
-    currentTurn: context.currentTurn,
-  };
-}
-
-function appendGenericErrorToState(
-  context: AilaExecutionContext,
-): AilaTurnResult {
-  return appendAssistantMessageToState(
-    context,
-    "We encountered an error while processing your request.",
-  );
 }

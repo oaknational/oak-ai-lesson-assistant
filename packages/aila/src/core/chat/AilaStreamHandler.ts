@@ -262,7 +262,7 @@ export class AilaStreamHandler {
       controller: this._controller!,
     });
 
-    const ailaTurnResult = await ailaTurn({
+    await ailaTurn({
       callbacks: ailaTurnCallbacks,
       persistedState: {
         messages: this._chat.messages,
@@ -280,11 +280,11 @@ export class AilaStreamHandler {
       },
     });
 
-    await this._chat.enqueue({
-      type: "state",
-      reasoning: "final",
-      value: ailaTurnResult.currentTurn.document,
-    } as JsonPatchDocumentOptional);
+    // await this._chat.enqueue({
+    //   type: "state",
+    //   reasoning: "final",
+    //   value: ailaTurnResult.currentTurn.document,
+    // } as JsonPatchDocumentOptional);
   }
 
   private async startLLMStream() {

@@ -1,3 +1,4 @@
+import type { JsonPatchDocumentOptional } from "../../../protocol/jsonPatchProtocol";
 import type { AilaTurnCallbacks } from "../types";
 import { createTextStreamer } from "./helpers/createTextStreamer";
 import { createOnPlannerComplete } from "./onPlannerComplete";
@@ -8,7 +9,10 @@ export function createAilaTurnCallbacks({
   chat,
   controller,
 }: {
-  chat: { appendChunk: (chunk: string) => void };
+  chat: {
+    appendChunk: (chunk: string) => void;
+    enqueue: <T extends JsonPatchDocumentOptional>(event: T) => Promise<void>;
+  };
   controller: ReadableStreamDefaultController;
 }): AilaTurnCallbacks {
   const patchState = { isFirstSection: true };
@@ -20,6 +24,14 @@ export function createAilaTurnCallbacks({
   return {
     onPlannerComplete,
     onSectionComplete,
-    onTurnComplete,
+    onTurnComplete: async (args) => {
+      onTurnComplete(args);
+      // Handle turn completion
+      await chat.enqueue({
+        type: "state",
+        reasoning: "final",
+        value: args.nextDoc,
+      });
+    },
   };
 }
