@@ -3,6 +3,7 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { LooseLessonPlan } from "../../protocol/schema";
 import { LessonPlanSchemaWhilstStreaming } from "../../protocol/schema";
+import { upgradeQuizzes } from "../../protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 
 export async function fetchLessonPlanContentById(
   id: string,
@@ -18,8 +19,14 @@ export async function fetchLessonPlanContentById(
   if (!lessonPlanRecord) {
     return null;
   }
+
+  const upgradedLessonPlan = await upgradeQuizzes({
+    data: lessonPlanRecord.content,
+    persistUpgrade: null,
+  });
+
   const parsedPlan = tryWithErrorReporting(
-    () => LessonPlanSchemaWhilstStreaming.parse(lessonPlanRecord.content),
+    () => LessonPlanSchemaWhilstStreaming.parse(upgradedLessonPlan),
     "Failed to parse lesson plan content",
     undefined,
     undefined,
