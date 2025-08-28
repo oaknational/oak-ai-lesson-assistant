@@ -1,8 +1,4 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
-
-export const priorKnowledgeInstructions = `${identityAndVoice}
-
-# Task
+export const priorKnowledgeInstructions = `# Task
 
 List up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.
 

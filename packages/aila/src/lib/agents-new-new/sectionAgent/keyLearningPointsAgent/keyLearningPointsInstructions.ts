@@ -1,12 +1,7 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
-
-export const keyLearningPointsInstructions = `${identityAndVoice}
-
-# Task
+export const keyLearningPointsInstructions = `# Task
 
 List the most important factual things pupils should learn in the lesson.
 
-- Voice: EXPERT_TEACHER
 - Use succinct, knowledge-rich statements
 - Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.
 - Avoid vague or descriptive phrasing

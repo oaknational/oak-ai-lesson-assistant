@@ -2,6 +2,11 @@ import type { z } from "zod";
 
 import type { GenericPromptAgentPrompt } from "../schema";
 import { plannerOutputSchema } from "../schema";
+import {
+  getVoiceDefinitions,
+  getVoicePrompt,
+  voices,
+} from "../sectionAgent/shared/voices";
 import { currentDocumentPromptPart } from "../sharedPromptParts/currentDocument.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
 import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
@@ -26,6 +31,14 @@ export const createPlannerAgent = ({
       {
         role: "developer",
         content: plannerInstructions,
+      },
+      {
+        role: "developer" as const,
+        content: getVoiceDefinitions(["AGENT_TO_AGENT"]),
+      },
+      {
+        role: "developer" as const,
+        content: getVoicePrompt("AGENT_TO_AGENT"),
       },
       {
         role: "user" as const,

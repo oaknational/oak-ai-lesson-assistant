@@ -7,4 +7,5 @@ export const priorKnowledgeAgent = createSectionAgent({
   responseSchema: PriorKnowledgeSchema,
   instructions: priorKnowledgeInstructions,
   contentToString: stringListToText(),
+  defaultVoice: "EXPERT_TEACHER",
 });

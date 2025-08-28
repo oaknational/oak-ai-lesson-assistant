@@ -1,9 +1,6 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesignInstructions";
 
-export const cyclesInstructions = `${identityAndVoice}
-
-# Task
+export const cyclesInstructions = `# Task
 
 Generate a LEARNING CYCLE to structure the main body of the lesson.  These should take approximately 10 minutes to allow time for the teacher to also deliver the quizzes in a 50 minute lesson.
 For key stage 1 lessons, each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.

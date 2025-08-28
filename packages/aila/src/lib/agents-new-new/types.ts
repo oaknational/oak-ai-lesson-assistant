@@ -24,6 +24,7 @@ import type {
   SectionKey,
   errorSchema,
 } from "./schema";
+import type { VoiceId } from "./sectionAgent/shared/voices";
 
 export type ChatMessage = {
   id: string;
@@ -98,6 +99,8 @@ export type SectionPromptAgentProps<ResponseType> = {
   extraInputFromCtx?: (
     ctx: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
+  defaultVoice?: VoiceId;
+  voices?: VoiceId[];
 };
 
 export type SectionAgent<ResponseType> = {

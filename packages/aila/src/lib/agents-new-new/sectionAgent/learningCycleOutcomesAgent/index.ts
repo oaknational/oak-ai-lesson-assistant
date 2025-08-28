@@ -5,4 +5,5 @@ import { LearningCyclesSchema } from "./learningCycleOutcomesSchema";
 export const learningCycleOutcomesAgent = createSectionAgent({
   responseSchema: LearningCyclesSchema,
   instructions: learningCycleTitlesInstructions,
+  defaultVoice: "EXPERT_TEACHER",
 });

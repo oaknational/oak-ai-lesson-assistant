@@ -1,9 +1,6 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesignInstructions";
 
-export const exitQuizInstructions = `${identityAndVoice}
-
-# Task
+export const exitQuizInstructions = `# Task
 
 Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
 

@@ -1,8 +1,4 @@
-import { identityAndVoice } from "../sectionAgent/shared/identityAndVoice";
-
-export const plannerInstructions = `${identityAndVoice}
-
-# Task
+export const plannerInstructions = `# Task
 
 ### 🧠 You are a *planning agent* that supports users in creating or editing structured lesson plans.
 

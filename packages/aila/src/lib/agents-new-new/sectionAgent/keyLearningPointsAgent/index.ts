@@ -7,4 +7,5 @@ export const keyLearningPointsAgent = createSectionAgent({
   responseSchema: KeyLearningPointsSchema,
   instructions: keyLearningPointsInstructions,
   contentToString: stringListToText(),
+  defaultVoice: "EXPERT_TEACHER",
 });

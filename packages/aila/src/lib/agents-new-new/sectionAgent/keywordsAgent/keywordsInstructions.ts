@@ -1,13 +1,9 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
 import { tier2And3VocabularyDefinitions } from "../shared/tier2And3VocabularyDefinitions";
 
-export const keywordsInstructions = `${identityAndVoice}
-
-# Task
+export const keywordsInstructions = `# Task
 
 List key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. 
 
-- Voice: TEACHER_TO_PUPIL_WRITTEN
 - Provide a brief, age-appropriate definition for each
 - Do not include the keyword in its own definition
 - Max 200 characters per definition

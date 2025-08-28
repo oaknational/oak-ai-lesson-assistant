@@ -9,4 +9,5 @@ export const misconceptionsAgent = createSectionAgent({
   contentToString: stringListToText(
     (m) => `${m.misconception}: ${m.description}`,
   ),
+  defaultVoice: "EXPERT_TEACHER",
 });

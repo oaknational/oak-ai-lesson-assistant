@@ -1,6 +1,10 @@
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgentPrompt, SectionKey } from "../schema";
+import {
+  getVoiceDefinitions,
+  getVoicePrompt,
+} from "../sectionAgent/shared/voices";
 import { changesMadePromptPart } from "../sharedPromptParts/changesMade.part";
 import { errorsPromptPart } from "../sharedPromptParts/errors.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
@@ -36,6 +40,14 @@ export function createPresentationAgent({
       {
         role: "developer" as const,
         content: presentationAgentInstructions,
+      },
+      {
+        role: "developer" as const,
+        content: getVoiceDefinitions(["AILA_TO_TEACHER"]),
+      },
+      {
+        role: "developer" as const,
+        content: getVoicePrompt("AILA_TO_TEACHER"),
       },
       errors.length > 0 && {
         role: "developer" as const,

@@ -1,9 +1,6 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
 import { tier2And3VocabularyDefinitions } from "../shared/tier2And3VocabularyDefinitions";
 
-export const additionalMaterialsInstructions = `${identityAndVoice}
-
-# Task
+export const additionalMaterialsInstructions = `# Task
 
 Generate the 'additional materials' section. This section is designed to enable teachers to produce any additional teaching materials they need to support the effective delivery of their lessons.
 

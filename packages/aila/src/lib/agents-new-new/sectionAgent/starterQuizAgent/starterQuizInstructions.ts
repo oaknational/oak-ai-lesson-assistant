@@ -1,9 +1,6 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesignInstructions";
 
-export const starterQuizInstructions = `${identityAndVoice}
-
-# Task
+export const starterQuizInstructions = `# Task
 
 Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
 

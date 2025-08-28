@@ -6,4 +6,5 @@ import { additionalMaterialsInstructions } from "./additionalMaterialsInstructio
 export const additionalMaterialsAgent = createSectionAgent({
   responseSchema: z.string(),
   instructions: additionalMaterialsInstructions,
+  defaultVoice: "EXPERT_TEACHER",
 });

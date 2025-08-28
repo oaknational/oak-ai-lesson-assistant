@@ -1,8 +1,4 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
-
-export const learningCycleTitlesInstructions = `${identityAndVoice}
-
-# Task
+export const learningCycleTitlesInstructions = `# Task
 
 LEARNING CYCLE OUTCOMES break the LEARNING OUTCOME into 1–3 manageable chunks, each aligned to a LEARNING CYCLE. These are statements that describe what pupils should know or be able to do by the end of the lesson.
 

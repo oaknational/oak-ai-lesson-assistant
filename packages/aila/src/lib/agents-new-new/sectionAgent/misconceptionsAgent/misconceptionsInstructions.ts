@@ -1,8 +1,4 @@
-import { identityAndVoice } from "../shared/identityAndVoice";
-
-export const misconceptionsInstructions = `${identityAndVoice}
-
-# Task
+export const misconceptionsInstructions = `# Task
 
 Identify 1–3 common misconceptions pupils may have about the topic.
 

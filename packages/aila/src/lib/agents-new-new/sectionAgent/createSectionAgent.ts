@@ -7,6 +7,7 @@ import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import type { AilaExecutionContext } from "../types";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
 import { sectionToGenericAgent } from "./sectionToGenericPromptAgent";
+import type { VoiceId } from "./shared/voices";
 
 /**
  * This is a factory function for section agents.
@@ -17,6 +18,8 @@ export function createSectionAgent<ResponseType>({
   instructions,
   contentToString = defaultContentToString,
   extraInputFromCtx,
+  defaultVoice,
+  voices,
 }: {
   responseSchema: z.ZodType<ResponseType>;
   instructions: string;
@@ -24,6 +27,8 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx?: (
     state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
+  defaultVoice?: VoiceId;
+  voices?: VoiceId[];
 }) {
   return ({
     id,
@@ -57,6 +62,8 @@ export function createSectionAgent<ResponseType>({
         currentValue,
         ctx,
         extraInputFromCtx,
+        defaultVoice,
+        voices,
       });
 
       return executeGenericPromptAgent({
@@ -73,7 +80,7 @@ function defaultContentToString(content: unknown): string {
     try {
       return JSON.stringify(content);
     } catch {
-      return "[Unstringifiable Object]";
+      return "[Non-serializable Object]";
     }
   }
   return String(content);
