@@ -56,6 +56,8 @@ describe("addFooterAttribution", () => {
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 
@@ -114,6 +116,8 @@ describe("addFooterAttribution", () => {
     const imageMetadata: ImageMetadata[] = questions.map((_, i) => ({
       imageUrl: `https://example.com/image${i + 1}.jpg`,
       attribution: "Pixabay",
+      width: 800,
+      height: 600,
     }));
 
     await addFooterAttribution(
@@ -202,6 +206,8 @@ describe("addFooterAttribution", () => {
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 

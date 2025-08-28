@@ -26,10 +26,7 @@ export interface FormattedAttribution {
   segments: AttributionSegment[];
 }
 
-// Primary interface - represents all image metadata
-export interface ImageMetadata {
+export interface ImageAttributionMetadata {
   imageUrl: string;
-  attribution?: string;
-  width?: number;
-  height?: number;
+  attribution: string | null;
 }

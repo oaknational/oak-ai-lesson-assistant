@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionMatch } from "@oakai/aila/src/protocol/schema";
+import type {
+  ImageMetadata,
+  QuizV2QuestionMatch,
+} from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 import { shuffleMatchItems } from "@oakai/exports/src/quiz-utils/shuffle";
 
@@ -14,11 +17,13 @@ import { useTextWithBlanks } from "./textWithBlanks";
 type MatchQuestionProps = {
   question: QuizV2QuestionMatch;
   questionNumber: number;
+  imageMetadata: ImageMetadata[];
 };
 
 export const MatchQuestion = ({
   question,
   questionNumber,
+  imageMetadata,
 }: MatchQuestionProps) => {
   // Extract right side items and shuffle them
   const shuffledRight = useMemo(() => {
@@ -48,6 +53,7 @@ export const MatchQuestion = ({
           markdown={processedText}
           className="[&>p]:mb-0"
           components={components}
+          imageDimensions={imageMetadata}
         />
       </OakFlex>
 
@@ -77,6 +83,7 @@ export const MatchQuestion = ({
                 <MemoizedReactMarkdownWithStyles
                   markdown={`${letter}) ${pair.left}`}
                   className="[&>p]:mb-0 [&>p]:inline"
+                  imageDimensions={imageMetadata}
                 />
               </OakFlex>
             );
@@ -99,6 +106,7 @@ export const MatchQuestion = ({
                 <MemoizedReactMarkdownWithStyles
                   markdown={item.text}
                   className="[&>p]:mb-0 [&>p]:inline"
+                  imageDimensions={imageMetadata}
                 />
               </OakBox>
             </OakFlex>

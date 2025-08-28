@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionMultipleChoice } from "@oakai/aila/src/protocol/schema";
+import type {
+  ImageMetadata,
+  QuizV2QuestionMultipleChoice,
+} from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 import { shuffleMultipleChoiceAnswers } from "@oakai/exports/src/quiz-utils/shuffle";
 
@@ -14,11 +17,13 @@ import { useTextWithBlanks } from "./textWithBlanks";
 type MultipleChoiceQuestionProps = {
   question: QuizV2QuestionMultipleChoice;
   questionNumber: number;
+  imageMetadata: ImageMetadata[];
 };
 
 export const MultipleChoiceQuestion = ({
   question,
   questionNumber,
+  imageMetadata,
 }: MultipleChoiceQuestionProps) => {
   const answers = useMemo(
     () => shuffleMultipleChoiceAnswers(question.answers, question.distractors),
@@ -46,6 +51,7 @@ export const MultipleChoiceQuestion = ({
           markdown={processedText}
           className="[&>p]:mb-0"
           components={components}
+          imageDimensions={imageMetadata}
         />
       </OakFlex>
 
@@ -69,6 +75,7 @@ export const MultipleChoiceQuestion = ({
                 <MemoizedReactMarkdownWithStyles
                   markdown={`${letter}) ${answer.text}`}
                   className="[&>p]:mb-0 [&>p]:inline"
+                  imageDimensions={imageMetadata}
                 />
               </OakBox>
             </OakFlex>

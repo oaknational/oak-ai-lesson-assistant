@@ -32,5 +32,6 @@ export const Default: Story = {
       hint: null,
     },
     questionNumber: 4,
+    imageMetadata: [],
   },
 };

@@ -31,6 +31,12 @@ const insertLatexImage = (
 ): docs_v1.Schema$Request => {
   const dimensions = getLatexDimensions(image.url);
 
+  log.info(`Inserting LaTeX image`, {
+    originalUrl: image.url,
+    dimensions: { width: dimensions.width, height: dimensions.height },
+    unit: "PT",
+  });
+
   // Request to insert the inline image at the same position
   return {
     insertInlineImage: {
@@ -62,6 +68,13 @@ const insertStemImage = (
     metadata.width,
     metadata.height,
   );
+
+  log.info(`Inserting image stem`, {
+    originalUrl: image.url,
+    originalDimensions: { width: metadata.width, height: metadata.height },
+    scaledDimensions: { width: dimensions.width, height: dimensions.height },
+    unit: "PT",
+  });
 
   // Request to insert the inline image at the same position
   return [
@@ -156,13 +169,8 @@ export function imageReplacements(
     } else {
       // Look up dimensions from metadata
       const metadata = imageMetadata?.find((m) => m.imageUrl === image.url);
-
-      if (!metadata?.width || !metadata?.height) {
-        throw new Error(
-          `Missing dimensions for non-LaTeX image: ${image.url}. ` +
-            `Available metadata: ${JSON.stringify(metadata)}. ` +
-            `Width: ${metadata?.width}, Height: ${metadata?.height}`,
-        );
+      if (!metadata) {
+        throw new Error(`Image metadata not found for ${image.url}`);
       }
 
       requests.push(

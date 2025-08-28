@@ -51,6 +51,7 @@ const CheckForUnderstandingQuiz = ({
               key={index}
               question={question}
               questionNumber={index + 1}
+              imageMetadata={[]}
             />
           );
         }

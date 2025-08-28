@@ -2,7 +2,7 @@ import { extractImagesFromQuestion } from "./extractImages";
 import type {
   AttributionSegment,
   FormattedAttribution,
-  ImageMetadata,
+  ImageAttributionMetadata,
   ImageWithAttribution,
   QuizV2Question,
 } from "./types";
@@ -12,7 +12,7 @@ import type {
  */
 export function mapQuestionImages(
   questions: QuizV2Question[],
-  imageMetadata: ImageMetadata[],
+  imageMetadata: ImageAttributionMetadata[],
 ): ImageWithAttribution[] {
   const result: ImageWithAttribution[] = [];
 
@@ -118,7 +118,7 @@ export function formatAttributionText(
  */
 export function formatQuizAttributions(
   questions: QuizV2Question[],
-  imageMetadata: ImageMetadata[],
+  imageMetadata: ImageAttributionMetadata[],
 ): FormattedAttribution {
   const imagesWithAttributions = mapQuestionImages(questions, imageMetadata);
   return formatAttributionText(imagesWithAttributions);

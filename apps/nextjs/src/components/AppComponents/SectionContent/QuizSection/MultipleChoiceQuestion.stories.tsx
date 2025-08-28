@@ -27,6 +27,7 @@ export const Default: Story = {
       hint: null,
     },
     questionNumber: 1,
+    imageMetadata: [],
   },
 };
 
@@ -47,6 +48,7 @@ export const LongAnswers: Story = {
       hint: null,
     },
     questionNumber: 4,
+    imageMetadata: [],
   },
 };
 
@@ -60,6 +62,7 @@ export const MultipleCorrectAnswers: Story = {
       hint: null,
     },
     questionNumber: 3,
+    imageMetadata: [],
   },
 };
 
@@ -73,5 +76,6 @@ export const WithUnfilledBlanks: Story = {
       hint: null,
     },
     questionNumber: 4,
+    imageMetadata: [],
   },
 };

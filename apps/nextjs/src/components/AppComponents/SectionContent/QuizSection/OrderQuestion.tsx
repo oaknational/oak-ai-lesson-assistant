@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionOrder } from "@oakai/aila/src/protocol/schema";
+import type {
+  ImageMetadata,
+  QuizV2QuestionOrder,
+} from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 import { shuffleOrderItems } from "@oakai/exports/src/quiz-utils/shuffle";
 
@@ -14,11 +17,13 @@ import { useTextWithBlanks } from "./textWithBlanks";
 type OrderQuestionProps = {
   question: QuizV2QuestionOrder;
   questionNumber: number;
+  imageMetadata: ImageMetadata[];
 };
 
 export const OrderQuestion = ({
   question,
   questionNumber,
+  imageMetadata,
 }: OrderQuestionProps) => {
   const shuffledItems = useMemo(
     () => shuffleOrderItems(question.items),
@@ -47,6 +52,7 @@ export const OrderQuestion = ({
           markdown={processedText}
           className="[&>p]:mb-0"
           components={components}
+          imageDimensions={imageMetadata}
         />
       </OakFlex>
 
@@ -64,6 +70,7 @@ export const OrderQuestion = ({
               <MemoizedReactMarkdownWithStyles
                 markdown={item.text}
                 className="[&>p]:mb-0 [&>p]:inline"
+                imageDimensions={imageMetadata}
               />
             </OakBox>
           </OakFlex>

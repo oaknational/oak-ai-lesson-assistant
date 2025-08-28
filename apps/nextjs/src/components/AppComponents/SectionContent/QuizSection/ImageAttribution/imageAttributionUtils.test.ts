@@ -45,19 +45,27 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/nature-landscape.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://ciec.org.uk/images/classroom-activity.jpg",
         attribution: "CIEC",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl:
           "https://cdn.pixabay.com/photo/2023/02/science-experiment.jpg",
         attribution: "Pixabay", // Duplicate attribution
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://shutterstock.com/image-id-123456/lab-equipment.jpg",
         attribution: "Shutterstock / Jane Doe",
+        width: 400,
+        height: 300,
       },
     ];
 
@@ -153,34 +161,50 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/classroom.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://ciec.org.uk/images/science-lesson.jpg",
         attribution: "CIEC",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/02/students.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://oaknationalacademy.com/images/lesson-materials.png",
         attribution: "Oak National Academy",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/03/experiment.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://shutterstock.com/image-12345/chemistry-lab.png",
         attribution: "Shutterstock / John Smith",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://uyseg.org/resources/education-photo.jpg",
         attribution: "UYSEG",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://images.pexels.com/photos/2023/school-activity.png",
         attribution: "Pexels",
+        width: 400,
+        height: 300,
       },
     ];
 
@@ -350,18 +374,26 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/classroom.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://ciec.org.uk/images/science-lesson.jpg",
         attribution: "CIEC",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/02/students.jpg",
         attribution: "Pixabay",
+        width: 400,
+        height: 300,
       },
       {
         imageUrl: "https://oaknationalacademy.com/images/lesson-materials.png",
         attribution: "Oak National Academy",
+        width: 400,
+        height: 300,
       },
     ];
 

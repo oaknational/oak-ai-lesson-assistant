@@ -6,13 +6,13 @@ import {
   mapQuestionImages,
 } from "./formatAttribution";
 import type {
-  ImageMetadata,
+  ImageAttributionMetadata,
   ImageWithAttribution,
   QuizV2Question,
 } from "./types";
 
 describe("mapQuestionImages", () => {
-  const mockMetadata: ImageMetadata[] = [
+  const mockMetadata: ImageAttributionMetadata[] = [
     {
       imageUrl: "https://example.com/image1.jpg",
       attribution: "Pixabay",
@@ -369,7 +369,7 @@ describe("formatAttributionText", () => {
 });
 
 describe("formatQuizAttributions", () => {
-  const mockMetadata: ImageMetadata[] = [
+  const mockMetadata: ImageAttributionMetadata[] = [
     {
       imageUrl: "https://example.com/pixabay.jpg",
       attribution: "Pixabay",

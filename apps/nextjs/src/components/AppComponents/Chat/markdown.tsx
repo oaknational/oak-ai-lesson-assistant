@@ -3,6 +3,8 @@ import React, { memo, useMemo } from "react";
 import type { Components, Options } from "react-markdown";
 import ReactMarkdown from "react-markdown";
 
+import { STEM_IMAGE_SCALE } from "@oakai/exports/src/images/constants";
+
 import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
@@ -17,15 +19,25 @@ const MemoizedReactMarkdown: FC<Options> = memo(
     prevProps.className === nextProps.className,
 );
 
+export interface ImageDimensions {
+  imageUrl: string;
+  width: number;
+  height: number;
+}
+
 export type ReactMarkdownWithStylesProps = Readonly<{
   markdown: string;
   lessonPlanSectionDescription?: string;
   className?: string;
   components?: Partial<Components>;
+  imageDimensions?: ImageDimensions[];
 }>;
 
 // This could do with further refactoring to make it more readable
-const createComponents = (className?: string): Partial<Components> => ({
+const createComponents = (
+  className?: string,
+  imageDimensions?: ImageDimensions[],
+): Partial<Components> => ({
   li: ({ children }) => (
     <li className={cn("marker:text-black", className)}>{children}</li>
   ),
@@ -86,19 +98,43 @@ const createComponents = (className?: string): Partial<Components> => ({
       </a>
     );
   },
+  img: ({ src, alt, title }) => {
+    const dimensions = imageDimensions?.find((d) => d.imageUrl === src);
+
+    if (dimensions) {
+      // Oak curriculum images are high-DPI (2x resolution) for print quality
+      // We scale them down by 50% for appropriate web display
+      const scaledWidth = Math.round(dimensions.width * STEM_IMAGE_SCALE);
+      const scaledHeight = Math.round(dimensions.height * STEM_IMAGE_SCALE);
+
+      return (
+        <img
+          src={src}
+          alt={alt}
+          title={title}
+          width={scaledWidth}
+          height={scaledHeight}
+          className="max-w-full"
+        />
+      );
+    }
+
+    return <img src={src} alt={alt} title={title} />;
+  },
 });
 
 export const MemoizedReactMarkdownWithStyles = ({
   markdown,
   className,
   components: customComponents,
+  imageDimensions,
 }: ReactMarkdownWithStylesProps) => {
   const components: Partial<Components> = useMemo(() => {
-    const defaultComponents = createComponents(className);
+    const defaultComponents = createComponents(className, imageDimensions);
     return customComponents
       ? { ...defaultComponents, ...customComponents }
       : defaultComponents;
-  }, [className, customComponents]);
+  }, [className, customComponents, imageDimensions]);
   return (
     <MemoizedReactMarkdown
       className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

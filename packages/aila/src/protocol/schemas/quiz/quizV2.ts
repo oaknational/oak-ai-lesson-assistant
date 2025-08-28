@@ -15,12 +15,11 @@ export const QUIZ_V2_DESCRIPTIONS = {
 
 // Stores image metadata including attribution and dimensions.
 // Extended from attribution-only to include width/height for Google Docs API.
-// All fields optional for backward compatibility.
 export const ImageMetadataSchema = z.object({
   imageUrl: z.string().describe("The URL of the image"),
-  attribution: z.string().optional().describe("Attribution text for the image"),
-  width: z.number().optional().describe("Width of the image in pixels"),
-  height: z.number().optional().describe("Height of the image in pixels"),
+  attribution: z.string().nullable().describe("Attribution text for the image"),
+  width: z.number().describe("Width of the image in pixels"),
+  height: z.number().describe("Height of the image in pixels"),
 });
 
 // Base question schema with common fields

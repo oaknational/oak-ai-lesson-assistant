@@ -87,6 +87,51 @@ describe("convertHasuraQuizToV2", () => {
     ]);
   });
 
+  it("should extract image dimensions", () => {
+    const quizWithImageDimensions: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [
+          {
+            image_object: {
+              secure_url:
+                "https://oaknationalacademy-res.cloudinary.com/image/upload/v1713196725/xkyiwetaana4uw210usr.png",
+              width: 226,
+              height: 181,
+              metadata: {},
+            },
+            type: "image",
+          },
+        ],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [{ text: "A", type: "text" }],
+              answer_is_correct: true,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV2(quizWithImageDimensions);
+    expect(result.questions[0]?.question).toContain(
+      "![](https://oaknationalacademy-res.cloudinary.com/image/upload/v1713196725/xkyiwetaana4uw210usr.png)",
+    );
+    expect(result.imageAttributions).toEqual([
+      {
+        imageUrl:
+          "https://oaknationalacademy-res.cloudinary.com/image/upload/v1713196725/xkyiwetaana4uw210usr.png",
+        width: 226,
+        height: 181,
+      },
+    ]);
+  });
+
   it("should convert images to markdown syntax", () => {
     const quizWithImages: HasuraQuiz = [
       {

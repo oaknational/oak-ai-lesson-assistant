@@ -26,6 +26,8 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
     return "Invalid quiz";
   }
 
+  const imageMetadata = quiz.imageAttributions;
+
   return (
     <>
       {quiz.questions.map((question, index) => {
@@ -38,6 +40,7 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                imageMetadata={imageMetadata}
               />
             );
           case "short-answer":
@@ -46,6 +49,7 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                imageMetadata={imageMetadata}
               />
             );
           case "order":
@@ -54,6 +58,7 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                imageMetadata={imageMetadata}
               />
             );
           case "match":
@@ -62,6 +67,7 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                imageMetadata={imageMetadata}
               />
             );
           default:

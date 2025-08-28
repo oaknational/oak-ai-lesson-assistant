@@ -58,17 +58,17 @@ export const quizV2QuestionSchema = z.discriminatedUnion("questionType", [
 // Now stores all image metadata (attribution, dimensions, etc.)
 const imageMetadataSchema = z.object({
   imageUrl: z.string(),
-  attribution: z.string().optional(),
-  width: z.number().optional(),
-  height: z.number().optional(),
+  attribution: z.string().nullable(),
+  width: z.number(),
+  height: z.number(),
 });
 
 export const quizV2Schema = z.object({
   version: z.literal("v2"),
   questions: z.array(quizV2QuestionSchema).min(1),
-  /** 
+  /**
    * Image metadata including attribution and dimensions.
-   * Named "imageAttributions" for backward compatibility - originally stored only 
+   * Named "imageAttributions" for backward compatibility - originally stored only
    * attribution data, now extended to include width/height for Google Docs API.
    */
   imageAttributions: z.array(imageMetadataSchema),

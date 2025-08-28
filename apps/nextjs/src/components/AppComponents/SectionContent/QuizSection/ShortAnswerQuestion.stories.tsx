@@ -26,6 +26,7 @@ export const InlineAnswer: Story = {
       hint: null,
     },
     questionNumber: 1,
+    imageMetadata: [],
   },
 };
 
@@ -38,6 +39,7 @@ export const InlineAnswerWithSpaces: Story = {
       hint: null,
     },
     questionNumber: 2,
+    imageMetadata: [],
   },
 };
 
@@ -50,6 +52,7 @@ export const InlineAnswerWithDegrees: Story = {
       hint: null,
     },
     questionNumber: 2,
+    imageMetadata: [],
   },
 };
 
@@ -63,5 +66,6 @@ export const SeparateAnswer: Story = {
       hint: null,
     },
     questionNumber: 4,
+    imageMetadata: [],
   },
 };

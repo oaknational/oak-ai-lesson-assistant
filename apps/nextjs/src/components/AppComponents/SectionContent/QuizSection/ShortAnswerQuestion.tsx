@@ -1,4 +1,7 @@
-import type { QuizV2QuestionShortAnswer } from "@oakai/aila/src/protocol/schema";
+import type {
+  ImageMetadata,
+  QuizV2QuestionShortAnswer,
+} from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
@@ -10,11 +13,13 @@ import { hasBlankSpaces, useTextWithBlanks } from "./textWithBlanks";
 type ShortAnswerQuestionProps = {
   question: QuizV2QuestionShortAnswer;
   questionNumber: number;
+  imageMetadata: ImageMetadata[];
 };
 
 export const ShortAnswerQuestion = ({
   question,
   questionNumber,
+  imageMetadata,
 }: ShortAnswerQuestionProps) => {
   const hasInlineAnswer = hasBlankSpaces(question.question);
   const answer = question.answers?.[0] ?? "";
@@ -41,6 +46,7 @@ export const ShortAnswerQuestion = ({
           markdown={processedText}
           className="[&>p]:mb-0"
           components={components}
+          imageDimensions={imageMetadata}
         />
       </OakFlex>
 

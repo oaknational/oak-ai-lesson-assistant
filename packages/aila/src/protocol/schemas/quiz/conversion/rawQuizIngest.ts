@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
-import type { QuizV2, QuizV2Question } from "../quizV2";
+import type { ImageMetadata, QuizV2, QuizV2Question } from "../quizV2";
 import type {
   HasuraQuiz,
   StemImageObject,
@@ -26,27 +26,31 @@ function isImageItem(item: StemObject): item is StemImageObject {
   return item.type === "image";
 }
 
+function getImageAttribution(item: StemImageObject): string | null {
+  if (
+    item.image_object.metadata &&
+    typeof item.image_object.metadata === "object" &&
+    !Array.isArray(item.image_object.metadata)
+  ) {
+    const attribution = item.image_object.metadata.attribution;
+    if (attribution) {
+      return attribution;
+    }
+  }
+  return null;
+}
+
 /**
  * Extract markdown content from Oak's content items array, inlining images
  * Returns both the markdown content and image metadata
  */
-function extractMarkdownFromContent(
+function buildMarkdownFromContent(
   contentItems: Array<StemObject | undefined>,
 ): {
   markdown: string;
-  metadata: Array<{
-    imageUrl: string;
-    attribution?: string;
-    width?: number;
-    height?: number;
-  }>;
+  metadata: ImageMetadata[];
 } {
-  const metadata: Array<{
-    imageUrl: string;
-    attribution?: string;
-    width?: number;
-    height?: number;
-  }> = [];
+  const metadata: ImageMetadata[] = [];
 
   const markdownParts = contentItems
     .filter((item): item is StemObject => item !== undefined)
@@ -57,42 +61,21 @@ function extractMarkdownFromContent(
         const imageUrl = item.image_object.secure_url;
         const width = item.image_object.width;
         const height = item.image_object.height;
+        invariant(width && height, `Image ${imageUrl} has no dimensions`);
 
         // Extract alt text from context if available
         const altText = item.image_object.context?.custom?.alt ?? "";
 
         // Build metadata object for this image
-        const imageMetadata: {
-          imageUrl: string;
-          attribution?: string;
-          width?: number;
-          height?: number;
-        } = { imageUrl };
+        const imageMetadata: ImageMetadata = {
+          imageUrl,
+          attribution: getImageAttribution(item),
+          width,
+          height,
+        };
 
-        // Extract attribution if available
-        if (
-          item.image_object.metadata &&
-          typeof item.image_object.metadata === "object" &&
-          !Array.isArray(item.image_object.metadata)
-        ) {
-          const attribution = item.image_object.metadata.attribution;
-          if (attribution) {
-            imageMetadata.attribution = attribution;
-          }
-        }
-
-        // Add dimensions if available
-        if (width) imageMetadata.width = width;
-        if (height) imageMetadata.height = height;
-
-        // Push metadata if we have any useful information (attribution OR dimensions)
-        if (
-          imageMetadata.attribution ||
-          imageMetadata.width ||
-          imageMetadata.height
-        ) {
-          metadata.push(imageMetadata);
-        }
+        // Push to the list of metadata
+        metadata.push(imageMetadata);
 
         // Return markdown image syntax with alt text
         return `![${altText}](${imageUrl})`;
@@ -122,12 +105,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
   }
 
   // Collect all image metadata from all questions
-  const allImageMetadata: Array<{
-    imageUrl: string;
-    attribution?: string;
-    width?: number;
-    height?: number;
-  }> = [];
+  const allImageMetadata: ImageMetadata[] = [];
 
   const questions = hasuraQuiz
     .filter(
@@ -141,7 +119,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         throw new Error("Explanatory text questions should be filtered out");
       }
       // Extract question stem as markdown with inlined images
-      const { markdown: questionStem, metadata } = extractMarkdownFromContent(
+      const { markdown: questionStem, metadata } = buildMarkdownFromContent(
         hasuraQuestion.questionStem,
       );
 
@@ -159,7 +137,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
                 answer.answer,
                 "Multiple choice answer missing 'answer' field",
               );
-              return extractMarkdownFromContent(answer.answer);
+              return buildMarkdownFromContent(answer.answer);
             });
           const correctAnswers = correctAnswerResults.map(
             (result) => result.markdown,
@@ -172,7 +150,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
                 answer.answer,
                 "Multiple choice answer missing 'answer' field",
               );
-              return extractMarkdownFromContent(answer.answer);
+              return buildMarkdownFromContent(answer.answer);
             });
           const distractors = distractorResults.map(
             (result) => result.markdown,
@@ -198,7 +176,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
           const saAnswers = hasuraQuestion.answers?.["short-answer"] ?? [];
           const answerResults = saAnswers.map((answer) => {
             invariant(answer.answer, "Short answer missing 'answer' field");
-            return extractMarkdownFromContent(answer.answer);
+            return buildMarkdownFromContent(answer.answer);
           });
           const answers = answerResults.map((result) => result.markdown);
 
@@ -218,10 +196,10 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         case "match": {
           const matchAnswers = hasuraQuestion.answers?.match ?? [];
           const pairs = matchAnswers.map((matchItem) => {
-            const leftResult = extractMarkdownFromContent(
+            const leftResult = buildMarkdownFromContent(
               matchItem.match_option ?? [],
             );
-            const rightResult = extractMarkdownFromContent(
+            const rightResult = buildMarkdownFromContent(
               matchItem.correct_choice || [],
             );
 
@@ -249,7 +227,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         case "order": {
           const orderAnswers = hasuraQuestion.answers?.order ?? [];
           const itemResults = orderAnswers.map((orderItem) =>
-            extractMarkdownFromContent(orderItem.answer || []),
+            buildMarkdownFromContent(orderItem.answer || []),
           );
           const items = itemResults.map((result) => result.markdown);
 

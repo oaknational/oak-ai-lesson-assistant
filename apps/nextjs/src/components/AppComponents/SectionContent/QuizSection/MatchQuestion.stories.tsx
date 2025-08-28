@@ -31,6 +31,7 @@ export const CapitalCities: Story = {
       hint: null,
     },
     questionNumber: 6,
+    imageMetadata: [],
   },
 };
 
@@ -64,5 +65,6 @@ export const LiteraryTerms: Story = {
       hint: null,
     },
     questionNumber: 3,
+    imageMetadata: [],
   },
 };
