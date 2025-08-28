@@ -1,1 +1,0 @@
-export { QuizQuestionsMCAnswers } from "./QuizQuestionsMCAnswers";

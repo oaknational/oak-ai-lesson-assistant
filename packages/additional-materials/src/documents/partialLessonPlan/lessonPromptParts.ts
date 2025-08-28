@@ -292,6 +292,7 @@ export const lessonPlanPromptParts = {
   The Exit Quiz should be six questions long.
   It should get harder as pupils go through.
   It should include one question that tests pupils on their understanding of one of the keywords.`,
+  transcript: "",
 };
 
 export const howToMakeAGoodQuiz = `HOW TO MAKE A GOOD QUIZ

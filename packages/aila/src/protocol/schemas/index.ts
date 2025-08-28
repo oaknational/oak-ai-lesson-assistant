@@ -18,5 +18,3 @@ export type {
   QuizPath,
   QuizOperationType,
 } from "./quiz";
-
-export type { RawQuiz } from "./quiz/rawQuiz";

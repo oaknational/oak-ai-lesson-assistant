@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 
@@ -26,23 +26,23 @@ import { handleDialogSelection } from "./helpers";
 const StepOne = ({
   handleCreateSession,
 }: {
-  handleCreateSession: (docType: string | null) => Promise<void>;
+  handleCreateSession: (
+    docType: string | null,
+    stepNumber?: number,
+  ) => Promise<void>;
 }) => {
-  const { setDocType, setGeneration, setSubject, setTitle, setYear } =
-    useResourcesActions();
+  const {
+    setDocType,
+    setGeneration,
+
+    generateMaterial,
+  } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
+
+  const lesson = useResourcesStore((state) => state.pageData.lessonPlan);
   const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
-
-  useEffect(() => {
-    // Reset the document type when the component is mounted
-    setDocType(null);
-    setGeneration(null);
-    setSubject(null);
-    setTitle(null);
-    setYear(null);
-  }, [setDocType, setGeneration, setSubject, setTitle, setYear]);
 
   const resourceTypes = getResourceTypes().filter(
     (resourceType) => resourceType.isAvailable,
@@ -77,11 +77,7 @@ const StepOne = ({
                     radioInnerSize="all-spacing-5"
                     radioOuterSize="all-spacing-6"
                     label={
-                      <OakFlex
-                        $flexDirection="column"
-                        // $gap="all-spacing-2"
-                        $ml="space-between-ssx"
-                      >
+                      <OakFlex $flexDirection="column" $ml="space-between-ssx">
                         <OakP $font="body-2-bold">
                           {resourceType.displayName}
                         </OakP>
@@ -99,7 +95,11 @@ const StepOne = ({
       <ResourcesFooter>
         <SharedNavigationButtons
           backLabel="Back a step"
-          nextLabel="Next, provide lesson details"
+          nextLabel={
+            lesson.lessonId
+              ? "Create teaching material"
+              : "Next, provide lesson details"
+          }
           onBackClick={() => {}} // href used here instead
           backHref={getAilaUrl("start")}
           onNextClick={() => {
@@ -107,7 +107,13 @@ const StepOne = ({
               setShowValidationError("Please select a teaching material.");
               return;
             }
-            void handleCreateSession(docType);
+
+            if (lesson.lessonId) {
+              void handleCreateSession(docType, 3);
+              void generateMaterial();
+            } else {
+              void handleCreateSession(docType);
+            }
           }}
         />
       </ResourcesFooter>

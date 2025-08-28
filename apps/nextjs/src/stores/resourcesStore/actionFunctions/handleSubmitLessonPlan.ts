@@ -1,3 +1,4 @@
+import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
@@ -28,11 +29,11 @@ export type SubmitLessonPlanParams = {
 const buildLessonPlanInput = (
   title: string,
   subject: string,
-
   year: string,
-  docType: string | null,
+  docType: AdditionalMaterialType,
+  source: "aila" | "owa",
 ): PartialLessonContextSchemaType => {
-  const resourceType = docType ? getResourceType(docType) : null;
+  const resourceType = getResourceType(docType);
 
   // Always include these base fields
   const baseFields = ["title", "keyStage", "subject"];
@@ -40,9 +41,14 @@ const buildLessonPlanInput = (
   // Get resource-specific lesson parts or use all fields as fallback
   let lessonPartsToGenerate = baseFields;
 
-  if (resourceType?.lessonParts) {
+  if (resourceType?.lessonParts || resourceType?.owaLessonParts) {
+    const lessonPartsFromResourceType =
+      source === "owa"
+        ? resourceType?.owaLessonParts
+        : resourceType?.lessonParts;
     // Use resource-specific parts
-    lessonPartsToGenerate = [...baseFields, ...resourceType.lessonParts];
+    lessonPartsToGenerate = [...baseFields, ...lessonPartsFromResourceType];
+    log.info("Building lesson plan from ", lessonPartsToGenerate);
   } else {
     // Fallback to all fields
     const validLessonFields = lessonFieldKeys.filter(
@@ -127,16 +133,22 @@ export const handleSubmitLessonPlan =
   (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
   async ({ title, subject, year }: SubmitLessonPlanParams) => {
     const { setIsLoadingLessonPlan } = get().actions;
-    const { docType, id: resourceId } = get();
+    const { docType, id: resourceId, source } = get();
 
     set({ stepNumber: 2 });
     setIsLoadingLessonPlan(true);
 
     invariant(resourceId, "Resource ID must be defined");
-
+    invariant(docType, "DocType ID must be defined");
     try {
       log.info("Processing lesson plan", { title, subject, year });
-      const apiInput = buildLessonPlanInput(title, subject, year, docType);
+      const apiInput = buildLessonPlanInput(
+        title,
+        subject,
+        year,
+        docType,
+        source,
+      );
 
       const result =
         await trpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate(

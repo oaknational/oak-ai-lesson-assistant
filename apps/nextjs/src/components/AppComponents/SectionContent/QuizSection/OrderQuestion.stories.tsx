@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["desktop", "mobile"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof OrderQuestion>;
 
 export default meta;
