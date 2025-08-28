@@ -129,12 +129,12 @@ function IconInfoCardLink({
           target="_blank"
         >
           <OakFlex $display={["flex", "none"]} $width={"100%"}>
-            <OakP $font="body-3">
+            <OakP $font="heading-light-7">
               {buttonLabelMobile} ({fileName})
             </OakP>
           </OakFlex>
           <OakFlex $display={["none", "flex"]} $alignItems="center">
-            <OakP $font="body-3">
+            <OakP $font="heading-light-7">
               {buttonLabel} ({fileName})
             </OakP>
           </OakFlex>
@@ -227,7 +227,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           <OakHeading id="give-feedback" $font="heading-4" tag="h2">
             Give feedback
           </OakHeading>
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Aila is still in development, and we&apos;re the first to admit
             it&apos;s not perfect. It doesn&apos;t yet have all the features
             you&apos;ll want, and you may spot the odd glitch or mistake. It
@@ -319,7 +319,7 @@ function HomePageHero({ pageData }: HomePageProps) {
             />
           </OakBoxCustomMaxWidth>
 
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Transform your lesson prep with your free AI-powered lesson
             assistant, Aila. Whether it&apos;s creating bespoke resources or
             tailoring content to your class, Aila can help speed things along.
@@ -451,17 +451,17 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
                 playbackId={
                   pageData?.belowTheFoldVideo2?.video.asset.playbackId
                 }
-                thumbnailTime={6.32}
+                thumbnailTime={73}
               />
             </OakBoxCustomMaxWidth>
           )}
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Tell Aila what you want to teach and get step-by-step support to
             build your lesson. Start with your learning outcome, then adapt as
             you go - add or remove content, lower the reading age, or change the
             context to suit your school.
           </OakP>
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Ask for different tasks or activities to suit your pupils, and
             download fully editable resources ready for your classroom.
           </OakP>
@@ -504,7 +504,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           >
             Creating teaching materials
           </OakHeading>
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Already planned your lesson? Ask Aila to create glossaries, tasks
             and quizzes in minutes to enhance an Oak lesson or your own. Then
             download your tailored resource - or ask Aila to tweak it to suit
@@ -527,7 +527,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           <OakHeading id="what-makes-aila-different" $font="heading-5" tag="h3">
             What makes Aila different
           </OakHeading>
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Aila draws on our extensive library of national curriculum-aligned
             resources, designed and tested by teachers and subject experts. That
             means you get high-quality results made for UK pupils and
@@ -568,7 +568,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           <OakHeading id="how-our-ai-works" $font="heading-5" tag="h3">
             How our AI works
           </OakHeading>
-          <OakP $textAlign="left" $font="body-1">
+          <OakP $textAlign="left" $font="body-2">
             Our AI Experiments explore how AI can help create effective teaching
             resources and reduce your workload. We combine carefully designed
             prompts with our high-quality, national curriculum-aligned content
