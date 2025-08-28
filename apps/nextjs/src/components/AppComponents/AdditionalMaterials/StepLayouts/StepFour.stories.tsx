@@ -606,24 +606,27 @@ export const LoadingState: Story = {
   },
   parameters: {
     resourcesStoreState: {
+      stepNumber: 4,
+      docType: "additional-glossary",
+      isResourcesLoading: true,
+      isResourceRefining: false,
+      generation: null,
       source: "aila",
       pageData: {
         lessonPlan: {
-          lessonId: "lesson-123",
-          title: "Introduction to Fractions",
-          keyStage: "KS2",
-          subject: "Mathematics",
-          topic: "Fractions",
-          learningOutcome: "Students will understand basic fraction concepts",
+          lessonId: "mock-lesson-id",
+          title: "Mock Lesson",
         },
       },
-      docType: "additional-starter-quiz",
-      generation: null,
-      isResourcesLoading: true,
-      isResourceRefining: false,
+      threatDetection: false,
+      moderation: {
+        justification: "This contains content that requires guidance.",
+        categories: ["l/strong-language", "u/sensitive-content"],
+      },
     },
   },
   decorators: [
+    TeachingMaterialsStoreDecorator,
     (Story: React.ComponentType) => (
       <DemoProvider>
         <TeachingMaterialsLayout

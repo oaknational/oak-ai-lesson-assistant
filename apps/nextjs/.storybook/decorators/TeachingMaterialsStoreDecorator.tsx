@@ -57,6 +57,8 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
       stepNumber: 0,
       docType: "additional-glossary",
       source: "aila",
+      isResourcesLoading: false,
+      isResourceRefining: false,
       pageData: {
         lessonPlan: {
           lessonId: "mock-lesson-id",
@@ -70,11 +72,19 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
       },
     };
 
-    // Create the store with merged initial values from parameters
-    const resourcesStore = createResourcesStore({}, trackEvents, mockTrpc, {
+    // Merge the states
+    const finalState = {
       ...defaultState,
       ...parameters.resourcesStoreState,
-    });
+    };
+
+    // Create the store with merged initial values from parameters
+    const resourcesStore = createResourcesStore(
+      {},
+      trackEvents,
+      mockTrpc,
+      finalState,
+    );
 
     return {
       resources: resourcesStore,

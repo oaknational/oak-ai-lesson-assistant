@@ -83,10 +83,10 @@ export const createResourcesStore = (
 ) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     ...DEFAULT_STATE,
-    ...initState,
     source: props.source ?? "aila",
     stepNumber: props.initialStep ?? 0,
     isResourcesLoading: props.source === "owa" && props.initialStep === 3,
+    ...initState,
     actions: {
       // Setters
       setStepNumber: handleSetStepNumber(set, get),
