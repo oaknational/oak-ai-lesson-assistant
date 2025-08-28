@@ -1,61 +1,33 @@
-import { useMemo } from "react";
-import type { Components } from "react-markdown";
-
 import type { QuizV2QuestionShortAnswer } from "@oakai/aila/src/protocol/schema";
 
-import { OakBox, OakFlex, OakSpan } from "@oaknational/oak-components";
+import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { addInstruction } from "./helpers";
+import { hasBlankSpaces, useTextWithBlanks } from "./textWithBlanks";
 
 type ShortAnswerQuestionProps = {
   question: QuizV2QuestionShortAnswer;
   questionNumber: number;
 };
 
-// Create custom components for inline answer rendering
-const getInlineAnswerComponents = (answer: string): Partial<Components> => ({
-  em: ({ children }) => {
-    const isInlineAnswer = children?.toString() === "{{}}";
-    if (isInlineAnswer) {
-      return (
-        <OakSpan
-          $ba="border-solid-m"
-          $borderColor="border-primary"
-          $font="body-2-bold"
-          $color="text-success"
-          $borderStyle="none none solid none"
-          aria-label={`blank filled with: ${answer}`}
-          role="insertion"
-        >
-          {answer}
-        </OakSpan>
-      );
-    }
-
-    // Regular italic text
-    return <em>{children}</em>;
-  },
-});
-
 export const ShortAnswerQuestion = ({
   question,
   questionNumber,
 }: ShortAnswerQuestionProps) => {
-  const hasInlineAnswer = question.question.includes("{{}}");
+  const hasInlineAnswer = hasBlankSpaces(question.question);
   const answer = question.answers?.[0] ?? "";
 
-  const questionText = addInstruction(
-    // Wrap {{}} in italics. We can intercept with a custom em component
-    question.question.replace("{{}}", "_{{}}_ "),
+  const questionWithInstruction = addInstruction(
+    question.question,
     "Fill in the blank.",
   );
 
-  const customComponents = useMemo(
-    () => getInlineAnswerComponents(answer),
-    [answer],
-  );
+  const { processedText, components } = useTextWithBlanks({
+    questionText: questionWithInstruction,
+    fillAnswer: answer,
+  });
 
   return (
     <OakBox
@@ -66,9 +38,9 @@ export const ShortAnswerQuestion = ({
       <OakFlex $mb="space-between-s">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
-          markdown={questionText}
+          markdown={processedText}
           className="[&>p]:mb-0"
-          components={customComponents}
+          components={components}
         />
       </OakFlex>
 

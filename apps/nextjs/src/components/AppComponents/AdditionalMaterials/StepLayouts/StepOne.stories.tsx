@@ -15,6 +15,21 @@ const meta = {
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
     layout: "fullscreen",
+    resourcesStoreState: {
+      stepNumber: 0,
+      docType: "additional-glossary",
+      source: "aila",
+      pageData: {
+        lessonPlan: {
+          title: "Mock Lesson",
+        },
+      },
+      threatDetection: true,
+      moderation: {
+        justification: "This contains content that requires guidance.",
+        categories: ["l/strong-language", "u/sensitive-content"],
+      },
+    },
   },
 } satisfies Meta<typeof StepOne>;
 
@@ -27,6 +42,7 @@ export const Default: Story = {
       return Promise.resolve();
     },
   },
+
   decorators: [
     (Story) => (
       <DemoProvider>

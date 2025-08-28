@@ -74,17 +74,17 @@ const answersSchema = z.object({
   "explanatory-text": z.null().optional(),
 });
 
-export const rawQuizQuestionSchema = z.object({
-  question_id: z.number(),
-  question_uid: z.string(),
-  question_type: z.enum([
+export const hasuraQuizQuestionSchema = z.object({
+  questionId: z.number(),
+  questionUid: z.string(),
+  questionType: z.enum([
     "multiple-choice",
     "match",
     "order",
     "short-answer",
     "explanatory-text",
   ]),
-  question_stem: z
+  questionStem: z
     .array(z.union([stemTextObjectSchema, stemImageObjectSchema]))
     .min(1),
   answers: answersSchema.nullable().optional(),
@@ -93,14 +93,9 @@ export const rawQuizQuestionSchema = z.object({
   active: z.boolean(),
 });
 
-export const rawQuizSchema = z
-  .array(rawQuizQuestionSchema)
+export type HasuraQuizQuestion = z.infer<typeof hasuraQuizQuestionSchema>;
+export const hasuraQuizSchema = z
+  .array(hasuraQuizQuestionSchema)
   .nullable()
   .optional();
-
-export type RawQuiz = z.infer<typeof rawQuizSchema>;
-export type QuizProps = {
-  questions: NonNullable<RawQuiz>;
-  imageAttribution: { attribution: string; questionNumber: string }[];
-  isMathJaxLesson: boolean;
-};
+export type HasuraQuiz = z.infer<typeof hasuraQuizSchema>;

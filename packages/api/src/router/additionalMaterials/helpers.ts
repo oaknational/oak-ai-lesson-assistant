@@ -5,3 +5,4 @@
 export { generateAdditionalMaterial } from "./generateAdditionalMaterial";
 export { generatePartialLessonPlan } from "./generatePartialLessonPlan";
 export { recordSafetyViolation } from "./safetyUtils";
+export { validateCurriculumApiEnv } from "./envUtils";

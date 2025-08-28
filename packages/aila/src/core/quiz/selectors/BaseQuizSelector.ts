@@ -4,7 +4,7 @@ import type {
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "../ChoiceModels";
-import type { QuizSelector } from "../interfaces";
+import type { QuizQuestionWithRawJson, QuizSelector } from "../interfaces";
 
 export abstract class BaseQuizSelector<T extends BaseType>
   implements QuizSelector<T>
@@ -12,9 +12,9 @@ export abstract class BaseQuizSelector<T extends BaseType>
   public abstract ratingFunction: RatingFunction<T>;
   public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   public selectBestQuiz(
-    quizzes: QuizV1Question[][],
+    quizzes: QuizQuestionWithRawJson[][],
     ratingsSchemas: T[],
-  ): QuizV1Question[] {
+  ): QuizQuestionWithRawJson[] {
     const selectedIndex = this.maxRatingFunctionApplier(
       ratingsSchemas,
       this.ratingFunction,
