@@ -13,10 +13,6 @@ import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.
 import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
 import { plannerInstructions } from "./plannerAgent.instructions";
 
-/**
- * This is a factory function for planning agents.
- * A planning agent is responsible for generating a plan for Aila's turn in the interaction.
- */
 export const createPlannerAgent = ({
   messages,
   document,

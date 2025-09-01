@@ -20,10 +20,6 @@ import {
   messageToUserAgentSchema,
 } from "./messageToUserAgent.schema";
 
-/**
- * This is a factory function for a presentation agent.
- * A presentation agent is responsible for presenting Aila's changes to the user in the form of a message.
- */
 export function createMessageToUserAgent({
   messages,
   prevDoc,
