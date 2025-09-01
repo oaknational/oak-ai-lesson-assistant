@@ -112,7 +112,7 @@ export function createTableElement(
       tableCellStyle: {
         contentAlignment: "MIDDLE",
         paddingLeft: { magnitude: 0, unit: "PT" },
-        paddingRight: { magnitude: 2, unit: "PT" },
+        paddingRight: { magnitude: 1, unit: "PT" },
         borderTop: {
           width: { magnitude: 0, unit: "PT" },
           color: { color: { rgbColor: { red: 1, green: 1, blue: 1 } } },
