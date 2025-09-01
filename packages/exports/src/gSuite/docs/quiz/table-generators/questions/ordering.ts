@@ -1,7 +1,10 @@
 /**
  * Ordering question generator
  */
-import { addInstruction } from "../../../../../quiz-utils/formatting";
+import {
+  addInstruction,
+  processBlankPlaceholders,
+} from "../../../../../quiz-utils/formatting";
 import { shuffleOrderItems } from "../../../../../quiz-utils/shuffle";
 import { COLUMN_WIDTHS } from "../constants";
 import { createTableElement, createTextElement } from "../elements";
@@ -24,7 +27,8 @@ export function generateOrderingTable(
 
   // Question text element with properly formatted instruction
   const instruction = "Write the correct number in each box.";
-  const formattedQuestion = addInstruction(question, instruction);
+  const questionWithBlanks = processBlankPlaceholders(question);
+  const formattedQuestion = addInstruction(questionWithBlanks, instruction);
   elements.push(
     createTextElement(insertIndex, `${questionNumber}. ${formattedQuestion}`),
   );
