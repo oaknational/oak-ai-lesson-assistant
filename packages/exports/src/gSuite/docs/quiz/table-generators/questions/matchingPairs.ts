@@ -3,7 +3,10 @@
  */
 import invariant from "tiny-invariant";
 
-import { addInstruction } from "../../../../../quiz-utils/formatting";
+import {
+  addInstruction,
+  processBlankPlaceholders,
+} from "../../../../../quiz-utils/formatting";
 import { shuffleMatchItems } from "../../../../../quiz-utils/shuffle";
 import { CHECKBOX_PLACEHOLDER, COLUMN_WIDTHS } from "../constants";
 import { createTableElement, createTextElement } from "../elements";
@@ -24,7 +27,8 @@ export function generateMatchingPairsTable(
 
   // Question text element with properly formatted instruction
   const instruction = "Write the matching letter in each box.";
-  const formattedQuestion = addInstruction(question, instruction);
+  const questionWithBlanks = processBlankPlaceholders(question);
+  const formattedQuestion = addInstruction(questionWithBlanks, instruction);
   elements.push(
     createTextElement(insertIndex, `${questionNumber}. ${formattedQuestion}`),
   );

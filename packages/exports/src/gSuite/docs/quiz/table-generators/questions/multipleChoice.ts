@@ -1,7 +1,10 @@
 /**
  * Multiple choice question generator
  */
-import { addInstruction } from "../../../../../quiz-utils/formatting";
+import {
+  addInstruction,
+  processBlankPlaceholders,
+} from "../../../../../quiz-utils/formatting";
 import { shuffleMultipleChoiceAnswers } from "../../../../../quiz-utils/shuffle";
 import { CHECKBOX_PLACEHOLDER, COLUMN_WIDTHS } from "../constants";
 import { createTableElement, createTextElement } from "../elements";
@@ -31,7 +34,8 @@ export function generateMultipleChoiceTable(
       : "Tick 1 correct answer.";
 
   // Question text element with properly formatted instruction
-  const formattedQuestion = addInstruction(question, instruction);
+  const questionWithBlanks = processBlankPlaceholders(question);
+  const formattedQuestion = addInstruction(questionWithBlanks, instruction);
   elements.push(
     createTextElement(insertIndex, `${questionNumber}. ${formattedQuestion}`),
   );
