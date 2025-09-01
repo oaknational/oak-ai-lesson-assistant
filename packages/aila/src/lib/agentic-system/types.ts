@@ -36,14 +36,14 @@ export type ChatMessage = {
   content: string;
 };
 
-// Serializable state that gets persisted (input + output, can be mutated)
+// Serializable state that gets persisted
 export type AilaPersistedState = {
   messages: ChatMessage[];
   initialDocument: LooseLessonPlan;
   relevantLessons: RagLessonPlan[] | null;
 };
 
-// Runtime context with agents and config (input only, not serializable)
+// Runtime context with agents and config
 export type AilaRuntimeContext = {
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
   sectionAgents: SectionAgentRegistry;
