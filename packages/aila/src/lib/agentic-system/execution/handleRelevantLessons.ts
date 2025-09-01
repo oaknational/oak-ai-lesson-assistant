@@ -29,11 +29,11 @@ export async function handleRelevantLessons(
     // if above sections remain unchanged, do not refetch RAG lessons
     return true;
   }
-  context.persistedState.relevantLessons =
+  context.currentTurn.relevantLessons =
     await context.runtime.fetchRelevantLessons();
   context.currentTurn.relevantLessonsFetched = true;
 
-  if (context.persistedState.relevantLessons.length > 0) {
+  if (context.currentTurn.relevantLessons.length > 0) {
     await terminateWithResponse(context);
     return false;
   }

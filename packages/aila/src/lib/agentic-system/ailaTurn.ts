@@ -17,6 +17,7 @@ export async function ailaTurn({
     runtime,
     currentTurn: {
       document: persistedState.initialDocument,
+      relevantLessons: persistedState.relevantLessons,
       plannerOutput: null,
       errors: [],
       stepsExecuted: [],

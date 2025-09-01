@@ -22,7 +22,7 @@ export async function terminateWithResponse(
   context: AilaExecutionContext,
 ): Promise<void> {
   if (context.currentTurn.relevantLessonsFetched) {
-    const { relevantLessons } = context.persistedState;
+    const { relevantLessons } = context.currentTurn;
     if (!relevantLessons?.length) {
       await terminateWithCustomMessage("No relevant lessons found.", context);
       return;

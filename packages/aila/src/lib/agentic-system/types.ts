@@ -167,6 +167,7 @@ export type AilaCurrentTurn = {
   plannerOutput: PlannerOutput | null;
   errors: { message: string }[];
   stepsExecuted: PlanStep[];
+  relevantLessons: RagLessonPlan[] | null;
   relevantLessonsFetched: boolean;
 };
 
