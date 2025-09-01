@@ -10,7 +10,13 @@ export async function handleRelevantLessons(
 ): Promise<boolean> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
 
-  if (!(title && subject && keyStage && !basedOn)) {
+  if (!title || !subject || !keyStage) {
+    // if any of the above sections are missing, do not refetch RAG lessons
+    return true;
+  }
+
+  if (basedOn) {
+    // if the user has already chosen a lesson to adapt, do not refetch RAG lessons
     return true;
   }
 
@@ -19,16 +25,17 @@ export async function handleRelevantLessons(
     subject !== context.persistedState.initialDocument.subject ||
     keyStage !== context.persistedState.initialDocument.keyStage;
 
-  if (hasDocumentMetadataChanged) {
-    // Fetch relevant lessons and update state
-    context.persistedState.relevantLessons =
-      await context.runtime.fetchRelevantLessons();
-    context.currentTurn.relevantLessonsFetched = true;
+  if (!hasDocumentMetadataChanged) {
+    // if above sections remain unchanged, do not refetch RAG lessons
+    return true;
+  }
+  context.persistedState.relevantLessons =
+    await context.runtime.fetchRelevantLessons();
+  context.currentTurn.relevantLessonsFetched = true;
 
-    if (context.persistedState.relevantLessons.length > 0) {
-      await terminateWithResponse(context);
-      return false;
-    }
+  if (context.persistedState.relevantLessons.length > 0) {
+    await terminateWithResponse(context);
+    return false;
   }
 
   return true;

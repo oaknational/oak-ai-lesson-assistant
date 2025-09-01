@@ -28,7 +28,6 @@ export function createMessageToUserAgent({
   errors,
   plannerOutput,
   relevantLessons,
-  relevantLessonsFetched,
 }: MessageToUserAgentProps): GenericPromptAgent<MessageToUserAgentOutput> {
   return {
     responseSchema: messageToUserAgentSchema,
@@ -69,9 +68,8 @@ export function createMessageToUserAgent({
             .map(([key]) => key as SectionKey), // @todo fix this
         ),
       },
-      relevantLessonsFetched &&
-        relevantLessons &&
-        relevantLessons?.length > 0 && {
+      relevantLessons &&
+        relevantLessons.length > 0 && {
           role: "developer" as const,
           content: relevantLessonsPromptPart(relevantLessons),
         },

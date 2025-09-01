@@ -148,7 +148,6 @@ export type MessageToUserAgentProps = {
   errors: { message: string }[];
   plannerOutput: PlannerOutput | null;
   relevantLessons: RagLessonPlan[] | null;
-  relevantLessonsFetched: boolean;
 };
 
 export type AilaState = {
