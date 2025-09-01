@@ -60,7 +60,7 @@ describe("sectionToGenericPromptAgent", () => {
       plannerAgent: jest.fn(),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sectionAgents: {} as any, // Mock - not used in this test
-      presentationAgent: jest.fn(),
+      messageToUserAgent: jest.fn(),
       fetchRelevantLessons: jest.fn(),
       config: {
         mathsQuizEnabled: false,

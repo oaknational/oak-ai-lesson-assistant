@@ -1,10 +1,10 @@
 import type { LooseLessonPlan } from "../../../../protocol/schema";
 import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { PlanStep, PlannerOutput } from "../../schema";
-import type { ChatMessage, PresentationAgentProps } from "../../types";
-import { createPresentationAgent } from "./createPresentationAgent";
+import type { ChatMessage, MessageToUserAgentProps } from "../../types";
+import { createMessageToUserAgent } from "./createMessageToUserAgent";
 
-describe("createPresentationAgent", () => {
+describe("createMessageToUserAgent", () => {
   const mockMessages: ChatMessage[] = [
     {
       id: "msg-1",
@@ -94,7 +94,7 @@ describe("createPresentationAgent", () => {
 
   const mockRelevantLessons: RagLessonPlan[] = [];
 
-  const mockProps: PresentationAgentProps = {
+  const mockProps: MessageToUserAgentProps = {
     messages: mockMessages,
     prevDoc: mockPrevDoc,
     nextDoc: mockNextDoc,
@@ -107,20 +107,20 @@ describe("createPresentationAgent", () => {
 
   describe("input message generation", () => {
     it("should generate consistent input messages for presentation", () => {
-      const presentationAgent = createPresentationAgent(mockProps);
+      const messageToUserAgent = createMessageToUserAgent(mockProps);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle errors in the presentation", () => {
-      const propsWithErrors: PresentationAgentProps = {
+      const propsWithErrors: MessageToUserAgentProps = {
         ...mockProps,
         errors: mockErrors,
       };
 
-      const presentationAgent = createPresentationAgent(propsWithErrors);
+      const messageToUserAgent = createMessageToUserAgent(propsWithErrors);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle exit decision from planner", () => {
@@ -132,50 +132,50 @@ describe("createPresentationAgent", () => {
         additionalInfo: "Lesson plan is ready for use",
       };
 
-      const propsWithExit: PresentationAgentProps = {
+      const propsWithExit: MessageToUserAgentProps = {
         ...mockProps,
         plannerOutput: exitPlannerOutput,
       };
 
-      const presentationAgent = createPresentationAgent(propsWithExit);
+      const messageToUserAgent = createMessageToUserAgent(propsWithExit);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle no steps executed", () => {
-      const propsWithNoSteps: PresentationAgentProps = {
+      const propsWithNoSteps: MessageToUserAgentProps = {
         ...mockProps,
         stepsExecuted: [],
       };
 
-      const presentationAgent = createPresentationAgent(propsWithNoSteps);
+      const messageToUserAgent = createMessageToUserAgent(propsWithNoSteps);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle null planner output", () => {
-      const propsWithNullPlanner: PresentationAgentProps = {
+      const propsWithNullPlanner: MessageToUserAgentProps = {
         ...mockProps,
         plannerOutput: null,
       };
 
-      const presentationAgent = createPresentationAgent(propsWithNullPlanner);
+      const messageToUserAgent = createMessageToUserAgent(propsWithNullPlanner);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle relevant lessons not fetched", () => {
-      const propsWithoutRelevantLessons: PresentationAgentProps = {
+      const propsWithoutRelevantLessons: MessageToUserAgentProps = {
         ...mockProps,
         relevantLessonsFetched: false,
         relevantLessons: null,
       };
 
-      const presentationAgent = createPresentationAgent(
+      const messageToUserAgent = createMessageToUserAgent(
         propsWithoutRelevantLessons,
       );
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle multiple errors and complex state", () => {
@@ -197,36 +197,38 @@ describe("createPresentationAgent", () => {
         { type: "section", sectionKey: "misconceptions", action: "generate" },
       ];
 
-      const propsWithComplexState: PresentationAgentProps = {
+      const propsWithComplexState: MessageToUserAgentProps = {
         ...mockProps,
         errors: complexErrors,
         stepsExecuted: complexSteps,
       };
 
-      const presentationAgent = createPresentationAgent(propsWithComplexState);
+      const messageToUserAgent = createMessageToUserAgent(
+        propsWithComplexState,
+      );
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
 
     it("should handle empty document changes", () => {
-      const propsWithSameDoc: PresentationAgentProps = {
+      const propsWithSameDoc: MessageToUserAgentProps = {
         ...mockProps,
         prevDoc: mockNextDoc,
         nextDoc: mockNextDoc,
       };
 
-      const presentationAgent = createPresentationAgent(propsWithSameDoc);
+      const messageToUserAgent = createMessageToUserAgent(propsWithSameDoc);
 
-      expect(presentationAgent.input).toMatchSnapshot();
+      expect(messageToUserAgent.input).toMatchSnapshot();
     });
   });
 
   describe("schema validation", () => {
     it("should have the correct response schema", () => {
-      const presentationAgent = createPresentationAgent(mockProps);
+      const messageToUserAgent = createMessageToUserAgent(mockProps);
 
-      expect(presentationAgent.responseSchema).toBeDefined();
-      expect(typeof presentationAgent.responseSchema.parse).toBe("function");
+      expect(messageToUserAgent.responseSchema).toBeDefined();
+      expect(typeof messageToUserAgent.responseSchema.parse).toBe("function");
     });
   });
 });

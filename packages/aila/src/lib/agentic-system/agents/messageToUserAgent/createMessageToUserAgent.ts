@@ -1,7 +1,7 @@
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent, SectionKey } from "../../schema";
-import type { PresentationAgentProps } from "../../types";
+import type { MessageToUserAgentProps } from "../../types";
 import {
   getVoiceDefinitions,
   getVoicePrompt,
@@ -14,17 +14,17 @@ import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.
 import { stepsExecutedPromptPart } from "../sharedPromptParts/stepsExecuted.part";
 import { unplannedSectionsPromptPart } from "../sharedPromptParts/unplannedSections.part";
 import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
-import { presentationAgentInstructions } from "./presentationAgent.instructions";
+import { messageToUserAgentInstructions } from "./messageToUserAgent.instructions";
 import {
-  type PresentationAgentOutput,
-  presentationAgentSchema,
-} from "./presentationAgent.schema";
+  type MessageToUserAgentOutput,
+  messageToUserAgentSchema,
+} from "./messageToUserAgent.schema";
 
 /**
  * This is a factory function for a presentation agent.
  * A presentation agent is responsible for presenting Aila's changes to the user in the form of a message.
  */
-export function createPresentationAgent({
+export function createMessageToUserAgent({
   messages,
   prevDoc,
   nextDoc,
@@ -33,13 +33,13 @@ export function createPresentationAgent({
   plannerOutput,
   relevantLessons,
   relevantLessonsFetched,
-}: PresentationAgentProps): GenericPromptAgent<PresentationAgentOutput> {
+}: MessageToUserAgentProps): GenericPromptAgent<MessageToUserAgentOutput> {
   return {
-    responseSchema: presentationAgentSchema,
+    responseSchema: messageToUserAgentSchema,
     input: [
       {
         role: "developer" as const,
-        content: presentationAgentInstructions,
+        content: messageToUserAgentInstructions,
       },
       {
         role: "developer" as const,

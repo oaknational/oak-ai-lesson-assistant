@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`createPresentationAgent input message generation should generate consistent input messages for presentation 1`] = `
+exports[`createMessageToUserAgent input message generation should generate consistent input messages for presentation 1`] = `
 [
   {
     "content": "# Role
@@ -153,7 +153,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle empty document changes 1`] = `
+exports[`createMessageToUserAgent input message generation should handle empty document changes 1`] = `
 [
   {
     "content": "# Role
@@ -306,7 +306,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle errors in the presentation 1`] = `
+exports[`createMessageToUserAgent input message generation should handle errors in the presentation 1`] = `
 [
   {
     "content": "# Role
@@ -467,7 +467,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle exit decision from planner 1`] = `
+exports[`createMessageToUserAgent input message generation should handle exit decision from planner 1`] = `
 [
   {
     "content": "# Role
@@ -628,7 +628,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle multiple errors and complex state 1`] = `
+exports[`createMessageToUserAgent input message generation should handle multiple errors and complex state 1`] = `
 [
   {
     "content": "# Role
@@ -793,7 +793,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle no steps executed 1`] = `
+exports[`createMessageToUserAgent input message generation should handle no steps executed 1`] = `
 [
   {
     "content": "# Role
@@ -928,7 +928,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle null planner output 1`] = `
+exports[`createMessageToUserAgent input message generation should handle null planner output 1`] = `
 [
   {
     "content": "# Role
@@ -1081,7 +1081,7 @@ Please make sure to include practical activities and common misconceptions.",
 ]
 `;
 
-exports[`createPresentationAgent input message generation should handle relevant lessons not fetched 1`] = `
+exports[`createMessageToUserAgent input message generation should handle relevant lessons not fetched 1`] = `
 [
   {
     "content": "# Role

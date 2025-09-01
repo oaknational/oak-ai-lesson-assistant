@@ -17,7 +17,7 @@ import type {
   SubjectSchema,
 } from "../../protocol/schema";
 import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
-import type { PresentationAgentOutput } from "./agents/presentationAgent/presentationAgent.schema";
+import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type {
   PlanStep,
@@ -47,9 +47,9 @@ export type AilaPersistedState = {
 export type AilaRuntimeContext = {
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
   sectionAgents: SectionAgentRegistry;
-  presentationAgent: (
-    props: PresentationAgentProps,
-  ) => Promise<WithError<PresentationAgentOutput>>;
+  messageToUserAgent: (
+    props: MessageToUserAgentProps,
+  ) => Promise<WithError<MessageToUserAgentOutput>>;
   fetchRelevantLessons: () => Promise<RagLessonPlan[]>;
   config: {
     mathsQuizEnabled: boolean;
@@ -140,7 +140,7 @@ export type PlannerAgentProps = {
   relevantLessons: RagLessonPlan[] | null;
 };
 
-export type PresentationAgentProps = {
+export type MessageToUserAgentProps = {
   messages: ChatMessage[];
   prevDoc: LooseLessonPlan;
   nextDoc: LooseLessonPlan;
@@ -155,9 +155,9 @@ export type AilaState = {
   initialDocument: LooseLessonPlan;
   messages: ChatMessage[];
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
-  presentationAgent: (
-    props: PresentationAgentProps,
-  ) => Promise<WithError<PresentationAgentOutput>>;
+  messageToUserAgent: (
+    props: MessageToUserAgentProps,
+  ) => Promise<WithError<MessageToUserAgentOutput>>;
   sectionAgents: SectionAgentRegistry;
   relevantLessons: RagLessonPlan[] | null;
   fetchRelevantLessons: () => Promise<RagLessonPlan[]>;
