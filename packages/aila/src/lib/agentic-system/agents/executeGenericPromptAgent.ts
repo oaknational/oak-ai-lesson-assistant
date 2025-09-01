@@ -2,6 +2,7 @@ import type OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
+import { DEFAULT_OPENAI_GENERATION_MODEL } from "../constants";
 import type { GenericPromptAgent } from "../schema";
 import type { WithError } from "../types";
 
@@ -20,7 +21,7 @@ export async function executeGenericPromptAgent<ResponseType>({
   const result = await openai.responses.parse({
     input: agent.input,
     stream: false,
-    model: "gpt-4o-2024-11-20",
+    model: DEFAULT_OPENAI_GENERATION_MODEL,
     text: {
       format: responseFormat,
     },
