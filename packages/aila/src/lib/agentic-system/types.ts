@@ -16,7 +16,6 @@ import type {
   QuizV2Schema,
   SubjectSchema,
 } from "../../protocol/schema";
-import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type {
@@ -40,9 +39,10 @@ export type ChatMessage = {
 export type AilaPersistedState = {
   messages: ChatMessage[];
   initialDocument: LooseLessonPlan;
-  relevantLessons: RagLessonPlan[] | null;
+  relevantLessons: AgenticRagLessonPlanResult[] | null;
 };
 
+type RagSearchArgs = { title: string; subject: string; keyStage: string };
 // Runtime context with agents and config
 export type AilaRuntimeContext = {
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
@@ -50,7 +50,9 @@ export type AilaRuntimeContext = {
   messageToUserAgent: (
     props: MessageToUserAgentProps,
   ) => Promise<WithError<MessageToUserAgentOutput>>;
-  fetchRelevantLessons: () => Promise<RagLessonPlan[]>;
+  fetchRelevantLessons: (
+    props: RagSearchArgs,
+  ) => Promise<AgenticRagLessonPlanResult[]>;
   config: {
     mathsQuizEnabled: boolean;
   };
@@ -137,7 +139,7 @@ export type SectionAgentRegistry<
 export type PlannerAgentProps = {
   messages: ChatMessage[];
   document: LooseLessonPlan;
-  relevantLessons: RagLessonPlan[] | null;
+  relevantLessons: AgenticRagLessonPlanResult[] | null;
 };
 
 export type MessageToUserAgentProps = {
@@ -147,7 +149,7 @@ export type MessageToUserAgentProps = {
   stepsExecuted: PlanStep[];
   errors: { message: string }[];
   plannerOutput: PlannerOutput | null;
-  relevantLessons: RagLessonPlan[] | null;
+  relevantLessons: AgenticRagLessonPlanResult[] | null;
 };
 
 export type AilaState = {
@@ -158,8 +160,10 @@ export type AilaState = {
     props: MessageToUserAgentProps,
   ) => Promise<WithError<MessageToUserAgentOutput>>;
   sectionAgents: SectionAgentRegistry;
-  relevantLessons: RagLessonPlan[] | null;
-  fetchRelevantLessons: () => Promise<RagLessonPlan[]>;
+  relevantLessons: AgenticRagLessonPlanResult[] | null;
+  fetchRelevantLessons: (
+    ctx: AilaExecutionContext,
+  ) => Promise<AgenticRagLessonPlanResult[]>;
 };
 
 export type AilaCurrentTurn = {
@@ -167,10 +171,17 @@ export type AilaCurrentTurn = {
   plannerOutput: PlannerOutput | null;
   errors: { message: string }[];
   stepsExecuted: PlanStep[];
-  relevantLessons: RagLessonPlan[] | null;
+  relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
 };
 
 export type WithError<T> =
   | { error: null; data: T }
   | { error: z.infer<typeof errorSchema> };
+
+export type AgenticRagLessonPlanResult = {
+  ragLessonPlanId: string;
+  oakLessonId: number | null;
+  oakLessonSlug: string;
+  lessonPlan: LooseLessonPlan;
+};
