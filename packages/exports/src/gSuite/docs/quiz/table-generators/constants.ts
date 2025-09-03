@@ -8,8 +8,6 @@ export const COLUMN_WIDTHS = {
   letter: 21,
   spacer: 10,
   textNarrow: 140,
-  textWide: 400,
-  textFull: 430, // Slightly wider to compensate
   auto: "AUTO", // Special value for auto-width columns
 } as const;
 
