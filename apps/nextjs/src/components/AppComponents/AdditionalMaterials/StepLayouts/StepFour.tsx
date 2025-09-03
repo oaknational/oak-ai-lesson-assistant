@@ -277,7 +277,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
-                    Start again
+                    Create more
                   </OakSecondaryButton>
                   <OakFlex $gap="all-spacing-2">
                     <OakSecondaryButton
@@ -320,7 +320,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       setDialogWindow("additional-materials-start-again")
                     }
                   >
-                    Start again
+                    Create more
                   </MobileNoLetterSpacingButton>
                   <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
                     <MobileNoLetterSpacingButton

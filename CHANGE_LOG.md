@@ -1,3 +1,19 @@
+# [1.48.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.1...v1.48.0) (2025-08-28)
+
+
+### Bug Fixes
+
+* resolve RAG parse errors blocking lesson retrieval ([#773](https://github.com/oaknational/oak-ai-lesson-assistant/issues/773)) ([0b76f63](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0b76f638c4aade94e51f7efb9af9a73f2bfefe3e))
+* short answer placeholder patterns ([#771](https://github.com/oaknational/oak-ai-lesson-assistant/issues/771)) ([2060818](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2060818bc247290397427517f3bb5300cce3cebd))
+
+
+### Features
+
+* add ML-based quiz generation with OpenAI reranking [AI-1373] ([#724](https://github.com/oaknational/oak-ai-lesson-assistant/issues/724)) ([1af3708](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1af370800c69c33b8351a9df99977a73d7dd062d))
+* add unified placeholder support across all quiz question types ([#775](https://github.com/oaknational/oak-ai-lesson-assistant/issues/775)) ([dc3ed30](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dc3ed30f76afc98f81bf3d9ec431239881a8f5d0))
+* implement LaTeX image dimensions and URL handling ([#759](https://github.com/oaknational/oak-ai-lesson-assistant/issues/759)) ([dec4c1e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dec4c1e89f2edfc17a490719378672d8fca03fbd))
+* teaching materials from owa with trpc ([#755](https://github.com/oaknational/oak-ai-lesson-assistant/issues/755)) ([35a8a40](https://github.com/oaknational/oak-ai-lesson-assistant/commit/35a8a40d52b8bac79f06263ca683aff78dab0dd6))
+
 ## [1.47.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.0...v1.47.1) (2025-08-12)
 
 

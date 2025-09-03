@@ -11,6 +11,7 @@ const meta = {
     layout: "padded",
     ...chromaticParams(["desktop"]),
   },
+  tags: ["autodocs"],
 } satisfies Meta<typeof ShortAnswerQuestion>;
 
 export default meta;
@@ -25,6 +26,30 @@ export const InlineAnswer: Story = {
       hint: null,
     },
     questionNumber: 1,
+  },
+};
+
+export const InlineAnswerWithSpaces: Story = {
+  args: {
+    question: {
+      questionType: "short-answer",
+      question: "The capital of France is {{ }}.",
+      answers: ["Paris"],
+      hint: null,
+    },
+    questionNumber: 2,
+  },
+};
+
+export const InlineAnswerWithDegrees: Story = {
+  args: {
+    question: {
+      questionType: "short-answer",
+      question: "The size of angle C° is {{}}°",
+      answers: ["120"],
+      hint: null,
+    },
+    questionNumber: 2,
   },
 };
 

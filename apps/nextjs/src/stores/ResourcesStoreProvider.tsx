@@ -1,7 +1,8 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";
 
@@ -23,21 +24,35 @@ export const ResourcesStoresContext = createContext<
 export type ResourcesStoresProviderProps = {
   children: React.ReactNode;
   initState?: Partial<ResourcesState>;
-};
+} & TeachingMaterialsPageProps;
 
 export const ResourcesStoresProvider: React.FC<
   ResourcesStoresProviderProps
-> = ({ children, initState }) => {
+> = ({ children, initState, ...props }) => {
   const { track } = useAnalytics();
 
   const trpcUtils = trpc.useUtils();
 
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(track, trpcUtils, initState),
+      resources: createResourcesStore(props, track, trpcUtils, initState),
     };
     return storesObj;
   });
+
+  // Store initialisation
+  const haveInitialized = useRef(false);
+  useEffect(() => {
+    // work around react strict mode double rendering
+    if (haveInitialized.current) {
+      return;
+    }
+    if (props.source === "owa") {
+      void stores.resources.getState().actions.fetchOwaData(props);
+    }
+
+    haveInitialized.current = true;
+  }, [props, stores.resources]);
 
   return (
     <ResourcesStoresContext.Provider value={stores}>

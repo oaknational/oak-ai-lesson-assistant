@@ -1,11 +1,10 @@
 "use client";
 
 import type { FC } from "react";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-
-import { OakP } from "@oaknational/oak-components";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -18,6 +17,7 @@ import {
 } from "@/components/AppComponents/DialogContext";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+import { OakMathJaxContext } from "@/components/MathJax";
 import ResourcesLayout from "@/components/ResourcesLayout";
 import {
   ResourcesStoresProvider,
@@ -32,17 +32,21 @@ import {
   yearSelector,
 } from "@/stores/resourcesStore/selectors";
 
-interface AdditionalMaterialsUserProps {
-  pageData?: {
-    lessonPlan: {
-      title: string;
-      keyStage: string;
-      subject: string;
-    };
+export type TeachingMaterialsPageProps = {
+  lesson?: LessonPlanSchemaTeachingMaterials;
+  initialStep?: number;
+  id?: string;
+  source?: "aila" | "owa";
+  error?: Error;
+  lessonId?: string;
+  queryParams?: {
+    lessonSlug: string;
+    programmeSlug?: string;
+    docType: string;
   };
-}
+};
 
-const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
+const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const stepNumber = useResourcesStore(stepNumberSelector);
   const pageData = useResourcesStore(pageDataSelector);
   const threatDetected = useResourcesStore(threatDetectionSelector);
@@ -50,22 +54,17 @@ const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   const docType = useResourcesStore(docTypeSelector);
   const year = useResourcesStore(yearSelector);
   const error = useResourcesStore((state) => state.error);
+  const lessonPlan = useResourcesStore((state) => state.pageData.lessonPlan);
 
-  // Get resource type information from configuration
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
   const {
-    resetFormState,
     createMaterialSession,
     submitLessonPlan,
     generateMaterial,
     refineMaterial,
   } = useResourcesActions();
   const { setDialogWindow } = useDialog();
-
-  useEffect(() => {
-    resetFormState();
-  }, [resetFormState]);
 
   handleDialogSelection({
     threatDetected,
@@ -76,37 +75,22 @@ const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   const titleAreaContent = {
     0: {
       title: "Select teaching material",
-      subTitle: (
-        <OakP $font="body-2" $color="text-primary">
-          Choose the downloadable resource you'd like to create with Aila for
-          your lesson.
-        </OakP>
-      ),
+      subTitle: lessonPlan.title
+        ? `Choose the downloadable resource you'd like to create for the lesson: ${lessonPlan.title}.`
+        : "Choose the downloadable resource you'd like to create with Aila for your lesson.",
     },
     1: {
       title: "What are you teaching?",
-      subTitle: (
-        <OakP $font="body-2" $color="text-primary">
-          The more detail you give, the better suited your resource will be for
-          your lesson.
-        </OakP>
-      ),
+      subTitle:
+        "The more detail you give, the better suited your resource will be for your lesson.",
     },
     2: {
       title: pageData.lessonPlan.title,
-      subTitle: (
-        <OakP $font="body-2" $color="text-primary">
-          {`${year} • ${pageData.lessonPlan.subject}`}
-        </OakP>
-      ),
+      subTitle: `${year} • ${pageData.lessonPlan.subject}`,
     },
     3: {
       title: pageData.lessonPlan.title,
-      subTitle: (
-        <OakP $font="body-2" $color="text-primary">
-          {`${year} • ${pageData.lessonPlan.subject}`}
-        </OakP>
-      ),
+      subTitle: `${year} • ${pageData.lessonPlan.subject}`,
     },
   };
 
@@ -131,13 +115,15 @@ const TeachingMaterialsViewInner: FC<AdditionalMaterialsUserProps> = () => {
   );
 };
 
-const TeachingMaterialsView: FC<AdditionalMaterialsUserProps> = (props) => {
+const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
   return (
-    <ResourcesStoresProvider>
+    <ResourcesStoresProvider {...props}>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
-          <TeachingMaterialsViewInner {...props} />
+          <OakMathJaxContext>
+            <TeachingMaterialsViewInner {...props} />
+          </OakMathJaxContext>
         </DialogRoot>
       </DialogProvider>
     </ResourcesStoresProvider>
