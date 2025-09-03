@@ -4,6 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
+import { DEFAULT_OPENAI_GPT5_PARAMS } from "../../constants";
 import type {
   CompletedLessonPlan,
   LessonPlanKey,
@@ -67,13 +68,17 @@ ${additionalInstructions}`;
   log.info("Input:", input);
 
   const result = await openAIClient.responses.parse({
-    instructions,
-    input,
-    stream: false,
-    model: "gpt-4.1-2025-04-14",
+    model: DEFAULT_OPENAI_GPT5_PARAMS.model,
+    reasoning: {
+      effort: DEFAULT_OPENAI_GPT5_PARAMS.reasoning_effort,
+    },
     text: {
+      verbosity: DEFAULT_OPENAI_GPT5_PARAMS.verbosity,
       format: responseFormat,
     },
+    stream: false,
+    instructions,
+    input,
   });
 
   if (
