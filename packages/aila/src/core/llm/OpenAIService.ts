@@ -36,6 +36,15 @@ export class OpenAIService implements LLMService {
         role: m.role,
         content: m.content,
       })),
+      ...("temperature" in params.modelParams
+        ? { temperature: params.modelParams.temperature }
+        : {}),
+      // 👇 This is where we should be passing gpt-5 params, but it's not available in this version of Vercel AI SDK
+      // providerOptions: {
+      //   openai: {
+      //     reasoning_effort: "high",
+      //   },
+      // },
     });
 
     return Promise.resolve(stream.getReader());
