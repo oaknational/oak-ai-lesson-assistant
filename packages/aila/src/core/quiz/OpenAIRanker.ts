@@ -286,13 +286,7 @@ async function evaluateStarterQuiz<
   questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
-): Promise<
-  ParsedChatCompletion<
-    {
-      rating: number;
-    } & Record<string, unknown>
-  >
-> {
+): Promise<OpenAI.Chat.Completions.ChatCompletion> {
   const openAIMessage = combinePromptsAndQuestions(
     lessonPlan,
     questions,

@@ -72,7 +72,7 @@ export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
       userId: this._aila.userId,
       chatId: this._aila.chatId,
       queryDuration,
-      model: this._aila.options.modelParams?.model ?? "unknown",
+      model: this._aila.options.modelParams.model,
       totalTokens,
       promptTokens,
       completionTokens,
