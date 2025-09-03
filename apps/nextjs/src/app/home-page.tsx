@@ -420,7 +420,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
           {pageData?.sampleLessons?.map((lesson, index) => (
             <IconInfoCardLink
-              key={index}
+              key={`${index}-${lesson.title}`}
               iconName={lesson.iconName}
               background={lesson.iconTileBackgroundColour}
               title={lesson.title}
@@ -469,7 +469,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           </OakP>
           {pageData?.promptExamples?.map((example, index) => (
             <IconInfoCardLink
-              key={index}
+              key={`${index}-${example.title}`}
               iconName={example.iconName}
               background={example.iconTileBackgroundColour}
               buttonLabel={example.fileName}
