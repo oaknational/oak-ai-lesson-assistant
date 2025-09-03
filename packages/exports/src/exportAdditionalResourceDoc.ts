@@ -3,9 +3,9 @@ import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/a
 import { aiLogger } from "@oakai/logger";
 
 import { exportGeneric } from "./exportGeneric";
-import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/cleanupUnusedPlaceholdersRequests";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/populate/cleanupUnusedPlaceholdersRequests";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
 import { getAdditionalResourcesTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
