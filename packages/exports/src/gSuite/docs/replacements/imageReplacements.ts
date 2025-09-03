@@ -2,7 +2,11 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import { getGoogleDocsDimensions } from "../../../images/constants";
+import {
+  QUESTION_IMAGE_MAX_HEIGHT,
+  QUESTION_IMAGE_MAX_WIDTH,
+  calculateLatexImageDimensions,
+} from "../../../images/constants";
 import { GCS_LATEX_BUCKET_NAME } from "../../../images/gcsCredentials";
 
 const log = aiLogger("exports");
@@ -15,7 +19,7 @@ function getDimensions(imageUrl: string) {
     const scaledWidth = parseInt(dimensions[1], 10);
     const scaledHeight = parseInt(dimensions[2], 10);
 
-    return getGoogleDocsDimensions(scaledWidth, scaledHeight);
+    return calculateLatexImageDimensions(scaledWidth, scaledHeight);
   }
 
   throw new Error(`Unable to extract dimensions from image URL: ${imageUrl}`);
@@ -67,6 +71,16 @@ const insertStemImage = (
         uri: image.url,
         location: {
           index: startIndex, // Insert at the same startIndex where the Markdown was removed
+        },
+        objectSize: {
+          height: {
+            magnitude: QUESTION_IMAGE_MAX_HEIGHT,
+            unit: "PT",
+          },
+          width: {
+            magnitude: QUESTION_IMAGE_MAX_WIDTH,
+            unit: "PT",
+          },
         },
       },
     },
