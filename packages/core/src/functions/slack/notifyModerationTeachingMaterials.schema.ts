@@ -9,6 +9,6 @@ export const notifyModerationTeachingMaterialsSchema = {
     justification: z.string(),
     categories: z.array(z.string()),
     userAction: z.string(),
-    violationType: z.string(),
+    violationType: z.enum(["THREAT", "MODERATION", "SAFEGUARDING"]),
   }),
 };

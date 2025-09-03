@@ -19,15 +19,26 @@ export const notifyModerationTeachingMaterials = inngest.createFunction(
         event.data,
       );
 
+      const isThreat = args.violationType === "THREAT";
+      
+      // Different text and formatting for threats vs regular moderation
+      const fallbackText = isThreat 
+        ? "🚨 THREAT DETECTED - Immediate action required" 
+        : "⚠️ Content moderation flag - Review required";
+      
+      const headerText = isThreat
+        ? "🚨 THREAT DETECTED - Teaching Materials"
+        : "⚠️ Content Moderation Flag - Teaching Materials";
+
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
-        text: "Toxic user input detected",
+        text: fallbackText,
         blocks: [
           {
             type: "header",
             text: {
               type: "plain_text",
-              text: `${args.violationType === "THREAT" ? "Threat " : "Toxic user input "}detected - Teaching materials`,
+              text: headerText,
             },
           },
           userIdBlock(event.user.id),
@@ -56,6 +67,14 @@ export const notifyModerationTeachingMaterials = inngest.createFunction(
               },
             ],
           },
+          // Add threat-specific warning for threats
+          ...(isThreat ? [{
+            type: "section" as const,
+            text: {
+              type: "mrkdwn" as const,
+              text: "🚨 *URGENT: This content requires immediate review and may pose a safety risk. Please escalate to appropriate authorities if necessary.*",
+            },
+          }] : []),
           actionsBlock({ userActionsProps: { userId: event.user.id } }),
         ],
       });

@@ -1,4 +1,5 @@
 import { aiLogger } from "@oakai/logger";
+import { inngest } from "@oakai/core";
 
 import { z } from "zod";
 
@@ -206,6 +207,35 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     }
 
     const highestThreat = this.getHighestThreatFromBreakdown(data);
+    if (highestThreat) {
+      const threatId = `threat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const threatLevel = this.mapSeverity(highestThreat.detector_type).toUpperCase();
+      const threatCategory = this.mapCategory(highestThreat.detector_type).toUpperCase();
+      
+      // Extract content preview for the alert
+      const contentPreview = Array.isArray(content) && content.length > 0 
+        ? content[0].content.substring(0, 200) + (content[0].content.length > 200 ? "..." : "")
+        : "Unknown content";
+    
+      try {
+        await inngest.send({
+          name: "app/slack.notifyThreatDetection",
+          data: {
+            id: threatId,
+            threatLevel,
+            threatCategory,
+            userAction: `Content flagged by Lakera: ${contentPreview}`,
+            detectionTime: new Date().toISOString(),
+            systemComponent: "Lakera Content Analysis",
+            threatDescription: `Lakera detected: ${highestThreat.detector_type}`
+          },
+        });
+        log.info("Threat alert sent to Slack", { threatId });
+      } catch (error) {
+        log.error("Failed to send threat alert to Slack", { error, threatId });
+      }
+    }
+    
     return this.buildThreatResult(data, highestThreat);
   }
 
