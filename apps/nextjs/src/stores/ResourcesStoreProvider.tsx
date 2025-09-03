@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
+import { useAuth } from "@clerk/nextjs";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
@@ -33,6 +34,8 @@ export const ResourcesStoresProvider: React.FC<
 
   const trpcUtils = trpc.useUtils();
 
+  const { isLoaded } = useAuth();
+
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
       resources: createResourcesStore(props, track, trpcUtils, initState),
@@ -47,12 +50,15 @@ export const ResourcesStoresProvider: React.FC<
     if (haveInitialized.current) {
       return;
     }
+
+    if (!isLoaded) return;
+
     if (props.source === "owa") {
       void stores.resources.getState().actions.fetchOwaData(props);
     }
 
     haveInitialized.current = true;
-  }, [props, stores.resources]);
+  }, [isLoaded, props, stores.resources]);
 
   return (
     <ResourcesStoresContext.Provider value={stores}>
