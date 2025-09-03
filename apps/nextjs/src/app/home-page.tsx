@@ -453,7 +453,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
                 playbackId={
                   pageData?.belowTheFoldVideo2?.video.asset.playbackId
                 }
-                thumbnailTime={73}
+                thumbnailTime={51}
               />
             </OakBoxCustomMaxWidth>
           )}
