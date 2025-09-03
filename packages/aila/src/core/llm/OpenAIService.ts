@@ -36,7 +36,6 @@ export class OpenAIService implements LLMService {
         role: m.role,
         content: m.content,
       })),
-      ...(params.modelParams as any), // Spread the model params
     });
 
     return Promise.resolve(stream.getReader());
@@ -64,7 +63,6 @@ export class OpenAIService implements LLMService {
         role: m.role,
         content: m.content,
       })),
-      ...(modelParams as any), // Spread the model params
     });
 
     const reader = stream.getReader();
