@@ -80,7 +80,7 @@ function IconInfoCardLink({
   buttonLabelMobile,
   buttonLabel,
   title,
-  fileName,
+  fileExtension,
   href,
 }: {
   iconName: OakIconName;
@@ -88,7 +88,7 @@ function IconInfoCardLink({
   title: string;
   buttonLabelMobile?: string;
   buttonLabel: string;
-  fileName: string;
+  fileExtension: string;
   href: string;
 }) {
   return (
@@ -130,12 +130,12 @@ function IconInfoCardLink({
         >
           <OakFlex $display={["flex", "none"]} $width={"100%"}>
             <OakP $font="heading-light-7">
-              {buttonLabelMobile} ({fileName})
+              {buttonLabelMobile} ({fileExtension})
             </OakP>
           </OakFlex>
           <OakFlex $display={["none", "flex"]} $alignItems="center">
             <OakP $font="heading-light-7">
-              {buttonLabel} ({fileName})
+              {buttonLabel} ({fileExtension})
             </OakP>
           </OakFlex>
         </OakSmallPrimaryInvertedButton>
@@ -426,7 +426,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
               title={lesson.title}
               buttonLabel={lesson.fileName}
               buttonLabelMobile={lesson.mobileFileName ?? lesson.fileName}
-              fileName={`.${lesson.file?.asset.extension ?? "zip"}`}
+              fileExtension={`.${lesson.file?.asset.extension ?? "zip"}`}
               href={lesson.file?.asset.url}
             />
           ))}
@@ -475,7 +475,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
               buttonLabel={example.fileName}
               buttonLabelMobile={example.mobileFileName ?? example.fileName}
               title={example.title}
-              fileName={`.${example.file?.asset.extension ?? "pdf"}`}
+              fileExtension={`.${example.file?.asset.extension ?? "pdf"}`}
               href={example.file?.asset.url}
             />
           ))}
