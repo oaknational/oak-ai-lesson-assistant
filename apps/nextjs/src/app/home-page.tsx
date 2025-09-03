@@ -72,6 +72,8 @@ export function HomePageContent({ pageData }: HomePageProps) {
 
   const { track } = useAnalytics();
 
+  console.log("pageData", pageData);
+
   return (
     <>
       <HomePageHero pageData={pageData} />
