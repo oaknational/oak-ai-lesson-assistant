@@ -214,7 +214,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       
       // Extract content preview for the alert
       const contentPreview = Array.isArray(content) && content.length > 0 
-        ? content[0].content.substring(0, 200) + (content[0].content.length > 200 ? "..." : "")
+        ? (content[0] as Message).content.substring(0, 200) + ((content[0] as Message).content.length > 200 ? "..." : "")
         : "Unknown content";
     
       try {

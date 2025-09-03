@@ -21,6 +21,7 @@ import { generateAllQuizQuestionsSchema } from "./quizQuestion/generateAll.schem
 import { embedQuizQuestionSchema } from "./quizQuestion/generateQuizQuestionEmbeddings.schema";
 import { notifyModerationSchema } from "./slack/notifyModeration.schema";
 import { notifyModerationTeachingMaterialsSchema } from "./slack/notifyModerationTeachingMaterials.schema";
+import { notifyThreatDetectionSchema } from "./slack/notifyThreatDetection.schema";
 import { notifyRateLimitSchema } from "./slack/notifyRateLimit.schema";
 import { notifyUserBanSchema } from "./slack/notifyUserBan.schema";
 import { embedAllSnippetsSchema } from "./snippet/embedAll.schema";
@@ -66,6 +67,7 @@ const schemas = {
   "app/slack.notifyModeration": notifyModerationSchema,
   "app/slack.notifyModerationTeachingMaterials":
     notifyModerationTeachingMaterialsSchema,
+  "app/slack.notifyThreatDetection": notifyThreatDetectionSchema,
   "app/slack.notifyUserBan": notifyUserBanSchema,
   "app/demo.populateStatuses": populateDemoStatusesSchema,
 } satisfies ZodEventSchemas;
