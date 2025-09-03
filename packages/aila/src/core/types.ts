@@ -1,5 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
+import type { OpenAIModelParams } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
 import type { AilaModerator } from "../features/moderation/moderators";
@@ -37,7 +38,6 @@ export type AilaGenerateDocumentOptions = {
 
 export type AilaPublicChatOptions = {
   useRag?: boolean;
-  temperature?: number;
   numberOfRecordsInRag?: number;
   quizGenerators?: QuizGeneratorType[];
 };
@@ -49,7 +49,7 @@ export type AilaOptions = AilaPublicChatOptions & {
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
   useAgenticAila?: boolean;
-  model?: string;
+  modelParams?: OpenAIModelParams;
   mode?: AilaGenerateDocumentMode;
 };
 

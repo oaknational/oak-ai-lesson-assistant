@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
+import type { ParsedChatCompletion } from "openai/resources/chat/completions.mjs";
 import { z } from "zod";
 
 import type {
@@ -286,7 +286,13 @@ async function evaluateStarterQuiz<
   questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+): Promise<
+  ParsedChatCompletion<
+    {
+      rating: number;
+    } & Record<string, unknown>
+  >
+> {
   const openAIMessage = combinePromptsAndQuestions(
     lessonPlan,
     questions,
@@ -531,7 +537,7 @@ export async function OpenAICallRerankerWithSchema(
   const openai = createOpenAIClient({ app: "maths-reranker" });
   const startTime = Date.now();
   if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
-    const response = await openai.beta.chat.completions.parse({
+    const response = await openai.chat.completions.parse({
       model: OPENAI_MODEL,
       max_completion_tokens: 4000,
       messages,
@@ -539,7 +545,7 @@ export async function OpenAICallRerankerWithSchema(
     });
     return response;
   } else {
-    const response = await openai.beta.chat.completions.parse({
+    const response = await openai.chat.completions.parse({
       model: OPENAI_MODEL,
       max_tokens,
       messages,

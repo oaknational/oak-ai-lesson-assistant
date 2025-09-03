@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Md5 } from "ts-md5";
 
-import { DEFAULT_CATEGORISE_MODEL } from "../../../constants";
+import { DEFAULT_CATEGORISE_GPT5_PARAMS } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 import type { Message } from "../../../core/chat";
 import type { AilaDocumentContent } from "../../../core/document/types";
@@ -122,7 +122,7 @@ Thank you and happy classifying!`;
         prompt: "categorise_key_stage_and_subject",
       },
       {
-        model: DEFAULT_CATEGORISE_MODEL,
+        ...DEFAULT_CATEGORISE_GPT5_PARAMS,
         stream: false,
         messages,
         response_format: { type: "json_object" },

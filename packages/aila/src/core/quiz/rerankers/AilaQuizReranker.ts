@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
-import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
+import type { ParsedChatCompletion } from "openai/resources/chat/completions.mjs";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 import type { z } from "zod";

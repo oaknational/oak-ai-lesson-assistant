@@ -3,10 +3,9 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import {
-  DEFAULT_MODEL,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
+  DEFAULT_OPENAI_GPT4_PARAMS,
   DEFAULT_QUIZ_GENERATORS,
-  DEFAULT_TEMPERATURE,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
@@ -161,7 +160,6 @@ export class Aila implements AilaServices {
   ): AilaOptionsWithDefaultFallbackValues {
     return {
       useRag: options?.useRag ?? true,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
       quizGenerators: options?.quizGenerators ?? DEFAULT_QUIZ_GENERATORS,
@@ -171,7 +169,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       useAgenticAila: options?.useAgenticAila ?? false,
-      model: options?.model ?? DEFAULT_MODEL,
+      modelParams: options?.modelParams ?? DEFAULT_OPENAI_GPT4_PARAMS,
       mode: options?.mode ?? "interactive",
     };
   }

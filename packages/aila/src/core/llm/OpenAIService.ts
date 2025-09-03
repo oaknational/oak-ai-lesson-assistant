@@ -6,6 +6,7 @@ import type { OpenAIProvider } from "@ai-sdk/openai";
 import { streamObject, streamText } from "ai";
 import type { ZodSchema } from "zod";
 
+import type { OpenAIModelParams } from "../../constants";
 import type { Message } from "../chat";
 import type { LLMService } from "./LLMService";
 
@@ -26,36 +27,36 @@ export class OpenAIService implements LLMService {
   }
 
   async createChatCompletionStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { textStream: stream } = streamText({
-      model: this._openAIProvider(params.model),
+      model: this._openAIProvider(params.modelParams.model),
       messages: params.messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: params.temperature,
+      ...(params.modelParams as any), // Spread the model params
     });
 
     return Promise.resolve(stream.getReader());
   }
 
   async createChatCompletionObjectStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     schema: ZodSchema;
     schemaName: string;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { model, messages, temperature, schema, schemaName } = params;
+    const { modelParams, messages, schema, schemaName } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {
-      return this.createChatCompletionStream({ model, messages, temperature });
+      return this.createChatCompletionStream({ modelParams, messages });
     }
     const startTime = Date.now();
     const { textStream: stream } = streamObject({
-      model: this._openAIProvider(model, { structuredOutputs: true }),
+      model: this._openAIProvider(modelParams.model, {
+        structuredOutputs: true,
+      }),
       output: "object",
       schema,
       schemaName,
@@ -63,7 +64,7 @@ export class OpenAIService implements LLMService {
         role: m.role,
         content: m.content,
       })),
-      temperature,
+      ...(modelParams as any), // Spread the model params
     });
 
     const reader = stream.getReader();
