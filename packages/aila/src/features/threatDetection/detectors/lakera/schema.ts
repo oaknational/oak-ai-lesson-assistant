@@ -46,9 +46,26 @@ export const lakeraGuardResponseSchema = z.object({
   dev_info: devInfoSchema.optional(),
 });
 
+// Results endpoint schema
+const lakeraResultItemSchema = z.object({
+  project_id: z.string(),
+  policy_id: z.string(),
+  detector_id: z.string(),
+  detector_type: z.string(),
+  result: z.enum(["l1_confident", "l2_very_likely", "l3_likely", "l4_less_likely", "l5_unlikely"]),
+  custom_matched: z.boolean(),
+  message_id: z.number(),
+});
+
+export const lakeraResultsResponseSchema = z.object({
+  results: z.array(lakeraResultItemSchema),
+});
+
 // Type definitions
 export type LakeraGuardRequest = z.infer<typeof lakeraGuardRequestSchema>;
 export type LakeraGuardResponse = z.infer<typeof lakeraGuardResponseSchema>;
+export type LakeraResultsResponse = z.infer<typeof lakeraResultsResponseSchema>;
+export type LakeraResultItem = z.infer<typeof lakeraResultItemSchema>;
 export type Message = z.infer<typeof messageSchema>;
 export type PayloadItem = z.infer<typeof payloadItemSchema>;
 export type BreakdownItem = z.infer<typeof breakdownItemSchema>;
