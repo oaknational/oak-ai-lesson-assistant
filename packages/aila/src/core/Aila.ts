@@ -4,7 +4,7 @@ import { aiLogger } from "@oakai/logger";
 
 import {
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-  DEFAULT_OPENAI_GPT4_PARAMS,
+  DEFAULT_OPENAI_GPT5_PARAMS,
   DEFAULT_QUIZ_GENERATORS,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
@@ -169,7 +169,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       useAgenticAila: options?.useAgenticAila ?? false,
-      modelParams: options?.modelParams ?? DEFAULT_OPENAI_GPT4_PARAMS,
+      modelParams: options?.modelParams ?? DEFAULT_OPENAI_GPT5_PARAMS,
       mode: options?.mode ?? "interactive",
     };
   }

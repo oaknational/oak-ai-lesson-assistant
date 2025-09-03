@@ -36,7 +36,7 @@ export const DEFAULT_OPENAI_GPT4_PARAMS: GPT4Params = {
 };
 
 export const DEFAULT_OPENAI_GPT5_PARAMS: GPT5Params = {
-  model: "gpt-5-2025-08-07",
+  model: "gpt-5-mini-2025-08-07",
   reasoning_effort: "low",
   verbosity: "low",
 };
@@ -47,7 +47,7 @@ export const DEFAULT_MODERATION_GPT4_PARAMS: GPT4Params = {
 };
 
 export const DEFAULT_MODERATION_GPT5_PARAMS: GPT5Params = {
-  model: "gpt-5-2025-08-07",
+  model: "gpt-5-mini-2025-08-07",
   reasoning_effort: "low",
   verbosity: "low",
 };
@@ -58,7 +58,7 @@ export const DEFAULT_CATEGORISE_GPT4_PARAMS: GPT4Params = {
 };
 
 export const DEFAULT_CATEGORISE_GPT5_PARAMS: GPT5Params = {
-  model: "gpt-5-2025-08-07",
+  model: "gpt-5-mini-2025-08-07",
   reasoning_effort: "low",
   verbosity: "low",
 };

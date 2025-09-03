@@ -1,5 +1,5 @@
 import {
-  DEFAULT_OPENAI_GPT4_PARAMS,
+  DEFAULT_OPENAI_GPT5_PARAMS,
   DEFAULT_QUIZ_GENERATORS,
 } from "@oakai/aila/src/constants";
 import type { Aila } from "@oakai/aila/src/core/Aila";
@@ -84,11 +84,12 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-may-25");
+      // const useAgenticAila = await serverSideFeatureFlag("agentic-aila-may-25");
+      const useAgenticAila = false;
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
-        modelParams: DEFAULT_OPENAI_GPT4_PARAMS,
+        modelParams: DEFAULT_OPENAI_GPT5_PARAMS,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         quizGenerators: getQuizGenerators(),
         usePersistence: true,
