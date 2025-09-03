@@ -36,6 +36,40 @@ export const homePageQuery = `*[_type == "aiHomepage"] {
         }
       }
     },
+    sampleLessons[]{
+      iconName,
+      iconTileBackgroundColour,
+      title,
+      fileName,
+      mobileFileName,
+      file{
+        asset->{
+          size,
+          url,
+          extension
+        }
+      }
+    },
+    promptExamples[]{
+      iconName,
+      iconTileBackgroundColour,
+      title,
+      fileName,
+      mobileFileName,
+      file{
+        asset->{
+          size,
+          url,
+          extension
+        }
+      }
+    },
+
+    giveFeedbackLink {
+      title,
+      url,
+      external
+    },
     "seo": {
       "metaTitle": seo.metaTitle,
       "metaDescription": seo.metaDescription,

@@ -209,55 +209,64 @@ export function HomePageContent({ pageData }: HomePageProps) {
         </OakGridArea>
       </OakGrid>
 
-      <OakFlexWithBackground
-        $flexDirection={["column", "row"]}
-        $justifyContent={["center", "space-between"]}
-        $alignItems={"center"}
-        $gap="all-spacing-10"
-        $pv={["inner-padding-xl8"]}
-        $ph={["inner-padding-xl"]}
-        $background={"lavender30"}
-        fullWidthBgColor={"lavender30"}
-      >
-        <OakFlexCustomMaxWidth
-          customMaxWidth={557}
-          $flexDirection="column"
-          $gap="all-spacing-6"
+      {pageData?.giveFeedbackLink?.external && (
+        <OakFlexWithBackground
+          $flexDirection={["column", "row"]}
+          $justifyContent={["center", "space-between"]}
+          $alignItems={"center"}
+          $gap="all-spacing-10"
+          $pv={["inner-padding-xl8"]}
+          $ph={["inner-padding-xl"]}
+          $background={"lavender30"}
+          fullWidthBgColor={"lavender30"}
         >
-          <OakHeading id="give-feedback" $font="heading-4" tag="h2">
-            Give feedback
-          </OakHeading>
-          <OakP $textAlign="left" $font="body-2">
-            Aila is still in development, and we&apos;re the first to admit
-            it&apos;s not perfect. It doesn&apos;t yet have all the features
-            you&apos;ll want, and you may spot the odd glitch or mistake. It
-            can&apos;t create images or model diagrams, though it can suggest
-            where to find them. Like all AI tools, it&apos;s stronger in some
-            subjects than others. We&apos;re improving Aila all the time, and
-            your feedback helps us make it better for you and your pupils.
-          </OakP>
-          <OakSecondaryButton
-            element="a"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-            iconName="arrow-right"
-            isTrailingIcon
+          <OakFlexCustomMaxWidth
+            customMaxWidth={557}
+            $flexDirection="column"
+            $gap="all-spacing-6"
           >
-            Share feedback
-          </OakSecondaryButton>
-        </OakFlexCustomMaxWidth>
+            <OakHeading id="give-feedback" $font="heading-4" tag="h2">
+              Give feedback
+            </OakHeading>
+            <OakP $textAlign="left" $font="body-2">
+              Aila is still in development, and we&apos;re the first to admit
+              it&apos;s not perfect. It doesn&apos;t yet have all the features
+              you&apos;ll want, and you may spot the odd glitch or mistake. It
+              can&apos;t create images or model diagrams, though it can suggest
+              where to find them. Like all AI tools, it&apos;s stronger in some
+              subjects than others. We&apos;re improving Aila all the time, and
+              your feedback helps us make it better for you and your pupils.
+            </OakP>
+            <OakSecondaryButton
+              element="a"
+              href={pageData.giveFeedbackLink.external}
+              target="_blank"
+              rel="noopener noreferrer"
+              iconName="arrow-right"
+              isTrailingIcon
+            >
+              Share feedback
+            </OakSecondaryButton>
+          </OakFlexCustomMaxWidth>
 
-        <OakBoxCustomMaxWidth customMaxWidth={445} style={{ height: "215px" }}>
-          <OakFlex $flexGrow={1} $justifyContent="center" $alignItems="center">
-            <Image
-              src={oakSupporting}
-              alt="jigsaw image"
-              style={{ width: "100%", height: "100%", objectFit: "fill" }}
-            />
-          </OakFlex>
-        </OakBoxCustomMaxWidth>
-      </OakFlexWithBackground>
+          <OakBoxCustomMaxWidth
+            customMaxWidth={445}
+            style={{ height: "215px" }}
+          >
+            <OakFlex
+              $flexGrow={1}
+              $justifyContent="center"
+              $alignItems="center"
+            >
+              <Image
+                src={oakSupporting}
+                alt="jigsaw image"
+                style={{ width: "100%", height: "100%", objectFit: "fill" }}
+              />
+            </OakFlex>
+          </OakBoxCustomMaxWidth>
+        </OakFlexWithBackground>
+      )}
     </>
   );
 }
@@ -409,25 +418,18 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           lessons, but you can add your own once downloaded.
         </OakP>
         <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
-          <IconInfoCardLink
-            iconName="subject-history"
-            background="bg-decorative5-subdued"
-            title="KS2 • History"
-            buttonLabel="Why was the discovery of the Rosetta Stone so important"
-            buttonLabelMobile="Rosetta Stone"
-            fileName=".zip"
-            href="https://drive.google.com/file/d/1KqGIPrCIz3s-gpS4O_kyDBef_OUP_FIt/view?usp=drive_link"
-          />
-
-          <IconInfoCardLink
-            iconName="subject-geography"
-            background="border-decorative4"
-            title="KS4 • Geography"
-            buttonLabel="Demographic transition model"
-            buttonLabelMobile="Demographic transition"
-            fileName=".zip"
-            href="https://drive.google.com/file/d/1LvFNQ7OH6rS02BBftSCxVKOtRWM688ml/view?usp=drive_link"
-          />
+          {pageData?.sampleLessons?.map((lesson, index) => (
+            <IconInfoCardLink
+              key={index}
+              iconName={lesson.iconName}
+              background={lesson.iconTileBackgroundColour}
+              title={lesson.title}
+              buttonLabel={lesson.fileName}
+              buttonLabelMobile={lesson.mobileFileName ?? lesson.fileName}
+              fileName={`.${lesson.file?.asset.extension ?? "zip"}`}
+              href={lesson.file?.asset.url}
+            />
+          ))}
         </OakFlex>
         <OakHeading
           id="creating-a-lesson"
@@ -465,15 +467,18 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             Ask for different tasks or activities to suit your pupils, and
             download fully editable resources ready for your classroom.
           </OakP>
-          <IconInfoCardLink
-            iconName="ai-worksheet"
-            background="bg-decorative3-subdued"
-            buttonLabel="A guide to creating a lesson with example prompts"
-            buttonLabelMobile="Example prompts"
-            title="Getting started with Aila"
-            fileName=".pdf"
-            href="/"
-          />
+          {pageData?.promptExamples?.map((example, index) => (
+            <IconInfoCardLink
+              key={index}
+              iconName={example.iconName}
+              background={example.iconTileBackgroundColour}
+              buttonLabel={example.fileName}
+              buttonLabelMobile={example.mobileFileName ?? example.fileName}
+              title={example.title}
+              fileName={`.${example.file?.asset.extension ?? "pdf"}`}
+              href={example.file?.asset.url}
+            />
+          ))}
 
           <OakSecondaryButton
             element="a"
