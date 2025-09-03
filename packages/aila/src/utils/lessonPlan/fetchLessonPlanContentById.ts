@@ -4,7 +4,7 @@ import invariant from "tiny-invariant";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { LooseLessonPlan } from "../../protocol/schema";
-import { LessonPlanSchemaWhilstStreaming } from "../../protocol/schema";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../protocol/schema";
 import { upgradeQuizzes } from "../../protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
 
 // asserts that the object has a lessonPlan property
@@ -48,7 +48,8 @@ export async function fetchLessonPlanContentById(
   const upgradedLessonPlan = upgradeResult.data.lessonPlan;
 
   const parsedPlan = tryWithErrorReporting(
-    () => LessonPlanSchemaWhilstStreaming.parse(upgradedLessonPlan),
+    // RAG lesson plans have all fields but can have different length for answers, keywords, etc
+    () => CompletedLessonPlanSchemaWithoutLength.parse(upgradedLessonPlan),
     "Failed to parse lesson plan content",
     undefined,
     undefined,
