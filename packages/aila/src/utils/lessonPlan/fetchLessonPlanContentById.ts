@@ -20,13 +20,13 @@ export async function fetchLessonPlanContentById(
     return null;
   }
 
-  const upgradedLessonPlan = await upgradeQuizzes({
-    data: lessonPlanRecord.content,
-    persistUpgrade: null,
-  });
+  // const upgradedLessonPlan = await upgradeQuizzes({
+  //   data: lessonPlanRecord.content,
+  //   persistUpgrade: null,
+  // });
 
   const parsedPlan = tryWithErrorReporting(
-    () => LessonPlanSchemaWhilstStreaming.parse(upgradedLessonPlan),
+    () => LessonPlanSchemaWhilstStreaming.parse(lessonPlanRecord.content),
     "Failed to parse lesson plan content",
     undefined,
     undefined,
