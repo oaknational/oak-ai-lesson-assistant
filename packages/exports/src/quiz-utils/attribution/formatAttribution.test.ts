@@ -8,7 +8,7 @@ import {
 import type {
   ImageAttribution,
   ImageWithAttribution,
-  QuizV2Question,
+  QuizQuestion,
 } from "./types";
 
 describe("mapQuestionImages", () => {
@@ -28,7 +28,7 @@ describe("mapQuestionImages", () => {
   ];
 
   it("should map questions with single images to attributions", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is this? ![image](https://example.com/image1.jpg)",
@@ -52,7 +52,7 @@ describe("mapQuestionImages", () => {
   });
 
   it("should map multiple images within a single question", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question:
@@ -84,7 +84,7 @@ describe("mapQuestionImages", () => {
   });
 
   it("should map images across multiple questions", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is ![first](https://example.com/image1.jpg)?",
@@ -121,7 +121,7 @@ describe("mapQuestionImages", () => {
   });
 
   it("should skip images without attributions", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question:
@@ -146,7 +146,7 @@ describe("mapQuestionImages", () => {
   });
 
   it("should return empty array for questions with no images", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is 2 + 2?",
@@ -381,7 +381,7 @@ describe("formatQuizAttributions", () => {
   ];
 
   it("should integrate image extraction and formatting", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![diagram](https://example.com/pixabay.jpg)?",
@@ -406,7 +406,7 @@ describe("formatQuizAttributions", () => {
   });
 
   it("should return empty result for no images", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is 2 + 2?",
@@ -424,7 +424,7 @@ describe("formatQuizAttributions", () => {
   });
 
   it("should handle questions with images but no attributions", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![unknown](https://example.com/unknown.jpg)?",

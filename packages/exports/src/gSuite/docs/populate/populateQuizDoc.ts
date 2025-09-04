@@ -4,7 +4,7 @@ import type { docs_v1 } from "@googleapis/docs";
 
 import type {
   ImageAttribution,
-  QuizV2Question,
+  QuizQuestion,
 } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
 import { addFooterAttribution } from "../quiz/footerAttribution";
@@ -18,7 +18,7 @@ const log = aiLogger("exports");
 interface PopulateDocV2Data {
   lesson_title: string;
   quiz_type: string;
-  questions: QuizV2Question[];
+  questions: QuizQuestion[];
   imageAttributions: ImageAttribution[];
 }
 

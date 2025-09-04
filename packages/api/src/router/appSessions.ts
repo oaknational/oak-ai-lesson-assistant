@@ -1,4 +1,4 @@
-import { upgradeQuizzes } from "@oakai/aila/src/protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
+import { migrateLessonPlan } from "@oakai/aila/src/protocol/schemas/versioning/lessonPlanMigrator";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -72,9 +72,9 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   }
 
   // Upgrade V1 quizzes to V2 if needed
-  const upgradeResult = await upgradeQuizzes({
-    data: chatRecord.output,
-    persistUpgrade: async (upgradedData) => {
+  const upgradeResult = await migrateLessonPlan({
+    lessonPlan: chatRecord.output as Record<string, unknown>,
+    persistMigration: async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
         data: { output: upgradedData },
@@ -85,7 +85,7 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   const chat = parseChatAndReportError({
     id,
     userId: chatRecord.userId,
-    sessionOutput: upgradeResult.data,
+    sessionOutput: upgradeResult.lessonPlan as Prisma.JsonValue,
   });
 
   return chat;
@@ -294,16 +294,16 @@ export const appSessionsRouter = router({
         });
       }
 
-      // Upgrade V1 quizzes to V2 if needed (but don't persist yet)
-      const upgradeResult = await upgradeQuizzes({
-        data: session.output,
-        persistUpgrade: null,
+      // Migrate lesson plan to latest version if needed (but don't persist yet)
+      const upgradeResult = await migrateLessonPlan({
+        lessonPlan: session.output as Record<string, unknown>,
+        persistMigration: null,
       });
 
       const chat = parseChatAndReportError({
         id,
         userId: session.userId,
-        sessionOutput: upgradeResult.data,
+        sessionOutput: upgradeResult.lessonPlan as Prisma.JsonValue,
       });
 
       if (!chat) {

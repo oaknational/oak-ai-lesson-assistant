@@ -13,10 +13,43 @@ import type {
   LessonPlanKey,
 } from "../../../../protocol/schema";
 import { chatSchema } from "../../../../protocol/schema";
-import { upgradeQuizzes } from "../../../../protocol/schemas/quiz/conversion/lessonPlanQuizMigrator";
+import { migrateLessonPlan } from "../../../../protocol/schemas/versioning/lessonPlanMigrator";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
+
+/**
+ * Helper to migrate lesson plan quizzes in chat data before parsing
+ */
+async function migrateChatData(
+  rawChat: unknown,
+  persistCallback: (updatedChat: Prisma.InputJsonValue) => Promise<void>,
+): Promise<unknown> {
+  if (
+    !rawChat ||
+    typeof rawChat !== "object" ||
+    !("lessonPlan" in rawChat) ||
+    !rawChat.lessonPlan
+  ) {
+    return rawChat;
+  }
+
+  const migrationResult = await migrateLessonPlan({
+    lessonPlan: rawChat.lessonPlan as Record<string, unknown>,
+    persistMigration: async (migratedLessonPlan) => {
+      const updatedChat = {
+        ...rawChat,
+        lessonPlan: migratedLessonPlan,
+      };
+      await persistCallback(updatedChat as Prisma.InputJsonValue);
+    },
+  });
+
+  // Return chat with migrated lesson plan if migration occurred
+  return migrationResult.wasMigrated
+    ? { ...rawChat, lessonPlan: migrationResult.lessonPlan }
+    : rawChat;
+}
 
 export class AilaPrismaPersistence extends AilaPersistence {
   private readonly _prisma: PrismaClientWithAccelerate;
@@ -54,18 +87,18 @@ export class AilaPrismaPersistence extends AilaPersistence {
 
     const rawChat = appSession?.output;
 
-    // Upgrade V1 quizzes to V2 before parsing with the schema
-    const upgradeResult = await upgradeQuizzes({
-      data: rawChat,
-      persistUpgrade: async (upgradedData) => {
+    // Migrate lesson plan quizzes before parsing
+    const chatDataForParsing = await migrateChatData(
+      rawChat,
+      async (updatedChat) => {
         await this._prisma.appSession.update({
           where: { id },
-          data: { output: upgradedData },
+          data: { output: updatedChat },
         });
       },
-    });
+    );
 
-    const parsedChat = chatSchema.parse(upgradeResult.data);
+    const parsedChat = chatSchema.parse(chatDataForParsing);
 
     return parsedChat;
   }

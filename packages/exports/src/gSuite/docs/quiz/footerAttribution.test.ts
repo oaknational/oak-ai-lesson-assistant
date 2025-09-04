@@ -6,7 +6,7 @@ import { describe, expect, it, jest } from "@jest/globals";
 
 import type {
   ImageAttribution,
-  QuizV2Question,
+  QuizQuestion,
 } from "../../../schema/input.schema";
 import { addFooterAttribution } from "./footerAttribution";
 
@@ -42,7 +42,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![diagram](https://example.com/image1.jpg)?",
@@ -103,7 +103,7 @@ describe("addFooterAttribution", () => {
     });
 
     // Create long content (multiple questions to exceed threshold)
-    const questions: QuizV2Question[] = Array.from({ length: 15 }, (_, i) => ({
+    const questions: QuizQuestion[] = Array.from({ length: 15 }, (_, i) => ({
       questionType: "multiple-choice",
       question: `Question ${i + 1} with ![image](https://example.com/image${i + 1}.jpg)?`,
       answers: ["A", "B", "C"],
@@ -157,7 +157,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is 2 + 2?",
@@ -188,7 +188,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![diagram](https://example.com/image1.jpg)?",

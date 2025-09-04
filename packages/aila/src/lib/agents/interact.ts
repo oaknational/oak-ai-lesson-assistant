@@ -10,7 +10,7 @@ import {
   type LessonPlanKey,
   type LooseLessonPlan,
 } from "../../protocol/schema";
-import type { QuizV2 } from "../../protocol/schemas/quiz/quizV2";
+import type { LatestQuiz } from "../../protocol/schemas/quiz";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { agents, sectionAgentMap } from "./agents";
 import { type InteractResult } from "./compatibility/streamHandling";
@@ -94,8 +94,8 @@ export async function interact({
   messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
-    mathsStarterQuiz?: CustomAgentAsyncFn<QuizV2>;
-    mathsExitQuiz?: CustomAgentAsyncFn<QuizV2>;
+    mathsStarterQuiz?: CustomAgentAsyncFn<LatestQuiz>;
+    mathsExitQuiz?: CustomAgentAsyncFn<LatestQuiz>;
     fetchRagData: CustomAgentAsyncFn<CompletedLessonPlan[]>;
   };
   relevantLessons: AilaRagRelevantLesson[] | null;

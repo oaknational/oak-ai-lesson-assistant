@@ -4,9 +4,12 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
 import {
-  type QuizV2Optional,
-  QuizV2Schema,
-  QuizV2SchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlySchema,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
+  type LatestQuizOptional,
+  LatestQuizSchema,
+  LatestQuizSchemaWithoutLength,
 } from "./schemas/quiz";
 import { type HasuraQuiz } from "./schemas/quiz/rawQuiz";
 
@@ -368,11 +371,11 @@ export const CompletedLessonPlanSchema = z.object({
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
   basedOn: BasedOnSchema.nullish(),
-  starterQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+  starterQuiz: LatestQuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.nullable().describe("The third learning cycle"),
-  exitQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: LatestQuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
@@ -498,7 +501,7 @@ export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
   | MisconceptionsOptional
   | KeywordOptional[]
-  | QuizV2Optional
+  | LatestQuizOptional
   | CycleOptional
   | string
   | string[]
@@ -516,7 +519,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizV2SchemaWithoutLength.describe(
+  starterQuiz: LatestQuizSchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
@@ -524,7 +527,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   cycle3: CycleSchemaWithoutLength.nullable().describe(
     "The third learning cycle",
   ),
-  exitQuiz: QuizV2SchemaWithoutLength.describe(
+  exitQuiz: LatestQuizSchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),
   additionalMaterials: AdditionalMaterialsSchema,
@@ -532,7 +535,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
 
 // Re-export quiz schemas for external use
 export {
-  QuizV2MultipleChoiceOnlySchema,
-  QuizV2MultipleChoiceOnlySchemaWithoutLength,
-  QuizV2MultipleChoiceOnlyStrictMax6Schema,
+  LatestQuizMultipleChoiceOnlySchema,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
 } from "./schemas/quiz";

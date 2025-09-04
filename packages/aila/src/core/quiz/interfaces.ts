@@ -7,11 +7,11 @@ import type {
   LooseLessonPlan,
   QuizPath,
 } from "../../protocol/schema";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type {
-  QuizV2,
-  QuizV2Question,
-} from "../../protocol/schemas/quiz/quizV2";
+  LatestQuiz,
+  LatestQuizQuestion,
+} from "../../protocol/schemas/quiz";
+import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
@@ -109,7 +109,7 @@ export interface FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
     override?: boolean,
-  ): Promise<QuizV2>;
+  ): Promise<LatestQuiz>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionMultipleChoice } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 import { shuffleMultipleChoiceAnswers } from "@oakai/exports/src/quiz-utils/shuffle";
 
@@ -12,7 +12,7 @@ import { AnswerBox } from "./AnswerBox";
 import { useTextWithBlanks } from "./textWithBlanks";
 
 type MultipleChoiceQuestionProps = {
-  question: QuizV2QuestionMultipleChoice;
+  question: Extract<LatestQuizQuestion, { questionType: "multiple-choice" }>;
   questionNumber: number;
 };
 
