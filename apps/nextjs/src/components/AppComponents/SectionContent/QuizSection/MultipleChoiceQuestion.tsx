@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 
 import type { QuizV2QuestionMultipleChoice } from "@oakai/aila/src/protocol/schema";
+import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
+import { shuffleMultipleChoiceAnswers } from "@oakai/exports/src/quiz-utils/shuffle";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "./AnswerBox";
-import { addInstruction } from "./helpers";
-import { shuffleMultipleChoiceAnswers } from "./shuffle";
 import { useTextWithBlanks } from "./textWithBlanks";
 
 type MultipleChoiceQuestionProps = {

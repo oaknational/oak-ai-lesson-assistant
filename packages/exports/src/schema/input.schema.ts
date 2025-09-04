@@ -32,34 +32,50 @@ const quizV2QuestionShortAnswerSchema = z.object({
 const quizV2QuestionMatchSchema = z.object({
   questionType: z.literal("match"),
   question: z.string(),
-  answers: z.array(z.tuple([z.string(), z.string()])),
+  pairs: z.array(
+    z.object({
+      left: z.string(),
+      right: z.string(),
+    }),
+  ),
   hint: z.string().nullable(),
 });
 
 const quizV2QuestionOrderSchema = z.object({
   questionType: z.literal("order"),
   question: z.string(),
-  answers: z.array(z.string()),
-  correctOrder: z.array(z.number()),
+  items: z.array(z.string()),
   hint: z.string().nullable(),
 });
 
-export const quizV2QuestionSchema = z.union([
+export const quizV2QuestionSchema = z.discriminatedUnion("questionType", [
   quizV2QuestionMultipleChoiceSchema,
   quizV2QuestionShortAnswerSchema,
   quizV2QuestionMatchSchema,
   quizV2QuestionOrderSchema,
 ]);
 
+const imageAttributionSchema = z.object({
+  imageUrl: z.string(),
+  attribution: z.string(),
+});
+
 export const quizV2Schema = z.object({
   version: z.literal("v2"),
   questions: z.array(quizV2QuestionSchema).min(1),
+  imageAttributions: z.array(imageAttributionSchema),
 });
+export type ImageAttribution = z.infer<typeof imageAttributionSchema>;
 export type QuizV2 = z.infer<typeof quizV2Schema>;
 export type QuizV2Question = z.infer<typeof quizV2QuestionSchema>;
 export type QuizV2QuestionMultipleChoice = z.infer<
   typeof quizV2QuestionMultipleChoiceSchema
 >;
+export type QuizV2QuestionShortAnswer = z.infer<
+  typeof quizV2QuestionShortAnswerSchema
+>;
+export type QuizV2QuestionMatch = z.infer<typeof quizV2QuestionMatchSchema>;
+export type QuizV2QuestionOrder = z.infer<typeof quizV2QuestionOrderSchema>;
 
 // Union type for both formats
 export const quizSchema = quizV2Schema;

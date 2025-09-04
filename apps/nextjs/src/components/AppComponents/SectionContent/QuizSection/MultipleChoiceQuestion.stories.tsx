@@ -75,3 +75,16 @@ export const WithUnfilledBlanks: Story = {
     questionNumber: 4,
   },
 };
+
+export const WithBlockquoteText: Story = {
+  args: {
+    question: {
+      questionType: "multiple-choice",
+      question: "What angle is greater than a right angle?",
+      answers: ["> 90 degrees"],
+      distractors: ["< 90 degrees", "= 90 degrees", "≤ 45 degrees"],
+      hint: null,
+    },
+    questionNumber: 5,
+  },
+};
