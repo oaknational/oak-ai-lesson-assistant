@@ -215,13 +215,12 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $justifyContent={["center", "space-between"]}
           $alignItems={"center"}
           $gap="all-spacing-10"
-          $pv={["inner-padding-xl8"]}
-          $ph={["inner-padding-xl"]}
+          $pv={["none", "inner-padding-xl8"]}
           $background={"lavender30"}
           fullWidthBgColor={"lavender30"}
         >
-          <OakFlexCustomMaxWidth
-            customMaxWidth={557}
+          <OakFlex
+            $pv={["inner-padding-xl8"]}
             $flexDirection="column"
             $gap="all-spacing-6"
           >
@@ -247,24 +246,19 @@ export function HomePageContent({ pageData }: HomePageProps) {
             >
               Share feedback
             </OakSecondaryButton>
-          </OakFlexCustomMaxWidth>
-
-          <OakBoxCustomMaxWidth
-            customMaxWidth={445}
-            style={{ height: "215px" }}
+          </OakFlex>
+          <OakFlex
+            $display={["none", "flex"]}
+            $maxWidth={"all-spacing-22"}
+            $flexGrow={1}
+            $pa={"inner-padding-xl"}
           >
-            <OakFlex
-              $flexGrow={1}
-              $justifyContent="center"
-              $alignItems="center"
-            >
-              <Image
-                src={oakSupporting}
-                alt="jigsaw image"
-                style={{ width: "100%", height: "100%", objectFit: "fill" }}
-              />
-            </OakFlex>
-          </OakBoxCustomMaxWidth>
+            <Image
+              src={oakSupporting}
+              alt="jigsaw image"
+              style={{ width: "100%", height: "100%", objectFit: "fill" }}
+            />
+          </OakFlex>
         </OakFlexWithBackground>
       )}
     </>
@@ -285,9 +279,9 @@ const OakFlexWithBackground = styled(OakFlex)<{
     width: 150vw;
     background-color: ${(props) => oakColorTokens[props.fullWidthBgColor]};
   }
-  img {
+  /* img {
     max-width: 300px;
-  }
+  } */
   p {
     max-width: 700px;
   }
