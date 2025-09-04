@@ -34,7 +34,7 @@ export const ResourcesStoresProvider: React.FC<
 
   const trpcUtils = trpc.useUtils();
 
-  const { isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
 
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
@@ -51,14 +51,14 @@ export const ResourcesStoresProvider: React.FC<
       return;
     }
 
-    if (!isLoaded) return;
+    if (!isLoaded && !isSignedIn) return;
 
     if (props.source === "owa") {
       void stores.resources.getState().actions.fetchOwaData(props);
     }
 
     haveInitialized.current = true;
-  }, [isLoaded, props, stores.resources]);
+  }, [isLoaded, isSignedIn, props, stores.resources]);
 
   return (
     <ResourcesStoresContext.Provider value={stores}>
