@@ -36,6 +36,11 @@ export const ResourcesStoresProvider: React.FC<
 
   const { isLoaded, isSignedIn } = useAuth();
 
+  console.log("signed in store provider: isLoaded / isSignedIn", {
+    isLoaded,
+    isSignedIn,
+  });
+
   const [stores] = useState(() => {
     const storesObj: ResourcesStores = {
       resources: createResourcesStore(props, track, trpcUtils, initState),
