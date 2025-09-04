@@ -215,7 +215,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $justifyContent={["center", "space-between"]}
           $alignItems={"center"}
           $gap="all-spacing-10"
-          $pv={["none", "inner-padding-xl8"]}
+          $pv={["inner-padding-none", "inner-padding-xl8"]}
           $background={"lavender30"}
           fullWidthBgColor={"lavender30"}
         >
