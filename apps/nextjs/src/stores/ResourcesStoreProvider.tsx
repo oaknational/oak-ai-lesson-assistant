@@ -51,7 +51,7 @@ export const ResourcesStoresProvider: React.FC<
       return;
     }
 
-    if (!isLoaded && !isSignedIn) return;
+    if (!isLoaded || !isSignedIn) return;
 
     if (props.source === "owa") {
       void stores.resources.getState().actions.fetchOwaData(props);
