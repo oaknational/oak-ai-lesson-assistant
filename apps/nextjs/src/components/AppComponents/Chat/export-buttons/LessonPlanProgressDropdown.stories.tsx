@@ -1,8 +1,8 @@
 import type {
   Cycle,
   Keyword,
+  LatestQuiz,
   Misconception,
-  QuizV2,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
@@ -175,10 +175,10 @@ function sampleKeyword(): Keyword {
   };
 }
 
-function sampleQuiz(): QuizV2 {
+function sampleQuiz(): LatestQuiz {
   return {
-    version: "v2" as const,
-    imageAttributions: [],
+    version: "v3" as const,
+    imageMetadata: [],
     questions: [
       {
         questionType: "multiple-choice" as const,

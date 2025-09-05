@@ -55,17 +55,19 @@ export const quizQuestionSchema = z.discriminatedUnion("questionType", [
   quizQuestionOrderSchema,
 ]);
 
-const imageAttributionSchema = z.object({
+const imageMetadataSchema = z.object({
   imageUrl: z.string(),
-  attribution: z.string(),
+  attribution: z.string().nullable(),
+  width: z.number(),
+  height: z.number(),
 });
 
 export const quizSchema = z.object({
-  version: z.literal("v2"),
+  version: z.literal("v3"),
   questions: z.array(quizQuestionSchema).min(1),
-  imageAttributions: z.array(imageAttributionSchema),
+  imageMetadata: z.array(imageMetadataSchema),
 });
-export type ImageAttribution = z.infer<typeof imageAttributionSchema>;
+export type ImageMetadata = z.infer<typeof imageMetadataSchema>;
 export type Quiz = z.infer<typeof quizSchema>;
 export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
 export type QuizQuestionMultipleChoice = z.infer<

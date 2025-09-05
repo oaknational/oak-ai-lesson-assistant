@@ -1,4 +1,4 @@
-import type { QuizV1, QuizV2 } from "../../quiz";
+import type { QuizV1, QuizV2, QuizV3 } from "../../quiz";
 
 // V1 Quiz fixtures (array format)
 export const mockV1Quiz: QuizV1 = [
@@ -53,6 +53,21 @@ export const mockV2QuizAlt: QuizV2 = {
   imageAttributions: [],
 };
 
+// V3 Quiz fixtures (object format with imageMetadata)
+export const mockV3Quiz: QuizV3 = {
+  version: "v3",
+  questions: [
+    {
+      questionType: "multiple-choice",
+      question: "What is the capital of Germany?",
+      answers: ["Berlin"],
+      distractors: ["Munich", "Hamburg"],
+      hint: null,
+    },
+  ],
+  imageMetadata: [],
+};
+
 // Base chat data structure
 export const baseChatData = {
   id: "test-chat-id",
@@ -84,12 +99,29 @@ export const chatWithV2Quiz = {
   },
 };
 
+export const chatWithV3Quiz = {
+  ...baseChatData,
+  lessonPlan: {
+    title: "Test Lesson",
+    subject: "Mathematics",
+    starterQuiz: mockV3Quiz,
+    exitQuiz: mockV3Quiz,
+  },
+};
+
 // Lesson plan fixtures
 export const simpleLessonPlan = {
   title: "My Lesson",
   subject: "Mathematics",
   starterQuiz: mockV2Quiz,
   exitQuiz: mockV2Quiz,
+};
+
+export const lessonPlanWithV3Quizzes = {
+  title: "My Lesson",
+  subject: "Mathematics",
+  starterQuiz: mockV3Quiz,
+  exitQuiz: mockV3Quiz,
 };
 
 export const completeLessonPlan = {
