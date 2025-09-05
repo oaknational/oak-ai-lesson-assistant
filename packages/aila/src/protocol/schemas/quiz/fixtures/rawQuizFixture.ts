@@ -68,6 +68,8 @@ export const rawQuizFixture: HasuraQuiz = [
         image_object: {
           secure_url: "https://example.com/dog.jpg",
           url: "https://example.com/dog.jpg",
+          width: 1024,
+          height: 768,
           metadata: {
             attribution: "Photo by John Doe on Unsplash",
             usageRestriction: "Free to use",
@@ -96,6 +98,8 @@ export const rawQuizFixture: HasuraQuiz = [
             {
               image_object: {
                 secure_url: "https://example.com/cat.jpg",
+                width: 640,
+                height: 480,
                 metadata: {
                   attribution: "Image © Example Inc",
                 },

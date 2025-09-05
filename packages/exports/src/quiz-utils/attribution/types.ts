@@ -25,8 +25,3 @@ export interface FormattedAttribution {
   plainText: string;
   segments: AttributionSegment[];
 }
-
-export interface ImageAttribution {
-  imageUrl: string;
-  attribution: string;
-}

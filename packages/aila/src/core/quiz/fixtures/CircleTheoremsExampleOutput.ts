@@ -71,8 +71,8 @@ export const CircleTheoremLesson = {
     },
   ],
   starterQuiz: {
-    version: "v2" as const,
-    imageAttributions: [],
+    version: "v3" as const,
+    imageMetadata: [],
     questions: [
       {
         questionType: "multiple-choice" as const,
@@ -217,8 +217,8 @@ export const CircleTheoremLesson = {
       "Model answer: For each problem, identify the applicable theorem and show step-by-step calculations leading to the solution. Ensure that diagrams are correctly annotated.",
   },
   exitQuiz: {
-    version: "v2" as const,
-    imageAttributions: [],
+    version: "v3" as const,
+    imageMetadata: [],
     questions: [
       {
         questionType: "multiple-choice" as const,

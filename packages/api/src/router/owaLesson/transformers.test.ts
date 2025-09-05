@@ -246,8 +246,8 @@ describe("transformQuiz", () => {
 
   it("should handle empty or malformed input gracefully", () => {
     expect(transformQuiz([])).toEqual({
-      version: "v2",
-      imageAttributions: [],
+      version: "v3",
+      imageMetadata: [],
       questions: [],
     });
   });
