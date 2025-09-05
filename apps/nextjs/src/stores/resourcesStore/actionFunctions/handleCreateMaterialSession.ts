@@ -1,9 +1,12 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
+import z from "zod";
+
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
+import { callWithHandshakeRetry } from "../utils/allWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
@@ -17,21 +20,21 @@ export const handleCreateMaterialSession =
     const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
 
     try {
-      const result =
-        await trpc.client.additionalMaterials.createMaterialSession.mutate({
+      const result = await callWithHandshakeRetry(() =>
+        trpc.client.additionalMaterials.createMaterialSession.mutate({
           documentType: docTypeParsed,
-        });
+        }),
+      );
+
+      const resourceId = z.string().parse(result.resourceId);
 
       log.info("Material session created ", {
         resourceId: result.resourceId,
       });
-      set({ id: result.resourceId });
+      set({ id: resourceId });
       log.info(get().id, "ID after creation");
 
-      get().actions.analytics.trackMaterialSelected(
-        result.resourceId,
-        docTypeParsed,
-      );
+      get().actions.analytics.trackMaterialSelected(resourceId, docTypeParsed);
     } catch (error) {
       handleStoreError(set, error, {
         context: "handleCreateMaterialSession",
