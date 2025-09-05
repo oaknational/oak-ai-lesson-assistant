@@ -80,6 +80,7 @@ export const createResourcesStore = (
   track: TrackFns,
   trpc: TrpcUtils,
   initState?: Partial<ResourcesState>,
+  refreshAuth?: () => Promise<void>,
 ) => {
   const resourcesStore = create<ResourcesState>()((set, get) => ({
     ...DEFAULT_STATE,
@@ -117,12 +118,12 @@ export const createResourcesStore = (
       downloadMaterial: handleDownload(set, get),
 
       // OWA data loading
-      fetchOwaData: handleFetchOwaLesson(set, get, trpc),
+      fetchOwaData: handleFetchOwaLesson(set, get, trpc, refreshAuth),
 
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
-      createMaterialSession: handleCreateMaterialSession(set, get, trpc),
+      createMaterialSession: handleCreateMaterialSession(set, get, trpc, refreshAuth),
 
       // Analytics actions
       analytics: handleAnalytics(set, get, track),

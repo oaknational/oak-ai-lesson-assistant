@@ -12,7 +12,7 @@ import { handleStoreError } from "../utils/errorHandling";
 const log = aiLogger("additional-materials");
 
 export const handleCreateMaterialSession =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils, refreshAuth?: () => Promise<void>) =>
   async (docType: string | null, stepNumber?: number) => {
     set({ stepNumber: stepNumber ?? 1 });
 
@@ -20,10 +20,12 @@ export const handleCreateMaterialSession =
     const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
 
     try {
-      const result = await callWithHandshakeRetry(() =>
-        trpc.client.additionalMaterials.createMaterialSession.mutate({
-          documentType: docTypeParsed,
-        }),
+      const result = await callWithHandshakeRetry(
+        () =>
+          trpc.client.additionalMaterials.createMaterialSession.mutate({
+            documentType: docTypeParsed,
+          }),
+        refreshAuth,
       );
 
       const resourceId = z.string().parse(result.resourceId);

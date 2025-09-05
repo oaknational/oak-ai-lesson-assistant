@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { type ExtractState, type StoreApi, useStore } from "zustand";
 
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
@@ -35,10 +35,15 @@ export const ResourcesStoresProvider: React.FC<
   const trpcUtils = trpc.useUtils();
 
   const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
 
   const [stores] = useState(() => {
+    const refreshAuth = user?.reload ? async () => {
+      await user.reload();
+    } : undefined;
+    
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(props, track, trpcUtils, initState),
+      resources: createResourcesStore(props, track, trpcUtils, initState, refreshAuth),
     };
     return storesObj;
   });
