@@ -42,10 +42,14 @@ export function generateOrderingTable(
   };
 
   elements.push(
-    createTableElement(insertIndex, shuffledItems.length, 2, cellContent, [
-      COLUMN_WIDTHS.checkbox,
-      COLUMN_WIDTHS.auto,
-    ]),
+    createTableElement(
+      insertIndex,
+      shuffledItems.length,
+      2,
+      cellContent,
+      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.auto],
+      null,
+    ),
   );
 
   return elements;

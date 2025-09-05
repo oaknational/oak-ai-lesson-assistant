@@ -2,6 +2,7 @@
  * Element creation functions for quiz table generation
  */
 import type { docs_v1 } from "@googleapis/docs";
+import invariant from "tiny-invariant";
 
 import {
   ANSWER_BOX_IMAGE_URL,
@@ -58,6 +59,7 @@ export function createTableElement(
   columns: number,
   cellContent: (row: number, col: number) => string,
   columnWidths: (number | "AUTO")[],
+  columnAlignments: ("START" | "CENTER" | "END" | "JUSTIFIED" | null)[] | null,
 ): QuizElement {
   const requests: docs_v1.Schema$Request[] = [];
 
@@ -70,9 +72,35 @@ export function createTableElement(
     },
   });
 
-  // 2. Populate cells (backwards to avoid index shifting)
   const cellIndices = calculateCellIndices(insertIndex, rows, columns);
 
+  // 2. Apply column-specific paragraph alignments
+  if (columnAlignments) {
+    columnAlignments.forEach((alignment, colIndex) => {
+      if (!alignment) return; // Skip null alignments
+
+      // Apply alignment to all cells in this column
+      for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+        const cellStartIndex = cellIndices[rowIndex * columns + colIndex];
+        invariant(cellStartIndex, `Cell index missing ${rowIndex}:${colIndex}`);
+
+        requests.push({
+          updateParagraphStyle: {
+            range: {
+              startIndex: cellStartIndex,
+              endIndex: cellStartIndex + 1,
+            },
+            paragraphStyle: {
+              alignment,
+            },
+            fields: "alignment",
+          },
+        });
+      }
+    });
+  }
+
+  // 3. Populate cells (backwards to avoid index shifting)
   for (let i = cellIndices.length - 1; i >= 0; i--) {
     const row = Math.floor(i / columns);
     const col = i % columns;
@@ -106,13 +134,13 @@ export function createTableElement(
     }
   }
 
-  // 3. Remove borders and set horizontal padding only
+  // 4. Remove borders and set horizontal padding only
   requests.push({
     updateTableCellStyle: {
       tableCellStyle: {
         contentAlignment: "MIDDLE",
         paddingLeft: { magnitude: 0, unit: "PT" },
-        paddingRight: { magnitude: 1, unit: "PT" },
+        paddingRight: { magnitude: 2, unit: "PT" },
         borderTop: {
           width: { magnitude: 0, unit: "PT" },
           color: { color: { rgbColor: { red: 1, green: 1, blue: 1 } } },
@@ -148,7 +176,7 @@ export function createTableElement(
     },
   });
 
-  // 4. Set column widths (skip AUTO columns to let them fill remaining space)
+  // 5. Set column widths (skip AUTO columns to let them fill remaining space)
   columnWidths.forEach((width, index) => {
     // Skip AUTO columns - let them fill remaining space
     if (width === "AUTO") return;
