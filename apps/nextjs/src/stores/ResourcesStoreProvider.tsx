@@ -38,22 +38,23 @@ export const ResourcesStoresProvider: React.FC<
   const { user } = useUser();
 
   const [stores] = useState(() => {
-    const refreshAuth = user?.reload ? async () => {
-      await user.reload();
-    } : undefined;
-    
+    const refreshAuth = user?.reload
+      ? async () => {
+          await user.reload();
+        }
+      : undefined;
+
     const storesObj: ResourcesStores = {
-      resources: createResourcesStore(props, track, trpcUtils, initState, refreshAuth),
+      resources: createResourcesStore(
+        props,
+        track,
+        trpcUtils,
+        initState,
+        refreshAuth,
+      ),
     };
     return storesObj;
   });
-
-  useEffect(() => {
-    console.log("signed in store provider: isLoaded / isSignedIn", {
-      isLoaded,
-      isSignedIn,
-    });
-  }, [isLoaded, isSignedIn]);
 
   // Store initialisation
   const haveInitialized = useRef(false);

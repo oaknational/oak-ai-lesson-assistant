@@ -15,30 +15,30 @@ function isHTTPError(error: unknown): error is { status?: number } {
 
 // Type guard for TRPCClientError with HTML response (session not ready)
 function isTRPCHTMLError(error: unknown): error is { message: string } {
-  log.info("🔍 Checking if error is HTML response error", { 
+  log.info("🔍 Checking if error is HTML response error", {
     errorType: typeof error,
-    hasMessage: typeof error === "object" && error !== null && "message" in error,
-    errorString: String(error).substring(0, 200) // First 200 chars for logging
+    hasMessage:
+      typeof error === "object" && error !== null && "message" in error,
+    errorString: String(error).substring(0, 200), // First 200 chars for logging
   });
-  
-  const isHTMLError = (
+
+  const isHTMLError =
     typeof error === "object" &&
     error !== null &&
     "message" in error &&
     typeof (error as { message: unknown }).message === "string" &&
     (error as { message: string }).message.includes(
       "Unexpected token '<', \"<!DOCTYPE",
-    )
-  );
-  
+    );
+
   if (isHTMLError) {
-    log.info("✅ Detected HTML response error", { 
-      message: (error as { message: string }).message 
+    log.info("✅ Detected HTML response error", {
+      message: (error as { message: string }).message,
     });
   } else {
     log.info("❌ Not an HTML response error");
   }
-  
+
   return isHTMLError;
 }
 
@@ -48,7 +48,11 @@ export async function callWithHandshakeRetry<T>(
   maxRetries: number = 3,
   delayMs: number = 300,
 ) {
-  log.info("callWithHandshakeRetry started", { maxRetries, delayMs, hasRefreshAuth: !!refreshAuth });
+  log.info("callWithHandshakeRetry started", {
+    maxRetries,
+    delayMs,
+    hasRefreshAuth: !!refreshAuth,
+  });
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -57,10 +61,10 @@ export async function callWithHandshakeRetry<T>(
       return await fn();
     } catch (e: unknown) {
       lastError = e;
-      log.info(`Attempt ${attempt} failed`, { 
+      log.info(`Attempt ${attempt} failed`, {
         error: e instanceof Error ? e.message : String(e),
         errorType: typeof e,
-        isLastAttempt: attempt === maxRetries 
+        isLastAttempt: attempt === maxRetries,
       });
 
       // If this is the last attempt, throw the error
@@ -75,10 +79,10 @@ export async function callWithHandshakeRetry<T>(
         (isHTTPError(e) && e.status === 401);
 
       const sessionNotReady = isTRPCHTMLError(e);
-      log.info("Error type analysis", { 
-        unauthorized, 
+      log.info("Error type analysis", {
+        unauthorized,
         sessionNotReady,
-        willRetry: attempt < maxRetries
+        willRetry: attempt < maxRetries,
       });
 
       // For unauthorized errors, use the original delay
