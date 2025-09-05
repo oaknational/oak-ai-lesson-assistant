@@ -12,7 +12,12 @@ import { handleStoreError } from "../utils/errorHandling";
 const log = aiLogger("additional-materials");
 
 export const handleCreateMaterialSession =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils, refreshAuth?: () => Promise<void>) =>
+  (
+    set: ResourcesSetter,
+    get: ResourcesGetter,
+    trpc: TrpcUtils,
+    refreshAuth?: () => Promise<void>,
+  ) =>
   async (docType: string | null, stepNumber?: number) => {
     set({ stepNumber: stepNumber ?? 1 });
 

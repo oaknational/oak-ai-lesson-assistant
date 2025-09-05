@@ -123,7 +123,12 @@ export const createResourcesStore = (
       // History management actions
       undoRefinement: handleUndoRefinement(set, get),
 
-      createMaterialSession: handleCreateMaterialSession(set, get, trpc, refreshAuth),
+      createMaterialSession: handleCreateMaterialSession(
+        set,
+        get,
+        trpc,
+        refreshAuth,
+      ),
 
       // Analytics actions
       analytics: handleAnalytics(set, get, track),
