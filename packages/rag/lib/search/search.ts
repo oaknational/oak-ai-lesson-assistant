@@ -40,9 +40,10 @@ export async function vectorSearch({
     limit,
   });
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
-  const results = queryResponse
-    .map(preparseResult)
-    .filter(parseResult({ onError: (e) => parseErrors.push(e) }));
+  const preparsedResults = await Promise.all(queryResponse.map(preparseResult));
+  const results = preparsedResults.filter(
+    parseResult({ onError: (e) => parseErrors.push(e) }),
+  );
 
   /**
    * @todo Handle parse errors (i.e. record in DB so we can re-ingest!)
