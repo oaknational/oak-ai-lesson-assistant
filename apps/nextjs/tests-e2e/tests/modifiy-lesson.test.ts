@@ -70,7 +70,10 @@ test.describe("Modify a lesson plan", () => {
   async function selectOtherModification(page: Page) {
     const modifyButtons = page.locator("text=Modify");
     await modifyButtons.first().click();
-    const radioButtonOther = page.locator('input[type="radio"][value="OTHER"]');
+
+    const radioButtonOther = page
+      .getByTestId("modify-radio-button")
+      .filter({ hasText: "Other" });
     await radioButtonOther.click();
     const otherInput = page.getByTestId("modify-other-text-area");
     await expect(otherInput).toBeVisible();

@@ -25,6 +25,8 @@
   - E2E tests: `pnpm test-e2e`
   - Coverage: `pnpm test-coverage`
 - **Dev**: `pnpm dev` (runs Next.js on port 2525)
+- **Run Scripts with Environment Variables**: Use `pnpm with-env` prefix
+  - Example: `pnpm with-env tsx src/script.ts`
 
 ## Git Workflow
 
@@ -119,6 +121,10 @@
   - Structured error types
   - User-friendly error messages
   - Proper logging
+- **Error Cause**: When rethrowing errors, use the `cause` option for better error context:
+  ```typescript
+  throw new Error("High-level error message", { cause: originalError });
+  ```
 
 ### tRPC Implementation
 

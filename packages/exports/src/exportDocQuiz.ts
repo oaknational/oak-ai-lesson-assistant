@@ -1,8 +1,7 @@
-import type { ExportDocQuizData } from "..";
-import { prepQuizForDocs } from "./dataHelpers/prepQuizForDocs";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { populateQuizDoc } from "./gSuite/docs/populate/populateQuizDoc";
+import type { QuizDocInputData } from "./schema/input.schema";
 import { getDocsTemplateIdQuiz } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
@@ -10,7 +9,10 @@ const QUIZ_TYPE_LABELS = {
   starter: "Starter quiz",
   exit: "Exit quiz",
 };
-// build
+
+/**
+ * Export quiz documents with support for all question types
+ */
 export const exportDocQuiz = async ({
   snapshotId,
   data: inputData,
@@ -18,25 +20,27 @@ export const exportDocQuiz = async ({
   onStateChange,
 }: {
   snapshotId: string;
-  data: ExportDocQuizData;
+  data: QuizDocInputData;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
   try {
-    const { quizType, quiz, lessonTitle } = inputData;
+    const { quizType, lessonTitle } = inputData;
 
     const result = await exportGeneric({
       newFileName: `${lessonTitle} - ${snapshotId} - ${QUIZ_TYPE_LABELS[quizType]}`,
-      data: {
-        title: lessonTitle,
-        quiz,
-        quizType,
-      },
-      prepData: prepQuizForDocs,
+      data: inputData,
+      prepData: (data) =>
+        Promise.resolve({
+          lesson_title: data.lessonTitle,
+          quiz_type: QUIZ_TYPE_LABELS[data.quizType],
+          questions: data.quiz.questions,
+          imageAttributions: data.quiz.imageAttributions,
+        }),
       templateId: getDocsTemplateIdQuiz(),
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();
-        return populateDoc({
+        return populateQuizDoc({
           googleDocs: client,
           documentId: templateCopyId,
           data,
@@ -50,12 +54,18 @@ export const exportDocQuiz = async ({
       return result;
     }
 
-    const { data } = result;
-
-    onStateChange({ status: "success", data });
-    return { data };
+    onStateChange({ status: "success", data: result.data });
+    return result;
   } catch (error) {
-    onStateChange({ status: "error", error });
-    return { error, message: "Failed to export Quiz doc" };
+    const errorObj =
+      error instanceof Error ? error : new Error("Unknown error");
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const errorResult: Result<OutputData> = {
+      error: errorObj,
+      message: errorMessage,
+    };
+    onStateChange({ status: "error", error: errorMessage });
+    return errorResult;
   }
 };

@@ -1,3 +1,15 @@
+# [1.49.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.48.0...v1.49.0) (2025-09-04)
+
+
+### Bug Fixes
+
+* disable blockquote rendering in quiz answers ([#782](https://github.com/oaknational/oak-ai-lesson-assistant/issues/782)) ([c9086d3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9086d34e11563a991b7f838f37e769c3c894f4c))
+
+
+### Features
+
+* implement dynamic quiz sections with table-based generation ([#764](https://github.com/oaknational/oak-ai-lesson-assistant/issues/764)) ([3f2821e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f2821edf5c6adfcf10a6b3cff8640609afe6ea6))
+
 # [1.48.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.1...v1.48.0) (2025-08-28)
 
 
