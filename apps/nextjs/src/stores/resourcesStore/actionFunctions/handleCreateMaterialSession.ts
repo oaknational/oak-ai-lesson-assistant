@@ -6,7 +6,7 @@ import z from "zod";
 import type { TrpcUtils } from "@/utils/trpc";
 
 import type { ResourcesGetter, ResourcesSetter } from "../types";
-import { callWithHandshakeRetry } from "../utils/allWithHandshakeRetry";
+import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");

@@ -42,6 +42,71 @@ function isTRPCHTMLError(error: unknown): error is { message: string } {
   return isHTMLError;
 }
 
+// Helper to determine error types and retry strategy
+function analyzeError(error: unknown) {
+  const unauthorized =
+    (isTRPCError(error) && error.data?.code === "UNAUTHORIZED") ||
+    (isHTTPError(error) && error.status === 401);
+
+  const sessionNotReady = isTRPCHTMLError(error);
+
+  return { unauthorized, sessionNotReady };
+}
+
+// Helper to calculate retry delay based on error type and attempt
+function calculateDelay(
+  errorAnalysis: { unauthorized: boolean; sessionNotReady: boolean },
+  attempt: number,
+  baseDelayMs: number,
+): number {
+  const { unauthorized, sessionNotReady } = errorAnalysis;
+
+  if (unauthorized) {
+    return baseDelayMs;
+  } else if (sessionNotReady) {
+    return attempt * 500; // 500ms, 1000ms, 1500ms for session propagation
+  } else {
+    return baseDelayMs * Math.pow(2, attempt - 1);
+  }
+}
+
+// Helper to handle auth refresh for session errors
+async function handleAuthRefresh(
+  errorAnalysis: { unauthorized: boolean; sessionNotReady: boolean },
+  refreshAuth?: () => Promise<void>,
+): Promise<void> {
+  if (errorAnalysis.sessionNotReady && refreshAuth) {
+    try {
+      log.info("Refreshing user session before retry");
+      await refreshAuth();
+    } catch (refreshError) {
+      log.warn("Failed to refresh auth", { refreshError });
+    }
+  }
+}
+
+// Helper to log retry information
+function logRetryAttempt(
+  errorAnalysis: { unauthorized: boolean; sessionNotReady: boolean },
+  delay: number,
+  attempt: number,
+  maxRetries: number,
+): void {
+  const { unauthorized, sessionNotReady } = errorAnalysis;
+
+  if (sessionNotReady) {
+    log.info(
+      `Session not ready, retrying in ${delay}ms (${attempt}/${maxRetries})`,
+    );
+  } else if (unauthorized) {
+    log.info(`Unauthorized, retrying in ${delay}ms (${attempt}/${maxRetries})`);
+  } else {
+    log.info(
+      `Request failed, retrying in ${delay}ms (${attempt}/${maxRetries})`,
+    );
+  }
+}
+
 export async function callWithHandshakeRetry<T>(
   fn: () => Promise<T>,
   refreshAuth?: () => Promise<void>,
@@ -73,53 +138,21 @@ export async function callWithHandshakeRetry<T>(
         throw e;
       }
 
-      // Check for different error types to determine retry strategy
-      const unauthorized =
-        (isTRPCError(e) && e.data?.code === "UNAUTHORIZED") ||
-        (isHTTPError(e) && e.status === 401);
-
-      const sessionNotReady = isTRPCHTMLError(e);
+      // Analyze error type to determine retry strategy
+      const errorAnalysis = analyzeError(e);
       log.info("Error type analysis", {
-        unauthorized,
-        sessionNotReady,
+        ...errorAnalysis,
         willRetry: attempt < maxRetries,
       });
 
-      // For unauthorized errors, use the original delay
-      // For session not ready (HTML response), use exponential backoff with longer delays
-      // For other errors, use exponential backoff
-      let delay: number;
-      if (unauthorized) {
-        delay = delayMs;
-      } else if (sessionNotReady) {
-        delay = attempt * 500; // 500ms, 1000ms, 1500ms for session propagation
-      } else {
-        delay = delayMs * Math.pow(2, attempt - 1);
-      }
+      // Calculate appropriate delay based on error type
+      const delay = calculateDelay(errorAnalysis, attempt, delayMs);
 
-      // Log the retry attempt with context and refresh auth if needed
-      if (sessionNotReady) {
-        log.info(
-          `Session not ready, retrying in ${delay}ms (${attempt}/${maxRetries})`,
-        );
-        // Try to refresh auth for session issues
-        if (refreshAuth) {
-          try {
-            log.info("Refreshing user session before retry");
-            await refreshAuth();
-          } catch (refreshError) {
-            log.warn("Failed to refresh auth", { refreshError });
-          }
-        }
-      } else if (unauthorized) {
-        log.info(
-          `Unauthorized, retrying in ${delay}ms (${attempt}/${maxRetries})`,
-        );
-      } else {
-        log.info(
-          `Request failed, retrying in ${delay}ms (${attempt}/${maxRetries})`,
-        );
-      }
+      // Handle auth refresh if needed
+      await handleAuthRefresh(errorAnalysis, refreshAuth);
+
+      // Log retry attempt with context
+      logRetryAttempt(errorAnalysis, delay, attempt, maxRetries);
 
       await wait(delay);
     }
