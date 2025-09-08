@@ -67,23 +67,20 @@ export function generateMatchingPairsTable(
   };
 
   elements.push(
-    createTableElement(
+    createTableElement({
       insertIndex,
       rows,
-      5,
+      columns: 5,
       cellContent,
-      [
+      columnWidths: [
         COLUMN_WIDTHS.letter,
         COLUMN_WIDTHS.textNarrow,
         COLUMN_WIDTHS.spacer,
         COLUMN_WIDTHS.checkbox,
         COLUMN_WIDTHS.auto,
       ],
-      // Center-align letter column: Word and Pages apps can render the letter text too wide for the
-      // column, either because of missing fonts or a default 4px text offset on pages.
-      // To allow for that, we make the letter column wider - but then need to center it to look right
-      ["CENTER", null, null, null, null],
-    ),
+      columnAlignments: ["CENTER", null, null, null, null],
+    }),
   );
 
   return elements;

@@ -10,7 +10,7 @@ import {
   CHECKBOX_PLACEHOLDER,
 } from "./constants";
 import { calculateCellIndices, pxToPt } from "./helpers";
-import type { QuizElement } from "./types";
+import type { CreateTableElementOptions, QuizElement } from "./types";
 
 /**
  * Create a text element (question text, instructions, etc.)
@@ -49,18 +49,17 @@ export function createSpacerElement(insertIndex: number): QuizElement {
   };
 }
 
-/**
- * Create a complete table element with all its operations
- * This includes table creation, cell population, and styling
- */
 export function createTableElement(
-  insertIndex: number,
-  rows: number,
-  columns: number,
-  cellContent: (row: number, col: number) => string,
-  columnWidths: (number | "AUTO")[],
-  columnAlignments: ("START" | "CENTER" | "END" | "JUSTIFIED" | null)[] | null,
+  options: CreateTableElementOptions,
 ): QuizElement {
+  const {
+    insertIndex,
+    rows,
+    columns,
+    cellContent,
+    columnWidths,
+    columnAlignments,
+  } = options;
   const requests: docs_v1.Schema$Request[] = [];
 
   // 1. Create the table structure

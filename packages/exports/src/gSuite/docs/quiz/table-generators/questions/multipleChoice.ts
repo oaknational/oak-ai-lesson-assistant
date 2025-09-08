@@ -51,17 +51,18 @@ export function generateMultipleChoiceTable(
   };
 
   elements.push(
-    createTableElement(
+    createTableElement({
       insertIndex,
-      shuffledChoices.length,
-      3,
+      rows: shuffledChoices.length,
+      columns: 3,
       cellContent,
-      [COLUMN_WIDTHS.checkbox, COLUMN_WIDTHS.letter, COLUMN_WIDTHS.auto],
-      // Center-align letter column: Word and Pages apps can render the letter text too wide for the
-      // column, either because of missing fonts or a default 4px text offset on pages.
-      // To allow for that, we make the letter column wider - but then need to center it to look right
-      [null, "CENTER", null],
-    ),
+      columnWidths: [
+        COLUMN_WIDTHS.checkbox,
+        COLUMN_WIDTHS.letter,
+        COLUMN_WIDTHS.auto,
+      ],
+      columnAlignments: [null, "CENTER", null],
+    }),
   );
 
   return elements;
