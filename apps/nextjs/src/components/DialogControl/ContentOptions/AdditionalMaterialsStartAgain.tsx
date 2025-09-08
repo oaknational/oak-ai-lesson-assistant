@@ -105,6 +105,7 @@ const AdditionalMaterialsStartAgain = ({
               value="new-lesson"
               radioInnerSize="all-spacing-5"
               radioOuterSize="all-spacing-6"
+              $borderStyle={"none"}
               label={
                 <OakFlex
                   $flexDirection="column"
