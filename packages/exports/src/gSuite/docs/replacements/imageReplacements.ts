@@ -2,11 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import {
-  QUESTION_IMAGE_MAX_HEIGHT,
-  QUESTION_IMAGE_MAX_WIDTH,
-  calculateLatexImageDimensions,
-} from "../../../images/constants";
+import { calculateLatexImageDimensions } from "../../../images/constants";
 import { GCS_LATEX_BUCKET_NAME } from "../../../images/gcsCredentials";
 
 const log = aiLogger("exports");
@@ -55,6 +51,7 @@ const insertLatexImage = (
 const insertStemImage = (
   image: { url: string; altText: string; startIndex: number },
   startIndex: number,
+  imageOptions: ImageOptions,
 ): docs_v1.Schema$Request[] => {
   // Request to insert the inline image at the same position
   return [
@@ -74,11 +71,11 @@ const insertStemImage = (
         },
         objectSize: {
           height: {
-            magnitude: QUESTION_IMAGE_MAX_HEIGHT,
+            magnitude: imageOptions.maxHeight,
             unit: "PT",
           },
           width: {
-            magnitude: QUESTION_IMAGE_MAX_WIDTH,
+            magnitude: imageOptions.maxWidth,
             unit: "PT",
           },
         },
@@ -95,8 +92,14 @@ const insertStemImage = (
   ];
 };
 
+interface ImageOptions {
+  maxWidth: number;
+  maxHeight: number;
+}
+
 export function imageReplacements(
   markdownImages: { url: string; altText: string; startIndex: number }[],
+  imageOptions: ImageOptions,
 ): { requests: docs_v1.Schema$Request[] } {
   if (markdownImages.length === 0) {
     log.info("No Markdown images to process.");
@@ -145,6 +148,7 @@ export function imageReplacements(
         ...insertStemImage(
           image,
           startIndex, // Insert at the same startIndex where the Markdown was removed
+          imageOptions,
         ),
       );
     }

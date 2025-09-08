@@ -1,6 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
+import { QUESTION_IMAGE_MAX_WIDTH } from "images/constants";
 
 import type {
   ImageAttribution,
@@ -84,7 +85,10 @@ export async function populateQuizDoc({
 
     // Insert image objects for markdown images
     const markdownImages = await findMarkdownImages(googleDocs, documentId);
-    const { requests: imageRequests } = imageReplacements(markdownImages);
+    const { requests: imageRequests } = imageReplacements(markdownImages, {
+      maxHeight: QUESTION_IMAGE_MAX_WIDTH,
+      maxWidth: QUESTION_IMAGE_MAX_WIDTH,
+    });
 
     if (imageRequests.length > 0) {
       await googleDocs.documents.batchUpdate({

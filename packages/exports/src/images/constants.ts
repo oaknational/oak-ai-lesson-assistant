@@ -17,10 +17,16 @@ export const DPI_SCALE_FACTOR = 3.0;
 export const LATEX_VISUAL_SCALE = 1.3;
 
 /**
- * Max dimensions for images in question text (points)
+ * Max dimensions for images in quiz docs (points)
  */
-export const QUESTION_IMAGE_MAX_WIDTH = 250;
-export const QUESTION_IMAGE_MAX_HEIGHT = 200;
+export const QUIZ_IMAGE_MAX_WIDTH = 250;
+export const QUIZ_IMAGE_MAX_HEIGHT = 180;
+
+/**
+ * Max dimensions for images in other docs (points)
+ */
+export const DOC_IMAGE_MAX_WIDTH = 100;
+export const DOC_IMAGE_MAX_HEIGHT = 60;
 
 /**
  * Whether to render LaTeX expressions in bold

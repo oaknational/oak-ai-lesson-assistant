@@ -1,6 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
+import { DOC_IMAGE_MAX_HEIGHT, DOC_IMAGE_MAX_WIDTH } from "images/constants";
 
 import type { Result } from "../../../types";
 import type { ValueToString } from "../../../utils";
@@ -52,7 +53,10 @@ export async function populateDoc<
 
     const markdownImages = await findMarkdownImages(googleDocs, documentId);
 
-    const { requests: imageRequests } = imageReplacements(markdownImages);
+    const { requests: imageRequests } = imageReplacements(markdownImages, {
+      maxWidth: DOC_IMAGE_MAX_WIDTH,
+      maxHeight: DOC_IMAGE_MAX_HEIGHT,
+    });
 
     if (imageRequests.length > 0) {
       await googleDocs.documents.batchUpdate({
