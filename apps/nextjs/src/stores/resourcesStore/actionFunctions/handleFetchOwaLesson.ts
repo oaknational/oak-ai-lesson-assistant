@@ -10,12 +10,18 @@ import type {
   ResourcesGetter,
   ResourcesSetter,
 } from "../types";
+import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
 export const handleFetchOwaLesson =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  (
+    set: ResourcesSetter,
+    get: ResourcesGetter,
+    trpc: TrpcUtils,
+    refreshAuth?: () => Promise<void>,
+  ) =>
   async (params: LoadOwaDataParams) => {
     try {
       // If we have an error from the page, handle it
@@ -53,11 +59,14 @@ export const handleFetchOwaLesson =
 
           // Fetch the OWA lesson data
 
-          const response =
-            await trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
-              lessonSlug,
-              programmeSlug,
-            });
+          const response = await callWithHandshakeRetry(
+            () =>
+              trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
+                lessonSlug,
+                programmeSlug,
+              }),
+            refreshAuth,
+          );
 
           const { lesson } = response;
 

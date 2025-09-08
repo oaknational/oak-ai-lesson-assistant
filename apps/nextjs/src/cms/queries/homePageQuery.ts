@@ -24,6 +24,52 @@ export const homePageQuery = `*[_type == "aiHomepage"] {
         }
       }
     },
+    belowTheFoldVideo2->{
+      _id,
+      title,
+      url,
+      video {
+        asset->{
+          assetId,
+          thumbTime,
+          playbackId
+        }
+      }
+    },
+    sampleLessons[]{
+      iconName,
+      iconTileBackgroundColour,
+      title,
+      fileName,
+      mobileFileName,
+      file{
+        asset->{
+          size,
+          url,
+          extension
+        }
+      }
+    },
+    promptExamples[]{
+      iconName,
+      iconTileBackgroundColour,
+      title,
+      fileName,
+      mobileFileName,
+      file{
+        asset->{
+          size,
+          url,
+          extension
+        }
+      }
+    },
+
+    giveFeedbackLink {
+      title,
+      url,
+      external
+    },
     "seo": {
       "metaTitle": seo.metaTitle,
       "metaDescription": seo.metaDescription,

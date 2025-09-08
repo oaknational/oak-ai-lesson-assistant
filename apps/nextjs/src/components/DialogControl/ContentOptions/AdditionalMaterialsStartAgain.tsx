@@ -82,6 +82,7 @@ const AdditionalMaterialsStartAgain = ({
           >
             <OakRadioButton
               id="current-lesson"
+              $borderStyle={"none"}
               value="current-lesson"
               radioInnerSize="all-spacing-5"
               radioOuterSize="all-spacing-6"
