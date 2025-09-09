@@ -2,7 +2,6 @@ import type OpenAI from "openai";
 import type { LooseLessonPlan } from "protocol/schema";
 import type { z } from "zod";
 
-import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
@@ -40,12 +39,13 @@ export function createSectionAgent<ResponseType>({
     description: string;
     openai: OpenAI;
     contentFromDocument: (
-      document: LooseLessonPlan | RagLessonPlan,
+      document: LooseLessonPlan,
     ) => ResponseType | undefined;
   }) => ({
     id,
     description,
     handler: (ctx: AilaExecutionContext) => {
+      console.log(ctx);
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
           ctx,
@@ -65,6 +65,10 @@ export function createSectionAgent<ResponseType>({
         defaultVoice,
         voices,
       });
+
+      console.log(
+        genericPromptAgent.input.map((i) => i.content).join("\n\n---\n\n"),
+      );
 
       return executeGenericPromptAgent({
         agent: genericPromptAgent,

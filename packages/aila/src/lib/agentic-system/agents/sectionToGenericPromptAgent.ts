@@ -2,7 +2,7 @@ import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
 import type { SectionPromptAgentProps } from "../types";
-import { identityAndVoice } from "./sectionAgents/shared/identityAndVoice";
+import { sectionAgentIdentity } from "./sectionAgents/shared/sectionAgentIdentity";
 import {
   getVoiceDefinitions,
   getVoicePrompt,
@@ -33,7 +33,7 @@ export function sectionToGenericPromptAgent<SectionValueType>({
     input: [
       {
         role: "developer" as const,
-        content: identityAndVoice,
+        content: sectionAgentIdentity,
       },
       {
         role: "developer" as const,
@@ -51,7 +51,7 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         role: "developer" as const,
         content: currentSectionValuePromptPart(currentValue, contentToString),
       },
-      {
+      exemplarContent?.length && {
         role: "developer" as const,
         content: exemplarContentPromptPart(
           exemplarContent ?? [],

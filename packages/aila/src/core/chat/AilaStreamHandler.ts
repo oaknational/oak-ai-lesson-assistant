@@ -15,6 +15,7 @@ import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/planne
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
+import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -281,7 +282,7 @@ export class AilaStreamHandler {
     await ailaTurn({
       callbacks: ailaTurnCallbacks,
       persistedState: {
-        messages: this._chat.messages,
+        messages: extractPromptTextFromMessages(this._chat.messages),
         initialDocument,
         relevantLessons: relevantLessonsPopulated,
       },
