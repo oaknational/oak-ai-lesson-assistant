@@ -291,7 +291,47 @@ export class AilaStreamHandler {
           mathsQuizEnabled: true,
         },
         plannerAgent: createOpenAIPlannerAgent(openai),
-        sectionAgents: createSectionAgentRegistry({ openai }),
+        sectionAgents: createSectionAgentRegistry({
+          openai,
+          customAgentHandlers: {
+            "starterQuiz--maths": async (ctx) => {
+              try {
+                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                  "/starterQuiz",
+                  ctx.currentTurn.document,
+                );
+
+                return { error: null, data: quiz };
+              } catch (error) {
+                log.error("Error generating starter quiz", { error });
+                return {
+                  error: {
+                    message:
+                      "Failed to generate a starter quiz with maths quiz engine",
+                  },
+                };
+              }
+            },
+            "exitQuiz--maths": async (ctx) => {
+              try {
+                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                  "/exitQuiz",
+                  ctx.currentTurn.document,
+                );
+
+                return { error: null, data: quiz };
+              } catch (error) {
+                log.error("Error generating exit quiz", { error });
+                return {
+                  error: {
+                    message:
+                      "Failed to generate an exit quiz with maths quiz engine",
+                  },
+                };
+              }
+            },
+          },
+        }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
           const subjectSlugs = parseSubjectsForRagSearch(subject);
