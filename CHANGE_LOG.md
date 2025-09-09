@@ -1,3 +1,27 @@
+# [1.50.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.49.0...v1.50.0) (2025-09-08)
+
+
+### Bug Fixes
+
+* only fetch owa data when clerk is hydrated ([#791](https://github.com/oaknational/oak-ai-lesson-assistant/issues/791)) ([43cf218](https://github.com/oaknational/oak-ai-lesson-assistant/commit/43cf2180591f6e16cf3be1b445f3ac2116418f6e))
+
+
+### Features
+
+* home page updates ([#776](https://github.com/oaknational/oak-ai-lesson-assistant/issues/776)) ([3844665](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3844665f3dfd5dac1ccf6bb8bfd8d458f81eb956))
+
+# [1.49.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.48.0...v1.49.0) (2025-09-04)
+
+
+### Bug Fixes
+
+* disable blockquote rendering in quiz answers ([#782](https://github.com/oaknational/oak-ai-lesson-assistant/issues/782)) ([c9086d3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c9086d34e11563a991b7f838f37e769c3c894f4c))
+
+
+### Features
+
+* implement dynamic quiz sections with table-based generation ([#764](https://github.com/oaknational/oak-ai-lesson-assistant/issues/764)) ([3f2821e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3f2821edf5c6adfcf10a6b3cff8640609afe6ea6))
+
 # [1.48.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.47.1...v1.48.0) (2025-08-28)
 
 
