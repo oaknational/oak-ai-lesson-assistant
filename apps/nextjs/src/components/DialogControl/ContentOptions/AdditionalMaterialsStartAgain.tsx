@@ -82,7 +82,6 @@ const AdditionalMaterialsStartAgain = ({
           >
             <OakRadioButton
               id="current-lesson"
-              $borderStyle={"none"}
               value="current-lesson"
               radioInnerSize="all-spacing-5"
               radioOuterSize="all-spacing-6"
@@ -105,7 +104,6 @@ const AdditionalMaterialsStartAgain = ({
               value="new-lesson"
               radioInnerSize="all-spacing-5"
               radioOuterSize="all-spacing-6"
-              $borderStyle={"none"}
               label={
                 <OakFlex
                   $flexDirection="column"

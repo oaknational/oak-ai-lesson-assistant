@@ -72,7 +72,6 @@ const StepOne = ({
               {resourceTypes.map((resourceType) => (
                 <OakLabel key={resourceType.id}>
                   <OakRadioButton
-                    $borderStyle={"none"}
                     id={resourceType.id}
                     value={resourceType.id}
                     radioInnerSize="all-spacing-5"
