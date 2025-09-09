@@ -32,7 +32,7 @@ export const Default: Story = {
         userId: "user_2nQuq4jFWLfo4w1WNA6xEBp93IY",
         appSessionId: "ElzgFmHVS6JTdldd",
         messageId: "a-bMjytJMVEJYa24Lk",
-        categories: ["t/encouragement-violence"],
+        categories: ["t4"],
         scores: null,
         justification: "Mock toxic result",
         lessonSnapshotId: "cm654k08y0005tf412e0g9f5y",

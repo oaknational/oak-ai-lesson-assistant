@@ -29,7 +29,7 @@ type Story = StoryObj<typeof meta>;
 
 const toxicModeration: PersistedModerationBase = {
   id: "mock-moderation-id",
-  categories: ["l/discriminatory-behaviour"],
+  categories: ["l1"],
 };
 
 export const WithModeration: Story = {
