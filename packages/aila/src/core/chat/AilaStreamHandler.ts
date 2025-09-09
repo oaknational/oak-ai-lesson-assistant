@@ -180,74 +180,6 @@ export class AilaStreamHandler {
       ...this._chat.aila.document.content,
     };
 
-    // // Create a stream handler
-    // const streamHandler = createInteractStreamHandler(
-    //   this._chat,
-    //   this._controller!,
-    // );
-
-    // // Call interact with the stream handler
-    // const interactResult = await interact({
-    //   userId: this._chat.userId ?? "anonymous",
-    //   chatId: this._chat.id,
-    //   initialDocument: initialDocument,
-    //   messageHistoryWithProtocol: this._chat.messages
-    //     .filter((m) => m.role === "user" || m.role === "assistant")
-    //     .map((m) => {
-    //       log.info(m);
-    //       return m;
-    //     }) as { role: "user" | "assistant"; content: string }[],
-    //   onUpdate: streamHandler, // This is the new part
-    //   customAgents: {
-    //     mathsStarterQuiz: async ({ document }) => {
-    //       const quiz = await this._chat.fullQuizService.createBestQuiz(
-    //         "/starterQuiz",
-    //         document,
-    //       );
-
-    //       return quiz;
-    //     },
-    //     mathsExitQuiz: async ({ document }) => {
-    //       const quiz = await this._chat.fullQuizService.createBestQuiz(
-    //         "/exitQuiz",
-    //         document,
-    //       );
-
-    //       return quiz;
-    //     },
-    //     fetchRagData: async ({ document }) => {
-    //       if (this._chat.relevantLessons) {
-    //         const results = await getRagLessonPlansByIds({
-    //           lessonPlanIds: this._chat.relevantLessons.map(
-    //             (lesson) => lesson.lessonPlanId,
-    //           ),
-    //         });
-    //         return results;
-    //       }
-    //       const lessonPlanResults = await fetchRelevantLessonPlans({
-    //         document,
-    //       });
-
-    //       const relevantLessons = lessonPlanResults.map((result) => ({
-    //         lessonPlanId: result.ragLessonPlanId,
-    //         title: result.lessonPlan.title,
-    //       }));
-    //       this._chat.relevantLessons = relevantLessons;
-
-    //       return lessonPlanResults.map((l) => l.lessonPlan);
-    //     },
-    //   },
-    //   relevantLessons: this._chat.relevantLessons,
-    // });
-
-    // // Stream the final result to the client
-    // await streamInteractResultToClient(
-    //   this._chat,
-    //   this._controller!,
-    //   initialDocument,
-    //   interactResult,
-    // );
-
     const openai = createOpenAIClient({
       app: "lesson-assistant",
       chatMeta: {
@@ -268,16 +200,6 @@ export class AilaStreamHandler {
           ),
         })
       : [];
-
-    // const lessonPlanResults = await fetchRelevantLessonPlans({
-    //   document,
-    // });
-
-    // const relevantLessons = lessonPlanResults.map((result) => ({
-    //   lessonPlanId: result.ragLessonPlanId,
-    //   title: result.lessonPlan.title,
-    // }));
-    // this._chat.relevantLessons = relevantLessons;
 
     await ailaTurn({
       callbacks: ailaTurnCallbacks,
