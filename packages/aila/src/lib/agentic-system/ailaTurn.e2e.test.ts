@@ -61,7 +61,29 @@ describe("ailaTurn e2e happy path with continue loop", () => {
     const runtime: AilaRuntimeContext = {
       config: { mathsQuizEnabled: true },
       plannerAgent: createOpenAIPlannerAgent(openai),
-      sectionAgents: createSectionAgentRegistry({ openai }),
+      sectionAgents: createSectionAgentRegistry({
+        openai,
+        customAgentHandlers: {
+          "starterQuiz--maths": () =>
+            Promise.resolve({
+              error: null,
+              data: {
+                version: "v2",
+                questions: [],
+                imageAttributions: [],
+              },
+            }),
+          "exitQuiz--maths": () =>
+            Promise.resolve({
+              error: null,
+              data: {
+                version: "v2",
+                questions: [],
+                imageAttributions: [],
+              },
+            }),
+        },
+      }),
       messageToUserAgent: createOpenAIMessageToUserAgent(openai),
       fetchRelevantLessons: () => Promise.resolve([]),
     };
