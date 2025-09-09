@@ -1,5 +1,10 @@
-import { formatQuestionForDoc, formatLegacyQuestionForDoc } from "./formatQuestionForDoc";
+import dedent from "dedent";
+
 import type { QuizQAD, QuizV2Question } from "../schema/input.schema";
+import {
+  formatLegacyQuestionForDoc,
+  formatQuestionForDoc,
+} from "./formatQuestionForDoc";
 
 describe("formatQuestionForDoc", () => {
   it("formats multiple-choice questions correctly", () => {
@@ -12,13 +17,13 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 1);
-    
-    expect(result).toEqual(
-      "1. What is 2 + 2?\n" +
-      "  a) 3\n" +
-      "  b) 4 ✓\n" +
-      "  c) 5"
-    );
+
+    expect(result).toEqual(dedent`
+      1. What is 2 + 2?
+        a) 3
+        b) 4 ✓
+        c) 5
+    `);
   });
 
   it("formats multiple-choice questions with blanks correctly", () => {
@@ -31,7 +36,7 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 2);
-    
+
     expect(result).toContain("2. The formula for water is ▁▁▁▁▁▁▁▁▁▁.");
     expect(result).toContain("H2O ✓");
     expect(result).toContain("CO2");
@@ -47,11 +52,11 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 2);
-    
-    expect(result).toEqual(
-      "2. What is the capital of France?\n" +
-      "  ▁▁▁▁▁▁▁▁▁▁"
-    );
+
+    expect(result).toEqual(dedent`
+      2. What is the capital of France?
+        ▁▁▁▁▁▁▁▁▁▁
+    `);
   });
 
   it("formats short-answer questions with inline blanks correctly", () => {
@@ -63,10 +68,8 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 3);
-    
-    expect(result).toEqual(
-      "3. The capital of France is ▁▁▁▁▁▁▁▁▁▁."
-    );
+
+    expect(result).toEqual("3. The capital of France is ▁▁▁▁▁▁▁▁▁▁.");
   });
 
   it("formats matching questions correctly", () => {
@@ -82,13 +85,13 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 3);
-    
-    expect(result).toEqual(
-      "3. Match the countries to their capitals:\n" +
-      "  1. France          A. Paris\n" +
-      "  2. Germany         B. Berlin\n" +
-      "  3. Spain           C. Madrid"
-    );
+
+    expect(result).toEqual(dedent`
+      3. Match the countries to their capitals:
+        1. France          A. Paris
+        2. Germany         B. Berlin
+        3. Spain           C. Madrid
+    `);
   });
 
   it("formats ordering questions correctly", () => {
@@ -100,13 +103,13 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 4);
-    
-    expect(result).toEqual(
-      "4. Put these events in chronological order:\n" +
-      "  • Fall of Berlin Wall\n" +
-      "  • World War II ends\n" +
-      "  • Moon landing"
-    );
+
+    expect(result).toEqual(dedent`
+      4. Put these events in chronological order:
+        • Fall of Berlin Wall
+        • World War II ends
+        • Moon landing
+    `);
   });
 
   it("handles empty matching pairs", () => {
@@ -118,10 +121,9 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 1);
-    
+
     expect(result).toEqual(
-      "1. Match the items:\n" +
-      "(No matching pairs provided)"
+      "1. Match the items:\n" + "(No matching pairs provided)",
     );
   });
 
@@ -134,11 +136,8 @@ describe("formatQuestionForDoc", () => {
     };
 
     const result = formatQuestionForDoc(question, 1);
-    
-    expect(result).toEqual(
-      "1. Put these in order:\n" +
-      "(No items provided)"
-    );
+
+    expect(result).toEqual("1. Put these in order:\n" + "(No items provided)");
   });
 });
 
@@ -151,13 +150,13 @@ describe("formatLegacyQuestionForDoc", () => {
     };
 
     const result = formatLegacyQuestionForDoc(question, 5);
-    
+
     expect(result).toEqual(
       "5. What is 5 + 3?\n" +
-      "  a) 7\n" +
-      "  b) 8 ✓\n" +
-      "  c) 9\n" +
-      "  d) 10"
+        "  a) 7\n" +
+        "  b) 8 ✓\n" +
+        "  c) 9\n" +
+        "  d) 10",
     );
   });
 
@@ -169,13 +168,13 @@ describe("formatLegacyQuestionForDoc", () => {
     };
 
     const result = formatLegacyQuestionForDoc(question, 1);
-    
+
     expect(result).toEqual(
       "1. Which are prime numbers?\n" +
-      "  a) 1\n" +
-      "  b) 2 ✓\n" +
-      "  c) 3 ✓\n" +
-      "  d) 4"
+        "  a) 1\n" +
+        "  b) 2 ✓\n" +
+        "  c) 3 ✓\n" +
+        "  d) 4",
     );
   });
 });

@@ -1,13 +1,71 @@
-import type { QuizQAD, QuizV2Question } from "../schema/input.schema";
-import { 
-  shuffleMultipleChoiceAnswers, 
-  shuffleOrderItems, 
-  shuffleMatchItems 
-} from "../quiz-utils/shuffle";
-import { 
-  hasBlankPlaceholders, 
-  processBlankPlaceholders 
+import {
+  hasBlankPlaceholders,
+  processBlankPlaceholders,
 } from "../quiz-utils/formatting";
+import {
+  type ShuffledChoice,
+  type ShuffledMatchItem,
+  type ShuffledOrderItem,
+  shuffleMatchItems,
+  shuffleMultipleChoiceAnswers,
+  shuffleOrderItems,
+} from "../quiz-utils/shuffle";
+import type { QuizQAD, QuizV2Question } from "../schema/input.schema";
+
+function createQuestionHeader(number: number, text: string): string {
+  const processedQuestion = processBlankPlaceholders(text);
+  return `${number}. ${processedQuestion}`;
+}
+
+function formatChoice(choice: ShuffledChoice, index: number): string {
+  const letter = String.fromCharCode(97 + index);
+  const tick = choice.isCorrect ? " ✓" : "";
+  return `  ${letter}) ${choice.text}${tick}`;
+}
+
+function formatMultipleChoice(choices: ShuffledChoice[]): string {
+  return choices.map(formatChoice).join("\n");
+}
+
+function formatShortAnswer(
+  questionText: string,
+  hasInlineBlanks: boolean,
+): string {
+  if (hasInlineBlanks) {
+    return "";
+  }
+
+  const blankLine = "▁".repeat(10);
+  return `\n  ${blankLine}`;
+}
+
+function formatMatchPair(
+  left: string,
+  right: ShuffledMatchItem | undefined,
+): string {
+  const rightFormatted = right
+    ? `${right.label.toUpperCase()}. ${right.text}`
+    : "";
+  return `  ${left.padEnd(18)} ${rightFormatted}`;
+}
+
+function formatMatchPairs(
+  leftItems: string[],
+  rightItems: ShuffledMatchItem[],
+): string {
+  const maxLength = Math.max(leftItems.length, rightItems.length);
+
+  const pairedLines = Array.from({ length: maxLength }, (_, i) =>
+    formatMatchPair(leftItems[i] ?? "", rightItems[i]),
+  );
+
+  return `\n${pairedLines.join("\n")}`;
+}
+
+function formatOrderItems(items: ShuffledOrderItem[]): string {
+  const formattedItems = items.map((item) => `  • ${item.text}`);
+  return `\n${formattedItems.join("\n")}`;
+}
 
 /**
  * Format a question for lesson plan documents
@@ -17,8 +75,10 @@ export function formatQuestionForDoc(
   question: QuizV2Question,
   questionNumber: number,
 ): string {
-  const processedQuestion = processBlankPlaceholders(question.question);
-  const questionText = `${questionNumber}. ${processedQuestion}`;
+  const questionHeader = createQuestionHeader(
+    questionNumber,
+    question.question,
+  );
 
   switch (question.questionType) {
     case "multiple-choice": {
@@ -26,74 +86,44 @@ export function formatQuestionForDoc(
         question.answers,
         question.distractors,
       );
-      
-      const formattedAnswers = shuffledChoices
-        .map((choice, index) => {
-          const letter = String.fromCharCode(97 + index); // a, b, c, d...
-          const tick = choice.isCorrect ? " ✓" : "";
-          return `  ${letter}) ${choice.text}${tick}`;
-        })
-        .join("\n");
-
-      return `${questionText}\n${formattedAnswers}`;
+      const answersSection = formatMultipleChoice(shuffledChoices);
+      return `${questionHeader}\n${answersSection}`;
     }
 
     case "short-answer": {
-      // If question already contains inline blanks, don't add separate answer line
-      if (hasBlankPlaceholders(question.question)) {
-        return questionText;
-      }
-      
-      // If no inline blanks, add a separate answer line
-      const blankLine = "▁".repeat(10);
-      return `${questionText}\n  ${blankLine}`;
+      const hasInlineBlanks = hasBlankPlaceholders(question.question);
+      const answerSection = formatShortAnswer(questionHeader, hasInlineBlanks);
+      return questionHeader + answerSection;
     }
 
     case "match": {
       if (question.pairs.length === 0) {
-        return `${questionText}\n(No matching pairs provided)`;
+        return `${questionHeader}\n(No matching pairs provided)`;
       }
 
       const leftItems = question.pairs.map(
         (pair, index) => `${index + 1}. ${pair.left}`,
       );
-      
       const rightTexts = question.pairs.map((pair) => pair.right);
       const shuffledRightItems = shuffleMatchItems(rightTexts);
 
-      // Create a two-column layout
-      const maxLines = Math.max(leftItems.length, shuffledRightItems.length);
-      const pairedLines = [];
-      
-      for (let i = 0; i < maxLines; i++) {
-        const left = leftItems[i] ?? "";
-        const right = shuffledRightItems[i] 
-          ? `${shuffledRightItems[i].label.toUpperCase()}. ${shuffledRightItems[i].text}`
-          : "";
-        pairedLines.push(`  ${left.padEnd(18)} ${right}`);
-      }
-
-      return `${questionText}\n${pairedLines.join("\n")}`;
+      const pairsSection = formatMatchPairs(leftItems, shuffledRightItems);
+      return questionHeader + pairsSection;
     }
 
     case "order": {
       if (question.items.length === 0) {
-        return `${questionText}\n(No items provided)`;
+        return `${questionHeader}\n(No items provided)`;
       }
 
       const shuffledItems = shuffleOrderItems(question.items);
-      
-      const formattedItems = shuffledItems
-        .map((item) => `  • ${item.text}`)
-        .join("\n");
-
-      return `${questionText}\n${formattedItems}`;
+      const itemsSection = formatOrderItems(shuffledItems);
+      return questionHeader + itemsSection;
     }
 
     default: {
-      // TypeScript exhaustiveness check
       const _exhaustive: never = question;
-      return `${questionText}\n(Unsupported question type)`;
+      return `${questionHeader}\n(Unsupported question type)`;
     }
   }
 }
@@ -105,21 +135,14 @@ export function formatLegacyQuestionForDoc(
   question: QuizQAD,
   questionNumber: number,
 ): string {
-  const processedQuestion = processBlankPlaceholders(question.question);
-  const questionText = `${questionNumber}. ${processedQuestion}`;
-  
+  const questionHeader = createQuestionHeader(
+    questionNumber,
+    question.question,
+  );
   const shuffledChoices = shuffleMultipleChoiceAnswers(
     question.answers,
     question.distractors,
   );
-  
-  const formattedAnswers = shuffledChoices
-    .map((choice, index) => {
-      const letter = String.fromCharCode(97 + index); // a, b, c, d...
-      const tick = choice.isCorrect ? " ✓" : "";
-      return `  ${letter}) ${choice.text}${tick}`;
-    })
-    .join("\n");
-
-  return `${questionText}\n${formattedAnswers}`;
+  const answersSection = formatMultipleChoice(shuffledChoices);
+  return `${questionHeader}\n${answersSection}`;
 }

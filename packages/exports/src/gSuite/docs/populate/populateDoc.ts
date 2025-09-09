@@ -1,8 +1,11 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
-import { DOC_IMAGE_MAX_HEIGHT, DOC_IMAGE_MAX_WIDTH } from "images/constants";
 
+import {
+  DOC_IMAGE_MAX_HEIGHT,
+  DOC_IMAGE_MAX_WIDTH,
+} from "../../../images/constants";
 import type { Result } from "../../../types";
 import type { ValueToString } from "../../../utils";
 import { defaultValueToString } from "../../../utils";
@@ -10,6 +13,7 @@ import { findMarkdownImages } from "../replacements/findMarkdownImages";
 import { imageReplacements } from "../replacements/imageReplacements";
 import { textReplacements } from "../replacements/textReplacements";
 import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRequests";
+import { removeTablesWithPlaceholders } from "./removeTablesWithPlaceholders";
 
 const log = aiLogger("exports");
 
@@ -25,6 +29,7 @@ export async function populateDoc<
   warnIfMissing = [],
   valueToString = defaultValueToString,
   enablePlaceholderCleanup = false,
+  tablePlaceholdersToRemove,
 }: {
   googleDocs: docs_v1.Docs;
   documentId: string;
@@ -32,9 +37,28 @@ export async function populateDoc<
   warnIfMissing?: (keyof Data)[];
   valueToString?: ValueToString<Data>;
   enablePlaceholderCleanup?: boolean;
+  tablePlaceholdersToRemove?: string[];
 }): Promise<Result<{ missingData: string[] }>> {
   try {
     const missingData: string[] = [];
+
+    // Remove tables for cycles which aren't used, if applicable
+    if (tablePlaceholdersToRemove && tablePlaceholdersToRemove.length > 0) {
+      const tableRemovalRequests = await removeTablesWithPlaceholders(
+        googleDocs,
+        documentId,
+        tablePlaceholdersToRemove,
+      );
+
+      if (tableRemovalRequests.length > 0) {
+        await googleDocs.documents.batchUpdate({
+          documentId,
+          requestBody: {
+            requests: tableRemovalRequests,
+          },
+        });
+      }
+    }
 
     const { requests: textRequests } = textReplacements({
       data,

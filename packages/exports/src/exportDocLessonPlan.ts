@@ -19,12 +19,17 @@ export const exportDocLessonPlan = async ({
 }): Promise<Result<OutputData>> => {
   try {
     onStateChange({ status: "loading", message: "Starting..." });
-    const templateId = getDocsTemplateIdLessonPlan(lessonPlan);
+    const templateId = getDocsTemplateIdLessonPlan();
     if (!templateId) {
       throw new Error("Template ID not found");
     }
 
-    const { title } = lessonPlan;
+    const { title, cycle2, cycle3 } = lessonPlan;
+
+    const tablePlaceholdersToRemove = [
+      ...(cycle2 ? [] : ["{{learning_cycle_2_title}}"]),
+      ...(cycle3 ? [] : ["{{learning_cycle_3_title}}"]),
+    ];
 
     const result = await exportGeneric({
       newFileName: `${title} - ${snapshotId} - Lesson plan`,
@@ -37,6 +42,7 @@ export const exportDocLessonPlan = async ({
           googleDocs: client,
           documentId: templateCopyId,
           data,
+          tablePlaceholdersToRemove,
         });
       },
       userEmail,
