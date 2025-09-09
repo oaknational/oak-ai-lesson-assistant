@@ -4,6 +4,11 @@ import type { docs_v1 } from "@googleapis/docs";
 
 const log = aiLogger("exports");
 
+type TableWithStartEndIndex = docs_v1.Schema$Table & {
+  startIndex: number;
+  endIndex: number;
+};
+
 export async function removeTablesWithPlaceholders(
   googleDocs: docs_v1.Docs,
   documentId: string,
@@ -27,35 +32,38 @@ export async function removeTablesWithPlaceholders(
         element.startIndex &&
         element.endIndex &&
         tableContainsPlaceholders(element.table, targetPlaceholders),
-    );
+    ) as { element: TableWithStartEndIndex; index: number }[];
 
-  return tablesToRemove
-    .sort((a, b) => b.element.startIndex! - a.element.startIndex!) // Delete from end first
-    .map(({ element, index }) => {
-      let endIndex = element.endIndex!;
+  return (
+    tablesToRemove
+      // Delete up the document so deleting one table doesn't shift other indexes
+      .sort((a, b) => b.element.startIndex - a.element.startIndex)
+      .map(({ element, index }) => {
+        let endIndex = element.endIndex;
 
-      // Check if the next element is a paragraph with a page break
-      const nextElement = bodyContent[index + 1];
-      const hasPageBreakElement = nextElement?.paragraph?.elements?.some(
-        (el) => !!el.pageBreak,
-      );
+        // Check if the next element is a paragraph with a page break
+        const nextElement = bodyContent[index + 1];
+        const hasPageBreakElement = nextElement?.paragraph?.elements?.some(
+          (el) => !!el.pageBreak,
+        );
 
-      if (hasPageBreakElement && nextElement?.endIndex) {
-        log.info("Including paragraph with page break in table deletion");
-        endIndex = nextElement.endIndex;
-      } else {
-        log.info("No page break found after table, deleting table only");
-      }
+        if (hasPageBreakElement && nextElement?.endIndex) {
+          log.info("Including paragraph with page break in table deletion");
+          endIndex = nextElement.endIndex;
+        } else {
+          log.info("No page break found after table, deleting table only");
+        }
 
-      return {
-        deleteContentRange: {
-          range: {
-            startIndex: element.startIndex!,
-            endIndex,
+        return {
+          deleteContentRange: {
+            range: {
+              startIndex: element.startIndex,
+              endIndex,
+            },
           },
-        },
-      };
-    });
+        };
+      })
+  );
 }
 
 function tableContainsPlaceholders(
