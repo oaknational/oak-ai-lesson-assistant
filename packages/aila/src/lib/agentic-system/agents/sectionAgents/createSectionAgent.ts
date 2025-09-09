@@ -1,7 +1,7 @@
 import type OpenAI from "openai";
-import type { LooseLessonPlan } from "protocol/schema";
 import type { z } from "zod";
 
+import type { LooseLessonPlan } from "../../../../protocol/schema";
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";

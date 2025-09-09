@@ -1,6 +1,6 @@
 import type OpenAI from "openai";
-import type { QuizV2 } from "protocol/schema";
 
+import type { QuizV2 } from "../../../../protocol/schema";
 import type { SectionAgent, SectionAgentRegistry } from "../../types";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
