@@ -6,7 +6,7 @@ import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
 
-const log = aiLogger("aila:protocol");
+const log = aiLogger("aila:schema");
 
 export type MigrationResult = {
   lessonPlan: Record<string, unknown>;
@@ -82,10 +82,50 @@ export type MigrateLessonPlanArgs = {
     | null;
 };
 
+/**
+ * Helper to migrate lesson plan quizzes in chat data before parsing
+ */
+export async function migrateChatData(
+  rawChat: unknown,
+  persistCallback: MigrateLessonPlanArgs["persistMigration"],
+): Promise<{
+  lessonPlan: unknown;
+  [key: string]: unknown;
+}> {
+  if (
+    !rawChat ||
+    typeof rawChat !== "object" ||
+    !("lessonPlan" in rawChat) ||
+    !rawChat.lessonPlan
+  ) {
+    throw new Error("Invalid chat data format. Expected lessonPlan key");
+  }
+
+  const migrationResult = await migrateLessonPlan({
+    lessonPlan: rawChat.lessonPlan as Record<string, unknown>,
+    persistMigration: async (migratedLessonPlan) => {
+      const updatedChat = {
+        ...rawChat,
+        lessonPlan: migratedLessonPlan,
+      };
+      await persistCallback?.(updatedChat);
+    },
+  });
+
+  // Return chat with migrated lesson plan if migration occurred
+  return migrationResult.wasMigrated
+    ? { ...rawChat, lessonPlan: migrationResult.lessonPlan }
+    : rawChat;
+}
+
 export const migrateLessonPlan = async ({
   lessonPlan: originalLessonPlan,
   persistMigration,
 }: MigrateLessonPlanArgs): Promise<MigrationResult> => {
+  if ("lessonPlan" in originalLessonPlan) {
+    throw new Error("Invalid lesson plan format. Not expecting lessonPlan key");
+  }
+
   // Validate input is a valid lesson plan structure
   const parseResult = LessonPlanInputSchema.safeParse(originalLessonPlan);
   if (!parseResult.success) {
@@ -103,6 +143,7 @@ export const migrateLessonPlan = async ({
     // Check if this section exists in the lesson plan
     const sectionData = lessonPlan[key];
     if (!sectionData) {
+      log.info(`Section ${key} not found in lesson plan`);
       continue;
     }
 

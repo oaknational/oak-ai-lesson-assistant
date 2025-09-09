@@ -1,4 +1,4 @@
-import { migrateLessonPlan } from "@oakai/aila/src/protocol/schemas/versioning/lessonPlanMigrator";
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/lessonPlanMigrator";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -45,7 +45,9 @@ function parseChatAndReportError({
   });
 
   if (!parseResult.success) {
-    const error = new Error("Failed to parse chat");
+    const error = new Error("Failed to parse chat", {
+      cause: parseResult.error,
+    });
     log.error(error);
     Sentry.captureException(error, {
       extra: {
@@ -72,15 +74,15 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
   }
 
   // Upgrade V1 quizzes to V2 if needed
-  const upgradeResult = await migrateLessonPlan({
-    lessonPlan: chatRecord.output as Record<string, unknown>,
-    persistMigration: async (upgradedData) => {
+  const upgradeResult = await migrateChatData(
+    chatRecord.output,
+    async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
         data: { output: upgradedData },
       });
     },
-  });
+  );
 
   const chat = parseChatAndReportError({
     id,
@@ -295,10 +297,7 @@ export const appSessionsRouter = router({
       }
 
       // Migrate lesson plan to latest version if needed (but don't persist yet)
-      const upgradeResult = await migrateLessonPlan({
-        lessonPlan: session.output as Record<string, unknown>,
-        persistMigration: null,
-      });
+      const upgradeResult = await migrateChatData(session.output, null);
 
       const chat = parseChatAndReportError({
         id,
