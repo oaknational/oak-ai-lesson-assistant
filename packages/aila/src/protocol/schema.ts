@@ -360,7 +360,7 @@ export const CompletedLessonPlanSchema = z.object({
   title: LessonTitleSchema,
   keyStage: KeyStageSchema,
   subject: SubjectSchema,
-  topic: TopicSchema.nullable(),
+  topic: TopicSchema.nullish(),
   learningOutcome: LearningOutcomeSchema,
   learningCycles: LearningCyclesSchema,
   priorKnowledge: PriorKnowledgeSchema,
@@ -371,9 +371,9 @@ export const CompletedLessonPlanSchema = z.object({
   starterQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
-  cycle3: CycleSchema.nullable().describe("The third learning cycle"),
+  cycle3: CycleSchema.nullish().describe("The third learning cycle"),
   exitQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
-  additionalMaterials: AdditionalMaterialsSchema.nullable(),
+  additionalMaterials: AdditionalMaterialsSchema.nullish(),
 });
 
 export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;

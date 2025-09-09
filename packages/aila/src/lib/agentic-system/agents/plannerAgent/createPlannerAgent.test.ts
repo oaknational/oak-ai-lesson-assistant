@@ -1,6 +1,9 @@
 import type { LooseLessonPlan } from "../../../../protocol/schema";
-import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
-import type { ChatMessage, PlannerAgentProps } from "../../types";
+import type {
+  AgenticRagLessonPlanResult,
+  ChatMessage,
+  PlannerAgentProps,
+} from "../../types";
 import { createPlannerAgent } from "./createPlannerAgent";
 
 describe("createPlannerAgent", () => {
@@ -43,7 +46,7 @@ describe("createPlannerAgent", () => {
     ],
   };
 
-  const mockRelevantLessons: RagLessonPlan[] = [];
+  const mockRelevantLessons: AgenticRagLessonPlanResult[] = [];
 
   const mockProps: PlannerAgentProps = {
     messages: mockMessages,
