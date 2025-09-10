@@ -1,7 +1,7 @@
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
-import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -9,6 +9,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
@@ -35,7 +36,7 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  // Upgrade V1 quizzes to V2 if needed and parse in one step
+  // Upgrade V1 quizzes to V2 if needed and parse
   const chat = await migrateChatData(
     chatRecord.output,
     async (upgradedData) => {
@@ -43,6 +44,11 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
         where: { id },
         data: { output: upgradedData },
       });
+    },
+    {
+      id: chatRecord.id,
+      userId: chatRecord.userId,
+      caller: "appSessions.getChat",
     },
   );
 
@@ -253,7 +259,11 @@ export const appSessionsRouter = router({
       }
 
       // Migrate lesson plan to latest version if needed (but don't persist yet)
-      const chat = await migrateChatData(session.output, null);
+      const chat = await migrateChatData(session.output, null, {
+        id: session.id,
+        userId: session.userId,
+        caller: "appSessions.shareChat",
+      });
 
       const sharedChat = {
         ...chat,

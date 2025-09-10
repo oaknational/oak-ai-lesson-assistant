@@ -11,18 +11,24 @@ import {
 } from "./fixtures/migrationTestData";
 import { migrateChatData } from "./migrateChatData";
 
+const testContext = {
+  id: "test-chat-id",
+  userId: "test-user-id",
+  caller: "test",
+};
+
 describe("migrateChatData", () => {
   describe("valid chat data migration", () => {
     it("should handle chat data with V1 and V2 quizzes", async () => {
       // Should migrate V1 quizzes
-      const v1Result = await migrateChatData(chatWithV1Quiz, null);
+      const v1Result = await migrateChatData(chatWithV1Quiz, null, testContext);
       expect(v1Result.id).toBe("test-chat-id");
       expect(v1Result.lessonPlan.title).toBe("Test Lesson");
       expect(v1Result.lessonPlan.starterQuiz).toHaveProperty("version", "v2");
       expect(v1Result.lessonPlan.exitQuiz).toHaveProperty("version", "v2");
 
       // Should not migrate V2 quizzes
-      const v2Result = await migrateChatData(chatWithV2Quiz, null);
+      const v2Result = await migrateChatData(chatWithV2Quiz, null, testContext);
       expect(v2Result.id).toBe("test-chat-id");
       expect(v2Result.lessonPlan.starterQuiz).toEqual(mockV2Quiz);
       expect(v2Result.lessonPlan.exitQuiz).toEqual(mockV2Quiz);
@@ -44,7 +50,7 @@ describe("migrateChatData", () => {
         .mockResolvedValue(undefined);
 
       // Should call when migration occurs
-      await migrateChatData(chatWithV1Quiz, mockPersist);
+      await migrateChatData(chatWithV1Quiz, mockPersist, testContext);
       expect(mockPersist).toHaveBeenCalledTimes(1);
       expect(mockPersist).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -58,7 +64,7 @@ describe("migrateChatData", () => {
       mockPersist.mockClear();
 
       // Should not call when no migration needed
-      await migrateChatData(chatWithV2Quiz, mockPersist);
+      await migrateChatData(chatWithV2Quiz, mockPersist, testContext);
       expect(mockPersist).not.toHaveBeenCalled();
     });
 
@@ -71,8 +77,8 @@ describe("migrateChatData", () => {
         });
 
       await expect(
-        migrateChatData(chatWithV1Quiz, mockPersist),
-      ).rejects.toThrow("Persistence failed");
+        migrateChatData(chatWithV1Quiz, mockPersist, testContext),
+      ).rejects.toThrow("test :: Failed to parse chat");
     });
   });
 
@@ -86,9 +92,9 @@ describe("migrateChatData", () => {
       chatWithStringLessonPlan,
       chatWithNullLessonPlan,
     ])("should reject invalid chat data: %p", async (chatData) => {
-      await expect(migrateChatData(chatData, null)).rejects.toThrow(
-        "Invalid chat data format",
-      );
+      await expect(
+        migrateChatData(chatData, null, testContext),
+      ).rejects.toThrow("Invalid chat data format");
     });
   });
 });

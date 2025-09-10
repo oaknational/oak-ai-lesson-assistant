@@ -54,12 +54,20 @@ export class AilaPrismaPersistence extends AilaPersistence {
     const rawChat = appSession?.output;
 
     // Migrate lesson plan quizzes and parse in one step
-    const parsedChat = await migrateChatData(rawChat, async (updatedChat) => {
-      await this._prisma.appSession.update({
-        where: { id },
-        data: { output: updatedChat },
-      });
-    });
+    const parsedChat = await migrateChatData(
+      rawChat,
+      async (updatedChat) => {
+        await this._prisma.appSession.update({
+          where: { id },
+          data: { output: updatedChat },
+        });
+      },
+      {
+        id,
+        userId: appSession.userId,
+        caller: "prisma.loadChat",
+      },
+    );
 
     return parsedChat;
   }
