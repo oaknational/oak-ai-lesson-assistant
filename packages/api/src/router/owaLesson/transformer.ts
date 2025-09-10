@@ -286,10 +286,11 @@ export const getPriorKnowledgeFromUnitData = (
 ): LessonPlanSchemaTeachingMaterials["priorKnowledge"] => {
   if (orderInUnit === 1) {
     return [
+      owaBrowseData.unit_data.connection_prior_unit_description,
       ...(owaBrowseData.unit_data.prior_knowledge_requirements ?? []),
-      ...(owaBrowseData.unit_data.connection_prior_unit_description ?? []),
     ].filter(isTruthy);
   }
+
   if (unitData) {
     const unitPriorKnowledge = unitData.reduce<string[]>((acc, lesson) => {
       if (lesson.order_in_unit >= orderInUnit) {
@@ -297,6 +298,7 @@ export const getPriorKnowledgeFromUnitData = (
       }
       const title = lesson.lesson_data?.title ?? "";
       const keyLearningPoint = lesson.lesson_data.key_learning_points;
+
       if (isArray(keyLearningPoint)) {
         const points = keyLearningPoint
           .map((item: { key_learning_point?: string }) => {

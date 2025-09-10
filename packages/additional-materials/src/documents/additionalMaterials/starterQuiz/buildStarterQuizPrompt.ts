@@ -5,7 +5,6 @@ import {
   getQuizRequirements,
   getQuizStructure,
   getQuizSystemMessage,
-  language,
 } from "../promptHelpers";
 import { refinementMap } from "../refinement/schema";
 
@@ -33,8 +32,8 @@ ${getQuizStructure()}
 ${getQuizRequirements()}
 
 INCLUDE:
-- At least one question testing understanding of a KEYWORD
-- At least one question checking for a COMMON MISCONCEPTION
+- At least one question testing understanding of a PRIOR KNOWLEDGE KEYWORD
+- At least one question checking for a PRIOR KNOWLEDGE COMMON MISCONCEPTION
 - Use PLAUSIBLE DISTRACTORS that are:
     - Similar in length and style to the correct answer
     - Believable but clearly incorrect with reasoning
