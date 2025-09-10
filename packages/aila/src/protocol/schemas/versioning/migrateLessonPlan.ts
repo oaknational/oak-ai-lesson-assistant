@@ -2,6 +2,11 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
+import type { LooseLessonPlan } from "../../schema";
+import {
+  LessonPlanSchema,
+  LessonPlanSchemaWhilstStreaming,
+} from "../../schema";
 import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
@@ -9,29 +14,25 @@ import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
 const log = aiLogger("aila:schema");
 
 export type MigrationResult = {
-  lessonPlan: Record<string, unknown>;
+  lessonPlan: LooseLessonPlan;
   wasMigrated: boolean;
 };
 
-const LessonPlanInputSchema = z
-  .object({
-    starterQuiz: z
-      .union([
-        z.array(z.any()), // V1 format (array)
-        z.object({ version: z.string() }).passthrough(), // V2/V3 format (object with string version)
-      ])
-      .optional(),
-    exitQuiz: z
-      .union([
-        z.array(z.any()), // V1 format (array)
-        z.object({ version: z.string() }).passthrough(), // V2/V3 format (object with string version)
-      ])
-      .optional(),
-  })
-  .passthrough();
+// Schema for quiz data that can be migrated - accepts both V1 and V2 formats
+export const MigratableQuizSchema = z.union([
+  QuizV1Schema, // Array of V1 questions
+  QuizV2Schema, // Object with version "v2" and questions array
+]);
 
-// Schema for quiz data that can be migrated
-const MigratableQuizSchema = z.union([QuizV1Schema, QuizV2Schema]);
+// Proper input schema for lesson plan migration
+export const LessonPlanMigrationInputSchema = LessonPlanSchema.extend({
+  starterQuiz: MigratableQuizSchema.optional(),
+  exitQuiz: MigratableQuizSchema.optional(),
+});
+
+export type LessonPlanMigrationInput = z.infer<
+  typeof LessonPlanMigrationInputSchema
+>;
 
 const versionedSections = {
   starterQuiz: {
@@ -64,8 +65,8 @@ const getCurrentVersion = (section: unknown, sectionKey: string): number => {
   }
 
   if (typeof section.version === "string") {
-    // v2 => 2
-    return parseInt(section.version.replace(/[^0-9]/, ""), 10);
+    // Remove 'v' prefix and parse (e.g., "v2" => "2", "123" => "123")
+    return parseInt(section.version.replace("v", ""), 10);
   }
 
   if (typeof section.version === "number") {
@@ -76,62 +77,29 @@ const getCurrentVersion = (section: unknown, sectionKey: string): number => {
 };
 
 export type MigrateLessonPlanArgs = {
-  lessonPlan: Record<string, unknown>;
-  persistMigration:
-    | ((lessonPlan: Record<string, unknown>) => Promise<void>)
-    | null;
+  lessonPlan: LessonPlanMigrationInput | Record<string, unknown>;
+  persistMigration: ((lessonPlan: LooseLessonPlan) => Promise<void>) | null;
 };
-
-/**
- * Helper to migrate lesson plan quizzes in chat data before parsing
- */
-export async function migrateChatData(
-  rawChat: unknown,
-  persistCallback: MigrateLessonPlanArgs["persistMigration"],
-): Promise<{
-  lessonPlan: unknown;
-  [key: string]: unknown;
-}> {
-  if (
-    !rawChat ||
-    typeof rawChat !== "object" ||
-    !("lessonPlan" in rawChat) ||
-    !rawChat.lessonPlan
-  ) {
-    throw new Error("Invalid chat data format. Expected lessonPlan key");
-  }
-
-  const migrationResult = await migrateLessonPlan({
-    lessonPlan: rawChat.lessonPlan as Record<string, unknown>,
-    persistMigration: async (migratedLessonPlan) => {
-      const updatedChat = {
-        ...rawChat,
-        lessonPlan: migratedLessonPlan,
-      };
-      await persistCallback?.(updatedChat);
-    },
-  });
-
-  // Return chat with migrated lesson plan if migration occurred
-  return migrationResult.wasMigrated
-    ? { ...rawChat, lessonPlan: migrationResult.lessonPlan }
-    : rawChat;
-}
 
 export const migrateLessonPlan = async ({
   lessonPlan: originalLessonPlan,
   persistMigration,
 }: MigrateLessonPlanArgs): Promise<MigrationResult> => {
-  if ("lessonPlan" in originalLessonPlan) {
+  if (
+    originalLessonPlan &&
+    typeof originalLessonPlan === "object" &&
+    "lessonPlan" in originalLessonPlan
+  ) {
     throw new Error("Invalid lesson plan format. Not expecting lessonPlan key");
   }
 
   // Validate input is a valid lesson plan structure
-  const parseResult = LessonPlanInputSchema.safeParse(originalLessonPlan);
+  const parseResult =
+    LessonPlanMigrationInputSchema.safeParse(originalLessonPlan);
   if (!parseResult.success) {
-    throw new Error(
-      `Invalid lesson plan format for migration: ${parseResult.error.message}`,
-    );
+    throw new Error("Invalid lesson plan format for migration", {
+      cause: parseResult.error,
+    });
   }
 
   let wasMigrated = false;
@@ -156,10 +124,21 @@ export const migrateLessonPlan = async ({
     }
   }
 
+  // Parse the migrated lesson plan with the proper schema
+  const finalParseResult =
+    LessonPlanSchemaWhilstStreaming.safeParse(lessonPlan);
+  if (!finalParseResult.success) {
+    throw new Error("Migrated lesson plan failed validation", {
+      cause: finalParseResult.error,
+    });
+  }
+
+  const typedLessonPlan = finalParseResult.data;
+
   // Call the persistence callback if provided
   if (wasMigrated && persistMigration) {
     try {
-      await persistMigration(lessonPlan);
+      await persistMigration(typedLessonPlan);
       log.info("Persisted migrated lesson plan");
     } catch (error) {
       log.error("Failed to persist migrated lesson plan", error);
@@ -167,5 +146,5 @@ export const migrateLessonPlan = async ({
     }
   }
 
-  return { lessonPlan, wasMigrated };
+  return { lessonPlan: typedLessonPlan, wasMigrated };
 };

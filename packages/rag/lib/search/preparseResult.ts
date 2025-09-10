@@ -1,4 +1,4 @@
-import { migrateLessonPlan } from "../../../aila/src/protocol/schemas/versioning/lessonPlanMigrator";
+import { migrateLessonPlan } from "../../../aila/src/protocol/schemas/versioning/migrateLessonPlan";
 import type { DeepPartial, RagLessonPlanResult } from "../../types";
 
 /**

@@ -12,8 +12,7 @@ import type {
   AilaPersistedChat,
   LessonPlanKey,
 } from "../../../../protocol/schema";
-import { chatSchema } from "../../../../protocol/schema";
-import { migrateChatData } from "../../../../protocol/schemas/versioning/lessonPlanMigrator";
+import { migrateChatData } from "../../../../protocol/schemas/versioning/migrateChatData";
 import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
@@ -54,18 +53,13 @@ export class AilaPrismaPersistence extends AilaPersistence {
 
     const rawChat = appSession?.output;
 
-    // Migrate lesson plan quizzes before parsing
-    const chatDataForParsing = await migrateChatData(
-      rawChat,
-      async (updatedChat) => {
-        await this._prisma.appSession.update({
-          where: { id },
-          data: { output: updatedChat },
-        });
-      },
-    );
-
-    const parsedChat = chatSchema.parse(chatDataForParsing);
+    // Migrate lesson plan quizzes and parse in one step
+    const parsedChat = await migrateChatData(rawChat, async (updatedChat) => {
+      await this._prisma.appSession.update({
+        where: { id },
+        data: { output: updatedChat },
+      });
+    });
 
     return parsedChat;
   }

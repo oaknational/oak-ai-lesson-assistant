@@ -1,4 +1,4 @@
-import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/lessonPlanMigrator";
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
@@ -14,7 +14,6 @@ import { z } from "zod";
 import { getSessionModerations } from "../../../aila/src/features/moderation/getSessionModerations";
 import { generateChatId } from "../../../aila/src/helpers/chat/generateChatId";
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
-import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import { checkMutationPermissions } from "./helpers/checkMutationPermissions";
@@ -23,43 +22,6 @@ const log = aiLogger("appSessions");
 
 function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
-}
-
-function parseChatAndReportError({
-  sessionOutput,
-  id,
-  userId,
-}: {
-  sessionOutput: Prisma.JsonValue;
-  id: string;
-  userId: string;
-}) {
-  if (typeof sessionOutput !== "object") {
-    throw new Error("sessionOutput is not an object");
-  }
-
-  const parseResult = chatSchema.safeParse({
-    ...sessionOutput,
-    userId,
-    id,
-  });
-
-  if (!parseResult.success) {
-    const error = new Error("Failed to parse chat", {
-      cause: parseResult.error,
-    });
-    log.error(error);
-    Sentry.captureException(error, {
-      extra: {
-        id,
-        userId,
-        sessionOutput,
-        zodError: parseResult.error.flatten(),
-      },
-    });
-  }
-
-  return parseResult.data;
 }
 
 export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
@@ -73,8 +35,8 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     return undefined;
   }
 
-  // Upgrade V1 quizzes to V2 if needed
-  const upgradeResult = await migrateChatData(
+  // Upgrade V1 quizzes to V2 if needed and parse in one step
+  const chat = await migrateChatData(
     chatRecord.output,
     async (upgradedData) => {
       await prisma.appSession.update({
@@ -83,12 +45,6 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
       });
     },
   );
-
-  const chat = parseChatAndReportError({
-    id,
-    userId: chatRecord.userId,
-    sessionOutput: upgradeResult.lessonPlan as Prisma.JsonValue,
-  });
 
   return chat;
 }
@@ -297,20 +253,7 @@ export const appSessionsRouter = router({
       }
 
       // Migrate lesson plan to latest version if needed (but don't persist yet)
-      const upgradeResult = await migrateChatData(session.output, null);
-
-      const chat = parseChatAndReportError({
-        id,
-        userId: session.userId,
-        sessionOutput: upgradeResult.lessonPlan as Prisma.JsonValue,
-      });
-
-      if (!chat) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to parse chat",
-        });
-      }
+      const chat = await migrateChatData(session.output, null);
 
       const sharedChat = {
         ...chat,
