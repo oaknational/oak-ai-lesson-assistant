@@ -1,4 +1,4 @@
-import { stringListToText } from "../../../../agentic-system/utils/stringListToText";
+import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
 import { learningCycleTitlesInstructions } from "./learningCycleOutcomes.instructions";
 import { LearningCyclesSchema } from "./learningCycleOutcomes.schema";

@@ -1,5 +1,4 @@
-import type { AgenticRagLessonPlanResult } from "lib/agentic-system/types";
-
+import type { AgenticRagLessonPlanResult } from "../../types";
 import { createPromptPartMessageFn } from "./_createPromptPart";
 
 export const relevantLessonsPromptPart = createPromptPartMessageFn<
