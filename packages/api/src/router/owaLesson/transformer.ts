@@ -7,10 +7,13 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 
 import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
+import { isArray, isTruthy } from "remeda";
+import z from "zod";
 
 import type {
   LessonBrowseDataByKsSchema,
   LessonContentSchema,
+  UnitDataSchema,
 } from "./schemas";
 
 /**
@@ -220,8 +223,13 @@ export function transformOwaLessonToLessonPlan(
   owaLesson: LessonContentSchema,
   owaBrowseData: LessonBrowseDataByKsSchema,
   pathways: string[],
+  unitData: UnitDataSchema,
 ): LessonPlanSchemaTeachingMaterials {
   const isCanonicalLesson = pathways.length > 0;
+  const orderInUnit = unitData.find(
+    (lesson) => lesson.lesson_slug === owaLesson.lesson_slug,
+  )?.order_in_unit;
+
   // Create a base lesson plan object
   const lessonPlan: LessonPlanSchemaTeachingMaterials = {
     title: owaLesson.lesson_title ?? "",
@@ -264,8 +272,49 @@ export function transformOwaLessonToLessonPlan(
 
     // Empty placeholders for required fields
     learningCycles: [],
-    priorKnowledge: [],
+    priorKnowledge:
+      getPriorKnowledgeFromUnitData(unitData, orderInUnit, owaBrowseData) ?? [],
   };
 
   return lessonPlan;
 }
+
+export const getPriorKnowledgeFromUnitData = (
+  unitData: UnitDataSchema,
+  orderInUnit: number | undefined = 1,
+  owaBrowseData: LessonBrowseDataByKsSchema,
+): LessonPlanSchemaTeachingMaterials["priorKnowledge"] => {
+  if (orderInUnit === 1) {
+    return [
+      ...(owaBrowseData.unit_data.prior_knowledge_requirements ?? []),
+      ...(owaBrowseData.unit_data.connection_prior_unit_description ?? []),
+    ].filter(isTruthy);
+  }
+  if (unitData) {
+    const unitPriorKnowledge = unitData.reduce<string[]>((acc, lesson) => {
+      if (lesson.order_in_unit >= orderInUnit) {
+        return acc;
+      }
+      const title = lesson.lesson_data?.title ?? "";
+      const keyLearningPoint = lesson.lesson_data.key_learning_points;
+      if (isArray(keyLearningPoint)) {
+        const points = keyLearningPoint
+          .map((item: { key_learning_point?: string }) => {
+            return `${item.key_learning_point ?? ""}`;
+          })
+          .join(" ");
+        acc.push(`Lesson title: ${title} - Key learning points: ${points}`);
+      } else {
+        const parsePoint = z
+          .object({ key_learning_point: z.string() })
+          .safeParse(keyLearningPoint);
+        if (parsePoint.success) {
+          acc.push(`${title}: ${parsePoint.data.key_learning_point}`);
+        }
+      }
+      return acc;
+    }, []);
+
+    return unitPriorKnowledge.filter(isTruthy);
+  }
+};

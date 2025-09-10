@@ -197,11 +197,8 @@ export const resourceTypesConfig: Record<
     owaLessonParts: [
       "learningOutcome",
       "keyLearningPoints",
-      "misconceptions",
       "keywords",
-      "starterQuiz",
-      "exitQuiz",
-      "transcript",
+      "priorKnowledge",
     ],
   },
   "additional-exit-quiz": {

@@ -161,7 +161,6 @@ export const additionalMaterialsRouter = router({
 
         const rawLesson = lessonData.data.content[0];
         const parsedLesson = lessonContentSchema.parse(rawLesson);
-
         const browseDataArray = lessonData.data.browseData;
         const pathways = isCanonicalLesson
           ? Array.from(
@@ -174,6 +173,10 @@ export const additionalMaterialsRouter = router({
           : [];
         const browseData = browseDataArray.find(
           (item) => item.lesson_slug === parsedLesson.lesson_slug,
+        );
+
+        const browseDataUnits = browseDataArray.filter(
+          (item) => item.unit_slug === browseData?.unit_slug,
         );
 
         if (!browseData) {
@@ -207,6 +210,7 @@ export const additionalMaterialsRouter = router({
           parsedLesson,
           parsedBrowseData,
           pathways,
+          browseDataUnits,
         );
 
         const lesson = {
