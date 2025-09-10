@@ -13,8 +13,8 @@ import zodToJsonSchema from "zod-to-json-schema";
 
 import { AilaModerationError, AilaModerator } from ".";
 import {
-  DEFAULT_MODERATION_MODEL,
-  DEFAULT_MODERATION_TEMPERATURE,
+  DEFAULT_MODERATION_GPT4_PARAMS,
+  type OpenAIModelParams,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 
@@ -23,8 +23,7 @@ const log = aiLogger("aila:moderation");
 export type OpenAiModeratorArgs = {
   chatId: string;
   userId: string | undefined;
-  temperature?: number;
-  model?: OpenAI.Chat.ChatModel;
+  modelParams?: OpenAIModelParams;
   aila?: AilaServices;
   openAiClient?: OpenAILike;
 };
@@ -42,15 +41,14 @@ export interface OpenAILike {
 
 export class OpenAiModerator extends AilaModerator {
   protected _openAIClient: OpenAILike;
-  private readonly _temperature: number = DEFAULT_MODERATION_TEMPERATURE;
-  private readonly _model: string = DEFAULT_MODERATION_MODEL;
+  private readonly _modelParams: OpenAIModelParams =
+    DEFAULT_MODERATION_GPT4_PARAMS;
   private readonly _aila?: AilaServices;
 
   constructor({
     chatId,
     userId,
-    temperature = DEFAULT_MODERATION_TEMPERATURE,
-    model = DEFAULT_MODERATION_MODEL,
+    modelParams = DEFAULT_MODERATION_GPT4_PARAMS,
     aila,
     openAiClient,
   }: OpenAiModeratorArgs) {
@@ -65,11 +63,14 @@ export class OpenAiModerator extends AilaModerator {
           userId,
         },
       });
-    if (temperature < 0 || temperature > 2) {
+    if (
+      "temperature" in modelParams &&
+      modelParams.temperature &&
+      (modelParams.temperature < 0 || modelParams.temperature > 2)
+    ) {
       throw new Error("Temperature must be between 0 and 2.");
     }
-    this._temperature = temperature;
-    this._model = model;
+    this._modelParams = modelParams;
     this._aila = aila;
   }
 
@@ -92,7 +93,7 @@ export class OpenAiModerator extends AilaModerator {
 
     const moderationResponse = await this._callOpenAi(
       {
-        model: this._model,
+        ...this._modelParams,
         messages: [
           {
             role: "system",
@@ -100,7 +101,6 @@ export class OpenAiModerator extends AilaModerator {
           },
           { role: "user", content: input },
         ],
-        temperature: this._temperature,
         response_format: {
           type: "json_schema",
           json_schema: {
