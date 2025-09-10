@@ -23,13 +23,12 @@ export async function terminateWithResponse(
 ): Promise<void> {
   if (context.currentTurn.relevantLessonsFetched) {
     const { relevantLessons } = context.currentTurn;
-    if (!relevantLessons?.length) {
-      await terminateWithCustomMessage("No relevant lessons found.", context);
-      return;
-    } else {
+    if (relevantLessons?.length) {
       const message = displayRelevantLessons(relevantLessons);
       await terminateWithCustomMessage(message, context);
       return;
+    } else {
+      // If no relevant lessons were found, continue to generate a message
     }
   }
 

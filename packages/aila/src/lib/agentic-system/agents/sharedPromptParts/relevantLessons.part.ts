@@ -1,7 +1,8 @@
+import type { AgenticRagLessonPlanResult } from "../../types";
 import { createPromptPartMessageFn } from "./_createPromptPart";
 
 export const relevantLessonsPromptPart = createPromptPartMessageFn<
-  { title: string }[] | null
+  AgenticRagLessonPlanResult[] | null
 >({
   heading: "RELEVANT LESSONS (RAG DATA)",
   description: (lessons) => {
@@ -17,6 +18,6 @@ export const relevantLessonsPromptPart = createPromptPartMessageFn<
     if (lessons === null || lessons.length === 0) {
       return "";
     }
-    return lessons.map((l) => `- ${l.title}`).join("\n");
+    return lessons.map((l) => `- ${l.lessonPlan.title}`).join("\n");
   },
 });

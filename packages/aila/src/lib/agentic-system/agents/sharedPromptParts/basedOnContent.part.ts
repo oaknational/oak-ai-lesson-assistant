@@ -7,7 +7,8 @@ export function basedOnContentPromptPart<T>(
   return createPromptPartMessageFn<T>({
     heading: "BASED ON CONTENT",
     description: () =>
-      "Only diverge from this content if necessary to make sense or if the user has specified otherwise. If there's no way to do this without contradiction then return an error, with justification.",
-    contentToString,
+      "The user is adapting an Oak lesson which has the following content for this section. Match the text below verbatim, only diverging if necessary to make sense or if the user has specified otherwise. If there's no way to do this without contradiction then return an error, with justification.",
+    contentToString: (content) =>
+      `<BasedOn-Content>\n${contentToString(content)}\n</BasedOn-Content>`,
   })(content);
 }

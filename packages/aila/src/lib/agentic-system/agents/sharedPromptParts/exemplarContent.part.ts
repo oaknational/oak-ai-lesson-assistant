@@ -7,13 +7,13 @@ export function exemplarContentPromptPart<T>(
   return createPromptPartMessageFn<T[]>({
     heading: "EXEMPLAR CONTENT",
     description: () =>
-      "This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.",
+      "The following is exemplar content from similar Oak Academy lessons, it should be used as a guide for 'what good looks like' for the section you are generating. Don't copy it verbatim, but use it to inspire your own unique output. If there is a 'based on content' section below, use that as your primary source, and this exemplar content only as a secondary guide.",
     contentToString: (content) =>
       content
         .map(
           (item, i) =>
-            `<example-${i + 1}>${contentToString(item)}</example-${i + 1}>`,
+            `\n<Example-${i + 1}>\n${contentToString(item)}\n</Example-${i + 1}>`,
         )
-        .join("\n"),
+        .join("\n\n"),
   })(content);
 }

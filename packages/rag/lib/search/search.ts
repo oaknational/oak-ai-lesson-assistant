@@ -29,16 +29,16 @@ export async function vectorSearch({
     throw new Error("No subjects provided");
   }
 
-  const queryEmbedding = `[${queryVector.join(",")}]`;
   const limit = 50;
   const startAt = new Date();
   const queryResponse = await executePrismaQueryRaw({
     prisma,
-    queryEmbedding,
+    queryVector,
     keyStageSlugs,
     subjectSlugs,
     limit,
   });
+  log.info(`Prisma returned ${queryResponse.length} results`);
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const results = queryResponse
     .map(preparseResult)

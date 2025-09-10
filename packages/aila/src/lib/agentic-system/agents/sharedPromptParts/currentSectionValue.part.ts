@@ -7,7 +7,7 @@ export function currentSectionValuePromptPart<T>(
   return createPromptPartMessageFn<T>({
     heading: "CURRENT SECTION VALUE",
     description: () =>
-      "This is the current value of the section you are creating. Use it as a starting point.",
+      "This is the current value of the section you are generating. Use it as a starting point.",
     contentToString,
   })(content);
 }

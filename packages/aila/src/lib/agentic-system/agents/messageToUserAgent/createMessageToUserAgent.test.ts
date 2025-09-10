@@ -1,7 +1,10 @@
 import type { LooseLessonPlan } from "../../../../protocol/schema";
-import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { PlanStep, PlannerOutput } from "../../schema";
-import type { ChatMessage, MessageToUserAgentProps } from "../../types";
+import type {
+  AgenticRagLessonPlanResult,
+  ChatMessage,
+  MessageToUserAgentProps,
+} from "../../types";
 import { createMessageToUserAgent } from "./createMessageToUserAgent";
 
 describe("createMessageToUserAgent", () => {
@@ -92,7 +95,7 @@ describe("createMessageToUserAgent", () => {
     { message: "Failed to generate quiz questions due to content complexity" },
   ];
 
-  const mockRelevantLessons: RagLessonPlan[] = [];
+  const mockRelevantLessons: AgenticRagLessonPlanResult[] = [];
 
   const mockProps: MessageToUserAgentProps = {
     messages: mockMessages,
@@ -102,7 +105,6 @@ describe("createMessageToUserAgent", () => {
     errors: [],
     plannerOutput: mockPlannerOutput,
     relevantLessons: mockRelevantLessons,
-    relevantLessonsFetched: true,
   };
 
   describe("input message generation", () => {
@@ -167,7 +169,6 @@ describe("createMessageToUserAgent", () => {
     it("should handle relevant lessons not fetched", () => {
       const propsWithoutRelevantLessons: MessageToUserAgentProps = {
         ...mockProps,
-        relevantLessonsFetched: false,
         relevantLessons: null,
       };
 

@@ -1,8 +1,11 @@
+import type { AgenticRagLessonPlanResult } from "../types";
+
 export function displayRelevantLessons(
-  relevantLessons: { title: string }[],
+  relevantLessons: AgenticRagLessonPlanResult[],
 ): string {
   return `I have fetched the following existing Oak lessons that look relevant:
-${relevantLessons.map((lesson, i) => `${i + 1}. ${lesson.title}`).join("\n")}
+${relevantLessons.map(({ lessonPlan }, i) => `${i + 1}. ${lessonPlan.title}`).join("\n")}
+\n
 Would you like to base your lesson on one of these? Otherwise we can create one from scratch!`;
 }
 
