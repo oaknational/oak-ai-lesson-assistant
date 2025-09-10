@@ -300,21 +300,22 @@ export const LessonTitleSchema = z
   .string()
   .describe(LESSON_PLAN_DESCRIPTIONS.title);
 
+export const KEY_STAGE_SLUGS = [
+  "key-stage-1",
+  "key-stage-2",
+  "key-stage-3",
+  "key-stage-4",
+  "key-stage-5",
+  "early-years-foundation-stage",
+  "specialist",
+  "further-education",
+  "higher-education",
+] as const;
+
+const KeyStageSlugSchema = z.enum(KEY_STAGE_SLUGS);
+
 export const KeyStageSchema = z
-  .union([
-    z.enum([
-      "key-stage-1",
-      "key-stage-2",
-      "key-stage-3",
-      "key-stage-4",
-      "key-stage-5",
-      "early-years-foundation-stage",
-      "specialist",
-      "further-education",
-      "higher-education",
-    ]),
-    z.string(),
-  ])
+  .union([KeyStageSlugSchema, z.string()])
   .describe(LESSON_PLAN_DESCRIPTIONS.keyStage);
 
 export const SubjectSchema = z
