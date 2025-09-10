@@ -10,3 +10,12 @@ export interface QuizElement {
   type: "text" | "table" | "spacer";
   requests: docs_v1.Schema$Request[];
 }
+
+export interface CreateTableElementOptions {
+  insertIndex: number;
+  rows: number;
+  columns: number;
+  cellContent: (row: number, col: number) => string;
+  columnWidths: (number | "AUTO")[];
+  columnAlignments: ("START" | "CENTER" | "END" | "JUSTIFIED" | null)[] | null;
+}
