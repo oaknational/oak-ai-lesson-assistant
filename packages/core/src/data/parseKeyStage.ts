@@ -85,12 +85,6 @@ export function parseKeyStage(maybeKeyStage: string): string {
     return startMatch[1]; // Return the mapped value
   }
 
-  // Normalize canonical kebab forms like "key-stage-1"
-  if (/^key_stage_[1-5]$/.test(strippedMaybeKeyStage)) {
-    const n = strippedMaybeKeyStage.at(-1) as "1" | "2" | "3" | "4" | "5";
-    return `key-stage-${n}`;
-  }
-
   return maybeKeyStage;
 }
 
