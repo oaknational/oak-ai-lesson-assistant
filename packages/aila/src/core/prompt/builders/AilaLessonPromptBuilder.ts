@@ -80,6 +80,11 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       };
     }
 
+    /**
+     * In the 'agentic' system, RAG is handled directly, i.e. this class is not used.
+     * If we want to test the new RAG schema with the 'mega prompt' system, we can
+     * enable feature flag 'rag-schema-2024-12' for certain users.
+     */
     const newRagEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
       "rag-schema-2024-12",
       userId,

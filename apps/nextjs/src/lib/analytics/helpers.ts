@@ -1,6 +1,6 @@
 import type { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
+import { parseKeyStageSlugForAnalytics } from "@oakai/core/src/data/parseKeyStage";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 
 import { isTruthy } from "remeda";
@@ -27,7 +27,7 @@ export function getLessonTrackingProps({
     product: "ai lesson assistant",
     lessonPlanTitle: lesson.title ?? "",
     subjectSlug: lesson.subject ?? "",
-    keyStageSlug: parseKeyStage(lesson.keyStage ?? ""),
+    keyStageSlug: parseKeyStageSlugForAnalytics(lesson.keyStage ?? ""),
   };
 }
 
