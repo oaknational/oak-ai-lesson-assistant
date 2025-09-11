@@ -45,8 +45,8 @@ export const InlineAnswerWithDegrees: Story = {
   args: {
     question: {
       questionType: "short-answer",
-      question: "The size of angle C° is {{}}°",
-      answers: ["120"],
+      question: "The boiling temperature of water is {{ }}°C",
+      answers: ["100"],
       hint: null,
     },
     questionNumber: 2,
