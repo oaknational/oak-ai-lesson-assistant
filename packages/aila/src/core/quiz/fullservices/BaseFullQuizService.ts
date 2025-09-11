@@ -5,9 +5,9 @@ import type { z } from "zod";
 
 import type {
   AilaRagRelevantLesson,
+  LatestQuiz,
   LooseLessonPlan,
   QuizV1Question,
-  QuizV2,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
@@ -34,7 +34,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     if (override) {
       return this.createBestQuizOverride(
         quizType,
@@ -53,7 +53,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
@@ -104,7 +104,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     quizType: quizPatchType,
     lessonPlan: LooseLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 

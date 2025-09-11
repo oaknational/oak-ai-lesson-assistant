@@ -4,9 +4,12 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
 import {
-  type QuizV2Optional,
-  QuizV2Schema,
-  QuizV2SchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlySchema,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
+  type LatestQuizOptional,
+  LatestQuizSchema,
+  LatestQuizSchemaWithoutLength,
 } from "./schemas/quiz";
 import { type HasuraQuiz } from "./schemas/quiz/rawQuiz";
 
@@ -300,21 +303,22 @@ export const LessonTitleSchema = z
   .string()
   .describe(LESSON_PLAN_DESCRIPTIONS.title);
 
+export const KEY_STAGE_SLUGS = [
+  "key-stage-1",
+  "key-stage-2",
+  "key-stage-3",
+  "key-stage-4",
+  "key-stage-5",
+  "early-years-foundation-stage",
+  "specialist",
+  "further-education",
+  "higher-education",
+] as const;
+
+const KeyStageSlugSchema = z.enum(KEY_STAGE_SLUGS);
+
 export const KeyStageSchema = z
-  .union([
-    z.enum([
-      "key-stage-1",
-      "key-stage-2",
-      "key-stage-3",
-      "key-stage-4",
-      "key-stage-5",
-      "early-years-foundation-stage",
-      "specialist",
-      "further-education",
-      "higher-education",
-    ]),
-    z.string(),
-  ])
+  .union([KeyStageSlugSchema, z.string()])
   .describe(LESSON_PLAN_DESCRIPTIONS.keyStage);
 
 export const SubjectSchema = z
@@ -368,11 +372,11 @@ export const CompletedLessonPlanSchema = z.object({
   misconceptions: MisconceptionsSchema,
   keywords: KeywordsSchema,
   basedOn: BasedOnSchema.nullish(),
-  starterQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
+  starterQuiz: LatestQuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.starterQuiz),
   cycle1: CycleSchema.describe("The first learning cycle"),
   cycle2: CycleSchema.describe("The second learning cycle"),
   cycle3: CycleSchema.nullable().describe("The third learning cycle"),
-  exitQuiz: QuizV2Schema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
+  exitQuiz: LatestQuizSchema.describe(LESSON_PLAN_DESCRIPTIONS.exitQuiz),
   additionalMaterials: AdditionalMaterialsSchema.nullable(),
 });
 
@@ -498,7 +502,7 @@ export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional
   | MisconceptionsOptional
   | KeywordOptional[]
-  | QuizV2Optional
+  | LatestQuizOptional
   | CycleOptional
   | string
   | string[]
@@ -516,7 +520,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   keyLearningPoints: KeyLearningPointsSchema,
   misconceptions: MisconceptionsSchemaWithoutLength,
   keywords: KeywordsSchemaWithoutLength,
-  starterQuiz: QuizV2SchemaWithoutLength.describe(
+  starterQuiz: LatestQuizSchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.starterQuiz,
   ),
   cycle1: CycleSchemaWithoutLength.describe("The first learning cycle"),
@@ -524,7 +528,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   cycle3: CycleSchemaWithoutLength.nullable().describe(
     "The third learning cycle",
   ),
-  exitQuiz: QuizV2SchemaWithoutLength.describe(
+  exitQuiz: LatestQuizSchemaWithoutLength.describe(
     LESSON_PLAN_DESCRIPTIONS.exitQuiz,
   ),
   additionalMaterials: AdditionalMaterialsSchema,
@@ -532,7 +536,7 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
 
 // Re-export quiz schemas for external use
 export {
-  QuizV2MultipleChoiceOnlySchema,
-  QuizV2MultipleChoiceOnlySchemaWithoutLength,
-  QuizV2MultipleChoiceOnlyStrictMax6Schema,
+  LatestQuizMultipleChoiceOnlySchema,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
 } from "./schemas/quiz";

@@ -1,6 +1,6 @@
 import dedent from "dedent";
 
-import type { QuizQAD, QuizV2Question } from "../schema/input.schema";
+import type { QuizQAD, QuizQuestion } from "../schema/input.schema";
 import {
   formatLegacyQuestionForDoc,
   formatQuestionForDoc,
@@ -8,7 +8,7 @@ import {
 
 describe("formatQuestionForDoc", () => {
   it("formats multiple-choice questions correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question: "What is 2 + 2?",
       answers: ["4"],
@@ -27,7 +27,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("formats multiple-choice questions with blanks correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question: "The formula for water is {{ }}.",
       answers: ["H2O"],
@@ -44,7 +44,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("formats short-answer questions correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "short-answer",
       question: "What is the capital of France?",
       answers: ["Paris"],
@@ -60,7 +60,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("formats short-answer questions with inline blanks correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "short-answer",
       question: "The capital of France is ___.",
       answers: ["Paris"],
@@ -73,7 +73,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("formats matching questions correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "match",
       question: "Match the countries to their capitals:",
       pairs: [
@@ -95,7 +95,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("formats ordering questions correctly", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "order",
       question: "Put these events in chronological order:",
       items: ["World War II ends", "Moon landing", "Fall of Berlin Wall"],
@@ -113,7 +113,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("handles empty matching pairs", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "match",
       question: "Match the items:",
       pairs: [],
@@ -128,7 +128,7 @@ describe("formatQuestionForDoc", () => {
   });
 
   it("handles empty ordering items", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "order",
       question: "Put these in order:",
       items: [],

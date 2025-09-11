@@ -1,3 +1,15 @@
+# [1.50.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.49.0...v1.50.0) (2025-09-08)
+
+
+### Bug Fixes
+
+* only fetch owa data when clerk is hydrated ([#791](https://github.com/oaknational/oak-ai-lesson-assistant/issues/791)) ([43cf218](https://github.com/oaknational/oak-ai-lesson-assistant/commit/43cf2180591f6e16cf3be1b445f3ac2116418f6e))
+
+
+### Features
+
+* home page updates ([#776](https://github.com/oaknational/oak-ai-lesson-assistant/issues/776)) ([3844665](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3844665f3dfd5dac1ccf6bb8bfd8d458f81eb956))
+
 # [1.49.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.48.0...v1.49.0) (2025-09-04)
 
 

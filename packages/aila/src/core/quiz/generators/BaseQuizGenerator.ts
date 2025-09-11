@@ -19,12 +19,12 @@ import {
 } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
+  LatestQuizQuestion,
   LooseLessonPlan,
   QuizOperationType,
   QuizPath,
   QuizV1,
   QuizV1Question,
-  QuizV2Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";

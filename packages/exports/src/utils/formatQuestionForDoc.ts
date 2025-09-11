@@ -10,7 +10,7 @@ import {
   shuffleMultipleChoiceAnswers,
   shuffleOrderItems,
 } from "../quiz-utils/shuffle";
-import type { QuizQAD, QuizV2Question } from "../schema/input.schema";
+import type { QuizQAD, QuizQuestion } from "../schema/input.schema";
 
 function createQuestionHeader(number: number, text: string): string {
   const processedQuestion = processBlankPlaceholders(text);
@@ -72,7 +72,7 @@ function formatOrderItems(items: ShuffledOrderItem[]): string {
  * Each question type is formatted differently to display properly in the table layout
  */
 export function formatQuestionForDoc(
-  question: QuizV2Question,
+  question: QuizQuestion,
   questionNumber: number,
 ): string {
   const questionHeader = createQuestionHeader(
