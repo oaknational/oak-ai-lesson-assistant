@@ -96,3 +96,7 @@ export function stringOrBullets(input: undefined | string | string[]) {
 }
 
 export { filterToMcQuestions } from "./utils/filterToMcQuestions";
+export {
+  formatQuestionForDoc,
+  formatLegacyQuestionForDoc,
+} from "./utils/formatQuestionForDoc";

@@ -56,7 +56,7 @@ export async function prepLessonForSlides(
   const keywords = data.keywords?.map((keyword) => keyword.keyword);
   const keyword_sentences = data.keywords?.map((keyword) => keyword.definition);
 
-  // TODO: Currently only multiple-choice questions are supported in exports
+  // TODO: Currently only multiple-choice questions are supported
   // Filter to only include multiple-choice questions
   // Other question types (short-answer, match, order) are ignored
   const starterMcQuestions = filterToMcQuestions(data.starterQuiz.questions);

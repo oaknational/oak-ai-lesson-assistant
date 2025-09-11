@@ -10,17 +10,28 @@
 export const DPI_SCALE_FACTOR = 3.0;
 
 /**
- * Visual scaling factor for LaTeX images - makes them appear larger in documents.
- * This does NOT get divided out, so it actually makes the images visually bigger.
+ * Visual scaling factor for LaTeX images in quizzes
  * 2.0 = twice as large, 1.5 = 50% larger, etc.
  */
-export const LATEX_VISUAL_SCALE = 1.3;
+export const LATEX_VISUAL_SCALE_QUIZ = 1.3;
 
 /**
- * Max dimensions for images in question text (points)
+ * Visual scaling factor for LaTeX images in lesson plans
+ * Lesson plans need smaller LaTeX than quizzes due to different layout density
  */
-export const QUESTION_IMAGE_MAX_WIDTH = 250;
-export const QUESTION_IMAGE_MAX_HEIGHT = 200;
+export const LATEX_VISUAL_SCALE_LESSON_PLAN = 1.1;
+
+/**
+ * Max dimensions for images in quiz docs (points)
+ */
+export const QUIZ_IMAGE_MAX_WIDTH = 250;
+export const QUIZ_IMAGE_MAX_HEIGHT = 180;
+
+/**
+ * Max dimensions for images in other docs (points)
+ */
+export const DOC_IMAGE_MAX_WIDTH = 160;
+export const DOC_IMAGE_MAX_HEIGHT = 90;
 
 /**
  * Whether to render LaTeX expressions in bold
