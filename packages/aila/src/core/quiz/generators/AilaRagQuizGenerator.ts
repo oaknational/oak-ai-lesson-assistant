@@ -11,7 +11,7 @@ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
-// TODO: GCLOMAX - Seperate out starter and exit quizzes.
+// TODO: GCLOMAX - Separate out starter and exit quizzes.
 export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async mappedQuizFromAilaRagRelevantLessons(
     lessonPlan: PartialLessonPlan,
