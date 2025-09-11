@@ -153,7 +153,7 @@ export const QuizWithImages: Story = {
         {
           questionType: "multiple-choice" as const,
           question:
-            "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+            "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)", // cspell:disable-line
           answers: ["12 x 8 + 8", "Increase 96 by 8"],
           distractors: ["Count in eights from zero"],
           hint: null,
