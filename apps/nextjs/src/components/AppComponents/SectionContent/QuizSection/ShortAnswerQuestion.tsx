@@ -1,4 +1,4 @@
-import type { QuizV2QuestionShortAnswer } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
@@ -8,7 +8,7 @@ import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat
 import { hasBlankSpaces, useTextWithBlanks } from "./textWithBlanks";
 
 type ShortAnswerQuestionProps = {
-  question: QuizV2QuestionShortAnswer;
+  question: Extract<LatestQuizQuestion, { questionType: "short-answer" }>;
   questionNumber: number;
 };
 

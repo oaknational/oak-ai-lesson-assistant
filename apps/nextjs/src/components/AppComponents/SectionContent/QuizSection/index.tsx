@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
-import { QuizV2Schema } from "@oakai/aila/src/protocol/schema";
+import { LatestQuizSchema } from "@oakai/aila/src/protocol/schema";
 
 import { ImageAttribution } from "./ImageAttribution";
 import { MatchQuestion } from "./MatchQuestion";
@@ -17,7 +17,7 @@ export type QuizSectionProps = {
 
 export const QuizSection = ({ quizSection }: QuizSectionProps) => {
   const quiz = useMemo(() => {
-    const result = QuizV2Schema.safeParse(quizSection);
+    const result = LatestQuizSchema.safeParse(quizSection);
     return result.success ? result.data : null;
   }, [quizSection]);
 
