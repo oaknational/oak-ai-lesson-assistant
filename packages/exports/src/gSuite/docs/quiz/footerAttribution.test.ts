@@ -4,10 +4,7 @@
 import type { docs_v1 } from "@googleapis/docs";
 import { describe, expect, it, jest } from "@jest/globals";
 
-import type {
-  ImageAttribution,
-  QuizQuestion,
-} from "../../../schema/input.schema";
+import type { ImageMetadata, QuizQuestion } from "../../../schema/input.schema";
 import { addFooterAttribution } from "./footerAttribution";
 
 // Mock the Google Docs API
@@ -52,10 +49,12 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageAttributions: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 
@@ -111,9 +110,11 @@ describe("addFooterAttribution", () => {
       hint: null,
     }));
 
-    const imageAttributions: ImageAttribution[] = questions.map((_, i) => ({
+    const imageAttributions: ImageMetadata[] = questions.map((_, i) => ({
       imageUrl: `https://example.com/image${i + 1}.jpg`,
       attribution: "Pixabay",
+      width: 800,
+      height: 600,
     }));
 
     await addFooterAttribution(
@@ -166,7 +167,7 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [];
+    const imageAttributions: ImageMetadata[] = [];
 
     await addFooterAttribution(
       mockGoogleDocs,
@@ -198,10 +199,12 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageAttributions: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 

@@ -289,8 +289,8 @@ const completedLessonPlan = {
   },
   subject: "computing",
   exitQuiz: {
-    version: "v2" as const,
-    imageAttributions: [],
+    version: "v3" as const,
+    imageMetadata: [],
     questions: [
       {
         questionType: "multiple-choice" as const,
@@ -366,8 +366,8 @@ const completedLessonPlan = {
     },
   ],
   starterQuiz: {
-    version: "v2" as const,
-    imageAttributions: [],
+    version: "v3" as const,
+    imageMetadata: [],
     questions: [
       {
         questionType: "multiple-choice" as const,

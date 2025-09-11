@@ -11,8 +11,8 @@ export type ImageAttributionProps = {
 
 export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
   const formattedAttribution = useMemo(
-    () => formatQuizAttributions(quiz.questions, quiz.imageAttributions),
-    [quiz.questions, quiz.imageAttributions],
+    () => formatQuizAttributions(quiz.questions, quiz.imageMetadata),
+    [quiz.questions, quiz.imageMetadata],
   );
 
   if (formattedAttribution.segments.length === 0) {

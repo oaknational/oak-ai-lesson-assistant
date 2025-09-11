@@ -1,14 +1,16 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
-import type { QuizV2 } from "../quiz";
+import type { QuizV2, QuizV3 } from "../quiz";
 import {
   completeLessonPlan,
   invalidInputs,
   lessonPlanWithUndefinedQuizzes,
+  lessonPlanWithV3Quizzes,
   lessonPlanWithoutQuizzes,
   mockV1EmptyQuiz,
   mockV1Quiz,
   mockV2Quiz,
+  mockV3Quiz,
 } from "./fixtures/migrationTestData";
 import {
   type MigrateLessonPlanArgs,
@@ -33,12 +35,12 @@ describe("migrateLessonPlan", () => {
 
       const quizOnlyResult = await migrateLessonPlan(
         createMigrationArgs({
-          starterQuiz: mockV2Quiz,
-          exitQuiz: mockV2Quiz,
+          starterQuiz: mockV3Quiz,
+          exitQuiz: mockV3Quiz,
         }),
       );
       expect(quizOnlyResult.wasMigrated).toBe(false);
-      expect(quizOnlyResult.lessonPlan.starterQuiz).toEqual(mockV2Quiz);
+      expect(quizOnlyResult.lessonPlan.starterQuiz).toEqual(mockV3Quiz);
     });
 
     it.each(invalidInputs)("should reject invalid input: %p", async (input) => {
@@ -62,7 +64,19 @@ describe("migrateLessonPlan", () => {
   });
 
   describe("migration logic", () => {
-    it("should not migrate when quizzes are already V2", async () => {
+    it("should not migrate when quizzes are already V3", async () => {
+      const input = {
+        starterQuiz: mockV3Quiz,
+        exitQuiz: mockV3Quiz,
+      };
+
+      const result = await migrateLessonPlan(createMigrationArgs(input));
+
+      expect(result.wasMigrated).toBe(false);
+      expect(result.lessonPlan.starterQuiz).toEqual(mockV3Quiz);
+    });
+
+    it("should migrate V2 quizzes to V3", async () => {
       const input = {
         starterQuiz: mockV2Quiz,
         exitQuiz: mockV2Quiz,
@@ -70,11 +84,12 @@ describe("migrateLessonPlan", () => {
 
       const result = await migrateLessonPlan(createMigrationArgs(input));
 
-      expect(result.wasMigrated).toBe(false);
-      expect(result.lessonPlan.starterQuiz).toEqual(mockV2Quiz);
+      expect(result.wasMigrated).toBe(true);
+      expect(result.lessonPlan.starterQuiz).toHaveProperty("version", "v3");
+      expect(result.lessonPlan.exitQuiz).toHaveProperty("version", "v3");
     });
 
-    it("should migrate V1 quizzes to V2", async () => {
+    it("should migrate V1 quizzes to V3", async () => {
       const starterOnlyResult = await migrateLessonPlan(
         createMigrationArgs({
           starterQuiz: mockV1Quiz,
@@ -84,10 +99,10 @@ describe("migrateLessonPlan", () => {
       expect(starterOnlyResult.wasMigrated).toBe(true);
       expect(starterOnlyResult.lessonPlan.starterQuiz).toHaveProperty(
         "version",
-        "v2",
+        "v3",
       );
       expect(
-        (starterOnlyResult.lessonPlan.starterQuiz as QuizV2).questions,
+        (starterOnlyResult.lessonPlan.starterQuiz as QuizV3).questions,
       ).toHaveLength(2);
 
       const bothResult = await migrateLessonPlan(
@@ -97,8 +112,8 @@ describe("migrateLessonPlan", () => {
         }),
       );
       expect(bothResult.wasMigrated).toBe(true);
-      expect(bothResult.lessonPlan.starterQuiz).toHaveProperty("version", "v2");
-      expect(bothResult.lessonPlan.exitQuiz).toHaveProperty("version", "v2");
+      expect(bothResult.lessonPlan.starterQuiz).toHaveProperty("version", "v3");
+      expect(bothResult.lessonPlan.exitQuiz).toHaveProperty("version", "v3");
     });
 
     it("should handle missing/undefined quiz values", async () => {
@@ -121,7 +136,7 @@ describe("migrateLessonPlan", () => {
         }),
       );
       expect(result.wasMigrated).toBe(true);
-      expect(result.lessonPlan.starterQuiz).toHaveProperty("version", "v2");
+      expect(result.lessonPlan.starterQuiz).toHaveProperty("version", "v3");
     });
   });
 
@@ -139,7 +154,7 @@ describe("migrateLessonPlan", () => {
       expect(mockPersist).toHaveBeenCalledTimes(1);
       expect(mockPersist).toHaveBeenCalledWith(
         expect.objectContaining({
-          starterQuiz: expect.objectContaining({ version: "v2" }),
+          starterQuiz: expect.objectContaining({ version: "v3" }),
         }),
       );
 
@@ -147,7 +162,7 @@ describe("migrateLessonPlan", () => {
 
       // Should not call when no migration needed
       const noMigrationResult = await migrateLessonPlan(
-        createMigrationArgs({ starterQuiz: mockV2Quiz }, mockPersist),
+        createMigrationArgs({ starterQuiz: mockV3Quiz }, mockPersist),
       );
       expect(noMigrationResult.wasMigrated).toBe(false);
       expect(mockPersist).not.toHaveBeenCalled();

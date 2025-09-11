@@ -1,15 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`convertHasuraQuizToV2 should convert Hasura quiz to V2 format 1`] = `
+exports[`convertHasuraQuizToV3 should convert Hasura quiz to V3 format 1`] = `
 {
-  "imageAttributions": [
+  "imageMetadata": [
     {
       "attribution": "Photo by John Doe on Unsplash",
+      "height": 768,
       "imageUrl": "https://example.com/dog.jpg",
+      "width": 1024,
     },
     {
       "attribution": "Image © Example Inc",
+      "height": 480,
       "imageUrl": "https://example.com/cat.jpg",
+      "width": 640,
     },
   ],
   "questions": [
@@ -72,6 +76,6 @@ exports[`convertHasuraQuizToV2 should convert Hasura quiz to V2 format 1`] = `
       "questionType": "order",
     },
   ],
-  "version": "v2",
+  "version": "v3",
 }
 `;

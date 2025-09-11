@@ -2,10 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import type {
-  ImageAttribution,
-  QuizQuestion,
-} from "../../../schema/input.schema";
+import type { ImageMetadata, QuizQuestion } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
 import { addFooterAttribution } from "../quiz/footerAttribution";
 import { generateAllQuizElements } from "../quiz/table-generators";
@@ -19,7 +16,7 @@ interface PopulateDocV2Data {
   lesson_title: string;
   quiz_type: string;
   questions: QuizQuestion[];
-  imageAttributions: ImageAttribution[];
+  imageAttributions: ImageMetadata[];
 }
 
 /**

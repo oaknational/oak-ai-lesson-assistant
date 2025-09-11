@@ -65,7 +65,7 @@ async function main() {
       customAgents: {
         mathsStarterQuiz: () => {
           return Promise.resolve({
-            version: "v2" as const,
+            version: "v3" as const,
             questions: [
               {
                 question: "What is 2 + 2?",
@@ -75,12 +75,12 @@ async function main() {
                 hint: null,
               },
             ],
-            imageAttributions: [],
+            imageMetadata: [],
           });
         },
         mathsExitQuiz: () => {
           return Promise.resolve({
-            version: "v2" as const,
+            version: "v3" as const,
             questions: [
               {
                 question: "What is 2 + 3?",
@@ -90,7 +90,7 @@ async function main() {
                 hint: null,
               },
             ],
-            imageAttributions: [],
+            imageMetadata: [],
           });
         },
         fetchRagData: () => {

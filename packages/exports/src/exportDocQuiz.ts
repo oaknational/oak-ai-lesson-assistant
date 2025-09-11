@@ -35,7 +35,7 @@ export const exportDocQuiz = async ({
           lesson_title: data.lessonTitle,
           quiz_type: QUIZ_TYPE_LABELS[data.quizType],
           questions: data.quiz.questions,
-          imageAttributions: data.quiz.imageAttributions,
+          imageAttributions: data.quiz.imageMetadata,
         }),
       templateId: getDocsTemplateIdQuiz(),
       populateTemplate: async ({ data, templateCopyId }) => {

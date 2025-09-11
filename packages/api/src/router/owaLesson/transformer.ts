@@ -163,9 +163,9 @@ export function transformQuiz(questions: OwaQuizQuestion[]): LatestQuiz {
   }
 
   return {
-    version: "v2",
+    version: "v3",
     questions: result,
-    imageAttributions: [],
+    imageMetadata: [],
   };
 }
 
