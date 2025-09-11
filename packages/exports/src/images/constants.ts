@@ -10,11 +10,16 @@
 export const DPI_SCALE_FACTOR = 3.0;
 
 /**
- * Visual scaling factor for LaTeX images - makes them appear larger in documents.
- * This does NOT get divided out, so it actually makes the images visually bigger.
+ * Visual scaling factor for LaTeX images in quizzes
  * 2.0 = twice as large, 1.5 = 50% larger, etc.
  */
-export const LATEX_VISUAL_SCALE = 1.3;
+export const LATEX_VISUAL_SCALE_QUIZ = 1.3;
+
+/**
+ * Visual scaling factor for LaTeX images in lesson plans
+ * Lesson plans need smaller LaTeX than quizzes due to different layout density
+ */
+export const LATEX_VISUAL_SCALE_LESSON_PLAN = 1.1;
 
 /**
  * Max dimensions for images in quiz docs (points)

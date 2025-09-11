@@ -2,6 +2,7 @@ import { prepLessonPlanForDocs } from "./dataHelpers/prepLessonPlanForDocs";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populate/populateDoc";
+import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import type { LessonPlanDocInputData } from "./schema/input.schema";
 import { getDocsTemplateIdLessonPlan } from "./templates";
 import type { OutputData, Result, State } from "./types";
@@ -43,6 +44,7 @@ export const exportDocLessonPlan = async ({
           documentId: templateCopyId,
           data,
           tablePlaceholdersToRemove,
+          latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
         });
       },
       userEmail,

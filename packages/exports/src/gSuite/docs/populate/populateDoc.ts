@@ -11,6 +11,7 @@ import type { ValueToString } from "../../../utils";
 import { defaultValueToString } from "../../../utils";
 import { findMarkdownImages } from "../replacements/findMarkdownImages";
 import { imageReplacements } from "../replacements/imageReplacements";
+import { replaceLatexInDocument } from "../replacements/replaceLatexInDocument";
 import { textReplacements } from "../replacements/textReplacements";
 import { cleanupUnusedPlaceholdersRequests } from "./cleanupUnusedPlaceholdersRequests";
 import { removeTablesWithPlaceholders } from "./removeTablesWithPlaceholders";
@@ -30,6 +31,7 @@ export async function populateDoc<
   valueToString = defaultValueToString,
   enablePlaceholderCleanup = false,
   tablePlaceholdersToRemove,
+  latexVisualScale,
 }: {
   googleDocs: docs_v1.Docs;
   documentId: string;
@@ -38,6 +40,7 @@ export async function populateDoc<
   valueToString?: ValueToString<Data>;
   enablePlaceholderCleanup?: boolean;
   tablePlaceholdersToRemove?: string[];
+  latexVisualScale: number;
 }): Promise<Result<{ missingData: string[] }>> {
   try {
     const missingData: string[] = [];
@@ -74,6 +77,9 @@ export async function populateDoc<
         },
       });
     }
+
+    // Convert LaTeX patterns to markdown images
+    await replaceLatexInDocument(googleDocs, documentId, latexVisualScale);
 
     const markdownImages = await findMarkdownImages(googleDocs, documentId);
 

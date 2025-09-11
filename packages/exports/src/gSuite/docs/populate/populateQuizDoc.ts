@@ -2,7 +2,10 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import { QUIZ_IMAGE_MAX_WIDTH } from "../../../images/constants";
+import {
+  LATEX_VISUAL_SCALE_QUIZ,
+  QUIZ_IMAGE_MAX_WIDTH,
+} from "../../../images/constants";
 import type {
   ImageAttribution,
   QuizV2Question,
@@ -81,7 +84,11 @@ export async function populateQuizDoc({
     });
 
     // Convert LaTeX to markdown images
-    await replaceLatexInDocument(googleDocs, documentId);
+    await replaceLatexInDocument(
+      googleDocs,
+      documentId,
+      LATEX_VISUAL_SCALE_QUIZ,
+    );
 
     // Insert image objects for markdown images
     const markdownImages = await findMarkdownImages(googleDocs, documentId);

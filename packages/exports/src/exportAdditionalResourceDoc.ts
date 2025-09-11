@@ -6,6 +6,7 @@ import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/populate/cleanupUnusedPlaceholdersRequests";
 import { populateDoc } from "./gSuite/docs/populate/populateDoc";
+import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import { getAdditionalResourcesTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
@@ -84,6 +85,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(templateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,
@@ -116,6 +118,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(answersTemplateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,
@@ -159,6 +162,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(templateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,
