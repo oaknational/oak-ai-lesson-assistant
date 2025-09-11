@@ -25,8 +25,8 @@ export const QUIZ_IMAGE_MAX_HEIGHT = 180;
 /**
  * Max dimensions for images in other docs (points)
  */
-export const DOC_IMAGE_MAX_WIDTH = 100;
-export const DOC_IMAGE_MAX_HEIGHT = 60;
+export const DOC_IMAGE_MAX_WIDTH = 160;
+export const DOC_IMAGE_MAX_HEIGHT = 90;
 
 /**
  * Whether to render LaTeX expressions in bold
