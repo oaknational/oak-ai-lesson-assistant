@@ -66,7 +66,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   try {
     // For comprehension tasks, we need to create both the questions and answers files
     if (documentType === "additional-comprehension") {
-      // @todo we should think about having a mechnism here in the the future that is more flexible and not specific to the document type
+      // @todo we should think about having a mechanism here in the future that is more flexible and not specific to the document type
       const templateId = getAdditionalResourcesTemplateId({
         docType: documentType,
       });
