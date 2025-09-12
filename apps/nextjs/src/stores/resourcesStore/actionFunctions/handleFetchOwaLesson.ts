@@ -70,6 +70,8 @@ export const handleFetchOwaLesson =
 
           const { lesson } = response;
 
+          log.info("Lesson:", { lesson });
+
           const parsedFormProps = z
             .object({
               subject: z.string(),

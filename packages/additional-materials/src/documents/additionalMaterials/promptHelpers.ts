@@ -126,19 +126,19 @@ export const getLessonDetails = (
   }
 
   if (lessonPlan.priorKnowledge?.length) {
-    lines.push("**Prior Knowledge Required**:");
+    lines.push("**Prior knowledge required**:");
     lines.push(...lessonPlan.priorKnowledge.map((pk) => `- ${pk}`));
     lines.push("");
   }
 
   if (lessonPlan.keyLearningPoints?.length) {
-    lines.push("**Key Learning Points**:");
+    lines.push("**Key learning points**:");
     lines.push(...lessonPlan.keyLearningPoints.map((point) => `- ${point}`));
     lines.push("");
   }
 
   if (lessonPlan.misconceptions?.length) {
-    lines.push("**Misconceptions to Address**:");
+    lines.push("**Misconceptions to address**:");
     lines.push(
       ...lessonPlan.misconceptions.map(
         ({ misconception, description }) =>
@@ -160,7 +160,7 @@ export const getLessonDetails = (
 
   if (lessonPlan.starterQuiz) {
     const starterQuiz = renderQuiz(lessonPlan.starterQuiz);
-    lines.push("**Starter Quiz**:");
+    lines.push("**Starter quiz**:");
     lines.push(starterQuiz);
     lines.push("");
   }
@@ -172,14 +172,14 @@ export const getLessonDetails = (
   ].filter(Boolean);
 
   if (cycleSections.length) {
-    lines.push("**Learning Cycles**:");
+    lines.push("**Learning cycles**:");
     lines.push(...cycleSections);
     lines.push("");
   }
 
   if (lessonPlan.exitQuiz) {
     const exitQuiz = renderQuiz(lessonPlan.exitQuiz);
-    lines.push("**Exit Quiz**:");
+    lines.push("**Exit quiz**:");
     lines.push(exitQuiz);
     lines.push("");
   }
