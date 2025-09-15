@@ -35,7 +35,7 @@
   "selection": {
     "inProgressStatuses": ["In Progress"],
     "readyStatuses": ["Ready"],
-    "filterAssignee": "me",
+    "filterAssignee": "{notionUserId|me}",
     "sort": ["Priority:desc", "LastUpdated:asc"],
     "preferInProgressOverReady": true
   },
@@ -52,7 +52,7 @@
 }
 ```
 
-> The agent may auto-populate `notion.databaseId` and `notion.props` by inspecting the configured Notion database. Discovered values are cached back into `config.json`.
+> The agent may need to auto-populate `filterAssignee` by asking the user their name or email and querying the Notion MCP. The agent may also auto-populate `notion.databaseId` and `notion.props` by querying Notion MCP for the correct database for the user's team's ticket board. Discovered values are cached back into `config.json`.
 
 ---
 

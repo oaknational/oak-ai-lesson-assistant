@@ -48,6 +48,7 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const sectionStates = [
       { name: "Lesson details", completed: true },
+      { name: "Topic", completed: true }, // Optional field, missing = complete
       { name: "Learning outcome", completed: true },
       { name: "Learning cycle outcomes", completed: true },
       { name: "Prior knowledge", completed: true },
@@ -57,6 +58,7 @@ describe("LessonPlanProgressDropdown", () => {
       { name: "Starter quiz", completed: false },
       { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
+      { name: "Additional materials", completed: true }, // Optional field, missing = complete
     ];
 
     sectionStates.forEach(({ name, completed }) => {
@@ -90,6 +92,7 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const allSections = [
       "Lesson details",
+      "Topic",
       "Learning outcome",
       "Learning cycle outcomes",
       "Prior knowledge",
@@ -99,6 +102,7 @@ describe("LessonPlanProgressDropdown", () => {
       "Starter quiz",
       "Learning cycles",
       "Exit quiz",
+      "Additional materials",
     ];
 
     allSections.forEach((name) => {
@@ -127,6 +131,7 @@ describe("LessonPlanProgressDropdown", () => {
     );
     const sectionStates = [
       { name: "Lesson details", completed: true },
+      { name: "Topic", completed: true }, // Optional field, missing = complete
       { name: "Learning outcome", completed: true },
       { name: "Learning cycle outcomes", completed: true },
       { name: "Prior knowledge", completed: true },
@@ -136,6 +141,7 @@ describe("LessonPlanProgressDropdown", () => {
       { name: "Starter quiz", completed: false },
       { name: "Learning cycles", completed: true },
       { name: "Exit quiz", completed: false },
+      { name: "Additional materials", completed: true }, // Optional field, missing = complete
     ];
 
     sectionStates.forEach(({ name, completed }) => {

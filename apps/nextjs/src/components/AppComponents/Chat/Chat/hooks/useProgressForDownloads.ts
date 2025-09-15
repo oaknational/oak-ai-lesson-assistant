@@ -23,16 +23,50 @@ export type ProgressSection = {
 export type ProgressSections = ProgressSection[];
 
 /**
- * For a given list of Zod issues and lessonPlan fields, checks that none of
- * the errors pertain to the fields.
+ * Check if cycles section is complete - requires at least one cycle
  */
-function getCompleteness(errors: ZodIssue[], fields: string[]) {
+function getCycleCompleteness(errors: ZodIssue[], lessonPlan: LooseLessonPlan) {
+  const cycleFields = ["cycle1", "cycle2", "cycle3"];
+  const hasErrorInCycles = errors.some(error => 
+    cycleFields.some(field => error.path[0] === field)
+  );
+  
+  // At least one cycle should exist and have meaningful content
+  const hasAtLeastOneCycle = cycleFields.some(field => {
+    const value = lessonPlan[field as LessonPlanKey];
+    return value !== null && value !== undefined && 
+           (typeof value !== 'string' || (value !== '' && value !== 'None'));
+  });
+  
+  return !hasErrorInCycles && hasAtLeastOneCycle;
+}
+
+/**
+ * For a given list of Zod issues and lessonPlan fields, checks that none of
+ * the errors pertain to the fields and that all fields have meaningful values.
+ */
+function getCompleteness(errors: ZodIssue[], fields: string[], lessonPlan: LooseLessonPlan, isOptional: boolean = false) {
   const hasErrorInSomeField = errors.reduce(
     (acc, curr) => acc || fields.some((field) => curr.path[0] === field),
     false,
   );
 
-  return !hasErrorInSomeField;
+  // For optional fields, if they don't exist, consider them complete
+  // For required fields, they must exist and have meaningful values
+  const allFieldsHaveValues = fields.every((field) => {
+    const value = lessonPlan[field as LessonPlanKey];
+    
+    // For optional fields, missing/null/undefined values are considered complete
+    if (isOptional && (value === null || value === undefined)) return true;
+    
+    // Handle different types of "empty" values
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string' && (value === '' || value === 'None')) return false;
+    if (Array.isArray(value) && value.length === 0) return false;
+    return true;
+  });
+
+  return !hasErrorInSomeField && allFieldsHaveValues;
 }
 
 export function useProgressForDownloads({
@@ -73,52 +107,62 @@ export function useProgressForDownloads({
       {
         label: "Lesson details",
         key: "title",
-        complete: getCompleteness(errors, ["title", "subject", "keyStage"]),
+        complete: getCompleteness(errors, ["title", "subject", "keyStage"], lessonPlan),
+      },
+      {
+        label: "Topic",
+        key: "topic",
+        complete: getCompleteness(errors, ["topic"], lessonPlan, true),
       },
       {
         label: "Learning outcome",
         key: "learningOutcome",
-        complete: getCompleteness(errors, ["learningOutcome"]),
+        complete: getCompleteness(errors, ["learningOutcome"], lessonPlan),
       },
       {
         label: "Learning cycle outcomes",
         key: "learningCycles",
-        complete: getCompleteness(errors, ["learningCycles"]),
+        complete: getCompleteness(errors, ["learningCycles"], lessonPlan),
       },
       {
         label: "Prior knowledge",
         key: "priorKnowledge",
-        complete: getCompleteness(errors, ["priorKnowledge"]),
+        complete: getCompleteness(errors, ["priorKnowledge"], lessonPlan),
       },
       {
         label: "Key learning points",
         key: "keyLearningPoints",
-        complete: getCompleteness(errors, ["keyLearningPoints"]),
+        complete: getCompleteness(errors, ["keyLearningPoints"], lessonPlan),
       },
       {
         label: "Misconceptions",
         key: "misconceptions",
-        complete: getCompleteness(errors, ["misconceptions"]),
+        complete: getCompleteness(errors, ["misconceptions"], lessonPlan),
       },
       {
         label: "Keywords",
         key: "keywords",
-        complete: getCompleteness(errors, ["keywords"]),
+        complete: getCompleteness(errors, ["keywords"], lessonPlan),
       },
       {
         label: "Starter quiz",
         key: "starterQuiz",
-        complete: getCompleteness(errors, ["starterQuiz"]),
+        complete: getCompleteness(errors, ["starterQuiz"], lessonPlan),
       },
       {
         label: "Learning cycles",
         key: "cycle1",
-        complete: getCompleteness(errors, ["cycle1", "cycle2", "cycle3"]),
+        complete: getCycleCompleteness(errors, lessonPlan),
       },
       {
         label: "Exit quiz",
         key: "exitQuiz",
-        complete: getCompleteness(errors, ["exitQuiz"]),
+        complete: getCompleteness(errors, ["exitQuiz"], lessonPlan),
+      },
+      {
+        label: "Additional materials",
+        key: "additionalMaterials",
+        complete: getCompleteness(errors, ["additionalMaterials"], lessonPlan, true),
       },
     ];
 
