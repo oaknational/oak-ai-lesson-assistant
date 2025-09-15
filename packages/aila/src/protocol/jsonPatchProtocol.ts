@@ -9,7 +9,7 @@ import untruncateJson from "untruncate-json";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
-import type { LooseLessonPlan } from "./schema";
+import type { PartialLessonPlan } from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
@@ -22,10 +22,10 @@ import {
   LatestQuizMultipleChoiceOnlySchemaWithoutLength,
   LatestQuizOptionalSchema,
   LatestQuizSchema,
-  LessonPlanSchemaWhilstStreaming,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
+  PartialLessonPlanSchema,
   QuizV1OptionalSchema,
   QuizV1Schema,
 } from "./schema";
@@ -818,7 +818,7 @@ function isValidPatch(patch: Operation): boolean {
   return true;
 }
 export function applyLessonPlanPatch(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   command: JsonPatchDocument,
 ) {
   log.info("Apply patch (old)", JSON.stringify(command));
@@ -835,7 +835,7 @@ export function applyLessonPlanPatch(
 
   try {
     const result = applyPatch(deepClone(updatedLessonPlan), [patchValue]);
-    const newUpdatedLessonPlan = LessonPlanSchemaWhilstStreaming.parse(
+    const newUpdatedLessonPlan = PartialLessonPlanSchema.parse(
       result.newDocument,
     );
 
@@ -871,7 +871,7 @@ export function applyLessonPlanPatch(
  * that haven't changed
  */
 export function applyLessonPlanPatchImmutable(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   command: JsonPatchDocument,
 ) {
   log.info("Apply patch (immutable)", JSON.stringify(command));
@@ -895,7 +895,7 @@ export function applyLessonPlanPatchImmutable(
 
     // Zod returns a deep-cloned result which we can't use.
     // We can just rely on the fact that it didn't throw
-    LessonPlanSchemaWhilstStreaming.parse(newLessonPlan);
+    PartialLessonPlanSchema.parse(newLessonPlan);
 
     return newLessonPlan;
   } catch (e) {

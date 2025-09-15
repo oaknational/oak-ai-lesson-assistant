@@ -8,7 +8,7 @@ import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
 import type { AilaPlugin } from "../../core/plugins";
 import type { AilaChatInitializationOptions } from "../../core/types";
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";
 
@@ -17,7 +17,7 @@ const prismaMock = {} as PrismaClientWithAccelerate;
 
 type SetUpModerationOptions = {
   document: {
-    content: LooseLessonPlan;
+    content: PartialLessonPlan;
   };
   chat: AilaChatInitializationOptions;
   moderator: AilaModerator;

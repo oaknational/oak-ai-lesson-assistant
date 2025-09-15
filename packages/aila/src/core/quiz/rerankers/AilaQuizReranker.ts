@@ -7,7 +7,7 @@ import { Md5 } from "ts-md5";
 import type { z } from "zod";
 
 import type {
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
   QuizV1Question,
 } from "../../../protocol/schema";
@@ -35,7 +35,7 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
   public async evaluateQuizArray(
     quizArray: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
     useCache: boolean = true,
@@ -104,14 +104,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
   }
   // public abstract evaluateQuizArray(
   //   quizArray: QuizQuestion[][],
-  //   lessonPlan: LooseLessonPlan,
+  //   lessonPlan: PartialLessonPlan,
   //   ratingSchema: T,
   //   quizType: QuizPath,
   // ): Promise<z.infer<T>[]>;
 
   public async cachedEvaluateQuizArray(
     quizArray: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]> {

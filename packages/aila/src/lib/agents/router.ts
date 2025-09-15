@@ -4,7 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import { type LooseLessonPlan } from "../../protocol/schema";
+import { type PartialLessonPlan } from "../../protocol/schema";
 import { sectionKeysSchema } from "./lessonPlanSectionGroups";
 import { routerInstructions } from "./prompts";
 import { identity } from "./prompts/shared/identity";
@@ -57,7 +57,7 @@ export async function agentRouter({
 }: {
   chatId: string;
   userId: string;
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   messageHistoryChatOnly: { role: "user" | "assistant"; content: string }[];
 }): Promise<RouterResponse | null> {
   const openAIClient = createOpenAIClient({

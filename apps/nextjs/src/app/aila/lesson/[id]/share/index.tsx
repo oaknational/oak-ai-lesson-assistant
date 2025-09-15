@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
@@ -17,7 +17,7 @@ import { OakMathJaxContext } from "@/components/MathJax";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 interface ShareChatProps {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   creatorsName: string | null;
   moderation: PersistedModerationBase | null | undefined;
 }

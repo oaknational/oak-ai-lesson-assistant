@@ -8,7 +8,7 @@ import {
   type AilaRagRelevantLesson,
   type CompletedLessonPlan,
   type LessonPlanKey,
-  type LooseLessonPlan,
+  type PartialLessonPlan,
 } from "../../protocol/schema";
 import type { LatestQuiz } from "../../protocol/schemas/quiz";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
@@ -67,7 +67,7 @@ type InteractUpdate =
   | {
       type: "complete";
       data: {
-        document: LooseLessonPlan;
+        document: PartialLessonPlan;
         ailaMessage: string;
       };
     };
@@ -76,7 +76,7 @@ export type InteractCallback = <Update extends InteractUpdate>(
 ) => void;
 
 type CustomAgentAsyncFn<T> = (args: {
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
 }) => Promise<T>;
 
 export async function interact({
@@ -90,7 +90,7 @@ export async function interact({
 }: {
   chatId: string;
   userId: string;
-  initialDocument: LooseLessonPlan;
+  initialDocument: PartialLessonPlan;
   messageHistoryWithProtocol: { role: "user" | "assistant"; content: string }[];
   onUpdate?: InteractCallback;
   customAgents: {
@@ -470,9 +470,9 @@ function handleSectionGenerated({
   sectionKey: LessonPlanKey;
   actionType: "add" | "replace";
   value: string | number | string[] | object;
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   onUpdate?: InteractCallback;
-}): LooseLessonPlan {
+}): PartialLessonPlan {
   // call onUpdate with the action
   onUpdate?.(
     createSectionUpdatePayload({
@@ -537,10 +537,10 @@ function createUpdatedDocument({
   sectionKey,
   value,
 }: {
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   sectionKey: LessonPlanKey;
   value: string | number | string[] | object;
-}): LooseLessonPlan {
+}): PartialLessonPlan {
   return {
     ...document,
     [sectionKey]: value,

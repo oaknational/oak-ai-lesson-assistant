@@ -14,7 +14,7 @@ import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
 const log = aiLogger("aila:schema");
 
 export type MigrationResult = {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   wasMigrated: boolean;
 };
 

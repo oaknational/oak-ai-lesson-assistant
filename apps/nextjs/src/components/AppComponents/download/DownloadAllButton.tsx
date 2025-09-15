@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 import { Box } from "@radix-ui/themes";
@@ -42,7 +42,7 @@ type Data = {
 
 type DownloadAllButtonProps = {
   onClick: () => void;
-  lesson: LooseLessonPlan;
+  lesson: PartialLessonPlan;
   title: string;
   subTitle: string;
   downloadAvailable: boolean;

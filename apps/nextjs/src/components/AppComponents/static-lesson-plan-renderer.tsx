@@ -3,7 +3,7 @@ import { useRef } from "react";
 import type {
   LessonPlanKey,
   LessonPlanSectionWhileStreaming,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -30,7 +30,7 @@ const StaticLessonPlanRenderer = ({
   lessonPlan,
   sectionRefs,
 }: {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   sectionRefs?: Record<string, React.MutableRefObject<HTMLDivElement | null>>;
 }) => {
   return Object.entries(lessonPlan)
@@ -39,7 +39,7 @@ const StaticLessonPlanRenderer = ({
         entry,
       ): entry is [
         ValidLessonPlanKey,
-        NonNullable<LooseLessonPlan[ValidLessonPlanKey]>,
+        NonNullable<PartialLessonPlan[ValidLessonPlanKey]>,
       ] => {
         const [k] = entry;
         return !excludedKeys.includes(k as ExcludedKeys);

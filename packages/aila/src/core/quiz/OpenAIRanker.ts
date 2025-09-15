@@ -7,7 +7,7 @@ import type { ParsedChatCompletion } from "openai/resources/beta/chat/completion
 import { z } from "zod";
 
 import type {
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
   QuizV1Question,
 } from "../../protocol/schema";
@@ -58,13 +58,13 @@ export type ChatMessage =
 
 export class OpenAIRanker {
   public async rankQuestion(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     question: QuizV1Question,
   ): Promise<number> {
     return 0;
   }
 
-  private stuffLessonPlanIntoPrompt(lessonPlan: LooseLessonPlan): string {
+  private stuffLessonPlanIntoPrompt(lessonPlan: PartialLessonPlan): string {
     return "prompt";
   }
 
@@ -121,7 +121,7 @@ function quizToLLMMessages(quizQuestion: QuizQuestionWithRawJson): ChatMessage {
 }
 
 function lessonPlanSectionToMessage(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   lessonPlanSectionName: sectionCategory,
 ): ChatContent {
   let promptprefix = "";
@@ -144,7 +144,7 @@ function contentListToUser(messages: ChatContent[]): ChatMessage {
 }
 
 function combinePrompts(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   question: QuizQuestionWithRawJson,
 ): ChatMessage[] {
   const Messages: ChatMessage[] = [];
@@ -186,14 +186,14 @@ function quizQuestionsToOpenAIMessageFormat(
  * Includes the appropriate section of the lesson plan (prior knowledge or key learning points) based on the
  * provided section category.
  *
- * @param {LooseLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
+ * @param {PartialLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
  * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
  * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} systemPrompt - The system prompt to be used.
  * @param {sectionCategory} lessonPlanSectionForConsideration - The section of the lesson plan to be considered.
  * @returns {ChatMessage[]} An array of formatted messages ready for use with OpenAI API.
  */
 function combinePromptsAndQuestions(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   lessonPlanSectionForConsideration: sectionCategory,
@@ -219,7 +219,7 @@ function combinePromptsAndQuestions(
  * Includes the appropriate section of the lesson plan (prior knowledge or key learning points) based on the
  * provided section category. Prompt is arranged for reasoning model.
  *
- * @param {LooseLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
+ * @param {PartialLessonPlan} lessonPlan - The lesson plan to be used in the prompts.
  * @param {QuizQuestion[]} questions - An array of QuizQuestion objects to be converted.
  * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} systemPrompt - The system prompt to be used.
  * @param {sectionCategory} lessonPlanSectionForConsideration - The section of the lesson plan to be considered.
@@ -227,7 +227,7 @@ function combinePromptsAndQuestions(
  */
 
 function combinePromptsAndQuestionsReasoningModel(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   quizType: QuizPath,
@@ -273,7 +273,7 @@ function combinePromptsAndQuestionsReasoningModel(
  *
  * @async
  * @function
- * @param {LooseLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
+ * @param {PartialLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
  * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
  * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
  * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
@@ -282,7 +282,7 @@ function combinePromptsAndQuestionsReasoningModel(
 async function evaluateStarterQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
@@ -309,7 +309,7 @@ async function evaluateStarterQuiz<
  *
  * @async
  * @function
- * @param {LooseLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
+ * @param {PartialLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
  * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
  * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
  * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
@@ -319,7 +319,7 @@ async function evaluateStarterQuiz<
 async function evaluateQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
   max_tokens: number = 1500,
   ranking_schema: T,
@@ -346,7 +346,7 @@ async function evaluateQuiz<
 async function evaluateQuizReasoningModel<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
   max_tokens: number = 4000,
   ranking_schema: T,
