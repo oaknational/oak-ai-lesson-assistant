@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 
 import type { AilaPersistedChat } from "../../schema";
-import { chatSchema } from "../../schema";
+import { PartialLessonPlanSchema, chatSchema } from "../../schema";
 import { migrateLessonPlan } from "./migrateLessonPlan";
 
 // Minimal schema for raw chat input validation
@@ -53,6 +53,7 @@ export async function migrateChatData(
         const parsedChat = chatSchema.parse(updatedChat);
         await persistCallback?.(parsedChat);
       },
+      outputSchema: PartialLessonPlanSchema,
     });
 
     const finalChatData = migrationResult.wasMigrated

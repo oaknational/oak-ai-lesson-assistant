@@ -1,5 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
+import { PartialLessonPlanSchema } from "../../schema";
 import type { QuizV2 } from "../quiz";
 import {
   completeLessonPlan,
@@ -10,19 +11,20 @@ import {
   mockV1Quiz,
   mockV2Quiz,
 } from "./fixtures/migrationTestData";
-import {
-  type MigrateLessonPlanArgs,
-  migrateLessonPlan,
-} from "./migrateLessonPlan";
+import type { MigrateLessonPlanArgs } from "./migrateLessonPlan";
+import { migrateLessonPlan } from "./migrateLessonPlan";
 
 describe("migrateLessonPlan", () => {
   // Helper function to create migration args
   const createMigrationArgs = (
     lessonPlan: Record<string, unknown>,
-    persistMigration: MigrateLessonPlanArgs["persistMigration"] = null,
-  ): MigrateLessonPlanArgs => ({
+    persistMigration: MigrateLessonPlanArgs<
+      typeof PartialLessonPlanSchema
+    >["persistMigration"] = null,
+  ) => ({
     lessonPlan,
     persistMigration,
+    outputSchema: PartialLessonPlanSchema,
   });
 
   describe("input validation", () => {

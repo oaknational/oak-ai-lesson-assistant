@@ -1,12 +1,9 @@
 import { aiLogger } from "@oakai/logger";
 
-import { z } from "zod";
+import { type ZodTypeAny, z } from "zod";
 
-import type { LooseLessonPlan } from "../../schema";
-import {
-  LessonPlanSchema,
-  LessonPlanSchemaWhilstStreaming,
-} from "../../schema";
+import type { PartialLessonPlan } from "../../schema";
+import { LessonPlanSchema, PartialLessonPlanSchema } from "../../schema";
 import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
@@ -76,15 +73,17 @@ const getCurrentVersion = (section: unknown, sectionKey: string): number => {
   throw new Error(`Invalid version for section ${sectionKey}`);
 };
 
-export type MigrateLessonPlanArgs = {
+export type MigrateLessonPlanArgs<TSchema extends ZodTypeAny> = {
   lessonPlan: LessonPlanMigrationInput | Record<string, unknown>;
-  persistMigration: ((lessonPlan: LooseLessonPlan) => Promise<void>) | null;
+  persistMigration: ((lessonPlan: z.infer<TSchema>) => Promise<void>) | null;
+  outputSchema: TSchema;
 };
 
-export const migrateLessonPlan = async ({
+export const migrateLessonPlan = async <TSchema extends ZodTypeAny>({
   lessonPlan: originalLessonPlan,
   persistMigration,
-}: MigrateLessonPlanArgs): Promise<MigrationResult> => {
+  outputSchema,
+}: MigrateLessonPlanArgs<TSchema>): Promise<MigrationResult> => {
   if (
     originalLessonPlan &&
     typeof originalLessonPlan === "object" &&
@@ -125,8 +124,10 @@ export const migrateLessonPlan = async ({
   }
 
   // Parse the migrated lesson plan with the proper schema
-  const finalParseResult =
-    LessonPlanSchemaWhilstStreaming.safeParse(lessonPlan);
+  const finalParseResult: z.SafeParseReturnType<
+    unknown,
+    z.infer<TSchema>
+  > = outputSchema.safeParse(lessonPlan);
   if (!finalParseResult.success) {
     throw new Error("Migrated lesson plan failed validation", {
       cause: finalParseResult.error,
