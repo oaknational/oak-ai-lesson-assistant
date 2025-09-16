@@ -1,17 +1,14 @@
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import type { z } from "zod";
 
-import {
-  lessonBrowseDataByKsSchema,
-  lessonContentSchema,
-} from "./schemas";
-import type { UnitDataSchema } from "./schemas";
 import {
   checkForRestrictedContentGuidance,
   checkForRestrictedLessonId,
   checkForRestrictedTranscript,
   checkForRestrictedWorks,
 } from "./restrictionsHelper";
+import { lessonBrowseDataByKsSchema, lessonContentSchema } from "./schemas";
+import type { UnitDataSchema } from "./schemas";
 import type { LessonOverviewResponse, TRPCWorksResponse } from "./types";
 
 type PrepareArgs = {
@@ -66,7 +63,8 @@ export function prepareAndCheckRestrictions({
   checkForRestrictedContentGuidance(parsedLesson.content_guidance);
   checkForRestrictedLessonId(browseData.lesson_data.lesson_uid);
   const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
-  const hasRestrictedTranscript = checkForRestrictedTranscript(parsedBrowseData);
+  const hasRestrictedTranscript =
+    checkForRestrictedTranscript(parsedBrowseData);
 
   if (parsedLesson.is_legacy) {
     throw new TRPCError({
@@ -85,4 +83,3 @@ export function prepareAndCheckRestrictions({
     hasRestrictedTranscript,
   };
 }
-
