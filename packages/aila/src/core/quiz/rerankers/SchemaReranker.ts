@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { z } from "zod";
 
-import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
@@ -19,7 +19,7 @@ export class TestSchemaReranker<
   public inputSchema = testRatingSchema;
   public evaluateStarterQuiz(
     quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]> {
@@ -27,7 +27,7 @@ export class TestSchemaReranker<
   }
   public evaluateExitQuiz(
     quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]> {

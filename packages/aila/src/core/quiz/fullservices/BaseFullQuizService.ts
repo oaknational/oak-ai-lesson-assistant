@@ -6,7 +6,7 @@ import type { z } from "zod";
 import type {
   AilaRagRelevantLesson,
   LatestQuiz,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizV1Question,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
@@ -31,7 +31,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
   public async createBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
   ): Promise<LatestQuiz> {
@@ -51,7 +51,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
   private async defaultCreateBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<LatestQuiz> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
@@ -102,7 +102,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // Creates a best quiz in a hierarchy of quiz types.
   private async createBestQuizOverride(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<LatestQuiz> {
     // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.

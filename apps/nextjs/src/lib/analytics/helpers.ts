@@ -1,5 +1,5 @@
 import type { ModerationDocument } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { parseKeyStageSlugForAnalytics } from "@oakai/core/src/data/parseKeyStage";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 
@@ -21,7 +21,7 @@ export type LessonTrackingProps = {
 export function getLessonTrackingProps({
   lesson,
 }: {
-  lesson: LooseLessonPlan;
+  lesson: PartialLessonPlan;
 }): LessonTrackingProps {
   return {
     product: "ai lesson assistant",
@@ -31,7 +31,7 @@ export function getLessonTrackingProps({
   };
 }
 
-export function isLessonComplete(lesson: LooseLessonPlan) {
+export function isLessonComplete(lesson: PartialLessonPlan) {
   return lessonPlanSectionsSchema.safeParse(lesson).success;
 }
 

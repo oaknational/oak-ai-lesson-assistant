@@ -1,3 +1,4 @@
+import { PartialLessonPlanSchema } from "../../../aila/src/protocol/schema";
 import { migrateLessonPlan } from "../../../aila/src/protocol/schemas/versioning/migrateLessonPlan";
 import type { DeepPartial, RagLessonPlanResult } from "../../types";
 
@@ -15,6 +16,7 @@ export async function preparseResult(result: DeepPartial<RagLessonPlanResult>) {
       keywords: result?.lessonPlan?.keywords?.slice(0, 5),
     },
     persistMigration: null,
+    outputSchema: PartialLessonPlanSchema,
   });
   return {
     ...result,

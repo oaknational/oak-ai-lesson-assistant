@@ -17,7 +17,7 @@ import type {
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
@@ -60,7 +60,7 @@ export interface AilaChatService {
 
 export interface AilaQuizService {
   generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
 

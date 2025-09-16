@@ -4,7 +4,7 @@ import type * as z from "zod";
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
 } from "../../protocol/schema";
 import type {
@@ -46,29 +46,29 @@ export interface DocumentReranker {
 
 export interface AilaQuizService {
   generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
 
 // // TODO: GCLOMAX - move this to interfaces and rename.
 // export interface AilaQuizGeneratorService {
 //   generateMathsExitQuizPatch(
-//     lessonPlan: LooseLessonPlan,
+//     lessonPlan: PartialLessonPlan,
 //     relevantLessons?: AilaRagRelevantLesson[],
 //   ): Promise<Quiz[]>;
 //   generateMathsStarterQuizPatch(
-//     lessonPlan: LooseLessonPlan,
+//     lessonPlan: PartialLessonPlan,
 //     relevantLessons?: AilaRagRelevantLesson[],
 //   ): Promise<Quiz[]>;
 // }
 
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
   generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
 }
@@ -76,7 +76,7 @@ export interface AilaQuizGeneratorService {
 export interface AilaQuizVariantService {
   rerankService: DocumentReranker;
   generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
 
@@ -84,13 +84,13 @@ export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
   rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
   evaluateQuizArray(
     quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
   cachedEvaluateQuizArray(
     quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ratingSchema: T,
     quizType: QuizPath,
   ): Promise<z.infer<T>[]>;
@@ -106,7 +106,7 @@ export interface FullQuizService {
   quizGenerators: AilaQuizGeneratorService[];
   createBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
     override?: boolean,
   ): Promise<LatestQuiz>;
@@ -201,8 +201,8 @@ export interface FullServiceFactory {
 }
 
 export interface AilaQuizFactory {
-  quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;
-  createQuizRecommender(lessonPlan: LooseLessonPlan): AilaQuizService;
+  quizStrategySelector(lessonPlan: PartialLessonPlan): QuizRecommenderType;
+  createQuizRecommender(lessonPlan: PartialLessonPlan): AilaQuizService;
 }
 
 export interface AilaQuizRerankerFactory {

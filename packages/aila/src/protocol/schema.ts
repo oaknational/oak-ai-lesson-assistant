@@ -4,9 +4,6 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { minMaxText } from "./schemaHelpers";
 import {
-  LatestQuizMultipleChoiceOnlySchema,
-  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
-  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
   type LatestQuizOptional,
   LatestQuizSchema,
   LatestQuizSchemaWithoutLength,
@@ -384,11 +381,8 @@ export type CompletedLessonPlan = z.infer<typeof CompletedLessonPlanSchema>;
 
 export const LessonPlanSchema = CompletedLessonPlanSchema.partial();
 
-export const LessonPlanSchemaWhilstStreaming = LessonPlanSchema;
-
-// TODO old - refactor these to the new types
-
-export type LooseLessonPlan = z.infer<typeof LessonPlanSchemaWhilstStreaming>;
+export const PartialLessonPlanSchema = LessonPlanSchema;
+export type PartialLessonPlan = z.infer<typeof PartialLessonPlanSchema>;
 
 export type LessonPlanKey = keyof typeof CompletedLessonPlanSchema.shape;
 
@@ -435,7 +429,7 @@ export const chatSchema = z
     path: z.string(),
     title: z.string(),
     userId: z.string(),
-    lessonPlan: LessonPlanSchemaWhilstStreaming,
+    lessonPlan: PartialLessonPlanSchema,
     relevantLessons: z.array(AilaRagRelevantLessonSchema).nullish(),
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
@@ -469,7 +463,7 @@ export const chatSchemaWithMissingMessageIds = z
     path: z.string(),
     title: z.string(),
     userId: z.string(),
-    lessonPlan: LessonPlanSchemaWhilstStreaming,
+    lessonPlan: PartialLessonPlanSchema,
     isShared: z.boolean().optional(),
     createdAt: z.union([z.date(), z.number()]),
     updatedAt: z.union([z.date(), z.number()]).optional(),
@@ -493,10 +487,6 @@ export const chatSchemaWithMissingMessageIds = z
     ),
   })
   .passthrough();
-
-export type AilaPersistedChatWithMissingMessageIds = z.infer<
-  typeof chatSchemaWithMissingMessageIds
->;
 
 export type LessonPlanSectionWhileStreaming =
   | BasedOnOptional

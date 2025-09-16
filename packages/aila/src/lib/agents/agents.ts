@@ -18,9 +18,9 @@ import {
   LearningOutcomeSchemaStrictMax190,
   type LessonPlanKey,
   LessonTitleSchema,
-  type LooseLessonPlan,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
+  type PartialLessonPlan,
   PriorKnowledgeSchema,
   PriorKnowledgeStrictMax5Schema,
   SubjectSchema,
@@ -245,7 +245,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
 
 export const sectionAgentMap: Record<
   LessonPlanKey,
-  (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
+  (ctx: { lessonPlan: PartialLessonPlan }) => AgentName
 > = {
   title: () => "title",
   keyStage: () => "keyStage",
