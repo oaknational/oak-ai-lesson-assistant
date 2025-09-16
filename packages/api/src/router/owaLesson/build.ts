@@ -1,6 +1,6 @@
-import { z } from "zod";
+import type { z } from "zod";
 
-import {
+import type {
   lessonBrowseDataByKsSchema,
   lessonContentSchema,
 } from "./schemas";
@@ -39,4 +39,3 @@ export function buildTransformedLesson({
     hasRestrictedWorks,
   };
 }
-

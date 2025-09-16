@@ -273,17 +273,86 @@ export function transformOwaLessonToLessonPlan(
     // Empty placeholders for required fields
     learningCycles: [],
     priorKnowledge:
-      getPriorKnowledgeFromUnitData(unitData, orderInUnit, owaBrowseData) ?? [],
+      getPriorKnowledgeFromUnitData({ unitData, owaBrowseData, orderInUnit }) ??
+      [],
   };
-
+  console.log(
+    "WITH MISCONCEPTION",
+    getPriorKnowledgeFromUnitData({ unitData, owaBrowseData, orderInUnit }),
+  );
   return lessonPlan;
 }
 
-export const getPriorKnowledgeFromUnitData = (
-  unitData: UnitDataSchema,
-  orderInUnit: number | undefined = 1,
-  owaBrowseData: LessonBrowseDataByKsSchema,
-): LessonPlanSchemaTeachingMaterials["priorKnowledge"] => {
+interface LessonMisconception {
+  response?: string;
+  misconception?: string;
+}
+
+interface LessonKeyLearningPoint {
+  key_learning_point?: string;
+}
+
+const formatMisconceptions = (
+  misconceptions: unknown,
+  title: string,
+): string | null => {
+  if (isArray(misconceptions)) {
+    const misconceptionText = (misconceptions as LessonMisconception[])
+      .map((item) => `${item.response ?? ""} - ${item.misconception ?? ""}`)
+      .filter((text) => text.trim() !== " - ")
+      .join(" ");
+
+    return misconceptionText
+      ? `Lesson title: ${title} - Misconceptions: ${misconceptionText}`
+      : null;
+  }
+
+  const parsedMisconception = z
+    .object({
+      description: z.string(),
+      misconception: z.string(),
+    })
+    .safeParse(misconceptions);
+
+  return parsedMisconception.success
+    ? `${title}: ${parsedMisconception.data.description} - ${parsedMisconception.data.misconception}`
+    : null;
+};
+
+const formatKeyLearningPoints = (
+  keyLearningPoints: unknown,
+  title: string,
+): string | null => {
+  if (isArray(keyLearningPoints)) {
+    const points = (keyLearningPoints as LessonKeyLearningPoint[])
+      .map((item) => item.key_learning_point ?? "")
+      .filter((point) => point.trim() !== "")
+      .join(" ");
+
+    return points
+      ? `Lesson title: ${title} - Key learning points: ${points}`
+      : null;
+  }
+
+  const parsedPoint = z
+    .object({ key_learning_point: z.string() })
+    .safeParse(keyLearningPoints);
+
+  return parsedPoint.success
+    ? `${title}: ${parsedPoint.data.key_learning_point}`
+    : null;
+};
+
+export const getPriorKnowledgeFromUnitData = ({
+  unitData,
+  owaBrowseData,
+  orderInUnit = 1,
+}: {
+  unitData: UnitDataSchema;
+  owaBrowseData: LessonBrowseDataByKsSchema;
+  orderInUnit?: number;
+}): LessonPlanSchemaTeachingMaterials["priorKnowledge"] => {
+  // Handle first lesson case
   if (orderInUnit === 1) {
     return [
       owaBrowseData.unit_data.connection_prior_unit_description,
@@ -291,32 +360,40 @@ export const getPriorKnowledgeFromUnitData = (
     ].filter(isTruthy);
   }
 
-  if (unitData) {
-    const unitPriorKnowledge = unitData.reduce<string[]>((acc, lesson) => {
-      if (lesson.order_in_unit >= orderInUnit) {
-        return acc;
-      }
-      const title = lesson.lesson_data?.title ?? "";
-      const keyLearningPoint = lesson.lesson_data.key_learning_points;
-
-      if (isArray(keyLearningPoint)) {
-        const points = keyLearningPoint
-          .map((item: { key_learning_point?: string }) => {
-            return `${item.key_learning_point ?? ""}`;
-          })
-          .join(" ");
-        acc.push(`Lesson title: ${title} - Key learning points: ${points}`);
-      } else {
-        const parsePoint = z
-          .object({ key_learning_point: z.string() })
-          .safeParse(keyLearningPoint);
-        if (parsePoint.success) {
-          acc.push(`${title}: ${parsePoint.data.key_learning_point}`);
-        }
-      }
-      return acc;
-    }, []);
-
-    return unitPriorKnowledge.filter(isTruthy);
+  // Handle subsequent lessons
+  if (!unitData) {
+    return [];
   }
+
+  const priorKnowledge = unitData
+    .filter((lesson) => lesson.order_in_unit < orderInUnit)
+    .flatMap((lesson) => {
+      const title = lesson.lesson_data?.title ?? "";
+      if (!title) return [];
+
+      const results: string[] = [];
+
+      // Process misconceptions
+      const misconceptionText = formatMisconceptions(
+        lesson.lesson_data.misconceptions_and_common_mistakes,
+        title,
+      );
+      if (misconceptionText) {
+        results.push(misconceptionText);
+      }
+
+      // Process key learning points
+      const keyLearningText = formatKeyLearningPoints(
+        lesson.lesson_data.key_learning_points,
+        title,
+      );
+      if (keyLearningText) {
+        results.push(keyLearningText);
+      }
+
+      return results;
+    })
+    .filter(isTruthy);
+
+  return priorKnowledge;
 };
