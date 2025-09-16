@@ -1,6 +1,7 @@
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import type { SectionPromptAgentProps } from "../types";
 import { sectionAgentIdentity } from "./sectionAgents/shared/sectionAgentIdentity";
 import {
@@ -25,7 +26,9 @@ export function sectionToGenericPromptAgent<SectionValueType>({
   extraInputFromCtx,
   defaultVoice = "AILA_TO_TEACHER",
   voices = [],
-}: SectionPromptAgentProps<SectionValueType>): GenericPromptAgent<SectionValueType> {
+}: SectionPromptAgentProps<SectionValueType>,
+  modelParams: Omit<ResponseCreateParamsNonStreaming, "input" | "text" | "stream">,
+): GenericPromptAgent<SectionValueType> {
   voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
 
   return {
@@ -72,5 +75,6 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         content: userMessagePromptPart(messages),
       },
     ].filter(isTruthy),
+    modelParams,
   };
 }

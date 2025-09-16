@@ -7,6 +7,7 @@ import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
 import type { VoiceId } from "./shared/voices";
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 
 /**
  * This is a factory function for section agents.
@@ -19,6 +20,7 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx,
   defaultVoice,
   voices,
+  modelParams,
 }: {
   responseSchema: z.ZodType<ResponseType>;
   instructions: string;
@@ -28,6 +30,7 @@ export function createSectionAgent<ResponseType>({
   ) => { role: "user" | "developer"; content: string }[];
   defaultVoice?: VoiceId;
   voices?: VoiceId[];
+  modelParams: Omit<ResponseCreateParamsNonStreaming, "input" | "text" | "stream">;
 }) {
   return ({
     id,
@@ -64,7 +67,7 @@ export function createSectionAgent<ResponseType>({
         extraInputFromCtx,
         defaultVoice,
         voices,
-      });
+      }, modelParams);
 
       console.log(
         genericPromptAgent.input.map((i) => i.content).join("\n\n---\n\n"),
