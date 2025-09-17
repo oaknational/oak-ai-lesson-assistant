@@ -1,10 +1,10 @@
 import type { z } from "zod";
 
 import type {
+  UnitDataSchema,
   lessonBrowseDataByKsSchema,
   lessonContentSchema,
 } from "./schemas";
-import type { UnitDataSchema } from "./schemas";
 import { transformOwaLessonToLessonPlan } from "./transformer";
 
 type BuildArgs = {
