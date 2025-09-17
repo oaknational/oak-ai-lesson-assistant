@@ -353,7 +353,7 @@ export const KeyLearningPointsStrictMax5Schema =
 
 export const AdditionalMaterialsSchema = z
   .string()
-  .optional()
+  .nullish()
   .describe(LESSON_PLAN_DESCRIPTIONS.additionalMaterials);
 
 // Main schema
