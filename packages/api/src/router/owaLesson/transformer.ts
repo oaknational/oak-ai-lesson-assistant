@@ -276,10 +276,7 @@ export function transformOwaLessonToLessonPlan(
       getPriorKnowledgeFromUnitData({ unitData, owaBrowseData, orderInUnit }) ??
       [],
   };
-  console.log(
-    "WITH MISCONCEPTION",
-    getPriorKnowledgeFromUnitData({ unitData, owaBrowseData, orderInUnit }),
-  );
+
   return lessonPlan;
 }
 
@@ -293,7 +290,7 @@ interface LessonKeyLearningPoint {
 }
 
 const formatMisconceptions = (
-  misconceptions: unknown,
+  misconceptions: UnitDataSchema[number]["lesson_data"]["misconceptions_and_common_mistakes"],
   title: string,
 ): string | null => {
   if (isArray(misconceptions)) {
@@ -320,7 +317,7 @@ const formatMisconceptions = (
 };
 
 const formatKeyLearningPoints = (
-  keyLearningPoints: unknown,
+  keyLearningPoints: UnitDataSchema[number]["lesson_data"]["key_learning_points"],
   title: string,
 ): string | null => {
   if (isArray(keyLearningPoints)) {
@@ -341,6 +338,20 @@ const formatKeyLearningPoints = (
   return parsedPoint.success
     ? `${title}: ${parsedPoint.data.key_learning_point}`
     : null;
+};
+
+const formatKeywords = (
+  keywords: UnitDataSchema[number]["lesson_data"]["keywords"],
+): string | null => {
+  if (isArray(keywords)) {
+    const stringOfKeywords = keywords
+      .map((word: { keyword?: string; description?: string }): string => {
+        return `${word.keyword ?? ""}: ${word.description ?? ""}`;
+      })
+      .join(", ");
+    return `Prior knowledge keywords: ${stringOfKeywords}`;
+  }
+  return null;
 };
 
 export const getPriorKnowledgeFromUnitData = ({
@@ -389,6 +400,11 @@ export const getPriorKnowledgeFromUnitData = ({
       );
       if (keyLearningText) {
         results.push(keyLearningText);
+      }
+
+      const keywords = formatKeywords(lesson.lesson_data.keywords);
+      if (keywords) {
+        results.push(keywords);
       }
 
       return results;
