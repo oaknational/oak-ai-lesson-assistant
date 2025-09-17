@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { type ZodTypeAny, z } from "zod";
 
 import type { PartialLessonPlan } from "../../schema";
-import { LessonPlanSchema, PartialLessonPlanSchema } from "../../schema";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../schema";
 import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
@@ -22,10 +22,13 @@ export const MigratableQuizSchema = z.union([
 ]);
 
 // Proper input schema for lesson plan migration
-export const LessonPlanMigrationInputSchema = LessonPlanSchema.extend({
-  starterQuiz: MigratableQuizSchema.optional(),
-  exitQuiz: MigratableQuizSchema.optional(),
-});
+export const LessonPlanMigrationInputSchema =
+  // HACK: This loose type is needed for RAG lessons which can violate length requirements
+  //       eg: misconceptions can be an empty array
+  CompletedLessonPlanSchemaWithoutLength.partial().extend({
+    starterQuiz: MigratableQuizSchema.optional(),
+    exitQuiz: MigratableQuizSchema.optional(),
+  });
 
 export type LessonPlanMigrationInput = z.infer<
   typeof LessonPlanMigrationInputSchema
