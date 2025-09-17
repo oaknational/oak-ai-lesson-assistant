@@ -253,8 +253,8 @@ c. [answer c - max 80 characters]`;
 export const getQuizRequirements = () => {
   return `REQUIREMENTS:
 - There should be 10 questions
+- In the 'options' array, randomise the order of the answers. The correct answer must be placed in a different index each time. Ensure that across the 10 questions, the correct answer appears roughly equally in index 0, 1, and 2.
 - Each question should have one correct answer and two PLAUSIBLE DISTRACTORS
-- Put answers in alphabetical order
 - Questions should get progressively harder`;
 };
 
@@ -262,6 +262,8 @@ export const getQuizAvoids = () => {
   return `AVOID:
 - Negatively phrased questions (e.g., "Which is NOT…")
 - "All of the above" or "None of the above" options
+- All the correct answers being option a
+- The first distractor always being the correct answer
 - True/false questions
 - Answers should always start with lower-case letters unless they are proper nouns or acronyms. Cities and countries should be capitalised.
 - Do not repeat questions from the lesson details`;
@@ -285,12 +287,13 @@ Your task is to create a high-quality, age-appropriate multiple-choice quiz with
 
 The quiz should follow this structure for each question:
 1. A clear question (max 200 characters)
-2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each)
+2. Three options (a, b, c) - one correct answer and two plausible distractors (max 80 characters each) 
 
 Make sure that:
 - One correct answer is clearly marked as correct in your JSON output
 - Distractors are plausible but unambiguously incorrect
-- Answers follow alphabetical ordering
++ Randomise the order of the answer options
++ Ensure that the correct answer is evenly distributed across options a, b, and c
 ${additionalInstructions}
 - The content is appropriate for UK schools
 - British English spelling and conventions are used throughout
