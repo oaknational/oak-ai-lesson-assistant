@@ -67,3 +67,5 @@ yarn-error.log*
 .claude/env.local.json
 .claude/prompts
 *.local.md
+
+AGENT.md
