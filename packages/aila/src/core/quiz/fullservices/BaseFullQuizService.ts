@@ -105,7 +105,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<LatestQuiz> {
-    // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
+    // If basedOnRag Quiz generator present: Generate a quiz, check it isn't empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 
     const basedOnRagQuizGenerator = this.quizGenerators.find(
@@ -130,7 +130,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
       }
     }
 
-    // If we dont have a based on rag quiz generator, or it didnt produce a quiz, generate a quiz using the rest of the quiz generators.
+    // If we don't have a based on rag quiz generator, or it didn't produce a quiz, generate a quiz using the rest of the quiz generators.
     const quizGenerators = this.quizGenerators.filter(
       (cls) =>
         !(cls instanceof BasedOnRagQuizGenerator) ||

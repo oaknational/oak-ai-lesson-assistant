@@ -34,7 +34,7 @@ const testKeyStageMap: Record<
   "KS2 Year 5": "key-stage-2",
   KS3: "key-stage-3",
   "KS3 Geography": "key-stage-3",
-  "KS3 Geography L1 . Mrs Karaphillides": "key-stage-3",
+  "KS3 Geography L1 . Mrs Karaphillides": "key-stage-3", // cspell:disable-line
   "KS3 and KS4": "key-stage-3",
   "KS3,4": "key-stage-3",
   "KS3-4": "key-stage-3",
