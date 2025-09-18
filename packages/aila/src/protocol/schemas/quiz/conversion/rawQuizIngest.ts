@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
-import type { QuizV2, QuizV2Question } from "../quizV2";
+import type { ImageMetadata, QuizV3, QuizV3Question } from "../quizV3";
 import type {
   HasuraQuiz,
   StemImageObject,
@@ -27,17 +27,31 @@ function isImageItem(item: StemObject): item is StemImageObject {
   return item.type === "image";
 }
 
+function getImageAttribution(item: StemImageObject): string | null {
+  if (
+    item.image_object.metadata &&
+    typeof item.image_object.metadata === "object" &&
+    !Array.isArray(item.image_object.metadata)
+  ) {
+    const attribution = item.image_object.metadata.attribution;
+    if (attribution) {
+      return attribution;
+    }
+  }
+  return null;
+}
+
 /**
  * Extract markdown content from Oak's content items array, inlining images
- * Returns both the markdown content and attribution metadata
+ * Returns both the markdown content and image metadata
  */
-function extractMarkdownFromContent(
+function buildMarkdownFromContent(
   contentItems: Array<StemObject | undefined>,
 ): {
   markdown: string;
-  attributions: Array<{ imageUrl: string; attribution: string }>;
+  metadata: ImageMetadata[];
 } {
-  const attributions: Array<{ imageUrl: string; attribution: string }> = [];
+  const metadata: ImageMetadata[] = [];
 
   const markdownParts = contentItems
     .filter((item): item is StemObject => item !== undefined)
@@ -46,21 +60,23 @@ function extractMarkdownFromContent(
         return item.text || "";
       } else if (isImageItem(item)) {
         const imageUrl = getConstrainedStemImageUrl(item);
+        const width = item.image_object.width;
+        const height = item.image_object.height;
+        invariant(width && height, `Image ${imageUrl} has no dimensions`);
 
         // Extract alt text from context if available
         const altText = item.image_object.context?.custom?.alt ?? "";
 
-        // Extract attribution if available
-        if (
-          item.image_object.metadata &&
-          typeof item.image_object.metadata === "object" &&
-          !Array.isArray(item.image_object.metadata)
-        ) {
-          const attribution = item.image_object.metadata.attribution;
-          if (attribution) {
-            attributions.push({ imageUrl, attribution });
-          }
-        }
+        // Build metadata object for this image
+        const imageMetadata: ImageMetadata = {
+          imageUrl,
+          attribution: getImageAttribution(item),
+          width,
+          height,
+        };
+
+        // Push to the list of metadata
+        metadata.push(imageMetadata);
 
         // Return markdown image syntax with alt text
         return `![${altText}](${imageUrl})`;
@@ -70,34 +86,33 @@ function extractMarkdownFromContent(
 
   return {
     markdown: markdownParts.join(" ").trim(),
-    attributions,
+    metadata,
   };
 }
 
 /**
- * Convert Hasura quiz format to Quiz V2 format
+ * Convert Hasura quiz format to Quiz V3 format
  */
-export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
-  log.info("convertHasuraQuizToV2 input:", { hasuraQuiz });
+export function convertHasuraQuizToV3(hasuraQuiz: HasuraQuiz): QuizV3 {
+  log.info("convertHasuraQuizToV3 input:", { hasuraQuiz });
 
   if (!hasuraQuiz || !Array.isArray(hasuraQuiz)) {
     log.info("Hasura quiz is not an array, returning empty quiz");
     return {
-      version: "v2",
+      version: "v3",
       questions: [],
-      imageAttributions: [],
+      imageMetadata: [],
     };
   }
 
-  // Collect all image attributions from all questions
-  const allImageAttributions: Array<{ imageUrl: string; attribution: string }> =
-    [];
+  // Collect all image metadata from all questions
+  const allImageMetadata: ImageMetadata[] = [];
 
   const questions = hasuraQuiz
     .filter(
       (hasuraQuestion) => hasuraQuestion.questionType !== "explanatory-text",
     )
-    .map((hasuraQuestion): QuizV2Question => {
+    .map((hasuraQuestion): QuizV3Question => {
       log.info("Processing hasura question:", { hasuraQuestion });
 
       // Early return for explanatory-text (should be filtered out already)
@@ -105,8 +120,9 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         throw new Error("Explanatory text questions should be filtered out");
       }
       // Extract question stem as markdown with inlined images
-      const { markdown: questionStem, attributions } =
-        extractMarkdownFromContent(hasuraQuestion.questionStem);
+      const { markdown: questionStem, metadata } = buildMarkdownFromContent(
+        hasuraQuestion.questionStem,
+      );
 
       const hint = hasuraQuestion.hint ?? null;
 
@@ -122,7 +138,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
                 answer.answer,
                 "Multiple choice answer missing 'answer' field",
               );
-              return extractMarkdownFromContent(answer.answer);
+              return buildMarkdownFromContent(answer.answer);
             });
           const correctAnswers = correctAnswerResults.map(
             (result) => result.markdown,
@@ -135,17 +151,17 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
                 answer.answer,
                 "Multiple choice answer missing 'answer' field",
               );
-              return extractMarkdownFromContent(answer.answer);
+              return buildMarkdownFromContent(answer.answer);
             });
           const distractors = distractorResults.map(
             (result) => result.markdown,
           );
 
-          // Collect all attributions from question and answers
-          allImageAttributions.push(
-            ...attributions,
-            ...correctAnswerResults.flatMap((result) => result.attributions),
-            ...distractorResults.flatMap((result) => result.attributions),
+          // Collect all metadata from question and answers
+          allImageMetadata.push(
+            ...metadata,
+            ...correctAnswerResults.flatMap((result) => result.metadata),
+            ...distractorResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -161,13 +177,13 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
           const saAnswers = hasuraQuestion.answers?.["short-answer"] ?? [];
           const answerResults = saAnswers.map((answer) => {
             invariant(answer.answer, "Short answer missing 'answer' field");
-            return extractMarkdownFromContent(answer.answer);
+            return buildMarkdownFromContent(answer.answer);
           });
           const answers = answerResults.map((result) => result.markdown);
 
-          allImageAttributions.push(
-            ...attributions,
-            ...answerResults.flatMap((result) => result.attributions),
+          allImageMetadata.push(
+            ...metadata,
+            ...answerResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -181,16 +197,16 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         case "match": {
           const matchAnswers = hasuraQuestion.answers?.match ?? [];
           const pairs = matchAnswers.map((matchItem) => {
-            const leftResult = extractMarkdownFromContent(
+            const leftResult = buildMarkdownFromContent(
               matchItem.match_option ?? [],
             );
-            const rightResult = extractMarkdownFromContent(
+            const rightResult = buildMarkdownFromContent(
               matchItem.correct_choice || [],
             );
 
-            allImageAttributions.push(
-              ...leftResult.attributions,
-              ...rightResult.attributions,
+            allImageMetadata.push(
+              ...leftResult.metadata,
+              ...rightResult.metadata,
             );
 
             return {
@@ -199,7 +215,7 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
             };
           });
 
-          allImageAttributions.push(...attributions);
+          allImageMetadata.push(...metadata);
 
           return {
             questionType: "match" as const,
@@ -212,13 +228,13 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
         case "order": {
           const orderAnswers = hasuraQuestion.answers?.order ?? [];
           const itemResults = orderAnswers.map((orderItem) =>
-            extractMarkdownFromContent(orderItem.answer || []),
+            buildMarkdownFromContent(orderItem.answer || []),
           );
           const items = itemResults.map((result) => result.markdown);
 
-          allImageAttributions.push(
-            ...attributions,
-            ...itemResults.flatMap((result) => result.attributions),
+          allImageMetadata.push(
+            ...metadata,
+            ...itemResults.flatMap((result) => result.metadata),
           );
 
           return {
@@ -239,8 +255,8 @@ export function convertHasuraQuizToV2(hasuraQuiz: HasuraQuiz): QuizV2 {
     });
 
   return {
-    version: "v2",
+    version: "v3",
     questions,
-    imageAttributions: allImageAttributions,
+    imageMetadata: allImageMetadata,
   };
 }

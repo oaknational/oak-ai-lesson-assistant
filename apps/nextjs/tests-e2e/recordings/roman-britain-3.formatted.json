@@ -16,7 +16,7 @@
         "op": "add",
         "path": "/starterQuiz",
         "value": {
-          "version": "v2",
+          "version": "v3",
           "questions": [
             {
               "question": "When did the Romans invade Britain?",
@@ -91,7 +91,7 @@
               ]
             }
           ],
-          "imageAttributions": []
+          "imageMetadata": []
         }
       },
       "status": "complete"
@@ -254,7 +254,7 @@
         "op": "add",
         "path": "/exitQuiz",
         "value": {
-          "version": "v2",
+          "version": "v3",
           "questions": [
             {
               "question": "Why did the Romans leave Britain?",
@@ -329,7 +329,7 @@
               ]
             }
           ],
-          "imageAttributions": []
+          "imageMetadata": []
         }
       },
       "status": "complete"

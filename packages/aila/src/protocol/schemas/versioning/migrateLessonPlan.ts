@@ -5,8 +5,9 @@ import { type ZodTypeAny, z } from "zod";
 import type { PartialLessonPlan } from "../../schema";
 import { CompletedLessonPlanSchemaWithoutLength } from "../../schema";
 import type { LatestQuiz } from "../quiz";
-import { QuizV1Schema, QuizV2Schema } from "../quiz";
+import { QuizV1Schema, QuizV2Schema, QuizV3Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
+import { convertQuizV2ToV3, isQuizV3 } from "../quiz/conversion/quizV2ToV3";
 
 const log = aiLogger("aila:schema");
 
@@ -15,10 +16,11 @@ export type MigrationResult = {
   wasMigrated: boolean;
 };
 
-// Schema for quiz data that can be migrated - accepts both V1 and V2 formats
+// Schema for quiz data that can be migrated - accepts V1, V2, and V3 formats
 export const MigratableQuizSchema = z.union([
   QuizV1Schema, // Array of V1 questions
   QuizV2Schema, // Object with version "v2" and questions array
+  QuizV3Schema, // Object with version "v3" and imageMetadata array
 ]);
 
 // Proper input schema for lesson plan migration
@@ -34,24 +36,26 @@ export type LessonPlanMigrationInput = z.infer<
   typeof LessonPlanMigrationInputSchema
 >;
 
+const migrateQuiz = (section: unknown): LatestQuiz => {
+  const quiz = MigratableQuizSchema.parse(section);
+  if (isQuizV3(quiz)) {
+    return quiz;
+  }
+  // Chain migrations: V1→V2→V3 (Latest currently V3)
+  const v2Quiz = isQuizV1(quiz) ? convertQuizV1ToV2(quiz) : quiz;
+  return convertQuizV2ToV3(v2Quiz);
+};
+
 const versionedSections = {
   starterQuiz: {
     key: "starterQuiz" as const,
-    latestVersion: 2,
-    migrate: (section: unknown): LatestQuiz => {
-      const quiz = MigratableQuizSchema.parse(section);
-      // Migrate to latest version (currently V2)
-      return isQuizV1(quiz) ? convertQuizV1ToV2(quiz) : quiz;
-    },
+    latestVersion: 3,
+    migrate: migrateQuiz,
   },
   exitQuiz: {
     key: "exitQuiz" as const,
-    latestVersion: 2,
-    migrate: (section: unknown): LatestQuiz => {
-      const quiz = MigratableQuizSchema.parse(section);
-      // Migrate to latest version (currently V2)
-      return isQuizV1(quiz) ? convertQuizV1ToV2(quiz) : quiz;
-    },
+    latestVersion: 3,
+    migrate: migrateQuiz,
   },
 } as const;
 

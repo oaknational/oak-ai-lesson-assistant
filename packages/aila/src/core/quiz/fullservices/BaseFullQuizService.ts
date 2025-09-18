@@ -87,9 +87,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
       return {
-        version: "v2",
+        version: "v3",
         questions: [],
-        imageAttributions: [],
+        imageMetadata: [],
       };
     }
     const parsedRankings = quizRankings.map((ranking) =>
@@ -171,9 +171,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
       return {
-        version: "v2",
+        version: "v3",
         questions: [],
-        imageAttributions: [],
+        imageMetadata: [],
       };
     }
     const ratingSchema = this.quizReranker.ratingSchema;

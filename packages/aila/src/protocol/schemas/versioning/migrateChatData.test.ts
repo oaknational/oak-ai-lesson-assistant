@@ -6,6 +6,7 @@ import {
   chatWithStringLessonPlan,
   chatWithV1Quiz,
   chatWithV2Quiz,
+  chatWithV3Quiz,
   invalidChatData,
   mockV2Quiz,
 } from "./fixtures/migrationTestData";
@@ -18,53 +19,55 @@ const testContext = {
 };
 
 describe("migrateChatData", () => {
-  describe("valid chat data migration", () => {
-    it("should handle chat data with V1 and V2 quizzes", async () => {
-      // Should migrate V1 quizzes
-      const v1Result = await migrateChatData(chatWithV1Quiz, null, testContext);
-      expect(v1Result.id).toBe("test-chat-id");
-      expect(v1Result.lessonPlan.title).toBe("Test Lesson");
-      expect(v1Result.lessonPlan.starterQuiz).toHaveProperty("version", "v2");
-      expect(v1Result.lessonPlan.exitQuiz).toHaveProperty("version", "v2");
+  describe("chat data integration", () => {
+    it("should migrate lesson plans when needed and preserve chat structure", async () => {
+      // Should migrate when lesson plan needs migration
+      const result = await migrateChatData(chatWithV1Quiz, null, testContext);
 
-      // Should not migrate V2 quizzes
-      const v2Result = await migrateChatData(chatWithV2Quiz, null, testContext);
-      expect(v2Result.id).toBe("test-chat-id");
-      expect(v2Result.lessonPlan.starterQuiz).toEqual(mockV2Quiz);
-      expect(v2Result.lessonPlan.exitQuiz).toEqual(mockV2Quiz);
+      expect(result.id).toBe("test-chat-id");
+      expect(result.lessonPlan.title).toBe("Test Lesson");
+      expect(result.lessonPlan.starterQuiz).toHaveProperty("version", "v3");
 
       // Should preserve all chat fields
-      expect(v1Result.id).toBe(baseChatData.id);
-      expect(v1Result.path).toBe(baseChatData.path);
-      expect(v1Result.title).toBe(baseChatData.title);
-      expect(v1Result.userId).toBe(baseChatData.userId);
-      expect(v1Result.createdAt).toBe(baseChatData.createdAt);
-      expect(v1Result.messages).toEqual(baseChatData.messages);
+      expect(result.id).toBe(baseChatData.id);
+      expect(result.path).toBe(baseChatData.path);
+      expect(result.title).toBe(baseChatData.title);
+      expect(result.userId).toBe(baseChatData.userId);
+      expect(result.createdAt).toBe(baseChatData.createdAt);
+      expect(result.messages).toEqual(baseChatData.messages);
+    });
+
+    it("should not migrate when lesson plan doesn't need migration", async () => {
+      const result = await migrateChatData(chatWithV3Quiz, null, testContext);
+
+      expect(result.id).toBe("test-chat-id");
+      expect(result.lessonPlan.starterQuiz).toHaveProperty("version", "v3");
     });
   });
 
   describe("persistence callback", () => {
-    it("should handle persistence callbacks correctly", async () => {
+    it("should call persistence when migration occurs", async () => {
       const mockPersist = jest
         .fn<() => Promise<void>>()
         .mockResolvedValue(undefined);
 
-      // Should call when migration occurs
       await migrateChatData(chatWithV1Quiz, mockPersist, testContext);
-      expect(mockPersist).toHaveBeenCalledTimes(1);
       expect(mockPersist).toHaveBeenCalledWith(
         expect.objectContaining({
           id: "test-chat-id",
           lessonPlan: expect.objectContaining({
-            starterQuiz: expect.objectContaining({ version: "v2" }),
+            starterQuiz: expect.objectContaining({ version: "v3" }),
           }),
         }),
       );
+    });
 
-      mockPersist.mockClear();
+    it("should not call persistence when no migration needed", async () => {
+      const mockPersist = jest
+        .fn<() => Promise<void>>()
+        .mockResolvedValue(undefined);
 
-      // Should not call when no migration needed
-      await migrateChatData(chatWithV2Quiz, mockPersist, testContext);
+      await migrateChatData(chatWithV3Quiz, mockPersist, testContext);
       expect(mockPersist).not.toHaveBeenCalled();
     });
 

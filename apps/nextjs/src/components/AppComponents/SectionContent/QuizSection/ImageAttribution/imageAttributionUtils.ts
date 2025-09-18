@@ -15,7 +15,7 @@ export function extractImageUrls(text: string): string[] {
 
 export function getAttributionsForQuestion(
   question: LatestQuizQuestion,
-  quizAttributions: LatestQuiz["imageAttributions"],
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): string[] {
   if (!quizAttributions || quizAttributions.length === 0) {
     return [];
@@ -44,7 +44,7 @@ export function getAttributionsForQuestion(
 
 export function getGroupedAttributions(
   questions: LatestQuizQuestion[],
-  quizAttributions: LatestQuiz["imageAttributions"],
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): Record<string, number[]> {
   const attributionGroups: Record<string, number[]> = {};
 
@@ -64,7 +64,7 @@ export function getGroupedAttributions(
 
 export function getFormattedAttributions(
   questions: LatestQuizQuestion[],
-  quizAttributions: LatestQuiz["imageAttributions"],
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): Array<{ attribution: string; questionRange: string }> {
   const groups = getGroupedAttributions(questions, quizAttributions);
 

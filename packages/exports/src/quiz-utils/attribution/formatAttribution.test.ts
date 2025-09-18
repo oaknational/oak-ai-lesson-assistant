@@ -1,29 +1,32 @@
 import { describe, expect, it } from "@jest/globals";
 
+import type { ImageMetadata } from "../../schema/input.schema";
 import {
   formatAttributionText,
   formatQuizAttributions,
   mapQuestionImages,
 } from "./formatAttribution";
-import type {
-  ImageAttribution,
-  ImageWithAttribution,
-  QuizQuestion,
-} from "./types";
+import type { ImageWithAttribution, QuizQuestion } from "./types";
 
 describe("mapQuestionImages", () => {
-  const mockAttributions: ImageAttribution[] = [
+  const mockAttributions: ImageMetadata[] = [
     {
       imageUrl: "https://example.com/image1.jpg",
       attribution: "Pixabay",
+      width: 800,
+      height: 600,
     },
     {
       imageUrl: "https://example.com/image2.jpg",
       attribution: "Shutterstock / Jane Doe",
+      width: 800,
+      height: 600,
     },
     {
       imageUrl: "https://example.com/image3.jpg",
       attribution: "Oak National Academy",
+      width: 800,
+      height: 600,
     },
   ];
 
@@ -369,14 +372,18 @@ describe("formatAttributionText", () => {
 });
 
 describe("formatQuizAttributions", () => {
-  const mockAttributions: ImageAttribution[] = [
+  const mockAttributions: ImageMetadata[] = [
     {
       imageUrl: "https://example.com/pixabay.jpg",
       attribution: "Pixabay",
+      width: 800,
+      height: 600,
     },
     {
       imageUrl: "https://example.com/shutterstock.jpg",
       attribution: "Shutterstock / Jane Doe",
+      width: 800,
+      height: 600,
     },
   ];
 
