@@ -4,7 +4,7 @@ import {
   extractImageUrlsFromText,
   extractImagesFromQuestion,
 } from "./extractImages";
-import type { QuizV2Question } from "./types";
+import type { QuizQuestion } from "./types";
 
 describe("extractImageUrlsFromText", () => {
   it("should extract single image with alt text", () => {
@@ -65,7 +65,7 @@ describe("extractImageUrlsFromText", () => {
 
 describe("extractImagesFromQuestion", () => {
   it("should extract images from multiple choice question text", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question: "What is shown? ![diagram](https://example.com/diagram.jpg)",
       answers: ["Answer 1"],
@@ -81,7 +81,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should extract images from multiple choice answers and distractors", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question: "Choose the correct option:",
       answers: ["![correct](https://example.com/correct.jpg)"],
@@ -102,7 +102,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should extract images from question text and answers combined", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question: "Based on ![chart](https://example.com/chart.jpg), choose:",
       answers: ["![option1](https://example.com/option1.jpg)"],
@@ -119,7 +119,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should extract images from match question pairs", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "match",
       question: "Match the images to descriptions:",
       pairs: [
@@ -144,7 +144,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should extract images from order question items", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "order",
       question: "Put these in chronological order:",
       items: [
@@ -164,7 +164,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should handle short answer questions with images in question text only", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "short-answer",
       question: "What is shown in ![graph](https://example.com/graph.jpg)?",
       answers: ["A graph"],
@@ -179,7 +179,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should return empty array for questions with no images", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "short-answer",
       question: "What is 2 + 2?",
       answers: ["4"],
@@ -192,7 +192,7 @@ describe("extractImagesFromQuestion", () => {
   });
 
   it("should maintain correct index order across different sections", () => {
-    const question: QuizV2Question = {
+    const question: QuizQuestion = {
       questionType: "multiple-choice",
       question:
         "First ![q1](https://example.com/q1.jpg) and second ![q2](https://example.com/q2.jpg)",

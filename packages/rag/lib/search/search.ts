@@ -7,6 +7,27 @@ import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
 import { parseResult } from "./parseResult";
 import { preparseResult } from "./preparseResult";
 
+/**
+ * We currently store key stages in Aila as key-stage-1, key-stage-2, etc.
+ * But in the vector DB they are stored as ks1, ks2, etc. So we need to
+ * convert between the two formats when searching and when displaying
+ */
+const keyStageForSearch = (ks: string) =>
+  ({
+    "key-stage-1": "ks1",
+    "key-stage-2": "ks2",
+    "key-stage-3": "ks3",
+    "key-stage-4": "ks4",
+  })[ks] ?? ks;
+
+const keyStageFromSearch = (ks: string) =>
+  ({
+    ks1: "key-stage-1",
+    ks2: "key-stage-2",
+    ks3: "key-stage-3",
+    ks4: "key-stage-4",
+  })[ks] ?? ks;
+
 export async function vectorSearch({
   prisma,
   log,
@@ -35,14 +56,21 @@ export async function vectorSearch({
   const queryResponse = await executePrismaQueryRaw({
     prisma,
     queryEmbedding,
-    keyStageSlugs,
+    keyStageSlugs: keyStageSlugs.map(keyStageForSearch),
     subjectSlugs,
     limit,
   });
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
-  const results = queryResponse
-    .map(preparseResult)
-    .filter(parseResult({ onError: (e) => parseErrors.push(e) }));
+  const preparsedResults = await Promise.all(queryResponse.map(preparseResult));
+  const results = preparsedResults
+    .filter(parseResult({ onError: (e) => parseErrors.push(e) }))
+    .map((r) => ({
+      ...r,
+      lessonPlan: {
+        ...r.lessonPlan,
+        keyStage: keyStageFromSearch(r.lessonPlan.keyStage),
+      },
+    }));
 
   /**
    * @todo Handle parse errors (i.e. record in DB so we can re-ingest!)

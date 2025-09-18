@@ -8,7 +8,7 @@ import type {
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
@@ -26,7 +26,7 @@ const SemanticSearchSchema = z.object({
 
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // Using hybrid search combining BM25 and vector similarity
@@ -43,7 +43,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
    * Validates the lesson plan
    * @throws {Error} If the lesson plan is invalid
    */
-  private isValidLessonPlan(lessonPlan: LooseLessonPlan | null): void {
+  private isValidLessonPlan(lessonPlan: PartialLessonPlan | null): void {
     if (!lessonPlan) throw new Error("Lesson plan is null");
     // Check for minimum required properties
     if (
@@ -59,7 +59,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // Our Rag system may retrieve N Questions. We split them into chunks of 6 to conform with the schema. If we have less than 6 questions we pad with questions from the appropriate section of the lesson plan.
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizQuestions: QuizQuestionWithRawJson[],
     quizType: QuizPath,
   ): QuizQuestionWithRawJson[][] {
@@ -106,7 +106,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
   // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[]> {
     this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
@@ -117,7 +117,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   }
 
   public async generateMathsQuizMLWithSemanticQueries(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionWithRawJson[]> {
     // Using hybrid search combining BM25 and vector similarity
@@ -146,7 +146,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
    * Generates semantic search queries from lesson plan content using OpenAI
    */
   public async generateSemanticSearchQueries(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<z.infer<typeof SemanticSearchSchema>> {
     const unpackedContent = unpackLessonPlanForPrompt(lessonPlan);
@@ -213,7 +213,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
 
   // TODO: GCLOMAX - Change for starter and exit quizzes.
   public async generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz = await this.generateMathsQuizMLWithSemanticQueries(
       lessonPlan,
@@ -228,7 +228,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
     return quiz2DArray;
   }
   public async generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz: QuizQuestionWithRawJson[] =
       await this.generateMathsQuizMLWithSemanticQueries(

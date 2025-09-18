@@ -51,11 +51,18 @@ export function generateMultipleChoiceTable(
   };
 
   elements.push(
-    createTableElement(insertIndex, shuffledChoices.length, 3, cellContent, [
-      COLUMN_WIDTHS.checkbox,
-      COLUMN_WIDTHS.letter,
-      COLUMN_WIDTHS.auto,
-    ]),
+    createTableElement({
+      insertIndex,
+      rows: shuffledChoices.length,
+      columns: 3,
+      cellContent,
+      columnWidths: [
+        COLUMN_WIDTHS.checkbox,
+        COLUMN_WIDTHS.letter,
+        COLUMN_WIDTHS.auto,
+      ],
+      columnAlignments: [null, "CENTER", null],
+    }),
   );
 
   return elements;

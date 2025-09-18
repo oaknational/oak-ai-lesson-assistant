@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
 import type { LessonPlanSchemaTeachingMaterials } from "./sharedSchema";
 
 export const getLessonTranscript = (transcript: string) => {
@@ -6,7 +6,7 @@ export const getLessonTranscript = (transcript: string) => {
 };
 
 const renderCycle = (
-  cycle: LooseLessonPlan["cycle1"] | null,
+  cycle: PartialLessonPlan["cycle1"] | null,
   label: string,
 ) => {
   if (!cycle) return "";
@@ -45,7 +45,7 @@ ${feedback}
 `;
 };
 
-export const renderQuiz = (quiz: LooseLessonPlan["starterQuiz"]): string => {
+export const renderQuiz = (quiz: PartialLessonPlan["starterQuiz"]): string => {
   if (!quiz || !quiz.questions?.length) return "- N/A";
 
   return quiz.questions

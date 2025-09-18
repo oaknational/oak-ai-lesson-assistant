@@ -5,9 +5,9 @@ import type { z } from "zod";
 
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  LatestQuiz,
+  PartialLessonPlan,
   QuizV1Question,
-  QuizV2,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
@@ -31,10 +31,10 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
   public async createBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     if (override) {
       return this.createBestQuizOverride(
         quizType,
@@ -51,9 +51,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
   private async defaultCreateBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
@@ -102,9 +102,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // Creates a best quiz in a hierarchy of quiz types.
   private async createBestQuizOverride(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 

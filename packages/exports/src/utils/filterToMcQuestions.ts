@@ -1,6 +1,6 @@
 import type {
-  QuizV2Question,
-  QuizV2QuestionMultipleChoice,
+  QuizQuestion,
+  QuizQuestionMultipleChoice,
 } from "../schema/input.schema";
 
 /**
@@ -14,10 +14,10 @@ import type {
  * @returns Array of only multiple-choice questions with proper typing
  */
 export function filterToMcQuestions(
-  questions: QuizV2Question[],
-): QuizV2QuestionMultipleChoice[] {
+  questions: QuizQuestion[],
+): QuizQuestionMultipleChoice[] {
   return questions.filter(
-    (q): q is QuizV2QuestionMultipleChoice =>
+    (q): q is QuizQuestionMultipleChoice =>
       q.questionType === "multiple-choice",
   );
 }

@@ -2,7 +2,6 @@ import { aiLogger } from "@oakai/logger";
 
 import type { docs_v1 } from "@googleapis/docs";
 
-import { LATEX_VISUAL_SCALE } from "../../../images/constants";
 import {
   getExistingImageUrl,
   uploadImageToGCS,
@@ -21,6 +20,7 @@ const log = aiLogger("exports");
 export async function replaceLatexInDocument(
   googleDocs: docs_v1.Docs,
   documentId: string,
+  visualScale: number,
 ): Promise<void> {
   // 1. Get the document content
   const doc = await googleDocs.documents.get({ documentId });
@@ -40,7 +40,7 @@ export async function replaceLatexInDocument(
   log.info(`Found ${latexPatterns.length} unique LaTeX patterns to convert`);
 
   // 3. Generate images for all unique patterns in parallel
-  const imageUrls = await generateLatexImages(latexPatterns);
+  const imageUrls = await generateLatexImages(latexPatterns, visualScale);
 
   // 4. Create replacement requests for each unique pattern
   const requests: docs_v1.Schema$Request[] = [];
@@ -100,6 +100,7 @@ function findUniqueLatexPatterns(text: string): string[] {
  */
 async function generateLatexImages(
   patterns: string[],
+  visualScale: number,
 ): Promise<Map<string, string>> {
   const imageMap = new Map<string, string>();
 
@@ -144,7 +145,7 @@ async function generateLatexImages(
 
     const pngPromises = missing.map(async (item) => {
       const svg = latexToSvg(item.pattern, false);
-      const pngResult = await svgToPng(svg, LATEX_VISUAL_SCALE); // Make LaTeX visually larger
+      const pngResult = await svgToPng(svg, visualScale);
       const url = await uploadImageToGCS({
         buffer: pngResult.buffer,
         latexHash: item.hash,

@@ -7,7 +7,7 @@ import { z } from "zod";
 import type {
   CompletedLessonPlan,
   LessonPlanKey,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "../../protocol/schema";
 import type { PromptAgentDefinition } from "./agents";
 import { examplesFromSimilarLessons } from "./prompts/shared/examplesFromSimilarLessons";
@@ -27,7 +27,7 @@ export async function promptAgentHandler<
   ragData,
 }: {
   agent: PromptAgentDefinition<Schema, SchemaStrict>;
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   targetKey: LessonPlanKey;
   additionalInstructions: string;
   chatId: string;

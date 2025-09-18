@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import {
   type OakIconName,
@@ -106,7 +106,7 @@ const DialogContents = ({
   isShared,
 }: {
   readonly chatId: string | undefined;
-  readonly lesson: LooseLessonPlan;
+  readonly lesson: PartialLessonPlan;
   readonly children?: React.ReactNode;
   readonly messages?: Message[];
   readonly submit?: () => void;

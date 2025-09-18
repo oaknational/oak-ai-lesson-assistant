@@ -8,7 +8,7 @@ import type { docs_v1 } from "@googleapis/docs";
 import { formatQuizAttributions } from "../../../quiz-utils/attribution/formatAttribution";
 import type {
   ImageAttribution,
-  QuizV2Question,
+  QuizQuestion,
 } from "../../../schema/input.schema";
 import { getFooterStrategy } from "./estimate-page-breaks";
 
@@ -73,7 +73,7 @@ function generateFooterAttributionRequests(
 export async function addFooterAttribution(
   googleDocs: docs_v1.Docs,
   documentId: string,
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
   imageAttributions: ImageAttribution[],
 ): Promise<void> {
   // Get document style to access footer IDs

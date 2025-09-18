@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionOrder } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 import { shuffleOrderItems } from "@oakai/exports/src/quiz-utils/shuffle";
 
@@ -12,7 +12,7 @@ import { AnswerBox } from "./AnswerBox";
 import { useTextWithBlanks } from "./textWithBlanks";
 
 type OrderQuestionProps = {
-  question: QuizV2QuestionOrder;
+  question: Extract<LatestQuizQuestion, { questionType: "order" }>;
   questionNumber: number;
 };
 

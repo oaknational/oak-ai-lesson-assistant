@@ -4,7 +4,7 @@ import readline from "readline";
 import type {
   AilaRagRelevantLesson,
   CompletedLessonPlan,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "../../protocol/schema";
 import { interact } from "./interact";
 
@@ -30,7 +30,7 @@ async function main() {
   const title = await ask("Lesson Title: ");
 
   // You could add more fields here if needed
-  let currentDocument: LooseLessonPlan = {
+  let currentDocument: PartialLessonPlan = {
     subject,
     keyStage,
     title,

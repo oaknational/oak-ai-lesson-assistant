@@ -1,30 +1,30 @@
-import { convertHasuraQuizToV2 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type {
-  QuizV2,
-  QuizV2Question,
-} from "../../protocol/schemas/quiz/quizV2";
+  LatestQuiz,
+  LatestQuizQuestion,
+} from "../../protocol/schemas/quiz";
+import { convertHasuraQuizToV2 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type { QuizQuestionWithRawJson } from "./interfaces";
 
 export function coerceQuizQuestionWithJson(
   quizQuestion: QuizQuestionWithRawJson,
-): QuizV2 {
+): LatestQuiz {
   return convertHasuraQuizToV2(quizQuestion.rawQuiz);
 }
 
 export function coerceQuizQuestionWithJsonArray(
   quizQuestions: QuizQuestionWithRawJson[],
-): QuizV2 {
-  const quizV2s = quizQuestions.map((quizQuestion) =>
+): LatestQuiz {
+  const quizzes = quizQuestions.map((quizQuestion) =>
     coerceQuizQuestionWithJson(quizQuestion),
   );
 
-  // Merge all QuizV2 objects into a single one
-  const mergedQuestions: QuizV2Question[] = [];
-  const mergedImageAttributions: QuizV2["imageAttributions"] = [];
+  // Merge all quiz objects into a single one
+  const mergedQuestions: LatestQuizQuestion[] = [];
+  const mergedImageAttributions: LatestQuiz["imageAttributions"] = [];
 
-  for (const quizV2 of quizV2s) {
-    mergedQuestions.push(...quizV2.questions);
-    mergedImageAttributions.push(...quizV2.imageAttributions);
+  for (const quiz of quizzes) {
+    mergedQuestions.push(...quiz.questions);
+    mergedImageAttributions.push(...quiz.imageAttributions);
   }
 
   return {

@@ -54,6 +54,9 @@ export const tryWithErrorReporting = <T>(
       level,
       extra,
     });
-    return null;
+    if (process.env.NEXT_PUBLIC_ENVIRONMENT === "prd") {
+      return null;
+    }
+    throw e;
   }
 };

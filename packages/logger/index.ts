@@ -37,6 +37,7 @@ export type LoggerKey =
   | "aila:protocol"
   | "aila:quiz"
   | "aila:rag"
+  | "aila:schema"
   | "aila:stream"
   | "aila:testing"
   | "aila:threat"

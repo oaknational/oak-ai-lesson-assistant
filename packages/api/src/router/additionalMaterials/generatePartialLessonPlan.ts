@@ -9,7 +9,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
-import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
 import { getMockModerationResult } from "./moderationFixtures";
 import { recordSafetyViolation } from "./safetyUtils";
 
@@ -25,7 +25,7 @@ interface GeneratePartialLessonPlanParams {
 export type GeneratePartialLessonPlanResponse =
   | {
       threatDetection: boolean;
-      lesson: LooseLessonPlan | null;
+      lesson: PartialLessonPlan | null;
       lessonId: string;
       moderation: ModerationResult;
     }

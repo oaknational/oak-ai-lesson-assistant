@@ -1,9 +1,9 @@
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import type {
   Keyword,
+  LatestQuiz,
+  LatestQuizQuestion,
   Misconception,
-  QuizV2,
-  QuizV2Question,
 } from "@oakai/aila/src/protocol/schema";
 
 import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
@@ -19,7 +19,7 @@ import type {
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(questions: OwaQuizQuestion[]): QuizV2 {
+export function transformQuiz(questions: OwaQuizQuestion[]): LatestQuiz {
   // Refined helper function with proper typing
   function filterUndefined<T>(items?: (T | undefined)[]): T[] {
     return Array.isArray(items)
@@ -40,7 +40,7 @@ export function transformQuiz(questions: OwaQuizQuestion[]): QuizV2 {
       )
       .map((item) => item.text.trim());
 
-  const result: QuizV2Question[] = [];
+  const result: LatestQuizQuestion[] = [];
 
   for (const q of questions) {
     if (!isTextOnly(q.question_stem)) continue;

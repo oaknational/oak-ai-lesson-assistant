@@ -1,6 +1,6 @@
 import type {
   LessonPlanKey,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { StoreApi } from "zustand";
@@ -9,7 +9,7 @@ import type { AiMessage } from "../chatStore/types";
 
 export type LessonPlanState = {
   id: string;
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   appliedPatchHashes: string[];
   appliedPatchPaths: LessonPlanKey[];
   sectionsToEdit: LessonPlanKey[];

@@ -4,14 +4,14 @@ import type {
   FormattedAttribution,
   ImageAttribution,
   ImageWithAttribution,
-  QuizV2Question,
+  QuizQuestion,
 } from "./types";
 
 /**
  * Groups quiz questions with their image attributions
  */
 export function mapQuestionImages(
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
   imageAttributions: ImageAttribution[],
 ): ImageWithAttribution[] {
   const result: ImageWithAttribution[] = [];
@@ -117,7 +117,7 @@ export function formatAttributionText(
  * Main function to format quiz attributions
  */
 export function formatQuizAttributions(
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
   imageAttributions: ImageAttribution[],
 ): FormattedAttribution {
   const imagesWithAttributions = mapQuestionImages(

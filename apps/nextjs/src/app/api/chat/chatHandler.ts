@@ -18,7 +18,7 @@ import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetectio
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -210,9 +210,9 @@ function verifyChatOwnership(
 function parseChatOutput(
   output: unknown,
   chatId: string,
-): { messages: Message[]; lessonPlan: LooseLessonPlan } {
+): { messages: Message[]; lessonPlan: PartialLessonPlan } {
   let messages: Message[] = [];
-  let lessonPlan: LooseLessonPlan = {};
+  let lessonPlan: PartialLessonPlan = {};
 
   try {
     const parsedOutput =
@@ -226,7 +226,7 @@ function parseChatOutput(
       hasLessonPlan(parsedOutput) &&
       isValidLessonPlan(parsedOutput.lessonPlan)
     ) {
-      lessonPlan = parsedOutput.lessonPlan as LooseLessonPlan;
+      lessonPlan = parsedOutput.lessonPlan as PartialLessonPlan;
     }
   } catch (error) {
     log.error(`Error parsing output for chat ${chatId}`, error);
@@ -242,7 +242,7 @@ function parseChatOutput(
 async function loadChatDataFromDatabase(
   chatId: string,
   userId: string,
-): Promise<{ messages: Message[]; lessonPlan: LooseLessonPlan }> {
+): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
       where: { id: chatId },
@@ -305,7 +305,7 @@ type CreateAilaInstanceArguments = {
   chatId: string;
   userId: string | undefined;
   messages: Message[];
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
   threatDetectors: AilaThreatDetector[];
