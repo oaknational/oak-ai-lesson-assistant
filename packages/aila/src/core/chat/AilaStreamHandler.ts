@@ -218,10 +218,7 @@ export class AilaStreamHandler {
         fetchRagData: async ({ document }) => {
           const { subject, keyStage, topic, title } = document;
           invariant(title, "Document title is required to fetch RAG data");
-          // invariant(subject, "Document subject is required");
-          // invariant(keyStage, "Document key stage is required");
-          // invariant(this._chat.id, "Chat ID is required");
-          // invariant(this._chat.userId, "User ID is required");
+
           const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
 
           if (!isMaths) {
