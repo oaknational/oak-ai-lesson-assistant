@@ -9,6 +9,7 @@ import type {
   StemObject,
   StemTextObject,
 } from "../rawQuiz";
+import { getConstrainedStemImageUrl } from "./cloudinaryImageHelper";
 
 const log = aiLogger("aila:quiz");
 
@@ -44,7 +45,7 @@ function extractMarkdownFromContent(
       if (isTextItem(item)) {
         return item.text || "";
       } else if (isImageItem(item)) {
-        const imageUrl = item.image_object.secure_url;
+        const imageUrl = getConstrainedStemImageUrl(item);
 
         // Extract alt text from context if available
         const altText = item.image_object.context?.custom?.alt ?? "";

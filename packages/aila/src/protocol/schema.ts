@@ -524,9 +524,6 @@ export const CompletedLessonPlanSchemaWithoutLength = z.object({
   additionalMaterials: AdditionalMaterialsSchema,
 });
 
-export const PartialLessonPlanSchemaWithoutLength =
-  CompletedLessonPlanSchemaWithoutLength.partial();
-
 // Re-export quiz schemas for external use
 export {
   LatestQuizMultipleChoiceOnlySchema,
