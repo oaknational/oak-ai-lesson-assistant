@@ -222,7 +222,7 @@ export class AilaStreamHandler {
           const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
 
           if (!isMaths) {
-            // temporaryily use only RAG if subject is not maths -- we only have maths in the new RAG
+            // temporarily use only RAG if subject is not maths -- we only have maths in the new RAG
             const relevantLessonPlans = await fetchRagContent({
               title,
               subject,
