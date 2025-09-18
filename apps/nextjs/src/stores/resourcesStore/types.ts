@@ -100,7 +100,7 @@ export type ResourcesState = {
     createMaterialSession: (
       docType: string | null,
       stepNumber?: number,
-    ) => Promise<void>;
+    ) => Promise<{ success: boolean }>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: () => Promise<void>;
     refineMaterial: (refinementOption: RefinementOption) => Promise<void>;
