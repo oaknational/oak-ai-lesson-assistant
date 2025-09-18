@@ -42,11 +42,13 @@ export const handleCreateMaterialSession =
       log.info(get().id, "ID after creation");
 
       get().actions.analytics.trackMaterialSelected(resourceId, docTypeParsed);
+      return { success: true };
     } catch (error) {
       handleStoreError(set, error, {
         context: "handleCreateMaterialSession",
         docType,
       });
       log.error("Error creating material session", error);
+      return { success: false };
     }
   };
