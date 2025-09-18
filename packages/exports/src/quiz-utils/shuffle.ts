@@ -30,7 +30,7 @@ function detectLetterAnswerPattern(choices: string[]): boolean {
 
   // Strip all standalone A-D letters and compare the remaining text
   const strippedChoices = choices.map((choice) =>
-    choice.replace(/\b[A-D]\b/g, ""),
+    choice.replace(/\b[a-dA-D]\b/g, ""),
   );
   const baseChoice = strippedChoices[0];
 

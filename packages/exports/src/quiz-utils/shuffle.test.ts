@@ -37,24 +37,24 @@ describe("shuffleMultipleChoiceAnswers", () => {
       ]);
     });
 
-    it("should maintain alphabetical order for Figure A/B/C/D pattern", () => {
-      const answers = ["Figure D", "Figure A"];
-      const distractors = ["Figure B", "Figure C"];
+    it("should maintain alphabetical order for Figure a/b/c/d pattern", () => {
+      const answers = ["Figure d", "Figure a"];
+      const distractors = ["Figure b", "Figure c"];
 
       const result = shuffleMultipleChoiceAnswers(answers, distractors);
 
       expect(result.map((r) => r.text)).toEqual([
-        "Figure A",
-        "Figure B",
-        "Figure C",
-        "Figure D",
+        "Figure a",
+        "Figure b",
+        "Figure c",
+        "Figure d",
       ]);
 
       // Verify both correct answers are marked
-      expect(result.find((r) => r.text === "Figure A")?.isCorrect).toBe(true);
-      expect(result.find((r) => r.text === "Figure D")?.isCorrect).toBe(true);
-      expect(result.find((r) => r.text === "Figure B")?.isCorrect).toBe(false);
-      expect(result.find((r) => r.text === "Figure C")?.isCorrect).toBe(false);
+      expect(result.find((r) => r.text === "Figure a")?.isCorrect).toBe(true);
+      expect(result.find((r) => r.text === "Figure d")?.isCorrect).toBe(true);
+      expect(result.find((r) => r.text === "Figure b")?.isCorrect).toBe(false);
+      expect(result.find((r) => r.text === "Figure c")?.isCorrect).toBe(false);
     });
 
     it("should handle standalone letters A/B/C/D", () => {
