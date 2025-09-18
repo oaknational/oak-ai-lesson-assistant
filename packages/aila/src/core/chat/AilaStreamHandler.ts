@@ -1,7 +1,9 @@
+import { RAG } from "@oakai/core/src/rag";
 import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
+import { isTruthy } from "remeda";
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
@@ -13,7 +15,7 @@ import {
 } from "../../lib/agents/compatibility/streamHandling";
 import { interact } from "../../lib/agents/interact";
 import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
-import { fetchRagContent } from "../../utils/rag/fetchRagContent";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../protocol/schema";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -216,41 +218,38 @@ export class AilaStreamHandler {
           return quiz;
         },
         fetchRagData: async ({ document }) => {
+          const chatId = this._chat.id;
+          const userId = this._chat.userId ?? undefined;
+          const prisma = globalPrisma;
           const { subject, keyStage, topic, title } = document;
           invariant(title, "Document title is required to fetch RAG data");
 
           const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
 
           if (!isMaths) {
-            // temporarily use only RAG if subject is not maths -- we only have maths in the new RAG
-            const relevantLessonPlans = await fetchRagContent({
+            const rag = new RAG(prisma, { chatId, userId });
+            const relevantLessonPlans = await rag.fetchLessonPlans({
+              chatId: this._chat.id,
               title,
+              keyStage,
               subject,
               topic: topic ?? undefined,
-              keyStage,
-              id: this._chat.id,
               k:
                 this._chat.aila?.options.numberOfRecordsInRag ??
                 DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-              prisma: globalPrisma,
-              chatId: this._chat.id,
-              userId: this._chat.userId,
             });
 
-            return relevantLessonPlans.map((lessonPlan) => ({
-              ...lessonPlan,
-              starterQuiz: {
-                version: "v2",
-                questions: [],
-                imageAttributions: [],
-              },
-              exitQuiz: {
-                version: "v2",
-                questions: [],
-                imageAttributions: [],
-              },
-            }));
+            return relevantLessonPlans
+              .map(
+                (lessonPlan) =>
+                  // Not confident of the schema in old RAG, so filtering those that fail validation
+                  CompletedLessonPlanSchemaWithoutLength.safeParse(
+                    lessonPlan.content,
+                  ).data,
+              )
+              .filter(isTruthy);
           }
+
           if (this._chat.relevantLessons) {
             const results = await getRagLessonPlansByIds({
               lessonPlanIds: this._chat.relevantLessons.map(
@@ -259,6 +258,7 @@ export class AilaStreamHandler {
             });
             return results;
           }
+
           const lessonPlanResults = await fetchRelevantLessonPlans({
             document,
           });
