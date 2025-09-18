@@ -61,16 +61,17 @@ export async function vectorSearch({
     limit,
   });
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
-  const preparsedResults = await Promise.all(queryResponse.map(preparseResult));
-  const results = preparsedResults
+  const preParsedResults = await Promise.all(queryResponse.map(preparseResult));
+  const results = preParsedResults
     .filter(parseResult({ onError: (e) => parseErrors.push(e) }))
-    .map((r) => ({
-      ...r,
+    .map((result) => ({
+      ...result,
       lessonPlan: {
-        ...r.lessonPlan,
-        keyStage: keyStageFromSearch(r.lessonPlan.keyStage),
+        ...result.lessonPlan,
+        keyStage: keyStageFromSearch(result.lessonPlan.keyStage),
       },
-    }));
+      // Note: for some reason TS isn't narrowing the type all of a sudden so we need to assert
+    })) as RagLessonPlanResult[];
 
   /**
    * @todo Handle parse errors (i.e. record in DB so we can re-ingest!)
