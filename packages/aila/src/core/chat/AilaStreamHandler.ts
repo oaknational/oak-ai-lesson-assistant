@@ -3,7 +3,7 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
-import { isTruthy } from "remeda";
+import { migrateLessonPlan } from "protocol/schemas/versioning/migrateLessonPlan";
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
@@ -15,7 +15,10 @@ import {
 } from "../../lib/agents/compatibility/streamHandling";
 import { interact } from "../../lib/agents/interact";
 import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
-import { CompletedLessonPlanSchemaWithoutLength } from "../../protocol/schema";
+import {
+  type CompletedLessonPlan,
+  CompletedLessonPlanSchemaWithoutLength,
+} from "../../protocol/schema";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -239,15 +242,22 @@ export class AilaStreamHandler {
                 DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
             });
 
-            return relevantLessonPlans
-              .map(
-                (lessonPlan) =>
-                  // Not confident of the schema in old RAG, so filtering those that fail validation
-                  CompletedLessonPlanSchemaWithoutLength.safeParse(
-                    lessonPlan.content,
-                  ).data,
-              )
-              .filter(isTruthy);
+            const migratedLessonPlans: CompletedLessonPlan[] = [];
+
+            for (const lessonPlan of relevantLessonPlans) {
+              try {
+                const result = await migrateLessonPlan({
+                  lessonPlan: lessonPlan.content as Record<string, unknown>,
+                  outputSchema: CompletedLessonPlanSchemaWithoutLength,
+                  persistMigration: null,
+                });
+                migratedLessonPlans.push(result.lessonPlan);
+              } catch (error) {
+                log.error("Failed to migrate lesson plan", { error });
+              }
+            }
+
+            return migratedLessonPlans;
           }
 
           if (this._chat.relevantLessons) {

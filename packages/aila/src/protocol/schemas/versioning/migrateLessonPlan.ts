@@ -2,16 +2,15 @@ import { aiLogger } from "@oakai/logger";
 
 import { type ZodTypeAny, z } from "zod";
 
-import type { PartialLessonPlan } from "../../schema";
-import { LessonPlanSchema, PartialLessonPlanSchema } from "../../schema";
+import { PartialLessonPlanSchemaWithoutLength } from "../../schema";
 import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema } from "../quiz";
 import { convertQuizV1ToV2, isQuizV1 } from "../quiz/conversion/quizV1ToV2";
 
 const log = aiLogger("aila:schema");
 
-export type MigrationResult = {
-  lessonPlan: PartialLessonPlan;
+export type MigrationResult<TSchema extends ZodTypeAny> = {
+  lessonPlan: z.infer<TSchema>;
   wasMigrated: boolean;
 };
 
@@ -22,10 +21,11 @@ export const MigratableQuizSchema = z.union([
 ]);
 
 // Proper input schema for lesson plan migration
-export const LessonPlanMigrationInputSchema = LessonPlanSchema.extend({
-  starterQuiz: MigratableQuizSchema.optional(),
-  exitQuiz: MigratableQuizSchema.optional(),
-});
+export const LessonPlanMigrationInputSchema =
+  PartialLessonPlanSchemaWithoutLength.extend({
+    starterQuiz: MigratableQuizSchema.optional(),
+    exitQuiz: MigratableQuizSchema.optional(),
+  });
 
 export type LessonPlanMigrationInput = z.infer<
   typeof LessonPlanMigrationInputSchema
@@ -83,7 +83,7 @@ export const migrateLessonPlan = async <TSchema extends ZodTypeAny>({
   lessonPlan: originalLessonPlan,
   persistMigration,
   outputSchema,
-}: MigrateLessonPlanArgs<TSchema>): Promise<MigrationResult> => {
+}: MigrateLessonPlanArgs<TSchema>): Promise<MigrationResult<TSchema>> => {
   if (
     originalLessonPlan &&
     typeof originalLessonPlan === "object" &&
