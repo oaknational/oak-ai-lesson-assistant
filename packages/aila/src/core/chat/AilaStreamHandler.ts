@@ -3,7 +3,6 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { getRagLessonPlansByIds } from "@oakai/rag";
 
-import { migrateLessonPlan } from "protocol/schemas/versioning/migrateLessonPlan";
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 
@@ -19,6 +18,7 @@ import {
   type CompletedLessonPlan,
   CompletedLessonPlanSchemaWithoutLength,
 } from "../../protocol/schema";
+import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
