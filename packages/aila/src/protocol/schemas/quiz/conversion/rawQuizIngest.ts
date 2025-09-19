@@ -42,6 +42,14 @@ function getImageAttribution(item: StemImageObject): string | null {
 }
 
 /**
+ * Check if a text string is just a single answer letter (A-D, a-d) with optional period
+ * These should be filtered out when other content (like images) is present
+ */
+function isSingleAnswerLetter(text: string): boolean {
+  return /^[A-Da-d]\.?$/.test(text.trim());
+}
+
+/**
  * Extract markdown content from Oak's content items array, inlining images
  * Returns both the markdown content and image metadata
  */
@@ -53,8 +61,21 @@ function buildMarkdownFromContent(
 } {
   const metadata: ImageMetadata[] = [];
 
-  const markdownParts = contentItems
-    .filter((item): item is StemObject => item !== undefined)
+  const validItems = contentItems.filter(
+    (item): item is StemObject => item !== undefined,
+  );
+
+  const hasImage = validItems.some(isImageItem);
+
+  const markdownParts = validItems
+    .filter((item) => {
+      // Filter out answer letters (A,B,C) when alongside an image
+      if (hasImage && isTextItem(item)) {
+        const text = item.text || "";
+        return !isSingleAnswerLetter(text);
+      }
+      return true; // Keep all other items (images, and text when no images present)
+    })
     .map((item) => {
       if (isTextItem(item)) {
         return item.text || "";

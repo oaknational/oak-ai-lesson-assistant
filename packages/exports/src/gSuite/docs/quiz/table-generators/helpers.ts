@@ -36,3 +36,24 @@ export function calculateCellIndices(
 
   return indices;
 }
+
+/**
+ * Check if text contains an image
+ * Used to detect when multiple choice answers contain images
+ */
+export function hasImage(text: string): boolean {
+  return /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g.test(text);
+}
+
+/**
+ * Check if all answers in a multiple choice question contain images
+ */
+export function hasImageOnlyAnswers(
+  answers: string[],
+  distractors: string[],
+): boolean {
+  const allChoices = [...answers, ...distractors];
+  return (
+    allChoices.length > 0 && allChoices.every((choice) => hasImage(choice))
+  );
+}
