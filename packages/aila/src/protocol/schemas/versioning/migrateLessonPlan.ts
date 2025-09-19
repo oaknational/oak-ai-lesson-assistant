@@ -2,7 +2,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { type ZodTypeAny, z } from "zod";
 
-import type { PartialLessonPlan } from "../../schema";
 import { CompletedLessonPlanSchemaWithoutLength } from "../../schema";
 import type { LatestQuiz } from "../quiz";
 import { QuizV1Schema, QuizV2Schema, QuizV3Schema } from "../quiz";
@@ -11,8 +10,8 @@ import { convertQuizV2ToV3, isQuizV3 } from "../quiz/conversion/quizV2ToV3";
 
 const log = aiLogger("aila:schema");
 
-export type MigrationResult = {
-  lessonPlan: PartialLessonPlan;
+export type MigrationResult<TSchema extends ZodTypeAny> = {
+  lessonPlan: z.infer<TSchema>;
   wasMigrated: boolean;
 };
 
@@ -90,7 +89,7 @@ export const migrateLessonPlan = async <TSchema extends ZodTypeAny>({
   lessonPlan: originalLessonPlan,
   persistMigration,
   outputSchema,
-}: MigrateLessonPlanArgs<TSchema>): Promise<MigrationResult> => {
+}: MigrateLessonPlanArgs<TSchema>): Promise<MigrationResult<TSchema>> => {
   if (
     originalLessonPlan &&
     typeof originalLessonPlan === "object" &&
