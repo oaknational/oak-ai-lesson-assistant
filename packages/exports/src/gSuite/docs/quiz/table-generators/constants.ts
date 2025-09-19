@@ -8,6 +8,7 @@ export const COLUMN_WIDTHS = {
   letter: 21,
   spacer: 10,
   textNarrow: 140,
+  imageColumn: 130, // Fixed width for image columns in 4-column layout
   auto: "AUTO", // Special value for auto-width columns
 } as const;
 
