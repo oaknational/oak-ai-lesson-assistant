@@ -49,7 +49,7 @@ Quiz
 ","value":{"
 version":"
 v
-2
+3
 ","questions":[
 {"
 question":"
@@ -197,7 +197,7 @@ Languages
 Types
  of
  food
-"]}],"imageAttributions":[]
+"]}],"imageMetadata":[]
 }},"status":"
 complete
 "},{"
@@ -1091,7 +1091,7 @@ Quiz
 ","value":{"
 version":"
 v
-2
+3
 ","questions":[
 {"
 question":"
@@ -1264,7 +1264,7 @@ A
  type
  of
  government
-"]}],"imageAttributions":[]
+"]}],"imageMetadata":[]
 }},"status":"
 complete
 "}],"sectionsEdited":["

@@ -23,12 +23,32 @@ export interface ShuffledChoice {
 }
 
 /**
+ * Detect if all choices follow the same pattern with only A/B/C/D letters differing
+ */
+function detectLetterAnswerPattern(choices: string[]): boolean {
+  if (choices.length < 2) return false;
+
+  // Strip all standalone A-D letters and compare the remaining text
+  const strippedChoices = choices.map((choice) =>
+    choice.replace(/\b[a-dA-D]\b/g, ""),
+  );
+  const baseChoice = strippedChoices[0];
+
+  return strippedChoices.every((choice) => choice === baseChoice);
+}
+
+/**
  * Shuffle multiple choice answers and distractors deterministically
  */
 export function shuffleMultipleChoiceAnswers(
   answers: string[],
   distractors: string[],
 ): ShuffledChoice[] {
+  const allChoicesText = [...answers, ...distractors];
+
+  // Check if all choices follow a letter answer pattern (Line A, Line B, etc.)
+  const hasLetterAnswerPattern = detectLetterAnswerPattern(allChoicesText);
+
   const allChoices = [
     ...answers.map((answer) => ({
       text: answer,
@@ -42,6 +62,17 @@ export function shuffleMultipleChoiceAnswers(
     })),
   ];
 
+  if (hasLetterAnswerPattern) {
+    // Sort alphabetically when letter answer pattern is detected
+    return allChoices
+      .sort((a, b) => a.text.localeCompare(b.text))
+      .map((choice) => ({
+        text: choice.text,
+        isCorrect: choice.isCorrect,
+      }));
+  }
+
+  // Default hash-based deterministic shuffling
   return allChoices
     .sort((a, b) => a.sortKey - b.sortKey)
     .map((choice) => ({

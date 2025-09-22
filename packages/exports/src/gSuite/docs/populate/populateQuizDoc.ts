@@ -6,10 +6,7 @@ import {
   LATEX_VISUAL_SCALE_QUIZ,
   QUIZ_IMAGE_MAX_WIDTH,
 } from "../../../images/constants";
-import type {
-  ImageAttribution,
-  QuizQuestion,
-} from "../../../schema/input.schema";
+import type { ImageMetadata, QuizQuestion } from "../../../schema/input.schema";
 import type { Result } from "../../../types";
 import { addFooterAttribution } from "../quiz/footerAttribution";
 import { generateAllQuizElements } from "../quiz/table-generators";
@@ -23,7 +20,7 @@ interface PopulateDocV2Data {
   lesson_title: string;
   quiz_type: string;
   questions: QuizQuestion[];
-  imageAttributions: ImageAttribution[];
+  imageAttributions: ImageMetadata[];
 }
 
 /**

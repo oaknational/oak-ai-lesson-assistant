@@ -1,4 +1,4 @@
-import type { QuizV2Question } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
 
 import {
   extractImageUrls,
@@ -45,24 +45,32 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/nature-landscape.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://ciec.org.uk/images/classroom-activity.jpg",
         attribution: "CIEC",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl:
           "https://cdn.pixabay.com/photo/2023/02/science-experiment.jpg",
         attribution: "Pixabay", // Duplicate attribution
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://shutterstock.com/image-id-123456/lab-equipment.jpg",
         attribution: "Shutterstock / Jane Doe",
+        width: 800,
+        height: 600,
       },
     ];
 
     it("should return attributions for images in question text", () => {
-      const question: QuizV2Question = {
+      const question: LatestQuizQuestion = {
         questionType: "multiple-choice",
         question:
           "What is shown? ![Test](https://cdn.pixabay.com/photo/2023/01/nature-landscape.jpg)",
@@ -79,7 +87,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return attributions for images in answer choices", () => {
-      const question: QuizV2Question = {
+      const question: LatestQuizQuestion = {
         questionType: "multiple-choice",
         question: "Choose the correct image:",
         answers: [
@@ -101,7 +109,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return unique attributions when multiple images have same attribution", () => {
-      const question: QuizV2Question = {
+      const question: LatestQuizQuestion = {
         questionType: "multiple-choice",
         question:
           "Compare: ![Image 1](https://cdn.pixabay.com/photo/2023/01/nature-landscape.jpg) vs ![Image 3](https://cdn.pixabay.com/photo/2023/02/science-experiment.jpg)",
@@ -118,7 +126,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return empty array when no images match attributions", () => {
-      const question: QuizV2Question = {
+      const question: LatestQuizQuestion = {
         questionType: "multiple-choice",
         question: "What is shown? ![Test](https://different.com/image.png)",
         answers: ["Answer 1"],
@@ -134,7 +142,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return empty array when quiz attributions is empty", () => {
-      const question: QuizV2Question = {
+      const question: LatestQuizQuestion = {
         questionType: "multiple-choice",
         question:
           "What is shown? ![Test](https://cdn.pixabay.com/photo/2023/01/nature-landscape.jpg)",
@@ -153,39 +161,55 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/classroom.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://ciec.org.uk/images/science-lesson.jpg",
         attribution: "CIEC",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/02/students.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://oaknationalacademy.com/images/lesson-materials.png",
         attribution: "Oak National Academy",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/03/experiment.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://shutterstock.com/image-12345/chemistry-lab.png",
         attribution: "Shutterstock / John Smith",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://uyseg.org/resources/education-photo.jpg",
         attribution: "UYSEG",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://images.pexels.com/photos/2023/school-activity.png",
         attribution: "Pexels",
+        width: 800,
+        height: 600,
       },
     ];
 
     it("should group questions by attribution", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question:
@@ -229,7 +253,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should handle questions with multiple attributions as separate tallies", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question:
@@ -266,7 +290,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return empty object when no questions have images", () => {
-      const questionsWithoutImages: QuizV2Question[] = [
+      const questionsWithoutImages: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question: "Question without image",
@@ -284,7 +308,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should skip questions with images that have no attribution", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question:
@@ -329,7 +353,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return empty object when attributions array is empty", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question:
@@ -350,23 +374,31 @@ describe("imageAttributionUtils", () => {
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/01/classroom.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://ciec.org.uk/images/science-lesson.jpg",
         attribution: "CIEC",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://cdn.pixabay.com/photo/2023/02/students.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
       {
         imageUrl: "https://oaknationalacademy.com/images/lesson-materials.png",
         attribution: "Oak National Academy",
+        width: 800,
+        height: 600,
       },
     ];
 
     it("should return formatted attributions with question ranges", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question:
@@ -411,7 +443,7 @@ describe("imageAttributionUtils", () => {
     });
 
     it("should return empty array when no attributions exist", () => {
-      const mockQuestions: QuizV2Question[] = [
+      const mockQuestions: LatestQuizQuestion[] = [
         {
           questionType: "multiple-choice",
           question: "Question without images",

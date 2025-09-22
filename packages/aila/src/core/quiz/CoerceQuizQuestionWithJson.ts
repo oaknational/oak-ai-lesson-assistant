@@ -2,13 +2,13 @@ import type {
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import { convertHasuraQuizToV2 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import { convertHasuraQuizToV3 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type { QuizQuestionWithRawJson } from "./interfaces";
 
 export function coerceQuizQuestionWithJson(
   quizQuestion: QuizQuestionWithRawJson,
 ): LatestQuiz {
-  return convertHasuraQuizToV2(quizQuestion.rawQuiz);
+  return convertHasuraQuizToV3(quizQuestion.rawQuiz);
 }
 
 export function coerceQuizQuestionWithJsonArray(
@@ -20,16 +20,16 @@ export function coerceQuizQuestionWithJsonArray(
 
   // Merge all quiz objects into a single one
   const mergedQuestions: LatestQuizQuestion[] = [];
-  const mergedImageAttributions: LatestQuiz["imageAttributions"] = [];
+  const mergedImageMetadata: LatestQuiz["imageMetadata"] = [];
 
   for (const quiz of quizzes) {
     mergedQuestions.push(...quiz.questions);
-    mergedImageAttributions.push(...quiz.imageAttributions);
+    mergedImageMetadata.push(...quiz.imageMetadata);
   }
 
   return {
-    version: "v2",
+    version: "v3",
     questions: mergedQuestions,
-    imageAttributions: mergedImageAttributions,
+    imageMetadata: mergedImageMetadata,
   };
 }

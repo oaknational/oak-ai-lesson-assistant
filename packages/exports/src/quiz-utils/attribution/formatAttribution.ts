@@ -1,18 +1,24 @@
+import type { ImageMetadata } from "../../schema/input.schema";
 import { extractImagesFromQuestion } from "./extractImages";
 import type {
   AttributionSegment,
   FormattedAttribution,
-  ImageAttribution,
   ImageWithAttribution,
   QuizQuestion,
 } from "./types";
+
+function hasAttribution(
+  metadata: ImageMetadata,
+): metadata is ImageMetadata & { attribution: string } {
+  return metadata.attribution !== null;
+}
 
 /**
  * Groups quiz questions with their image attributions
  */
 export function mapQuestionImages(
   questions: QuizQuestion[],
-  imageAttributions: ImageAttribution[],
+  imageMetadata: ImageMetadata[],
 ): ImageWithAttribution[] {
   const result: ImageWithAttribution[] = [];
 
@@ -21,17 +27,17 @@ export function mapQuestionImages(
     const extractedImages = extractImagesFromQuestion(question, questionNumber);
 
     extractedImages.forEach((image) => {
-      // Find attribution for this image URL
-      const attribution = imageAttributions.find(
-        (attr) => attr.imageUrl === image.url,
-      );
+      // Find metadata for this image URL with non-null attribution
+      const metadata = imageMetadata
+        .filter(hasAttribution)
+        .find((meta) => meta.imageUrl === image.url);
 
-      if (attribution) {
+      if (metadata) {
         result.push({
           questionNumber,
           imageIndex: image.index,
           imageUrl: image.url,
-          attribution: attribution.attribution,
+          attribution: metadata.attribution,
           altText: image.altText,
         });
       }
@@ -118,11 +124,8 @@ export function formatAttributionText(
  */
 export function formatQuizAttributions(
   questions: QuizQuestion[],
-  imageAttributions: ImageAttribution[],
+  imageMetadata: ImageMetadata[],
 ): FormattedAttribution {
-  const imagesWithAttributions = mapQuestionImages(
-    questions,
-    imageAttributions,
-  );
+  const imagesWithAttributions = mapQuestionImages(questions, imageMetadata);
   return formatAttributionText(imagesWithAttributions);
 }

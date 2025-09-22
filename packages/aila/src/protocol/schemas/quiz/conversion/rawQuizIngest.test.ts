@@ -3,29 +3,29 @@ import { describe, expect, it } from "@jest/globals";
 import { rawQuizFixture } from "../fixtures/rawQuizFixture";
 import type { QuizV2QuestionMultipleChoice } from "../quizV2";
 import type { HasuraQuiz } from "../rawQuiz";
-import { convertHasuraQuizToV2 } from "./rawQuizIngest";
+import { convertHasuraQuizToV3 } from "./rawQuizIngest";
 
-describe("convertHasuraQuizToV2", () => {
-  it("should convert Hasura quiz to V2 format", () => {
-    const result = convertHasuraQuizToV2(rawQuizFixture);
+describe("convertHasuraQuizToV3", () => {
+  it("should convert Hasura quiz to V3 format", () => {
+    const result = convertHasuraQuizToV3(rawQuizFixture);
     expect(result).toMatchSnapshot();
   });
 
   it("should handle empty quiz", () => {
-    const result = convertHasuraQuizToV2([]);
+    const result = convertHasuraQuizToV3([]);
     expect(result).toEqual({
-      version: "v2",
+      version: "v3",
       questions: [],
-      imageAttributions: [],
+      imageMetadata: [],
     });
   });
 
   it("should handle null quiz", () => {
-    const result = convertHasuraQuizToV2(null);
+    const result = convertHasuraQuizToV3(null);
     expect(result).toEqual({
-      version: "v2",
+      version: "v3",
       questions: [],
-      imageAttributions: [],
+      imageMetadata: [],
     });
   });
 
@@ -42,7 +42,7 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(explanatoryOnlyQuiz);
+    const result = convertHasuraQuizToV3(explanatoryOnlyQuiz);
     expect(result.questions).toHaveLength(0);
   });
 
@@ -56,6 +56,8 @@ describe("convertHasuraQuizToV2", () => {
           {
             image_object: {
               secure_url: "https://example.com/image1.jpg",
+              width: 800,
+              height: 600,
               metadata: {
                 attribution: "Photo by Photographer",
               },
@@ -76,14 +78,16 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV3(quizWithImages);
     expect(result.questions[0]?.question).toContain(
       "![](https://example.com/image1.jpg)",
     );
-    expect(result.imageAttributions).toEqual([
+    expect(result.imageMetadata).toEqual([
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Photo by Photographer",
+        width: 800,
+        height: 600,
       },
     ]);
   });
@@ -99,6 +103,8 @@ describe("convertHasuraQuizToV2", () => {
           {
             image_object: {
               secure_url: "https://example.com/image.jpg",
+              width: 800,
+              height: 600,
               metadata: {},
             },
             type: "image",
@@ -118,7 +124,7 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV3(quizWithImages);
     expect(result.questions[0]?.question).toBe(
       "Look at ![](https://example.com/image.jpg) What is it?",
     );
@@ -134,6 +140,8 @@ describe("convertHasuraQuizToV2", () => {
           {
             image_object: {
               secure_url: "https://example.com/dog.jpg",
+              width: 800,
+              height: 600,
               metadata: {},
               context: {
                 custom: {
@@ -157,7 +165,7 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithAltText);
+    const result = convertHasuraQuizToV3(quizWithAltText);
     expect(result.questions[0]?.question).toBe(
       "![A golden retriever sitting in a park](https://example.com/dog.jpg)",
     );
@@ -176,7 +184,7 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ] as HasuraQuiz;
-    expect(() => convertHasuraQuizToV2(unknownTypeQuiz)).toThrow(
+    expect(() => convertHasuraQuizToV3(unknownTypeQuiz)).toThrow(
       "Unknown question type: unknown-type",
     );
   });

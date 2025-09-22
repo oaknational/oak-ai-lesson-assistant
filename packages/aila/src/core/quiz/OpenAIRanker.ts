@@ -11,6 +11,7 @@ import type {
   QuizPath,
   QuizV1Question,
 } from "../../protocol/schema";
+import { constrainImageUrl } from "../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
 import type { BaseType } from "./ChoiceModels";
 import {
   QuestionInspectionSystemPrompt,
@@ -83,10 +84,16 @@ function processStringWithImages(text: string): ChatContent[] {
       if (part.startsWith("![")) {
         // Extract URL from markdown image: ![alt](url)
         // Use bounded quantifier to prevent ReDoS vulnerability
-        const imageUrl = part.match(/\(([^)]{0,2000})\)/)?.[1];
-        return imageUrl
-          ? { type: "image_url" as const, image_url: { url: imageUrl } }
-          : null;
+        const extractedImageUrl = part.match(/\(([^)]{0,2000})\)/)?.[1];
+        if (!extractedImageUrl) {
+          return null;
+        }
+
+        const imageUrl = constrainImageUrl(extractedImageUrl);
+        return {
+          type: "image_url" as const,
+          image_url: { url: imageUrl },
+        };
       } else if (part.trim()) {
         return { type: "text" as const, text: part.trim() };
       }
