@@ -243,7 +243,7 @@ describe("convertHasuraQuizToV3", () => {
       "![](https://example.com/image/upload/answer1.jpg)",
     );
     expect(question.distractors[0]).toBe(
-      "![](https://example.com/answer2.jpg)",
+      "![](https://example.com/image/upload/answer2.jpg)",
     );
   });
 
