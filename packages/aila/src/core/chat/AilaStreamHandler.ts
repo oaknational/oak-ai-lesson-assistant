@@ -5,6 +5,7 @@ import { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../constants";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
@@ -256,6 +257,12 @@ export class AilaStreamHandler {
                 log.error("Failed to migrate lesson plan", { error });
               }
             }
+
+            this._chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
+              lessonPlanId: lesson.id,
+              title: z.object({ title: z.string() }).parse(lesson.content)
+                .title,
+            }));
 
             return migratedLessonPlans;
           }
