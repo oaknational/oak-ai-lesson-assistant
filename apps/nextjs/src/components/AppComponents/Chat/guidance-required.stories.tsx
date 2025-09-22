@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 const mockModeration: PersistedModerationBase = {
   id: "moderated",
-  categories: ["l/strong-language"],
+  categories: ["l2"],
 };
 
 export const Default: Story = {
