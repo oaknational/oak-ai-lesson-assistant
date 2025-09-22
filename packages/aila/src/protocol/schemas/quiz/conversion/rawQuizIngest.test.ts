@@ -231,7 +231,7 @@ describe("convertHasuraQuizToV3", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithLetterAndImage);
+    const result = convertHasuraQuizToV3(quizWithLetterAndImage);
     const question = result.questions[0] as QuizV2QuestionMultipleChoice;
 
     // Single letters should be filtered out, leaving only images
@@ -261,7 +261,7 @@ describe("convertHasuraQuizToV3", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithOnlyLetter);
+    const result = convertHasuraQuizToV3(quizWithOnlyLetter);
     const question = result.questions[0] as QuizV2QuestionMultipleChoice;
 
     // Single letter should be kept when it's the only content
@@ -297,7 +297,7 @@ describe("convertHasuraQuizToV3", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithMeaningfulText);
+    const result = convertHasuraQuizToV3(quizWithMeaningfulText);
     const question = result.questions[0] as QuizV2QuestionMultipleChoice;
 
     // Meaningful text should be kept alongside images
@@ -335,7 +335,7 @@ describe("convertHasuraQuizToV3", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithNumberAndImage);
+    const result = convertHasuraQuizToV3(quizWithNumberAndImage);
     const question = result.questions[0] as QuizV2QuestionMultipleChoice;
 
     // Numbers should be kept (not filtered as single answer labels)
@@ -384,7 +384,7 @@ describe("convertHasuraQuizToV3", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithVariousLetters);
+    const result = convertHasuraQuizToV3(quizWithVariousLetters);
     const question = result.questions[0] as QuizV2QuestionMultipleChoice;
 
     // All letter patterns should be filtered out
