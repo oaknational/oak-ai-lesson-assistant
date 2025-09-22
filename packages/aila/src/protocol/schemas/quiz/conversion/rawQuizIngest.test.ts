@@ -204,6 +204,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/answer1.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
@@ -217,6 +219,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/answer2.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
@@ -285,6 +289,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/image.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
@@ -323,6 +329,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/image.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
@@ -361,6 +369,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/image1.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
@@ -374,6 +384,8 @@ describe("convertHasuraQuizToV3", () => {
                 {
                   image_object: {
                     secure_url: "https://example.com/image/upload/image2.jpg",
+                    height: 600,
+                    width: 800,
                     metadata: {},
                   },
                   type: "image",
