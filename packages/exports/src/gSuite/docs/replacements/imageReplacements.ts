@@ -4,6 +4,7 @@ import type { docs_v1 } from "@googleapis/docs";
 
 import { calculateLatexImageDimensions } from "../../../images/constants";
 import { GCS_LATEX_BUCKET_NAME } from "../../../images/gcsCredentials";
+import { ImageContext } from "./findMarkdownImages";
 
 const log = aiLogger("exports");
 
@@ -92,13 +93,43 @@ const insertStemImage = (
   ];
 };
 
+const insertTableImage = (
+  image: { url: string; altText: string; startIndex: number },
+  startIndex: number,
+): docs_v1.Schema$Request => {
+  // For table images, use constrained dimensions that fit well in table cells
+  return {
+    insertInlineImage: {
+      uri: image.url,
+      location: {
+        index: startIndex,
+      },
+      objectSize: {
+        height: {
+          magnitude: 90,
+          unit: "PT",
+        },
+        width: {
+          magnitude: 120, // Fit within ~130pt column width
+          unit: "PT",
+        },
+      },
+    },
+  };
+};
+
 interface ImageOptions {
   maxWidth: number;
   maxHeight: number;
 }
 
 export function imageReplacements(
-  markdownImages: { url: string; altText: string; startIndex: number }[],
+  markdownImages: {
+    url: string;
+    altText: string;
+    startIndex: number;
+    context: ImageContext;
+  }[],
   imageOptions: ImageOptions,
 ): { requests: docs_v1.Schema$Request[] } {
   if (markdownImages.length === 0) {
@@ -134,23 +165,17 @@ export function imageReplacements(
       },
     });
 
-    const isLatexImage = image.url.includes(GCS_LATEX_BUCKET_NAME);
-
-    if (isLatexImage) {
-      requests.push(
-        insertLatexImage(
-          image,
-          startIndex, // Insert at the same startIndex where the Markdown was removed
-        ),
-      );
-    } else {
-      requests.push(
-        ...insertStemImage(
-          image,
-          startIndex, // Insert at the same startIndex where the Markdown was removed
-          imageOptions,
-        ),
-      );
+    // Always use LaTeX dimensions for LaTeX images, regardless of context
+    if (image.url.includes(GCS_LATEX_BUCKET_NAME)) {
+      requests.push(insertLatexImage(image, startIndex));
+    }
+    // Use table dimensions for quiz image tables
+    else if (image.context === ImageContext.QUIZ_IMAGE_TABLE) {
+      requests.push(insertTableImage(image, startIndex));
+    }
+    // Use stem dimensions for everything else (paragraphs, other tables)
+    else {
+      requests.push(...insertStemImage(image, startIndex, imageOptions));
     }
   });
 
