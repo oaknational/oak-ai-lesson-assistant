@@ -39,7 +39,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       log.info("QUIZ BELOW");
       log.info(JSON.stringify(quiz));
       expect(quiz).toBeDefined();
-      expect(quiz.version).toBe("v2");
+      expect(quiz.version).toBe("v3");
       expect(Array.isArray(quiz.questions)).toBe(true);
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]).toHaveProperty("question");
@@ -53,7 +53,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quiz).toBeDefined();
-      expect(quiz.version).toBe("v2");
+      expect(quiz.version).toBe("v3");
       expect(Array.isArray(quiz.questions)).toBe(true);
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]).toHaveProperty("question");

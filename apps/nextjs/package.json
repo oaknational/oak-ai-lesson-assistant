@@ -57,7 +57,7 @@
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
-    "@oaknational/oak-components": "^1.142.0",
+    "@oaknational/oak-components": "^1.142.2",
     "@oaknational/oak-consent-client": "^2.1.0",
     "@oaknational/oak-curriculum-schema": "^1.59.1",
     "@portabletext/react": "^3.1.0",

@@ -9,7 +9,7 @@ import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
 import { LLMResponseJsonSchema } from "../../../protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../protocol/schema";
 import { LessonPlanJsonSchema } from "../../../protocol/schema";
 import { compressedLessonPlanForRag } from "../../../utils/lessonPlan/compressedLessonPlanForRag";
 import { fetchLessonPlan } from "../../../utils/lessonPlan/fetchLessonPlan";
@@ -41,7 +41,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     );
   }
 
-  private async fetchBaseLessonPlan(): Promise<LooseLessonPlan | undefined> {
+  private async fetchBaseLessonPlan(): Promise<PartialLessonPlan | undefined> {
     const basedOnId = this._aila.document?.content?.basedOn?.id;
     if (!basedOnId) {
       return;
@@ -80,6 +80,11 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
       };
     }
 
+    /**
+     * In the 'agentic' system, RAG is handled directly, i.e. this class is not used.
+     * If we want to test the new RAG schema with the 'mega prompt' system, we can
+     * enable feature flag 'rag-schema-2024-12' for certain users.
+     */
     const newRagEnabled = await posthogAiBetaServerClient.isFeatureEnabled(
       "rag-schema-2024-12",
       userId,
@@ -145,7 +150,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
   private systemPrompt(
     relevantLessonPlans: string,
-    baseLessonPlan: LooseLessonPlan | undefined,
+    baseLessonPlan: PartialLessonPlan | undefined,
   ): string {
     const lessonPlan = this._aila?.document?.content ?? {};
     const args: TemplateProps = {

@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type {
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
   QuizV1Question,
 } from "../../../protocol/schema";
@@ -29,7 +29,7 @@ class TestBasedOnRagReranker extends BasedOnRagAilaQuizReranker<
 describe("BasedOnRagAilaQuizReranker", () => {
   let reranker: TestBasedOnRagReranker;
   let mockQuizzes: QuizQuestionWithRawJson[][];
-  let mockLessonPlan: LooseLessonPlan;
+  let mockLessonPlan: PartialLessonPlan;
   let mockQuizType: QuizPath;
 
   beforeEach(() => {

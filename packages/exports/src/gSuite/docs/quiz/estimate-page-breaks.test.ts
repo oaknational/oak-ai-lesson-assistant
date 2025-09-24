@@ -1,7 +1,7 @@
 /**
  * Unit tests for page break estimation utility
  */
-import type { QuizV2Question } from "../../../schema/input.schema";
+import type { QuizQuestion } from "../../../schema/input.schema";
 import {
   LINE_COUNT_THRESHOLD,
   countQuizLines,
@@ -10,7 +10,7 @@ import {
 
 describe("countQuizLines", () => {
   it("should count single multiple choice question correctly", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is 2 + 2?",
@@ -25,7 +25,7 @@ describe("countQuizLines", () => {
   });
 
   it("should count short-answer question correctly", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is the capital of France?",
@@ -39,7 +39,7 @@ describe("countQuizLines", () => {
   });
 
   it("should count match question correctly", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "match",
         question: "Match the countries with their capitals:",
@@ -57,7 +57,7 @@ describe("countQuizLines", () => {
   });
 
   it("should count order question correctly", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "order",
         question: "Put these events in chronological order:",
@@ -76,7 +76,7 @@ describe("countQuizLines", () => {
   });
 
   it("should add spacing between multiple questions", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is 2 + 2?",
@@ -97,7 +97,7 @@ describe("countQuizLines", () => {
   });
 
   it("should handle mixed question types", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is 2 + 2?",
@@ -134,7 +134,7 @@ describe("countQuizLines", () => {
   });
 
   it("should not add spacing after last question", () => {
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "Single question",
@@ -151,7 +151,7 @@ describe("countQuizLines", () => {
 describe("getFooterStrategy", () => {
   it('should return "both-footers" for content under threshold', () => {
     // Create content with exactly threshold lines
-    const questions: QuizV2Question[] = Array.from(
+    const questions: QuizQuestion[] = Array.from(
       { length: LINE_COUNT_THRESHOLD },
       (_, i) => ({
         questionType: "short-answer",
@@ -163,7 +163,7 @@ describe("getFooterStrategy", () => {
 
     // This will be threshold * 2 - 1 (no spacing after last question)
     // which should be over threshold, so let's use fewer questions
-    const shortQuestions: QuizV2Question[] = [
+    const shortQuestions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "Short quiz",
@@ -178,7 +178,7 @@ describe("getFooterStrategy", () => {
 
   it('should return "global-only" for content over threshold', () => {
     // Create content that exceeds threshold
-    const questions: QuizV2Question[] = Array.from({ length: 15 }, (_, i) => ({
+    const questions: QuizQuestion[] = Array.from({ length: 15 }, (_, i) => ({
       questionType: "multiple-choice",
       question: `Question ${i + 1}`,
       answers: ["A", "B", "C"],
@@ -195,7 +195,7 @@ describe("getFooterStrategy", () => {
 
     // Use short-answer questions (2 lines each) to get precise control
     const questionsNeeded = Math.ceil(lineCount / 2);
-    const questions: QuizV2Question[] = Array.from(
+    const questions: QuizQuestion[] = Array.from(
       { length: questionsNeeded },
       (_, i) => ({
         questionType: "short-answer",

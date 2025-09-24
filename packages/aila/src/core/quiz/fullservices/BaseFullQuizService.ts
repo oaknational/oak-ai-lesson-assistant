@@ -5,9 +5,9 @@ import type { z } from "zod";
 
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  LatestQuiz,
+  PartialLessonPlan,
   QuizV1Question,
-  QuizV2,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
@@ -31,10 +31,10 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
   public async createBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
     override: boolean = false,
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     if (override) {
       return this.createBestQuizOverride(
         quizType,
@@ -51,9 +51,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
 
   private async defaultCreateBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
+  ): Promise<LatestQuiz> {
     const quizPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
         return quizGenerator.generateMathsStarterQuizPatch(
@@ -87,9 +87,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
       return {
-        version: "v2",
+        version: "v3",
         questions: [],
-        imageAttributions: [],
+        imageMetadata: [],
       };
     }
     const parsedRankings = quizRankings.map((ranking) =>
@@ -102,10 +102,10 @@ export abstract class BaseFullQuizService implements FullQuizService {
   // Creates a best quiz in a hierarchy of quiz types.
   private async createBestQuizOverride(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-  ): Promise<QuizV2> {
-    // If basedOnRag Quiz generator present: Generate a quiz, check it isnt empty, then return that.
+  ): Promise<LatestQuiz> {
+    // If basedOnRag Quiz generator present: Generate a quiz, check it isn't empty, then return that.
     // In the absence of a basedOnRag Quiz generator, generate a quiz using the rest of default quiz generators and return a schema.
 
     const basedOnRagQuizGenerator = this.quizGenerators.find(
@@ -130,7 +130,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
       }
     }
 
-    // If we dont have a based on rag quiz generator, or it didnt produce a quiz, generate a quiz using the rest of the quiz generators.
+    // If we don't have a based on rag quiz generator, or it didn't produce a quiz, generate a quiz using the rest of the quiz generators.
     const quizGenerators = this.quizGenerators.filter(
       (cls) =>
         !(cls instanceof BasedOnRagQuizGenerator) ||
@@ -171,9 +171,9 @@ export abstract class BaseFullQuizService implements FullQuizService {
         `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
       );
       return {
-        version: "v2",
+        version: "v3",
         questions: [],
-        imageAttributions: [],
+        imageMetadata: [],
       };
     }
     const ratingSchema = this.quizReranker.ratingSchema;

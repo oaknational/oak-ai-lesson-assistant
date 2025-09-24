@@ -64,7 +64,7 @@ importers:
         version: 15.2.2
       next:
         specifier: 14.2.28
-        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       postcss:
         specifier: ^8.4.32
         version: 8.4.35
@@ -144,8 +144,8 @@ importers:
         specifier: '*'
         version: link:../../packages/prettier-config
       '@oaknational/oak-components':
-        specifier: ^1.142.0
-        version: 1.142.0(next-cloudinary@6.16.0)(next@14.2.28)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        specifier: ^1.142.2
+        version: 1.142.2(next-cloudinary@6.16.0)(next@14.2.28)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -283,7 +283,7 @@ importers:
         version: 2.0.0
       next:
         specifier: 14.2.28
-        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       object-hash:
         specifier: ^3.0.0
         version: 3.0.0
@@ -703,7 +703,7 @@ importers:
         version: 1.41.1
       next:
         specifier: 14.2.28
-        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       remeda:
         specifier: ^1.29.0
         version: 1.29.0
@@ -993,6 +993,9 @@ importers:
       '@types/mathjax':
         specifier: ^0.0.40
         version: 0.0.40
+      dedent:
+        specifier: ^1.5.3
+        version: 1.5.3
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
@@ -6630,8 +6633,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.142.0(next-cloudinary@6.16.0)(next@14.2.28)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-31z09FWt1H/HtumOUGUusmruS0w2PH/Hxm3lgvBI6x4CVypqhL+XSVwrjSKyoXFsbgcuH8p4tYlCroJ8XPDulw==}
+  /@oaknational/oak-components@1.142.2(next-cloudinary@6.16.0)(next@14.2.28)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-/OVSoxjuAe64fO2TNZm0dhWj92wnfnGV9eDetVpRPWyjCLG/ST93vpk06h0Ppf8SzTLbCYJMyz9sQv+5ftW5Ng==}
     peerDependencies:
       next: '>=14.2.12'
       next-cloudinary: '>=6.16.0'
@@ -6639,7 +6642,7 @@ packages:
       react-dom: '>=18.2.0'
       styled-components: '>=5.3.11'
     dependencies:
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       next-cloudinary: 6.16.0(next@14.2.28)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -6826,11 +6829,11 @@ packages:
   /@opentelemetry/api@1.8.0:
     resolution: {integrity: sha512-I/s6F7yKUDdtMsoBWXJe8Qz40Tui5vsuKCWJEWVL+5q9sSWRzzx6v2KeNsOBEwd94j0eWkpWCH4yB6rZg9Mf0w==}
     engines: {node: '>=8.0.0'}
-    dev: false
 
   /@opentelemetry/api@1.9.0:
     resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
     engines: {node: '>=8.0.0'}
+    dev: false
 
   /@opentelemetry/context-async-hooks@1.30.1(@opentelemetry/api@1.9.0):
     resolution: {integrity: sha512-s5vvxXPVdjqS3kTLKMeBMvop9hbWkwzBpu+mUO2M7sZtlkyDJGwFe33wRKnbaYDo8ExRVBIIdwIGrqpxHuKttA==}
@@ -9948,7 +9951,7 @@ packages:
       '@sentry/bundler-plugin-core': 2.22.7
       unplugin: 1.0.1
       uuid: 9.0.1
-      webpack: 5.98.0(esbuild@0.21.5)
+      webpack: 5.98.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -10370,7 +10373,7 @@ packages:
       find-up: 5.0.0
       image-size: 1.0.2
       loader-utils: 3.3.1
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       node-polyfill-webpack-plugin: 2.0.1(webpack@5.98.0)
       pnp-webpack-plugin: 1.7.0(typescript@5.8.2)
       postcss: 8.4.38
@@ -10709,7 +10712,7 @@ packages:
       '@trpc/client': 10.45.2(@trpc/server@10.45.2)
       '@trpc/react-query': 10.45.2(@tanstack/react-query@4.19.1)(@trpc/client@10.45.2)(@trpc/server@10.45.2)(react-dom@18.2.0)(react@18.2.0)
       '@trpc/server': 10.45.2
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
@@ -16733,7 +16736,7 @@ packages:
     peerDependencies:
       next: '>=13.2.0 <15'
     dependencies:
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /gensequence@7.0.0:
@@ -19535,7 +19538,7 @@ packages:
       pg: ^8.11.0
       pg-copy-streams: ^6.0.5
       pickleparser: ^0.2.1
-      playwright: ^1.32.1
+      playwright: 1.51.1
       portkey-ai: ^0.1.11
       puppeteer: ^19.7.2
       redis: ^4.6.4
@@ -21179,9 +21182,52 @@ packages:
       '@cloudinary-util/types': 1.5.10
       '@cloudinary-util/url-loader': 5.10.4
       '@cloudinary-util/util': 4.0.0
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
+
+  /next@14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-QLEIP/kYXynIxtcKB6vNjtWLVs3Y4Sb+EClTC/CSVzdLD1gIuItccpu/n1lhmduffI32iPGEK2cLLxxt28qgYA==}
+    engines: {node: '>=18.17.0'}
+    hasBin: true
+    peerDependencies:
+      '@opentelemetry/api': ^1.1.0
+      '@playwright/test': ^1.41.2
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      sass: ^1.3.0
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@playwright/test':
+        optional: true
+      sass:
+        optional: true
+    dependencies:
+      '@next/env': 14.2.28
+      '@opentelemetry/api': 1.8.0
+      '@playwright/test': 1.51.1
+      '@swc/helpers': 0.5.5
+      busboy: 1.6.0
+      caniuse-lite: 1.0.30001699
+      graceful-fs: 4.2.11
+      postcss: 8.4.31
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      styled-jsx: 5.1.1(@babel/core@7.26.9)(react@18.2.0)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 14.2.28
+      '@next/swc-darwin-x64': 14.2.28
+      '@next/swc-linux-arm64-gnu': 14.2.28
+      '@next/swc-linux-arm64-musl': 14.2.28
+      '@next/swc-linux-x64-gnu': 14.2.28
+      '@next/swc-linux-x64-musl': 14.2.28
+      '@next/swc-win32-arm64-msvc': 14.2.28
+      '@next/swc-win32-ia32-msvc': 14.2.28
+      '@next/swc-win32-x64-msvc': 14.2.28
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
 
   /next@14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-QLEIP/kYXynIxtcKB6vNjtWLVs3Y4Sb+EClTC/CSVzdLD1gIuItccpu/n1lhmduffI32iPGEK2cLLxxt28qgYA==}
@@ -21225,6 +21271,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+    dev: false
 
   /no-case@2.3.2:
     resolution: {integrity: sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==}
@@ -23352,7 +23399,7 @@ packages:
       estree-walker: 3.0.3
       kleur: 4.1.5
       mri: 1.2.0
-      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.28(@babel/core@7.26.9)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@18.2.0)(react@18.2.0)
       playwright: 1.51.1
       preact: 10.25.1
       react: 18.2.0
@@ -25485,6 +25532,31 @@ packages:
       serialize-javascript: 6.0.2
       terser: 5.39.0
       webpack: 5.98.0(esbuild@0.21.5)
+    dev: true
+
+  /terser-webpack-plugin@5.3.14(webpack@5.98.0):
+    resolution: {integrity: sha512-vkZjpUjb6OMS7dhV+tILUW6BhpDR7P2L/aQSAv+Uwk+m8KATX9EccViHTJR2qDtACKPIYndLGCyl3FMo+r2LMw==}
+    engines: {node: '>= 10.13.0'}
+    peerDependencies:
+      '@swc/core': '*'
+      esbuild: '*'
+      uglify-js: '*'
+      webpack: ^5.1.0
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      esbuild:
+        optional: true
+      uglify-js:
+        optional: true
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.25
+      jest-worker: 27.5.1
+      schema-utils: 4.3.0
+      serialize-javascript: 6.0.2
+      terser: 5.39.0
+      webpack: 5.98.0
+    dev: false
 
   /terser@5.31.3:
     resolution: {integrity: sha512-pAfYn3NIZLyZpa83ZKigvj6Rn9c/vd5KfYGX7cN1mnzqgDcxWvrU5ZtAfIKhEXz9nRecw4z3LXkjaq96/qZqAA==}
@@ -26824,6 +26896,45 @@ packages:
       - uglify-js
     dev: true
 
+  /webpack@5.98.0:
+    resolution: {integrity: sha512-UFynvx+gM44Gv9qFgj0acCQK2VE1CtdfwFdimkapco3hlPCJ/zeq73n2yVKimVbtm+TnApIugGhLJnkU6gjYXA==}
+    engines: {node: '>=10.13.0'}
+    hasBin: true
+    peerDependencies:
+      webpack-cli: '*'
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.6
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.14.1
+      browserslist: 4.24.4
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.18.1
+      es-module-lexer: 1.6.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 4.3.0
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.14(webpack@5.98.0)
+      watchpack: 2.4.2
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+    dev: false
+
   /webpack@5.98.0(esbuild@0.21.5):
     resolution: {integrity: sha512-UFynvx+gM44Gv9qFgj0acCQK2VE1CtdfwFdimkapco3hlPCJ/zeq73n2yVKimVbtm+TnApIugGhLJnkU6gjYXA==}
     engines: {node: '>=10.13.0'}
@@ -26861,6 +26972,7 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
+    dev: true
 
   /webvtt-parser@2.2.0:
     resolution: {integrity: sha512-FzmaED+jZyt8SCJPTKbSsimrrnQU8ELlViE1wuF3x1pgiQUM8Llj5XWj2j/s6Tlk71ucPfGSMFqZWBtKn/0uEA==}

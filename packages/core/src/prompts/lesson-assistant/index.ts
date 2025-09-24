@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-import type { LooseLessonPlan } from "../../../../aila/src/protocol/schema";
+import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
 import {
   americanToBritish,
   basedOn,
@@ -22,7 +22,7 @@ import { promptingTheUser } from "./parts/promptingTheUser";
 
 export interface TemplateProps {
   relevantLessonPlans?: string;
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   summaries?: string;
   responseMode?: "interactive" | "generate";
   baseLessonPlan?: string;

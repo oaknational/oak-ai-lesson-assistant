@@ -1,6 +1,6 @@
-import type { QuizV2Question } from "../../schema/input.schema";
+import type { QuizQuestion } from "../../schema/input.schema";
 
-export type { QuizV2Question };
+export type { QuizQuestion };
 
 export interface ImageWithAttribution {
   questionNumber: number;
@@ -24,9 +24,4 @@ export interface AttributionSegment {
 export interface FormattedAttribution {
   plainText: string;
   segments: AttributionSegment[];
-}
-
-export interface ImageAttribution {
-  imageUrl: string;
-  attribution: string;
 }

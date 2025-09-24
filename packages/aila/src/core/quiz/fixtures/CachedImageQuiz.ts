@@ -1,3 +1,4 @@
+/* cspell:disable */
 import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 

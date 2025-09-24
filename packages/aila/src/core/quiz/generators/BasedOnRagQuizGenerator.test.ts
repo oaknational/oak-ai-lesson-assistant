@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../protocol/schema";
 import { QuizV1Schema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
@@ -11,7 +11,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
 (shouldSkipTests ? describe.skip : describe)("BasedOnRagQuizGenerator", () => {
   let quizGenerator: BasedOnRagQuizGenerator;
-  let mockLessonPlan: LooseLessonPlan;
+  let mockLessonPlan: PartialLessonPlan;
 
   beforeEach(() => {
     quizGenerator = new BasedOnRagQuizGenerator();

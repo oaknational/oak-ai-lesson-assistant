@@ -4,10 +4,7 @@
 import type { docs_v1 } from "@googleapis/docs";
 import { describe, expect, it, jest } from "@jest/globals";
 
-import type {
-  ImageAttribution,
-  QuizV2Question,
-} from "../../../schema/input.schema";
+import type { ImageMetadata, QuizQuestion } from "../../../schema/input.schema";
 import { addFooterAttribution } from "./footerAttribution";
 
 // Mock the Google Docs API
@@ -42,7 +39,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![diagram](https://example.com/image1.jpg)?",
@@ -52,10 +49,12 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageAttributions: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 
@@ -103,7 +102,7 @@ describe("addFooterAttribution", () => {
     });
 
     // Create long content (multiple questions to exceed threshold)
-    const questions: QuizV2Question[] = Array.from({ length: 15 }, (_, i) => ({
+    const questions: QuizQuestion[] = Array.from({ length: 15 }, (_, i) => ({
       questionType: "multiple-choice",
       question: `Question ${i + 1} with ![image](https://example.com/image${i + 1}.jpg)?`,
       answers: ["A", "B", "C"],
@@ -111,9 +110,11 @@ describe("addFooterAttribution", () => {
       hint: null,
     }));
 
-    const imageAttributions: ImageAttribution[] = questions.map((_, i) => ({
+    const imageAttributions: ImageMetadata[] = questions.map((_, i) => ({
       imageUrl: `https://example.com/image${i + 1}.jpg`,
       attribution: "Pixabay",
+      width: 800,
+      height: 600,
     }));
 
     await addFooterAttribution(
@@ -157,7 +158,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "short-answer",
         question: "What is 2 + 2?",
@@ -166,7 +167,7 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [];
+    const imageAttributions: ImageMetadata[] = [];
 
     await addFooterAttribution(
       mockGoogleDocs,
@@ -188,7 +189,7 @@ describe("addFooterAttribution", () => {
       },
     });
 
-    const questions: QuizV2Question[] = [
+    const questions: QuizQuestion[] = [
       {
         questionType: "multiple-choice",
         question: "What is ![diagram](https://example.com/image1.jpg)?",
@@ -198,10 +199,12 @@ describe("addFooterAttribution", () => {
       },
     ];
 
-    const imageAttributions: ImageAttribution[] = [
+    const imageAttributions: ImageMetadata[] = [
       {
         imageUrl: "https://example.com/image1.jpg",
         attribution: "Pixabay",
+        width: 800,
+        height: 600,
       },
     ];
 

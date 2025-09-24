@@ -67,13 +67,20 @@ export function generateMatchingPairsTable(
   };
 
   elements.push(
-    createTableElement(insertIndex, rows, 5, cellContent, [
-      COLUMN_WIDTHS.letter,
-      COLUMN_WIDTHS.textNarrow,
-      COLUMN_WIDTHS.spacer,
-      COLUMN_WIDTHS.checkbox,
-      COLUMN_WIDTHS.auto,
-    ]),
+    createTableElement({
+      insertIndex,
+      rows,
+      columns: 5,
+      cellContent,
+      columnWidths: [
+        COLUMN_WIDTHS.letter,
+        COLUMN_WIDTHS.textNarrow,
+        COLUMN_WIDTHS.spacer,
+        COLUMN_WIDTHS.checkbox,
+        COLUMN_WIDTHS.auto,
+      ],
+      columnAlignments: ["CENTER", null, null, null, null],
+    }),
   );
 
   return elements;

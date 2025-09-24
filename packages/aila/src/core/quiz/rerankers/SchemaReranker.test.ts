@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { cachedBadQuiz, cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
@@ -13,7 +13,7 @@ describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);
   let reranker: TestSchemaReranker<typeof testRatingSchema>;
   let mockQuizzes: QuizQuestionWithRawJson[][];
-  let mockLessonPlan: LooseLessonPlan;
+  let mockLessonPlan: PartialLessonPlan;
   let mockQuizType: QuizPath;
 
   beforeEach(() => {

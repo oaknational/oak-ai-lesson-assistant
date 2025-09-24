@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
 import type { QuizQuestionWithRawJson } from "../interfaces";
@@ -11,10 +11,10 @@ import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
-// TODO: GCLOMAX - Seperate out starter and exit quizzes.
+// TODO: GCLOMAX - Separate out starter and exit quizzes.
 export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async mappedQuizFromAilaRagRelevantLessons(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath = "/starterQuiz",
   ): Promise<QuizQuestionWithRawJson[][]> {
@@ -32,7 +32,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   }
 
   async generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]> {
     return await this.mappedQuizFromAilaRagRelevantLessons(
@@ -44,7 +44,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
 
   //   TODO: GCLOMAX - make this unique for starter and exit quizzes.
   async generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]> {
     return await this.mappedQuizFromAilaRagRelevantLessons(
