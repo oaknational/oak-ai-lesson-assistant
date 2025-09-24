@@ -30,6 +30,7 @@ import { captureException } from "@sentry/nextjs";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
@@ -213,8 +214,15 @@ async function loadChatDataFromDatabase(
 
     verifyChatOwnership(chat, userId, chatId);
 
+    const output = z
+      .object({ lessonPlan: z.record(z.unknown()) })
+      .passthrough()
+      .parse(chat.output ?? {});
+
+    output.lessonPlan = output.lessonPlan ?? {};
+
     const { messages, lessonPlan } = await migrateChatData(
-      chat,
+      output,
       async (upgradedData) => {
         await prisma.appSession.update({
           where: { id: chat.id },
