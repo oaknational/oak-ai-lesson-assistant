@@ -1,3 +1,28 @@
+# [1.51.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.50.0...v1.51.0) (2025-09-24)
+
+
+### Bug Fixes
+
+* "based on" retrieval - upgrade quizzes to v2 and use lengthless schema ([#780](https://github.com/oaknational/oak-ai-lesson-assistant/issues/780)) ([ab4fa94](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ab4fa9465171fe8929eebd3d7120004fa5d6a2f3))
+* agentic non maths old rag ([#810](https://github.com/oaknational/oak-ai-lesson-assistant/issues/810)) ([c6c3e2a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c6c3e2a6b8bb024a294299298ac71846a9788d39))
+* fix radio button dot after oak-components update ([#797](https://github.com/oaknational/oak-ai-lesson-assistant/issues/797)) ([6446f8a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6446f8affbd260fa0000490923d59e91ef1f3e9a))
+* perssit non-maths aila agentic RAG data ([#811](https://github.com/oaknational/oak-ai-lesson-assistant/issues/811)) ([b55ff0a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b55ff0a44c84d3a901e4be46c71d7abbb4771bd1))
+* remove length constraints from migrator input schema to fix rag ([#808](https://github.com/oaknational/oak-ai-lesson-assistant/issues/808)) ([731a18c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/731a18c9e1acfb30e03e6b1b0cfc56cdebd15f11))
+* restore image quiz table generator with proper image sizing ([26627dd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/26627dd2246cb6327eab4fd8b034bc83e3272b85))
+* set 1200px size limit on RAG images ([#809](https://github.com/oaknational/oak-ai-lesson-assistant/issues/809)) ([23004ee](https://github.com/oaknational/oak-ai-lesson-assistant/commit/23004eeea8234b8df8e7df20830c14173592ddf3))
+* sort multiple choice answers with letter patterns alphabetically ([#805](https://github.com/oaknational/oak-ai-lesson-assistant/issues/805)) ([5ab1dbd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5ab1dbd7b862f40fc583f9d2408d7f7c524ca3c1))
+* support units other than degrees with placeholders ([#802](https://github.com/oaknational/oak-ai-lesson-assistant/issues/802)) ([a30a4d9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a30a4d936b0776015ae46c2a5c8f04ea02de0f34))
+* use kebab-case for key stages ([#801](https://github.com/oaknational/oak-ai-lesson-assistant/issues/801)) ([374943d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/374943dc9f7f76f075b2f0929aa9bbf35f531b62))
+
+
+### Features
+
+* add quiz v3 schema with image dimensions [AI-1569] ([#792](https://github.com/oaknational/oak-ai-lesson-assistant/issues/792)) ([598744c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/598744c018fed76cac0e2fb1c0b926e211c7e75f))
+* center-align letter columns in quiz tables ([#796](https://github.com/oaknational/oak-ai-lesson-assistant/issues/796)) ([1e18077](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1e180778a76ada2c5c5792601bd266dd9d461a55))
+* filter out answer letters when images are present in quiz content ([fd4afc5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fd4afc5367bef4afcf0d389e6cb7a758175f940d))
+* implement responsive 4-column quiz layout with aligned checkboxes ([311b5f3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/311b5f371c22dcda825cb317bbcc3906a42369a1))
+* render maths quiz content in lesson plan doc #AI-1560 ([#798](https://github.com/oaknational/oak-ai-lesson-assistant/issues/798)) ([3d5005c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3d5005c14c7776e2f34826396c8fddc7b409c808)), closes [#AI-1560](https://github.com/oaknational/oak-ai-lesson-assistant/issues/AI-1560)
+
 # [1.50.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.49.0...v1.50.0) (2025-09-08)
 
 
