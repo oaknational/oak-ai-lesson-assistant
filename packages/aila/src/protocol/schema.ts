@@ -461,12 +461,10 @@ export const chatSchemaWithMissingMessageIds = z
           id: z.string().optional(),
           content: z.string(),
           role: z.union([
-            z.literal("function"),
             z.literal("data"),
             z.literal("user"),
             z.literal("system"),
             z.literal("assistant"),
-            z.literal("tool"),
           ]),
         })
         .passthrough(),
