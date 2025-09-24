@@ -19,6 +19,7 @@ import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -178,22 +179,6 @@ async function generateChatStream(
   );
 }
 
-function hasLessonPlan(obj: unknown): obj is { lessonPlan: unknown } {
-  return obj !== null && typeof obj === "object" && "lessonPlan" in obj;
-}
-
-function isValidLessonPlan(lessonPlan: unknown): boolean {
-  return lessonPlan !== null && typeof lessonPlan === "object";
-}
-
-function hasMessages(obj: unknown): obj is { messages: unknown } {
-  return obj !== null && typeof obj === "object" && "messages" in obj;
-}
-
-function isValidMessages(messages: unknown): boolean {
-  return Array.isArray(messages);
-}
-
 function verifyChatOwnership(
   chat: { userId: string },
   requestUserId: string,
@@ -205,38 +190,6 @@ function verifyChatOwnership(
     );
     throw new Error("Unauthorized access to chat");
   }
-}
-
-function parseChatOutput(
-  output: unknown,
-  chatId: string,
-): { messages: Message[]; lessonPlan: PartialLessonPlan } {
-  let messages: Message[] = [];
-  let lessonPlan: PartialLessonPlan = {};
-
-  try {
-    const parsedOutput =
-      typeof output === "string" ? JSON.parse(output) : output;
-
-    if (hasMessages(parsedOutput) && isValidMessages(parsedOutput.messages)) {
-      messages = parsedOutput.messages as Message[];
-    }
-
-    if (
-      hasLessonPlan(parsedOutput) &&
-      isValidLessonPlan(parsedOutput.lessonPlan)
-    ) {
-      lessonPlan = parsedOutput.lessonPlan as PartialLessonPlan;
-    }
-  } catch (error) {
-    log.error(`Error parsing output for chat ${chatId}`, error);
-    captureException(error, {
-      extra: { chatId, output },
-      tags: { context: "parseChatOutput" },
-    });
-  }
-
-  return { messages, lessonPlan };
 }
 
 async function loadChatDataFromDatabase(
@@ -260,7 +213,20 @@ async function loadChatDataFromDatabase(
 
     verifyChatOwnership(chat, userId, chatId);
 
-    const { messages, lessonPlan } = parseChatOutput(chat.output, chatId);
+    const { messages, lessonPlan } = await migrateChatData(
+      chat,
+      async (upgradedData) => {
+        await prisma.appSession.update({
+          where: { id: chat.id },
+          data: { output: upgradedData },
+        });
+      },
+      {
+        id: chat.id,
+        userId,
+        caller: "chatHandler.loadChatDataFromDatabase",
+      },
+    );
 
     log.info(
       `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
