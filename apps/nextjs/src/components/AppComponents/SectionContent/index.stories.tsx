@@ -61,8 +61,8 @@ export const Quiz: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
-      version: "v2" as const,
-      imageAttributions: [],
+      version: "v3" as const,
+      imageMetadata: [],
       questions: [
         {
           questionType: "multiple-choice" as const,
@@ -87,8 +87,8 @@ export const QuizWithMaths: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
-      version: "v2" as const,
-      imageAttributions: [],
+      version: "v3" as const,
+      imageMetadata: [],
       questions: [
         {
           questionType: "multiple-choice" as const,
@@ -115,22 +115,28 @@ export const QuizWithImages: Story = {
   args: {
     sectionKey: "starterQuiz",
     value: {
-      version: "v2" as const,
-      imageAttributions: [
+      version: "v3" as const,
+      imageMetadata: [
         {
           imageUrl:
             "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266807/a3g7nwse0lqdvrggp1vt.png",
           attribution: "Pixabay",
+          width: 800,
+          height: 600,
         },
         {
           imageUrl:
             "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266808/pggweqwl9chfutuul4pm.png",
           attribution: "Oak National Academy",
+          width: 800,
+          height: 600,
         },
         {
           imageUrl:
             "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png",
           attribution: "Pixabay",
+          width: 800,
+          height: 600,
         },
       ],
       questions: [
@@ -153,7 +159,7 @@ export const QuizWithImages: Story = {
         {
           questionType: "multiple-choice" as const,
           question:
-            "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)",
+            "Here is part of the 8 times table grid. What could Izzy do to find 13 × 8 quickly?\n\n![8 times table grid](https://oaknationalacademy-res.cloudinary.com/image/upload/v1706266809/pm6upn12cjexhp4xcccg.png)", // cspell:disable-line
           answers: ["12 x 8 + 8", "Increase 96 by 8"],
           distractors: ["Count in eights from zero"],
           hint: null,

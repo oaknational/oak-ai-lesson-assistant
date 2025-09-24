@@ -209,6 +209,7 @@ const config = [
     },
     plugins: {
       "@typescript-eslint": tsEslint,
+      "@cspell": cspellPlugin,
     },
     rules: {
       "@typescript-eslint/no-import-type-side-effects": "off",

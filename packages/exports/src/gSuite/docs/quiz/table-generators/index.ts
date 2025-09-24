@@ -3,7 +3,7 @@
  */
 import type { docs_v1 } from "@googleapis/docs";
 
-import type { QuizV2Question } from "../../../../schema/input.schema";
+import type { QuizQuestion } from "../../../../schema/input.schema";
 import { createSpacerElement } from "./elements";
 import { generateMatchingPairsTable } from "./questions/matchingPairs";
 import { generateMultipleChoiceTable } from "./questions/multipleChoice";
@@ -27,7 +27,7 @@ export * from "./questions/shortAnswer";
 function getQuestionElements(
   insertIndex: number,
   questionNumber: number,
-  q: QuizV2Question,
+  q: QuizQuestion,
 ): QuizElement[] {
   switch (q.questionType) {
     case "multiple-choice":
@@ -76,7 +76,7 @@ function getQuestionElements(
  */
 export function generateAllQuizElements(
   insertIndex: number,
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
 ): docs_v1.Schema$Request[] {
   const allElements: QuizElement[] = [];
 

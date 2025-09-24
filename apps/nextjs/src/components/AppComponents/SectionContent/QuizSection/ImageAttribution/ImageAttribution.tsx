@@ -1,18 +1,18 @@
 import { useMemo } from "react";
 
-import type { QuizV2 } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuiz } from "@oakai/aila/src/protocol/schema";
 import { formatQuizAttributions } from "@oakai/exports/src/quiz-utils/attribution";
 
 import { OakBox, OakSpan } from "@oaknational/oak-components";
 
 export type ImageAttributionProps = {
-  quiz: QuizV2;
+  quiz: LatestQuiz;
 };
 
 export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
   const formattedAttribution = useMemo(
-    () => formatQuizAttributions(quiz.questions, quiz.imageAttributions),
-    [quiz.questions, quiz.imageAttributions],
+    () => formatQuizAttributions(quiz.questions, quiz.imageMetadata),
+    [quiz.questions, quiz.imageMetadata],
   );
 
   if (formattedAttribution.segments.length === 0) {

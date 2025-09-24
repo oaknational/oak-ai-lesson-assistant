@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import yaml from "yaml";
 import { z } from "zod";
@@ -36,7 +36,7 @@ type LessonPlanPart = z.infer<typeof LessonPlanPartSchema>;
 export function getLessonPlanParts({
   lessonPlan,
 }: {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
 }): LessonPlanPart[] {
   const lessonPlanParts: LessonPlanPart[] = [];
 

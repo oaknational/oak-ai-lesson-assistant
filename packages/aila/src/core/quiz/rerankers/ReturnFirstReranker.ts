@@ -2,7 +2,7 @@ import { generateMock } from "@anatine/zod-mock";
 import type { z } from "zod";
 
 import type {
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
   QuizV1Question,
 } from "../../../protocol/schema";
@@ -19,7 +19,7 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   }
   public evaluateQuizArray(
     quizzes: QuizV1Question[][],
-    _lessonPlan: LooseLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ratingSchema: typeof testRatingSchema,
     _quizType: QuizPath,
   ): Promise<z.infer<typeof testRatingSchema>[]> {

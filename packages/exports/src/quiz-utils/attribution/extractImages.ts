@@ -1,4 +1,4 @@
-import type { ExtractedImage, QuizV2Question } from "./types";
+import type { ExtractedImage, QuizQuestion } from "./types";
 
 /**
  * Extracts image URLs from markdown text
@@ -23,8 +23,8 @@ export function extractImageUrlsFromText(
  * Extracts all images from a question with their positions
  */
 export function extractImagesFromQuestion(
-  question: QuizV2Question,
-  questionNumber: number,
+  question: QuizQuestion,
+  _questionNumber: number,
 ): ExtractedImage[] {
   const images: Array<{ url: string; altText: string }> = [];
 

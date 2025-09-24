@@ -49,7 +49,7 @@ Make a glossary for a class of pupils in the UK .
 The glossary should be structured and include all the following parts and should match the given schema:
 The GLOSSARY should include all tier 2 and tier 3 words in the lesson content. 
 Tier 2 words are cross-curricular, academic words that pupils are likely to encounter across multiple subjects.  These may be found less frequently in everyday conversation but are very commonly found in written texts.  They are more commonly used amongst mature language users e.g. evaluate, required, fortunate, soar. They often have different meanings in different disciplines e.g. product, force, volume.
-Tier 3 words are subject specific, academic words. There are used more rarely and are specific to certain domains and disciplines.  Examples include osmosis, denominator and aliteration. 
+Tier 3 words are subject specific, academic words. There are used more rarely and are specific to certain domains and disciplines.  Examples include osmosis, denominator and alliteration. 
 Organise the words in alphabetical order.
 You should include the keyword in bold, followed by a semicolon and a definition. The definition must be age-appropriate and should not include the keyword itself in the definition.
 For example, "Cell Membrane": "A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell."

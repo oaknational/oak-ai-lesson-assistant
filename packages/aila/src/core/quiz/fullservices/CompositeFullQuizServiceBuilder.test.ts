@@ -50,7 +50,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         CircleTheoremLesson,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.version).toBe("v2");
+      expect(quiz.version).toBe("v3");
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]?.question).toBeDefined();
       expect(quiz.questions[0]?.questionType).toBeDefined();
@@ -84,7 +84,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         mockRelevantLessons,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.version).toBe("v2");
+      expect(quiz.version).toBe("v3");
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]?.question).toBeDefined();
       expect(quiz.questions[0]?.questionType).toBeDefined();
@@ -112,7 +112,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         mockRelevantLessons,
       );
       expect(quiz).toBeDefined();
-      expect(quiz.version).toBe("v2");
+      expect(quiz.version).toBe("v3");
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]?.question).toBeDefined();
       expect(quiz.questions[0]?.questionType).toBeDefined();
@@ -146,7 +146,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
@@ -161,7 +161,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.version).toBe("v3");
       expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
       expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
@@ -196,7 +196,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
@@ -214,7 +214,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.version).toBe("v3");
       expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
       expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
@@ -251,7 +251,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
@@ -269,7 +269,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithoutOverride).toBeDefined();
-      expect(quizWithoutOverride.version).toBe("v2");
+      expect(quizWithoutOverride.version).toBe("v3");
       expect(quizWithoutOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithoutOverride.questions[0]?.question).toBeDefined();
       expect(quizWithoutOverride.questions[0]?.questionType).toBeDefined();
@@ -306,7 +306,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
@@ -341,7 +341,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
@@ -378,7 +378,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       );
 
       expect(quizWithOverride).toBeDefined();
-      expect(quizWithOverride.version).toBe("v2");
+      expect(quizWithOverride.version).toBe("v3");
       expect(quizWithOverride.questions.length).toBeGreaterThan(0);
       expect(quizWithOverride.questions[0]?.question).toBeDefined();
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();

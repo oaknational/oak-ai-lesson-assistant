@@ -12,7 +12,7 @@
  * This module estimates quiz content height to determine the appropriate
  * footer strategy based on whether content will span multiple pages.
  */
-import type { QuizV2Question } from "../../../schema/input.schema";
+import type { QuizQuestion } from "../../../schema/input.schema";
 
 // Single page capacity and safety padding
 export const SINGLE_PAGE_CAPACITY = 19;
@@ -34,7 +34,7 @@ export const LINE_COUNT_THRESHOLD = SINGLE_PAGE_CAPACITY + SAFETY_PADDING;
  * @returns Estimated number of lines the quiz will occupy
  */
 export function countQuizLines(
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
   debug = false,
 ): number {
   let height = 0;
@@ -82,7 +82,7 @@ export function countQuizLines(
  * @returns 'both-footers' if content fits on single page, 'global-only' if multi-page
  */
 export function getFooterStrategy(
-  questions: QuizV2Question[],
+  questions: QuizQuestion[],
 ): "both-footers" | "global-only" {
   const lineCount = countQuizLines(questions);
   return lineCount > LINE_COUNT_THRESHOLD ? "global-only" : "both-footers";

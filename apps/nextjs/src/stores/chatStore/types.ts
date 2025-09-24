@@ -1,5 +1,5 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import type { Message as AiMessage } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
@@ -38,7 +38,7 @@ export type ChatState = {
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: ChatAction | null;
-  lessonPlan: LooseLessonPlan | null;
+  lessonPlan: PartialLessonPlan | null;
   input: string;
   chatAreaRef: React.RefObject<HTMLDivElement> | null;
 
@@ -47,7 +47,7 @@ export type ChatState = {
 
   actions: {
     // Setters
-    setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
+    setLessonPlan: (lessonPlan: PartialLessonPlan) => void;
     setAiSdkActions: (actions: AiSdkActions) => void;
     setMessages: (messages: AiMessage[], isLoading: boolean) => void;
     setInput: (input: string) => void;

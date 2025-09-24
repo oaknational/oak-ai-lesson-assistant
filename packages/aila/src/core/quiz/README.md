@@ -108,7 +108,7 @@ The module has some architectural challenges that should be considered when maki
 
 1. **Large Interface Files**: `interfaces.ts` contains many interfaces - consider splitting by domain
 2. **Error Handling**: Inconsistent error handling patterns - some methods throw, others return null/empty arrays
-3. **Type Safety**: Some areas use loose typing (`LooseLessonPlan`) and type assertions
+3. **Type Safety**: Some areas use loose typing (`PartialLessonPlan`) and type assertions
 4. **Code Duplication**: Similar logic exists for starter vs exit quiz generation
 
 ### Best Practices

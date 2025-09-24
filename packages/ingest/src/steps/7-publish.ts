@@ -1,6 +1,6 @@
 import {
   LessonPlanSchema,
-  type LooseLessonPlan,
+  type PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 
@@ -50,7 +50,7 @@ export async function publishToRag({
     ingestLessonId?: string;
     subjectSlug: string;
     keyStageSlug: string;
-    lessonPlan: LooseLessonPlan;
+    lessonPlan: PartialLessonPlan;
   }[] = lessons.map((lesson) => {
     if (!lesson.lessonPlan) {
       throw new IngestError("Lesson is missing lesson plan", {
