@@ -2,6 +2,7 @@ import { dedent } from "ts-dedent";
 import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
+import { MessageSchema } from "../core/chat/types";
 import { minMaxText } from "./schemaHelpers";
 import {
   type LatestQuizOptional,
@@ -436,22 +437,7 @@ export const chatSchema = z
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
-    messages: z.array(
-      z
-        .object({
-          id: z.string(),
-          content: z.string(),
-          role: z.union([
-            z.literal("function"),
-            z.literal("data"),
-            z.literal("user"),
-            z.literal("system"),
-            z.literal("assistant"),
-            z.literal("tool"),
-          ]),
-        })
-        .passthrough(),
-    ),
+    messages: z.array(MessageSchema.passthrough()),
   })
   .passthrough();
 
@@ -475,12 +461,10 @@ export const chatSchemaWithMissingMessageIds = z
           id: z.string().optional(),
           content: z.string(),
           role: z.union([
-            z.literal("function"),
             z.literal("data"),
             z.literal("user"),
             z.literal("system"),
             z.literal("assistant"),
-            z.literal("tool"),
           ]),
         })
         .passthrough(),
