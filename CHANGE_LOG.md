@@ -1,3 +1,10 @@
+## [1.51.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.51.0...v1.51.1) (2025-09-25)
+
+
+### Bug Fixes
+
+* always migrate chat when fetching from database ([#813](https://github.com/oaknational/oak-ai-lesson-assistant/issues/813)) ([305676f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/305676fb1dbb3b843ca7cd54ddac7b024187cba7))
+
 # [1.51.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.50.0...v1.51.0) (2025-09-24)
 
 
