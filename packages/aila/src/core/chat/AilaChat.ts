@@ -7,7 +7,6 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
-import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
@@ -383,19 +382,17 @@ export class AilaChat implements AilaChatService {
 
   public async createChatCompletionStream(messages: Message[]) {
     return this._llmService.createChatCompletionStream({
-      model: this._aila.options.model ?? DEFAULT_MODEL,
+      modelParams: this._aila.options.modelParams,
       messages,
-      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
     });
   }
 
   public async createChatCompletionObjectStream(messages: Message[]) {
     return this._llmService.createChatCompletionObjectStream({
-      model: this._aila.options.model ?? DEFAULT_MODEL,
+      modelParams: this._aila.options.modelParams,
       schema: LLMMessageSchema,
       schemaName: "response",
       messages,
-      temperature: this._aila.options.temperature ?? DEFAULT_TEMPERATURE,
     });
   }
 

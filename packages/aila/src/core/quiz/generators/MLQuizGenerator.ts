@@ -168,7 +168,7 @@ You should generate queries for a ${quizType} quiz.
 Generate a list of 1-3 semantic search queries, each on a new line:`;
 
     try {
-      const response = await this.openai.beta.chat.completions.parse({
+      const response = await this.openai.chat.completions.parse({
         model: "gpt-4.1",
         messages: [
           {
@@ -183,7 +183,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
         ),
       });
 
-      const content = response.choices[0]?.message?.content;
+      const content = response.choices?.[0]?.message?.content;
       if (!content) {
         log.warn(
           "OpenAI returned empty content for semantic search generation",

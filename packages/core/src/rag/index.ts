@@ -18,7 +18,7 @@ import type { RerankResponse } from "cohere-ai/api";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { Md5 } from "ts-md5";
 
-import { DEFAULT_CATEGORISE_MODEL } from "../../../aila/src/constants";
+import { DEFAULT_CATEGORISE_GPT5_PARAMS } from "../../../aila/src/constants";
 import type { OpenAICompletionWithLoggingOptions } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
 import { OpenAICompletionWithLogging } from "../../../aila/src/lib/openai/OpenAICompletionWithLogging";
 import type { JsonValue } from "../models/prompts";
@@ -129,7 +129,7 @@ Thank you and happy classifying!`;
         prompt: "categorise_key_stage_and_subject",
       },
       {
-        model: DEFAULT_CATEGORISE_MODEL,
+        ...DEFAULT_CATEGORISE_GPT5_PARAMS,
         stream: false,
         messages,
         response_format: { type: "json_object" },

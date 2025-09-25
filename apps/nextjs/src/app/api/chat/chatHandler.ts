@@ -1,4 +1,7 @@
-import { DEFAULT_QUIZ_GENERATORS } from "@oakai/aila/src/constants";
+import {
+  DEFAULT_OPENAI_GPT5_PARAMS,
+  DEFAULT_QUIZ_GENERATORS,
+} from "@oakai/aila/src/constants";
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
@@ -87,7 +90,7 @@ async function setupChatHandler(req: NextRequest) {
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
-        temperature: chatOptions.temperature ?? 0.7,
+        modelParams: DEFAULT_OPENAI_GPT5_PARAMS,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         quizGenerators: getQuizGenerators(),
         usePersistence: true,

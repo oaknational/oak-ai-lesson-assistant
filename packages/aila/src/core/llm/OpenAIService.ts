@@ -6,6 +6,7 @@ import type { OpenAIProvider } from "@ai-sdk/openai";
 import { streamObject, streamText } from "ai";
 import type { ZodSchema } from "zod";
 
+import type { OpenAIModelParams } from "../../constants";
 import type { Message } from "../chat";
 import type { LLMService } from "./LLMService";
 
@@ -26,44 +27,54 @@ export class OpenAIService implements LLMService {
   }
 
   async createChatCompletionStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
     const { textStream: stream } = streamText({
-      model: this._openAIProvider(params.model),
+      model: this._openAIProvider(params.modelParams.model),
       messages: params.messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: params.temperature,
+      ...("temperature" in params.modelParams
+        ? { temperature: params.modelParams.temperature }
+        : {}),
     });
 
     return Promise.resolve(stream.getReader());
   }
 
   async createChatCompletionObjectStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     schema: ZodSchema;
     schemaName: string;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
-    const { model, messages, temperature, schema, schemaName } = params;
+    const { modelParams, messages, schema, schemaName } = params;
     if (!STRUCTURED_OUTPUTS_ENABLED) {
-      return this.createChatCompletionStream({ model, messages, temperature });
+      return this.createChatCompletionStream({ modelParams, messages });
     }
     const startTime = Date.now();
     const { textStream: stream } = streamObject({
-      model: this._openAIProvider(model, { structuredOutputs: true }),
+      model: this._openAIProvider(modelParams.model, {
+        structuredOutputs: true,
+      }),
       output: "object",
       schema,
       schemaName,
+      // With GPT-5, only the default (1) temperature value is supported.
+      temperature: "temperature" in modelParams ? modelParams.temperature : 1,
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature,
+      // 👇 This is where we should be passing gpt-5 params, but it's not available in this version of Vercel AI SDK
+      // providerOptions: {
+      //   openai: {
+      //     reasoning_effort: "medium", // default is medium
+      //     verbosity: "medium" // default is medium
+      //   },
+      // },
     });
 
     const reader = stream.getReader();
