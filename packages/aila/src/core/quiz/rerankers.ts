@@ -34,7 +34,6 @@ export class CohereReranker implements DocumentReranker {
         query: query,
         documents: jsonDocs,
         topN: topN,
-        //@ts-expect-error issue with cohere client - will need version bumping in future.
         rankFields: ["text"],
         returnDocuments: true,
       });

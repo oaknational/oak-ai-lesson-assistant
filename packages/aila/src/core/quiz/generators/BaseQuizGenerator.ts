@@ -19,7 +19,6 @@ import {
 } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
-  LatestQuizQuestion,
   PartialLessonPlan,
   QuizOperationType,
   QuizPath,
@@ -500,7 +499,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         query: query,
         documents: jsonDocs,
         topN: topN,
-        //@ts-expect-error Cohere client has some weirdness - should update version.
         rankFields: ["text"],
         returnDocuments: true,
       });
