@@ -58,7 +58,7 @@ async function singleLessonDryRun() {
       "lesson_plan",
     );
 
-    const completion = await openai.beta.chat.completions.parse({
+    const completion = await openai.chat.completions.parse({
       model: "gpt-4o-2024-08-06",
       temperature: 0.7,
       messages: [

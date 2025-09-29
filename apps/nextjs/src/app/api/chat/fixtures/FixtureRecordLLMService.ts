@@ -1,3 +1,4 @@
+import type { OpenAIModelParams } from "@oakai/aila/src/constants";
 import type { Message } from "@oakai/aila/src/core/chat";
 import type { LLMService } from "@oakai/aila/src/core/llm/LLMService";
 import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
@@ -20,19 +21,17 @@ export class FixtureRecordLLMService implements LLMService {
   }
 
   async createChatCompletionStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
     return this._openAIService.createChatCompletionStream(params);
   }
 
   async createChatCompletionObjectStream(params: {
-    model: string;
+    modelParams: OpenAIModelParams;
     schema: ZodSchema;
     schemaName: string;
     messages: Message[];
-    temperature: number;
   }): Promise<ReadableStreamDefaultReader<string>> {
     const upstreamReader =
       await this._openAIService.createChatCompletionObjectStream(params);
