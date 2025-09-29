@@ -1,3 +1,15 @@
+# [1.52.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.51.1...v1.52.0) (2025-09-29)
+
+
+### Bug Fixes
+
+* extra brace in mobile download URL ([#818](https://github.com/oaknational/oak-ai-lesson-assistant/issues/818)) ([5b2ff81](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5b2ff81da697b1c7e29e6ccaa82d579eb59eda2d))
+
+
+### Features
+
+* remove starter and exit quizzes from maths lessons ([#815](https://github.com/oaknational/oak-ai-lesson-assistant/issues/815)) ([eaa3189](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eaa3189c5b1044e6dc7346aa62a36783a139541a))
+
 ## [1.51.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.51.0...v1.51.1) (2025-09-25)
 
 
