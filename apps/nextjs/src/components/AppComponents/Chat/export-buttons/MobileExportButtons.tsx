@@ -39,7 +39,7 @@ export const MobileExportButtons = ({
           iconName="download"
           href={
             demo.isSharingEnabled
-              ? `${getAilaUrl("lesson")}}/${id}/download/`
+              ? `${getAilaUrl("lesson")}/${id}/download/`
               : "#"
           }
           onClick={() => {
