@@ -7,10 +7,13 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 
 import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
+import { isArray, isTruthy } from "remeda";
+import z from "zod";
 
 import type {
   LessonBrowseDataByKsSchema,
   LessonContentSchema,
+  UnitDataSchema,
 } from "./schemas";
 
 /**
@@ -220,8 +223,13 @@ export function transformOwaLessonToLessonPlan(
   owaLesson: LessonContentSchema,
   owaBrowseData: LessonBrowseDataByKsSchema,
   pathways: string[],
+  unitData: UnitDataSchema,
 ): LessonPlanSchemaTeachingMaterials {
   const isCanonicalLesson = pathways.length > 0;
+  const orderInUnit = unitData.find(
+    (lesson) => lesson.lesson_slug === owaLesson.lesson_slug,
+  )?.order_in_unit;
+
   // Create a base lesson plan object
   const lessonPlan: LessonPlanSchemaTeachingMaterials = {
     title: owaLesson.lesson_title ?? "",
@@ -264,8 +272,144 @@ export function transformOwaLessonToLessonPlan(
 
     // Empty placeholders for required fields
     learningCycles: [],
-    priorKnowledge: [],
+    priorKnowledge:
+      getPriorKnowledgeFromUnitData({ unitData, owaBrowseData, orderInUnit }) ??
+      [],
   };
 
   return lessonPlan;
 }
+
+interface LessonMisconception {
+  response?: string;
+  misconception?: string;
+}
+
+interface LessonKeyLearningPoint {
+  key_learning_point?: string;
+}
+
+const formatMisconceptions = (
+  misconceptions: UnitDataSchema[number]["lesson_data"]["misconceptions_and_common_mistakes"],
+  title: string,
+): string | null => {
+  if (isArray(misconceptions)) {
+    const misconceptionText = (misconceptions as LessonMisconception[])
+      .map((item) => `${item.response ?? ""} - ${item.misconception ?? ""}`)
+      .filter((text) => text.trim() !== " - ")
+      .join(" ");
+
+    return misconceptionText
+      ? `Lesson title: ${title} - Misconceptions: ${misconceptionText}`
+      : null;
+  }
+
+  const parsedMisconception = z
+    .object({
+      description: z.string(),
+      misconception: z.string(),
+    })
+    .safeParse(misconceptions);
+
+  return parsedMisconception.success
+    ? `${title}: ${parsedMisconception.data.description} - ${parsedMisconception.data.misconception}`
+    : null;
+};
+
+const formatKeyLearningPoints = (
+  keyLearningPoints: UnitDataSchema[number]["lesson_data"]["key_learning_points"],
+  title: string,
+): string | null => {
+  if (isArray(keyLearningPoints)) {
+    const points = (keyLearningPoints as LessonKeyLearningPoint[])
+      .map((item) => item.key_learning_point ?? "")
+      .filter((point) => point.trim() !== "")
+      .join(" ");
+
+    return points
+      ? `Lesson title: ${title} - Key learning points: ${points}`
+      : null;
+  }
+
+  const parsedPoint = z
+    .object({ key_learning_point: z.string() })
+    .safeParse(keyLearningPoints);
+
+  return parsedPoint.success
+    ? `${title}: ${parsedPoint.data.key_learning_point}`
+    : null;
+};
+
+const formatKeywords = (
+  keywords: UnitDataSchema[number]["lesson_data"]["keywords"],
+): string | null => {
+  if (isArray(keywords)) {
+    const stringOfKeywords = keywords
+      .map((word: { keyword?: string; description?: string }): string => {
+        return `${word.keyword ?? ""}: ${word.description ?? ""}`;
+      })
+      .join(", ");
+    return `Prior knowledge keywords: ${stringOfKeywords}`;
+  }
+  return null;
+};
+
+export const getPriorKnowledgeFromUnitData = ({
+  unitData,
+  owaBrowseData,
+  orderInUnit = 1,
+}: {
+  unitData: UnitDataSchema;
+  owaBrowseData: LessonBrowseDataByKsSchema;
+  orderInUnit?: number;
+}): LessonPlanSchemaTeachingMaterials["priorKnowledge"] => {
+  // Handle first lesson case
+  if (orderInUnit === 1) {
+    return [
+      owaBrowseData.unit_data.connection_prior_unit_description,
+      ...(owaBrowseData.unit_data.prior_knowledge_requirements ?? []),
+    ].filter(isTruthy);
+  }
+
+  // Handle subsequent lessons
+  if (!unitData) {
+    return [];
+  }
+
+  const priorKnowledge = unitData
+    .filter((lesson) => lesson.order_in_unit < orderInUnit)
+    .flatMap((lesson) => {
+      const title = lesson.lesson_data?.title ?? "";
+      if (!title) return [];
+
+      const results: string[] = [];
+
+      // Process misconceptions
+      const misconceptionText = formatMisconceptions(
+        lesson.lesson_data.misconceptions_and_common_mistakes,
+        title,
+      );
+      if (misconceptionText) {
+        results.push(misconceptionText);
+      }
+
+      // Process key learning points
+      const keyLearningText = formatKeyLearningPoints(
+        lesson.lesson_data.key_learning_points,
+        title,
+      );
+      if (keyLearningText) {
+        results.push(keyLearningText);
+      }
+
+      const keywords = formatKeywords(lesson.lesson_data.keywords);
+      if (keywords) {
+        results.push(keywords);
+      }
+
+      return results;
+    })
+    .filter(isTruthy);
+
+  return priorKnowledge;
+};

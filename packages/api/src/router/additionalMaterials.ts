@@ -23,26 +23,9 @@ import {
   generatePartialLessonPlan,
   validateCurriculumApiEnv,
 } from "./additionalMaterials/helpers";
-import {
-  lessonOverviewQuery,
-  lessonOverviewQueryCanonical,
-  tcpWorksByLessonSlugQuery,
-} from "./owaLesson/queries";
-import {
-  checkForRestrictedContentGuidance,
-  checkForRestrictedLessonId,
-  checkForRestrictedTranscript,
-  checkForRestrictedWorks,
-} from "./owaLesson/restrictionsHelper";
-import {
-  lessonBrowseDataByKsSchema,
-  lessonContentSchema,
-} from "./owaLesson/schemas";
-import { transformOwaLessonToLessonPlan } from "./owaLesson/transformer";
-import type {
-  LessonOverviewResponse,
-  TRPCWorksResponse,
-} from "./owaLesson/types";
+import { buildTransformedLesson } from "./owaLesson/build";
+import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
+import { prepareAndCheckRestrictions } from "./owaLesson/prepare";
 
 const log = aiLogger("additional-materials");
 
@@ -71,153 +54,41 @@ export const additionalMaterialsRouter = router({
       }
 
       try {
-        // Fetch lesson data
-        const isCanonicalLesson = !input.programmeSlug;
-
-        const lessonResponse = await fetch(String(graphqlEndpoint), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-oak-auth-key": authKey,
-            "x-oak-auth-type": authType,
-          },
-          body: JSON.stringify({
-            query: isCanonicalLesson
-              ? lessonOverviewQueryCanonical
-              : lessonOverviewQuery,
-            variables: {
-              lesson_slug: input.lessonSlug,
-              ...(!isCanonicalLesson
-                ? { programme_slug: input.programmeSlug }
-                : {}),
-            },
-          }),
-        });
-
-        if (!lessonResponse.ok) {
-          log.error("Failed to fetch lesson data", {
-            status: lessonResponse.status,
-            statusText: lessonResponse.statusText,
+        // Fetch
+        const { lessonData, tcpData, isCanonicalLesson } =
+          await fetchOwaLessonAndTcp({
             lessonSlug: input.lessonSlug,
             programmeSlug: input.programmeSlug,
+            authKey,
+            authType,
+            graphqlEndpoint: String(graphqlEndpoint),
           });
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to fetch lesson data from curriculum API",
-          });
-        }
 
-        // Fetch TCP data`
-        const tcpResponse = await fetch(String(graphqlEndpoint), {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-oak-auth-key": authKey,
-            "x-oak-auth-type": authType,
-          },
-          body: JSON.stringify({
-            query: tcpWorksByLessonSlugQuery,
-            variables: {
-              lesson_slug: input.lessonSlug,
-            },
-          }),
-        });
-
-        if (!tcpResponse.ok) {
-          log.error("Failed to fetch TCP data", {
-            status: tcpResponse.status,
-            statusText: tcpResponse.statusText,
-          });
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to fetch TCP data",
-          });
-        }
-
-        let lessonData: LessonOverviewResponse;
-        let tcpData: TRPCWorksResponse;
-
-        try {
-          lessonData = await lessonResponse.json();
-          tcpData = await tcpResponse.json();
-        } catch (jsonError) {
-          log.error("Failed to parse API responses", { jsonError });
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Invalid response format from API",
-          });
-        }
-
-        // Validate lesson data
-        if (
-          !lessonData.data?.content?.[0] ||
-          !lessonData.data?.browseData?.[0]
-        ) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Lesson not found",
-          });
-        }
-
-        const rawLesson = lessonData.data.content[0];
-        const parsedLesson = lessonContentSchema.parse(rawLesson);
-
-        const browseDataArray = lessonData.data.browseData;
-        const pathways = isCanonicalLesson
-          ? Array.from(
-              new Set(
-                browseDataArray.map((item) =>
-                  String(item.programme_fields?.subject),
-                ),
-              ),
-            )
-          : [];
-        const browseData = browseDataArray.find(
-          (item) => item.lesson_slug === parsedLesson.lesson_slug,
-        );
-
-        if (!browseData) {
-          throw new TRPCError({
-            code: "NOT_FOUND",
-            message: "Lesson not found in browse data",
-          });
-        }
-
-        const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData);
-
-        checkForRestrictedContentGuidance(parsedLesson.content_guidance);
-
-        checkForRestrictedLessonId(browseData.lesson_data.lesson_uid);
-
-        const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
-
-        const hasRestrictedTranscript =
-          checkForRestrictedTranscript(parsedBrowseData);
-
-        if (parsedLesson.is_legacy) {
-          throw new TRPCError({
-            code: "FORBIDDEN",
-            message:
-              "This lesson is legacy lesson and cannot be used for a new teaching material.",
-          });
-        }
-
-        // Transform to lesson plan format
-        const transformedLesson = transformOwaLessonToLessonPlan(
+        // Restrictions
+        const {
           parsedLesson,
           parsedBrowseData,
           pathways,
-        );
-
-        const lesson = {
-          ...transformedLesson,
-          transcript: !hasRestrictedTranscript
-            ? String(rawLesson.transcript_sentences)
-            : undefined,
+          browseDataUnits,
           hasRestrictedWorks,
-        };
+          hasRestrictedTranscript,
+        } = prepareAndCheckRestrictions({
+          lessonData,
+          tcpData,
+          isCanonicalLesson,
+        });
 
-        // Create lesson plan interaction
+        // Transform
+        const lesson = buildTransformedLesson({
+          parsedLesson,
+          parsedBrowseData,
+          pathways,
+          browseDataUnits,
+          hasRestrictedWorks,
+          hasRestrictedTranscript,
+        });
+
+        // Persist and return
         const interaction =
           await ctx.prisma.additionalMaterialInteraction.create({
             data: {

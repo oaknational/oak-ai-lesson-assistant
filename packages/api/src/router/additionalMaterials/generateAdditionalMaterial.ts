@@ -6,6 +6,7 @@ import {
 } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
 import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { baseQuizSchema } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -19,6 +20,42 @@ import type { RateLimitInfo } from "../../types";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
+
+/**
+ * Deterministically shuffles quiz options within each question while keeping question order stable
+ */
+function shuffleQuizOptions(quiz: ReturnType<typeof baseQuizSchema.parse>) {
+  // Deterministic hash (mirrors approach used in quiz-utils)
+  const simpleHash = (str: string) => {
+    let hash = 0;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // force 32-bit int
+    }
+    return Math.abs(hash);
+  };
+
+  // Shuffle the options within each question deterministically,
+  // keeping question order stable.
+  const questionsWithShuffledOptions = quiz.questions.map((q) => {
+    const shuffledOptions = [...q.options]
+      .map((opt) => ({
+        ...opt,
+        _sortKey: simpleHash(`${q.question}|${opt.text}`),
+      }))
+      .sort((a, b) => a._sortKey - b._sortKey)
+      .map(({ _sortKey, ...opt }) => opt);
+
+    return { ...q, options: shuffledOptions };
+  });
+
+  return {
+    ...quiz,
+    questions: questionsWithShuffledOptions,
+  };
+}
 
 export type GenerateAdditionalMaterialParams = {
   prisma: PrismaClientWithAccelerate;
@@ -66,8 +103,8 @@ export async function generateAdditionalMaterial({
     "Lesson parts  used in generation",
     JSON.stringify(lessonPartsToUse),
   );
-
-  const result = await generateAdditionalMaterialObject({
+  let result: AdditionalMaterialSchemas;
+  result = await generateAdditionalMaterialObject({
     provider: "openai",
     parsedInput: {
       documentType: input.documentType,
@@ -83,6 +120,13 @@ export async function generateAdditionalMaterial({
     throw error;
   }
 
+  if (
+    input.documentType === "additional-starter-quiz" ||
+    input.documentType === "additional-exit-quiz"
+  ) {
+    const quiz = baseQuizSchema.parse(result);
+    result = shuffleQuizOptions(quiz);
+  }
   const moderation = await generateAdditionalMaterialModeration({
     input: JSON.stringify(result),
     provider: "openai",
