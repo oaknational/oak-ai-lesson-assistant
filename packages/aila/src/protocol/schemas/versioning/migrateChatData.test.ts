@@ -48,7 +48,7 @@ describe("migrateChatData", () => {
   describe("persistence callback", () => {
     it("should call persistence when migration occurs", async () => {
       const mockPersist = jest
-        .fn<() => Promise<void>>()
+        .fn<(chatData: unknown) => Promise<void>>()
         .mockResolvedValue(undefined);
 
       await migrateChatData(chatWithV1Quiz, mockPersist, testContext);
@@ -64,7 +64,7 @@ describe("migrateChatData", () => {
 
     it("should not call persistence when no migration needed", async () => {
       const mockPersist = jest
-        .fn<() => Promise<void>>()
+        .fn<(chatData: unknown) => Promise<void>>()
         .mockResolvedValue(undefined);
 
       await migrateChatData(chatWithV3Quiz, mockPersist, testContext);
@@ -74,7 +74,7 @@ describe("migrateChatData", () => {
     it("should propagate persistence errors", async () => {
       const mockError = new Error("Persistence failed");
       const mockPersist = jest
-        .fn<() => Promise<void>>()
+        .fn<(chatData: unknown) => Promise<void>>()
         .mockImplementation(async () => {
           throw mockError;
         });
