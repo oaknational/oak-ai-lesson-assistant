@@ -1,3 +1,10 @@
+# [1.53.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.52.0...v1.53.0) (2025-10-02)
+
+
+### Features
+
+* construct prior knowledge from previous lessons AI-1571 AI-1620 AI-1620 ([#800](https://github.com/oaknational/oak-ai-lesson-assistant/issues/800)) ([af6ae64](https://github.com/oaknational/oak-ai-lesson-assistant/commit/af6ae64a0376fb0ed3a185a4d64e5819b8f60cc3))
+
 # [1.52.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.51.1...v1.52.0) (2025-09-29)
 
 
