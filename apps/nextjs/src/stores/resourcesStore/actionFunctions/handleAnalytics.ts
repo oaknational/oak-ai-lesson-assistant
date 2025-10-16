@@ -48,7 +48,7 @@ export const handleAnalytics = (
         interactionId: resourceId,
         platform: platform,
         product: product,
-        engagementIntent: "use",
+        engagementIntent: "refine",
         eventVersion: "2.0.0",
         analyticsUseCase: "Teacher",
         componentType,
