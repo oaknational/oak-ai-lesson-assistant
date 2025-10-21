@@ -20,10 +20,6 @@ import {
   priorKnowledgePrompt,
 } from "./QuestionAssesmentPrompt";
 import type { QuizQuestionWithRawJson } from "./interfaces";
-import {
-  starterQuizQuestionSuitabilityDescriptionSchema,
-  testRatingSchema,
-} from "./rerankers/RerankerStructuredOutputSchema";
 import { unpackLessonPlanForPrompt } from "./unpackLessonPlan";
 
 // Create a logger instance for the quiz module
