@@ -47,7 +47,7 @@ import type { BaseType } from "../ChoiceModels";
 //     ),
 // });
 
-export const testRatingSchema = z.object({
+export const ratingResponseSchema = z.object({
   justification: z
     .string()
     .describe("The chain of thought that led to the rating"),
@@ -58,7 +58,7 @@ export const testRatingSchema = z.object({
     ),
 }) satisfies z.ZodType<BaseType & Record<string, unknown>>;
 
-export type TestRating = z.infer<typeof testRatingSchema>;
+export type RatingResponse = z.infer<typeof ratingResponseSchema>;
 
 // export const quizConsiderationSchema = z.object({
 //   basedOnId: z

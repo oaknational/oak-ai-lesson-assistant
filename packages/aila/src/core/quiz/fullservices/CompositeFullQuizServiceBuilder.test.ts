@@ -6,7 +6,7 @@ import {
   CircleTheoremLesson,
   CircleTheoremLessonWithoutBasedOn,
 } from "../fixtures/CircleTheoremsExampleOutput";
-import { testRatingSchema } from "../rerankers/RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "../rerankers/RerankerStructuredOutputSchema";
 import type { QuizBuilderSettings } from "../schema";
 import { CompositeFullQuizServiceBuilder } from "./CompositeFullQuizServiceBuilder";
 
@@ -22,7 +22,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     it("should build a CompositeFullQuizService", () => {
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag"],
@@ -39,7 +39,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     it("Should work with a simple quiz selector", async () => {
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag"],
@@ -72,7 +72,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag"],
@@ -100,7 +100,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["rag"],
@@ -130,7 +130,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag", "rag"], // Include both generators to test override behavior
@@ -180,7 +180,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag", "rag"], // Only include rag generator to test fallback behavior
@@ -235,7 +235,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["basedOnRag", "rag", "ml"], // Only include rag generator to test fallback behavior
@@ -290,7 +290,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "return-first",
         quizGenerators: ["rag"], // Only include rag generator to test fallback behavior
@@ -325,7 +325,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "schema-reranker",
         quizGenerators: ["basedOnRag", "rag"], // Only include rag generator to test fallback behavior
@@ -362,7 +362,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
       const builder = new CompositeFullQuizServiceBuilder();
       const settings: QuizBuilderSettings = {
-        quizRatingSchema: testRatingSchema,
+        quizRatingSchema: ratingResponseSchema,
         quizSelector: "simple",
         quizReranker: "schema-reranker",
         quizGenerators: ["rag"], // Only include rag generator to test fallback behavior

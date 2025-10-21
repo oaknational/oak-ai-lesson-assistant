@@ -4,7 +4,7 @@ import type { z } from "zod";
 
 import type { QuizV1Question } from "../../../protocol/schema";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "./RerankerStructuredOutputSchema";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 
 const log = aiLogger("aila:quiz");
@@ -35,9 +35,9 @@ describe("ReturnFirstReranker", () => {
       const result = (await reranker.evaluateQuizArray(
         mockQuizzes,
         mockLessonPlan,
-        testRatingSchema,
+        ratingResponseSchema,
         "/exitQuiz",
-      )) as unknown as z.infer<typeof testRatingSchema>[];
+      )) as unknown as z.infer<typeof ratingResponseSchema>[];
 
       expect(result[0]?.rating).toBe(1);
       expect(result[1]?.rating).toBe(0);
@@ -53,7 +53,7 @@ describe("ReturnFirstReranker", () => {
       const result = await reranker.evaluateQuizArray(
         [],
         mockLessonPlan,
-        testRatingSchema,
+        ratingResponseSchema,
         "/exitQuiz",
       );
 
@@ -71,7 +71,7 @@ describe("ReturnFirstReranker", () => {
       const result = await reranker.evaluateQuizArray(
         mockQuizzes,
         mockLessonPlan,
-        testRatingSchema,
+        ratingResponseSchema,
         "/exitQuiz",
       );
     });

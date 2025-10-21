@@ -12,14 +12,14 @@ import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "./RerankerStructuredOutputSchema";
 
 jest.mock("../OpenAIRanker");
 
 const log = aiLogger("aila:quiz");
 
 class TestBasedOnRagReranker extends BasedOnRagAilaQuizReranker<
-  typeof testRatingSchema
+  typeof ratingResponseSchema
 > {
   async rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]> {
     return [0];
@@ -33,7 +33,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
   let mockQuizType: QuizPath;
 
   beforeEach(() => {
-    reranker = new TestBasedOnRagReranker(testRatingSchema, "/starterQuiz");
+    reranker = new TestBasedOnRagReranker(ratingResponseSchema, "/starterQuiz");
     mockQuizzes = [cachedQuiz];
     mockLessonPlan = CircleTheoremLesson;
     mockQuizType = "/starterQuiz";
@@ -48,7 +48,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
     //     const result = await reranker.evaluateQuizArray(
     //       mockQuizzes,
     //       mockLessonPlan,
-    //       testRatingSchema,
+    //       ratingResponseSchema,
     //       mockQuizType,
     //     );
 
@@ -70,7 +70,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
             message: {},
           },
         ],
-      } as unknown as ParsedChatCompletion<typeof testRatingSchema>;
+      } as unknown as ParsedChatCompletion<typeof ratingResponseSchema>;
 
       (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
         mockResponse,
@@ -80,7 +80,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
         reranker.evaluateQuizArray(
           mockQuizzes,
           mockLessonPlan,
-          testRatingSchema,
+          ratingResponseSchema,
           mockQuizType,
           false,
         ),
@@ -112,7 +112,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
             },
           },
         ],
-      } as unknown as ParsedChatCompletion<typeof testRatingSchema>;
+      } as unknown as ParsedChatCompletion<typeof ratingResponseSchema>;
 
       (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
         mockResponse,
@@ -121,7 +121,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
       const result = await reranker.evaluateQuizArray(
         mockQuizzes,
         mockLessonPlan,
-        testRatingSchema,
+        ratingResponseSchema,
         mockQuizType,
         false,
       );
@@ -153,7 +153,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
     //         },
     //       },
     //     ],
-    //   } as unknown as ParsedChatCompletion<typeof testRatingSchema>;
+    //   } as unknown as ParsedChatCompletion<typeof ratingResponseSchema>;
 
     //   (evaluateQuiz as jest.Mock)
     //     .mockResolvedValueOnce(mockSuccess)
@@ -162,7 +162,7 @@ describe("BasedOnRagAilaQuizReranker", () => {
     //   const result = await reranker.evaluateQuizArray(
     //     [cachedQuiz, cachedQuiz],
     //     mockLessonPlan,
-    //     testRatingSchema,
+    //     ratingResponseSchema,
     //     mockQuizType,
     //   );
 

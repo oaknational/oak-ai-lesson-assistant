@@ -7,12 +7,12 @@ import type {
   QuizV1Question,
 } from "../../../protocol/schema";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "./RerankerStructuredOutputSchema";
 
 // This reranker returns the first quiz in the list. It is used for testing and hacky workarounds.
 // TODO: GCLOMAX - Fix the typing here to be generic.
 export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
-  typeof testRatingSchema
+  typeof ratingResponseSchema
 > {
   public rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]> {
     return Promise.resolve([0]);
@@ -20,11 +20,11 @@ export class ReturnFirstReranker extends BasedOnRagAilaQuizReranker<
   public evaluateQuizArray(
     quizzes: QuizV1Question[][],
     _lessonPlan: PartialLessonPlan,
-    ratingSchema: typeof testRatingSchema,
+    ratingSchema: typeof ratingResponseSchema,
     _quizType: QuizPath,
-  ): Promise<z.infer<typeof testRatingSchema>[]> {
+  ): Promise<z.infer<typeof ratingResponseSchema>[]> {
     const output = quizzes.map(() => {
-      const dummySchema = generateMock(testRatingSchema);
+      const dummySchema = generateMock(ratingResponseSchema);
       dummySchema.rating = 0;
       return dummySchema;
     });

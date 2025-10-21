@@ -4,14 +4,14 @@ import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { cachedBadQuiz, cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "./RerankerStructuredOutputSchema";
 import { TestSchemaReranker } from "./SchemaReranker";
 
 const log = aiLogger("aila:quiz");
 
 describe("TestSchemaReranker", () => {
   jest.setTimeout(60000);
-  let reranker: TestSchemaReranker<typeof testRatingSchema>;
+  let reranker: TestSchemaReranker<typeof ratingResponseSchema>;
   let mockQuizzes: QuizQuestionWithRawJson[][];
   let mockLessonPlan: PartialLessonPlan;
   let mockQuizType: QuizPath;
@@ -34,13 +34,13 @@ describe("TestSchemaReranker", () => {
     const result = await reranker.evaluateStarterQuiz(
       mockQuizzes,
       mockLessonPlan,
-      testRatingSchema,
+      ratingResponseSchema,
       mockQuizType,
     );
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     result.forEach((item) => {
-      expect(testRatingSchema.safeParse(item).success).toBe(true);
+      expect(ratingResponseSchema.safeParse(item).success).toBe(true);
     });
     log.info("result", JSON.stringify(result));
   });
@@ -49,13 +49,13 @@ describe("TestSchemaReranker", () => {
     const result = await reranker.evaluateExitQuiz(
       mockQuizzes,
       mockLessonPlan,
-      testRatingSchema,
+      ratingResponseSchema,
       mockQuizType,
     );
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     result.forEach((item) => {
-      expect(testRatingSchema.safeParse(item).success).toBe(true);
+      expect(ratingResponseSchema.safeParse(item).success).toBe(true);
     });
     log.info("result", JSON.stringify(result));
   });
@@ -68,7 +68,7 @@ describe("TestSchemaReranker", () => {
     const starterResult = await reranker.evaluateStarterQuiz(
       emptyQuizzes,
       mockLessonPlan,
-      testRatingSchema,
+      ratingResponseSchema,
       mockQuizType,
     );
     expect(starterResult).toEqual([]);
@@ -76,7 +76,7 @@ describe("TestSchemaReranker", () => {
     const exitResult = await reranker.evaluateExitQuiz(
       emptyQuizzes,
       mockLessonPlan,
-      testRatingSchema,
+      ratingResponseSchema,
       mockQuizType,
     );
     expect(exitResult).toEqual([]);
@@ -92,11 +92,11 @@ describe("TestSchemaReranker Integration", () => {
       .evaluateStarterQuiz(
         quizArray,
         CircleTheoremLesson,
-        testRatingSchema,
+        ratingResponseSchema,
         "/starterQuiz",
       )
       .then((schemas) =>
-        schemas.map((schema) => testRatingSchema.parse(schema)),
+        schemas.map((schema) => ratingResponseSchema.parse(schema)),
       );
     log.info("result", JSON.stringify(result));
     expect(result).toBeDefined();

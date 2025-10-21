@@ -6,7 +6,7 @@ import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import type { QuizQuestionWithRawJson } from "../interfaces";
 import { BasedOnRagAilaQuizReranker } from "./AilaQuizReranker";
-import { testRatingSchema } from "./RerankerStructuredOutputSchema";
+import { ratingResponseSchema } from "./RerankerStructuredOutputSchema";
 
 const log = aiLogger("aila:quiz");
 
@@ -16,7 +16,7 @@ export class TestSchemaReranker<
   public rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]> {
     return Promise.resolve([]);
   }
-  public inputSchema = testRatingSchema;
+  public inputSchema = ratingResponseSchema;
   public evaluateStarterQuiz(
     quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: PartialLessonPlan,
