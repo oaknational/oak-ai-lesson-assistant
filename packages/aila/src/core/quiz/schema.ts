@@ -1,9 +1,6 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
-export type retrievalStrategy = "bm25" | "blended";
-export type rerankerStrategy = "openai" | "elastic" | "blended";
-
 // Generator Types
 export const QuizGeneratorTypeSchema = z.enum(["rag", "ml", "basedOnRag"]);
 export type QuizGeneratorType = z.infer<typeof QuizGeneratorTypeSchema>;

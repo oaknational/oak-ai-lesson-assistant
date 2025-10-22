@@ -25,15 +25,6 @@ import type {
   QuizServiceSettings,
 } from "./schema";
 
-export interface CustomMetadata {
-  questionUid: string;
-  [key: string]: unknown; // Allow for other unknown metadata fields
-}
-
-export interface DocumentRetriever {
-  retrieve(query: string): Promise<Document[]>;
-}
-
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
 export interface DocumentReranker {
@@ -50,18 +41,6 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-// // TODO: GCLOMAX - move this to interfaces and rename.
-// export interface AilaQuizGeneratorService {
-//   generateMathsExitQuizPatch(
-//     lessonPlan: PartialLessonPlan,
-//     relevantLessons?: AilaRagRelevantLesson[],
-//   ): Promise<Quiz[]>;
-//   generateMathsStarterQuizPatch(
-//     lessonPlan: PartialLessonPlan,
-//     relevantLessons?: AilaRagRelevantLesson[],
-//   ): Promise<Quiz[]>;
-// }
-
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
     lessonPlan: PartialLessonPlan,
@@ -71,13 +50,6 @@ export interface AilaQuizGeneratorService {
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
-}
-
-export interface AilaQuizVariantService {
-  rerankService: DocumentReranker;
-  generateMathsStarterQuizPatch(
-    lessonPlan: PartialLessonPlan,
-  ): Promise<JsonPatchDocument>;
 }
 
 export interface AilaQuizReranker {
@@ -96,7 +68,6 @@ export interface FullQuizService {
     quizType: quizPatchType,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-    override?: boolean,
   ): Promise<LatestQuiz>;
 }
 

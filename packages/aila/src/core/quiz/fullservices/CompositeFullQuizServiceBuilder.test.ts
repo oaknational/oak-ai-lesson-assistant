@@ -131,12 +131,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLesson,
         mockRelevantLessons,
-        true, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
@@ -146,12 +144,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       expect(quizWithOverride.questions[0]?.questionType).toBeDefined();
       log.info("Quiz generated with override: ", quizWithOverride);
 
-      // Test with override disabled (should use default behavior)
       const quizWithoutOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLesson,
         mockRelevantLessons,
-        false, // Disable override
       );
 
       expect(quizWithoutOverride).toBeDefined();
@@ -180,12 +176,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled but no basedOn lesson
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        true, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
@@ -198,12 +192,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         quizWithOverride,
       );
 
-      // Test with override disabled (should use default behavior)
       const quizWithoutOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        false, // Disable override
       );
 
       expect(quizWithoutOverride).toBeDefined();
@@ -234,12 +226,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled but no basedOn lesson
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        true, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
@@ -252,12 +242,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
         quizWithOverride,
       );
 
-      // Test with override disabled (should use default behavior)
       const quizWithoutOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        false, // Disable override
       );
 
       expect(quizWithoutOverride).toBeDefined();
@@ -288,12 +276,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled but no basedOn lesson
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        true, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
@@ -322,12 +308,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled but no basedOn lesson
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        false, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
@@ -358,12 +342,10 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       };
       const service = builder.build(settings);
 
-      // Test with override enabled but no basedOn lesson
       const quizWithOverride = await service.createBestQuiz(
         "/starterQuiz",
         CircleTheoremLessonWithoutBasedOn,
         mockRelevantLessons,
-        false, // Enable override
       );
 
       expect(quizWithOverride).toBeDefined();
