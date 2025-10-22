@@ -6,7 +6,7 @@ import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuizReasoningModel } from "../OpenAIRanker";
+import { evaluateQuiz } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
 import {
@@ -35,7 +35,7 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
     >(
       async (quiz: QuizQuestionWithRawJson[]) => {
         try {
-          const result = await evaluateQuizReasoningModel(
+          const result = await evaluateQuiz(
             lessonPlan,
             quiz,
             4000,

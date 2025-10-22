@@ -29,48 +29,16 @@ const log = aiLogger("aila:quiz");
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";
 const OPENAI_MODEL: string = "o4-mini";
 
-const ThoughtStep = z.object({
-  step: z.number(),
-  thought: z.string(),
-});
-
-const OutputSchema = z.object({
-  input: z.string(),
-  chainOfThought: z.array(ThoughtStep),
-  finalRanking: z.number().int().min(1).max(10),
-  conclusion: z.string(),
-});
-
-type LLMOutput = z.infer<typeof OutputSchema>;
 // TODO Change implementation to openai Provider
 type sectionCategory = "priorKnowledge" | "keyLearningPoints";
 
 type ChatContent = OpenAI.Chat.Completions.ChatCompletionContentPart;
 
-// type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
-
 export type ChatMessage =
   | OpenAI.Chat.Completions.ChatCompletionSystemMessageParam
   | OpenAI.Chat.Completions.ChatCompletionUserMessageParam;
 
-export class OpenAIRanker {
-  public async rankQuestion(
-    lessonPlan: PartialLessonPlan,
-    question: QuizV1Question,
-  ): Promise<number> {
-    return 0;
-  }
-
-  private stuffLessonPlanIntoPrompt(lessonPlan: PartialLessonPlan): string {
-    return "prompt";
-  }
-
-  private transformQuestionSchemaToOpenAIPayload(
-    QuizQuestion: QuizV1Question,
-  ): string {
-    return "input";
-  }
-}
+export class OpenAIRanker {}
 
 function processStringWithImages(text: string): ChatContent[] {
   // Split by markdown image patterns: ![alt](url) - secure regex prevents ReDoS
@@ -150,18 +118,18 @@ function combinePrompts(
   lessonPlan: PartialLessonPlan,
   question: QuizQuestionWithRawJson,
 ): ChatMessage[] {
-  const Messages: ChatMessage[] = [];
-  const Content: ChatContent[] = [];
+  const messages: ChatMessage[] = [];
+  const content: ChatContent[] = [];
 
-  Messages.push(QuestionInspectionSystemPrompt);
+  messages.push(QuestionInspectionSystemPrompt);
 
-  Content.push(lessonPlanSectionToMessage(lessonPlan, "priorKnowledge"));
+  content.push(lessonPlanSectionToMessage(lessonPlan, "priorKnowledge"));
   const questionMessage = quizToLLMMessages(question);
   if (Array.isArray(questionMessage.content)) {
-    Content.push(...questionMessage.content);
+    content.push(...questionMessage.content);
   }
-  Messages.push(contentListToUser(Content));
-  return Messages;
+  messages.push(contentListToUser(content));
+  return messages;
 }
 
 /**
@@ -201,20 +169,20 @@ function combinePromptsAndQuestions(
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   lessonPlanSectionForConsideration: sectionCategory,
 ): ChatMessage[] {
-  const Messages: ChatMessage[] = [];
-  const Content: ChatContent[] = [];
+  const messages: ChatMessage[] = [];
+  const content: ChatContent[] = [];
 
-  Messages.push(systemPrompt);
+  messages.push(systemPrompt);
 
-  Content.push(
+  content.push(
     lessonPlanSectionToMessage(lessonPlan, lessonPlanSectionForConsideration),
   );
   const questionMessage = quizQuestionsToOpenAIMessageFormat(questions);
   if (Array.isArray(questionMessage.content)) {
-    Content.push(...questionMessage.content);
+    content.push(...questionMessage.content);
   }
-  Messages.push(contentListToUser(Content));
-  return Messages;
+  messages.push(contentListToUser(content));
+  return messages;
 }
 
 /**
@@ -236,85 +204,49 @@ function combinePromptsAndQuestionsReasoningModel(
   quizType: QuizPath,
 ): ChatMessage[] {
   const lessonPlanUnpacked: string = unpackLessonPlanForPrompt(lessonPlan);
-  const Messages: ChatMessage[] = [];
-  const Content: ChatContent[] = [];
+  const messages: ChatMessage[] = [];
+  const content: ChatContent[] = [];
 
-  Messages.push(systemPrompt);
+  messages.push(systemPrompt);
 
-  Content.push({
+  content.push({
     type: "text" as const,
     text: `I want you to evaluate the quiz questions based on the lesson plan provided. Rate the quizzes based on their suitability for inclusion in the lesson plan. Consider best practice pedagogy, as you are part of a maths lesson plan generator for Oak National Academy, leaders in UK teaching.`,
   });
 
   if (quizType === "/starterQuiz") {
-    Content.push({
+    content.push({
       type: "text" as const,
       text: `You are generating a starter quiz for a lesson plan. The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge.`,
     });
   } else if (quizType === "/exitQuiz") {
-    Content.push({
+    content.push({
       type: "text" as const,
       text: `You are generating an exit quiz for a lesson plan. The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning.`,
     });
   }
 
-  Content.push({
+  content.push({
     type: "text" as const,
     text: `The lesson plan is as follows: ${lessonPlanUnpacked}`,
   });
   const questionMessage = quizQuestionsToOpenAIMessageFormat(questions);
   if (Array.isArray(questionMessage.content)) {
-    Content.push(...questionMessage.content);
+    content.push(...questionMessage.content);
   }
-  Messages.push(contentListToUser(Content));
-  return Messages;
-}
-
-/**
- * Evaluates a starter quiz by combining lesson plan information, quiz questions, and a system prompt,
- * then sends this combined information to an OpenAI model for analysis.
- *
- * @async
- * @function
- * @param {PartialLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
- * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
- * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
- * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
- * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
- */
-async function evaluateStarterQuiz<
-  T extends z.ZodType<BaseType & Record<string, unknown>>,
->(
-  lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithRawJson[],
-  max_tokens: number = 1500,
-  ranking_schema: T,
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
-  const openAIMessage = combinePromptsAndQuestions(
-    lessonPlan,
-    questions,
-    QuizInspectionSystemPrompt,
-    "priorKnowledge",
-  );
-  // TODO: Change remove zodtype any - make specific type.
-  log.info("openAIMessage", JSON.stringify(openAIMessage));
-  const response = await OpenAICallRerankerWithSchema(
-    openAIMessage,
-    max_tokens,
-    ranking_schema,
-  );
-  return response;
+  messages.push(contentListToUser(content));
+  return messages;
 }
 
 /**
  * Evaluates a quiz by combining lesson plan information, quiz questions, and a system prompt,
- * then sends this combined information to an OpenAI model for analysis.
+ * then sends this combined information to an OpenAI reasoning model for analysis.
  *
  * @async
  * @function
  * @param {PartialLessonPlan} lessonPlan - The lesson plan object containing information about the lesson.
  * @param {QuizQuestion[]} questions - An array of quiz questions to be evaluated.
- * @param {number} [max_tokens=1500] - The maximum number of tokens to be used in the OpenAI API call.
+ * @param {number} [max_tokens=4000] - The maximum number of tokens to be used in the OpenAI API call.
  * @param {T} ranking_schema - The Zod schema to be used for parsing the response.
  * @param {QuizPath} quizType - The type of quiz being evaluated (determines which lesson plan section to use).
  * @returns {Promise<ParsedChatCompletion<z.infer<T>>>} A promise that resolves to the parsed OpenAI chat completion response.
@@ -324,40 +256,10 @@ async function evaluateQuiz<
 >(
   lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithRawJson[],
-  max_tokens: number = 1500,
-  ranking_schema: T,
-  quizType: QuizPath,
-): Promise<ParsedChatCompletion<z.infer<T>>> {
-  const lessonSectionSelection: sectionCategory =
-    quizType === "/starterQuiz" ? "priorKnowledge" : "keyLearningPoints";
-
-  const openAIMessage = combinePromptsAndQuestions(
-    lessonPlan,
-    questions,
-    QuizInspectionSystemPrompt,
-    lessonSectionSelection,
-  );
-
-  const response = await OpenAICallRerankerWithSchema(
-    openAIMessage,
-    max_tokens,
-    ranking_schema,
-  );
-  return response;
-}
-
-async function evaluateQuizReasoningModel<
-  T extends z.ZodType<BaseType & Record<string, unknown>>,
->(
-  lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithRawJson[],
   max_tokens: number = 4000,
   ranking_schema: T,
   quizType: QuizPath,
 ): Promise<ParsedChatCompletion<z.infer<T>>> {
-  const lessonSectionSelection: sectionCategory =
-    quizType === "/starterQuiz" ? "priorKnowledge" : "keyLearningPoints";
-
   const openAIMessage = combinePromptsAndQuestionsReasoningModel(
     lessonPlan,
     questions,
@@ -365,14 +267,14 @@ async function evaluateQuizReasoningModel<
     quizType,
   );
 
-  const response = await OpenAICallRerankerWithSchema(
+  const response = await OpenAICallReranker(
     openAIMessage,
     max_tokens,
     ranking_schema,
   );
   return response;
 }
-export { evaluateQuiz, evaluateQuizReasoningModel };
+export { evaluateQuiz };
 
 export {
   combinePrompts,
@@ -380,49 +282,6 @@ export {
   quizQuestionsToOpenAIMessageFormat,
   quizToLLMMessages,
 };
-
-/**
- * Makes an OpenAI API call for reranking purposes.
- *
- * @async
- * @function
- * @param {ChatMessage[]} messages - The messages to send to the OpenAI API.
- * @param {number} [max_tokens=500] - The maximum number of tokens to generate.
- * @param {z.ZodType<BaseType & Record<string, unknown>>} [schema] - Optional schema for response validation.
- * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
- */
-export async function OpenAICallReranker(
-  messages: ChatMessage[],
-  max_tokens: number = 500,
-  schema?: z.ZodType<BaseType & Record<string, unknown>>,
-): Promise<OpenAI.Chat.Completions.ChatCompletion> {
-  const userId = "test-user-id";
-  const chatId = "test-chat-id";
-  const openai = createOpenAIClient({ app: "maths-reranker" });
-  const startTime = Date.now();
-
-  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
-    const response = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      max_completion_tokens: max_tokens,
-      messages,
-    });
-    const endTime = Date.now();
-    const durationInSeconds = (endTime - startTime) / 1000;
-    log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
-    return response;
-  } else {
-    const response = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      max_tokens,
-      messages,
-    });
-    const endTime = Date.now();
-    const durationInSeconds = (endTime - startTime) / 1000;
-    log.info(`OpenAI API call took ${durationInSeconds.toFixed(2)} seconds`);
-    return response;
-  }
-}
 
 // TODO: type logit_bias properly.
 export async function OpenAICallLogProbs(
@@ -514,7 +373,7 @@ export async function OpenAICallCrossEncoder(
 }
 
 /**
- * Makes an OpenAI API call with schema validation using the beta completions API.
+ * Makes an OpenAI API call for reranking with schema validation using the beta completions API.
  *
  * @async
  * @function
@@ -523,7 +382,7 @@ export async function OpenAICallCrossEncoder(
  * @param {z.ZodType<BaseType & Record<string, unknown>>} schema - The Zod schema for response validation.
  * @returns {Promise<ParsedChatCompletion<z.infer<typeof schema>>>} A promise that resolves to the parsed OpenAI chat completion.
  */
-export async function OpenAICallRerankerWithSchema(
+export async function OpenAICallReranker(
   messages: ChatMessage[],
   max_tokens: number = 500,
   schema: z.ZodType<BaseType & Record<string, unknown>>,
@@ -564,7 +423,7 @@ export async function DummyOpenAICall() {
   const chatId = "test-chat-id";
   const openai = createOpenAIClient({ app: "maths-reranker" });
 
-  const Messages = [
+  const messages = [
     {
       role: "user",
       content: [

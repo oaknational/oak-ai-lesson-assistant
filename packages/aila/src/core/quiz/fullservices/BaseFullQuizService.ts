@@ -4,7 +4,6 @@ import type {
   AilaRagRelevantLesson,
   LatestQuiz,
   PartialLessonPlan,
-  QuizV1Question,
 } from "../../../protocol/schema";
 import type { BaseType } from "../ChoiceModels";
 import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
@@ -12,7 +11,6 @@ import type {
   AilaQuizGeneratorService,
   AilaQuizReranker,
   FullQuizService,
-  QuizQuestionWithRawJson,
   QuizSelector,
   quizPatchType,
 } from "../interfaces";

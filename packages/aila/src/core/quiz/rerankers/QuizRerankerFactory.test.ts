@@ -1,5 +1,5 @@
 import type { QuizRerankerType } from "../schema";
-import { AiEvaluatorQuizReranker } from "./AilaQuizReranker";
+import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
 import { AilaQuizRerankerFactoryImpl } from "./AilaQuizRerankerFactory";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 

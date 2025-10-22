@@ -3,11 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuizReasoningModel } from "../OpenAIRanker";
+import { evaluateQuiz } from "../OpenAIRanker";
 import { cachedQuiz } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "../interfaces";
-import { AiEvaluatorQuizReranker } from "./AilaQuizReranker";
+import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
 import { type RatingResponse } from "./RerankerStructuredOutputSchema";
 
 jest.mock("../OpenAIRanker");
@@ -42,7 +42,7 @@ describe("AiEvaluatorQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<RatingResponse>;
 
-      (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
+      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(
         mockResponse,
       );
 
@@ -83,7 +83,7 @@ describe("AiEvaluatorQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<RatingResponse>;
 
-      (evaluateQuizReasoningModel as jest.Mock).mockResolvedValueOnce(
+      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(
         mockResponse,
       );
 
