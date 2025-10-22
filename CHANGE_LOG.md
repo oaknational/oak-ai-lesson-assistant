@@ -1,3 +1,10 @@
+# [1.54.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.53.0...v1.54.0) (2025-10-22)
+
+
+### Features
+
+* update avo props to include owa tracking ([#821](https://github.com/oaknational/oak-ai-lesson-assistant/issues/821)) ([5f44d70](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5f44d708dd2053e356a5cb760df141d59138eb93))
+
 # [1.53.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.52.0...v1.53.0) (2025-10-02)
 
 
