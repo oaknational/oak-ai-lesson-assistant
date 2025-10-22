@@ -4,63 +4,42 @@ import { kv } from "@vercel/kv";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
-import type { z } from "zod";
 
-import type {
-  PartialLessonPlan,
-  QuizPath,
-  QuizV1Question,
-} from "../../../protocol/schema";
-import { type BaseSchema, type BaseType } from "../ChoiceModels";
-import { evaluateQuiz, evaluateQuizReasoningModel } from "../OpenAIRanker";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import { evaluateQuizReasoningModel } from "../OpenAIRanker";
 import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
-
-// import { evaluateQuiz } from "../OpenAIRanker";
+import {
+  type RatingResponse,
+  ratingResponseSchema,
+} from "./RerankerStructuredOutputSchema";
 
 const log = aiLogger("aila:quiz");
-export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
-  implements AilaQuizReranker<T>
-{
-  abstract rerankQuiz(quizzes: QuizV1Question[][]): Promise<number[]>;
-  public ratingSchema?: T;
-  public quizType?: QuizPath;
 
-  constructor(ratingSchema?: T, quizType?: QuizPath) {
-    this.ratingSchema = ratingSchema;
-    this.quizType = quizType;
-  }
-
-  //  This takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
-  //   TODO: GCLOMAX - move evaluate quiz out to use dependancy injection - can then pass the different types of reranker types.
+export class AiEvaluatorQuizReranker implements AilaQuizReranker {
+  // Takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
   public async evaluateQuizArray(
     quizArray: QuizQuestionWithRawJson[][],
     lessonPlan: PartialLessonPlan,
-    ratingSchema: T,
     quizType: QuizPath,
     useCache: boolean = true,
-  ): Promise<z.infer<T>[]> {
+  ): Promise<RatingResponse[]> {
     if (useCache) {
-      return this.cachedEvaluateQuizArray(
-        quizArray,
-        lessonPlan,
-        ratingSchema,
-        quizType,
-      );
+      return this.cachedEvaluateQuizArray(quizArray, lessonPlan, quizType);
     }
 
     // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
     const delayedRetrieveQuiz = withRandomDelay<
       [QuizQuestionWithRawJson[]],
-      ParsedChatCompletion<z.infer<T>>
+      ParsedChatCompletion<RatingResponse>
     >(
       async (quiz: QuizQuestionWithRawJson[]) => {
         try {
-          const result = await evaluateQuizReasoningModel<T>(
+          const result = await evaluateQuizReasoningModel(
             lessonPlan,
             quiz,
             4000,
-            ratingSchema,
+            ratingResponseSchema,
             quizType,
           );
           if (result instanceof Error) {
@@ -74,47 +53,36 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
       1000,
       5000,
     );
-    // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
-    // TODO: GCLOMAX - make these generic types safer.
-    // In this case the output is coming from the openAI endpoint. We need to unpack the output and unparse it.
 
+    // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
     const outputRatings = await processArray<
       QuizQuestionWithRawJson[],
-      ParsedChatCompletion<z.infer<T>>
+      ParsedChatCompletion<RatingResponse>
     >(quizArray, delayedRetrieveQuiz);
-    const extractedOutputRatings = outputRatings.map((item): z.infer<T> => {
+
+    const extractedOutputRatings = outputRatings.map((item): RatingResponse => {
       if (item instanceof Error) {
         log.error("Failed to evaluate quiz:", item);
-        // TODO: GCLOMAX - When merged add zod-mock for this, then overwrite the rating to be zero given that the schema must always have a root rating field.
-        // Return a default/fallback rating object that matches type T.
+        // Return a default/fallback rating object.
         return {
           rating: 0,
-          reasoning: `Error evaluating quiz: ${item.message}`,
-        } as z.infer<T>;
+          justification: `Error evaluating quiz: ${item.message}`,
+        };
       }
       if (!item.choices?.[0]?.message?.parsed) {
         throw new Error("Missing parsed response from OpenAI");
       }
       return item.choices[0].message.parsed;
     });
-    // const event = completion.choices[0].message.parsed;
 
-    // const bestRating = selectHighestRated(outputRatings, (item) => item.rating);
     return extractedOutputRatings;
   }
-  // public abstract evaluateQuizArray(
-  //   quizArray: QuizQuestion[][],
-  //   lessonPlan: PartialLessonPlan,
-  //   ratingSchema: T,
-  //   quizType: QuizPath,
-  // ): Promise<z.infer<T>[]>;
 
   public async cachedEvaluateQuizArray(
     quizArray: QuizQuestionWithRawJson[][],
     lessonPlan: PartialLessonPlan,
-    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<z.infer<T>[]> {
+  ): Promise<RatingResponse[]> {
     const keyPrefix = "aila:quiz:openai:reranker";
     const lessonPlanRerankerFields = [
       "title",
@@ -129,14 +97,14 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
       JSON.stringify({
         quizArray,
         relevantLessonPlanData,
-        ratingSchema,
+        ratingSchema: ratingResponseSchema,
         quizType,
       }),
     );
     const cacheKey = `${keyPrefix}:${hash}`;
 
     try {
-      const cached = await kv.get<z.infer<T>[]>(cacheKey);
+      const cached = await kv.get<RatingResponse[]>(cacheKey);
       if (cached) {
         log.info(`Cache hit for key: ${cacheKey}`);
         return cached;
@@ -151,7 +119,6 @@ export abstract class BasedOnRagAilaQuizReranker<T extends z.ZodType<BaseType>>
     const evaluatedQuizzes = await this.evaluateQuizArray(
       quizArray,
       lessonPlan,
-      ratingSchema,
       quizType,
       false,
     );

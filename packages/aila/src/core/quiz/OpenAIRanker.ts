@@ -377,7 +377,6 @@ export { evaluateQuiz, evaluateQuizReasoningModel };
 export {
   combinePrompts,
   combinePromptsAndQuestions,
-  evaluateStarterQuiz,
   quizQuestionsToOpenAIMessageFormat,
   quizToLLMMessages,
 };

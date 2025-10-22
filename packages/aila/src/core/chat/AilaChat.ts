@@ -30,7 +30,6 @@ import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
 import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
 import type { FullQuizService } from "../quiz/interfaces";
-import { ratingResponseSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -85,9 +84,8 @@ export class AilaChat implements AilaChatService {
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
     this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
-      quizRatingSchema: ratingResponseSchema,
       quizSelector: "simple",
-      quizReranker: "schema-reranker", // "return-first"
+      quizReranker: "ai-evaluator",
       quizGenerators: aila.options.quizGenerators,
     });
   }

@@ -1,5 +1,4 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
@@ -18,6 +17,7 @@ import type {
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "./ChoiceModels";
+import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
@@ -80,29 +80,17 @@ export interface AilaQuizVariantService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
+export interface AilaQuizReranker {
   evaluateQuizArray(
     quizzes: QuizQuestionWithRawJson[][],
     lessonPlan: PartialLessonPlan,
-    ratingSchema: T,
     quizType: QuizPath,
-  ): Promise<z.infer<T>[]>;
-  cachedEvaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: PartialLessonPlan,
-    ratingSchema: T,
-    quizType: QuizPath,
-  ): Promise<z.infer<T>[]>;
-  ratingSchema?: T;
-  quizType?: QuizPath;
-  ratingFunction?: RatingFunction<z.infer<T>>;
+  ): Promise<RatingResponse[]>;
 }
 
-// TODO: GCLOMAX - make generic by extending BaseType and BaseSchema as <T,U>
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
-  quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
+  quizReranker: AilaQuizReranker;
   quizGenerators: AilaQuizGeneratorService[];
   createBestQuiz(
     quizType: quizPatchType,
@@ -206,9 +194,7 @@ export interface AilaQuizFactory {
 }
 
 export interface AilaQuizRerankerFactory {
-  createAilaQuizReranker(
-    quizType: QuizRerankerType,
-  ): AilaQuizReranker<z.ZodType<BaseType>>;
+  createAilaQuizReranker(quizType: QuizRerankerType): AilaQuizReranker;
 }
 
 export interface QuizSelectorFactory {
