@@ -1,6 +1,7 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import type { TrpcUtils } from "@/utils/trpc";
@@ -51,10 +52,12 @@ export const handleFetchOwaLesson =
         const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
         try {
           // Create a new session
-          await get().actions.createMaterialSession(docTypeParsed, 3);
+          await get().actions.createMaterialSession(docTypeParsed, 3, true);
+          const id = get().id;
+          invariant(id, "Resource ID should be defined");
 
           log.info("Material session created ", {
-            resourceId: get().id,
+            resourceId: id,
           });
 
           // Fetch the OWA lesson data
@@ -96,7 +99,7 @@ export const handleFetchOwaLesson =
             title: lesson.title,
             subject: lesson.subject,
             year: lesson.year,
-            resourceId: get().id,
+            resourceId: id,
           });
 
           // Set lesson and transcript in page data

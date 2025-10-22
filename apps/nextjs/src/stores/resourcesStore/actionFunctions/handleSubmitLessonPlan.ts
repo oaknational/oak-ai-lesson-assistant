@@ -167,7 +167,7 @@ export const handleSubmitLessonPlan =
         result.lessonId,
         trpc,
       );
-      get().actions.analytics.trackMaterialRefined("generate_overview");
+      get().actions.analytics.trackMaterialRefined("lesson_summary_button");
     } catch (error: unknown) {
       handleStoreError(set, error, { context: "handleSubmitLessonPlan" });
       log.error("Error handling lesson plan", error);

@@ -11,6 +11,8 @@ import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import { getModerationTypes } from "@/lib/analytics/helpers";
 import type {
   ComponentTypeValueType,
+  PlatformValueType,
+  ProductValueType,
   ResourceFileTypeValueType,
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
@@ -26,19 +28,27 @@ export const handleAnalytics = (
     /**
      * Track teaching materials selected event
      */
-    trackMaterialSelected: (
-      resourceId: string,
-      docType: AdditionalMaterialType,
-      componentType: ComponentTypeValueType = "create_additional_materials_button",
-    ) => {
+    trackMaterialSelected: ({
+      resourceId,
+      docType,
+      componentType,
+      platform,
+      product,
+    }: {
+      resourceId: string;
+      docType: AdditionalMaterialType;
+      componentType: ComponentTypeValueType;
+      platform: PlatformValueType;
+      product: ProductValueType;
+    }) => {
       invariant(docType, "Document type is required for analytics");
 
       track.teachingMaterialsSelected({
         teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
         interactionId: resourceId,
-        platform: "aila-beta",
-        product: "ai lesson assistant",
-        engagementIntent: "use",
+        platform: platform,
+        product: product,
+        engagementIntent: "refine",
         eventVersion: "2.0.0",
         analyticsUseCase: "Teacher",
         componentType,
@@ -67,7 +77,7 @@ export const handleAnalytics = (
         teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
         interactionId: id,
         platform: "aila-beta",
-        product: "ai lesson assistant",
+        product: "teaching material",
         engagementIntent: "refine",
         componentType,
         eventVersion: "2.0.0",
@@ -117,7 +127,7 @@ export const handleAnalytics = (
         teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
         interactionId: id,
         platform: "aila-beta",
-        product: "ai lesson assistant",
+        product: "teaching material",
         engagementIntent: "use",
         componentType,
         eventVersion: "2.0.0",

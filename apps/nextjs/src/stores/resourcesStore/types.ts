@@ -12,6 +12,8 @@ import type { StoreApi } from "zustand";
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
 import type {
   ComponentTypeValueType,
+  PlatformValueType,
+  ProductValueType,
   ResourceFileTypeValueType,
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
@@ -100,6 +102,7 @@ export type ResourcesState = {
     createMaterialSession: (
       docType: string | null,
       stepNumber?: number,
+      trackEventFromOwa?: boolean,
     ) => Promise<{ success: boolean }>;
     submitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
     generateMaterial: () => Promise<void>;
@@ -114,11 +117,13 @@ export type ResourcesState = {
 
     // Analytics actions
     analytics: {
-      trackMaterialSelected: (
-        resourceId: string,
-        docType: AdditionalMaterialType,
-        componentType?: ComponentTypeValueType,
-      ) => void;
+      trackMaterialSelected: (params: {
+        resourceId: string;
+        docType: AdditionalMaterialType;
+        componentType: ComponentTypeValueType;
+        platform: PlatformValueType;
+        product: ProductValueType;
+      }) => void;
       trackMaterialRefined: (componentType: ComponentTypeValueType) => void;
       trackMaterialDownloaded: (
         componentType?: ComponentTypeValueType,
