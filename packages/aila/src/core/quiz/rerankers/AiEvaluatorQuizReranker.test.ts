@@ -42,9 +42,7 @@ describe("AiEvaluatorQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<RatingResponse>;
 
-      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(
-        mockResponse,
-      );
+      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(mockResponse);
 
       await expect(
         reranker.evaluateQuizArray(
@@ -83,9 +81,7 @@ describe("AiEvaluatorQuizReranker", () => {
         ],
       } as unknown as ParsedChatCompletion<RatingResponse>;
 
-      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(
-        mockResponse,
-      );
+      (evaluateQuiz as jest.Mock).mockResolvedValueOnce(mockResponse);
 
       const result = await reranker.evaluateQuizArray(
         mockQuizzes,

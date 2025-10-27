@@ -1,5 +1,5 @@
 import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
-import { combinePrompts, combinePromptsAndQuestions } from "./OpenAIRanker";
+import { combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 
@@ -71,7 +71,7 @@ describe("combinePromptsAndQuestions", () => {
       lessonPlan,
       questions,
       QuizInspectionSystemPrompt,
-      "priorKnowledge",
+      "/starterQuiz",
     );
     const ans = true;
     expect(ans).toBe(true);
