@@ -16,7 +16,7 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   async mappedQuizFromAilaRagRelevantLessons(
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
-    quizType: QuizPath = "/starterQuiz",
+    quizType: QuizPath,
   ): Promise<QuizQuestionWithRawJson[][]> {
     log.info(
       "Getting quizzes for relevant lessons:",
