@@ -1,6 +1,6 @@
 import type { BaseType } from "../ChoiceModels";
 import { cachedQuizRatings } from "../fixtures/cachedQuizRatings";
-import { type TestRating } from "../rerankers/RerankerStructuredOutputSchema";
+import { type RatingResponse } from "../rerankers/RerankerStructuredOutputSchema";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
 
 describe("SimpleQuizSelector", () => {
@@ -8,10 +8,10 @@ describe("SimpleQuizSelector", () => {
     rating: number;
   }
 
-  const ratings: TestRating[] = cachedQuizRatings;
+  const ratings: RatingResponse[] = cachedQuizRatings;
 
   it("should use the default rating function to select the highest rated item", () => {
-    const selector = new SimpleQuizSelector<TestRating>();
+    const selector = new SimpleQuizSelector<RatingResponse>();
     const highestRatedItem = selector.maxRatingFunctionApplier(
       ratings,
       selector.ratingFunction,
