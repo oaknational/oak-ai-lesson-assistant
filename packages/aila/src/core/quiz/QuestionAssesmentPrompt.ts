@@ -1,11 +1,11 @@
 import type { OpenAI } from "openai";
 
-export const quizEffectivenessPrompt = `Given a lesson plan with prior knowledge requirements and key learning points, along with a proposed assessment question, rate the question's effectiveness on a scale of 1-10 (1 being least effective, 10 being most effective) based on the following criteria:
+export const quizEffectivenessPrompt = `Given a lesson plan with prior knowledge requirements and key learning points, along with a proposed assessment Quiz, rate the quiz's effectiveness on a scale of 1-10 (1 being least effective, 10 being most effective) based on the following criteria:
   1. Relevance to Prior Knowledge:
-     - How well does the question address the specific prior knowledge outlined in the lesson plan?
+     - If a starter quiz, how well does the question address the specific prior knowledge outlined in the lesson plan?
      - Does it effectively probe the depth of understanding of prerequisite concepts?
   2. Alignment with Key Learning Points:
-     - To what extent does the question target the main learning objectives of the lesson?
+     - If an exit quiz, to what extent does the question target the main learning objectives of the lesson?
      - Does it require students to demonstrate understanding of the core concepts?
   3. Cognitive Level:
      - Does the question match the appropriate level of thinking (e.g., recall, application, analysis) for the lesson's objectives?

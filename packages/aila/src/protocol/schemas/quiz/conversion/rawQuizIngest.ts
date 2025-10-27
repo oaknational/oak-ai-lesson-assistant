@@ -134,8 +134,6 @@ export function convertHasuraQuizToV3(hasuraQuiz: HasuraQuiz): QuizV3 {
       (hasuraQuestion) => hasuraQuestion.questionType !== "explanatory-text",
     )
     .map((hasuraQuestion): QuizV3Question => {
-      log.info("Processing hasura question:", { hasuraQuestion });
-
       // Early return for explanatory-text (should be filtered out already)
       if (hasuraQuestion.questionType === "explanatory-text") {
         throw new Error("Explanatory text questions should be filtered out");
