@@ -18,7 +18,11 @@ export const handleCreateMaterialSession =
     trpc: TrpcUtils,
     refreshAuth?: () => Promise<void>,
   ) =>
-  async (docType: string | null, stepNumber?: number) => {
+  async (
+    docType: string | null,
+    stepNumber?: number,
+    trackEventFromOwa?: boolean,
+  ) => {
     set({ stepNumber: stepNumber ?? 1 });
 
     log.info("Creating material session", { docType });
@@ -41,12 +45,35 @@ export const handleCreateMaterialSession =
       set({ id: resourceId });
       log.info(get().id, "ID after creation");
 
-      get().actions.analytics.trackMaterialSelected(resourceId, docTypeParsed);
+      const source = get().source;
+
+      if (trackEventFromOwa) {
+        get().actions.analytics.trackMaterialSelected({
+          resourceId,
+          docType: docTypeParsed,
+          componentType: "create_more_with_ai_dropdown",
+          platform: "owa",
+          product: "teacher lesson resources",
+        });
+      } else {
+        get().actions.analytics.trackMaterialSelected({
+          resourceId,
+          docType: docTypeParsed,
+          componentType:
+            source === "aila"
+              ? "lesson_details_button"
+              : "create_teaching_material_button",
+          platform: "aila-beta",
+          product: "teaching material",
+        });
+      }
+      return { success: true };
     } catch (error) {
       handleStoreError(set, error, {
         context: "handleCreateMaterialSession",
         docType,
       });
       log.error("Error creating material session", error);
+      return { success: false };
     }
   };

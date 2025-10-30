@@ -18,11 +18,6 @@ export type MaxRatingFunctionApplier<T extends BaseType> = (
   ratingFunction: RatingFunction<T>,
 ) => number;
 
-export type RatingFunctionApplier<T extends BaseType> = (
-  items: T[],
-  ratingFunction: RatingFunction<T>,
-) => number[];
-
 // This just applies a rating function to each item. This is abstracted out to allow for different types of rating functions, i.e you can use a secondary LLM as a rating function.
 export function selectHighestRated<T extends BaseType>(
   items: T[],
@@ -45,12 +40,4 @@ export function selectHighestRated<T extends BaseType>(
     }
   }
   return highestRatedIndex;
-}
-
-// Used for typing.
-export function ApplyRatingFunction<T extends BaseType>(
-  items: T[],
-  ratingFunction: RatingFunction<T>,
-): number[] {
-  return items.map((item) => ratingFunction(item));
 }

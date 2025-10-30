@@ -14,7 +14,11 @@ const mockBatchUpdate =
       params: docs_v1.Params$Resource$Documents$Batchupdate,
     ) => Promise<docs_v1.Schema$BatchUpdateDocumentResponse>
   >();
-const mockGet = jest.fn<() => Promise<{ data: docs_v1.Schema$Document }>>();
+const mockGet = jest.fn<
+  (params: docs_v1.Params$Resource$Documents$Get) => Promise<{
+    data: docs_v1.Schema$Document;
+  }>
+>();
 
 const mockGoogleDocs = {
   documents: {

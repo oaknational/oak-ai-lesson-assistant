@@ -69,35 +69,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     );
     const chunkSize = 6;
 
-    // const questionsForPadding =
-    //   quizType === "/starterQuiz"
-    //     ? lessonPlan.starterQuiz
-    //     : lessonPlan.exitQuiz;
-    // // TODO: GCLOMAX - change this to make it consistent - put it out into fixtures.
-    // Split questions into chunks of 6
     for (let i = 0; i < quizQuestions.length; i += chunkSize) {
       const chunk = quizQuestions.slice(i, i + chunkSize);
-
-      // // If the last chunk has less than 6 questions, pad it with questions from lessonPlan, if not use a default question with a message explaining the issue.
-      // if (chunk.length < chunkSize && i + chunkSize >= quizQuestions.length) {
-      //   const remainingCount = chunkSize - chunk.length;
-
-      //   if (questionsForPadding) {
-      //     const paddingQuestions =
-      //       questionsForPadding
-      //         ?.filter(
-      //           (q): q is QuizQuestion =>
-      //             !!q?.question && !!q?.answers && !!q?.distractors,
-      //         )
-      //         .slice(0, remainingCount) ||
-      //       Array(remainingCount).fill(missingQuizQuestion);
-      //     chunk.push(...paddingQuestions);
-      //   } else {
-      //     const paddingQuestions: QuizQuestion[] =
-      //       Array(remainingCount).fill(missingQuizQuestion);
-      //     chunk.push(...paddingQuestions);
-      //   }
-      // }
       quizQuestions2DArray.push(chunk);
     }
 
