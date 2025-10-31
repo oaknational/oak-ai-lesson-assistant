@@ -6,8 +6,8 @@ import { type ZodType, type z } from "zod";
 
 import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
 import {
-  type AdditionalMaterialType,
-  additionalMaterialsConfigMap,
+  type TeachingMaterialType,
+  teachingMaterialsConfigMap,
 } from "./configSchema";
 import {
   type AllowedRefinements,
@@ -116,12 +116,12 @@ const refinementOptions: RefinementOption[] = Array.from(refinements).map(
 );
 
 export const resourceTypesConfig: Record<
-  AdditionalMaterialType,
+  TeachingMaterialType,
   BaseResourceTypeConfig
 > = {
   "additional-glossary": {
     // Backend config
-    ...additionalMaterialsConfigMap["additional-glossary"],
+    ...teachingMaterialsConfigMap["additional-glossary"],
 
     // Frontend config
     id: "additional-glossary",
@@ -149,7 +149,7 @@ export const resourceTypesConfig: Record<
   },
   "additional-comprehension": {
     // Backend config
-    ...additionalMaterialsConfigMap["additional-comprehension"],
+    ...teachingMaterialsConfigMap["additional-comprehension"],
 
     // Frontend config
     id: "additional-comprehension",
@@ -177,7 +177,7 @@ export const resourceTypesConfig: Record<
   },
   "additional-starter-quiz": {
     // Backend config
-    ...additionalMaterialsConfigMap["additional-starter-quiz"],
+    ...teachingMaterialsConfigMap["additional-starter-quiz"],
 
     // Frontend config
     id: "additional-starter-quiz",
@@ -198,7 +198,7 @@ export const resourceTypesConfig: Record<
   },
   "additional-exit-quiz": {
     // Backend config
-    ...additionalMaterialsConfigMap["additional-exit-quiz"],
+    ...teachingMaterialsConfigMap["additional-exit-quiz"],
 
     // Frontend config
     id: "additional-exit-quiz",

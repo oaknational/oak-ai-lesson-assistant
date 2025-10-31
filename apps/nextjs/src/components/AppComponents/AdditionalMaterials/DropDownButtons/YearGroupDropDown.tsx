@@ -1,4 +1,4 @@
-import { yearNameMap } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { yearNameMap } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { SharedDropDown } from "./SharedDropDown";
 

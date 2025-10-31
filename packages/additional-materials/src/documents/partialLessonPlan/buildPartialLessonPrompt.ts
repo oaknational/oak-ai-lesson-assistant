@@ -1,4 +1,4 @@
-import { language } from "../additionalMaterials/promptHelpers";
+import { language } from "../teachingMaterials/promptHelpers";
 import { howToMakeAGoodQuiz, lessonPlanPromptParts } from "./lessonPromptParts";
 import { type PartialLessonPlanFieldKeys } from "./schema";
 

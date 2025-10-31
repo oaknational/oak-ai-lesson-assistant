@@ -1,4 +1,4 @@
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 import type {
   Keyword,
   LatestQuiz,

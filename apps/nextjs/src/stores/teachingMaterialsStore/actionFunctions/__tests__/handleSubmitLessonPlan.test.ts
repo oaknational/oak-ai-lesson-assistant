@@ -73,7 +73,7 @@ describe("handleSubmitLessonPlan", () => {
     // Create trpc mock
     mockTrpc = {
       client: {
-        additionalMaterials: {
+        teachingMaterials: {
           generatePartialLessonPlanObject: {
             mutate: jest.fn().mockResolvedValue({
               lesson: {
@@ -116,7 +116,7 @@ describe("handleSubmitLessonPlan", () => {
     it("sets isLoadingLessonPlan to false even when an error occurs", async () => {
       const error = new Error("API Error");
       (
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate as jest.Mock
       ).mockRejectedValue(error);
 
@@ -146,7 +146,7 @@ describe("handleSubmitLessonPlan", () => {
 
       // Accept any superset, but require these fields
       expect(
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate,
       ).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -176,11 +176,11 @@ describe("handleSubmitLessonPlan", () => {
       await handler(mockParams);
 
       expect(
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate,
       ).toHaveBeenCalledTimes(1);
       expect(
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate,
       ).toHaveBeenCalledWith({
         title: "Test Lesson Title",
@@ -217,7 +217,7 @@ describe("handleSubmitLessonPlan", () => {
     it("handles toxic content response", async () => {
       mockIsToxic.mockReturnValue(true);
       (
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate as jest.Mock
       ).mockResolvedValue({
         lesson: null,
@@ -258,10 +258,10 @@ describe("handleSubmitLessonPlan", () => {
       await handler(mockParams);
 
       expect(
-        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+        mockTrpc.client.teachingMaterials.updateMaterialSession.mutate,
       ).toHaveBeenCalledTimes(1);
       expect(
-        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+        mockTrpc.client.teachingMaterials.updateMaterialSession.mutate,
       ).toHaveBeenCalledWith({
         resourceId: "test-resource-id-123",
         lessonId: "test-lesson-id-123",
@@ -271,7 +271,7 @@ describe("handleSubmitLessonPlan", () => {
     it("handles updateMaterialSession errors gracefully", async () => {
       const updateError = new Error("Update session failed");
       (
-        mockTrpc.client.additionalMaterials.updateMaterialSession
+        mockTrpc.client.teachingMaterials.updateMaterialSession
           .mutate as jest.Mock
       ).mockRejectedValue(updateError);
 
@@ -308,7 +308,7 @@ describe("handleSubmitLessonPlan", () => {
     it("does not call trackMaterialRefined when an error occurs", async () => {
       const error = new Error("API Error");
       (
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate as jest.Mock
       ).mockRejectedValue(error);
 
@@ -328,7 +328,7 @@ describe("handleSubmitLessonPlan", () => {
     it("catches and handles generic errors correctly", async () => {
       const error = new Error("Generic error");
       (
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate as jest.Mock
       ).mockRejectedValue(error);
 
@@ -348,7 +348,7 @@ describe("handleSubmitLessonPlan", () => {
     it("catches and handles TRPC errors correctly", async () => {
       const trpcError = new TRPCClientError("TRPC Error");
       (
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate as jest.Mock
       ).mockRejectedValue(trpcError);
 
@@ -391,7 +391,7 @@ describe("handleSubmitLessonPlan", () => {
     it("handles missing trpc client gracefully", async () => {
       const mockTrpcWithoutUpdate = {
         client: {
-          additionalMaterials: {
+          teachingMaterials: {
             generatePartialLessonPlanObject: {
               mutate: jest.fn().mockResolvedValue({
                 lesson: { title: "Test" },
@@ -456,7 +456,7 @@ describe("handleSubmitLessonPlan", () => {
       // Verify the complete flow
       expect(mockSetIsLoadingLessonPlan).toHaveBeenNthCalledWith(1, true);
       expect(
-        mockTrpc.client.additionalMaterials.generatePartialLessonPlanObject
+        mockTrpc.client.teachingMaterials.generatePartialLessonPlanObject
           .mutate,
       ).toHaveBeenCalledWith(expect.any(Object));
       expect(mockSet).toHaveBeenCalledWith(
@@ -466,7 +466,7 @@ describe("handleSubmitLessonPlan", () => {
         }),
       );
       expect(
-        mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
+        mockTrpc.client.teachingMaterials.updateMaterialSession.mutate,
       ).toHaveBeenCalledWith(expect.any(Object));
       expect(mockTrackMaterialRefined).toHaveBeenCalledWith(
         "lesson_summary_button",
@@ -478,7 +478,7 @@ describe("handleSubmitLessonPlan", () => {
       // Success with API but failure with session update
       const updateError = new Error("Session update failed");
       (
-        mockTrpc.client.additionalMaterials.updateMaterialSession
+        mockTrpc.client.teachingMaterials.updateMaterialSession
           .mutate as jest.Mock
       ).mockRejectedValue(updateError);
 

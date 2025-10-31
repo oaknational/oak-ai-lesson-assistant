@@ -1,9 +1,9 @@
-import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/additionalMaterials/generatePartialLessonPlan";
+import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/teachingMaterials/generatePartialLessonPlan";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 
@@ -33,7 +33,7 @@ const buildLessonPlanInput = (
   title: string,
   subject: string,
   year: string,
-  docType: AdditionalMaterialType,
+  docType: TeachingMaterialType,
   source: "aila" | "owa",
 ): PartialLessonContextSchemaType => {
   const resourceType = getResourceType(docType);
@@ -118,7 +118,7 @@ const updateMaterialSessionWithLessonId = async (
   invariant(resourceId, "Resource ID must be defined");
 
   try {
-    await trpc.client.additionalMaterials.updateMaterialSession.mutate({
+    await trpc.client.teachingMaterials.updateMaterialSession.mutate({
       resourceId,
       lessonId,
     });
@@ -158,7 +158,7 @@ export const handleSubmitLessonPlan =
       );
 
       const result =
-        await trpc.client.additionalMaterials.generatePartialLessonPlanObject.mutate(
+        await trpc.client.teachingMaterials.generatePartialLessonPlanObject.mutate(
           apiInput,
         );
 

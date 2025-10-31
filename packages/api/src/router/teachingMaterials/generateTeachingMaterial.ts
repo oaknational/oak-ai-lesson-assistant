@@ -1,12 +1,12 @@
-import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
+import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
 import {
-  type AdditionalMaterialSchemas,
-  type GenerateAdditionalMaterialInput,
-  additionalMaterialsConfigMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import { baseQuizSchema } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+  type GenerateTeachingMaterialInput,
+  type TeachingMaterialSchemas,
+  teachingMaterialsConfigMap,
+} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import { generateTeachingMaterialObject } from "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import { baseQuizSchema } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -57,18 +57,18 @@ function shuffleQuizOptions(quiz: ReturnType<typeof baseQuizSchema.parse>) {
   };
 }
 
-export type GenerateAdditionalMaterialParams = {
+export type GenerateTeachingMaterialParams = {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;
   rateLimit: RateLimitInfo;
   userId: string;
-  input: GenerateAdditionalMaterialInput & {
+  input: GenerateTeachingMaterialInput & {
     lessonId?: string | null;
   };
 };
 
-export type GenerateAdditionalMaterialResponse = {
-  resource: AdditionalMaterialSchemas | null;
+export type GenerateTeachingMaterialResponse = {
+  resource: TeachingMaterialSchemas | null;
   moderation: ModerationResult;
   resourceId: string;
 };
@@ -76,13 +76,13 @@ export type GenerateAdditionalMaterialResponse = {
 /**s
  * Generates additional educational material based on the provided input
  */
-export async function generateAdditionalMaterial({
+export async function generateTeachingMaterial({
   prisma,
   userId,
   input,
   auth,
   rateLimit,
-}: GenerateAdditionalMaterialParams) {
+}: GenerateTeachingMaterialParams) {
   log.info("Generating additional material");
   const resourceTypes = resourceTypesConfig[input.documentType];
   const lessonPartsToUse =
@@ -103,8 +103,8 @@ export async function generateAdditionalMaterial({
     "Lesson parts  used in generation",
     JSON.stringify(lessonPartsToUse),
   );
-  let result: AdditionalMaterialSchemas;
-  result = await generateAdditionalMaterialObject({
+  let result: TeachingMaterialSchemas;
+  result = await generateTeachingMaterialObject({
     provider: "openai",
     parsedInput: {
       documentType: input.documentType,
@@ -127,7 +127,7 @@ export async function generateAdditionalMaterial({
     const quiz = baseQuizSchema.parse(result);
     result = shuffleQuizOptions(quiz);
   }
-  const moderation = await generateAdditionalMaterialModeration({
+  const moderation = await generateTeachingMaterialModeration({
     input: JSON.stringify(result),
     provider: "openai",
   });
@@ -141,7 +141,7 @@ export async function generateAdditionalMaterial({
   }
 
   const { resourceId, adaptsOutputId, documentType } = input;
-  const version = additionalMaterialsConfigMap[documentType].version;
+  const version = teachingMaterialsConfigMap[documentType].version;
   let interaction: { id: string };
 
   if (resourceId) {

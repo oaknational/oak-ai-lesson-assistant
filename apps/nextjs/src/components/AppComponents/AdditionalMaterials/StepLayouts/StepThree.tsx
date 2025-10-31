@@ -1,5 +1,5 @@
-import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
 import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 
 import {
@@ -39,7 +39,9 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
   const pageData = useTeachingMaterialsStore(pageDataSelector);
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const moderation = useTeachingMaterialsStore(moderationSelector);
-  const isLoadingLessonPlan = useTeachingMaterialsStore(isLoadingLessonPlanSelector);
+  const isLoadingLessonPlan = useTeachingMaterialsStore(
+    isLoadingLessonPlanSelector,
+  );
   const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
 
   const { setDialogWindow } = useDialog();

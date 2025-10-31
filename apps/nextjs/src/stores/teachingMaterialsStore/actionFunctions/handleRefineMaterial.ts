@@ -1,8 +1,8 @@
 import {
-  additionalMaterialTypeEnum,
-  generateAdditionalMaterialInputSchema,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+  generateTeachingMaterialInputSchema,
+  teachingMaterialTypeEnum,
+} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import type { RefinementOption } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -45,7 +45,7 @@ export const handleRefineMaterial =
     try {
       log.info("Refining material", { docType, refinementOption });
 
-      const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
+      const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
 
       const payload = {
         documentType: docTypeParsed,
@@ -60,12 +60,11 @@ export const handleRefineMaterial =
         source,
       };
 
-      const parsedPayload =
-        generateAdditionalMaterialInputSchema.parse(payload);
+      const parsedPayload = generateTeachingMaterialInputSchema.parse(payload);
 
       // Make the API call
       const result =
-        await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
+        await trpc.client.teachingMaterials.generateTeachingMaterial.mutate(
           parsedPayload,
         );
 

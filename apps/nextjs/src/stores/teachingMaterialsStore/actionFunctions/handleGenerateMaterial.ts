@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -27,7 +27,7 @@ export const handleGenerateMaterial =
     get().actions.setIsResourcesLoading(true);
     const docType = get().docType;
 
-    const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
+    const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
     if (!docType) {
       log.error("No document type selected");
       throw new Error("No document type selected");
@@ -53,22 +53,20 @@ export const handleGenerateMaterial =
 
       // Make the API call
       const result =
-        await trpc.client.additionalMaterials.generateAdditionalMaterial.mutate(
-          {
-            documentType: docTypeParsed,
-            context: {
-              lessonPlan: {
-                ...lessonPlan,
-                year: formState.year,
-              },
-              previousOutput: null,
-              options: null,
+        await trpc.client.teachingMaterials.generateTeachingMaterial.mutate({
+          documentType: docTypeParsed,
+          context: {
+            lessonPlan: {
+              ...lessonPlan,
+              year: formState.year,
             },
-            resourceId: get().id, // Use existing resourceId
-            lessonId: get().pageData.lessonPlan.lessonId,
-            source: get().source,
+            previousOutput: null,
+            options: null,
           },
-        );
+          resourceId: get().id, // Use existing resourceId
+          lessonId: get().pageData.lessonPlan.lessonId,
+          source: get().source,
+        });
       get().actions.setIsResourcesLoading(false);
 
       set({

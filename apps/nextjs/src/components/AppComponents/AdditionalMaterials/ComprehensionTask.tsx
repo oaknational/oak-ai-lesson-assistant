@@ -1,4 +1,4 @@
-import type { ComprehensionTask as ComprehensionTaskType } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
+import type { ComprehensionTask as ComprehensionTaskType } from "@oakai/additional-materials/src/documents/teachingMaterials/comprehension/schema";
 
 import {
   OakBox,

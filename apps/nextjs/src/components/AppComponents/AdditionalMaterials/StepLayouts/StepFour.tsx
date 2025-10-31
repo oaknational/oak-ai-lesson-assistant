@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-import { isComprehensionTask } from "@oakai/additional-materials/src/documents/additionalMaterials/comprehension/schema";
-import { isExitQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/exitQuiz/schema";
-import { isGlossary } from "@oakai/additional-materials/src/documents/additionalMaterials/glossary/schema";
+import { isComprehensionTask } from "@oakai/additional-materials/src/documents/teachingMaterials/comprehension/schema";
+import { isExitQuiz } from "@oakai/additional-materials/src/documents/teachingMaterials/exitQuiz/schema";
+import { isGlossary } from "@oakai/additional-materials/src/documents/teachingMaterials/glossary/schema";
 import {
   type RefinementOption,
   getResourceType,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import { isStarterQuiz } from "@oakai/additional-materials/src/documents/additionalMaterials/starterQuiz/schema";
+} from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import { isStarterQuiz } from "@oakai/additional-materials/src/documents/teachingMaterials/starterQuiz/schema";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -96,8 +96,12 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const generation = useTeachingMaterialsStore(generationSelector);
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
-  const isResourcesLoading = useTeachingMaterialsStore(isResourcesLoadingSelector);
-  const isResourceRefining = useTeachingMaterialsStore(isResourceRefiningSelector);
+  const isResourcesLoading = useTeachingMaterialsStore(
+    isResourcesLoadingSelector,
+  );
+  const isResourceRefining = useTeachingMaterialsStore(
+    isResourceRefiningSelector,
+  );
   const refinementHistory = useTeachingMaterialsStore(
     refinementGenerationHistorySelector,
   );
@@ -106,8 +110,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const moderation = useTeachingMaterialsStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const [userHasSeenSurvey, setUserHasSeenSurvey] = useState(false);
-  const { downloadMaterial, setIsResourceDownloading } = useTeachingMaterialsActions();
-  const isDownloading = useTeachingMaterialsStore(isResourcesDownloadingSelector);
+  const { downloadMaterial, setIsResourceDownloading } =
+    useTeachingMaterialsActions();
+  const isDownloading = useTeachingMaterialsStore(
+    isResourcesDownloadingSelector,
+  );
   const { setDialogWindow } = useDialog();
   const { getConsent } = useOakConsent();
   const posthogConsent = getConsent(ServicePolicyMap.POSTHOG);

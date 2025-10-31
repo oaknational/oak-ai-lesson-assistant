@@ -3,8 +3,8 @@
 import type { FC } from "react";
 import React from "react";
 
-import { getResourceType } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 
 import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
 import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
@@ -54,7 +54,9 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const year = useTeachingMaterialsStore(yearSelector);
   const error = useTeachingMaterialsStore((state) => state.error);
-  const lessonPlan = useTeachingMaterialsStore((state) => state.pageData.lessonPlan);
+  const lessonPlan = useTeachingMaterialsStore(
+    (state) => state.pageData.lessonPlan,
+  );
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;

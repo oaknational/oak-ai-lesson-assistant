@@ -4,7 +4,7 @@ import type { ProviderKey } from "../aiProviders";
 import { getLLMGeneration } from "../aiProviders/getGeneration";
 import { moderationPrompt } from "./moderationPrompt";
 
-export const generateAdditionalMaterialModeration = async ({
+export const generateTeachingMaterialModeration = async ({
   input,
   provider,
 }: {

@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
@@ -17,7 +17,7 @@ export const handleSetDocType =
 
     if (docType !== null) {
       try {
-        const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
+        const parsedDoctype = teachingMaterialTypeEnum.parse(docType);
         set({ docType: parsedDoctype });
       } catch (error) {
         Sentry.captureException(error, {

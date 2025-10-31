@@ -1,6 +1,6 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { transformDataForExport } from "@oakai/additional-materials/src/documents/additionalMaterials/dataHelpers/transformDataForExports";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import { transformDataForExport } from "@oakai/additional-materials/src/documents/teachingMaterials/dataHelpers/transformDataForExports";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { exportAdditionalResourceDoc } from "@oakai/exports/src/exportAdditionalResourceDoc";
 import { aiLogger } from "@oakai/logger";
 
@@ -23,7 +23,7 @@ export async function POST(req: Request, res: NextApiResponse) {
   try {
     const body = await req.json();
     const { documentType, resource, lessonTitle } = body;
-    const passedDocType = additionalMaterialTypeEnum.parse(documentType);
+    const passedDocType = teachingMaterialTypeEnum.parse(documentType);
     const { userId }: { userId: string | null } = auth();
 
     if (!userId) {

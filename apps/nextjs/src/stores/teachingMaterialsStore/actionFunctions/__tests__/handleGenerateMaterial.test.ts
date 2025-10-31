@@ -26,8 +26,8 @@ describe("handleGenerateMaterial", () => {
     // Create trpc mock
     mockTrpc = {
       client: {
-        additionalMaterials: {
-          generateAdditionalMaterial: {
+        teachingMaterials: {
+          generateTeachingMaterial: {
             mutate: jest.fn().mockResolvedValue({
               resource: { foo: "bar" },
               moderation: { flagged: false },
@@ -54,7 +54,7 @@ describe("handleGenerateMaterial", () => {
     const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
     await handler();
     expect(
-      mockTrpc.client.additionalMaterials.generateAdditionalMaterial.mutate,
+      mockTrpc.client.teachingMaterials.generateTeachingMaterial.mutate,
     ).toHaveBeenCalled();
     expect(mockSet).toHaveBeenCalledWith({
       generation: { foo: "bar" },
@@ -104,7 +104,7 @@ describe("handleGenerateMaterial", () => {
   it("calls handleStoreError on mutate error", async () => {
     const error = new Error("fail");
     (
-      mockTrpc.client.additionalMaterials.generateAdditionalMaterial
+      mockTrpc.client.teachingMaterials.generateTeachingMaterial
         .mutate as jest.Mock
     ).mockRejectedValue(error);
     const mockGet = jest.fn(() => ({

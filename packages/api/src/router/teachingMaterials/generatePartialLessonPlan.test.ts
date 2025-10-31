@@ -1,4 +1,4 @@
-import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
+import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
 import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
@@ -105,7 +105,7 @@ jest.mock(
 );
 
 jest.mock("@oakai/additional-materials", () => ({
-  generateAdditionalMaterialModeration: jest.fn(),
+  generateTeachingMaterialModeration: jest.fn(),
 }));
 
 jest.mock(
@@ -154,10 +154,8 @@ const mockGeneratePartialLessonPlanObject =
   generatePartialLessonPlanObject as jest.MockedFunction<
     typeof generatePartialLessonPlanObject
   >;
-const mockGenerateAdditionalMaterialModeration =
-  generateAdditionalMaterialModeration as jest.MockedFunction<
-    typeof generateAdditionalMaterialModeration
-  >;
+const mockGenerateTeachingMaterialModeration =
+  generateTeachingMaterialModeration;
 const mockPerformLakeraThreatCheck =
   performLakeraThreatCheck as jest.MockedFunction<
     typeof performLakeraThreatCheck
@@ -177,7 +175,7 @@ describe("generatePartialLessonPlan", () => {
 
     // Set up default mock return values
     mockGeneratePartialLessonPlanObject.mockResolvedValue(mockLessonPlan);
-    mockGenerateAdditionalMaterialModeration.mockResolvedValue(
+    mockGenerateTeachingMaterialModeration.mockResolvedValue(
       mockModerationResult,
     );
     mockIsToxic.mockReturnValue(false);
@@ -273,7 +271,7 @@ describe("generatePartialLessonPlan", () => {
   });
 
   it("should handle toxic moderation results and return null lesson", async () => {
-    mockGenerateAdditionalMaterialModeration.mockResolvedValueOnce(
+    mockGenerateTeachingMaterialModeration.mockResolvedValueOnce(
       mockToxicModerationResult,
     );
     mockIsToxic.mockReturnValueOnce(true);

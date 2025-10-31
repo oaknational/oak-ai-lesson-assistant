@@ -1,9 +1,9 @@
-import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 
 import { handleUndoRefinement } from "../handleUndoRefinement";
 
 describe("handleUndoRefinement", () => {
-  const validDocType: AdditionalMaterialType = "additional-comprehension";
+  const validDocType: TeachingMaterialType = "additional-comprehension";
 
   it("does nothing if no history", () => {
     const set = jest.fn();

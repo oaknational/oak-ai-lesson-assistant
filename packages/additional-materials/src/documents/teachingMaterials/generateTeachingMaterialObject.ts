@@ -1,14 +1,14 @@
 import type { ProviderKey } from "../../aiProviders";
 import { getLLMGeneration } from "../../aiProviders/getGeneration";
 import {
-  type AdditionalMaterialSchemas,
-  type AdditionalMaterialType,
   type ContextByMaterialType,
-  additionalMaterialsConfigMap,
+  type TeachingMaterialSchemas,
+  type TeachingMaterialType,
+  teachingMaterialsConfigMap,
 } from "./configSchema";
 
-export const generateAdditionalMaterialObject = async <
-  T extends AdditionalMaterialType,
+export const generateTeachingMaterialObject = async <
+  T extends TeachingMaterialType,
 >({
   parsedInput,
   provider = "openai",
@@ -18,11 +18,11 @@ export const generateAdditionalMaterialObject = async <
     documentType: T;
     context: ContextByMaterialType[T];
   };
-}): Promise<AdditionalMaterialSchemas> => {
+}): Promise<TeachingMaterialSchemas> => {
   const { documentType, context } = parsedInput;
-  const config = additionalMaterialsConfigMap[documentType];
+  const config = teachingMaterialsConfigMap[documentType];
 
-  return await getLLMGeneration<AdditionalMaterialSchemas>(
+  return await getLLMGeneration<TeachingMaterialSchemas>(
     {
       prompt: config.buildPrompt(context),
       systemMessage: config.systemMessage(),

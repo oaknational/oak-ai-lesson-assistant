@@ -1,9 +1,9 @@
 import type {
-  AdditionalMaterialSchemas,
-  AdditionalMaterialType,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import type { RefinementOption } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
+  TeachingMaterialSchemas,
+  TeachingMaterialType,
+} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import type { RefinementOption } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { z } from "zod";
@@ -64,13 +64,13 @@ export type TeachingMaterialsState = {
   isResourceRefining: boolean;
   isDownloading: boolean;
   pageData: PageData;
-  generation: AdditionalMaterialSchemas | null;
-  docType: AdditionalMaterialType | null;
+  generation: TeachingMaterialSchemas | null;
+  docType: TeachingMaterialType | null;
   formState: StepOneFormState;
   moderation?: ModerationResult;
   threatDetection?: boolean;
   error: TeachingMaterialError | null;
-  refinementGenerationHistory: AdditionalMaterialSchemas[];
+  refinementGenerationHistory: TeachingMaterialSchemas[];
 
   actions: {
     // setters
@@ -79,7 +79,7 @@ export type TeachingMaterialsState = {
       componentType?: ComponentTypeValueType,
     ) => void;
     setPageData: (pageData: PageData) => void;
-    setGeneration: (generation: AdditionalMaterialSchemas | null) => void;
+    setGeneration: (generation: TeachingMaterialSchemas | null) => void;
     setDocType: (docType: string | null) => void;
     setSource: (source: "aila" | "owa") => void;
     setId: (id: string | null) => void;
@@ -119,7 +119,7 @@ export type TeachingMaterialsState = {
     analytics: {
       trackMaterialSelected: (params: {
         resourceId: string;
-        docType: AdditionalMaterialType;
+        docType: TeachingMaterialType;
         componentType: ComponentTypeValueType;
         platform: PlatformValueType;
         product: ProductValueType;

@@ -1,9 +1,9 @@
-import type { AdditionalMaterialType } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import {
   resourceTypesConfig,
   subjectSlugMap,
   yearSlugMap,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+} from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 
 import invariant from "tiny-invariant";
 
@@ -17,7 +17,10 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
-import type { TeachingMaterialsGetter, TeachingMaterialsSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
 export const handleAnalytics = (
   _set: TeachingMaterialsSetter,
@@ -36,7 +39,7 @@ export const handleAnalytics = (
       product,
     }: {
       resourceId: string;
-      docType: AdditionalMaterialType;
+      docType: TeachingMaterialType;
       componentType: ComponentTypeValueType;
       platform: PlatformValueType;
       product: ProductValueType;

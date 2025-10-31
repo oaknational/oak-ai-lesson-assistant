@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 
 import {
   OakFlex,

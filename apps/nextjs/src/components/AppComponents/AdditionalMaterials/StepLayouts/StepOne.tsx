@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getResourceTypes } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { getResourceTypes } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 
 import {
   OakFlex,
@@ -37,7 +37,9 @@ const StepOne = ({
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const error = useTeachingMaterialsStore((state) => state.error);
 
-  const lesson = useTeachingMaterialsStore((state) => state.pageData.lessonPlan);
+  const lesson = useTeachingMaterialsStore(
+    (state) => state.pageData.lessonPlan,
+  );
   const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 

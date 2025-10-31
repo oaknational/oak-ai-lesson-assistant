@@ -1,9 +1,9 @@
-import {
-  additionalMaterialTypeEnum,
-  additionalMaterialsConfigMap,
-  generateAdditionalMaterialInputSchema,
-} from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
+import {
+  generateTeachingMaterialInputSchema,
+  teachingMaterialTypeEnum,
+  teachingMaterialsConfigMap,
+} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { demoUsers } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
@@ -16,20 +16,20 @@ import { TRPCError } from "@trpc/server";
 import { ZodError, z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
-import { additionalMaterialUserBasedRateLimitProcedure } from "../middleware/rateLimiter";
+import { teachingMaterialUserBasedRateLimitProcedure } from "../middleware/rateLimiter";
 import { router } from "../trpc";
-import {
-  generateAdditionalMaterial,
-  generatePartialLessonPlan,
-  validateCurriculumApiEnv,
-} from "./additionalMaterials/helpers";
 import { buildTransformedLesson } from "./owaLesson/build";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
 import { prepareAndCheckRestrictions } from "./owaLesson/prepare";
+import {
+  generatePartialLessonPlan,
+  generateTeachingMaterial,
+  validateCurriculumApiEnv,
+} from "./teachingMaterials/helpers";
 
 const log = aiLogger("additional-materials");
 
-export const additionalMaterialsRouter = router({
+export const teachingMaterialsRouter = router({
   handleFetchOwaLesson: protectedProcedure
     .input(
       z.object({
@@ -142,10 +142,10 @@ export const additionalMaterialsRouter = router({
           throw new UserBannedError(ctx.auth.userId);
         }
 
-        const parsedDocType = additionalMaterialTypeEnum.parse(
+        const parsedDocType = teachingMaterialTypeEnum.parse(
           input.documentType,
         );
-        const version = additionalMaterialsConfigMap[parsedDocType]?.version;
+        const version = teachingMaterialsConfigMap[parsedDocType]?.version;
 
         if (!version) {
           throw new Error(`Unknown document type: ${input.documentType}`);
@@ -219,7 +219,7 @@ export const additionalMaterialsRouter = router({
       }
     }),
 
-  generateAdditionalMaterial: additionalMaterialUserBasedRateLimitProcedure
+  generateTeachingMaterial: teachingMaterialUserBasedRateLimitProcedure
     .input(
       z.object({
         context: z.unknown(),
@@ -240,7 +240,7 @@ export const additionalMaterialsRouter = router({
         const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
         const isDemoUser = demoUsers.isDemoUser(clerkUser);
         isDemoUser &&
-          (await rateLimits.additionalMaterialSessions.demo.check(
+          (await rateLimits.teachingMaterialSessions.demo.check(
             ctx.auth.userId,
           ));
 
@@ -272,13 +272,13 @@ export const additionalMaterialsRouter = router({
 
       try {
         const parsedInput =
-          generateAdditionalMaterialInputSchema.safeParse(input);
+          generateTeachingMaterialInputSchema.safeParse(input);
         if (!parsedInput.success) {
           log.error("Failed to parse input", parsedInput.error);
           throw new ZodError(parsedInput.error.issues);
         }
 
-        return await generateAdditionalMaterial({
+        return await generateTeachingMaterial({
           prisma: ctx.prisma,
           userId: ctx.auth.userId,
           input: parsedInput.data,
@@ -296,7 +296,7 @@ export const additionalMaterialsRouter = router({
       }
     }),
 
-  generatePartialLessonPlanObject: additionalMaterialUserBasedRateLimitProcedure
+  generatePartialLessonPlanObject: teachingMaterialUserBasedRateLimitProcedure
     .input(partialLessonContextSchema)
     .mutation(async ({ ctx, input }) => {
       log.info("Generate partial lesson plan", input);
@@ -313,7 +313,7 @@ export const additionalMaterialsRouter = router({
         const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
         const isDemoUser = demoUsers.isDemoUser(clerkUser);
         isDemoUser &&
-          (await rateLimits.additionalMaterialSessions.demo.check(
+          (await rateLimits.teachingMaterialSessions.demo.check(
             ctx.auth.userId,
           ));
         if (clerkUser.banned) {
@@ -408,7 +408,7 @@ export const additionalMaterialsRouter = router({
     }
 
     const remaining =
-      await rateLimits.additionalMaterialSessions.demo.getRemaining(userId);
+      await rateLimits.teachingMaterialSessions.demo.getRemaining(userId);
     return { remaining };
   }),
 });

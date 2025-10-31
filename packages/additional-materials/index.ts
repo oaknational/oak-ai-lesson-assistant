@@ -1,2 +1,2 @@
-export { generateAdditionalMaterialModeration } from "./src/moderation/generateAdditionalMaterialModeration";
-export { generateAdditionalMaterialObject } from "./src/documents/additionalMaterials/generateAdditionalMaterialObject";
+export { generateTeachingMaterialModeration } from "./src/moderation/generateTeachingMaterialModeration";
+export { generateTeachingMaterialObject } from "./src/documents/teachingMaterials/generateTeachingMaterialObject";

@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { z } from "zod";
 
 import { comprehensionTaskSchema } from "../comprehension/schema";
-import type { AdditionalMaterialType } from "../configSchema";
+import type { TeachingMaterialType } from "../configSchema";
 import type { exitQuizSchema } from "../exitQuiz/schema";
 import { glossarySchema } from "../glossary/schema";
 import type { starterQuizSchema } from "../starterQuiz/schema";
@@ -16,9 +16,7 @@ export type GlossaryData = z.infer<typeof glossarySchema>;
 
 const log = aiLogger("additional-materials");
 
-export const transformDataForExport = (
-  documentType: AdditionalMaterialType,
-) => {
+export const transformDataForExport = (documentType: TeachingMaterialType) => {
   switch (documentType) {
     case "additional-glossary":
       return transformDataGlossary;

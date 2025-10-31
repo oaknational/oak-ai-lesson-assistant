@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
@@ -38,7 +38,7 @@ export const handleFetchOwaLesson =
         const { lessonSlug, programmeSlug, docType } = params.queryParams;
 
         // Set doc type using enum parse
-        const parsedDoctype = additionalMaterialTypeEnum.parse(docType);
+        const parsedDoctype = teachingMaterialTypeEnum.parse(docType);
         set({ docType: parsedDoctype });
 
         log.info("Fetching OWA lesson data via tRPC", {
@@ -49,7 +49,7 @@ export const handleFetchOwaLesson =
 
         // Set loading state
         set({ isResourcesLoading: true });
-        const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
+        const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
         try {
           // Create a new session
           await get().actions.createMaterialSession(docTypeParsed, 3, true);
@@ -64,7 +64,7 @@ export const handleFetchOwaLesson =
 
           const response = await callWithHandshakeRetry(
             () =>
-              trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
+              trpc.client.teachingMaterials.handleFetchOwaLesson.mutate({
                 lessonSlug,
                 programmeSlug,
               }),

@@ -1,11 +1,11 @@
-import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
-import { generateAdditionalMaterialObject } from "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject";
+import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
+import { generateTeachingMaterialObject } from "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import {
-  type GenerateAdditionalMaterialParams,
-  generateAdditionalMaterial,
-} from "./generateAdditionalMaterial";
+  type GenerateTeachingMaterialParams,
+  generateTeachingMaterial,
+} from "./generateTeachingMaterial";
 import {
   mockAuth,
   mockGlossaryResult,
@@ -17,14 +17,9 @@ import {
 } from "./testFixtures";
 
 // Cast the mocked functions
-const mockGenerateAdditionalMaterialObject =
-  generateAdditionalMaterialObject as jest.MockedFunction<
-    typeof generateAdditionalMaterialObject
-  >;
-const mockGenerateAdditionalMaterialModeration =
-  generateAdditionalMaterialModeration as jest.MockedFunction<
-    typeof generateAdditionalMaterialModeration
-  >;
+const mockGenerateTeachingMaterialObject = generateTeachingMaterialObject;
+const mockGenerateTeachingMaterialModeration =
+  generateTeachingMaterialModeration;
 const mockIsToxic = isToxic as jest.MockedFunction<typeof isToxic>;
 
 jest.mock("@oakai/logger", () => ({
@@ -35,13 +30,13 @@ jest.mock("@oakai/logger", () => ({
 }));
 
 jest.mock(
-  "@oakai/additional-materials/src/documents/additionalMaterials/generateAdditionalMaterialObject",
+  "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject",
   () => ({
-    generateAdditionalMaterialObject: jest.fn(),
+    generateTeachingMaterialObject: jest.fn(),
   }),
 );
 jest.mock("@oakai/additional-materials", () => ({
-  generateAdditionalMaterialModeration: jest.fn(),
+  generateTeachingMaterialModeration: jest.fn(),
 }));
 jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
   isToxic: jest.fn(),
@@ -50,9 +45,9 @@ jest.mock("./safetyUtils", () => ({
   recordSafetyViolation: jest.fn(),
 }));
 jest.mock(
-  "@oakai/additional-materials/src/documents/additionalMaterials/configSchema",
+  "@oakai/additional-materials/src/documents/teachingMaterials/configSchema",
   () => ({
-    additionalMaterialsConfigMap: {
+    teachingMaterialsConfigMap: {
       "additional-glossary": {
         version: 1,
       },
@@ -60,13 +55,13 @@ jest.mock(
   }),
 );
 
-describe("generateAdditionalMaterial", () => {
+describe("generateTeachingMaterial", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
     // Set up default mock return values
-    mockGenerateAdditionalMaterialObject.mockResolvedValue(mockGlossaryResult);
-    mockGenerateAdditionalMaterialModeration.mockResolvedValue(
+    mockGenerateTeachingMaterialObject.mockResolvedValue(mockGlossaryResult);
+    mockGenerateTeachingMaterialModeration.mockResolvedValue(
       mockModerationResult,
     );
     mockIsToxic.mockReturnValue(false); // Default to non-toxic
@@ -81,7 +76,7 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should log and call prisma.create when resourceId is not provided", async () => {
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -101,7 +96,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(mockPrisma.additionalMaterialInteraction.create).toHaveBeenCalled();
     expect(result.resource).toEqual(mockGlossaryResult);
@@ -111,7 +106,7 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should log and call prisma.update when resourceId is provided", async () => {
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -132,7 +127,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(mockPrisma.additionalMaterialInteraction.update).toHaveBeenCalled();
     expect(result.resource).toEqual(mockGlossaryResult);
@@ -142,12 +137,12 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should handle toxic moderation results", async () => {
-    mockGenerateAdditionalMaterialModeration.mockResolvedValueOnce(
+    mockGenerateTeachingMaterialModeration.mockResolvedValueOnce(
       mockToxicModerationResult,
     );
     mockIsToxic.mockReturnValueOnce(true); // Mock isToxic to return true for this test
 
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -167,7 +162,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(result.resource).toBeNull();
     expect(result.moderation).toEqual(mockToxicModerationResult);
@@ -176,7 +171,7 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should include lessonId when provided in input", async () => {
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -197,7 +192,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(
       mockPrisma.additionalMaterialInteraction.create,
@@ -216,7 +211,7 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should include adaptsOutputId when provided in input", async () => {
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -237,7 +232,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(
       mockPrisma.additionalMaterialInteraction.create,
@@ -256,7 +251,7 @@ describe("generateAdditionalMaterial", () => {
   });
 
   it("should handle null adaptsOutputId", async () => {
-    const params: GenerateAdditionalMaterialParams = {
+    const params: GenerateTeachingMaterialParams = {
       prisma: mockPrisma,
       userId: "test-user",
       input: {
@@ -277,7 +272,7 @@ describe("generateAdditionalMaterial", () => {
       rateLimit: mockRateLimit,
     };
 
-    const result = await generateAdditionalMaterial(params);
+    const result = await generateTeachingMaterial(params);
 
     expect(
       mockPrisma.additionalMaterialInteraction.create,

@@ -31,55 +31,55 @@ import {
 // Base Types
 // -----------------------
 
-const additionalMaterialDocType = [
+const teachingMaterialDocType = [
   "additional-comprehension",
   "additional-glossary",
   "additional-starter-quiz",
   "additional-exit-quiz",
 ] as const;
 
-export const additionalMaterialTypeEnum = z.enum(additionalMaterialDocType);
+export const teachingMaterialTypeEnum = z.enum(teachingMaterialDocType);
 
-export type AdditionalMaterialType = z.infer<typeof additionalMaterialTypeEnum>;
+export type TeachingMaterialType = z.infer<typeof teachingMaterialTypeEnum>;
 
 // -----------------------
 // Schema Maps
 // -----------------------
 
 // Prompt context map
-export const additionalMaterialContextSchemasMap = {
+export const teachingMaterialContextSchemasMap = {
   "additional-comprehension": comprehensionContextSchema,
   "additional-glossary": glossaryContextSchema,
   "additional-starter-quiz": starterQuizContextSchema,
   "additional-exit-quiz": exitQuizContextSchema,
   // "partial-lesson-plan": partialLessonContextSchema,
 } satisfies {
-  [K in AdditionalMaterialType]: ZodSchema;
+  [K in TeachingMaterialType]: ZodSchema;
 };
 
 export type ContextByMaterialType = {
-  [K in AdditionalMaterialType]: z.infer<
-    (typeof additionalMaterialContextSchemasMap)[K]
+  [K in TeachingMaterialType]: z.infer<
+    (typeof teachingMaterialContextSchemasMap)[K]
   >;
 };
 
 // LLM output schema map
-export const additionalMaterialSchemasMap = {
+export const teachingMaterialSchemasMap = {
   "additional-comprehension": comprehensionTaskSchema,
   "additional-glossary": glossarySchema,
   "additional-starter-quiz": starterQuizSchema,
   "additional-exit-quiz": exitQuizSchema,
 } satisfies {
-  [K in AdditionalMaterialType]: ZodSchema;
+  [K in TeachingMaterialType]: ZodSchema;
 };
 
-export type AdditionalMaterialSchemas = z.infer<
-  (typeof additionalMaterialSchemasMap)[keyof typeof additionalMaterialSchemasMap]
+export type TeachingMaterialSchemas = z.infer<
+  (typeof teachingMaterialSchemasMap)[keyof typeof teachingMaterialSchemasMap]
 >;
-export type AdditionalMaterialSchemasMap = typeof additionalMaterialSchemasMap;
+export type TeachingMaterialSchemasMap = typeof teachingMaterialSchemasMap;
 
 // Prompt builder map
-export const additionalMaterialPromptBuilderMap = {
+export const teachingMaterialPromptBuilderMap = {
   "additional-comprehension": {
     buildSystemMessage: buildComprehensionSystemMessage,
     buildPrompt: buildComprehensionPrompt,
@@ -97,7 +97,7 @@ export const additionalMaterialPromptBuilderMap = {
     buildSystemMessage: buildExitQuizSystemMessage,
   },
 } satisfies {
-  [K in AdditionalMaterialType]: {
+  [K in TeachingMaterialType]: {
     buildSystemMessage: () => string;
     buildPrompt: (context: ContextByMaterialType[K]) => string;
   };
@@ -107,15 +107,15 @@ export const additionalMaterialPromptBuilderMap = {
 //  Additional Material Config Map
 // -----------------------
 
-const additionalMaterialVersions: Record<AdditionalMaterialType, number> = {
+const teachingMaterialVersions: Record<TeachingMaterialType, number> = {
   "additional-comprehension": 1,
   "additional-glossary": 1,
   "additional-starter-quiz": 1,
   "additional-exit-quiz": 1,
 };
 
-type AdditionalMaterialsConfigMap = {
-  [K in AdditionalMaterialType]: {
+type TeachingMaterialsConfigMap = {
+  [K in TeachingMaterialType]: {
     systemMessage: () => string;
     buildPrompt: (context: ContextByMaterialType[K]) => string;
     schema: ZodType;
@@ -124,28 +124,27 @@ type AdditionalMaterialsConfigMap = {
   };
 };
 
-export const additionalMaterialsConfigMap = additionalMaterialDocType.reduce(
+export const teachingMaterialsConfigMap = teachingMaterialDocType.reduce(
   (acc, type) => {
     acc[type] = {
-      systemMessage:
-        additionalMaterialPromptBuilderMap[type].buildSystemMessage,
-      buildPrompt: additionalMaterialPromptBuilderMap[type].buildPrompt,
-      schema: additionalMaterialSchemasMap[type],
-      promptContextSchema: additionalMaterialContextSchemasMap[type],
-      version: additionalMaterialVersions[type],
+      systemMessage: teachingMaterialPromptBuilderMap[type].buildSystemMessage,
+      buildPrompt: teachingMaterialPromptBuilderMap[type].buildPrompt,
+      schema: teachingMaterialSchemasMap[type],
+      promptContextSchema: teachingMaterialContextSchemasMap[type],
+      version: teachingMaterialVersions[type],
     };
     return acc;
   },
-  {} as Record<AdditionalMaterialType, unknown>,
-) as AdditionalMaterialsConfigMap;
+  {} as Record<TeachingMaterialType, unknown>,
+) as TeachingMaterialsConfigMap;
 
 // -----------------------
 //  Discriminated Union
 // -----------------------
 
-function makeInputVariant<T extends AdditionalMaterialType>(
+function makeInputVariant<T extends TeachingMaterialType>(
   documentType: T,
-  context: (typeof additionalMaterialContextSchemasMap)[T],
+  context: (typeof teachingMaterialContextSchemasMap)[T],
 ) {
   return z.object({
     documentType: z.literal(documentType),
@@ -157,7 +156,7 @@ function makeInputVariant<T extends AdditionalMaterialType>(
   });
 }
 
-export const generateAdditionalMaterialInputSchema = z.discriminatedUnion(
+export const generateTeachingMaterialInputSchema = z.discriminatedUnion(
   "documentType",
   [
     makeInputVariant("additional-comprehension", comprehensionContextSchema),
@@ -167,8 +166,8 @@ export const generateAdditionalMaterialInputSchema = z.discriminatedUnion(
   ],
 );
 
-export type GenerateAdditionalMaterialInput = z.infer<
-  typeof generateAdditionalMaterialInputSchema
+export type GenerateTeachingMaterialInput = z.infer<
+  typeof generateTeachingMaterialInputSchema
 >;
 
 export { starterQuizSchema, exitQuizSchema };

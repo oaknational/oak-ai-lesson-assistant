@@ -1,5 +1,5 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/additionalMaterials/resourceTypes";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
 
 import { exportGeneric } from "./exportGeneric";
@@ -61,7 +61,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   onStateChange: (state: State<OutputData>) => void;
   transformData: (data: InputData) => Promise<TemplateData>;
 }): Promise<Result<OutputData>> => {
-  const passedDocType = additionalMaterialTypeEnum.parse(documentType);
+  const passedDocType = teachingMaterialTypeEnum.parse(documentType);
 
   try {
     // For comprehension tasks, we need to create both the questions and answers files

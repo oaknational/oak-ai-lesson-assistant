@@ -1,4 +1,4 @@
-import { generateAdditionalMaterialModeration } from "@oakai/additional-materials";
+import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
 import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import { type PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
@@ -62,7 +62,7 @@ export async function generatePartialLessonPlan({
     throw new Error("Failed to generate lesson plan");
   }
 
-  const moderation = await generateAdditionalMaterialModeration({
+  const moderation = await generateTeachingMaterialModeration({
     input: JSON.stringify(lesson),
     provider: "openai",
   });

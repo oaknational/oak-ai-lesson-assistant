@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
 import z from "zod";
@@ -29,12 +29,15 @@ export const handleCreateMaterialSession =
     set({ stepNumber: stepNumber ?? 1 });
 
     log.info("Creating material session", { docType });
-    const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
+    const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
 
     try {
       const result = await callWithHandshakeRetry(
         () =>
-          trpc.client.additionalMaterials.createMaterialSession.mutate({
+          // trpc.client.  teachingMaterials.createMaterialSession.mutate({
+          //   documentType: docTypeParsed,
+          // }),
+          trpc.client.teachingMaterials.createMaterialSession.mutate({
             documentType: docTypeParsed,
           }),
         refreshAuth,

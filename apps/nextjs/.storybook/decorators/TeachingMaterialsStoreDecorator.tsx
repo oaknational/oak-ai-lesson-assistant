@@ -28,7 +28,7 @@ const mockTrpc: TrpcUtils = {
     mutation: fn(),
     subscription: fn(),
     teachingMaterials: {
-      generateAdditionalMaterial: {
+      generateTeachingMaterial: {
         mutate: fn(),
       },
       createMaterialSession: {

@@ -1,4 +1,4 @@
-import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
@@ -23,7 +23,7 @@ describe("handleCreateMaterialSession", () => {
     mockTrackMaterialSelected = jest.fn();
     mockTrpc = {
       client: {
-        additionalMaterials: {
+        teachingMaterials: {
           createMaterialSession: {
             mutate: jest.fn().mockResolvedValue({ resourceId: "resource-xyz" }),
           },
@@ -50,16 +50,16 @@ describe("handleCreateMaterialSession", () => {
     );
     await handler("additional-glossary", 2, true);
     expect(
-      mockTrpc.client.additionalMaterials.createMaterialSession
+      mockTrpc.client.teachingMaterials.createMaterialSession
         .mutate as jest.Mock,
     ).toHaveBeenCalledWith({
-      documentType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 2 });
     expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
-      docType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      docType: teachingMaterialTypeEnum.parse("additional-glossary"),
       componentType: "create_more_with_ai_dropdown",
       platform: "owa",
       product: "teacher lesson resources",
@@ -84,16 +84,16 @@ describe("handleCreateMaterialSession", () => {
     );
     await handler("additional-glossary", 1, false);
     expect(
-      mockTrpc.client.additionalMaterials.createMaterialSession
+      mockTrpc.client.teachingMaterials.createMaterialSession
         .mutate as jest.Mock,
     ).toHaveBeenCalledWith({
-      documentType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 1 });
     expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
-      docType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      docType: teachingMaterialTypeEnum.parse("additional-glossary"),
       componentType: "lesson_details_button",
       platform: "aila-beta",
       product: "teaching material",
@@ -118,16 +118,16 @@ describe("handleCreateMaterialSession", () => {
     );
     await handler("additional-glossary", undefined, false);
     expect(
-      mockTrpc.client.additionalMaterials.createMaterialSession
+      mockTrpc.client.teachingMaterials.createMaterialSession
         .mutate as jest.Mock,
     ).toHaveBeenCalledWith({
-      documentType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 1 });
     expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
-      docType: additionalMaterialTypeEnum.parse("additional-glossary"),
+      docType: teachingMaterialTypeEnum.parse("additional-glossary"),
       componentType: "create_teaching_material_button",
       platform: "aila-beta",
       product: "teaching material",
@@ -136,7 +136,7 @@ describe("handleCreateMaterialSession", () => {
 
   it("handles error and calls handleStoreError", async () => {
     (
-      mockTrpc.client.additionalMaterials.createMaterialSession
+      mockTrpc.client.teachingMaterials.createMaterialSession
         .mutate as jest.Mock
     ).mockRejectedValue(new Error("fail"));
     const handler = handleCreateMaterialSession(

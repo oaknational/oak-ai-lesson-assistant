@@ -3,7 +3,7 @@ import { z } from "zod";
 import { LessonPlanSchema } from "../../../../aila/src/protocol/schema";
 import type { ProviderKey } from "../../aiProviders";
 import { getLLMGeneration } from "../../aiProviders/getGeneration";
-import { getKeystageFromYearGroup } from "../additionalMaterials/promptHelpers";
+import { getKeystageFromYearGroup } from "../teachingMaterials/promptHelpers";
 import {
   buildPartialLessonPrompt,
   buildPartialLessonSystemMessage,
