@@ -6,7 +6,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 import ResourcesFooter from "./ResourcesFooter";
 
 const meta = {
-  title: "Components/AdditionalMaterials/ResourcesFooter",
+  title: "Components/TeachingMaterials/ResourcesFooter",
   component: ResourcesFooter,
   tags: ["autodocs"],
   parameters: {

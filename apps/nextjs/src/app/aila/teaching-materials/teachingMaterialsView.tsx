@@ -6,15 +6,15 @@ import React from "react";
 import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 
-import StepFour from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepFour";
-import StepOne from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepOne";
-import StepThree from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepThree";
-import StepTwo from "@/components/AppComponents/AdditionalMaterials/StepLayouts/StepTwo";
-import { handleDialogSelection } from "@/components/AppComponents/AdditionalMaterials/StepLayouts/helpers";
 import {
   DialogProvider,
   useDialog,
 } from "@/components/AppComponents/DialogContext";
+import StepFour from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepFour";
+import StepOne from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepOne";
+import StepThree from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepThree";
+import StepTwo from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepTwo";
+import { handleDialogSelection } from "@/components/AppComponents/TeachingMaterials/StepLayouts/helpers";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { OakMathJaxContext } from "@/components/MathJax";

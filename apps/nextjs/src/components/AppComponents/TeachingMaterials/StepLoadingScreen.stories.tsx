@@ -6,7 +6,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 import StepLoadingScreen from "./StepLoadingScreen";
 
 const meta = {
-  title: "Components/AdditionalMaterials/StepLoadingScreen",
+  title: "Components/TeachingMaterials/StepLoadingScreen",
   component: StepLoadingScreen,
   tags: ["autodocs"],
   parameters: {

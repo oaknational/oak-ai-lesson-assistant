@@ -15,7 +15,7 @@ import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/Teaching
 import StepFour from "./StepFour";
 
 const meta = {
-  title: "Components/AdditionalMaterials/StepLayouts/StepFour",
+  title: "Components/TeachingMaterials/StepLayouts/StepFour",
   component: StepFour,
   decorators: [
     TeachingMaterialsStoreDecorator,

@@ -7,7 +7,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 import { SharedDropDown } from "./SharedDropDown";
 
 const meta = {
-  title: "Components/AdditionalMaterials/DropDownButtons/SharedDropDown",
+  title: "Components/TeachingMaterials/DropDownButtons/SharedDropDown",
   component: SharedDropDown,
   tags: ["autodocs"],
   parameters: {

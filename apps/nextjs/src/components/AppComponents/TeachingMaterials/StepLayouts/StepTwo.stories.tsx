@@ -6,52 +6,34 @@ import { chromaticParams } from "@/storybook/chromatic";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
-import StepOne from "./StepOne";
+import StepTwo from "./StepTwo";
 
 const meta = {
-  title: "Components/AdditionalMaterials/StepLayouts/StepOne",
-  component: StepOne,
+  title: "Components/TeachingMaterials/StepLayouts/StepTwo",
+  component: StepTwo,
   decorators: [TeachingMaterialsStoreDecorator, DialogContentDecorator],
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
     layout: "fullscreen",
-    resourcesStoreState: {
-      stepNumber: 0,
-      docType: "additional-glossary",
-      source: "aila",
-      pageData: {
-        lessonPlan: {
-          title: "Mock Lesson",
-        },
-      },
-      threatDetection: true,
-      moderation: {
-        justification: "This contains content that requires guidance.",
-        categories: ["l/strong-language", "u/sensitive-content"],
-      },
-    },
   },
-} satisfies Meta<typeof StepOne>;
+} satisfies Meta<typeof StepTwo>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleCreateSession: (
-      _docType: string | null,
-    ): Promise<{ success: boolean }> => {
-      return Promise.resolve({ success: true });
+    handleSubmitLessonPlan: async (params) => {
+      console.log("Submitting lesson plan:", params);
     },
   },
-
   decorators: [
     (Story) => (
       <DemoProvider>
         <TeachingMaterialsLayout
-          title="Select teaching material"
-          subTitle="Choose the downloadable resource you'd like to create with Aila for your lesson."
-          step={1}
+          title="What are you teaching?"
+          subTitle="The more detail you give, the better suited your resource will be for your lesson."
+          step={2}
           docTypeName={null}
         >
           <Story />

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { promise } from "zod";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
@@ -6,34 +7,52 @@ import { chromaticParams } from "@/storybook/chromatic";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
-import StepTwo from "./StepTwo";
+import StepThree from "./StepThree";
 
 const meta = {
-  title: "Components/AdditionalMaterials/StepLayouts/StepTwo",
-  component: StepTwo,
+  title: "Components/TeachingMaterials/StepLayouts/StepThree",
+  component: StepThree,
   decorators: [TeachingMaterialsStoreDecorator, DialogContentDecorator],
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
     layout: "fullscreen",
+    resourcesStoreState: {
+      pageData: {
+        lessonPlan: {
+          lessonId: "lesson-123",
+          title: "Introduction to Fractions",
+          keyStage: "KS2",
+          subject: "Mathematics",
+          topic: "Fractions",
+          learningOutcome: "Students will understand basic fraction concepts",
+          keyLearningPoints: [
+            "Understanding the concept of fractions",
+            "Identifying fractions in everyday contexts",
+            "Comparing and ordering fractions",
+          ],
+        },
+      },
+      docType: "additional-starter-quiz",
+    },
   },
-} satisfies Meta<typeof StepTwo>;
+} satisfies Meta<typeof StepThree>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleSubmitLessonPlan: async (params) => {
-      console.log("Submitting lesson plan:", params);
+    handleSubmit: () => {
+      return {} as Promise<void>;
     },
   },
   decorators: [
     (Story) => (
       <DemoProvider>
         <TeachingMaterialsLayout
-          title="What are you teaching?"
-          subTitle="The more detail you give, the better suited your resource will be for your lesson."
-          step={2}
+          title="Introduction to Fractions"
+          subTitle="Year 4 • Mathematics"
+          step={3}
           docTypeName={null}
         >
           <Story />

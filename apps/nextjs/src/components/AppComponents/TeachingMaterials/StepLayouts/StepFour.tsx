@@ -40,14 +40,14 @@ import {
   refinementGenerationHistorySelector,
 } from "@/stores/teachingMaterialsStore/selectors";
 
-import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
-import { Glossary } from "../../AdditionalMaterials/Glossary";
 import { useDialog } from "../../DialogContext";
-import { ModerationMessage } from "../AdditionalMaterialMessage";
+import { ComprehensionTask } from "../ComprehensionTask";
+import { Glossary } from "../Glossary";
 import InlineButton from "../InlineButton";
 import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
+import { ModerationMessage } from "../TeachingMaterialMessage";
 
 const log = aiLogger("additional-materials");
 

@@ -23,7 +23,7 @@ const glossaryFixture: GlossarySchema = {
 };
 
 const meta: Meta<typeof Glossary> = {
-  title: "Components/AdditionalMaterials/Glossary",
+  title: "Components/TeachingMaterials/Glossary",
   component: Glossary,
   parameters: {
     // Including custom decorators changes the layout from fullscreen

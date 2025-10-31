@@ -5,7 +5,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 import InlineButton from "./InlineButton";
 
 const meta = {
-  title: "Components/AdditionalMaterials/InlineButton",
+  title: "Components/TeachingMaterials/InlineButton",
   component: InlineButton,
 
   parameters: {

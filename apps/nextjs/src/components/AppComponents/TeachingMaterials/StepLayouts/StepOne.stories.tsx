@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { promise } from "zod";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
@@ -7,52 +6,52 @@ import { chromaticParams } from "@/storybook/chromatic";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
-import StepThree from "./StepThree";
+import StepOne from "./StepOne";
 
 const meta = {
-  title: "Components/AdditionalMaterials/StepLayouts/StepThree",
-  component: StepThree,
+  title: "Components/TeachingMaterials/StepLayouts/StepOne",
+  component: StepOne,
   decorators: [TeachingMaterialsStoreDecorator, DialogContentDecorator],
   parameters: {
     ...chromaticParams(["mobile", "desktop"]),
     layout: "fullscreen",
     resourcesStoreState: {
+      stepNumber: 0,
+      docType: "additional-glossary",
+      source: "aila",
       pageData: {
         lessonPlan: {
-          lessonId: "lesson-123",
-          title: "Introduction to Fractions",
-          keyStage: "KS2",
-          subject: "Mathematics",
-          topic: "Fractions",
-          learningOutcome: "Students will understand basic fraction concepts",
-          keyLearningPoints: [
-            "Understanding the concept of fractions",
-            "Identifying fractions in everyday contexts",
-            "Comparing and ordering fractions",
-          ],
+          title: "Mock Lesson",
         },
       },
-      docType: "additional-starter-quiz",
+      threatDetection: true,
+      moderation: {
+        justification: "This contains content that requires guidance.",
+        categories: ["l/strong-language", "u/sensitive-content"],
+      },
     },
   },
-} satisfies Meta<typeof StepThree>;
+} satisfies Meta<typeof StepOne>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleSubmit: () => {
-      return {} as Promise<void>;
+    handleCreateSession: (
+      _docType: string | null,
+    ): Promise<{ success: boolean }> => {
+      return Promise.resolve({ success: true });
     },
   },
+
   decorators: [
     (Story) => (
       <DemoProvider>
         <TeachingMaterialsLayout
-          title="Introduction to Fractions"
-          subTitle="Year 4 • Mathematics"
-          step={3}
+          title="Select teaching material"
+          subTitle="Choose the downloadable resource you'd like to create with Aila for your lesson."
+          step={1}
           docTypeName={null}
         >
           <Story />

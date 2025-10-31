@@ -31,7 +31,7 @@ const quizFixture: StarterQuizType = {
 };
 
 const meta: Meta<typeof Quiz> = {
-  title: "Components/AdditionalMaterials/Quiz",
+  title: "Components/TeachingMaterials/Quiz",
   component: Quiz,
   parameters: {
     // Including custom decorators changes the layout from fullscreen

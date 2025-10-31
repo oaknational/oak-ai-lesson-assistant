@@ -3,10 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { chromaticParams } from "@/storybook/chromatic";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
 
-import { ModerationMessage } from "./AdditionalMaterialMessage";
+import { ModerationMessage } from "./TeachingMaterialMessage";
 
 const meta = {
-  title: "Components/AdditionalMaterials/AdditionalMaterialMessage",
+  title: "Components/TeachingMaterials/TeachingMaterialMessage",
   component: ModerationMessage,
   decorators: [DialogContentDecorator],
   parameters: {

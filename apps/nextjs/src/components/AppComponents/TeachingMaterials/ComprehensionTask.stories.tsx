@@ -84,7 +84,7 @@ It also requires evaluating the impact of this withdrawal on British society, wh
 };
 
 const meta: Meta<typeof ComprehensionTask> = {
-  title: "Components/AdditionalMaterials/ComprehensionTask",
+  title: "Components/TeachingMaterials/ComprehensionTask",
   component: ComprehensionTask,
   parameters: {
     // Including custom decorators changes the layout from fullscreen

@@ -24,9 +24,9 @@ import {
 } from "@/stores/teachingMaterialsStore/selectors";
 
 import { useDialog } from "../../DialogContext";
-import { ModerationMessage } from "../AdditionalMaterialMessage";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
+import { ModerationMessage } from "../TeachingMaterialMessage";
 import SharedNavigationButtons from "./SharedFooterNavigationButtons";
 
 export function mapLessonPlanSections(
