@@ -1,7 +1,7 @@
 import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { transformDataForExport } from "@oakai/additional-materials/src/documents/teachingMaterials/dataHelpers/transformDataForExports";
 import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import { exportAdditionalResourceDoc } from "@oakai/exports/src/exportAdditionalResourceDoc";
+import { exportTeachingMaterialDoc } from "@oakai/exports/src/exportTeachingMaterialsDoc";
 import { aiLogger } from "@oakai/logger";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
@@ -41,13 +41,13 @@ export async function POST(req: Request, res: NextApiResponse) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const exportLink = await exportAdditionalResourceDoc({
+    const exportLink = await exportTeachingMaterialDoc({
       userEmail: userEmail,
       lessonTitle,
       onStateChange: (state) => {
         log.info(state);
         Sentry.addBreadcrumb({
-          category: "exportAdditionalResourceDoc",
+          category: "exportTeachingMaterialDoc",
           message: "Export state change",
           data: state,
         });

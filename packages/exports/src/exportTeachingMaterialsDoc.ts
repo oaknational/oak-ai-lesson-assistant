@@ -7,7 +7,7 @@ import { getDocsClient } from "./gSuite/docs/client";
 import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/populate/cleanupUnusedPlaceholdersRequests";
 import { populateDoc } from "./gSuite/docs/populate/populateDoc";
 import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
-import { getAdditionalResourcesTemplateId } from "./templates";
+import { getTeachingMaterialsTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
 const log = aiLogger("exports");
@@ -44,7 +44,7 @@ const extractDataFromBlocks = <T>(
   return map;
 };
 
-export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
+export const exportTeachingMaterialDoc = async <InputData, TemplateData>({
   documentType,
   lessonTitle,
   id,
@@ -67,7 +67,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
     // For comprehension tasks, we need to create both the questions and answers files
     if (documentType === "additional-comprehension") {
       // @todo we should think about having a mechanism here in the future that is more flexible and not specific to the document type
-      const templateId = getAdditionalResourcesTemplateId({
+      const templateId = getTeachingMaterialsTemplateId({
         docType: documentType,
       });
 
@@ -99,7 +99,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
         return result;
       }
 
-      const answersTemplateId = getAdditionalResourcesTemplateId({
+      const answersTemplateId = getTeachingMaterialsTemplateId({
         docType: documentType,
         withAnswers: true,
       });
@@ -144,7 +144,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
       return { data };
     } else {
       // Regular document processing for other document types
-      const templateId = getAdditionalResourcesTemplateId({
+      const templateId = getTeachingMaterialsTemplateId({
         docType: documentType,
       });
 
