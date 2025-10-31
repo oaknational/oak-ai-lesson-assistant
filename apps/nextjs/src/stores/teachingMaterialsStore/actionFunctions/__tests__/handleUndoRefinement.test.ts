@@ -7,7 +7,7 @@ describe("handleUndoRefinement", () => {
 
   it("does nothing if no history", () => {
     const set = jest.fn();
-    // Use a valid ResourcesState shape for get
+    // Use a valid TeachingMaterialsState shape for get
     const get = jest.fn(() => ({
       refinementGenerationHistory: [],
       formState: {

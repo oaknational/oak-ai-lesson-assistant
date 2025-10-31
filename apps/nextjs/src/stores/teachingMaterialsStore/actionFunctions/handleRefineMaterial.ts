@@ -9,12 +9,19 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleRefineMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  (
+    set: TeachingMaterialsSetter,
+    get: TeachingMaterialsGetter,
+    trpc: TrpcUtils,
+  ) =>
   async (refinementOption: RefinementOption) => {
     const {
       actions: { setIsResourceRefining },

@@ -3,12 +3,15 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleDownload =
-  (set: ResourcesSetter, get: ResourcesGetter) => async () => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) => async () => {
     // Clear any existing generation
     set({
       isDownloading: true,

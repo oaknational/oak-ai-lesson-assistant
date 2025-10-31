@@ -27,9 +27,9 @@ import styled, { css } from "styled-components";
 import AiIcon from "@/components/AiIcon";
 import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
 import {
   docTypeSelector,
   generationSelector,
@@ -38,7 +38,7 @@ import {
   isResourcesLoadingSelector,
   moderationSelector,
   refinementGenerationHistorySelector,
-} from "@/stores/resourcesStore/selectors";
+} from "@/stores/teachingMaterialsStore/selectors";
 
 import { ComprehensionTask } from "../../AdditionalMaterials/ComprehensionTask";
 import { Glossary } from "../../AdditionalMaterials/Glossary";
@@ -93,21 +93,21 @@ type StepFourProps = {
 };
 
 const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
-  const generation = useResourcesStore(generationSelector);
+  const generation = useTeachingMaterialsStore(generationSelector);
 
-  const docType = useResourcesStore(docTypeSelector);
-  const isResourcesLoading = useResourcesStore(isResourcesLoadingSelector);
-  const isResourceRefining = useResourcesStore(isResourceRefiningSelector);
-  const refinementHistory = useResourcesStore(
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const isResourcesLoading = useTeachingMaterialsStore(isResourcesLoadingSelector);
+  const isResourceRefining = useTeachingMaterialsStore(isResourceRefiningSelector);
+  const refinementHistory = useTeachingMaterialsStore(
     refinementGenerationHistorySelector,
   );
 
-  const { undoRefinement } = useResourcesActions();
-  const moderation = useResourcesStore(moderationSelector);
+  const { undoRefinement } = useTeachingMaterialsActions();
+  const moderation = useTeachingMaterialsStore(moderationSelector);
   const [isFooterAdaptOpen, setIsFooterAdaptOpen] = useState(false);
   const [userHasSeenSurvey, setUserHasSeenSurvey] = useState(false);
-  const { downloadMaterial, setIsResourceDownloading } = useResourcesActions();
-  const isDownloading = useResourcesStore(isResourcesDownloadingSelector);
+  const { downloadMaterial, setIsResourceDownloading } = useTeachingMaterialsActions();
+  const isDownloading = useTeachingMaterialsStore(isResourcesDownloadingSelector);
   const { setDialogWindow } = useDialog();
   const { getConsent } = useOakConsent();
   const posthogConsent = getConsent(ServicePolicyMap.POSTHOG);

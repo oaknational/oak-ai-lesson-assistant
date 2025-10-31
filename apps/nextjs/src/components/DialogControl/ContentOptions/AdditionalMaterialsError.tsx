@@ -3,10 +3,10 @@ import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/a
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
-import { docTypeSelector } from "@/stores/resourcesStore/selectors";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
+import { docTypeSelector } from "@/stores/teachingMaterialsStore/selectors";
 
 type AdditionalMaterialsErrorProps = {
   closeDialog: () => void;
@@ -15,14 +15,14 @@ type AdditionalMaterialsErrorProps = {
 const AdditionalMaterialsError = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsErrorProps>) => {
-  const docType = useResourcesStore(docTypeSelector);
-  const error = useResourcesStore((state) => state.error);
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const error = useTeachingMaterialsStore((state) => state.error);
 
   const docTypeDisplayName = docType
     ? resourceTypesConfig[docType].displayName
     : null;
 
-  const { resetToDefault } = useResourcesActions();
+  const { resetToDefault } = useTeachingMaterialsActions();
   return (
     <OakFlex
       $width="100%"

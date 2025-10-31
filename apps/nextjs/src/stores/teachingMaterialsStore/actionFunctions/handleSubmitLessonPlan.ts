@@ -12,10 +12,13 @@ import invariant from "tiny-invariant";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import { type ResourcesGetter, type ResourcesSetter } from "../types";
+import {
+  type TeachingMaterialsGetter,
+  type TeachingMaterialsSetter,
+} from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export type SubmitLessonPlanParams = {
   title: string;
@@ -75,7 +78,7 @@ const buildLessonPlanInput = (
  * Updates the store with successful lesson plan results
  */
 const updateStoreWithLessonPlan = (
-  set: ResourcesSetter,
+  set: TeachingMaterialsSetter,
   result: GeneratePartialLessonPlanResponse,
 ) => {
   if (isToxic(result.moderation)) {
@@ -130,7 +133,11 @@ const updateMaterialSessionWithLessonId = async (
 };
 
 export const handleSubmitLessonPlan =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  (
+    set: TeachingMaterialsSetter,
+    get: TeachingMaterialsGetter,
+    trpc: TrpcUtils,
+  ) =>
   async ({ title, subject, year }: SubmitLessonPlanParams) => {
     const { setIsLoadingLessonPlan } = get().actions;
     const { docType, id: resourceId, source } = get();

@@ -2,12 +2,15 @@ import { aiLogger } from "@oakai/logger";
 
 import type { ComponentTypeValueType } from "@/lib/avo/Avo";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleSetStepNumber =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
   (step: number, componentType?: ComponentTypeValueType) => {
     const { stepNumber: currentStep, formState, id } = get();
 

@@ -15,10 +15,10 @@ import { usePathname, useRouter } from "next/navigation";
 import invariant from "tiny-invariant";
 
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
-import { docTypeSelector } from "@/stores/resourcesStore/selectors";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
+import { docTypeSelector } from "@/stores/teachingMaterialsStore/selectors";
 
 type AdditionalMaterialsStartAgainProps = {
   closeDialog: () => void;
@@ -27,16 +27,16 @@ type AdditionalMaterialsStartAgainProps = {
 const AdditionalMaterialsStartAgain = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsStartAgainProps>) => {
-  const docType = useResourcesStore(docTypeSelector);
+  const docType = useTeachingMaterialsStore(docTypeSelector);
 
-  const lessonTitle = useResourcesStore(
+  const lessonTitle = useTeachingMaterialsStore(
     (state) => state.pageData.lessonPlan.title,
   );
   invariant(docType, "docType must be defined");
   const docTypeDisplayName =
     resourceTypesConfig[docType].displayName.toLowerCase();
   const { resetToDefault, setStepNumber, setId, setDocType, setGeneration } =
-    useResourcesActions();
+    useTeachingMaterialsActions();
   const [selectedOption, setSelectedOption] = useState<string>("");
 
   const router = useRouter();

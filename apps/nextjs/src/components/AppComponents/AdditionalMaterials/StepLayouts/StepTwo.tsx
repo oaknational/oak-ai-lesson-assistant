@@ -6,15 +6,15 @@ import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";
 
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
 import {
   activeDropdownSelector,
   subjectSelector,
   titleSelector,
   yearSelector,
-} from "@/stores/resourcesStore/selectors";
+} from "@/stores/teachingMaterialsStore/selectors";
 
 import FormValidationWarning from "../../FormValidationWarning";
 import { SubjectsDropDown, YearGroupDropDown } from "../DropDownButtons";
@@ -34,12 +34,12 @@ const StepTwo = ({
   handleSubmitLessonPlan: (params: SubmitLessonPlanParams) => Promise<void>;
 }) => {
   const { setStepNumber, setSubject, setTitle, setYear, setActiveDropdown } =
-    useResourcesActions();
-  const subject = useResourcesStore(subjectSelector);
-  const title = useResourcesStore(titleSelector);
-  const year = useResourcesStore(yearSelector);
-  const docType = useResourcesStore((state) => state.docType);
-  const activeDropdown = useResourcesStore(activeDropdownSelector);
+    useTeachingMaterialsActions();
+  const subject = useTeachingMaterialsStore(subjectSelector);
+  const title = useTeachingMaterialsStore(titleSelector);
+  const year = useTeachingMaterialsStore(yearSelector);
+  const docType = useTeachingMaterialsStore((state) => state.docType);
+  const activeDropdown = useTeachingMaterialsStore(activeDropdownSelector);
 
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);

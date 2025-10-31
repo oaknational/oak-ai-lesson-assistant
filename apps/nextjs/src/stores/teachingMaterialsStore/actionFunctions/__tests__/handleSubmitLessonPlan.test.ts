@@ -5,7 +5,10 @@ import { TRPCClientError } from "@trpc/client";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ResourcesGetter, ResourcesSetter } from "../../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../../types";
 import { handleStoreError } from "../../utils/errorHandling";
 import {
   type SubmitLessonPlanParams,
@@ -98,8 +101,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("loading state management", () => {
     it("sets isLoadingLessonPlan to true at start and false at end on success", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -118,8 +121,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -134,8 +137,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("buildLessonPlanInput behavior", () => {
     it("builds correct API input with resource type lesson parts", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -165,8 +168,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("mutateAsync calls", () => {
     it("calls mutate with correct props", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -189,8 +192,8 @@ describe("handleSubmitLessonPlan", () => {
 
     it("handles successful mutate response", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -224,8 +227,8 @@ describe("handleSubmitLessonPlan", () => {
       });
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -247,8 +250,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("updateMaterialSessionWithLessonId calls", () => {
     it("calls updateMaterialSession mutate with correct props", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -273,8 +276,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(updateError);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -289,8 +292,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("analytics tracking", () => {
     it("calls trackMaterialRefined with correct component type", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -310,8 +313,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -330,8 +333,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(error);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -350,8 +353,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(trpcError);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -375,8 +378,8 @@ describe("handleSubmitLessonPlan", () => {
       });
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -402,8 +405,8 @@ describe("handleSubmitLessonPlan", () => {
       } as unknown as TrpcUtils;
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpcWithoutUpdate,
       );
 
@@ -424,8 +427,8 @@ describe("handleSubmitLessonPlan", () => {
       });
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -443,8 +446,8 @@ describe("handleSubmitLessonPlan", () => {
   describe("integration scenarios", () => {
     it("completes full successful flow", async () => {
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 
@@ -480,8 +483,8 @@ describe("handleSubmitLessonPlan", () => {
       ).mockRejectedValue(updateError);
 
       const handler = handleSubmitLessonPlan(
-        mockSet as ResourcesSetter,
-        mockGet as ResourcesGetter,
+        mockSet as TeachingMaterialsSetter,
+        mockGet as TeachingMaterialsGetter,
         mockTrpc,
       );
 

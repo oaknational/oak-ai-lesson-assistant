@@ -2,12 +2,15 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
 const log = aiLogger("additional-materials");
 
 export const handleUndoRefinement =
-  (set: ResourcesSetter, get: ResourcesGetter) => () => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) => () => {
     const {
       refinementGenerationHistory,
       formState,

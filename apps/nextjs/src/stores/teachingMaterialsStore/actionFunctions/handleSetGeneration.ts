@@ -1,12 +1,15 @@
 import type { AdditionalMaterialSchemas } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleSetGeneration =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
   (generation: AdditionalMaterialSchemas | null) => {
     log.info("Setting generation");
     set({ generation });

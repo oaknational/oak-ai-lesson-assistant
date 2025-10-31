@@ -20,17 +20,17 @@ import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { OakMathJaxContext } from "@/components/MathJax";
 import ResourcesLayout from "@/components/ResourcesLayout";
 import {
-  ResourcesStoresProvider,
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
+  TeachingMaterialsStoresProvider,
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
 import {
   docTypeSelector,
   pageDataSelector,
   stepNumberSelector,
   threatDetectionSelector,
   yearSelector,
-} from "@/stores/resourcesStore/selectors";
+} from "@/stores/teachingMaterialsStore/selectors";
 
 export type TeachingMaterialsPageProps = {
   lesson?: LessonPlanSchemaTeachingMaterials;
@@ -47,14 +47,14 @@ export type TeachingMaterialsPageProps = {
 };
 
 const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
-  const stepNumber = useResourcesStore(stepNumberSelector);
-  const pageData = useResourcesStore(pageDataSelector);
-  const threatDetected = useResourcesStore(threatDetectionSelector);
+  const stepNumber = useTeachingMaterialsStore(stepNumberSelector);
+  const pageData = useTeachingMaterialsStore(pageDataSelector);
+  const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
 
-  const docType = useResourcesStore(docTypeSelector);
-  const year = useResourcesStore(yearSelector);
-  const error = useResourcesStore((state) => state.error);
-  const lessonPlan = useResourcesStore((state) => state.pageData.lessonPlan);
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const year = useTeachingMaterialsStore(yearSelector);
+  const error = useTeachingMaterialsStore((state) => state.error);
+  const lessonPlan = useTeachingMaterialsStore((state) => state.pageData.lessonPlan);
 
   const resourceType = docType ? getResourceType(docType) : null;
   const docTypeName = resourceType?.displayName ?? null;
@@ -63,7 +63,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
     submitLessonPlan,
     generateMaterial,
     refineMaterial,
-  } = useResourcesActions();
+  } = useTeachingMaterialsActions();
   const { setDialogWindow } = useDialog();
 
   handleDialogSelection({
@@ -117,7 +117,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
 
 const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
   return (
-    <ResourcesStoresProvider {...props}>
+    <TeachingMaterialsStoresProvider {...props}>
       <DialogProvider>
         <DialogRoot>
           <DialogContents chatId={undefined} lesson={{}} />
@@ -126,7 +126,7 @@ const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
           </OakMathJaxContext>
         </DialogRoot>
       </DialogProvider>
-    </ResourcesStoresProvider>
+    </TeachingMaterialsStoresProvider>
   );
 };
 

@@ -1,7 +1,11 @@
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
 export const handleSetSubject =
-  (set: ResourcesSetter, get: ResourcesGetter) => (subject: string | null) => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (subject: string | null) => {
     set((state) => ({
       formState: {
         ...state.formState,
@@ -11,7 +15,8 @@ export const handleSetSubject =
   };
 
 export const handleSetTitle =
-  (set: ResourcesSetter, get: ResourcesGetter) => (title: string | null) => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (title: string | null) => {
     set((state) => ({
       formState: {
         ...state.formState,
@@ -21,7 +26,8 @@ export const handleSetTitle =
   };
 
 export const handleSetYear =
-  (set: ResourcesSetter, get: ResourcesGetter) => (year: string | null) => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (year: string | null) => {
     set((state) => ({
       formState: {
         ...state.formState,
@@ -31,7 +37,7 @@ export const handleSetYear =
   };
 
 export const handleSetActiveDropdown =
-  (set: ResourcesSetter, get: ResourcesGetter) =>
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
   (activeDropdown: string | null) => {
     set((state) => ({
       formState: {
@@ -42,7 +48,7 @@ export const handleSetActiveDropdown =
   };
 
 export const handleResetFormState =
-  (set: ResourcesSetter, get: ResourcesGetter) => () => {
+  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) => () => {
     set({
       formState: {
         subject: null,

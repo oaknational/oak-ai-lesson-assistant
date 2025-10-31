@@ -5,16 +5,19 @@ import z from "zod";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleCreateMaterialSession =
   (
-    set: ResourcesSetter,
-    get: ResourcesGetter,
+    set: TeachingMaterialsSetter,
+    get: TeachingMaterialsGetter,
     trpc: TrpcUtils,
     refreshAuth?: () => Promise<void>,
   ) =>

@@ -12,16 +12,16 @@ import {
 } from "@oaknational/oak-components";
 
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
 import {
   docTypeSelector,
   isLoadingLessonPlanSelector,
   moderationSelector,
   pageDataSelector,
   threatDetectionSelector,
-} from "@/stores/resourcesStore/selectors";
+} from "@/stores/teachingMaterialsStore/selectors";
 
 import { useDialog } from "../../DialogContext";
 import { ModerationMessage } from "../AdditionalMaterialMessage";
@@ -36,11 +36,11 @@ export function mapLessonPlanSections(
 }
 
 const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
-  const pageData = useResourcesStore(pageDataSelector);
-  const docType = useResourcesStore(docTypeSelector);
-  const moderation = useResourcesStore(moderationSelector);
-  const isLoadingLessonPlan = useResourcesStore(isLoadingLessonPlanSelector);
-  const threatDetected = useResourcesStore(threatDetectionSelector);
+  const pageData = useTeachingMaterialsStore(pageDataSelector);
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const moderation = useTeachingMaterialsStore(moderationSelector);
+  const isLoadingLessonPlan = useTeachingMaterialsStore(isLoadingLessonPlanSelector);
+  const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
 
   const { setDialogWindow } = useDialog();
 
@@ -50,7 +50,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
     ? resourceType.displayName.toLowerCase()
     : null;
 
-  const { setStepNumber } = useResourcesActions();
+  const { setStepNumber } = useTeachingMaterialsActions();
 
   if (isLoadingLessonPlan) {
     return <StepLoadingScreen source="lessonPlan" docTypeName={docTypeName} />;

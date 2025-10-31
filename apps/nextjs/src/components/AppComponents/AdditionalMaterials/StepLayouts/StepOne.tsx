@@ -11,10 +11,10 @@ import {
 } from "@oaknational/oak-components";
 
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
-import { docTypeSelector } from "@/stores/resourcesStore/selectors";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
+import { docTypeSelector } from "@/stores/teachingMaterialsStore/selectors";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
@@ -32,12 +32,12 @@ const StepOne = ({
   ) => Promise<{ success: boolean }>;
 }) => {
   const { setDocType, setGeneration, setIsResourcesLoading, generateMaterial } =
-    useResourcesActions();
+    useTeachingMaterialsActions();
 
-  const docType = useResourcesStore(docTypeSelector);
-  const error = useResourcesStore((state) => state.error);
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const error = useTeachingMaterialsStore((state) => state.error);
 
-  const lesson = useResourcesStore((state) => state.pageData.lessonPlan);
+  const lesson = useTeachingMaterialsStore((state) => state.pageData.lessonPlan);
   const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 

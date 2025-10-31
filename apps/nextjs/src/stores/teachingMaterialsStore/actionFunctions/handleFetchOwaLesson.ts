@@ -8,8 +8,8 @@ import type { TrpcUtils } from "@/utils/trpc";
 
 import type {
   LoadOwaDataParams,
-  ResourcesGetter,
-  ResourcesSetter,
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
 } from "../types";
 import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
@@ -18,8 +18,8 @@ const log = aiLogger("additional-materials");
 
 export const handleFetchOwaLesson =
   (
-    set: ResourcesSetter,
-    get: ResourcesGetter,
+    set: TeachingMaterialsSetter,
+    get: TeachingMaterialsGetter,
     trpc: TrpcUtils,
     refreshAuth?: () => Promise<void>,
   ) =>

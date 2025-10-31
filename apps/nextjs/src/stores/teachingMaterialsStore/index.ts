@@ -28,7 +28,7 @@ import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
 import { handleUndoRefinement } from "./actionFunctions/handleUndoRefinement";
-import type { ResourcesState } from "./types";
+import type { TeachingMaterialsState } from "./types";
 
 export * from "./types";
 
@@ -75,71 +75,73 @@ const DEFAULT_STATE = {
   refinementGenerationHistory: [],
 };
 
-export const createResourcesStore = (
+export const createTeachingMaterialsStore = (
   props: TeachingMaterialsPageProps,
   track: TrackFns,
   trpc: TrpcUtils,
-  initState?: Partial<ResourcesState>,
+  initState?: Partial<TeachingMaterialsState>,
   refreshAuth?: () => Promise<void>,
 ) => {
-  const resourcesStore = create<ResourcesState>()((set, get) => ({
-    ...DEFAULT_STATE,
-    source: props.source ?? "aila",
-    stepNumber: props.initialStep ?? 0,
-    isResourcesLoading: props.source === "owa" && props.initialStep === 3,
-    ...initState,
-    actions: {
-      // Setters
-      setStepNumber: handleSetStepNumber(set, get),
-      setPageData: handleSetPageData(set, get),
-      setGeneration: handleSetGeneration(set, get),
-      setDocType: handleSetDocType(set, get),
-      setId: (id: string | null) => set({ id }),
-      setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
-      setSource: (source: "aila" | "owa") => set({ source }),
-      setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
-      setIsResourceRefining: handleSetIsResourceRefining(set, get),
-      setIsResourceDownloading: (isDownloading: boolean) =>
-        set({ isDownloading }),
-      setThreatDetection: (threatDetection: boolean) => {
-        set({ threatDetection });
+  const teachingMaterialsStore = create<TeachingMaterialsState>()(
+    (set, get) => ({
+      ...DEFAULT_STATE,
+      source: props.source ?? "aila",
+      stepNumber: props.initialStep ?? 0,
+      isResourcesLoading: props.source === "owa" && props.initialStep === 3,
+      ...initState,
+      actions: {
+        // Setters
+        setStepNumber: handleSetStepNumber(set, get),
+        setPageData: handleSetPageData(set, get),
+        setGeneration: handleSetGeneration(set, get),
+        setDocType: handleSetDocType(set, get),
+        setId: (id: string | null) => set({ id }),
+        setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
+        setSource: (source: "aila" | "owa") => set({ source }),
+        setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
+        setIsResourceRefining: handleSetIsResourceRefining(set, get),
+        setIsResourceDownloading: (isDownloading: boolean) =>
+          set({ isDownloading }),
+        setThreatDetection: (threatDetection: boolean) => {
+          set({ threatDetection });
+        },
+        // Form state setters
+        setSubject: handleSetSubject(set, get),
+        setTitle: handleSetTitle(set, get),
+        setYear: handleSetYear(set, get),
+        setActiveDropdown: handleSetActiveDropdown(set, get),
+        resetFormState: handleResetFormState(set, get),
+
+        // Business logic actions
+        submitLessonPlan: handleSubmitLessonPlan(set, get, trpc),
+        generateMaterial: handleGenerateMaterial(set, get, trpc),
+        refineMaterial: handleRefineMaterial(set, get, trpc),
+        downloadMaterial: handleDownload(set, get),
+
+        // OWA data loading
+        fetchOwaData: handleFetchOwaLesson(set, get, trpc, refreshAuth),
+
+        // History management actions
+        undoRefinement: handleUndoRefinement(set, get),
+
+        createMaterialSession: handleCreateMaterialSession(
+          set,
+          get,
+          trpc,
+          refreshAuth,
+        ),
+
+        // Analytics actions
+        analytics: handleAnalytics(set, get, track),
+
+        // Reset store to default state
+        resetToDefault: () => set(() => ({ ...DEFAULT_STATE })),
       },
-      // Form state setters
-      setSubject: handleSetSubject(set, get),
-      setTitle: handleSetTitle(set, get),
-      setYear: handleSetYear(set, get),
-      setActiveDropdown: handleSetActiveDropdown(set, get),
-      resetFormState: handleResetFormState(set, get),
-
-      // Business logic actions
-      submitLessonPlan: handleSubmitLessonPlan(set, get, trpc),
-      generateMaterial: handleGenerateMaterial(set, get, trpc),
-      refineMaterial: handleRefineMaterial(set, get, trpc),
-      downloadMaterial: handleDownload(set, get),
-
-      // OWA data loading
-      fetchOwaData: handleFetchOwaLesson(set, get, trpc, refreshAuth),
-
-      // History management actions
-      undoRefinement: handleUndoRefinement(set, get),
-
-      createMaterialSession: handleCreateMaterialSession(
-        set,
-        get,
-        trpc,
-        refreshAuth,
-      ),
-
-      // Analytics actions
-      analytics: handleAnalytics(set, get, track),
-
-      // Reset store to default state
-      resetToDefault: () => set(() => ({ ...DEFAULT_STATE })),
-    },
-  }));
+    }),
+  );
 
   // Log store updates
-  logStoreUpdates(resourcesStore, "additional-materials");
+  logStoreUpdates(teachingMaterialsStore, "teaching-materials");
 
-  return resourcesStore;
+  return teachingMaterialsStore;
 };

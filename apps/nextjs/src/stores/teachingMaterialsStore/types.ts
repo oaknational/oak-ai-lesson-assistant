@@ -55,7 +55,7 @@ export const teachingMaterialError = z.object({
 });
 export type TeachingMaterialError = z.infer<typeof teachingMaterialError>;
 
-export type ResourcesState = {
+export type TeachingMaterialsState = {
   id: string | null;
   source: "aila" | "owa";
   stepNumber: number;
@@ -139,5 +139,7 @@ export type ResourcesState = {
   };
 };
 
-export type ResourcesSetter = StoreApi<ResourcesState>["setState"];
-export type ResourcesGetter = StoreApi<ResourcesState>["getState"];
+export type TeachingMaterialsSetter =
+  StoreApi<TeachingMaterialsState>["setState"];
+export type TeachingMaterialsGetter =
+  StoreApi<TeachingMaterialsState>["getState"];

@@ -5,13 +5,21 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 import { handleStoreError } from "../utils/errorHandling";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleGenerateMaterial =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) => async () => {
+  (
+    set: TeachingMaterialsSetter,
+    get: TeachingMaterialsGetter,
+    trpc: TrpcUtils,
+  ) =>
+  async () => {
     set({ stepNumber: 3 });
 
     // Clear any existing generation

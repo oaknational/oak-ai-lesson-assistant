@@ -17,11 +17,11 @@ import type {
   ResourceTypeValueType,
 } from "@/lib/avo/Avo";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type { TeachingMaterialsGetter, TeachingMaterialsSetter } from "../types";
 
 export const handleAnalytics = (
-  _set: ResourcesSetter,
-  get: ResourcesGetter,
+  _set: TeachingMaterialsSetter,
+  get: TeachingMaterialsGetter,
   track: TrackFns,
 ) => {
   return {

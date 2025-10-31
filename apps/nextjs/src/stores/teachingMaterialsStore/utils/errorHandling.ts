@@ -3,12 +3,12 @@ import { aiLogger } from "@oakai/logger";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCClientError } from "@trpc/client";
 
-import { type ErrorType, type ResourcesSetter } from "../types";
+import { type ErrorType, type TeachingMaterialsSetter } from "../types";
 
 const log = aiLogger("additional-materials");
 
 export const handleStoreError = (
-  set: ResourcesSetter,
+  set: TeachingMaterialsSetter,
   error: unknown,
   context: Record<string, unknown> = {},
 ): void => {

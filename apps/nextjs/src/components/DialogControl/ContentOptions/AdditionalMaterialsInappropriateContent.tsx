@@ -4,13 +4,13 @@ import invariant from "tiny-invariant";
 
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 import {
-  useResourcesActions,
-  useResourcesStore,
-} from "@/stores/ResourcesStoreProvider";
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
 import {
   moderationSelector,
   pageDataSelector,
-} from "@/stores/resourcesStore/selectors";
+} from "@/stores/teachingMaterialsStore/selectors";
 
 import AdditionalMaterialsModerationFeedback from "./AdditionalMaterialsModerationFeedback";
 
@@ -21,9 +21,9 @@ type AdditionalMaterialsInappropriateContentProps = {
 const AdditionalMaterialsInappropriateContent = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsInappropriateContentProps>) => {
-  const { resetToDefault } = useResourcesActions();
-  const moderation = useResourcesStore(moderationSelector);
-  const id = useResourcesStore(pageDataSelector).lessonPlan.lessonId;
+  const { resetToDefault } = useTeachingMaterialsActions();
+  const moderation = useTeachingMaterialsStore(moderationSelector);
+  const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
   invariant(moderation, "Moderation data is required for this component");
   const { submitSurveyWithOutClosing } = usePosthogFeedbackSurvey({
     surveyName: "Moderation feedback",

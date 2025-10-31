@@ -3,12 +3,16 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 
-import type { ResourcesGetter, ResourcesSetter } from "../types";
+import type {
+  TeachingMaterialsGetter,
+  TeachingMaterialsSetter,
+} from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleSetDocType =
-  (set: ResourcesSetter, _get: ResourcesGetter) => (docType: string | null) => {
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
+  (docType: string | null) => {
     log.info("Setting docType", { docType });
 
     if (docType !== null) {

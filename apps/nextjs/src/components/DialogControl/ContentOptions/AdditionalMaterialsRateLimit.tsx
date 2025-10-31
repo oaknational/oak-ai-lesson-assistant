@@ -8,7 +8,7 @@ import {
 } from "@oaknational/oak-components";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
-import { useResourcesActions } from "@/stores/ResourcesStoreProvider";
+import { useTeachingMaterialsActions } from "@/stores/TeachingMaterialsStoreProvider";
 
 const RATELIMIT_FORM_URL = process.env.RATELIMIT_FORM_URL;
 
@@ -19,7 +19,7 @@ type AdditionalMaterialsRateLimitProps = {
 const AdditionalMaterialsRateLimit = ({
   closeDialog,
 }: Readonly<AdditionalMaterialsRateLimitProps>) => {
-  const { resetToDefault } = useResourcesActions();
+  const { resetToDefault } = useTeachingMaterialsActions();
   const { isDemoUser, demo } = useDemoUser();
 
   if (!isDemoUser) {
