@@ -131,12 +131,12 @@ function combinePromptsAndQuestions(
   if (quizType === "/starterQuiz") {
     content.push({
       type: "text" as const,
-      text: `You are generating a starter quiz for a lesson plan. The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge.`,
+      text: `You are generating a starter quiz for a lesson plan. The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.`,
     });
   } else if (quizType === "/exitQuiz") {
     content.push({
       type: "text" as const,
-      text: `You are generating an exit quiz for a lesson plan. The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning.`,
+      text: `You are generating an exit quiz for a lesson plan. The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning. Please consider alignment with the "key learning points" and "learning outcome" sections of the lesson plan.`,
     });
   }
 
