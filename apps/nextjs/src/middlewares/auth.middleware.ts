@@ -14,7 +14,6 @@ declare global {
     labs: {
       isDemoUser: boolean | null;
       isOnboarded: boolean | null;
-      featureFlagGroup: string | null;
     };
   }
 }
