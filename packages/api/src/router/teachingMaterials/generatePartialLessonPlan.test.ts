@@ -155,7 +155,9 @@ const mockGeneratePartialLessonPlanObject =
     typeof generatePartialLessonPlanObject
   >;
 const mockGenerateTeachingMaterialModeration =
-  generateTeachingMaterialModeration;
+  generateTeachingMaterialModeration as jest.MockedFunction<
+    typeof generateTeachingMaterialModeration
+  >;
 const mockPerformLakeraThreatCheck =
   performLakeraThreatCheck as jest.MockedFunction<
     typeof performLakeraThreatCheck
@@ -198,9 +200,7 @@ describe("generatePartialLessonPlan", () => {
 
     // Reset Prisma mocks
     (
-      mockPrisma.additionalMaterialInteraction.create as jest.MockedFunction<
-        typeof mockPrisma.additionalMaterialInteraction.create
-      >
+      mockPrisma.additionalMaterialInteraction.create as jest.Mock
     ).mockResolvedValue(mockPrismaInteraction);
   });
 

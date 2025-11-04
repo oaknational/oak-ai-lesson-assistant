@@ -17,9 +17,14 @@ import {
 } from "./testFixtures";
 
 // Cast the mocked functions
-const mockGenerateTeachingMaterialObject = generateTeachingMaterialObject;
+const mockGenerateTeachingMaterialObject =
+  generateTeachingMaterialObject as jest.MockedFunction<
+    typeof generateTeachingMaterialObject
+  >;
 const mockGenerateTeachingMaterialModeration =
-  generateTeachingMaterialModeration;
+  generateTeachingMaterialModeration as jest.MockedFunction<
+    typeof generateTeachingMaterialModeration
+  >;
 const mockIsToxic = isToxic as jest.MockedFunction<typeof isToxic>;
 
 jest.mock("@oakai/logger", () => ({
@@ -30,12 +35,12 @@ jest.mock("@oakai/logger", () => ({
 }));
 
 jest.mock(
-  "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject",
+  "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject",
   () => ({
     generateTeachingMaterialObject: jest.fn(),
   }),
 );
-jest.mock("@oakai/teaching-materials", () => ({
+jest.mock("@oakai/additional-materials", () => ({
   generateTeachingMaterialModeration: jest.fn(),
 }));
 jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
@@ -45,7 +50,7 @@ jest.mock("./safetyUtils", () => ({
   recordSafetyViolation: jest.fn(),
 }));
 jest.mock(
-  "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema",
+  "@oakai/additional-materials/src/documents/teachingMaterials/configSchema",
   () => ({
     teachingMaterialsConfigMap: {
       "additional-glossary": {
