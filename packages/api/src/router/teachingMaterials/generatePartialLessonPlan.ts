@@ -13,7 +13,7 @@ import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
 import { getMockModerationResult } from "./moderationFixtures";
 import { recordSafetyViolation } from "./safetyUtils";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 interface GeneratePartialLessonPlanParams {
   prisma: PrismaClientWithAccelerate;

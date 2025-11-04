@@ -5,7 +5,7 @@ import { TRPCClientError } from "@trpc/client";
 
 import { type ErrorType, type TeachingMaterialsSetter } from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleStoreError = (
   set: TeachingMaterialsSetter,

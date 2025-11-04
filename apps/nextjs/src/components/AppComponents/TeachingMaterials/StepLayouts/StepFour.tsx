@@ -49,7 +49,7 @@ import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
 import { ModerationMessage } from "../TeachingMaterialMessage";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 const MockOakSecondaryButtonWithJustIcon = styled.button<{
   disabled: boolean;

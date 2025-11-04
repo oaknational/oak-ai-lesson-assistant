@@ -27,7 +27,7 @@ import {
   validateCurriculumApiEnv,
 } from "./teachingMaterials/helpers";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const teachingMaterialsRouter = router({
   handleFetchOwaLesson: protectedProcedure

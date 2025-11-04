@@ -14,7 +14,7 @@ export type ExitQuizData = z.infer<typeof exitQuizSchema>;
 export type ComprehensionTaskData = z.infer<typeof comprehensionTaskSchema>;
 export type GlossaryData = z.infer<typeof glossarySchema>;
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const transformDataForExport = (documentType: TeachingMaterialType) => {
   switch (documentType) {

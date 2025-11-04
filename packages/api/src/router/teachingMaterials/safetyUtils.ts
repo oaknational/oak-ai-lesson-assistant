@@ -7,7 +7,7 @@ import { aiLogger } from "@oakai/logger";
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export async function recordSafetyViolation({
   prisma,

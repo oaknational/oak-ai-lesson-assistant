@@ -4,7 +4,7 @@ import { ZodError, type ZodType } from "zod";
 
 import { type ProviderKey, providers } from ".";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const getLLMGeneration = async <T>(
   document: { prompt: string; systemMessage: string; schema: ZodType<T> },

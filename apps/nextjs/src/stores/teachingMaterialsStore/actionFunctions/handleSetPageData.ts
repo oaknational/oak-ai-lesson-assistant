@@ -6,7 +6,7 @@ import type {
   TeachingMaterialsSetter,
 } from "../types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleSetPageData =
   (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>

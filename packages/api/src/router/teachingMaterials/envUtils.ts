@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export interface CurriculumApiConfig {
   authKey: string;

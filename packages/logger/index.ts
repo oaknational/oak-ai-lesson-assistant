@@ -15,8 +15,8 @@ const debugBase = debug("ai");
 debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
-  | "additional-materials"
-  | "additional-materials:testing"
+  | "teaching-materials"
+  | "teaching-materials:testing"
   | "teaching-materials-threat-detection"
   | "admin"
   | "aila"

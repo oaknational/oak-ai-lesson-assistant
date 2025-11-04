@@ -14,7 +14,7 @@ import type {
 import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export const handleFetchOwaLesson =
   (

@@ -9,7 +9,7 @@ import {
 } from "./queries";
 import type { LessonOverviewResponse, TRPCWorksResponse } from "./types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 type FetchArgs = {
   lessonSlug: string;

@@ -10,7 +10,7 @@ import {
   updateMaterialSessionResponse,
 } from "./fixtures";
 
-const log = aiLogger("additional-materials:testing");
+const log = aiLogger("teaching-materials:testing");
 
 export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
   await page.route(

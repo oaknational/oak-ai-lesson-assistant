@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 // Type guard for tRPC errors

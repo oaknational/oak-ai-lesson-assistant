@@ -19,7 +19,7 @@ import { pick } from "remeda";
 import type { RateLimitInfo } from "../../types";
 import { recordSafetyViolation } from "./safetyUtils";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 /**
  * Deterministically shuffles quiz options within each question while keeping question order stable
