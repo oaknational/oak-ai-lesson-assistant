@@ -24,6 +24,15 @@ const SemanticSearchSchema = z.object({
   queries: z.array(z.string()).describe("A list of semantic search queries"),
 });
 
+function quizSpecificInstruction(quizType: QuizPath) {
+  if (quizType === "/starterQuiz") {
+    return `The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.`;
+  } else if (quizType === "/exitQuiz") {
+    return `The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning. Please consider alignment with the "key learning points" and "learning outcome" sections of the lesson plan.`;
+  }
+  throw new Error(`Unsupported quiz type: ${quizType as string}`);
+}
+
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
     lessonPlan: PartialLessonPlan,
@@ -136,9 +145,9 @@ The search queries should:
 Lesson plan content:
 ${unpackedContent}
 
-You should generate queries for a ${quizType} quiz.
+You should generate queries for a ${quizType} quiz. ${quizSpecificInstruction(quizType)}
 
-Generate a list of 1-3 semantic search queries, each on a new line:`;
+Generate a list of 1-3 semantic search queries`;
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
