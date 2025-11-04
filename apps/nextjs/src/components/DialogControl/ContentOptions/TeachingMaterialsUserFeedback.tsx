@@ -3,7 +3,7 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import FeedBack from "@/components/Feedback";
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 
-const AdditionalMaterialsUserFeedback = ({
+const TeachingMaterialsUserFeedback = ({
   closeDialog,
 }: {
   readonly closeDialog: () => void;
@@ -34,4 +34,4 @@ const AdditionalMaterialsUserFeedback = ({
   );
 };
 
-export default AdditionalMaterialsUserFeedback;
+export default TeachingMaterialsUserFeedback;

@@ -20,13 +20,13 @@ import {
 } from "@/stores/TeachingMaterialsStoreProvider";
 import { docTypeSelector } from "@/stores/teachingMaterialsStore/selectors";
 
-type AdditionalMaterialsStartAgainProps = {
+type TeachingMaterialsStartAgainProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsStartAgain = ({
+const TeachingMaterialsStartAgain = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsStartAgainProps>) => {
+}: Readonly<TeachingMaterialsStartAgainProps>) => {
   const docType = useTeachingMaterialsStore(docTypeSelector);
 
   const lessonTitle = useTeachingMaterialsStore(
@@ -147,4 +147,4 @@ const AdditionalMaterialsStartAgain = ({
   );
 };
 
-export default AdditionalMaterialsStartAgain;
+export default TeachingMaterialsStartAgain;

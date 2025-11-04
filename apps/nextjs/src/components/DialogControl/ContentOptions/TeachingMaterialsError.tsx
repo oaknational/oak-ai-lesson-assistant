@@ -8,13 +8,13 @@ import {
 } from "@/stores/TeachingMaterialsStoreProvider";
 import { docTypeSelector } from "@/stores/teachingMaterialsStore/selectors";
 
-type AdditionalMaterialsErrorProps = {
+type TeachingMaterialsErrorProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsError = ({
+const TeachingMaterialsError = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsErrorProps>) => {
+}: Readonly<TeachingMaterialsErrorProps>) => {
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const error = useTeachingMaterialsStore((state) => state.error);
 
@@ -61,4 +61,4 @@ const AdditionalMaterialsError = ({
   );
 };
 
-export default AdditionalMaterialsError;
+export default TeachingMaterialsError;

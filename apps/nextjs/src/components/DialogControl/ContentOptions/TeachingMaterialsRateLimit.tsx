@@ -12,13 +12,13 @@ import { useTeachingMaterialsActions } from "@/stores/TeachingMaterialsStoreProv
 
 const RATELIMIT_FORM_URL = process.env.RATELIMIT_FORM_URL;
 
-type AdditionalMaterialsRateLimitProps = {
+type TeachingMaterialsRateLimitProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsRateLimit = ({
+const TeachingMaterialsRateLimit = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsRateLimitProps>) => {
+}: Readonly<TeachingMaterialsRateLimitProps>) => {
   const { resetToDefault } = useTeachingMaterialsActions();
   const { isDemoUser, demo } = useDemoUser();
 
@@ -86,4 +86,4 @@ const AdditionalMaterialsRateLimit = ({
   );
 };
 
-export default AdditionalMaterialsRateLimit;
+export default TeachingMaterialsRateLimit;

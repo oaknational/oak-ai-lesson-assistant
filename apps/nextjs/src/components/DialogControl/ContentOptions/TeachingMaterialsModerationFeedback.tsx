@@ -10,7 +10,7 @@ import {
   OakTextInput,
 } from "@oaknational/oak-components";
 
-interface AdditionalMaterialsModerationFeedbackProps {
+interface TeachingMaterialsModerationFeedbackProps {
   closeDialog: () => void;
   resetToDefault?: () => void;
   heading: string;
@@ -20,7 +20,7 @@ interface AdditionalMaterialsModerationFeedbackProps {
   onBack: () => void;
 }
 
-const AdditionalMaterialsModerationFeedback = ({
+const TeachingMaterialsModerationFeedback = ({
   closeDialog,
   resetToDefault,
   heading,
@@ -28,7 +28,7 @@ const AdditionalMaterialsModerationFeedback = ({
   submitSurvey,
   backButtonLabel,
   onBack,
-}: AdditionalMaterialsModerationFeedbackProps) => {
+}: TeachingMaterialsModerationFeedbackProps) => {
   const [feedback, setFeedback] = useState("");
   const [submittedFeedback, setSubmittedFeedback] = useState(false);
 
@@ -116,4 +116,4 @@ const AdditionalMaterialsModerationFeedback = ({
   );
 };
 
-export default AdditionalMaterialsModerationFeedback;
+export default TeachingMaterialsModerationFeedback;

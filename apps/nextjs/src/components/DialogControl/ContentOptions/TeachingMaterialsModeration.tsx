@@ -12,15 +12,15 @@ import {
   pageDataSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
 
-import AdditionalMaterialsModerationFeedback from "./AdditionalMaterialsModerationFeedback";
+import TeachingMaterialsModerationFeedback from "./TeachingMaterialsModerationFeedback";
 
-type AdditionalMaterialsModerationProps = {
+type TeachingMaterialsModerationProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsModeration = ({
+const TeachingMaterialsModeration = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsModerationProps>) => {
+}: Readonly<TeachingMaterialsModerationProps>) => {
   const moderation = useTeachingMaterialsStore(moderationSelector);
   const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
   invariant(moderation, "Moderation data is required for this component");
@@ -34,7 +34,7 @@ const AdditionalMaterialsModeration = ({
               please provide details below.`;
 
   return (
-    <AdditionalMaterialsModerationFeedback
+    <TeachingMaterialsModerationFeedback
       closeDialog={closeDialog}
       heading="Content guidance"
       message={message}
@@ -54,4 +54,4 @@ const AdditionalMaterialsModeration = ({
   );
 };
 
-export default AdditionalMaterialsModeration;
+export default TeachingMaterialsModeration;

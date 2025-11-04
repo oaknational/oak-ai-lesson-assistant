@@ -12,15 +12,15 @@ import {
   pageDataSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
 
-import AdditionalMaterialsModerationFeedback from "./AdditionalMaterialsModerationFeedback";
+import TeachingMaterialsModerationFeedback from "./TeachingMaterialsModerationFeedback";
 
-type AdditionalMaterialsThreatDetectedProps = {
+type TeachingMaterialsThreatDetectedProps = {
   closeDialog: () => void;
 };
 
-const AdditionalMaterialsThreatDetected = ({
+const TeachingMaterialsThreatDetected = ({
   closeDialog,
-}: Readonly<AdditionalMaterialsThreatDetectedProps>) => {
+}: Readonly<TeachingMaterialsThreatDetectedProps>) => {
   const { resetToDefault } = useTeachingMaterialsActions();
   const moderation = useTeachingMaterialsStore(moderationSelector);
   const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
@@ -31,7 +31,7 @@ const AdditionalMaterialsThreatDetected = ({
   });
 
   return (
-    <AdditionalMaterialsModerationFeedback
+    <TeachingMaterialsModerationFeedback
       closeDialog={closeDialog}
       resetToDefault={resetToDefault}
       heading="Potential misuse of Aila detected"
@@ -57,4 +57,4 @@ const AdditionalMaterialsThreatDetected = ({
   );
 };
 
-export default AdditionalMaterialsThreatDetected;
+export default TeachingMaterialsThreatDetected;
