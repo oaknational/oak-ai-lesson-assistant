@@ -1,9 +1,9 @@
+import { aiLogger } from "@oakai/logger";
 import {
   generateTeachingMaterialInputSchema,
   teachingMaterialTypeEnum,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import type { RefinementOption } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import { aiLogger } from "@oakai/logger";
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import * as Sentry from "@sentry/nextjs";
 

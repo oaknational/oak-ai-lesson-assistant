@@ -1,5 +1,5 @@
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
+import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import invariant from "tiny-invariant";
 
@@ -27,7 +27,7 @@ export const handleDownload =
 
     invariant(docType, "Document type is required for download");
 
-    const response = await fetch("/api/additional-resources-download", {
+    const response = await fetch("/api/teaching-materials-download", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

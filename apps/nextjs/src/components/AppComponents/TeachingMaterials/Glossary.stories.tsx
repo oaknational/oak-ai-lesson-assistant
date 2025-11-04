@@ -1,4 +1,4 @@
-import type { GlossarySchema } from "@oakai/additional-materials/src/documents/teachingMaterials/glossary/schema";
+import type { GlossarySchema } from "@oakai/teaching-materials/src/documents/teachingMaterials/glossary/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

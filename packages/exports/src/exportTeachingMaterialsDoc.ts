@@ -1,6 +1,6 @@
-import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { aiLogger } from "@oakai/logger";
+import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";

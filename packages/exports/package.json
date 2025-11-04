@@ -21,7 +21,7 @@
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
     "@googleapis/docs": "^5.0.1",
-    "@oakai/additional-materials": "*",
+    "@oakai/teaching-materials": "*",
     "@oakai/logger": "*",
     "@resvg/resvg-js": "^2.6.2",
     "mathjax-full": "^3.2.2",

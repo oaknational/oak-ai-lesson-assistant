@@ -1,14 +1,14 @@
-import { partialLessonContextSchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import {
-  generateTeachingMaterialInputSchema,
-  teachingMaterialTypeEnum,
-  teachingMaterialsConfigMap,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { demoUsers } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
+import { partialLessonContextSchema } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import {
+  generateTeachingMaterialInputSchema,
+  teachingMaterialTypeEnum,
+  teachingMaterialsConfigMap,
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 
 import { clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";

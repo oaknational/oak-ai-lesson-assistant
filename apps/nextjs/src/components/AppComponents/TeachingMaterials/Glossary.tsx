@@ -1,4 +1,4 @@
-import { type GlossarySchema } from "@oakai/additional-materials/src/documents/teachingMaterials/glossary/schema";
+import { type GlossarySchema } from "@oakai/teaching-materials/src/documents/teachingMaterials/glossary/schema";
 
 import { OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 

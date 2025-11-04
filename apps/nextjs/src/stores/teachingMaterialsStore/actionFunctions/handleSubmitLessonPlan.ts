@@ -1,11 +1,11 @@
-import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/teachingMaterials/generatePartialLessonPlan";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
+import { lessonFieldKeys } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";

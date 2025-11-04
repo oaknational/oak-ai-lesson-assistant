@@ -1,4 +1,4 @@
-import { subjectNameMap } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import { subjectNameMap } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { SharedDropDown } from "./SharedDropDown";
 

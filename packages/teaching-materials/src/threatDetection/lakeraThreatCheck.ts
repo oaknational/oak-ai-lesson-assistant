@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
 
-const log = aiLogger("additional-materials-threat-detection");
+const log = aiLogger("teaching-materials-threat-detection");
 
 const messageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),

@@ -1,16 +1,16 @@
-import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
-import {
-  type GenerateTeachingMaterialInput,
-  type TeachingMaterialSchemas,
-  teachingMaterialsConfigMap,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import { generateTeachingMaterialObject } from "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import { baseQuizSchema } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
+import {
+  type GenerateTeachingMaterialInput,
+  type TeachingMaterialSchemas,
+  teachingMaterialsConfigMap,
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import { generateTeachingMaterialObject } from "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
+import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { baseQuizSchema } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";

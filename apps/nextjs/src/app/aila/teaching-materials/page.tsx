@@ -5,7 +5,7 @@ import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
 
-export default function TeachingMaterialsTestPage({
+export default function TeachingMaterialsPage({
   searchParams,
 }: {
   readonly searchParams: { [key: string]: string | undefined };

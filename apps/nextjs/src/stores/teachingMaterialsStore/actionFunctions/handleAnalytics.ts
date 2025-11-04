@@ -1,9 +1,9 @@
-import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 import {
   resourceTypesConfig,
   subjectSlugMap,
   yearSlugMap,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import invariant from "tiny-invariant";
 

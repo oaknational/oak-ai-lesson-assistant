@@ -1,4 +1,4 @@
-import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials/src/documents/teachingMaterials/starterQuiz/schema";
+import type { StarterQuiz as StarterQuizType } from "@oakai/teaching-materials/src/documents/teachingMaterials/starterQuiz/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

@@ -1,13 +1,13 @@
-import { generateTeachingMaterialModeration } from "@oakai/additional-materials";
-import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
-import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
+import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
+import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
@@ -98,18 +98,18 @@ jest.mock("@oakai/logger", () => ({
 }));
 
 jest.mock(
-  "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan",
+  "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan",
   () => ({
     generatePartialLessonPlanObject: jest.fn(),
   }),
 );
 
-jest.mock("@oakai/additional-materials", () => ({
+jest.mock("@oakai/teaching-materials", () => ({
   generateTeachingMaterialModeration: jest.fn(),
 }));
 
 jest.mock(
-  "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck",
+  "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck",
   () => ({
     performLakeraThreatCheck: jest.fn(),
   }),

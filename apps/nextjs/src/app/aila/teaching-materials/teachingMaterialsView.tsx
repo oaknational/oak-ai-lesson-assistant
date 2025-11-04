@@ -3,8 +3,8 @@
 import type { FC } from "react";
 import React from "react";
 
-import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
+import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import {
   DialogProvider,

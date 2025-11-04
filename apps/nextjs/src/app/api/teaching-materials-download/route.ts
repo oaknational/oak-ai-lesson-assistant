@@ -1,8 +1,8 @@
-import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import { transformDataForExport } from "@oakai/additional-materials/src/documents/teachingMaterials/dataHelpers/transformDataForExports";
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import { exportTeachingMaterialDoc } from "@oakai/exports/src/exportTeachingMaterialsDoc";
 import { aiLogger } from "@oakai/logger";
+import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import { transformDataForExport } from "@oakai/teaching-materials/src/documents/teachingMaterials/dataHelpers/transformDataForExports";
+import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
@@ -11,7 +11,7 @@ import type { NextApiResponse } from "next";
 import { nodePassThroughToReadableStream } from "../aila-download/downloadHelpers";
 import { getDriveDocsZipStream } from "./helpers";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 export async function POST(req: Request, res: NextApiResponse) {
   if (req.method !== "POST") {

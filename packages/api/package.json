@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "5.7.2",
-    "@oakai/additional-materials": "*",
+    "@oakai/teaching-materials": "*",
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",

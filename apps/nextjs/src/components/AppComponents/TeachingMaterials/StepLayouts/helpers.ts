@@ -12,7 +12,7 @@ export const handleDialogSelection = ({
   setDialogWindow: Dispatch<SetStateAction<DialogTypes>>;
 }) => {
   if (threatDetected) {
-    setDialogWindow("additional-materials-threat-detected");
+    setDialogWindow("teaching-materials-threat-detected");
     return;
   }
 
@@ -22,15 +22,15 @@ export const handleDialogSelection = ({
         window.location.href = "/legal/account-locked";
         break;
       case "rate_limit":
-        setDialogWindow("additional-materials-rate-limit");
+        setDialogWindow("teaching-materials-rate-limit");
         break;
       case "toxic":
-        setDialogWindow("additional-materials-toxic-moderation");
+        setDialogWindow("teaching-materials-toxic-moderation");
         break;
       case "copyright":
       case "restrictedContentGuidance":
       default:
-        setDialogWindow("additional-materials-error");
+        setDialogWindow("teaching-materials-error");
         break;
     }
   }

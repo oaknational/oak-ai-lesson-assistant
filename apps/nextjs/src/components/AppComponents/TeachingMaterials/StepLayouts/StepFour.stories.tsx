@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { RefinementOption } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import type { Meta, StoryObj } from "@storybook/react";
 

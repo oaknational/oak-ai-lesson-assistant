@@ -1,6 +1,6 @@
-import { lessonFieldKeys } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
-import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
+import { lessonFieldKeys } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import {
   OakFlex,
@@ -58,7 +58,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
     return <StepLoadingScreen source="lessonPlan" docTypeName={docTypeName} />;
   }
   if (threatDetected) {
-    setDialogWindow("additional-materials-threat-detected");
+    setDialogWindow("teaching-materials-threat-detected");
   }
 
   const hasModeration =

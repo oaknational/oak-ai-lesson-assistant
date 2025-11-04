@@ -1,4 +1,4 @@
-import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 

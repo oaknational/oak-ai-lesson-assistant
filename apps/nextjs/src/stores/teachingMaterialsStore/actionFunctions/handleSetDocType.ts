@@ -1,5 +1,5 @@
-import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
+import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 
 import * as Sentry from "@sentry/nextjs";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getResourceType } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
+import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
 
 import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";

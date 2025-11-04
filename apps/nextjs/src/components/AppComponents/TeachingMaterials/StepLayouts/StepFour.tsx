@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-import { isComprehensionTask } from "@oakai/additional-materials/src/documents/teachingMaterials/comprehension/schema";
-import { isExitQuiz } from "@oakai/additional-materials/src/documents/teachingMaterials/exitQuiz/schema";
-import { isGlossary } from "@oakai/additional-materials/src/documents/teachingMaterials/glossary/schema";
+import { aiLogger } from "@oakai/logger";
+import { isComprehensionTask } from "@oakai/teaching-materials/src/documents/teachingMaterials/comprehension/schema";
+import { isExitQuiz } from "@oakai/teaching-materials/src/documents/teachingMaterials/exitQuiz/schema";
+import { isGlossary } from "@oakai/teaching-materials/src/documents/teachingMaterials/glossary/schema";
 import {
   type RefinementOption,
   getResourceType,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import { isStarterQuiz } from "@oakai/additional-materials/src/documents/teachingMaterials/starterQuiz/schema";
-import { aiLogger } from "@oakai/logger";
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { isStarterQuiz } from "@oakai/teaching-materials/src/documents/teachingMaterials/starterQuiz/schema";
 
 import {
   OakFlex,
@@ -141,7 +141,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   useEffect(() => {
     if (isDownloading && !userHasSeenSurvey && posthogConsent === "granted") {
       setUserHasSeenSurvey(true);
-      setDialogWindow("additional-materials-user-feedback");
+      setDialogWindow("teaching-materials-user-feedback");
     }
   }, [isDownloading, posthogConsent, setDialogWindow, userHasSeenSurvey]);
 
@@ -281,7 +281,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 >
                   <OakSecondaryButton
                     onClick={() =>
-                      setDialogWindow("additional-materials-start-again")
+                      setDialogWindow("teaching-materials-start-again")
                     }
                   >
                     Create more
@@ -324,7 +324,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 >
                   <MobileNoLetterSpacingButton
                     onClick={() =>
-                      setDialogWindow("additional-materials-start-again")
+                      setDialogWindow("teaching-materials-start-again")
                     }
                   >
                     Create more

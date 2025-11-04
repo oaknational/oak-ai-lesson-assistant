@@ -1,6 +1,5 @@
 import { type ZodSchema, type ZodType, z } from "zod";
 
-import { glossaryContextSchema, glossarySchema } from ".//glossary/schema";
 import {
   buildComprehensionPrompt,
   buildComprehensionSystemMessage,
@@ -18,6 +17,7 @@ import {
   buildGlossaryPrompt,
   buildGlossarySystemMessage,
 } from "./glossary/buildGlossaryPrompt";
+import { glossaryContextSchema, glossarySchema } from "./glossary/schema";
 import {
   buildStarterQuizPrompt,
   buildStarterQuizSystemMessage,

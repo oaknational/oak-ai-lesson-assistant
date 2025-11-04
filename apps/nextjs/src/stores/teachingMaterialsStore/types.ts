@@ -1,10 +1,10 @@
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type {
   TeachingMaterialSchemas,
   TeachingMaterialType,
-} from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
-import type { RefinementOption } from "@oakai/additional-materials/src/documents/teachingMaterials/resourceTypes";
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/teachingMaterials/sharedSchema";
-import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import { z } from "zod";
 import type { StoreApi } from "zustand";

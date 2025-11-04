@@ -1,4 +1,4 @@
-import type { StarterQuiz as StarterQuizType } from "@oakai/additional-materials/src/documents/teachingMaterials/starterQuiz/schema";
+import type { StarterQuiz as StarterQuizType } from "@oakai/teaching-materials/src/documents/teachingMaterials/starterQuiz/schema";
 
 import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
 

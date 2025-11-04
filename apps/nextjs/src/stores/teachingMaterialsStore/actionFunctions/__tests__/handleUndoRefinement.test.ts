@@ -1,4 +1,4 @@
-import type { TeachingMaterialType } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 
 import { handleUndoRefinement } from "../handleUndoRefinement";
 

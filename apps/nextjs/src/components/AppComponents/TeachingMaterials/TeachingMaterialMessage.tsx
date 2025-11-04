@@ -15,7 +15,7 @@ export function ModerationMessage() {
             <OakLink
               element="button"
               aria-label="Open content guidance dialog"
-              onClick={() => setDialogWindow("additional-materials-moderation")}
+              onClick={() => setDialogWindow("teaching-materials-moderation")}
               color={"primary"}
             >
               content guidance.

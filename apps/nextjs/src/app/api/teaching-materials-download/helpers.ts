@@ -6,7 +6,7 @@ import { PassThrough } from "stream";
 
 export const ext = ["pdf", "docx", "pptx"] as const;
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 type Ext = (typeof ext)[number][];
 

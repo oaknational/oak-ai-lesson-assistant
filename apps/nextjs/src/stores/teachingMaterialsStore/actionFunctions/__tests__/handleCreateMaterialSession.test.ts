@@ -1,4 +1,4 @@
-import { teachingMaterialTypeEnum } from "@oakai/additional-materials/src/documents/teachingMaterials/configSchema";
+import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 
 import type { TrpcUtils } from "@/utils/trpc";
 
