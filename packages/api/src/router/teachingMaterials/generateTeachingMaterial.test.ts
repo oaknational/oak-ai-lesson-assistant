@@ -35,12 +35,12 @@ jest.mock("@oakai/logger", () => ({
 }));
 
 jest.mock(
-  "@oakai/additional-materials/src/documents/teachingMaterials/generateTeachingMaterialObject",
+  "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject",
   () => ({
     generateTeachingMaterialObject: jest.fn(),
   }),
 );
-jest.mock("@oakai/additional-materials", () => ({
+jest.mock("@oakai/teaching-materials", () => ({
   generateTeachingMaterialModeration: jest.fn(),
 }));
 jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
@@ -50,7 +50,7 @@ jest.mock("./safetyUtils", () => ({
   recordSafetyViolation: jest.fn(),
 }));
 jest.mock(
-  "@oakai/additional-materials/src/documents/teachingMaterials/configSchema",
+  "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema",
   () => ({
     teachingMaterialsConfigMap: {
       "additional-glossary": {
