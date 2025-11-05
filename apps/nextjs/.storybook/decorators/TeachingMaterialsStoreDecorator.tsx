@@ -68,7 +68,7 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
       threatDetection: true,
       moderation: {
         justification: "This contains content that requires guidance.",
-        categories: ["l/strong-language", "u/sensitive-content"],
+        categories: ["l2", "u1"],
       },
     };
 

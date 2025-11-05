@@ -37,8 +37,8 @@ export const Default: Story = {
     creatorsName: "Mr Teacher",
     moderation: {
       id: "mock-moderation-id",
-      categories: ["l/strong-language"],
-      justification: "Mock sensitive result",
+      categories: ["l2"],
+      justifications: "Mock sensitive result",
     },
   },
 };

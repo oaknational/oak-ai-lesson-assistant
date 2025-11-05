@@ -63,7 +63,7 @@ export const WithModeration: Story = {
     moderationStoreState: {
       lastModeration: {
         id: "123",
-        categories: ["l/strong-language"],
+        categories: ["l2"],
       },
     },
     lessonPlanStoreState: {
