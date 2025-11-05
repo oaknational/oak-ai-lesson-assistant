@@ -7,8 +7,8 @@ describe("handleSetStepNumber", () => {
   const baseState = {
     stepNumber: 1,
     isLoadingLessonPlan: false,
-    isResourcesLoading: false,
-    isResourceRefining: false,
+    isMaterialLoading: false,
+    isMaterialRefining: false,
     isDownloading: false,
     pageData: {
       lessonPlan: { lessonId: "id1", title: "", subject: "", keyStage: "" },

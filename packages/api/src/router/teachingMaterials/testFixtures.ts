@@ -51,8 +51,8 @@ export const mockPrismaInteraction = {
   id: "mock-interaction-id",
   userId: "test-user",
   config: {
-    resourceType: "additional-glossary",
-    resourceTypeVersion: 1,
+    materialType: "additional-glossary",
+    materialTypeVersion: 1,
   },
   output: mockGlossaryResult,
   outputModeration: mockModerationResult,

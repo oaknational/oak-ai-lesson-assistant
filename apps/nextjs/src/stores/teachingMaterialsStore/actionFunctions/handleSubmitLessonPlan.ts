@@ -5,7 +5,7 @@ import { lessonFieldKeys } from "@oakai/teaching-materials/src/documents/partial
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
 import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
 import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
-import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import * as Sentry from "@sentry/nextjs";
 import invariant from "tiny-invariant";
@@ -36,7 +36,7 @@ const buildLessonPlanInput = (
   docType: TeachingMaterialType,
   source: "aila" | "owa",
 ): PartialLessonContextSchemaType => {
-  const resourceType = getResourceType(docType);
+  const materialType = getMaterialType(docType);
 
   // Always include these base fields
   const baseFields = ["title", "keyStage", "subject"];
@@ -44,13 +44,13 @@ const buildLessonPlanInput = (
   // Get resource-specific lesson parts or use all fields as fallback
   let lessonPartsToGenerate = baseFields;
 
-  if (resourceType?.lessonParts || resourceType?.owaLessonParts) {
-    const lessonPartsFromResourceType =
+  if (materialType?.lessonParts || materialType?.owaLessonParts) {
+    const lessonPartsFromMaterialType =
       source === "owa"
-        ? resourceType?.owaLessonParts
-        : resourceType?.lessonParts;
+        ? materialType?.owaLessonParts
+        : materialType?.lessonParts;
     // Use resource-specific parts
-    lessonPartsToGenerate = [...baseFields, ...lessonPartsFromResourceType];
+    lessonPartsToGenerate = [...baseFields, ...lessonPartsFromMaterialType];
     log.info("Building lesson plan from ", lessonPartsToGenerate);
   } else {
     // Fallback to all fields

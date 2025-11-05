@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
 import invariant from "tiny-invariant";
@@ -44,9 +44,9 @@ const StepTwo = ({
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);
 
-  const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType
-    ? resourceType.displayName.toLowerCase()
+  const materialType = docType ? getMaterialType(docType) : null;
+  const docTypeName = materialType
+    ? materialType.displayName.toLowerCase()
     : null;
 
   // Using the imported validateForm utility

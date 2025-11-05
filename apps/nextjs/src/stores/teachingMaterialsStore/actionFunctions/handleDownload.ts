@@ -1,5 +1,5 @@
 import { aiLogger } from "@oakai/logger";
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import invariant from "tiny-invariant";
 
@@ -46,7 +46,7 @@ export const handleDownload =
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
-    const filename = `${get().pageData.lessonPlan.title} - ${id?.slice(0, 8)} - ${resourceTypesConfig[docType].displayName.toLowerCase()}`;
+    const filename = `${get().pageData.lessonPlan.title} - ${id?.slice(0, 8)} - ${materialTypesConfig[docType].displayName.toLowerCase()}`;
     link.href = url;
     link.download = `${filename}.zip`;
     link.click();

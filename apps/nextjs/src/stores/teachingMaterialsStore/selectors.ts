@@ -29,10 +29,10 @@ export const docTypeSelector = (state: TeachingMaterialsState) => state.docType;
 
 /**
  * Selector for the is resources loading in the resources workflow
- * @example const isResourcesLoading = useTeachingMaterialsStore(isResourcesLoadingSelector);
+ * @example const isMaterialLoading = useTeachingMaterialsStore(isMaterialLoadingSelector);
  */
-export const isResourcesLoadingSelector = (state: TeachingMaterialsState) =>
-  state.isResourcesLoading;
+export const isMaterialLoadingSelector = (state: TeachingMaterialsState) =>
+  state.isMaterialLoading;
 
 /**
  * Selector for the source in the resources workflow
@@ -42,17 +42,17 @@ export const sourceSelector = (state: TeachingMaterialsState) => state.source;
 
 /**
  * Selector for the is resources loading in the resources workflow
- * @example const isResourcesDownloading = useTeachingMaterialsStore(isResourcesLoadingSelector);
+ * @example const isResourcesDownloading = useTeachingMaterialsStore(isMaterialLoadingSelector);
  */
 export const isResourcesDownloadingSelector = (state: TeachingMaterialsState) =>
   state.isDownloading;
 
 /**
  * Selector for the is resource refining in the resources workflow
- * @example const isResourceRefining = useTeachingMaterialsStore(isResourceRefiningSelector);
+ * @example const isMaterialRefining = useTeachingMaterialsStore(isMaterialRefiningSelector);
  */
-export const isResourceRefiningSelector = (state: TeachingMaterialsState) =>
-  state.isResourceRefining;
+export const isMaterialRefiningSelector = (state: TeachingMaterialsState) =>
+  state.isMaterialRefining;
 
 // Form state selectors
 export const formStateSelector = (state: TeachingMaterialsState) =>

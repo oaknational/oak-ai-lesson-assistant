@@ -88,7 +88,7 @@ export type RefinementOption = {
 };
 
 // Common properties for all resource types
-export type BaseResourceTypeConfig = {
+export type BaseMaterialTypeConfig = {
   id: string;
   displayName: string;
   description: string;
@@ -115,9 +115,9 @@ const refinementOptions: RefinementOption[] = Array.from(refinements).map(
   }),
 );
 
-export const resourceTypesConfig: Record<
+export const materialTypesConfig: Record<
   TeachingMaterialType,
-  BaseResourceTypeConfig
+  BaseMaterialTypeConfig
 > = {
   "additional-glossary": {
     // Backend config
@@ -229,16 +229,16 @@ export const resourceTypesConfig: Record<
 } as const;
 
 // Helper functions to access resource types
-export function getResourceTypes(): Array<
-  (typeof resourceTypesConfig)[keyof typeof resourceTypesConfig]
+export function getMaterialTypes(): Array<
+  (typeof materialTypesConfig)[keyof typeof materialTypesConfig]
 > {
-  return Object.values(resourceTypesConfig);
+  return Object.values(materialTypesConfig);
 }
 
-export function getResourceType(
+export function getMaterialType(
   id: string,
-): (typeof resourceTypesConfig)[keyof typeof resourceTypesConfig] | null {
-  return id in resourceTypesConfig
-    ? resourceTypesConfig[id as keyof typeof resourceTypesConfig]
+): (typeof materialTypesConfig)[keyof typeof materialTypesConfig] | null {
+  return id in materialTypesConfig
+    ? materialTypesConfig[id as keyof typeof materialTypesConfig]
     : null;
 }

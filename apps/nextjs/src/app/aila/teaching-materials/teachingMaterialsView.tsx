@@ -3,7 +3,7 @@
 import type { FC } from "react";
 import React from "react";
 
-import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import {
@@ -58,8 +58,8 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
     (state) => state.pageData.lessonPlan,
   );
 
-  const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType?.displayName ?? null;
+  const materialType = docType ? getMaterialType(docType) : null;
+  const docTypeName = materialType?.displayName ?? null;
   const {
     createMaterialSession,
     submitLessonPlan,

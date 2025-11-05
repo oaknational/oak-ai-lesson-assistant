@@ -46,8 +46,8 @@ describe("handleDownload", () => {
       generation: {},
       stepNumber: 0,
       isLoadingLessonPlan: false,
-      isResourcesLoading: false,
-      isResourceRefining: false,
+      isMaterialLoading: false,
+      isMaterialRefining: false,
       isDownloading: false,
       formState: {
         subject: null,

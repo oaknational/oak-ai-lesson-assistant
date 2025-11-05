@@ -1,9 +1,9 @@
 import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 import {
-  resourceTypesConfig,
+  materialTypesConfig,
   subjectSlugMap,
   yearSlugMap,
-} from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import invariant from "tiny-invariant";
 
@@ -47,7 +47,7 @@ export const handleAnalytics = (
       invariant(docType, "Document type is required for analytics");
 
       track.teachingMaterialsSelected({
-        teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
+        teachingMaterialType: materialTypesConfig[docType].analyticPropertyName,
         interactionId: resourceId,
         platform: platform,
         product: product,
@@ -77,7 +77,7 @@ export const handleAnalytics = (
       invariant(year, "Year is required for analytics");
 
       track.teachingMaterialsRefined({
-        teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
+        teachingMaterialType: materialTypesConfig[docType].analyticPropertyName,
         interactionId: id,
         platform: "aila-beta",
         product: "teaching material",
@@ -104,7 +104,7 @@ export const handleAnalytics = (
     trackMaterialDownloaded: (
       componentType: ComponentTypeValueType = "download_button",
       options?: {
-        resourceType?: ResourceTypeValueType[];
+        materialType?: ResourceTypeValueType[];
         resourceFileType?: ResourceFileTypeValueType;
       },
     ) => {
@@ -123,11 +123,11 @@ export const handleAnalytics = (
       invariant(year, "Year is required for analytics");
       invariant(lessonPlan.title, "Lesson plan is required for analytics");
 
-      const resourceType = options?.resourceType ?? ["teaching material"];
+      const materialType = options?.materialType ?? ["teaching material"];
       const resourceFileType = options?.resourceFileType ?? "all";
 
       track.teachingMaterialDownloaded({
-        teachingMaterialType: resourceTypesConfig[docType].analyticPropertyName,
+        teachingMaterialType: materialTypesConfig[docType].analyticPropertyName,
         interactionId: id,
         platform: "aila-beta",
         product: "teaching material",
@@ -140,7 +140,7 @@ export const handleAnalytics = (
         yearGroupName: year,
         yearGroupSlug: yearSlugMap[year] ?? year,
         lessonPlanTitle: lessonPlan.title,
-        resourceType,
+        resourceType: materialType,
         resourceFileType,
         moderatedContentType: getModerationTypes(
           moderation

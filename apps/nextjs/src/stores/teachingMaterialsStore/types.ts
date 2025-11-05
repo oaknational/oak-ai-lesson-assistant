@@ -3,7 +3,7 @@ import type {
   TeachingMaterialSchemas,
   TeachingMaterialType,
 } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
-import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import { z } from "zod";
@@ -60,8 +60,8 @@ export type TeachingMaterialsState = {
   source: "aila" | "owa";
   stepNumber: number;
   isLoadingLessonPlan: boolean;
-  isResourcesLoading: boolean;
-  isResourceRefining: boolean;
+  isMaterialLoading: boolean;
+  isMaterialRefining: boolean;
   isDownloading: boolean;
   pageData: PageData;
   generation: TeachingMaterialSchemas | null;
@@ -84,8 +84,8 @@ export type TeachingMaterialsState = {
     setSource: (source: "aila" | "owa") => void;
     setId: (id: string | null) => void;
     setIsLoadingLessonPlan: (isLoading: boolean) => void;
-    setIsResourcesLoading: (isLoading: boolean) => void;
-    setIsResourceRefining: (isRefining: boolean) => void;
+    setIsMaterialLoading: (isLoading: boolean) => void;
+    setIsMaterialRefining: (isRefining: boolean) => void;
     setThreatDetection: (threatDetection: boolean) => void;
 
     // Form state setters

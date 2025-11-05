@@ -57,8 +57,8 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
       stepNumber: 0,
       docType: "additional-glossary",
       source: "aila",
-      isResourcesLoading: false,
-      isResourceRefining: false,
+      isMaterialLoading: false,
+      isMaterialRefining: false,
       pageData: {
         lessonPlan: {
           lessonId: "mock-lesson-id",

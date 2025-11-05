@@ -9,7 +9,7 @@ import {
   teachingMaterialsConfigMap,
 } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 import { generateTeachingMaterialObject } from "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import { baseQuizSchema } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -84,11 +84,11 @@ export async function generateTeachingMaterial({
   rateLimit,
 }: GenerateTeachingMaterialParams) {
   log.info("Generating additional material");
-  const resourceTypes = resourceTypesConfig[input.documentType];
+  const materialTypes = materialTypesConfig[input.documentType];
   const lessonPartsToUse =
     input.source === "aila"
-      ? resourceTypes.lessonParts
-      : resourceTypes.owaLessonParts;
+      ? materialTypes.lessonParts
+      : materialTypes.owaLessonParts;
 
   const lesson = pick(input.context.lessonPlan, [
     "title",

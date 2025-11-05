@@ -1,4 +1,4 @@
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
 
@@ -19,7 +19,7 @@ const TeachingMaterialsError = ({
   const error = useTeachingMaterialsStore((state) => state.error);
 
   const docTypeDisplayName = docType
-    ? resourceTypesConfig[docType].displayName
+    ? materialTypesConfig[docType].displayName
     : null;
 
   const { resetToDefault } = useTeachingMaterialsActions();

@@ -3,7 +3,7 @@ import {
   generateTeachingMaterialInputSchema,
   teachingMaterialTypeEnum,
 } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
-import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import * as Sentry from "@sentry/nextjs";
 
@@ -24,7 +24,7 @@ export const handleRefineMaterial =
   ) =>
   async (refinementOption: RefinementOption) => {
     const {
-      actions: { setIsResourceRefining },
+      actions: { setIsMaterialRefining },
       docType,
       generation: currentGeneration,
       refinementGenerationHistory: currentHistory,
@@ -33,12 +33,12 @@ export const handleRefineMaterial =
       source,
     } = get();
 
-    log.info("Setting isResourceRefining to TRUE");
-    setIsResourceRefining(true);
+    log.info("Setting isMaterialRefining to TRUE");
+    setIsMaterialRefining(true);
 
     if (!docType) {
       log.error("No document type selected");
-      setIsResourceRefining(false);
+      setIsMaterialRefining(false);
       throw new Error("No document type selected");
     }
 
@@ -91,7 +91,7 @@ export const handleRefineMaterial =
       Sentry.captureException(error);
       throw error;
     } finally {
-      log.info("Setting isResourceRefining to FALSE");
-      setIsResourceRefining(false);
+      log.info("Setting isMaterialRefining to FALSE");
+      setIsMaterialRefining(false);
     }
   };

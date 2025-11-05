@@ -48,7 +48,7 @@ export const handleFetchOwaLesson =
         });
 
         // Set loading state
-        set({ isResourcesLoading: true });
+        set({ isMaterialLoading: true });
         const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
         try {
           // Create a new session
@@ -122,7 +122,7 @@ export const handleFetchOwaLesson =
             documentType: docType,
           });
         } finally {
-          set({ isResourcesLoading: false });
+          set({ isMaterialLoading: false });
         }
       }
     } catch (error) {
@@ -131,6 +131,6 @@ export const handleFetchOwaLesson =
         context: "handleFetchOwaLesson",
         documentType: params.queryParams?.docType,
       });
-      set({ isResourcesLoading: false });
+      set({ isMaterialLoading: false });
     }
   };

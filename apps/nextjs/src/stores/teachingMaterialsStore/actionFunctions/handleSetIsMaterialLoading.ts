@@ -3,16 +3,16 @@ import type {
   TeachingMaterialsSetter,
 } from "../types";
 
-const handleSetIsResourcesLoading =
+const handleSetIsMaterialLoading =
   (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
   (isLoading: boolean) => {
-    set({ isResourcesLoading: isLoading });
+    set({ isMaterialLoading: isLoading });
   };
 
-export const handleSetIsResourceRefining =
+export const handleSetIsMaterialRefining =
   (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
   (isRefining: boolean) => {
-    set({ isResourceRefining: isRefining });
+    set({ isMaterialRefining: isRefining });
   };
 
-export default handleSetIsResourcesLoading;
+export default handleSetIsMaterialLoading;

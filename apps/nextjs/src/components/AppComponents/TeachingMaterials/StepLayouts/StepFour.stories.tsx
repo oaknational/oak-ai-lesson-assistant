@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -608,8 +608,8 @@ export const LoadingState: Story = {
     resourcesStoreState: {
       stepNumber: 4,
       docType: "additional-glossary",
-      isResourcesLoading: true,
-      isResourceRefining: false,
+      isMaterialLoading: true,
+      isMaterialRefining: false,
       generation: null,
       source: "aila",
       pageData: {
@@ -752,7 +752,7 @@ export const RefiningState: Story = {
           },
         ],
       },
-      isResourceRefining: true,
+      isMaterialRefining: true,
       refinementGenerationHistory: [
         {
           year: "Year 4",

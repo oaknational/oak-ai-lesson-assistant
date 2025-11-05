@@ -1,6 +1,6 @@
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { lessonFieldKeys } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
-import { getResourceType } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import {
   OakFlex,
@@ -47,9 +47,9 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
   const { setDialogWindow } = useDialog();
 
   // Get resource type from configuration
-  const resourceType = docType ? getResourceType(docType) : null;
-  const docTypeName = resourceType
-    ? resourceType.displayName.toLowerCase()
+  const materialType = docType ? getMaterialType(docType) : null;
+  const docTypeName = materialType
+    ? materialType.displayName.toLowerCase()
     : null;
 
   const { setStepNumber } = useTeachingMaterialsActions();

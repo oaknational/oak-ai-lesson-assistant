@@ -21,9 +21,9 @@ import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
 import { handleSetDocType } from "./actionFunctions/handleSetDocType";
 import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
 import { handleSetIsLoadingLessonPlan } from "./actionFunctions/handleSetIsLoadingLessonPlan";
-import handleSetIsResourcesLoading, {
-  handleSetIsResourceRefining,
-} from "./actionFunctions/handleSetIsResourcesLoading";
+import handleSetIsMaterialLoading, {
+  handleSetIsMaterialRefining,
+} from "./actionFunctions/handleSetIsMaterialLoading";
 import { handleSetPageData } from "./actionFunctions/handleSetPageData";
 import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
 import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
@@ -36,8 +36,8 @@ const DEFAULT_STATE = {
   id: null,
   stepNumber: 0,
   isLoadingLessonPlan: false,
-  isResourcesLoading: false,
-  isResourceRefining: false,
+  isMaterialLoading: false,
+  isMaterialRefining: false,
   source: "aila" as const,
   isDownloading: false,
   error: null,
@@ -87,7 +87,7 @@ export const createTeachingMaterialsStore = (
       ...DEFAULT_STATE,
       source: props.source ?? "aila",
       stepNumber: props.initialStep ?? 0,
-      isResourcesLoading: props.source === "owa" && props.initialStep === 3,
+      isMaterialLoading: props.source === "owa" && props.initialStep === 3,
       ...initState,
       actions: {
         // Setters
@@ -98,8 +98,8 @@ export const createTeachingMaterialsStore = (
         setId: (id: string | null) => set({ id }),
         setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
         setSource: (source: "aila" | "owa") => set({ source }),
-        setIsResourcesLoading: handleSetIsResourcesLoading(set, get),
-        setIsResourceRefining: handleSetIsResourceRefining(set, get),
+        setIsMaterialLoading: handleSetIsMaterialLoading(set, get),
+        setIsMaterialRefining: handleSetIsMaterialRefining(set, get),
         setIsResourceDownloading: (isDownloading: boolean) =>
           set({ isDownloading }),
         setThreatDetection: (threatDetection: boolean) => {

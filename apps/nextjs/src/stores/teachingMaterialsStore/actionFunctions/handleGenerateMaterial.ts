@@ -24,7 +24,7 @@ export const handleGenerateMaterial =
 
     // Clear any existing generation
     get().actions.setGeneration(null);
-    get().actions.setIsResourcesLoading(true);
+    get().actions.setIsMaterialLoading(true);
     const docType = get().docType;
 
     const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
@@ -67,7 +67,7 @@ export const handleGenerateMaterial =
           lessonId: get().pageData.lessonPlan.lessonId,
           source: get().source,
         });
-      get().actions.setIsResourcesLoading(false);
+      get().actions.setIsMaterialLoading(false);
 
       set({
         generation: result.resource,
@@ -80,7 +80,7 @@ export const handleGenerateMaterial =
         "create_teaching_material_button",
       );
     } catch (error) {
-      get().actions.setIsResourcesLoading(false);
+      get().actions.setIsMaterialLoading(false);
       handleStoreError(set, error, {
         context: "handleGenerateMaterial",
         documentType: docType,

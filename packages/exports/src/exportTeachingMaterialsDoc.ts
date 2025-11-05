@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
@@ -72,7 +72,7 @@ export const exportTeachingMaterialDoc = async <InputData, TemplateData>({
       });
 
       const result = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${materialTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId,
@@ -105,7 +105,7 @@ export const exportTeachingMaterialDoc = async <InputData, TemplateData>({
       });
 
       const answersResult = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - answers - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${materialTypesConfig[passedDocType].displayName.toLowerCase()} - answers - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId: answersTemplateId,
@@ -149,7 +149,7 @@ export const exportTeachingMaterialDoc = async <InputData, TemplateData>({
       });
 
       const result = await exportGeneric<InputData, TemplateData>({
-        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${resourceTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
+        newFileName: `${id ? id + "- " : ""} ${lessonTitle} - ${materialTypesConfig[passedDocType].displayName.toLowerCase()} - ${Date.now()}`,
         data: inputData,
         prepData: transformData,
         templateId,

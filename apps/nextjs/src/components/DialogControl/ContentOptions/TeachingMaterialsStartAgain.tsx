@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import {
   OakFlex,
@@ -34,7 +34,7 @@ const TeachingMaterialsStartAgain = ({
   );
   invariant(docType, "docType must be defined");
   const docTypeDisplayName =
-    resourceTypesConfig[docType].displayName.toLowerCase();
+    materialTypesConfig[docType].displayName.toLowerCase();
   const { resetToDefault, setStepNumber, setId, setDocType, setGeneration } =
     useTeachingMaterialsActions();
   const [selectedOption, setSelectedOption] = useState<string>("");

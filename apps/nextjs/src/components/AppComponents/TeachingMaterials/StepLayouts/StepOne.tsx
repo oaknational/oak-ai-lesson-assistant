@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getResourceTypes } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { getMaterialTypes } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import {
   OakFlex,
@@ -31,7 +31,7 @@ const StepOne = ({
     stepNumber?: number,
   ) => Promise<{ success: boolean }>;
 }) => {
-  const { setDocType, setGeneration, setIsResourcesLoading, generateMaterial } =
+  const { setDocType, setGeneration, setIsMaterialLoading, generateMaterial } =
     useTeachingMaterialsActions();
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
@@ -43,8 +43,8 @@ const StepOne = ({
   const [showValidationError, setShowValidationError] = useState("");
   const { setDialogWindow } = useDialog();
 
-  const resourceTypes = getResourceTypes().filter(
-    (resourceType) => resourceType.isAvailable,
+  const materialTypes = getMaterialTypes().filter(
+    (materialType) => materialType.isAvailable,
   );
 
   handleDialogSelection({ threatDetected: undefined, error, setDialogWindow });
@@ -68,19 +68,19 @@ const StepOne = ({
               $flexDirection="column"
               $gap={"space-between-m"}
             >
-              {resourceTypes.map((resourceType) => (
-                <OakLabel key={resourceType.id}>
+              {materialTypes.map((materialType) => (
+                <OakLabel key={materialType.id}>
                   <OakRadioButton
-                    id={resourceType.id}
-                    value={resourceType.id}
+                    id={materialType.id}
+                    value={materialType.id}
                     radioInnerSize="all-spacing-5"
                     radioOuterSize="all-spacing-6"
                     label={
                       <OakFlex $flexDirection="column" $ml="space-between-ssx">
                         <OakP $font="body-2-bold">
-                          {resourceType.displayName}
+                          {materialType.displayName}
                         </OakP>
-                        <OakP $font="body-2">{resourceType.description}</OakP>
+                        <OakP $font="body-2">{materialType.description}</OakP>
                       </OakFlex>
                     }
                   />
@@ -109,7 +109,7 @@ const StepOne = ({
 
             if (lesson.lessonId) {
               void (async () => {
-                setIsResourcesLoading(true);
+                setIsMaterialLoading(true);
                 await handleCreateSession(docType, 3);
                 void generateMaterial();
               })();

@@ -6,8 +6,8 @@ import { isExitQuiz } from "@oakai/teaching-materials/src/documents/teachingMate
 import { isGlossary } from "@oakai/teaching-materials/src/documents/teachingMaterials/glossary/schema";
 import {
   type RefinementOption,
-  getResourceType,
-} from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+  getMaterialType,
+} from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import { isStarterQuiz } from "@oakai/teaching-materials/src/documents/teachingMaterials/starterQuiz/schema";
 
 import {
@@ -33,9 +33,9 @@ import {
 import {
   docTypeSelector,
   generationSelector,
-  isResourceRefiningSelector,
+  isMaterialLoadingSelector,
+  isMaterialRefiningSelector,
   isResourcesDownloadingSelector,
-  isResourcesLoadingSelector,
   moderationSelector,
   refinementGenerationHistorySelector,
 } from "@/stores/teachingMaterialsStore/selectors";
@@ -96,11 +96,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const generation = useTeachingMaterialsStore(generationSelector);
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
-  const isResourcesLoading = useTeachingMaterialsStore(
-    isResourcesLoadingSelector,
+  const isMaterialLoading = useTeachingMaterialsStore(
+    isMaterialLoadingSelector,
   );
-  const isResourceRefining = useTeachingMaterialsStore(
-    isResourceRefiningSelector,
+  const isMaterialRefining = useTeachingMaterialsStore(
+    isMaterialRefiningSelector,
   );
   const refinementHistory = useTeachingMaterialsStore(
     refinementGenerationHistorySelector,
@@ -120,8 +120,8 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   const posthogConsent = getConsent(ServicePolicyMap.POSTHOG);
 
   // Get resource type from configuration
-  const resourceType = docType ? getResourceType(docType) : null;
-  const refinementOptions = resourceType?.refinementOptions ?? [];
+  const materialType = docType ? getMaterialType(docType) : null;
+  const refinementOptions = materialType?.refinementOptions ?? [];
 
   const refinementRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -132,11 +132,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   }, [isFooterAdaptOpen]);
 
   useEffect(() => {
-    if (refinementHistory.length > 0 && !isResourceRefining) {
+    if (refinementHistory.length > 0 && !isMaterialRefining) {
       const btn = document.getElementById("undo-btn");
       btn?.focus();
     }
-  }, [isResourceRefining, refinementHistory.length]);
+  }, [isMaterialRefining, refinementHistory.length]);
 
   useEffect(() => {
     if (isDownloading && !userHasSeenSurvey && posthogConsent === "granted") {
@@ -186,10 +186,10 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     return null;
   };
   // if loading, show loading
-  if (isResourcesLoading && !isResourceRefining) {
+  if (isMaterialLoading && !isMaterialRefining) {
     return (
       <StepLoadingScreen
-        docTypeName={resourceType?.displayName}
+        docTypeName={materialType?.displayName}
         source="teachingMaterial"
       />
     );
@@ -197,7 +197,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
 
   return (
     <>
-      {isResourcesLoading || (!generation && <OakP>Loading...</OakP>)}
+      {isMaterialLoading || (!generation && <OakP>Loading...</OakP>)}
 
       <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
       {moderation?.categories && moderation.categories.length > 0 && (
@@ -205,7 +205,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
       )}
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
-          {refinementHistory.length > 0 && !isResourceRefining && (
+          {refinementHistory.length > 0 && !isMaterialRefining && (
             <OakFlex
               $gap="all-spacing-2"
               $alignItems="center"
@@ -222,7 +222,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 id="undo-btn"
                 onClick={undoRefinement}
                 disabled={
-                  isResourcesLoading || isResourceRefining || isDownloading
+                  isMaterialLoading || isMaterialRefining || isDownloading
                 }
                 iconName={"chevron-left"}
               >
@@ -240,7 +240,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                 $alignItems="center"
               >
                 <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
-                  {isResourceRefining ? (
+                  {isMaterialRefining ? (
                     <OakFlex $alignItems="center" $gap="all-spacing-2">
                       <OakP $font="body-2">Working on it...</OakP>
                       <OakLoadingSpinner $width="all-spacing-6" />
@@ -308,7 +308,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       iconName="download"
                       isTrailingIcon={true}
                       isLoading={isDownloading}
-                      disabled={!generation || isResourcesLoading}
+                      disabled={!generation || isMaterialLoading}
                     >
                       Download (.zip)
                     </OakPrimaryButton>
@@ -346,7 +346,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                     <MockOakSecondaryButtonWithJustIcon
                       onClick={() => void handleDownloadMaterial()}
                       disabled={
-                        !generation || isResourcesLoading || isDownloading
+                        !generation || isMaterialLoading || isDownloading
                       }
                     >
                       {isDownloading ? (

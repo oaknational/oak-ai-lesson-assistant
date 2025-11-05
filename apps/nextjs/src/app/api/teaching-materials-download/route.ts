@@ -2,7 +2,7 @@ import { exportTeachingMaterialDoc } from "@oakai/exports/src/exportTeachingMate
 import { aiLogger } from "@oakai/logger";
 import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 import { transformDataForExport } from "@oakai/teaching-materials/src/documents/teachingMaterials/dataHelpers/transformDataForExports";
-import { resourceTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/resourceTypes";
+import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
@@ -68,7 +68,7 @@ export async function POST(req: Request, res: NextApiResponse) {
       fileIds: exportLink.data.fileIds,
       ext: ["pdf", "docx"],
       documentTitle: lessonTitle,
-      docType: resourceTypesConfig[passedDocType].displayName.toLowerCase(),
+      docType: materialTypesConfig[passedDocType].displayName.toLowerCase(),
     });
 
     if ("error" in stream) {

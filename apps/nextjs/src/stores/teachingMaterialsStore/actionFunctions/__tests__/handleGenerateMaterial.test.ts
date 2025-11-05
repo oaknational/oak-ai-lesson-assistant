@@ -42,7 +42,7 @@ describe("handleGenerateMaterial", () => {
     const mockGet = jest.fn(() => ({
       actions: {
         setGeneration: jest.fn(),
-        setIsResourcesLoading: jest.fn(),
+        setisMaterialLoading: jest.fn(),
         analytics: { trackMaterialRefined: jest.fn() },
       },
       docType: "additional-glossary",
@@ -67,7 +67,7 @@ describe("handleGenerateMaterial", () => {
     const mockGet = jest.fn(() => ({
       actions: {
         setGeneration: jest.fn(),
-        setIsResourcesLoading: jest.fn(),
+        setisMaterialLoading: jest.fn(),
         analytics: { trackMaterialRefined: jest.fn() },
       },
       docType: null,
