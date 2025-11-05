@@ -24,12 +24,12 @@
   },
   "dependencies": {
     "@clerk/nextjs": "5.7.2",
-    "@oakai/teaching-materials": "*",
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",
     "@oakai/logger": "*",
+    "@oakai/teaching-materials": "*",
     "@trpc/server": "10.45.2",
     "@vercel/kv": "^0.2.2",
     "cloudinary": "^1.41.1",
