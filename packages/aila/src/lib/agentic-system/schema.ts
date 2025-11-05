@@ -1,22 +1,22 @@
 import { z } from "zod";
 
-const sectionKeysSchema = z.union([
-  z.literal("title"),
-  z.literal("keyStage"),
-  z.literal("subject"),
-  z.literal("basedOn"),
-  z.literal("learningOutcome"),
-  z.literal("learningCycles"),
-  z.literal("priorKnowledge"),
-  z.literal("keyLearningPoints"),
-  z.literal("misconceptions"),
-  z.literal("keywords"),
-  z.literal("starterQuiz"),
-  z.literal("cycle1"),
-  z.literal("cycle2"),
-  z.literal("cycle3"),
-  z.literal("exitQuiz"),
-  z.literal("additionalMaterials"),
+const sectionKeysSchema = z.enum([
+  "title",
+  "keyStage",
+  "subject",
+  "basedOn",
+  "learningOutcome",
+  "learningCycles",
+  "priorKnowledge",
+  "keyLearningPoints",
+  "misconceptions",
+  "keywords",
+  "starterQuiz",
+  "cycle1",
+  "cycle2",
+  "cycle3",
+  "exitQuiz",
+  "additionalMaterials",
 ]);
 
 export type SectionKey = z.infer<typeof sectionKeysSchema>;
