@@ -14,7 +14,9 @@ export type TeachingMaterialsStores = {
   teachingMaterials: StoreApi<TeachingMaterialsState>;
 };
 
-export type GetTeachingMaterialsStore = <T extends keyof TeachingMaterialsStores>(
+export type GetTeachingMaterialsStore = <
+  T extends keyof TeachingMaterialsStores,
+>(
   storeName: T,
 ) => ExtractState<TeachingMaterialsStores[T]>;
 

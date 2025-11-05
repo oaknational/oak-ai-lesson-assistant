@@ -4,19 +4,22 @@ import type { TeachingMaterialsState } from "./types";
  * Selector for the step number in the resources workflow
  * @example const stepNumber = useTeachingMaterialsStore(stepNumberSelector);
  */
-export const stepNumberSelector = (state: TeachingMaterialsState) => state.stepNumber;
+export const stepNumberSelector = (state: TeachingMaterialsState) =>
+  state.stepNumber;
 
 /**
  * Selector for the page data in the resources workflow
  * @example const pageData = useTeachingMaterialsStore(pageDataSelector);
  */
-export const pageDataSelector = (state: TeachingMaterialsState) => state.pageData;
+export const pageDataSelector = (state: TeachingMaterialsState) =>
+  state.pageData;
 
 /**
  * Selector for the generated material in the resources workflow
  * @example const generation = useTeachingMaterialsStore(generationSelector);
  */
-export const generationSelector = (state: TeachingMaterialsState) => state.generation;
+export const generationSelector = (state: TeachingMaterialsState) =>
+  state.generation;
 
 /**
  * Selector for the document type in the resources workflow
@@ -52,11 +55,14 @@ export const isResourceRefiningSelector = (state: TeachingMaterialsState) =>
   state.isResourceRefining;
 
 // Form state selectors
-export const formStateSelector = (state: TeachingMaterialsState) => state.formState;
+export const formStateSelector = (state: TeachingMaterialsState) =>
+  state.formState;
 export const subjectSelector = (state: TeachingMaterialsState) =>
   state.formState.subject;
-export const titleSelector = (state: TeachingMaterialsState) => state.formState.title;
-export const yearSelector = (state: TeachingMaterialsState) => state.formState.year;
+export const titleSelector = (state: TeachingMaterialsState) =>
+  state.formState.title;
+export const yearSelector = (state: TeachingMaterialsState) =>
+  state.formState.year;
 export const activeDropdownSelector = (state: TeachingMaterialsState) =>
   state.formState.activeDropdown;
 
@@ -64,7 +70,8 @@ export const activeDropdownSelector = (state: TeachingMaterialsState) =>
 export const isLoadingLessonPlanSelector = (state: TeachingMaterialsState) =>
   state.isLoadingLessonPlan;
 
-export const moderationSelector = (state: TeachingMaterialsState) => state.moderation;
+export const moderationSelector = (state: TeachingMaterialsState) =>
+  state.moderation;
 
 /**
  * Selector for the id in the resources workflow
@@ -89,5 +96,6 @@ export const errorSelector = (state: TeachingMaterialsState) => state.error;
  * Selector for the refinement generation history in the resources workflow
  * @example const refinementHistory = useTeachingMaterialsStore(refinementGenerationHistorySelector);
  */
-export const refinementGenerationHistorySelector = (state: TeachingMaterialsState) =>
-  state.refinementGenerationHistory;
+export const refinementGenerationHistorySelector = (
+  state: TeachingMaterialsState,
+) => state.refinementGenerationHistory;
