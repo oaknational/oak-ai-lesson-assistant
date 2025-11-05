@@ -35,6 +35,8 @@ const createComponents = (className?: string): Partial<Components> => ({
   h1: ({ children }) => (
     <h2 className="mb-0 mt-20 text-xl font-bold">{children}</h2>
   ),
+  // Disable blockquote rendering to prevent answers like "> 90 degrees" from being styled as quotes
+  blockquote: ({ children }) => <>{children}</>,
   code: (props) => {
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -84,6 +86,17 @@ const createComponents = (className?: string): Partial<Components> => ({
       <a href={href} {...tags}>
         {children}
       </a>
+    );
+  },
+  img: ({ src, alt, title }) => {
+    // Apply fixed max dimensions to all images
+    return (
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        className="h-auto max-h-[200px] w-auto max-w-[250px] object-contain"
+      />
     );
   },
 });

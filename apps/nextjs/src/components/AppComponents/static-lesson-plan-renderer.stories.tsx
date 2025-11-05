@@ -23,8 +23,8 @@ const meta = {
       learningOutcome:
         "Students will understand the characteristics of amphibians",
       starterQuiz: {
-        version: "v2" as const,
-        imageAttributions: [],
+        version: "v3" as const,
+        imageMetadata: [],
         questions: [
           {
             questionType: "multiple-choice" as const,

@@ -23,9 +23,8 @@ Generate quiz questions from various sources:
 
 Evaluate and rank generated quiz questions:
 
-- **SchemaReranker**: Uses structured output schemas to rate quiz quality
-- **ReturnFirstReranker**: Simple reranker that returns the first quiz
-- **BasedOnRagAilaQuizReranker**: Specialized reranker for RAG-based quizzes
+- **AiEvaluatorQuizReranker**: Uses AI to evaluate and rate quiz quality
+- **ReturnFirstReranker**: Simple reranker that always selects the first quiz (for testing)
 
 ### 3. Selectors (`selectors/`)
 
@@ -61,8 +60,8 @@ const builder = new CompositeFullQuizServiceBuilder({
 
 const quizService = builder.build({
   quizGenerators: ["rag", "basedOnRag"],
-  reranker: "schema",
-  selector: "simple",
+  quizReranker: "ai-evaluator",
+  quizSelector: "simple",
 });
 
 // Generate a quiz for a lesson plan
@@ -108,7 +107,7 @@ The module has some architectural challenges that should be considered when maki
 
 1. **Large Interface Files**: `interfaces.ts` contains many interfaces - consider splitting by domain
 2. **Error Handling**: Inconsistent error handling patterns - some methods throw, others return null/empty arrays
-3. **Type Safety**: Some areas use loose typing (`LooseLessonPlan`) and type assertions
+3. **Type Safety**: Some areas use loose typing (`PartialLessonPlan`) and type assertions
 4. **Code Duplication**: Similar logic exists for starter vs exit quiz generation
 
 ### Best Practices
@@ -141,7 +140,7 @@ To add a new reranker:
 Quiz services are configured through the `CompositeFullQuizServiceBuilder` with options for:
 
 - **quizGenerators**: Array of generator types (`'rag'`, `'basedOnRag'`, `'ml'`)
-- **reranker**: Reranker type (`'schema'`, `'returnFirst'`, `'basedOnRag'`)
-- **selector**: Selector type (`'simple'`)
+- **quizReranker**: Reranker type (`'ai-evaluator'`, `'return-first'`)
+- **quizSelector**: Selector type (`'simple'`)
 
 The builder pattern allows for flexible service composition based on requirements.

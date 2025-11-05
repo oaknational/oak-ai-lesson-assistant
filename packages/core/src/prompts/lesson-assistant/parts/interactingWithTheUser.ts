@@ -4,7 +4,7 @@ import type { TemplateProps } from "..";
 import { allSectionsInOrder } from "../../../../../../apps/nextjs/src/lib/lessonPlan/sectionsInOrder";
 import type {
   LessonPlanKey,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "../../../../../aila/src/protocol/schema";
 
 interface LessonConstructionStep {
@@ -16,7 +16,7 @@ interface LessonConstructionStep {
 const log = aiLogger("chat");
 
 const lessonConstructionSteps = (
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   relevantLessonPlans: string | undefined,
 ): LessonConstructionStep[] => {
   const presentLessonPlanKey = (

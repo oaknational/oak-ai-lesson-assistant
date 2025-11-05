@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { CompletedLessonPlanSchema } from "@oakai/aila/src/protocol/schema";
 
 import { zodResponseFormat } from "openai/helpers/zod";
@@ -22,7 +22,7 @@ export function getLessonPlanBatchFileLine({
   captions?: Captions;
 }) {
   const { lessonTitle, keyStageSlug, subjectSlug } = rawLesson;
-  const lessonPlan: LooseLessonPlan = {
+  const lessonPlan: PartialLessonPlan = {
     title: lessonTitle,
     keyStage: keyStageSlug,
     subject: subjectSlug,

@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -18,7 +18,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const lessonPlan: LooseLessonPlan = {
+const lessonPlan: PartialLessonPlan = {
   title: "The End of Roman Britain",
   subject: "history",
   keyStage: "key-stage-3",

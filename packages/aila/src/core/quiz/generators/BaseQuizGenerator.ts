@@ -19,12 +19,11 @@ import {
 } from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizOperationType,
   QuizPath,
   QuizV1,
   QuizV1Question,
-  QuizV2Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
@@ -88,11 +87,11 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   // The below is overly bloated and a mid-step in refactoring.
   abstract generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
   abstract generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
 
@@ -271,7 +270,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     return response;
   }
   protected unpackLessonPlanForRecommender(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     lessonPlanRerankerFields: string[] = [
       "title",
       "topic",
@@ -282,7 +281,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     const unpackedList: string[] = [];
 
     for (const field of lessonPlanRerankerFields) {
-      const content = lessonPlan[field as keyof LooseLessonPlan];
+      const content = lessonPlan[field as keyof PartialLessonPlan];
 
       if (Array.isArray(content)) {
         unpackedList.push(
@@ -500,7 +499,6 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
         query: query,
         documents: jsonDocs,
         topN: topN,
-        //@ts-expect-error Cohere client has some weirdness - should update version.
         rankFields: ["text"],
         returnDocuments: true,
       });

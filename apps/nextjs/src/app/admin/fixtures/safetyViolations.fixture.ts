@@ -1,3 +1,4 @@
+/* cspell:disable */
 import type { SafetyViolation } from "@oakai/db";
 
 // Mock user IDs

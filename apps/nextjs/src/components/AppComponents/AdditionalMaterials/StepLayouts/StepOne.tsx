@@ -29,14 +29,11 @@ const StepOne = ({
   handleCreateSession: (
     docType: string | null,
     stepNumber?: number,
-  ) => Promise<void>;
+  ) => Promise<{ success: boolean }>;
 }) => {
-  const {
-    setDocType,
-    setGeneration,
+  const { setDocType, setGeneration, setIsResourcesLoading, generateMaterial } =
+    useResourcesActions();
 
-    generateMaterial,
-  } = useResourcesActions();
   const docType = useResourcesStore(docTypeSelector);
   const error = useResourcesStore((state) => state.error);
 
@@ -109,8 +106,11 @@ const StepOne = ({
             }
 
             if (lesson.lessonId) {
-              void handleCreateSession(docType, 3);
-              void generateMaterial();
+              void (async () => {
+                setIsResourcesLoading(true);
+                await handleCreateSession(docType, 3);
+                void generateMaterial();
+              })();
             } else {
               void handleCreateSession(docType);
             }

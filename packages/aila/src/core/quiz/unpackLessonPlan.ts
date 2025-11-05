@@ -1,6 +1,8 @@
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 
-export function unpackLessonPlanForPrompt(lessonPlan: LooseLessonPlan): string {
+export function unpackLessonPlanForPrompt(
+  lessonPlan: PartialLessonPlan,
+): string {
   const sections: string[] = [];
 
   // Basic information

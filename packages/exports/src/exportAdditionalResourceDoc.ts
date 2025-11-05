@@ -3,9 +3,10 @@ import { resourceTypesConfig } from "@oakai/additional-materials/src/documents/a
 import { aiLogger } from "@oakai/logger";
 
 import { exportGeneric } from "./exportGeneric";
-import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/cleanupUnusedPlaceholdersRequests";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { dynamicPlaceholderTemplateIds } from "./gSuite/docs/populate/cleanupUnusedPlaceholdersRequests";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
+import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import { getAdditionalResourcesTemplateId } from "./templates";
 import type { OutputData, Result, State } from "./types";
 
@@ -65,7 +66,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
   try {
     // For comprehension tasks, we need to create both the questions and answers files
     if (documentType === "additional-comprehension") {
-      // @todo we should think about having a mechnism here in the the future that is more flexible and not specific to the document type
+      // @todo we should think about having a mechanism here in the future that is more flexible and not specific to the document type
       const templateId = getAdditionalResourcesTemplateId({
         docType: documentType,
       });
@@ -84,6 +85,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(templateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,
@@ -116,6 +118,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(answersTemplateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,
@@ -159,6 +162,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
             data: dataFromBlocks,
             enablePlaceholderCleanup:
               dynamicPlaceholderTemplateIds.includes(templateId),
+            latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
           });
         },
         userEmail,

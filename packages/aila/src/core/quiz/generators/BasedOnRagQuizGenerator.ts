@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizV1,
 } from "../../../protocol/schema";
 import type { QuizQuestionWithRawJson } from "../interfaces";
@@ -14,7 +14,7 @@ const log = aiLogger("aila:quiz");
 export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   //   This parameter is not used but we keep it for consistency with the other quiz generators
   async generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]> {
     // If quiz is basedOn, give them the default quiz as a starter quiz
@@ -36,7 +36,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
   }
 
   async generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]> {
     // If quiz is basedOn, give them the default quiz as an exit quiz

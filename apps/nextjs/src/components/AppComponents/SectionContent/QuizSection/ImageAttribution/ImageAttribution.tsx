@@ -1,35 +1,35 @@
 import { useMemo } from "react";
 
-import type { QuizV2 } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuiz } from "@oakai/aila/src/protocol/schema";
+import { formatQuizAttributions } from "@oakai/exports/src/quiz-utils/attribution";
 
 import { OakBox, OakSpan } from "@oaknational/oak-components";
 
-import { getFormattedAttributions } from "./imageAttributionUtils";
-
 export type ImageAttributionProps = {
-  quiz: QuizV2;
+  quiz: LatestQuiz;
 };
 
 export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
-  const groupedAttributions = useMemo(
-    () => getFormattedAttributions(quiz.questions, quiz.imageAttributions),
-    [quiz.questions, quiz.imageAttributions],
+  const formattedAttribution = useMemo(
+    () => formatQuizAttributions(quiz.questions, quiz.imageMetadata),
+    [quiz.questions, quiz.imageMetadata],
   );
 
-  if (groupedAttributions.length === 0) {
+  if (formattedAttribution.segments.length === 0) {
     return null;
   }
 
   return (
     <OakBox $mt="space-between-m" $color="text-subdued">
       <OakSpan $font="body-3">
-        {groupedAttributions.map(({ attribution, questionRange }, index) => (
-          <span key={`attribution-${index}`}>
-            © {attribution} ({questionRange})
-            {index < groupedAttributions.length - 1 && "; "}
-          </span>
+        {formattedAttribution.segments.map((segment, index) => (
+          <OakSpan
+            key={`segment-${index}`}
+            $font={segment.bold ? "body-3-bold" : "body-3"}
+          >
+            {segment.text}
+          </OakSpan>
         ))}
-        .
       </OakSpan>
     </OakBox>
   );

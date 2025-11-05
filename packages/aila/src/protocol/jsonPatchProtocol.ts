@@ -9,7 +9,7 @@ import untruncateJson from "untruncate-json";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 
-import type { LooseLessonPlan } from "./schema";
+import type { PartialLessonPlan } from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
@@ -19,15 +19,15 @@ import {
   KeywordsOptionalSchema,
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
-  LessonPlanSchemaWhilstStreaming,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizOptionalSchema,
+  LatestQuizSchema,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
+  PartialLessonPlanSchema,
   QuizV1OptionalSchema,
   QuizV1Schema,
-  QuizV2MultipleChoiceOnlySchemaWithoutLength,
-  QuizV2OptionalSchema,
-  QuizV2Schema,
 } from "./schema";
 
 const log = aiLogger("aila:protocol");
@@ -144,26 +144,31 @@ export const PatchQuizV1 = z.object({
 // When using Structured Outputs we cannot specify the length of arrays or strings
 // so we have to use a different schema and pass in the spec with a description and in the prompt
 
-// V2 Quiz Patch Schemas
-export const PatchQuizV2Optional = z.object({
+// V3 Quiz Patch Schemas
+export const PatchQuizV3Optional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV2OptionalSchema,
+  value: LatestQuizOptionalSchema,
 });
 
-export const PatchQuizV2 = z.object({
+export const PatchQuizV3 = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV2Schema,
+  value: LatestQuizSchema,
 });
 
 // For LLM - multiple choice only since LLM can only generate those
-export const PatchQuizV2ForLLM = z.object({
+export const PatchQuizV3ForLLM = z.object({
   type: z.literal("quiz"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: QuizV2MultipleChoiceOnlySchemaWithoutLength,
+  value: LatestQuizMultipleChoiceOnlySchemaWithoutLength,
 });
+
+// Legacy V2 names for backward compatibility - these now use V3 schemas internally
+export const PatchQuizV2Optional = PatchQuizV3Optional;
+export const PatchQuizV2 = PatchQuizV3;
+export const PatchQuizV2ForLLM = PatchQuizV3ForLLM;
 
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -813,7 +818,7 @@ function isValidPatch(patch: Operation): boolean {
   return true;
 }
 export function applyLessonPlanPatch(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   command: JsonPatchDocument,
 ) {
   log.info("Apply patch (old)", JSON.stringify(command));
@@ -830,7 +835,7 @@ export function applyLessonPlanPatch(
 
   try {
     const result = applyPatch(deepClone(updatedLessonPlan), [patchValue]);
-    const newUpdatedLessonPlan = LessonPlanSchemaWhilstStreaming.parse(
+    const newUpdatedLessonPlan = PartialLessonPlanSchema.parse(
       result.newDocument,
     );
 
@@ -866,7 +871,7 @@ export function applyLessonPlanPatch(
  * that haven't changed
  */
 export function applyLessonPlanPatchImmutable(
-  lessonPlan: LooseLessonPlan,
+  lessonPlan: PartialLessonPlan,
   command: JsonPatchDocument,
 ) {
   log.info("Apply patch (immutable)", JSON.stringify(command));
@@ -890,7 +895,7 @@ export function applyLessonPlanPatchImmutable(
 
     // Zod returns a deep-cloned result which we can't use.
     // We can just rely on the fact that it didn't throw
-    LessonPlanSchemaWhilstStreaming.parse(newLessonPlan);
+    PartialLessonPlanSchema.parse(newLessonPlan);
 
     return newLessonPlan;
   } catch (e) {

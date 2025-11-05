@@ -1,9 +1,9 @@
 import { prepLessonForSlides } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
+import { clearSpeakerNoteTags } from "./gSuite/slides/clearSpeakerNoteTags";
 import { googleSlides } from "./gSuite/slides/client";
 import {
-  CYCLE_TAGS,
-  type CycleNumber,
+  type SpeakerNotesTag,
   deleteSlides,
 } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
@@ -23,12 +23,8 @@ export const exportSlidesFullLesson = async ({
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
   try {
-    const speakerNotesTagsToDelete = [1, 2, 3]
-      .filter(
-        (num): num is CycleNumber =>
-          !lesson[`cycle${num}` as keyof typeof lesson],
-      )
-      .map((n) => CYCLE_TAGS[n]);
+    const speakerNotesTagsToDelete: SpeakerNotesTag[] =
+      lesson.subject === "maths" ? ["starterQuiz", "exitQuiz"] : [];
 
     const result = await exportGeneric({
       newFileName: `${lesson.title} - ${snapshotId} - Lesson slides`,
@@ -43,12 +39,22 @@ export const exportSlidesFullLesson = async ({
         });
       },
       populateTemplate: async ({ data, templateCopyId }) => {
-        return populateSlides({
+        const populateResult = await populateSlides({
           googleSlides,
           presentationId: templateCopyId,
           data,
           valueToString,
         });
+
+        const didPopulate = "data" in populateResult;
+        if (didPopulate) {
+          await clearSpeakerNoteTags({
+            googleSlides,
+            presentationId: templateCopyId,
+          });
+        }
+
+        return populateResult;
       },
       userEmail,
       onStateChange,

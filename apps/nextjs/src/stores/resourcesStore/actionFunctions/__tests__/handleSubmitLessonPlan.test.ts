@@ -298,7 +298,7 @@ describe("handleSubmitLessonPlan", () => {
 
       expect(mockTrackMaterialRefined).toHaveBeenCalledTimes(1);
       expect(mockTrackMaterialRefined).toHaveBeenCalledWith(
-        "generate_overview",
+        "lesson_summary_button",
       );
     });
 
@@ -466,7 +466,7 @@ describe("handleSubmitLessonPlan", () => {
         mockTrpc.client.additionalMaterials.updateMaterialSession.mutate,
       ).toHaveBeenCalledWith(expect.any(Object));
       expect(mockTrackMaterialRefined).toHaveBeenCalledWith(
-        "generate_overview",
+        "lesson_summary_button",
       );
       expect(mockSetIsLoadingLessonPlan).toHaveBeenNthCalledWith(2, false);
     });

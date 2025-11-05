@@ -4,7 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { zodTextFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import { type LooseLessonPlan } from "../../protocol/schema";
+import { type PartialLessonPlan } from "../../protocol/schema";
 import type { AgentName } from "./agents";
 import { sectionGroups } from "./lessonPlanSectionGroups";
 import { messageToUserInstructions } from "./prompts";
@@ -28,7 +28,7 @@ export async function messageToUserAgent({
 }: {
   chatId: string;
   userId: string;
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   jsonDiff: string;
   messageHistoryChatOnly: { role: "user" | "assistant"; content: string }[];
   error?: {
