@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import type OpenAI from "openai";
 import type { LooseLessonPlan } from "protocol/schema";
 import type { z } from "zod";
@@ -80,6 +81,9 @@ function defaultContentToString(content: unknown): string {
     try {
       return JSON.stringify(content);
     } catch {
+      Sentry.captureException(new Error("Failed to serialize content"), {
+        extra: { content },
+      });
       return "[Non-serializable Object]";
     }
   }
