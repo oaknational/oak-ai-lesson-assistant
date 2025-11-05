@@ -10,8 +10,8 @@ import type {
   LearningCyclesSchema,
   LearningOutcomeSchema,
   LessonTitleSchema,
-  LooseLessonPlan,
   MisconceptionsSchema,
+  PartialLessonPlan,
   PriorKnowledgeSchema,
   QuizV2Schema,
   SubjectSchema,
@@ -39,7 +39,7 @@ export type ChatMessage = {
 // Serializable state that gets persisted
 export type AilaPersistedState = {
   messages: ChatMessage[];
-  initialDocument: LooseLessonPlan;
+  initialDocument: PartialLessonPlan;
   relevantLessons: RagLessonPlan[] | null;
 };
 
@@ -59,12 +59,12 @@ export type AilaRuntimeContext = {
 export type AilaTurnCallbacks = {
   onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
   onSectionComplete: (
-    prevDoc: LooseLessonPlan,
-    nextDoc: LooseLessonPlan,
+    prevDoc: PartialLessonPlan,
+    nextDoc: PartialLessonPlan,
   ) => void;
   onTurnComplete: (props: {
-    prevDoc: LooseLessonPlan;
-    nextDoc: LooseLessonPlan;
+    prevDoc: PartialLessonPlan;
+    nextDoc: PartialLessonPlan;
     ailaMessage: string;
   }) => Promise<void>;
 };
@@ -136,14 +136,14 @@ export type SectionAgentRegistry<
 
 export type PlannerAgentProps = {
   messages: ChatMessage[];
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   relevantLessons: RagLessonPlan[] | null;
 };
 
 export type MessageToUserAgentProps = {
   messages: ChatMessage[];
-  prevDoc: LooseLessonPlan;
-  nextDoc: LooseLessonPlan;
+  prevDoc: PartialLessonPlan;
+  nextDoc: PartialLessonPlan;
   stepsExecuted: PlanStep[];
   errors: { message: string }[];
   plannerOutput: PlannerOutput | null;
@@ -152,7 +152,7 @@ export type MessageToUserAgentProps = {
 };
 
 export type AilaState = {
-  initialDocument: LooseLessonPlan;
+  initialDocument: PartialLessonPlan;
   messages: ChatMessage[];
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
   messageToUserAgent: (
@@ -164,7 +164,7 @@ export type AilaState = {
 };
 
 export type AilaCurrentTurn = {
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   plannerOutput: PlannerOutput | null;
   errors: { message: string }[];
   stepsExecuted: PlanStep[];

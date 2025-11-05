@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import type OpenAI from "openai";
-import type { LooseLessonPlan } from "protocol/schema";
 import type { z } from "zod";
 
+import type { PartialLessonPlan } from "../../../../protocol/schema";
 import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
@@ -41,7 +41,7 @@ export function createSectionAgent<ResponseType>({
     description: string;
     openai: OpenAI;
     contentFromDocument: (
-      document: LooseLessonPlan | RagLessonPlan,
+      document: PartialLessonPlan | RagLessonPlan,
     ) => ResponseType | undefined;
   }) => ({
     id,
