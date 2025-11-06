@@ -102,7 +102,7 @@ describe("MLQuizGenerator", () => {
     jest.setTimeout(60000); // 60 seconds
 
     // This test makes real API calls to OpenAI and Elasticsearch
-    const result = await mlQuizGenerator.generateMathsQuizMLWithSemanticQueries(
+    const result = await mlQuizGenerator.generateMathsQuizML(
       CircleTheoremLesson,
       "/starterQuiz",
     );
