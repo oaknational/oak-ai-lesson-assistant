@@ -34,9 +34,6 @@ export const handleCreateMaterialSession =
     try {
       const result = await callWithHandshakeRetry(
         () =>
-          // trpc.client.  teachingMaterials.createMaterialSession.mutate({
-          //   documentType: docTypeParsed,
-          // }),
           trpc.client.teachingMaterials.createMaterialSession.mutate({
             documentType: docTypeParsed,
           }),
