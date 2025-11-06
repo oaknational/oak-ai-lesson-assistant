@@ -115,3 +115,108 @@ export function actionsBlock({
     elements: [...userActions, ...chatActions],
   };
 }
+
+/**
+ * Format threat detection data as markdown for Slack
+ */
+export function formatThreatAsMarkdown(
+  userInput: string,
+  detectedThreats: Array<{ detectorType: string; detectorId: string }>,
+  requestId?: string,
+): string {
+  let markdown = "🚨 *Threat Detected*\n\n";
+
+  // User input section
+  markdown += "*User Input:*\n";
+  markdown += `> ${userInput}\n\n`;
+
+  // Detected threats section
+  if (detectedThreats.length > 0) {
+    markdown += "*Detected Threats:*\n";
+    detectedThreats.forEach((threat) => {
+      markdown += `• *Type:* \`${threat.detectorType}\`\n`;
+      markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
+    });
+    markdown += "\n";
+  }
+
+  // Request ID for traceability
+  if (requestId) {
+    markdown += `*Request ID:* \`${requestId}\``;
+  }
+
+  return markdown;
+}
+
+/**
+ * Create a header block for Slack messages
+ */
+export function createHeaderBlock(text: string) {
+  return {
+    type: "header" as const,
+    text: {
+      type: "plain_text" as const,
+      text,
+    },
+  };
+}
+
+/**
+ * Create a simple markdown field block
+ */
+export function createMarkdownField(text: string) {
+  return {
+    type: "mrkdwn" as const,
+    text,
+  };
+}
+
+/**
+ * Create a section block for threat detection violations in teaching materials
+ */
+export function createThreatSectionBlock(args: {
+  id: string;
+  userInput: string;
+  detectedThreats: Array<{ detectorType: string; detectorId: string }>;
+  requestId?: string;
+  userAction: string;
+  violationType: string;
+}): SectionBlock {
+  return {
+    type: "section",
+    fields: [
+      createMarkdownField(`*Id*: ${args.id}`),
+      createMarkdownField(
+        formatThreatAsMarkdown(
+          args.userInput,
+          args.detectedThreats,
+          args.requestId,
+        ),
+      ),
+      createMarkdownField(`*User action*:  ${args.userAction}`),
+      createMarkdownField(`*Violation type*:  ${args.violationType}`),
+    ],
+  };
+}
+
+/**
+ * Create a section block for moderation violations in teaching materials
+ */
+export function createModerationSectionBlock(args: {
+  id: string;
+  justification: string;
+  categories: string[];
+  userAction: string;
+  violationType: string;
+}): SectionBlock {
+  return {
+    type: "section",
+    fields: [
+      createMarkdownField(`*Id*: ${args.id}`),
+      createMarkdownField(`*Justification*: ${args.justification}`),
+      createMarkdownField(`*Categories*: \`${args.categories.join("`, `")}\``),
+      createMarkdownField(`*User action*:  ${args.userAction}`),
+      createMarkdownField(`*Violation type*:  ${args.violationType}`),
+    ],
+  };
+}

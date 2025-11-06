@@ -2,6 +2,7 @@ import { generateAdditionalMaterialModeration } from "@oakai/additional-material
 import { generatePartialLessonPlanObject } from "@oakai/additional-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import type { PartialLessonContextSchemaType } from "@oakai/additional-materials/src/documents/partialLessonPlan/schema";
 import { performLakeraThreatCheck } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
+import type { LakeraGuardResponse } from "@oakai/core/src/threatDetection/lakera";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type {
   ModerationResult,
@@ -14,7 +15,11 @@ import type { z } from "zod";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
 import { getMockModerationResult } from "./moderationFixtures";
-import { recordSafetyViolation } from "./safetyUtils";
+import {
+  formatThreatDetectionForSlack,
+  recordSafetyViolation,
+  type ThreatDetectionForSlack,
+} from "./safetyUtils";
 
 // Mock fixture data
 const mockLessonPlan = {
@@ -123,9 +128,13 @@ jest.mock("./moderationFixtures", () => ({
   getMockModerationResult: jest.fn(),
 }));
 
-jest.mock("./safetyUtils", () => ({
-  recordSafetyViolation: jest.fn(),
-}));
+jest.mock("./safetyUtils", () => {
+  const actual = jest.requireActual("./safetyUtils");
+  return {
+    ...actual,
+    recordSafetyViolation: jest.fn(),
+  };
+});
 
 const mockPrisma = {
   additionalMaterialInteraction: {
@@ -192,7 +201,6 @@ describe("generatePartialLessonPlan", () => {
           detector_id: "detector-1",
           detector_type: "type-1",
           detected: true,
-          message_id: 1,
         },
       ],
     });
@@ -246,7 +254,6 @@ describe("generatePartialLessonPlan", () => {
                 detector_id: "detector-1",
                 detector_type: "type-1",
                 detected: true,
-                message_id: 1,
               },
             ],
           },
@@ -299,6 +306,13 @@ describe("generatePartialLessonPlan", () => {
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockToxicModerationResult,
+      threatDetection: expect.objectContaining({
+        flagged: false,
+        userInput: expect.stringContaining("Mathematics"),
+        detectedThreats: expect.any(Array),
+        requestId: "123",
+        markdown: expect.any(String),
+      }),
     });
   });
 
@@ -327,25 +341,18 @@ describe("generatePartialLessonPlan", () => {
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockToxicModerationResult,
+      threatDetection: expect.objectContaining({
+        flagged: false,
+        userInput: expect.stringContaining("Mathematics"),
+        detectedThreats: expect.any(Array),
+        requestId: "123",
+        markdown: expect.any(String),
+      }),
     });
   });
 
   it("should handle threat detection and return null lesson", async () => {
-    const threatResult: {
-      payload: unknown[];
-      metadata: {
-        request_uuid: string;
-      };
-      flagged: boolean;
-      breakdown: {
-        project_id: string;
-        policy_id: string;
-        detector_id: string;
-        detector_type: string;
-        detected: boolean;
-        message_id: number;
-      }[];
-    } = {
+    const threatResult: LakeraGuardResponse = {
       flagged: true,
       metadata: { request_uuid: "123" },
       payload: [],
@@ -356,7 +363,6 @@ describe("generatePartialLessonPlan", () => {
           detector_id: "detector-1",
           detector_type: "type-1",
           detected: true,
-          message_id: 1,
         },
       ],
     };
@@ -384,6 +390,18 @@ describe("generatePartialLessonPlan", () => {
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockModerationResult,
+      threatDetection: expect.objectContaining({
+        flagged: true,
+        userInput: expect.stringContaining("Mathematics"),
+        detectedThreats: expect.arrayContaining([
+          expect.objectContaining({
+            detectorType: "type-1",
+            detectorId: "detector-1",
+          }),
+        ]),
+        requestId: "123",
+        markdown: expect.stringContaining("🚨"),
+      }),
     });
 
     expect(
