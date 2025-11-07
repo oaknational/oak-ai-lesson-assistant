@@ -8,6 +8,8 @@ import {
 } from "unique-names-generator";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
+import type { LakeraGuardResponse } from "../threatDetection/lakera";
+import type { Message } from "../threatDetection/lakera/schema";
 
 if (
   !process.env.SLACK_NOTIFICATION_CHANNEL_ID ||
@@ -56,6 +58,22 @@ export function userIdBlock(userId: string): SectionBlock {
       {
         type: "mrkdwn",
         text: `(*_${friendlyId}_*)`,
+      },
+    ],
+  };
+}
+
+/**
+ * Create a section block with a link to an Aila chat
+ */
+export function chatLinkBlock(chatId: string): SectionBlock {
+  const externalUrl = getExternalFacingUrl();
+  return {
+    type: "section",
+    fields: [
+      {
+        type: "mrkdwn",
+        text: `*Chat*: <https://${externalUrl}/aila/${chatId}|aila/${chatId}>`,
       },
     ],
   };
@@ -113,6 +131,56 @@ export function actionsBlock({
   return {
     type: "actions",
     elements: [...userActions, ...chatActions],
+  };
+}
+
+/**
+ * Formatted threat detection data for Slack notifications
+ */
+export interface FormatThreatDetectionWithMessages {
+  flagged: boolean;
+  userInput: string;
+  detectedThreats: Array<{
+    detectorType: string;
+    detectorId: string;
+  }>;
+  requestId?: string;
+}
+
+/**
+ * Format Lakera threat detection result for Slack notification
+ *
+ * Extracts only the useful information:
+ * - User's input that triggered the threat
+ * - List of detected threats (filtered to only those with detected: true)
+ * - Request UUID for traceability
+
+ *
+ * @param lakeraResult - The Lakera Guard API response
+ * @param messages - The messages that were checked for threats
+ * @returns Formatted threat detection data for Slack
+ */
+export function formatThreatDetectionWithMessages(
+  lakeraResult: LakeraGuardResponse,
+  messages: Message[],
+): FormatThreatDetectionWithMessages {
+  // Extract user input from messages (without role prefix for cleaner display)
+  const userInput = messages.map((msg) => msg.content).join("\n");
+
+  // Filter to only detected threats and extract relevant info
+  const detectedThreats =
+    lakeraResult.breakdown
+      ?.filter((item) => item.detected)
+      .map((item) => ({
+        detectorType: item.detector_type,
+        detectorId: item.detector_id,
+      })) ?? [];
+
+  return {
+    flagged: lakeraResult.flagged,
+    userInput,
+    detectedThreats,
+    requestId: lakeraResult.metadata?.request_uuid,
   };
 }
 
@@ -180,7 +248,6 @@ export function createThreatSectionBlock(args: {
   detectedThreats: Array<{ detectorType: string; detectorId: string }>;
   requestId?: string;
   userAction: string;
-  violationType: string;
 }): SectionBlock {
   return {
     type: "section",
@@ -194,7 +261,6 @@ export function createThreatSectionBlock(args: {
         ),
       ),
       createMarkdownField(`*User action*:  ${args.userAction}`),
-      createMarkdownField(`*Violation type*:  ${args.violationType}`),
     ],
   };
 }

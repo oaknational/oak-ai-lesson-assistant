@@ -3,7 +3,7 @@ import { z } from "zod";
 /**
  * Schema for a message sent to Lakera Guard API
  */
-const messageSchema = z.object({
+export const messageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
   content: z.string(),
 });

@@ -20,8 +20,10 @@ import { embedAllQuizQuestionsSchema } from "./quizQuestion/embedAll.schema";
 import { generateAllQuizQuestionsSchema } from "./quizQuestion/generateAll.schema";
 import { embedQuizQuestionSchema } from "./quizQuestion/generateQuizQuestionEmbeddings.schema";
 import { notifyModerationSchema } from "./slack/notifyModeration.schema";
+import { notifyModerationTeachingMaterialsSchema } from "./slack/notifyModerationTeachingMaterials.schema";
 import { notifyRateLimitSchema } from "./slack/notifyRateLimit.schema";
-import { notifySafetyViolationsTeachingMaterialsSchema } from "./slack/notifySafetyViolationsTeachingMaterials.schema";
+import { notifyThreatDetectionAilaSchema } from "./slack/notifyThreatDetectionAila.schema";
+import { notifyThreatDetectionTeachingMaterialsSchema } from "./slack/notifyThreatDetectionTeachingMaterials.schema";
 import { notifyUserBanSchema } from "./slack/notifyUserBan.schema";
 import { embedAllSnippetsSchema } from "./snippet/embedAll.schema";
 import { generateSnippetsForAllQuestionsSchema } from "./snippet/generateQuestionSnippets.schema";
@@ -64,8 +66,11 @@ const schemas = {
   "app/snippet.generateForAllQuestions": generateSnippetsForAllQuestionsSchema,
   "app/slack.notifyRateLimit": notifyRateLimitSchema,
   "app/slack.notifyModeration": notifyModerationSchema,
-  "app/slack.notifySafetyViolationsTeachingMaterials":
-    notifySafetyViolationsTeachingMaterialsSchema,
+  "app/slack.notifyThreatDetectionAila": notifyThreatDetectionAilaSchema,
+  "app/slack.notifyThreatDetectionTeachingMaterials":
+    notifyThreatDetectionTeachingMaterialsSchema,
+  "app/slack.notifyModerationTeachingMaterials":
+    notifyModerationTeachingMaterialsSchema,
   "app/slack.notifyUserBan": notifyUserBanSchema,
   "app/demo.populateStatuses": populateDemoStatusesSchema,
 } satisfies ZodEventSchemas;

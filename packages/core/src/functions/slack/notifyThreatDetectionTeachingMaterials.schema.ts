@@ -1,5 +1,8 @@
 import z from "zod";
 
+import { lakeraGuardResponseSchema } from "../../threatDetection/lakera";
+import { messageSchema } from "../../threatDetection/lakera/schema";
+
 /**
  * Schema for formatted threat detection data sent to Slack
  */
@@ -9,22 +12,20 @@ export const threatDetectionForSlackSchema = z.object({
   detectedThreats: z.array(
     z.object({
       detectorType: z.string(),
-      detectorId: z.string(),
+      detectorId: z.string().optional(),
     }),
   ),
   requestId: z.string().optional(),
 });
 
-export const notifySafetyViolationsTeachingMaterialsSchema = {
+export const notifyThreatDetectionTeachingMaterialsSchema = {
   user: z.object({
     id: z.string(),
   }),
   data: z.object({
     id: z.string(),
-    justification: z.string(),
-    categories: z.array(z.string()),
     userAction: z.string(),
-    violationType: z.string(),
-    threatDetection: threatDetectionForSlackSchema.optional(),
+    threatDetection: lakeraGuardResponseSchema,
+    messages: z.array(messageSchema),
   }),
 };

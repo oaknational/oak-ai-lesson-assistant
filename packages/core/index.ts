@@ -17,8 +17,10 @@ import { embedAllQuizQuestions } from "./src/functions/quizQuestion/embedAll";
 import { generateAllQuizQuestions } from "./src/functions/quizQuestion/generateAll";
 import { generateQuizQuestionEmbeddings } from "./src/functions/quizQuestion/generateQuizQuestionEmbeddings";
 import { notifyModeration } from "./src/functions/slack/notifyModeration";
+import { notifyModerationTeachingMaterials } from "./src/functions/slack/notifyModerationTeachingMaterials";
 import { notifyRateLimit } from "./src/functions/slack/notifyRateLimit";
-import { notifySafetyViolationsTeachingMaterials } from "./src/functions/slack/notifySafetyViolationsTeachingMaterials";
+import { notifyThreatDetectionAila } from "./src/functions/slack/notifyThreatDetectionAila";
+import { notifyThreatDetectionTeachingMaterials } from "./src/functions/slack/notifyThreatDetectionTeachingMaterials";
 import { notifyUserBan } from "./src/functions/slack/notifyUserBan";
 import { embedAllSnippets } from "./src/functions/snippet/embedAll";
 import { generateSnippetsForAllQuestions } from "./src/functions/snippet/generateForAllQuestions";
@@ -63,7 +65,9 @@ export const functions = [
   generatePlanForLesson,
   generateAllLessonPlans,
   notifyModeration,
-  notifySafetyViolationsTeachingMaterials,
+  notifyThreatDetectionAila,
+  notifyThreatDetectionTeachingMaterials,
+  notifyModerationTeachingMaterials,
   notifyRateLimit,
   notifyUserBan,
   populateDemoStatuses,
