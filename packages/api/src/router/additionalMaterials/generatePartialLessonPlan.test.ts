@@ -302,13 +302,6 @@ describe("generatePartialLessonPlan", () => {
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockToxicModerationResult,
-      threatDetection: expect.objectContaining({
-        flagged: false,
-        userInput: expect.stringContaining("Mathematics"),
-        detectedThreats: expect.any(Array),
-        requestId: "123",
-        markdown: expect.any(String),
-      }),
     });
   });
 
@@ -337,13 +330,6 @@ describe("generatePartialLessonPlan", () => {
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockToxicModerationResult,
-      threatDetection: expect.objectContaining({
-        flagged: false,
-        userInput: expect.stringContaining("Mathematics"),
-        detectedThreats: expect.any(Array),
-        requestId: "123",
-        markdown: expect.any(String),
-      }),
     });
   });
 
@@ -385,19 +371,13 @@ describe("generatePartialLessonPlan", () => {
       interactionId: "mock-interaction-id",
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
-      moderation: mockModerationResult,
-      threatDetection: expect.objectContaining({
-        flagged: true,
-        userInput: expect.stringContaining("Mathematics"),
-        detectedThreats: expect.arrayContaining([
-          expect.objectContaining({
-            detectorType: "type-1",
-            detectorId: "detector-1",
-          }),
-        ]),
-        requestId: "123",
-        markdown: expect.stringContaining("🚨"),
-      }),
+      messages: [
+        {
+          role: "user",
+          content: "Mathematics - Test Lesson",
+        },
+      ],
+      threatDetection: threatResult,
     });
 
     expect(
