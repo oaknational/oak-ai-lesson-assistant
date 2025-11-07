@@ -23,11 +23,9 @@ import "@/app/theme-config.css";
 import { Providers } from "@/components/AppComponents/Chat//providers";
 import { AnalyticsProvider } from "@/components/ContextProviders/AnalyticsProvider";
 import { CookieConsentProvider } from "@/components/ContextProviders/CookieConsentProvider";
-import { FeatureFlagProvider } from "@/components/ContextProviders/FeatureFlagProvider";
 import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
-import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
 import { SentryIdentify } from "@/lib/sentry/SentryIdentify";
 import { cn } from "@/lib/utils";
 import { TRPCReactProvider } from "@/utils/trpc";
@@ -95,8 +93,6 @@ export default async function RootLayout({
     return redirect("/not-found");
   }
 
-  const bootstrappedFeatures = await getBootstrappedFeatures(headers());
-
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
       <StyledComponentsRegistry>
@@ -135,15 +131,8 @@ export default async function RootLayout({
                             }),
                           },
                         }}
-                        bootstrappedFeatures={bootstrappedFeatures}
                       >
-                        <GleapProvider>
-                          <FeatureFlagProvider
-                            bootstrappedFeatures={bootstrappedFeatures}
-                          >
-                            {children}
-                          </FeatureFlagProvider>
-                        </GleapProvider>
+                        <GleapProvider>{children}</GleapProvider>
                       </AnalyticsProvider>
                     </CookieConsentProvider>
                   </Providers>

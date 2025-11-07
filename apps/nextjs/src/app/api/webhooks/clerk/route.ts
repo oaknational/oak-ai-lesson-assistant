@@ -17,7 +17,6 @@ declare global {
     labs?: {
       isDemoUser?: boolean;
       isOnboarded?: boolean;
-      featureFlagGroup?: string | null;
     };
   }
 }
@@ -31,13 +30,12 @@ function getPrimaryEmail(user: UserJSON): string {
 }
 
 async function syncUserToPosthog(user: UserJSON) {
-  const featureFlagGroup = user.public_metadata.labs?.featureFlagGroup ?? "";
   posthogAiBetaServerClient.identify({
     distinctId: getPrimaryEmail(user),
-    properties: { featureFlagGroup },
+    properties: {},
   });
   await posthogAiBetaServerClient.flush();
-  log.info("featureFlagGroup synced:", user.id, featureFlagGroup);
+  log.info("User synced to PostHog:", user.id);
 }
 
 export async function POST(req: Request) {

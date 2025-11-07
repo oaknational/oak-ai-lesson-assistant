@@ -75,7 +75,6 @@ export const analyticsContext = createContext<AnalyticsContext | null>(null);
 export type AnalyticsProviderProps = {
   children?: React.ReactNode;
   avoOptions?: Partial<AvoOptions>;
-  bootstrappedFeatures: Record<string, string | boolean>;
 };
 
 if (
@@ -132,7 +131,6 @@ const posthogClientAiBeta = new PostHog();
 export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   children,
   avoOptions,
-  bootstrappedFeatures,
 }) => {
   const [hubspotScriptLoaded, setHubspotScriptLoaded] = useState(false);
   const setHubspotScriptLoadedOnce = useCallback(() => {
@@ -173,7 +171,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   );
   const posthogAiBeta = useAnalyticsService({
     service: posthogServiceAiBeta,
-    config: { ...posthogAiBetaConfig, bootstrappedFeatures },
+    config: posthogAiBetaConfig,
     consentState: posthogConsentAiBeta,
   });
 
