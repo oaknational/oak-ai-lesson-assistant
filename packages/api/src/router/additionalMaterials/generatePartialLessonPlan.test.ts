@@ -15,11 +15,7 @@ import type { z } from "zod";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
 import { getMockModerationResult } from "./moderationFixtures";
-import {
-  formatThreatDetectionForSlack,
-  recordSafetyViolation,
-  type ThreatDetectionForSlack,
-} from "./safetyUtils";
+import { recordSafetyViolation } from "./safetyUtils";
 
 // Mock fixture data
 const mockLessonPlan = {

@@ -11,10 +11,7 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 
 import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
 import { getMockModerationResult } from "./moderationFixtures";
-import {
-  formatThreatDetectionForSlack,
-  recordSafetyViolation,
-} from "./safetyUtils";
+import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("additional-materials");
 
@@ -100,9 +97,6 @@ export async function generatePartialLessonPlan({
       violationType: "MODERATION",
       userAction: "PARTIAL_LESSON_GENERATION",
       moderation: mockModerationResult ?? moderation,
-      threatDetection: lakeraResult
-        ? formatThreatDetectionForSlack(lakeraResult, messages)
-        : undefined,
     });
 
     return {
@@ -120,8 +114,8 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
-      moderation: mockModerationResult ?? moderation,
-      threatDetection: formatThreatDetectionForSlack(lakeraResult, messages),
+      messages: messages,
+      threatDetection: lakeraResult,
     });
 
     return {
