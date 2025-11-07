@@ -10,19 +10,6 @@ import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("additional-materials");
 
-/**
- * Formatted threat detection data for Slack notifications
- */
-export interface FormatThreatDetectionWithMessages {
-  flagged: boolean;
-  userInput: string;
-  detectedThreats: Array<{
-    detectorType: string;
-    detectorId: string;
-  }>;
-  requestId?: string;
-}
-
 type BaseSafetyViolationParams = {
   prisma: PrismaClientWithAccelerate;
   auth: SignedInAuthObject;

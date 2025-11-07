@@ -137,7 +137,7 @@ export function actionsBlock({
 /**
  * Formatted threat detection data for Slack notifications
  */
-export interface FormatThreatDetectionWithMessages {
+interface FormatThreatDetectionWithMessages {
   flagged: boolean;
   userInput: string;
   detectedThreats: Array<{
