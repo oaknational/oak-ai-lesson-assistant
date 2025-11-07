@@ -124,13 +124,9 @@ jest.mock("./moderationFixtures", () => ({
   getMockModerationResult: jest.fn(),
 }));
 
-jest.mock("./safetyUtils", () => {
-  const actual = jest.requireActual("./safetyUtils");
-  return {
-    ...actual,
-    recordSafetyViolation: jest.fn(),
-  };
-});
+jest.mock("./safetyUtils", () => ({
+  recordSafetyViolation: jest.fn(),
+}));
 
 const mockPrisma = {
   additionalMaterialInteraction: {
