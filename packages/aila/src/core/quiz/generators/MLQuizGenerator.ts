@@ -24,6 +24,7 @@ import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
   CustomSource,
+  QuizQuestionPool,
   QuizQuestionWithRawJson,
   SimplifiedResult,
 } from "../interfaces";
@@ -140,10 +141,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       0.5, // 50/50 weight between BM25 and vector search
     );
 
-    // const quizQuestions = await this.retrieveAndProcessQuestions(semanticQueries);
     const customIds = await this.rerankAndExtractCustomIds(
       results.hits,
       concatenatedQueries,
+      10,
     );
     const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
     return quizQuestions;
@@ -210,33 +211,39 @@ Generate a list of 1-3 semantic search queries`;
     }
   }
 
-  // TODO: GCLOMAX - Change for starter and exit quizzes.
-  public async generateMathsStarterQuizPatch(
+  public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz = await this.generateMathsQuizML(lessonPlan, "/starterQuiz");
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizML(
       lessonPlan,
-      quiz,
       "/starterQuiz",
     );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} starter Quizzes`);
-    return quiz2DArray;
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from prior knowledge",
+          mappedToLearningGoal: lessonPlan.priorKnowledge?.join("; "),
+        },
+      } satisfies QuizQuestionPool,
+    ];
   }
-  public async generateMathsExitQuizPatch(
+
+  public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz: QuizQuestionWithRawJson[] = await this.generateMathsQuizML(
-      lessonPlan,
-      "/exitQuiz",
-    );
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
-      lessonPlan,
-      quiz,
-      "/exitQuiz",
-    );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} exit questions`);
-    return quiz2DArray;
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizML(lessonPlan, "/exitQuiz");
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from key learning points",
+          mappedToLearningGoal: lessonPlan.keyLearningPoints?.join("; "),
+        },
+      } satisfies QuizQuestionPool,
+    ];
   }
 
   // === ML-specific search and processing methods ===
@@ -451,11 +458,13 @@ Generate a list of 1-3 semantic search queries`;
   protected async rerankAndExtractCustomIds(
     hits: SearchHit<CustomSource>[],
     query: string,
+    topN: number,
   ): Promise<string[]> {
     const simplifiedResults = this.transformHits(hits);
     const rerankedResults = await this.rerankDocuments(
       query,
       simplifiedResults,
+      topN,
     );
     return rerankedResults.map(this.extractCustomId);
   }

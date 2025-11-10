@@ -41,29 +41,32 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizGeneratorService {
-  generateMathsExitQuizPatch(
+// TODO: MG - does having ailaRagRelevantLessons as an optional parameter work? It feels a bit hacky.
+export interface AilaQuizCandidateGenerator {
+  generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
-  generateMathsStarterQuizPatch(
+  ): Promise<QuizQuestionPool[]>;
+  generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
+  ): Promise<QuizQuestionPool[]>;
 }
 
-export interface AilaQuizReranker {
-  evaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
+// Composer actively constructs a quiz from candidate pools
+// Note: Lives in selectors/ directory but may move to composers/ in future
+export interface AilaQuizComposer {
+  composeQuiz(
+    questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<RatingResponse[]>;
+  ): Promise<QuizQuestionWithRawJson[]>;
 }
 
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
   quizReranker: AilaQuizReranker;
-  quizGenerators: AilaQuizGeneratorService[];
+  quizGenerators: AilaQuizCandidateGenerator[];
   createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: PartialLessonPlan,
@@ -71,17 +74,25 @@ export interface FullQuizService {
   ): Promise<LatestQuiz>;
 }
 
-// Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
-export interface QuizSelector<T extends BaseType> {
-  ratingFunction: RatingFunction<T>;
-  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
-  selectBestQuiz(
-    quizzes: QuizQuestionWithRawJson[][],
-    ratingsSchemas: T[],
-  ): QuizQuestionWithRawJson[];
+export type quizPatchType = "/starterQuiz" | "/exitQuiz";
+
+// Legacy interfaces - used by reranker/selector until we migrate to composer
+export interface AilaQuizReranker {
+  evaluateQuizArray(
+    questionPools: QuizQuestionPool[],
+    lessonPlan: PartialLessonPlan,
+    quizType: quizPatchType,
+  ): Promise<RatingResponse[]>;
 }
 
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
+export interface QuizSelector<T extends BaseType> {
+  selectBestQuiz(
+    questionPools: QuizQuestionPool[],
+    ratings: T[],
+  ): QuizQuestionWithRawJson[];
+  ratingFunction: RatingFunction<T>;
+  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
+}
 
 export interface CustomSource {
   text: string;
@@ -115,23 +126,29 @@ export interface SimplifiedResult {
   custom_id: string; // This will be populated with questionUid from the source
 }
 
-export interface Document {
-  document: {
-    text: string;
-  };
-  index: number;
-  relevanceScore: number;
-}
-
 export interface SimplifiedResultQuestion {
   text: string;
   questionUid: string;
 }
 
-export interface DocumentWrapper {
-  document: Document;
-  index: number;
-  relevanceScore: number;
+export interface QuizQuestionPool {
+  questions: QuizQuestionWithRawJson[];
+  source:
+    | {
+        type: "basedOn";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "ailaRag";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "mlSemanticSearch";
+        semanticQuery: string;
+        mappedToLearningGoal?: string;
+      };
 }
 
 export interface QuizSet {

@@ -32,23 +32,29 @@ describe("MLQuizGenerator", () => {
 
   it("should generate a starter quiz", async () => {
     const result =
-      await mlQuizGenerator.generateMathsStarterQuizPatch(CircleTheoremLesson);
+      await mlQuizGenerator.generateMathsStarterQuizCandidates(
+        CircleTheoremLesson,
+      );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
 
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    result.forEach((pool) => {
+      pool.questions.forEach((item) => {
+        expect(QuizV1Schema.safeParse(item).success).toBe(true);
+      });
     });
   });
 
   it("should generate an exit quiz", async () => {
     const result =
-      await mlQuizGenerator.generateMathsExitQuizPatch(CircleTheoremLesson);
+      await mlQuizGenerator.generateMathsExitQuizCandidates(CircleTheoremLesson);
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    result.forEach((pool) => {
+      pool.questions.forEach((item) => {
+        expect(QuizV1Schema.safeParse(item).success).toBe(true);
+      });
     });
   });
 

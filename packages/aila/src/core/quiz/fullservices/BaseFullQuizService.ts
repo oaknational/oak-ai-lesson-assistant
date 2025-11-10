@@ -8,7 +8,7 @@ import type {
 import type { BaseType } from "../ChoiceModels";
 import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
 import type {
-  AilaQuizGeneratorService,
+  AilaQuizCandidateGenerator,
   AilaQuizReranker,
   FullQuizService,
   QuizSelector,
@@ -20,21 +20,21 @@ const log = aiLogger("aila:quiz");
 export abstract class BaseFullQuizService implements FullQuizService {
   public abstract quizSelector: QuizSelector<BaseType>;
   public abstract quizReranker: AilaQuizReranker;
-  public abstract quizGenerators: AilaQuizGeneratorService[];
-  // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
+  public abstract quizGenerators: AilaQuizCandidateGenerator[];
+
   public async createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<LatestQuiz> {
-    const quizPromises = this.quizGenerators.map((quizGenerator) => {
+    const poolPromises = this.quizGenerators.map((quizGenerator) => {
       if (quizType === "/starterQuiz") {
-        return quizGenerator.generateMathsStarterQuizPatch(
+        return quizGenerator.generateMathsStarterQuizCandidates(
           lessonPlan,
           ailaRagRelevantLessons,
         );
       } else if (quizType === "/exitQuiz") {
-        return quizGenerator.generateMathsExitQuizPatch(
+        return quizGenerator.generateMathsExitQuizCandidates(
           lessonPlan,
           ailaRagRelevantLessons,
         );
@@ -42,11 +42,11 @@ export abstract class BaseFullQuizService implements FullQuizService {
       throw new Error(`Invalid quiz type: ${quizType as string}`);
     });
 
-    const quizArrays = await Promise.all(quizPromises);
-    const quizzes = quizArrays.flat();
+    const poolArrays = await Promise.all(poolPromises);
+    const questionPools = poolArrays.flat();
 
     const quizRankings = await this.quizReranker.evaluateQuizArray(
-      quizzes,
+      questionPools,
       lessonPlan,
       quizType,
     );
@@ -62,7 +62,7 @@ export abstract class BaseFullQuizService implements FullQuizService {
       };
     }
 
-    const bestQuiz = this.quizSelector.selectBestQuiz(quizzes, quizRankings);
+    const bestQuiz = this.quizSelector.selectBestQuiz(questionPools, quizRankings);
     return coerceQuizQuestionWithJsonArray(bestQuiz);
   }
 }

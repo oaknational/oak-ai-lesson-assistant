@@ -19,10 +19,12 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
   });
 
   it("should generate a valid quiz", async () => {
-    const quiz =
-      await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
-    log.info(JSON.stringify(quiz));
+    const pools =
+      await quizGenerator.generateMathsStarterQuizCandidates(mockLessonPlan);
+    log.info(JSON.stringify(pools));
     log.info("QUIZ ABOVE");
-    expect(QuizV1Schema.safeParse(quiz[0]).success).toBe(true);
+    expect(pools.length).toBeGreaterThan(0);
+    expect(pools[0]?.questions[0]).toBeDefined();
+    expect(QuizV1Schema.safeParse(pools[0]?.questions[0]).success).toBe(true);
   });
 });

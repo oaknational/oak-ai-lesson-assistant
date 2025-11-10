@@ -217,7 +217,9 @@ export async function OpenAICallReranker(
 
   const response = await openai.beta.chat.completions.parse({
     model: OPENAI_MODEL,
-    ...(IS_REASONING_MODEL ? { max_completion_tokens: 4000 } : { max_tokens }),
+    ...(IS_REASONING_MODEL
+      ? { max_completion_tokens: max_tokens }
+      : { max_tokens }),
     messages,
     response_format: zodResponseFormat(schema, "QuizRatingResponse"),
   });

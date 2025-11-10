@@ -22,9 +22,10 @@ import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
-  AilaQuizGeneratorService,
+  AilaQuizCandidateGenerator,
   CustomSource,
   LessonSlugQuizLookup,
+  QuizQuestionPool,
   QuizQuestionTextOnlySource,
   QuizQuestionWithRawJson,
 } from "../interfaces";
@@ -32,11 +33,9 @@ import type { SearchResponseBody } from "../types";
 
 const log = aiLogger("aila:quiz");
 
-// Base abstract class
-// Quiz generator takes a lesson plan and returns a quiz object.
-// Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
-// Quiz selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
-export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+// Base abstract class for quiz generators
+// Generators return structured candidate pools instead of pre-assembled quizzes
+export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   protected client: Client;
   protected quizLookup: LessonSlugQuizLookup;
 
@@ -62,15 +61,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     this.quizLookup = new ElasticLessonQuizLookup();
   }
 
-  // The below is overly bloated and a mid-step in refactoring.
-  abstract generateMathsStarterQuizPatch(
+  abstract generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
-  abstract generateMathsExitQuizPatch(
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<QuizQuestionPool[]>;
+
+  abstract generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<QuizQuestionPool[]>;
 
   public async getLessonSlugFromPlanId(planId: string): Promise<string | null> {
     try {
@@ -164,7 +163,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   public async questionArrayFromPlanId(
     planId: string,
-    quizType: QuizPath = "/starterQuiz",
+    quizType: QuizPath,
   ): Promise<QuizQuestionWithRawJson[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
