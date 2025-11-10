@@ -7,13 +7,13 @@ import type {
   KeyLearningPointsSchema,
   KeyStageSchema,
   KeywordsSchema,
+  LatestQuizSchema,
   LearningCyclesSchema,
   LearningOutcomeSchema,
   LessonTitleSchema,
   MisconceptionsSchema,
   PartialLessonPlan,
   PriorKnowledgeSchema,
-  QuizV2Schema,
   SubjectSchema,
 } from "../../protocol/schema";
 import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
@@ -120,11 +120,11 @@ export type SectionAgentResponseMap = {
   "keyLearningPoints--default": z.infer<typeof KeyLearningPointsSchema>;
   "misconceptions--default": z.infer<typeof MisconceptionsSchema>;
   "keywords--default": z.infer<typeof KeywordsSchema>;
-  "starterQuiz--default": z.infer<typeof QuizV2Schema>;
-  "starterQuiz--maths": z.infer<typeof QuizV2Schema>;
+  "starterQuiz--default": z.infer<typeof LatestQuizSchema>;
+  "starterQuiz--maths": z.infer<typeof LatestQuizSchema>;
   "cycle--default": z.infer<typeof CycleSchema>;
-  "exitQuiz--default": z.infer<typeof QuizV2Schema>;
-  "exitQuiz--maths": z.infer<typeof QuizV2Schema>;
+  "exitQuiz--default": z.infer<typeof LatestQuizSchema>;
+  "exitQuiz--maths": z.infer<typeof LatestQuizSchema>;
   "additionalMaterials--default": z.infer<typeof AdditionalMaterialsSchema>;
 };
 
