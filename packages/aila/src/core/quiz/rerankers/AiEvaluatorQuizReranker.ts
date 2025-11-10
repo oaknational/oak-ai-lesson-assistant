@@ -2,12 +2,12 @@ import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
+import pLimit from "p-limit";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { evaluateQuiz } from "../OpenAIRanker";
-import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
 import {
   type RatingResponse,
@@ -15,6 +15,9 @@ import {
 } from "./RerankerStructuredOutputSchema";
 
 const log = aiLogger("aila:quiz");
+
+const CONCURRENCY = 10;
+const limiter = pLimit(CONCURRENCY);
 
 export class AiEvaluatorQuizReranker implements AilaQuizReranker {
   // Takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
@@ -28,37 +31,16 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
       return this.cachedEvaluateQuizArray(quizArray, lessonPlan, quizType);
     }
 
-    // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
-    const delayedRetrieveQuiz = withRandomDelay<
-      [QuizQuestionWithRawJson[]],
-      ParsedChatCompletion<RatingResponse>
-    >(
-      async (quiz: QuizQuestionWithRawJson[]) => {
-        try {
-          const result = await evaluateQuiz(
-            lessonPlan,
-            quiz,
-            4000,
-            ratingResponseSchema,
-            quizType,
-          );
-          if (result instanceof Error) {
-            throw result;
-          }
-          return result;
-        } catch (error) {
-          throw error instanceof Error ? error : new Error(String(error));
-        }
-      },
-      1000,
-      5000,
-    );
-
-    // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
-    const outputRatings = await processArray<
-      QuizQuestionWithRawJson[],
-      ParsedChatCompletion<RatingResponse>
-    >(quizArray, delayedRetrieveQuiz);
+    const outputRatings = await limiter.map(quizArray, async (quiz) => {
+      const result = await evaluateQuiz(
+        lessonPlan,
+        quiz,
+        4000,
+        ratingResponseSchema,
+        quizType,
+      );
+      return result;
+    });
 
     const extractedOutputRatings = outputRatings.map((item): RatingResponse => {
       if (item instanceof Error) {

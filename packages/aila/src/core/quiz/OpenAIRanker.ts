@@ -20,6 +20,8 @@ const log = aiLogger("aila:quiz");
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";
 const OPENAI_MODEL: string = "o4-mini";
 
+const IS_REASONING_MODEL = OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini";
+
 type ChatContent = OpenAI.Chat.Completions.ChatCompletionContentPart;
 
 export type ChatMessage =
@@ -197,18 +199,6 @@ export {
 };
 
 /**
- * Implements a cross-encoder approach using OpenAI's API by manipulating logit biases.
- * This function allows for comparing multiple options by analyzing token probabilities.
- *
- * @async
- * @function
- * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} reranking_prompt - The system prompt for reranking.
- * @param {ChatMessage[]} reranking_messages - The messages to be ranked (must be fewer than 10).
- * @param {number} [bias_constant=100] - The bias value to apply to tokens.
- * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
- */
-
-/**
  * Makes an OpenAI API call for reranking with schema validation using the beta completions API.
  *
  * @async
@@ -224,24 +214,14 @@ export async function OpenAICallReranker(
   schema: z.ZodType<BaseType & Record<string, unknown>>,
 ): Promise<ParsedChatCompletion<z.infer<typeof schema>>> {
   const openai = createOpenAIClient({ app: "maths-reranker" });
-  const startTime = Date.now();
-  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
-    const response = await openai.beta.chat.completions.parse({
-      model: OPENAI_MODEL,
-      max_completion_tokens: 4000,
-      messages,
-      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
-    });
-    return response;
-  } else {
-    const response = await openai.beta.chat.completions.parse({
-      model: OPENAI_MODEL,
-      max_tokens,
-      messages,
-      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
-    });
-    return response;
-  }
+
+  const response = await openai.beta.chat.completions.parse({
+    model: OPENAI_MODEL,
+    ...(IS_REASONING_MODEL ? { max_completion_tokens: 4000 } : { max_tokens }),
+    messages,
+    response_format: zodResponseFormat(schema, "QuizRatingResponse"),
+  });
+  return response;
 }
 
 /**
