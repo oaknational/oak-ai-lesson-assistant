@@ -19,20 +19,24 @@ const fixtures = [
   { name: "fraction-display", latex: "\\frac{1}{2}", display: true },
 ];
 
-fixtures.forEach(({ name, latex, display }) => {
-  try {
-    // Generate SVG
-    const svg = latexToSvg(latex, display);
-    writeFileSync(join(fixturesDir, `${name}.svg`), svg);
-    console.log(`✅ Generated ${name}.svg`);
+async function generateAllFixtures() {
+  for (const { name, latex, display } of fixtures) {
+    try {
+      // Generate SVG
+      const svg = latexToSvg(latex, display);
+      writeFileSync(join(fixturesDir, `${name}.svg`), svg);
+      console.log(`✅ Generated ${name}.svg`);
 
-    // Generate PNG
-    const pngResult = svgToPng(svg);
-    writeFileSync(join(fixturesDir, `${name}.png`), pngResult.buffer);
-    console.log(`✅ Generated ${name}.png`);
-  } catch (error) {
-    console.error(`❌ Failed to generate ${name}:`, error);
+      // Generate PNG
+      const pngResult = await svgToPng(svg);
+      writeFileSync(join(fixturesDir, `${name}.png`), pngResult.buffer);
+      console.log(`✅ Generated ${name}.png`);
+    } catch (error) {
+      console.error(`❌ Failed to generate ${name}:`, error);
+    }
   }
-});
 
-console.log("\nFixtures generated in:", fixturesDir);
+  console.log("\nFixtures generated in:", fixturesDir);
+}
+
+generateAllFixtures().catch(console.error);

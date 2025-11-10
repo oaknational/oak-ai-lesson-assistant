@@ -1,10 +1,7 @@
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
+import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { PlanStep, PlannerOutput } from "../../schema";
-import type {
-  AgenticRagLessonPlanResult,
-  ChatMessage,
-  MessageToUserAgentProps,
-} from "../../types";
+import type { ChatMessage, MessageToUserAgentProps } from "../../types";
 import { createMessageToUserAgent } from "./createMessageToUserAgent";
 
 describe("createMessageToUserAgent", () => {
@@ -29,7 +26,7 @@ describe("createMessageToUserAgent", () => {
     },
   ];
 
-  const mockPrevDoc: LooseLessonPlan = {
+  const mockPrevDoc: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",
@@ -37,7 +34,7 @@ describe("createMessageToUserAgent", () => {
     learningOutcome: "Students will understand the process of photosynthesis",
   };
 
-  const mockNextDoc: LooseLessonPlan = {
+  const mockNextDoc: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",
@@ -95,7 +92,7 @@ describe("createMessageToUserAgent", () => {
     { message: "Failed to generate quiz questions due to content complexity" },
   ];
 
-  const mockRelevantLessons: AgenticRagLessonPlanResult[] = [];
+  const mockRelevantLessons: RagLessonPlan[] = [];
 
   const mockProps: MessageToUserAgentProps = {
     messages: mockMessages,
@@ -105,6 +102,7 @@ describe("createMessageToUserAgent", () => {
     errors: [],
     plannerOutput: mockPlannerOutput,
     relevantLessons: mockRelevantLessons,
+    relevantLessonsFetched: true,
   };
 
   describe("input message generation", () => {
@@ -169,6 +167,7 @@ describe("createMessageToUserAgent", () => {
     it("should handle relevant lessons not fetched", () => {
       const propsWithoutRelevantLessons: MessageToUserAgentProps = {
         ...mockProps,
+        relevantLessonsFetched: false,
         relevantLessons: null,
       };
 

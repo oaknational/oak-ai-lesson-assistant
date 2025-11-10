@@ -7,19 +7,19 @@ import type { ReadableStreamDefaultController } from "stream/web";
 
 import type { AilaChat } from "../../../core/chat/AilaChat";
 import type { JsonPatchDocumentOptional } from "../../../protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../protocol/schema";
 import type { InteractCallback } from "../interact";
 import type { TurnPlan } from "../router";
 
 const log = aiLogger("aila:agents:stream");
 
 export type InteractResult = {
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   ailaMessage?: string;
 };
 
 export function createPatchesFromInteractResult(
-  initialDocument: LooseLessonPlan,
+  initialDocument: PartialLessonPlan,
   result: InteractResult,
 ): {
   patches: JsonPatchDocumentOptional[];
@@ -66,7 +66,7 @@ export function createPatchesFromInteractResult(
 }
 
 export function createLlmMessageFromInteractResult(
-  initialDocument: LooseLessonPlan,
+  initialDocument: PartialLessonPlan,
   result: InteractResult,
 ) {
   const { patches, sectionsEdited } = createPatchesFromInteractResult(
@@ -241,7 +241,7 @@ function streamChunks(
 export async function streamInteractResultToClient(
   chat: AilaChat,
   controller: ReadableStreamDefaultController,
-  initialDocument: LooseLessonPlan,
+  initialDocument: PartialLessonPlan,
   result: InteractResult,
 ) {
   log.info("Streaming interact result to client");

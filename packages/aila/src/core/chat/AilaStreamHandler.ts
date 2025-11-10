@@ -1,4 +1,5 @@
-import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import { RAG } from "@oakai/core/src/rag";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import {
   getRagLessonPlansByIds,
@@ -8,14 +9,22 @@ import {
 } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
+import invariant from "tiny-invariant";
+import { z } from "zod";
 
+import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../constants";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
-import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
-import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
-import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
-import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
-import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
-import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
+import {
+  createInteractStreamHandler,
+  streamInteractResultToClient,
+} from "../../lib/agents/compatibility/streamHandling";
+import { interact } from "../../lib/agents/interact";
+import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
+import {
+  type CompletedLessonPlan,
+  CompletedLessonPlanSchemaWithoutLength,
+} from "../../protocol/schema";
+import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -223,45 +232,65 @@ export class AilaStreamHandler {
                   ctx.currentTurn.document,
                 );
 
-                return { error: null, data: quiz };
-              } catch (error) {
-                log.error("Error generating starter quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate a starter quiz with maths quiz engine",
-                  },
-                };
-              }
-            },
-            "exitQuiz--maths": async (ctx) => {
-              try {
-                const quiz = await this._chat.fullQuizService.createBestQuiz(
-                  "/exitQuiz",
-                  ctx.currentTurn.document,
-                );
+          return quiz;
+        },
+        fetchRagData: async ({ document }) => {
+          const chatId = this._chat.id;
+          const userId = this._chat.userId ?? undefined;
+          const prisma = globalPrisma;
+          const { subject, keyStage, topic, title } = document;
+          invariant(title, "Document title is required to fetch RAG data");
 
-                return { error: null, data: quiz };
+          const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
+
+          if (!isMaths) {
+            const rag = new RAG(prisma, { chatId, userId });
+            const relevantLessonPlans = await rag.fetchLessonPlans({
+              chatId: this._chat.id,
+              title,
+              keyStage,
+              subject,
+              topic: topic ?? undefined,
+              k:
+                this._chat.aila?.options.numberOfRecordsInRag ??
+                DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
+            });
+
+            const migratedLessonPlans: CompletedLessonPlan[] = [];
+
+            for (const lessonPlan of relevantLessonPlans) {
+              try {
+                const result = await migrateLessonPlan({
+                  lessonPlan: lessonPlan.content as Record<string, unknown>,
+                  outputSchema: CompletedLessonPlanSchemaWithoutLength,
+                  persistMigration: null,
+                });
+                migratedLessonPlans.push(result.lessonPlan);
               } catch (error) {
-                log.error("Error generating exit quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate an exit quiz with maths quiz engine",
-                  },
-                };
+                log.error("Failed to migrate lesson plan", { error });
               }
-            },
-          },
-        }),
-        messageToUserAgent: createOpenAIMessageToUserAgent(openai),
-        fetchRelevantLessons: async ({ title, subject, keyStage }) => {
-          const subjectSlugs = parseSubjectsForRagSearch(subject);
-          const keyStageSlugs = parseKeyStagesForRagSearch(keyStage);
-          const relevantLessons = await getRelevantLessonPlans({
-            title,
-            subjectSlugs,
-            keyStageSlugs,
+            }
+
+            this._chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
+              lessonPlanId: lesson.id,
+              title: z.object({ title: z.string() }).parse(lesson.content)
+                .title,
+            }));
+
+            return migratedLessonPlans;
+          }
+
+          if (this._chat.relevantLessons) {
+            const results = await getRagLessonPlansByIds({
+              lessonPlanIds: this._chat.relevantLessons.map(
+                (lesson) => lesson.lessonPlanId,
+              ),
+            });
+            return results;
+          }
+
+          const lessonPlanResults = await fetchRelevantLessonPlans({
+            document,
           });
           const persistedRelevantLessons = relevantLessons.map((result) => ({
             lessonPlanId: result.ragLessonPlanId,

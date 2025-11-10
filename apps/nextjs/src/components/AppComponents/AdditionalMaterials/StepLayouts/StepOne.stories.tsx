@@ -38,8 +38,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleCreateSession: (_docType: string | null): Promise<void> => {
-      return Promise.resolve();
+    handleCreateSession: (
+      _docType: string | null,
+    ): Promise<{ success: boolean }> => {
+      return Promise.resolve({ success: true });
     },
   },
 

@@ -1,11 +1,18 @@
+import { z } from "zod";
+
 import { OpenAICallReranker } from "./OpenAIRanker";
 import type { ChatMessage } from "./OpenAIRanker";
 
+const testSchema = z.object({
+  justification: z.string(),
+  rating: z.number(),
+});
+
 // This is here for the purpose of having method of timing / testing other parts of OpenAI Image rating outside of the large reranker set up.
-describe("Test OpenAI Image Chat", () => {
+describe.skip("Test OpenAI Image Chat", () => {
   jest.setTimeout(60000);
   it("Should return a valid response", async () => {
-    const Messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [
       {
         role: "user",
         content: [
@@ -30,7 +37,7 @@ describe("Test OpenAI Image Chat", () => {
         ],
       },
     ];
-    const response = await OpenAICallReranker(Messages);
+    const response = await OpenAICallReranker(messages, 500, testSchema);
     expect(response).toBeDefined();
   });
 });

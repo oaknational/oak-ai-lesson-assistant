@@ -23,12 +23,13 @@ export async function terminateWithResponse(
 ): Promise<void> {
   if (context.currentTurn.relevantLessonsFetched) {
     const { relevantLessons } = context.currentTurn;
-    if (relevantLessons?.length) {
+    if (!relevantLessons?.length) {
+      await terminateWithCustomMessage("No relevant lessons found.", context);
+      return;
+    } else {
       const message = displayRelevantLessons(relevantLessons);
       await terminateWithCustomMessage(message, context);
       return;
-    } else {
-      // If no relevant lessons were found, continue to generate a message
     }
   }
 
@@ -40,6 +41,7 @@ export async function terminateWithResponse(
     errors: context.currentTurn.errors,
     plannerOutput: context.currentTurn.plannerOutput,
     relevantLessons: context.persistedState.relevantLessons,
+    relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
   });
 
   if (messageResult.error) {

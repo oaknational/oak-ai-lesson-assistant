@@ -1,6 +1,7 @@
 import { isTruthy } from "remeda";
 
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
+import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 
 export function getRelevantRAGValues<ResponseType>({
@@ -8,7 +9,9 @@ export function getRelevantRAGValues<ResponseType>({
   contentFromDocument,
 }: {
   ctx: AilaExecutionContext;
-  contentFromDocument: (document: LooseLessonPlan) => ResponseType | undefined;
+  contentFromDocument: (
+    document: PartialLessonPlan | RagLessonPlan,
+  ) => ResponseType | undefined;
 }): {
   /**
    * Relevant section value extracted from the document that the lesson being planned is based on.
@@ -25,24 +28,13 @@ export function getRelevantRAGValues<ResponseType>({
 } {
   const exemplarContent =
     ctx.persistedState.relevantLessons
-      ?.map((lesson) => lesson.lessonPlan)
       ?.map(contentFromDocument)
       .filter(isTruthy) ?? [];
-
-  console.log("based on id ", ctx.currentTurn.document.basedOn?.id);
-  console.log(
-    "relevant lessons ",
-    ctx.persistedState.relevantLessons
-      ?.map((lesson) => lesson.ragLessonPlanId)
-      .join("\n- "),
-  );
   const basedOnLesson = ctx.persistedState.relevantLessons?.find(
-    (lesson) =>
-      lesson.ragLessonPlanId?.toString() ===
-      ctx.currentTurn.document.basedOn?.id,
+    (lesson) => lesson.id === ctx.currentTurn.document.basedOn?.id,
   );
   const basedOnContent = basedOnLesson
-    ? contentFromDocument(basedOnLesson.lessonPlan)
+    ? contentFromDocument(basedOnLesson)
     : undefined;
   const currentValue = contentFromDocument(ctx.currentTurn.document);
 

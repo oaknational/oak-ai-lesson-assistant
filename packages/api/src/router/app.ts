@@ -1,3 +1,4 @@
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { Apps } from "@oakai/core";
 import { serializeApp } from "@oakai/core/src/models/serializers";
 import { sendEmailRequestingMoreGenerations } from "@oakai/core/src/utils/sendEmailRequestingMoreGenerations";
@@ -110,15 +111,31 @@ export const appRouter = router({
       const { userId } = ctx.auth;
       try {
         if (typeof userId === "string") {
-          const content = await ctx.prisma.appSession.findFirst({
+          const chatRecord = await ctx.prisma.appSession.findFirst({
             where: { userId, id: input.sessionId },
-            select: { output: true },
           });
+
+          const chat = chatRecord
+            ? await migrateChatData(
+                chatRecord.output,
+                async (upgradedData) => {
+                  await prisma.appSession.update({
+                    where: { id: chatRecord.id },
+                    data: { output: upgradedData },
+                  });
+                },
+                {
+                  id: chatRecord.id,
+                  userId: chatRecord.userId,
+                  caller: "appSessions.getChat",
+                },
+              )
+            : null;
 
           const session = await ctx.prisma.sharedContent.create({
             data: {
               userId,
-              content: content?.output ? content.output : {},
+              content: chat ?? {},
               appSessionId: input.sessionId,
             },
           });

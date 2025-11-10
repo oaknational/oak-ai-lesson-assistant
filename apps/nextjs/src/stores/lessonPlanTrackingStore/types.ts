@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import type { AilaUserModificationAction } from "@prisma/client";
 import type { StoreApi } from "zustand";
@@ -19,7 +19,7 @@ export type LessonPlanTrackingState = {
   currentIntent: MessageIntent | null;
   queuedIntent: MessageIntent | null;
 
-  lessonPlanBeforeChanges: LooseLessonPlan;
+  lessonPlanBeforeChanges: PartialLessonPlan;
 
   actions: {
     // Actions to record the user intent

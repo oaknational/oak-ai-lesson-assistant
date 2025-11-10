@@ -1,3 +1,4 @@
+/* cspell:disable */
 export const restrictedLessonIds = [
   "LESS-OIDMT-O3146",
   "LESS-UCTEF-T3147",
@@ -727,3 +728,4 @@ export const restrictedLessonIds = [
   "LESS-VIKYR-20341",
   "LESS-LUJHD-20342",
 ];
+/* cspell:enable */

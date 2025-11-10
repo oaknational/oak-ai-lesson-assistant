@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { Box } from "@radix-ui/themes";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import { trackDownload } from "./trackDownload";
 export type DownloadButtonProps = Readonly<{
   chatId: string;
   onClick: () => void;
-  lesson: LooseLessonPlan;
+  lesson: PartialLessonPlan;
   title: string;
   subTitle: string;
   downloadAvailable: boolean;

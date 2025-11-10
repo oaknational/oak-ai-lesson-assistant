@@ -45,20 +45,20 @@ function comparePngWithFixture(
 }
 
 describe("svgToPng", () => {
-  it("converts simple equation SVG to PNG", () => {
+  it("converts simple equation SVG to PNG", async () => {
     const svg = readFileSync(
       "src/images/fixtures/simple-equation.svg",
       "utf-8",
     );
     const expectedPng = readFileSync("src/images/fixtures/simple-equation.png");
 
-    const result = svgToPng(svg);
+    const result = await svgToPng(svg);
 
     expect(result.buffer).toBeInstanceOf(Buffer);
     comparePngWithFixture(result.buffer, expectedPng, "simple-equation");
   });
 
-  it("converts quadratic formula SVG to PNG", () => {
+  it("converts quadratic formula SVG to PNG", async () => {
     const svg = readFileSync(
       "src/images/fixtures/quadratic-formula.svg",
       "utf-8",
@@ -67,13 +67,13 @@ describe("svgToPng", () => {
       "src/images/fixtures/quadratic-formula.png",
     );
 
-    const result = svgToPng(svg);
+    const result = await svgToPng(svg);
 
     expect(result.buffer).toBeInstanceOf(Buffer);
     comparePngWithFixture(result.buffer, expectedPng, "quadratic-formula");
   });
 
-  it("converts display mode fraction SVG to PNG", () => {
+  it("converts display mode fraction SVG to PNG", async () => {
     const svg = readFileSync(
       "src/images/fixtures/fraction-display.svg",
       "utf-8",
@@ -82,7 +82,7 @@ describe("svgToPng", () => {
       "src/images/fixtures/fraction-display.png",
     );
 
-    const result = svgToPng(svg);
+    const result = await svgToPng(svg);
 
     expect(result.buffer).toBeInstanceOf(Buffer);
     comparePngWithFixture(result.buffer, expectedPng, "fraction-display");

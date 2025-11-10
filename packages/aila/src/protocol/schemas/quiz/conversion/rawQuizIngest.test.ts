@@ -1,30 +1,31 @@
 import { describe, expect, it } from "@jest/globals";
 
 import { rawQuizFixture } from "../fixtures/rawQuizFixture";
+import type { QuizV2QuestionMultipleChoice } from "../quizV2";
 import type { HasuraQuiz } from "../rawQuiz";
-import { convertHasuraQuizToV2 } from "./rawQuizIngest";
+import { convertHasuraQuizToV3 } from "./rawQuizIngest";
 
-describe("convertHasuraQuizToV2", () => {
-  it("should convert Hasura quiz to V2 format", () => {
-    const result = convertHasuraQuizToV2(rawQuizFixture);
+describe("convertHasuraQuizToV3", () => {
+  it("should convert Hasura quiz to V3 format", () => {
+    const result = convertHasuraQuizToV3(rawQuizFixture);
     expect(result).toMatchSnapshot();
   });
 
   it("should handle empty quiz", () => {
-    const result = convertHasuraQuizToV2([]);
+    const result = convertHasuraQuizToV3([]);
     expect(result).toEqual({
-      version: "v2",
+      version: "v3",
       questions: [],
-      imageAttributions: [],
+      imageMetadata: [],
     });
   });
 
   it("should handle null quiz", () => {
-    const result = convertHasuraQuizToV2(null);
+    const result = convertHasuraQuizToV3(null);
     expect(result).toEqual({
-      version: "v2",
+      version: "v3",
       questions: [],
-      imageAttributions: [],
+      imageMetadata: [],
     });
   });
 
@@ -41,7 +42,7 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(explanatoryOnlyQuiz);
+    const result = convertHasuraQuizToV3(explanatoryOnlyQuiz);
     expect(result.questions).toHaveLength(0);
   });
 
@@ -54,7 +55,9 @@ describe("convertHasuraQuizToV2", () => {
         questionStem: [
           {
             image_object: {
-              secure_url: "https://example.com/image1.jpg",
+              secure_url: "https://example.com/image/upload/image1.jpg",
+              width: 800,
+              height: 600,
               metadata: {
                 attribution: "Photo by Photographer",
               },
@@ -75,14 +78,16 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV3(quizWithImages);
     expect(result.questions[0]?.question).toContain(
-      "![](https://example.com/image1.jpg)",
+      "![](https://example.com/image/upload/image1.jpg)",
     );
-    expect(result.imageAttributions).toEqual([
+    expect(result.imageMetadata).toEqual([
       {
-        imageUrl: "https://example.com/image1.jpg",
+        imageUrl: "https://example.com/image/upload/image1.jpg",
         attribution: "Photo by Photographer",
+        width: 800,
+        height: 600,
       },
     ]);
   });
@@ -97,7 +102,9 @@ describe("convertHasuraQuizToV2", () => {
           { text: "Look at", type: "text" },
           {
             image_object: {
-              secure_url: "https://example.com/image.jpg",
+              secure_url: "https://example.com/image/upload/image.jpg",
+              width: 800,
+              height: 600,
               metadata: {},
             },
             type: "image",
@@ -117,9 +124,9 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithImages);
+    const result = convertHasuraQuizToV3(quizWithImages);
     expect(result.questions[0]?.question).toBe(
-      "Look at ![](https://example.com/image.jpg) What is it?",
+      "Look at ![](https://example.com/image/upload/image.jpg) What is it?",
     );
   });
 
@@ -132,7 +139,9 @@ describe("convertHasuraQuizToV2", () => {
         questionStem: [
           {
             image_object: {
-              secure_url: "https://example.com/dog.jpg",
+              secure_url: "https://example.com/image/upload/dog.jpg",
+              width: 800,
+              height: 600,
               metadata: {},
               context: {
                 custom: {
@@ -156,9 +165,9 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ];
-    const result = convertHasuraQuizToV2(quizWithAltText);
+    const result = convertHasuraQuizToV3(quizWithAltText);
     expect(result.questions[0]?.question).toBe(
-      "![A golden retriever sitting in a park](https://example.com/dog.jpg)",
+      "![A golden retriever sitting in a park](https://example.com/image/upload/dog.jpg)",
     );
   });
 
@@ -175,8 +184,231 @@ describe("convertHasuraQuizToV2", () => {
         active: true,
       },
     ] as HasuraQuiz;
-    expect(() => convertHasuraQuizToV2(unknownTypeQuiz)).toThrow(
+    expect(() => convertHasuraQuizToV3(unknownTypeQuiz)).toThrow(
       "Unknown question type: unknown-type",
+    );
+  });
+
+  it("should filter out single answer letters when images are present", () => {
+    const quizWithLetterAndImage: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [
+                { text: "A", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/answer1.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: true,
+            },
+            {
+              answer: [
+                { text: "B.", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/answer2.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: false,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV3(quizWithLetterAndImage);
+    const question = result.questions[0] as QuizV2QuestionMultipleChoice;
+
+    // Single letters should be filtered out, leaving only images
+    expect(question.answers[0]).toBe(
+      "![](https://example.com/image/upload/answer1.jpg)",
+    );
+    expect(question.distractors[0]).toBe(
+      "![](https://example.com/image/upload/answer2.jpg)",
+    );
+  });
+
+  it("should keep single answer letter when it's the only content", () => {
+    const quizWithOnlyLetter: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [{ text: "A", type: "text" }],
+              answer_is_correct: true,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV3(quizWithOnlyLetter);
+    const question = result.questions[0] as QuizV2QuestionMultipleChoice;
+
+    // Single letter should be kept when it's the only content
+    expect(question.answers[0]).toBe("A");
+  });
+
+  it("should keep meaningful text alongside images", () => {
+    const quizWithMeaningfulText: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [
+                { text: "Option text", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/image.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: true,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV3(quizWithMeaningfulText);
+    const question = result.questions[0] as QuizV2QuestionMultipleChoice;
+
+    // Meaningful text should be kept alongside images
+    expect(question.answers[0]).toBe(
+      "Option text ![](https://example.com/image/upload/image.jpg)",
+    );
+  });
+
+  it("should keep numbers alongside images (not filtering numbers)", () => {
+    const quizWithNumberAndImage: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [
+                { text: "1", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/image.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: true,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV3(quizWithNumberAndImage);
+    const question = result.questions[0] as QuizV2QuestionMultipleChoice;
+
+    // Numbers should be kept (not filtered as single answer labels)
+    expect(question.answers[0]).toBe(
+      "1 ![](https://example.com/image/upload/image.jpg)",
+    );
+  });
+
+  it("should handle various letter patterns (uppercase, lowercase, with periods)", () => {
+    const quizWithVariousLetters: HasuraQuiz = [
+      {
+        questionId: 1,
+        questionUid: "test-uid-1",
+        questionType: "multiple-choice",
+        questionStem: [{ text: "Question", type: "text" }],
+        answers: {
+          "multiple-choice": [
+            {
+              answer: [
+                { text: "a", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/image1.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: true,
+            },
+            {
+              answer: [
+                { text: "D.", type: "text" },
+                {
+                  image_object: {
+                    secure_url: "https://example.com/image/upload/image2.jpg",
+                    height: 600,
+                    width: 800,
+                    metadata: {},
+                  },
+                  type: "image",
+                },
+              ],
+              answer_is_correct: false,
+            },
+          ],
+        },
+        feedback: "",
+        hint: "",
+        active: true,
+      },
+    ];
+    const result = convertHasuraQuizToV3(quizWithVariousLetters);
+    const question = result.questions[0] as QuizV2QuestionMultipleChoice;
+
+    // All letter patterns should be filtered out
+    expect(question.answers[0]).toBe(
+      "![](https://example.com/image/upload/image1.jpg)",
+    );
+    expect(question.distractors[0]).toBe(
+      "![](https://example.com/image/upload/image2.jpg)",
     );
   });
 });

@@ -18,7 +18,8 @@ import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetectio
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -29,6 +30,7 @@ import { captureException } from "@sentry/nextjs";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
@@ -178,22 +180,6 @@ async function generateChatStream(
   );
 }
 
-function hasLessonPlan(obj: unknown): obj is { lessonPlan: unknown } {
-  return obj !== null && typeof obj === "object" && "lessonPlan" in obj;
-}
-
-function isValidLessonPlan(lessonPlan: unknown): boolean {
-  return lessonPlan !== null && typeof lessonPlan === "object";
-}
-
-function hasMessages(obj: unknown): obj is { messages: unknown } {
-  return obj !== null && typeof obj === "object" && "messages" in obj;
-}
-
-function isValidMessages(messages: unknown): boolean {
-  return Array.isArray(messages);
-}
-
 function verifyChatOwnership(
   chat: { userId: string },
   requestUserId: string,
@@ -207,42 +193,10 @@ function verifyChatOwnership(
   }
 }
 
-function parseChatOutput(
-  output: unknown,
-  chatId: string,
-): { messages: Message[]; lessonPlan: LooseLessonPlan } {
-  let messages: Message[] = [];
-  let lessonPlan: LooseLessonPlan = {};
-
-  try {
-    const parsedOutput =
-      typeof output === "string" ? JSON.parse(output) : output;
-
-    if (hasMessages(parsedOutput) && isValidMessages(parsedOutput.messages)) {
-      messages = parsedOutput.messages as Message[];
-    }
-
-    if (
-      hasLessonPlan(parsedOutput) &&
-      isValidLessonPlan(parsedOutput.lessonPlan)
-    ) {
-      lessonPlan = parsedOutput.lessonPlan as LooseLessonPlan;
-    }
-  } catch (error) {
-    log.error(`Error parsing output for chat ${chatId}`, error);
-    captureException(error, {
-      extra: { chatId, output },
-      tags: { context: "parseChatOutput" },
-    });
-  }
-
-  return { messages, lessonPlan };
-}
-
 async function loadChatDataFromDatabase(
   chatId: string,
   userId: string,
-): Promise<{ messages: Message[]; lessonPlan: LooseLessonPlan }> {
+): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
       where: { id: chatId },
@@ -260,7 +214,27 @@ async function loadChatDataFromDatabase(
 
     verifyChatOwnership(chat, userId, chatId);
 
-    const { messages, lessonPlan } = parseChatOutput(chat.output, chatId);
+    const output = z
+      .object({ lessonPlan: z.record(z.unknown()) })
+      .passthrough()
+      .parse(chat.output ?? {});
+
+    output.lessonPlan = output.lessonPlan ?? {};
+
+    const { messages, lessonPlan } = await migrateChatData(
+      output,
+      async (upgradedData) => {
+        await prisma.appSession.update({
+          where: { id: chat.id },
+          data: { output: upgradedData },
+        });
+      },
+      {
+        id: chat.id,
+        userId,
+        caller: "chatHandler.loadChatDataFromDatabase",
+      },
+    );
 
     log.info(
       `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
@@ -305,7 +279,7 @@ type CreateAilaInstanceArguments = {
   chatId: string;
   userId: string | undefined;
   messages: Message[];
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
   threatDetectors: AilaThreatDetector[];

@@ -1,6 +1,7 @@
 import { additionalMaterialTypeEnum } from "@oakai/additional-materials/src/documents/additionalMaterials/configSchema";
 import { aiLogger } from "@oakai/logger";
 
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import type { TrpcUtils } from "@/utils/trpc";
@@ -10,12 +11,18 @@ import type {
   ResourcesGetter,
   ResourcesSetter,
 } from "../types";
+import { callWithHandshakeRetry } from "../utils/callWithHandshakeRetry";
 import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("additional-materials");
 
 export const handleFetchOwaLesson =
-  (set: ResourcesSetter, get: ResourcesGetter, trpc: TrpcUtils) =>
+  (
+    set: ResourcesSetter,
+    get: ResourcesGetter,
+    trpc: TrpcUtils,
+    refreshAuth?: () => Promise<void>,
+  ) =>
   async (params: LoadOwaDataParams) => {
     try {
       // If we have an error from the page, handle it
@@ -45,21 +52,28 @@ export const handleFetchOwaLesson =
         const docTypeParsed = additionalMaterialTypeEnum.parse(docType);
         try {
           // Create a new session
-          await get().actions.createMaterialSession(docTypeParsed, 3);
+          await get().actions.createMaterialSession(docTypeParsed, 3, true);
+          const id = get().id;
+          invariant(id, "Resource ID should be defined");
 
           log.info("Material session created ", {
-            resourceId: get().id,
+            resourceId: id,
           });
 
           // Fetch the OWA lesson data
 
-          const response =
-            await trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
-              lessonSlug,
-              programmeSlug,
-            });
+          const response = await callWithHandshakeRetry(
+            () =>
+              trpc.client.additionalMaterials.handleFetchOwaLesson.mutate({
+                lessonSlug,
+                programmeSlug,
+              }),
+            refreshAuth,
+          );
 
           const { lesson } = response;
+
+          log.info("Lesson:", { lesson });
 
           const parsedFormProps = z
             .object({
@@ -85,7 +99,7 @@ export const handleFetchOwaLesson =
             title: lesson.title,
             subject: lesson.subject,
             year: lesson.year,
-            resourceId: get().id,
+            resourceId: id,
           });
 
           // Set lesson and transcript in page data

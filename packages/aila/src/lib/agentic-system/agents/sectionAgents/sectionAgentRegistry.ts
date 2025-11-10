@@ -1,7 +1,6 @@
 import type OpenAI from "openai";
 
-import type { QuizV2 } from "../../../../protocol/schema";
-import type { SectionAgent, SectionAgentRegistry } from "../../types";
+import type { SectionAgentRegistry } from "../../types";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
 import { cycleAgent } from "./cycleAgent";
@@ -19,13 +18,8 @@ import { titleAgent } from "./titleAgent";
 
 export const createSectionAgentRegistry = ({
   openai,
-  customAgentHandlers,
 }: {
   openai: OpenAI;
-  customAgentHandlers: {
-    "starterQuiz--maths": SectionAgent<QuizV2>["handler"];
-    "exitQuiz--maths": SectionAgent<QuizV2>["handler"];
-  };
 }): SectionAgentRegistry => ({
   "keyStage--default": keyStageAgent({
     id: "keyStage--default",
@@ -94,11 +88,13 @@ export const createSectionAgentRegistry = ({
     contentFromDocument: (document) =>
       "starterQuiz" in document ? document.starterQuiz : undefined,
   }),
-  "starterQuiz--maths": {
+  "starterQuiz--maths": starterQuizAgent({
     id: "starterQuiz--maths",
     description: "Generates starter quiz questions for maths",
-    handler: customAgentHandlers["starterQuiz--maths"],
-  },
+    openai,
+    contentFromDocument: (document) =>
+      "starterQuiz" in document ? document.starterQuiz : undefined,
+  }),
   "cycle--default": cycleAgent({
     id: "cycle--default",
     description: "Generates learning cycle content",
@@ -112,11 +108,13 @@ export const createSectionAgentRegistry = ({
     contentFromDocument: (document) =>
       "exitQuiz" in document ? document.exitQuiz : undefined,
   }),
-  "exitQuiz--maths": {
+  "exitQuiz--maths": exitQuizAgent({
     id: "exitQuiz--maths",
     description: "Generates exit quiz questions for maths",
-    handler: customAgentHandlers["exitQuiz--maths"],
-  },
+    openai,
+    contentFromDocument: (document) =>
+      "exitQuiz" in document ? document.exitQuiz : undefined,
+  }),
   "additionalMaterials--default": additionalMaterialsAgent({
     id: "additionalMaterials--default",
     description: "Provides additional materials for the lesson",

@@ -16,16 +16,8 @@ export const basedOnAgent = createSectionAgent({
           "The following lessons were shown to the user:",
           JSON.stringify(
             ctx.persistedState.relevantLessons.map((lesson) => ({
-              /**
-               * currently BasedOn schema is just id and title.
-               * It would be good for it to more closely follow the AgenticRagLessonPlanResult:
-               * - rag asset id;
-               * - oak lesson title;
-               * - oak lesson slug;
-               * - oak lesson plan id
-               */
-              id: lesson.ragLessonPlanId,
-              title: lesson.lessonPlan.title,
+              id: lesson.id,
+              title: lesson.title,
             })),
           ),
         ].join("\n\n"),

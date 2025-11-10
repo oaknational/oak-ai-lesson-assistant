@@ -1,7 +1,9 @@
+import * as Sentry from "@sentry/nextjs";
 import type OpenAI from "openai";
 import type { z } from "zod";
 
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
+import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
@@ -39,13 +41,12 @@ export function createSectionAgent<ResponseType>({
     description: string;
     openai: OpenAI;
     contentFromDocument: (
-      document: LooseLessonPlan,
+      document: PartialLessonPlan | RagLessonPlan,
     ) => ResponseType | undefined;
   }) => ({
     id,
     description,
     handler: (ctx: AilaExecutionContext) => {
-      console.log(ctx);
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
           ctx,
@@ -66,10 +67,6 @@ export function createSectionAgent<ResponseType>({
         voices,
       });
 
-      console.log(
-        genericPromptAgent.input.map((i) => i.content).join("\n\n---\n\n"),
-      );
-
       return executeGenericPromptAgent({
         agent: genericPromptAgent,
         openai,
@@ -84,6 +81,9 @@ function defaultContentToString(content: unknown): string {
     try {
       return JSON.stringify(content);
     } catch {
+      Sentry.captureException(new Error("Failed to serialize content"), {
+        extra: { content },
+      });
       return "[Non-serializable Object]";
     }
   }

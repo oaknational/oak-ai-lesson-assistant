@@ -8,7 +8,7 @@ import type {
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import type { LooseLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
@@ -24,9 +24,18 @@ const SemanticSearchSchema = z.object({
   queries: z.array(z.string()).describe("A list of semantic search queries"),
 });
 
+function quizSpecificInstruction(quizType: QuizPath) {
+  if (quizType === "/starterQuiz") {
+    return `The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.`;
+  } else if (quizType === "/exitQuiz") {
+    return `The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning. Please consider alignment with the "key learning points" and "learning outcome" sections of the lesson plan.`;
+  }
+  throw new Error(`Unsupported quiz type: ${quizType as string}`);
+}
+
 export class MLQuizGenerator extends BaseQuizGenerator {
   private async unpackAndSearch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<SearchHit<CustomSource>[]> {
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
     // Using hybrid search combining BM25 and vector similarity
@@ -43,7 +52,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
    * Validates the lesson plan
    * @throws {Error} If the lesson plan is invalid
    */
-  private isValidLessonPlan(lessonPlan: LooseLessonPlan | null): void {
+  private isValidLessonPlan(lessonPlan: PartialLessonPlan | null): void {
     if (!lessonPlan) throw new Error("Lesson plan is null");
     // Check for minimum required properties
     if (
@@ -59,7 +68,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // Our Rag system may retrieve N Questions. We split them into chunks of 6 to conform with the schema. If we have less than 6 questions we pad with questions from the appropriate section of the lesson plan.
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizQuestions: QuizQuestionWithRawJson[],
     quizType: QuizPath,
   ): QuizQuestionWithRawJson[][] {
@@ -69,35 +78,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     );
     const chunkSize = 6;
 
-    // const questionsForPadding =
-    //   quizType === "/starterQuiz"
-    //     ? lessonPlan.starterQuiz
-    //     : lessonPlan.exitQuiz;
-    // // TODO: GCLOMAX - change this to make it consistent - put it out into fixtures.
-    // Split questions into chunks of 6
     for (let i = 0; i < quizQuestions.length; i += chunkSize) {
       const chunk = quizQuestions.slice(i, i + chunkSize);
-
-      // // If the last chunk has less than 6 questions, pad it with questions from lessonPlan, if not use a default question with a message explaining the issue.
-      // if (chunk.length < chunkSize && i + chunkSize >= quizQuestions.length) {
-      //   const remainingCount = chunkSize - chunk.length;
-
-      //   if (questionsForPadding) {
-      //     const paddingQuestions =
-      //       questionsForPadding
-      //         ?.filter(
-      //           (q): q is QuizQuestion =>
-      //             !!q?.question && !!q?.answers && !!q?.distractors,
-      //         )
-      //         .slice(0, remainingCount) ||
-      //       Array(remainingCount).fill(missingQuizQuestion);
-      //     chunk.push(...paddingQuestions);
-      //   } else {
-      //     const paddingQuestions: QuizQuestion[] =
-      //       Array(remainingCount).fill(missingQuizQuestion);
-      //     chunk.push(...paddingQuestions);
-      //   }
-      // }
       quizQuestions2DArray.push(chunk);
     }
 
@@ -106,7 +88,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
   // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[]> {
     this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
@@ -117,7 +99,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   }
 
   public async generateMathsQuizMLWithSemanticQueries(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionWithRawJson[]> {
     // Using hybrid search combining BM25 and vector similarity
@@ -146,7 +128,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
    * Generates semantic search queries from lesson plan content using OpenAI
    */
   public async generateSemanticSearchQueries(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<z.infer<typeof SemanticSearchSchema>> {
     const unpackedContent = unpackLessonPlanForPrompt(lessonPlan);
@@ -163,9 +145,9 @@ The search queries should:
 Lesson plan content:
 ${unpackedContent}
 
-You should generate queries for a ${quizType} quiz.
+You should generate queries for a ${quizType} quiz. ${quizSpecificInstruction(quizType)}
 
-Generate a list of 1-3 semantic search queries, each on a new line:`;
+Generate a list of 1-3 semantic search queries`;
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
@@ -213,7 +195,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
 
   // TODO: GCLOMAX - Change for starter and exit quizzes.
   public async generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz = await this.generateMathsQuizMLWithSemanticQueries(
       lessonPlan,
@@ -228,7 +210,7 @@ Generate a list of 1-3 semantic search queries, each on a new line:`;
     return quiz2DArray;
   }
   public async generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionWithRawJson[][]> {
     const quiz: QuizQuestionWithRawJson[] =
       await this.generateMathsQuizMLWithSemanticQueries(

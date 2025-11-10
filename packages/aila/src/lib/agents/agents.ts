@@ -10,19 +10,19 @@ import {
   KeyStageSchema,
   KeywordsSchema,
   KeywordsSchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
   LearningCyclesSchema,
   LearningCyclesStrictMax3Schema,
   LearningOutcomeSchema,
   LearningOutcomeSchemaStrictMax190,
   type LessonPlanKey,
   LessonTitleSchema,
-  type LooseLessonPlan,
   MisconceptionsSchema,
   MisconceptionsSchemaWithoutLength,
+  type PartialLessonPlan,
   PriorKnowledgeSchema,
   PriorKnowledgeStrictMax5Schema,
-  QuizV2MultipleChoiceOnlySchemaWithoutLength,
-  QuizV2MultipleChoiceOnlyStrictMax6Schema,
   SubjectSchema,
   TopicSchema,
 } from "../../protocol/schema";
@@ -180,8 +180,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
       identity,
       quizQuestionDesignInstructions,
     }),
-    schemaForLLM: QuizV2MultipleChoiceOnlySchemaWithoutLength,
-    schemaStrict: QuizV2MultipleChoiceOnlyStrictMax6Schema,
+    schemaForLLM: LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+    schemaStrict: LatestQuizMultipleChoiceOnlyStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.starterQuiz),
   },
   cycle: {
@@ -206,8 +206,8 @@ export const agents: Record<AgentName, AgentDefinition> = {
     type: "prompt",
     name: "exitQuiz",
     prompt: exitQuizInstructions({ identity, quizQuestionDesignInstructions }),
-    schemaForLLM: QuizV2MultipleChoiceOnlySchemaWithoutLength,
-    schemaStrict: QuizV2MultipleChoiceOnlyStrictMax6Schema,
+    schemaForLLM: LatestQuizMultipleChoiceOnlySchemaWithoutLength,
+    schemaStrict: LatestQuizMultipleChoiceOnlyStrictMax6Schema,
     extractRagData: (lp) => JSON.stringify(lp.exitQuiz),
   },
   mathsStarterQuiz: {
@@ -245,7 +245,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
 
 export const sectionAgentMap: Record<
   LessonPlanKey,
-  (ctx: { lessonPlan: LooseLessonPlan }) => AgentName
+  (ctx: { lessonPlan: PartialLessonPlan }) => AgentName
 > = {
   title: () => "title",
   keyStage: () => "keyStage",

@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../protocol/schema";
+import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
 import type {
-  AgenticRagLessonPlanResult,
   AilaExecutionContext,
   ChatMessage,
   SectionPromptAgentProps,
@@ -40,7 +40,7 @@ describe("sectionToGenericPromptAgent", () => {
     },
   ];
 
-  const mockDocument: LooseLessonPlan = {
+  const mockDocument: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",
@@ -48,7 +48,7 @@ describe("sectionToGenericPromptAgent", () => {
     learningOutcome: "Students will understand the process of photosynthesis",
   };
 
-  const mockRelevantLessons: AgenticRagLessonPlanResult[] = [];
+  const mockRelevantLessons: RagLessonPlan[] = [];
 
   const mockExecutionContext: AilaExecutionContext = {
     persistedState: {
@@ -71,8 +71,8 @@ describe("sectionToGenericPromptAgent", () => {
       plannerOutput: null,
       errors: [],
       stepsExecuted: [],
-      relevantLessons: [],
       relevantLessonsFetched: false,
+      relevantLessons: mockRelevantLessons,
     },
     callbacks: {
       onPlannerComplete: jest.fn(),

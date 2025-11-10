@@ -2,12 +2,13 @@ import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
 import type { SectionPromptAgentProps } from "../types";
-import { sectionAgentIdentity } from "./sectionAgents/shared/sectionAgentIdentity";
+import { identityAndVoice } from "./sectionAgents/shared/identityAndVoice";
 import {
   getVoiceDefinitions,
   getVoicePrompt,
 } from "./sectionAgents/shared/voices";
 import { basedOnContentPromptPart } from "./sharedPromptParts/basedOnContent.part";
+import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.part";
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
 import { exemplarContentPromptPart } from "./sharedPromptParts/exemplarContent.part";
 import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.part";
@@ -33,7 +34,7 @@ export function sectionToGenericPromptAgent<SectionValueType>({
     input: [
       {
         role: "developer" as const,
-        content: sectionAgentIdentity,
+        content: identityAndVoice,
       },
       {
         role: "developer" as const,
@@ -47,11 +48,15 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         role: "developer" as const,
         content: getVoicePrompt(defaultVoice),
       },
+      {
+        role: "developer" as const,
+        content: currentDocumentPromptPart(ctx.currentTurn.document),
+      },
       currentValue && {
         role: "developer" as const,
         content: currentSectionValuePromptPart(currentValue, contentToString),
       },
-      exemplarContent?.length && {
+      {
         role: "developer" as const,
         content: exemplarContentPromptPart(
           exemplarContent ?? [],

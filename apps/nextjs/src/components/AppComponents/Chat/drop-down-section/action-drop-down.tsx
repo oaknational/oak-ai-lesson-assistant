@@ -89,6 +89,7 @@ export const ActionDropDown = ({
               <SmallRadioButton
                 id={`${id}-modify-options-${option.enumValue}`}
                 key={`${id}-modify-options-${option.enumValue}`}
+                data-testid={"modify-radio-button"}
                 value={option.enumValue}
                 label={handleLabelText({
                   text: option.label,
