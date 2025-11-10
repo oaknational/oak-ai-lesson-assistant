@@ -169,6 +169,7 @@ export type AilaCurrentTurn = {
   errors: { message: string }[];
   stepsExecuted: PlanStep[];
   relevantLessonsFetched: boolean;
+  relevantLessons: RagLessonPlan[] | null;
 };
 
 export type WithError<T> =
