@@ -43,11 +43,4 @@ export const createOnTurnComplete =
 
     log.info("onTurnComplete: ", closingPart);
     textStreamer(closingPart);
-    // textStreamer(
-    //   JSON.stringify({
-    //     type: "state",
-    //     reasoning: "final",
-    //     value: nextDoc,
-    //   }),
-    // );
   };

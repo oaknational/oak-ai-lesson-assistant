@@ -1,37 +1,51 @@
+import * as Sentry from "@sentry/node";
 import { compare } from "fast-json-patch";
+import { isTruthy } from "remeda";
 
-import type { JsonPatchDocumentOptional } from "../../../../protocol/jsonPatchProtocol";
+import {
+  type JsonPatchDocumentOptional,
+  type PatchDocumentOptional,
+  PatchDocumentOptionalSchema,
+} from "../../../../protocol/jsonPatchProtocol";
 
 export function buildPatches<T extends object>(
   prevValue: T,
   nextValue: T,
 ): JsonPatchDocumentOptional[] {
-  // Generate patches from the document changes
-  const patches: JsonPatchDocumentOptional[] = [];
-
-  // Use fast-json-patch to detect changes
   const diff = compare(prevValue, nextValue);
 
-  // Create proper patch objects for each change
-  for (const patch of diff) {
-    // Convert path from /subject to subject
-    const sectionKey = patch.path.substring(1); // Remove leading slash
-
-    if ("value" in patch) {
-      if (patch.op === "test" || patch.op === "_get") {
-        continue;
-      }
-      patches.push({
-        type: "patch",
-        reasoning: `Updated ${sectionKey} based on user request`,
-        value: {
-          op: patch.op,
-          path: patch.path,
-          value: patch.value,
-        },
+  const patches: PatchDocumentOptional[] = diff
+    .filter(
+      (patch) =>
+        patch.op !== "test" &&
+        patch.op !== "_get" &&
+        patch.op !== "move" &&
+        patch.op !== "copy",
+    )
+    .map((patch) => {
+      const document = {
+        type: "patch" as const,
+        reasoning: `Updated ${patch.path.substring(1)} based on user request`,
+        value: patch,
         status: "complete",
-      });
-    }
-  }
+      };
+
+      const parseResult = PatchDocumentOptionalSchema.safeParse(document);
+
+      if (!parseResult.success) {
+        Sentry.captureException(
+          new Error(
+            `Failed to build patch document: ${JSON.stringify(
+              parseResult.error,
+            )}`,
+          ),
+        );
+        return null;
+      }
+
+      return parseResult.data;
+    })
+    .filter(isTruthy);
+
   return patches;
 }
