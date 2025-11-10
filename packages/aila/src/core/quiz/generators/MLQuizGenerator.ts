@@ -426,8 +426,6 @@ Generate a list of 1-3 semantic search queries`;
         returnDocuments: true,
       });
 
-      log.info("Ranked documents:");
-      log.info(response.results);
       return response.results;
     } catch (error) {
       log.error("Error during reranking:", error);
