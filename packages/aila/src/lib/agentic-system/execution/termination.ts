@@ -41,6 +41,7 @@ export async function terminateWithResponse(
     errors: context.currentTurn.errors,
     plannerOutput: context.currentTurn.plannerOutput,
     relevantLessons: context.persistedState.relevantLessons,
+    relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,
   });
 
   if (messageResult.error) {

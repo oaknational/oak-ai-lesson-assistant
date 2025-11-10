@@ -72,6 +72,7 @@ describe("sectionToGenericPromptAgent", () => {
       errors: [],
       stepsExecuted: [],
       relevantLessonsFetched: false,
+      relevantLessons: mockRelevantLessons,
     },
     callbacks: {
       onPlannerComplete: jest.fn(),
