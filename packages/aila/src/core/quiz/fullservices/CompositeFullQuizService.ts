@@ -10,13 +10,13 @@ import { BaseFullQuizService } from "./BaseFullQuizService";
 
 export class CompositeFullQuizService extends BaseFullQuizService {
   public quizSelector: QuizSelector<BaseType>;
-  public quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
+  public quizReranker: AilaQuizReranker;
   public quizGenerators: AilaQuizGeneratorService[];
 
   constructor(
     generators: AilaQuizGeneratorService[],
     selector: QuizSelector<BaseType>,
-    reranker: AilaQuizReranker<z.ZodType<BaseType>>,
+    reranker: AilaQuizReranker,
   ) {
     super();
     this.quizGenerators = generators;

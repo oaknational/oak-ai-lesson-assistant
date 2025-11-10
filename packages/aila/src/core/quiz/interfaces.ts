@@ -1,38 +1,29 @@
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
-import type * as z from "zod";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
-  LooseLessonPlan,
+  PartialLessonPlan,
   QuizPath,
 } from "../../protocol/schema";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type {
-  QuizV2,
-  QuizV2Question,
-} from "../../protocol/schemas/quiz/quizV2";
+  LatestQuiz,
+  LatestQuizQuestion,
+} from "../../protocol/schemas/quiz";
+import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "./ChoiceModels";
+import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
-
-export interface CustomMetadata {
-  questionUid: string;
-  [key: string]: unknown; // Allow for other unknown metadata fields
-}
-
-export interface DocumentRetriever {
-  retrieve(query: string): Promise<Document[]>;
-}
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -46,70 +37,38 @@ export interface DocumentReranker {
 
 export interface AilaQuizService {
   generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
   ): Promise<JsonPatchDocument>;
 }
-
-// // TODO: GCLOMAX - move this to interfaces and rename.
-// export interface AilaQuizGeneratorService {
-//   generateMathsExitQuizPatch(
-//     lessonPlan: LooseLessonPlan,
-//     relevantLessons?: AilaRagRelevantLesson[],
-//   ): Promise<Quiz[]>;
-//   generateMathsStarterQuizPatch(
-//     lessonPlan: LooseLessonPlan,
-//     relevantLessons?: AilaRagRelevantLesson[],
-//   ): Promise<Quiz[]>;
-// }
 
 export interface AilaQuizGeneratorService {
   generateMathsExitQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
   generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
   ): Promise<QuizQuestionWithRawJson[][]>;
 }
 
-export interface AilaQuizVariantService {
-  rerankService: DocumentReranker;
-  generateMathsStarterQuizPatch(
-    lessonPlan: LooseLessonPlan,
-  ): Promise<JsonPatchDocument>;
-}
-
-export interface AilaQuizReranker<T extends z.ZodType<BaseType>> {
-  rerankQuiz(quizzes: QuizQuestionWithRawJson[][]): Promise<number[]>;
+export interface AilaQuizReranker {
   evaluateQuizArray(
     quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
-    ratingSchema: T,
+    lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<z.infer<T>[]>;
-  cachedEvaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
-    lessonPlan: LooseLessonPlan,
-    ratingSchema: T,
-    quizType: QuizPath,
-  ): Promise<z.infer<T>[]>;
-  ratingSchema?: T;
-  quizType?: QuizPath;
-  ratingFunction?: RatingFunction<z.infer<T>>;
+  ): Promise<RatingResponse[]>;
 }
 
-// TODO: GCLOMAX - make generic by extending BaseType and BaseSchema as <T,U>
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
-  quizReranker: AilaQuizReranker<z.ZodType<BaseType>>;
+  quizReranker: AilaQuizReranker;
   quizGenerators: AilaQuizGeneratorService[];
   createBestQuiz(
     quizType: quizPatchType,
-    lessonPlan: LooseLessonPlan,
+    lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-    override?: boolean,
-  ): Promise<QuizV2>;
+  ): Promise<LatestQuiz>;
 }
 
 // Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
@@ -201,14 +160,12 @@ export interface FullServiceFactory {
 }
 
 export interface AilaQuizFactory {
-  quizStrategySelector(lessonPlan: LooseLessonPlan): QuizRecommenderType;
-  createQuizRecommender(lessonPlan: LooseLessonPlan): AilaQuizService;
+  quizStrategySelector(lessonPlan: PartialLessonPlan): QuizRecommenderType;
+  createQuizRecommender(lessonPlan: PartialLessonPlan): AilaQuizService;
 }
 
 export interface AilaQuizRerankerFactory {
-  createAilaQuizReranker(
-    quizType: QuizRerankerType,
-  ): AilaQuizReranker<z.ZodType<BaseType>>;
+  createAilaQuizReranker(quizType: QuizRerankerType): AilaQuizReranker;
 }
 
 export interface QuizSelectorFactory {

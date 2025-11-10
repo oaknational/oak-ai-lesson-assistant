@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { LooseLessonPlan } from "../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../protocol/schema";
 import type { RagLessonPlan } from "../../../utils/rag/fetchRagContent";
 import type {
   AilaExecutionContext,
@@ -40,7 +40,7 @@ describe("sectionToGenericPromptAgent", () => {
     },
   ];
 
-  const mockDocument: LooseLessonPlan = {
+  const mockDocument: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",

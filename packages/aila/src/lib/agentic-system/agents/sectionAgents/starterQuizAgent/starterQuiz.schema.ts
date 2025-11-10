@@ -1,1 +1,1 @@
-export { QuizV2Schema } from "../../../../../protocol/schema";
+export { LatestQuizSchema as StarterQuizSchema } from "../../../../../protocol/schema";

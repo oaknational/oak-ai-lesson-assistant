@@ -1,6 +1,6 @@
 import { isTruthy } from "remeda";
 
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
 import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 
@@ -10,7 +10,7 @@ export function getRelevantRAGValues<ResponseType>({
 }: {
   ctx: AilaExecutionContext;
   contentFromDocument: (
-    document: LooseLessonPlan | RagLessonPlan,
+    document: PartialLessonPlan | RagLessonPlan,
   ) => ResponseType | undefined;
 }): {
   /**

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`sectionToGenericPromptAgent input message generation should generate consistent input messages with minimal props 1`] = `
 [
@@ -36,6 +36,20 @@ Supportive expert guiding the teacher. Polite and clear. You can ask for clarifi
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {
@@ -107,6 +121,20 @@ Use this voice to write the text that will appear on slides or lesson resources.
     "content": "## Voice guidance
 
 Unless otherwise specified, use EXPERT_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {
@@ -196,6 +224,20 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -267,6 +309,20 @@ Supportive expert guiding the teacher. Polite and clear. You can ask for clarifi
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {
@@ -344,6 +400,20 @@ Unless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -418,6 +488,20 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -481,6 +565,20 @@ Supportive expert guiding the teacher. Polite and clear. You can ask for clarifi
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {
@@ -549,6 +647,20 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -613,6 +725,20 @@ Supportive expert guiding the teacher. Polite and clear. You can ask for clarifi
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {
@@ -695,6 +821,20 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -766,6 +906,20 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
+    "role": "developer",
+  },
+  {
     "content": "EXEMPLAR CONTENT
 
 This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
@@ -834,6 +988,20 @@ Use this voice to write the text that will appear on slides or lesson resources.
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "CURRENT DOCUMENT
+
+This is the document in its current state.
+
+{
+  "title": "Introduction to Photosynthesis",
+  "keyStage": "ks3",
+  "subject": "science",
+  "topic": "Plants and ecosystems",
+  "learningOutcome": "Students will understand the process of photosynthesis"
+}",
     "role": "developer",
   },
   {

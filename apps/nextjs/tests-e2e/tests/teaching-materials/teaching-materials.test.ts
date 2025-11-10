@@ -178,14 +178,12 @@ test.describe("Teaching Materials", () => {
         await page.getByText("Next, provide lesson details").click();
 
         // Should still be on the same step
-        await expect(
-          page.locator('input[value="additional-glossary"]'),
-        ).toBeVisible();
+        await expect(page.getByText("Glossary")).toBeVisible();
       });
 
       await test.step("Test validation on partial form", async () => {
         // Select material type but don't fill required fields
-        await page.locator('input[value="additional-glossary"]').click();
+        await page.getByText("Glossary").click();
         await page.getByText("Next, provide lesson details").click();
 
         // Should be on step 1 but validation should prevent progress

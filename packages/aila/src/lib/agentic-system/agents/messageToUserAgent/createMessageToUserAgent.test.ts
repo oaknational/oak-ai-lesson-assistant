@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
 import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { PlanStep, PlannerOutput } from "../../schema";
 import type { ChatMessage, MessageToUserAgentProps } from "../../types";
@@ -26,7 +26,7 @@ describe("createMessageToUserAgent", () => {
     },
   ];
 
-  const mockPrevDoc: LooseLessonPlan = {
+  const mockPrevDoc: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",
@@ -34,7 +34,7 @@ describe("createMessageToUserAgent", () => {
     learningOutcome: "Students will understand the process of photosynthesis",
   };
 
-  const mockNextDoc: LooseLessonPlan = {
+  const mockNextDoc: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",

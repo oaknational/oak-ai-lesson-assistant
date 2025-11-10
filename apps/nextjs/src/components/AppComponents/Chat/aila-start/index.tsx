@@ -114,7 +114,7 @@ export function AilaStart() {
                       track.createTeachingMaterialsInitiated({
                         platform: "aila-beta",
                         product: "ai lesson assistant",
-                        engagementIntent: "use",
+                        engagementIntent: "explore",
                         componentType: "create_additional_materials_button",
                         eventVersion: "2.0.0",
                         analyticsUseCase: "Teacher",

@@ -8,6 +8,7 @@ import {
   getVoicePrompt,
 } from "./sectionAgents/shared/voices";
 import { basedOnContentPromptPart } from "./sharedPromptParts/basedOnContent.part";
+import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.part";
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
 import { exemplarContentPromptPart } from "./sharedPromptParts/exemplarContent.part";
 import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.part";
@@ -46,6 +47,10 @@ export function sectionToGenericPromptAgent<SectionValueType>({
       defaultVoice && {
         role: "developer" as const,
         content: getVoicePrompt(defaultVoice),
+      },
+      {
+        role: "developer" as const,
+        content: currentDocumentPromptPart(ctx.currentTurn.document),
       },
       currentValue && {
         role: "developer" as const,

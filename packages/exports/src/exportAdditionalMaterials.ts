@@ -3,7 +3,8 @@ import { aiLogger } from "@oakai/logger";
 import { prepLessonForAdditionalMaterialsDoc } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
+import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import type { LessonInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdAdditionalMaterials as getDocsTemplateIdAdditionalMaterials } from "./templates";
 import type { OutputData, Result, State } from "./types";
@@ -43,6 +44,7 @@ export const exportAdditionalMaterials = async ({
             content: removeMarkdown(data.content),
           },
           valueToString,
+          latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
         });
       },
       userEmail,

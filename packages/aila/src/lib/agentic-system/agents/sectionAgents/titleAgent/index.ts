@@ -8,7 +8,10 @@ export const titleAgent = createSectionAgent({
   responseSchema: LessonTitleSchema,
   instructions: titleInstructions,
   extraInputFromCtx: (ctx) => {
-    const { subject = "english", keyStage = "ks3" } = ctx.currentTurn.document;
+    const { subject, keyStage } = ctx.currentTurn.document;
+    if (!subject || !keyStage) {
+      return [];
+    }
     const titles = titlesBySubjectKeyStage[subject]?.[keyStage] ?? [];
     return [
       {

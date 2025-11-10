@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import {
   OakBox,
@@ -23,7 +23,7 @@ import ModalFooterButtons from "./ModalFooterButtons";
 type ShareChatProps = {
   chatId: string;
   setOpenExportDialog: (open: DialogTypes) => void;
-  lesson: LooseLessonPlan;
+  lesson: PartialLessonPlan;
   isShared: boolean | undefined;
 };
 

@@ -24,13 +24,15 @@ export const hasBlankSpaces = (text: string): boolean => {
  */
 export const prepareTextWithBlanks = (text: string): string => {
   // 1: wrap all blanks in emphasis markers
+  // Note: We use new RegExp with 'g' flag since BLANK_PATTERNS constants
+  // can't have /g flag (they're stateful when tested multiple times)
   let result = text
-    .replace(BLANK_PATTERNS.CURLY_BRACES, "_{{}}_")
-    .replace(BLANK_PATTERNS.UNDERSCORES, "_{{}}_");
+    .replace(new RegExp(BLANK_PATTERNS.CURLY_BRACES.source, "g"), "_{{}}_")
+    .replace(new RegExp(BLANK_PATTERNS.UNDERSCORES.source, "g"), "_{{}}_");
 
-  // 2: move degree symbol inside emphasis markers so markdown parser recognizes them.
-  // _{{}}_° becomes _{{}}°_ because markdown requires word boundaries around markers
-  return result.replace("_{{}}_°", "_{{}}°_");
+  // 2: move any suffix inside emphasis markers so markdown parser recognizes them.
+  // _{{}}_suffix becomes _{{}}suffix_ because markdown requires word boundaries around markers
+  return result.replace(/_{{}}_([^\s]*)/g, "_{{}}$1_");
 };
 
 /**
@@ -42,12 +44,16 @@ export const createBlankComponents = (
   em: ({ children }) => {
     const content = children?.toString();
 
-    const isBlank = content === "{{}}" || content === "{{}}°";
+    if (!content) {
+      return <em>{children}</em>;
+    }
+
+    const isBlank = content.startsWith("{{}}");
 
     if (isBlank) {
-      const hasDegreeSymbol = content === "{{}}°";
+      const suffix = content.replace("{{}}", "");
       const ariaLabel = answer
-        ? `blank filled with: ${answer}${hasDegreeSymbol ? "°" : ""}`
+        ? `blank filled with: ${answer}`
         : "blank to be filled";
 
       return (
@@ -67,7 +73,7 @@ export const createBlankComponents = (
           >
             {answer}
           </OakBox>
-          {hasDegreeSymbol ? "°" : ""}
+          {suffix}
         </>
       );
     }

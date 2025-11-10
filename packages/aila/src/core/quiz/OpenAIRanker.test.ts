@@ -1,4 +1,5 @@
-import { combinePrompts, quizToLLMMessages } from "./OpenAIRanker";
+import { combinePromptsAndQuestions, quizToLLMMessages } from "./OpenAIRanker";
+import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionWithRawJson } from "./interfaces";
 
@@ -109,9 +110,11 @@ describe("fullOpenAIQuiz", () => {
         },
       ],
     };
-    const result = combinePrompts(
+    const result = combinePromptsAndQuestions(
       testLessonPlan,
-      testInput as QuizQuestionWithRawJson,
+      [testInput as QuizQuestionWithRawJson],
+      QuizInspectionSystemPrompt,
+      "/exitQuiz",
     );
     const ans = true;
     expect(ans).toBe(true);

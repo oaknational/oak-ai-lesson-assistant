@@ -6,7 +6,7 @@ import { aiLogger } from "@oakai/logger";
 import type { AilaRagFeature } from ".";
 import type { AilaServices } from "../../core/AilaServices";
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 import { minifyLessonPlanForRelevantLessons } from "../../utils/lessonPlan/minifyLessonPlanForRelevantLessons";
 
 const log = aiLogger("aila:rag");
@@ -36,7 +36,7 @@ export class AilaRag implements AilaRagFeature {
     lessonPlan,
   }: {
     numberOfRecordsInRag?: number;
-    lessonPlan?: LooseLessonPlan;
+    lessonPlan?: PartialLessonPlan;
   }) {
     // #TODO Refactor to return an array rather than stringified JSON
     let content = "[]";

@@ -7,13 +7,13 @@ import type {
   KeyLearningPointsSchema,
   KeyStageSchema,
   KeywordsSchema,
+  LatestQuizSchema,
   LearningCyclesSchema,
   LearningOutcomeSchema,
   LessonTitleSchema,
-  LooseLessonPlan,
   MisconceptionsSchema,
+  PartialLessonPlan,
   PriorKnowledgeSchema,
-  QuizV2Schema,
   SubjectSchema,
 } from "../../protocol/schema";
 import type { RagLessonPlan } from "../../utils/rag/fetchRagContent";
@@ -39,7 +39,7 @@ export type ChatMessage = {
 // Serializable state that gets persisted
 export type AilaPersistedState = {
   messages: ChatMessage[];
-  initialDocument: LooseLessonPlan;
+  initialDocument: PartialLessonPlan;
   relevantLessons: RagLessonPlan[] | null;
 };
 
@@ -59,12 +59,12 @@ export type AilaRuntimeContext = {
 export type AilaTurnCallbacks = {
   onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
   onSectionComplete: (
-    prevDoc: LooseLessonPlan,
-    nextDoc: LooseLessonPlan,
+    prevDoc: PartialLessonPlan,
+    nextDoc: PartialLessonPlan,
   ) => void;
   onTurnComplete: (props: {
-    prevDoc: LooseLessonPlan;
-    nextDoc: LooseLessonPlan;
+    prevDoc: PartialLessonPlan;
+    nextDoc: PartialLessonPlan;
     ailaMessage: string;
   }) => Promise<void>;
 };
@@ -120,11 +120,11 @@ export type SectionAgentResponseMap = {
   "keyLearningPoints--default": z.infer<typeof KeyLearningPointsSchema>;
   "misconceptions--default": z.infer<typeof MisconceptionsSchema>;
   "keywords--default": z.infer<typeof KeywordsSchema>;
-  "starterQuiz--default": z.infer<typeof QuizV2Schema>;
-  "starterQuiz--maths": z.infer<typeof QuizV2Schema>;
+  "starterQuiz--default": z.infer<typeof LatestQuizSchema>;
+  "starterQuiz--maths": z.infer<typeof LatestQuizSchema>;
   "cycle--default": z.infer<typeof CycleSchema>;
-  "exitQuiz--default": z.infer<typeof QuizV2Schema>;
-  "exitQuiz--maths": z.infer<typeof QuizV2Schema>;
+  "exitQuiz--default": z.infer<typeof LatestQuizSchema>;
+  "exitQuiz--maths": z.infer<typeof LatestQuizSchema>;
   "additionalMaterials--default": z.infer<typeof AdditionalMaterialsSchema>;
 };
 
@@ -136,22 +136,23 @@ export type SectionAgentRegistry<
 
 export type PlannerAgentProps = {
   messages: ChatMessage[];
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   relevantLessons: RagLessonPlan[] | null;
 };
 
 export type MessageToUserAgentProps = {
   messages: ChatMessage[];
-  prevDoc: LooseLessonPlan;
-  nextDoc: LooseLessonPlan;
+  prevDoc: PartialLessonPlan;
+  nextDoc: PartialLessonPlan;
   stepsExecuted: PlanStep[];
   errors: { message: string }[];
   plannerOutput: PlannerOutput | null;
   relevantLessons: RagLessonPlan[] | null;
+  relevantLessonsFetched: boolean;
 };
 
 export type AilaState = {
-  initialDocument: LooseLessonPlan;
+  initialDocument: PartialLessonPlan;
   messages: ChatMessage[];
   plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
   messageToUserAgent: (
@@ -163,12 +164,12 @@ export type AilaState = {
 };
 
 export type AilaCurrentTurn = {
-  document: LooseLessonPlan;
+  document: PartialLessonPlan;
   plannerOutput: PlannerOutput | null;
   errors: { message: string }[];
   stepsExecuted: PlanStep[];
-  relevantLessons: RagLessonPlan[] | null;
   relevantLessonsFetched: boolean;
+  relevantLessons: RagLessonPlan[] | null;
 };
 
 export type WithError<T> =

@@ -1,4 +1,7 @@
-import type { QuizV2, QuizV2Question } from "@oakai/aila/src/protocol/schema";
+import type {
+  LatestQuiz,
+  LatestQuizQuestion,
+} from "@oakai/aila/src/protocol/schema";
 
 import { formatNumberRanges } from "./formatNumberRanges";
 
@@ -11,8 +14,8 @@ export function extractImageUrls(text: string): string[] {
 }
 
 export function getAttributionsForQuestion(
-  question: QuizV2Question,
-  quizAttributions: QuizV2["imageAttributions"],
+  question: LatestQuizQuestion,
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): string[] {
   if (!quizAttributions || quizAttributions.length === 0) {
     return [];
@@ -32,15 +35,16 @@ export function getAttributionsForQuestion(
 
   const attributions = quizAttributions
     .filter((attr) => allImageUrls.includes(attr.imageUrl))
-    .map((attr) => attr.attribution);
+    .map((attr) => attr.attribution)
+    .filter((attr): attr is string => attr !== null); // Handle nullable attributions in V3
 
   // Return unique attributions
   return Array.from(new Set(attributions));
 }
 
 export function getGroupedAttributions(
-  questions: QuizV2Question[],
-  quizAttributions: QuizV2["imageAttributions"],
+  questions: LatestQuizQuestion[],
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): Record<string, number[]> {
   const attributionGroups: Record<string, number[]> = {};
 
@@ -59,8 +63,8 @@ export function getGroupedAttributions(
 }
 
 export function getFormattedAttributions(
-  questions: QuizV2Question[],
-  quizAttributions: QuizV2["imageAttributions"],
+  questions: LatestQuizQuestion[],
+  quizAttributions: LatestQuiz["imageMetadata"],
 ): Array<{ attribution: string; questionRange: string }> {
   const groups = getGroupedAttributions(questions, quizAttributions);
 

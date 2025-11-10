@@ -5,10 +5,7 @@ export { downloadDriveFile } from "./src/downloadDriveFile";
 export { exportAdditionalMaterials } from "./src/exportAdditionalMaterials";
 export { exportDocsWorksheet } from "./src/exportDocsWorksheet";
 
-export { findLatexPatterns } from "./src/gSuite/docs/findLatexPatterns";
-export { svgToPng } from "./src/images/svgToPng";
-export { latexToSvg } from "./src/images/latexToSvg";
-export { latexToImageReplacements } from "./src/gSuite/docs/latexToImageReplacements";
+export * from "./src/quiz-utils/attribution";
 
 export {
   quizDocInputSchema as exportDocQuizSchema,

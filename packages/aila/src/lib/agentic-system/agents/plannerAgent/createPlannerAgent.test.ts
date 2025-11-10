@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "../../../../protocol/schema";
+import type { PartialLessonPlan } from "../../../../protocol/schema";
 import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { ChatMessage, PlannerAgentProps } from "../../types";
 import { createPlannerAgent } from "./createPlannerAgent";
@@ -25,7 +25,7 @@ describe("createPlannerAgent", () => {
     },
   ];
 
-  const mockDocument: LooseLessonPlan = {
+  const mockDocument: PartialLessonPlan = {
     title: "Introduction to Photosynthesis",
     keyStage: "ks3",
     subject: "science",
@@ -81,7 +81,7 @@ describe("createPlannerAgent", () => {
     });
 
     it("should handle minimal document", () => {
-      const minimalDocument: LooseLessonPlan = {
+      const minimalDocument: PartialLessonPlan = {
         title: "Basic Science Lesson",
         keyStage: "ks2",
         subject: "science",
@@ -117,7 +117,7 @@ describe("createPlannerAgent", () => {
     });
 
     it("should handle different subjects and key stages", () => {
-      const mathDocument: LooseLessonPlan = {
+      const mathDocument: PartialLessonPlan = {
         title: "Introduction to Fractions",
         keyStage: "ks2",
         subject: "maths",

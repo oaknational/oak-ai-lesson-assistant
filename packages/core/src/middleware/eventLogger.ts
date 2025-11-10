@@ -44,7 +44,7 @@ export function eventLogger(env: string, eventKey: string) {
  * we want to tell which were actually used to send the event
  *
  * @example
- *   lazyRedact('abcdefekflrgkger', 5)
+ *   lazyRedact('abcdefekflrgkger', 5) // cspell:disable-line
  *   // -> 'abcde***********'
  */
 function lazyRedact(s: string, numShown: number): string {

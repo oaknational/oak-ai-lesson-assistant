@@ -13,8 +13,8 @@ export type QuizQAD = z.infer<typeof quizQADSchema>;
 export const quizV1Schema = z.array(quizQADSchema);
 export type QuizV1 = z.infer<typeof quizV1Schema>;
 
-// V2 format (modern) - supports all question types for import flexibility
-const quizV2QuestionMultipleChoiceSchema = z.object({
+// Modern quiz format - supports all question types for import flexibility
+const quizQuestionMultipleChoiceSchema = z.object({
   questionType: z.literal("multiple-choice"),
   question: z.string(),
   answers: z.array(z.string()),
@@ -22,49 +22,62 @@ const quizV2QuestionMultipleChoiceSchema = z.object({
   hint: z.string().nullable(),
 });
 
-const quizV2QuestionShortAnswerSchema = z.object({
+const quizQuestionShortAnswerSchema = z.object({
   questionType: z.literal("short-answer"),
   question: z.string(),
   answers: z.array(z.string()),
   hint: z.string().nullable(),
 });
 
-const quizV2QuestionMatchSchema = z.object({
+const quizQuestionMatchSchema = z.object({
   questionType: z.literal("match"),
   question: z.string(),
-  answers: z.array(z.tuple([z.string(), z.string()])),
+  pairs: z.array(
+    z.object({
+      left: z.string(),
+      right: z.string(),
+    }),
+  ),
   hint: z.string().nullable(),
 });
 
-const quizV2QuestionOrderSchema = z.object({
+const quizQuestionOrderSchema = z.object({
   questionType: z.literal("order"),
   question: z.string(),
-  answers: z.array(z.string()),
-  correctOrder: z.array(z.number()),
+  items: z.array(z.string()),
   hint: z.string().nullable(),
 });
 
-export const quizV2QuestionSchema = z.union([
-  quizV2QuestionMultipleChoiceSchema,
-  quizV2QuestionShortAnswerSchema,
-  quizV2QuestionMatchSchema,
-  quizV2QuestionOrderSchema,
+export const quizQuestionSchema = z.discriminatedUnion("questionType", [
+  quizQuestionMultipleChoiceSchema,
+  quizQuestionShortAnswerSchema,
+  quizQuestionMatchSchema,
+  quizQuestionOrderSchema,
 ]);
 
-export const quizV2Schema = z.object({
-  version: z.literal("v2"),
-  questions: z.array(quizV2QuestionSchema).min(1),
+const imageMetadataSchema = z.object({
+  imageUrl: z.string(),
+  attribution: z.string().nullable(),
+  width: z.number(),
+  height: z.number(),
 });
-export type QuizV2 = z.infer<typeof quizV2Schema>;
-export type QuizV2Question = z.infer<typeof quizV2QuestionSchema>;
-export type QuizV2QuestionMultipleChoice = z.infer<
-  typeof quizV2QuestionMultipleChoiceSchema
->;
 
-// Union type for both formats
-export const quizSchema = quizV2Schema;
+export const quizSchema = z.object({
+  version: z.literal("v3"),
+  questions: z.array(quizQuestionSchema).min(1),
+  imageMetadata: z.array(imageMetadataSchema),
+});
+export type ImageMetadata = z.infer<typeof imageMetadataSchema>;
 export type Quiz = z.infer<typeof quizSchema>;
-
+export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
+export type QuizQuestionMultipleChoice = z.infer<
+  typeof quizQuestionMultipleChoiceSchema
+>;
+export type QuizQuestionShortAnswer = z.infer<
+  typeof quizQuestionShortAnswerSchema
+>;
+export type QuizQuestionMatch = z.infer<typeof quizQuestionMatchSchema>;
+export type QuizQuestionOrder = z.infer<typeof quizQuestionOrderSchema>;
 export const cycleSchema = z.object({
   title: z.string(),
   durationInMinutes: z.number(),
@@ -130,8 +143,8 @@ export const lessonPlanSectionsSchema = z.object({
   keyLearningPoints: z.array(z.string()).min(1),
   misconceptions: z.array(misconceptionSchema),
   keywords: z.array(keywordSchema),
-  starterQuiz: quizV2Schema,
-  exitQuiz: quizV2Schema,
+  starterQuiz: quizSchema,
+  exitQuiz: quizSchema,
   cycle1: cycleSchema,
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),

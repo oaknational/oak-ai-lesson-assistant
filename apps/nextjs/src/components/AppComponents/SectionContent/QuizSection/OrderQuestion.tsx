@@ -1,18 +1,18 @@
 import { useMemo } from "react";
 
-import type { QuizV2QuestionOrder } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
+import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
+import { shuffleOrderItems } from "@oakai/exports/src/quiz-utils/shuffle";
 
 import { OakBox, OakFlex } from "@oaknational/oak-components";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "./AnswerBox";
-import { addInstruction } from "./helpers";
-import { shuffleOrderItems } from "./shuffle";
 import { useTextWithBlanks } from "./textWithBlanks";
 
 type OrderQuestionProps = {
-  question: QuizV2QuestionOrder;
+  question: Extract<LatestQuizQuestion, { questionType: "order" }>;
   questionNumber: number;
 };
 

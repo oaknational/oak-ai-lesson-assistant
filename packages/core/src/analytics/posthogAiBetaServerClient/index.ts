@@ -19,6 +19,7 @@ const enableLocalEvaluation = process.env.NODE_ENV !== "test";
  */
 export const posthogAiBetaServerClient = new PostHog(apiKey, {
   host,
+  disabled: !enableLocalEvaluation,
 
   // We evaluate user feature flags on the server to prevent round-trips to posthog.
   // See https://posthog.com/docs/feature-flags/local-evaluation
