@@ -32,9 +32,7 @@ export function getRelevantRAGValues<ResponseType>({
       .filter(isTruthy) ?? [];
 
   const basedOnLesson = ctx.persistedState.relevantLessons?.find(
-    (lesson) =>
-      lesson.ragLessonPlanId?.toString() ===
-      ctx.currentTurn.document.basedOn?.id,
+    (lesson) => lesson.ragLessonPlanId === ctx.currentTurn.document.basedOn?.id,
   );
   const basedOnContent = basedOnLesson
     ? contentFromDocument(basedOnLesson.lessonPlan)
