@@ -292,9 +292,7 @@ export class AilaStreamHandler {
                 (lesson) => lesson.lessonPlanId,
               ),
             });
-            const plans = results.map((r) => r.lessonPlan);
-
-            return plans;
+            return results.map((r) => r.lessonPlan);
           }
 
           const lessonPlanResults = await fetchRelevantLessonPlans({
