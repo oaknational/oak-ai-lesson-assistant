@@ -1,9 +1,8 @@
 import OpenAI from "openai";
-import { z } from "zod";
 
 import {
   CompletedLessonPlanSchema,
-  type LooseLessonPlan,
+  type PartialLessonPlan,
 } from "../../protocol/schema";
 import { createOpenAIMessageToUserAgent } from "./agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "./agents/plannerAgent";
@@ -19,12 +18,8 @@ import type {
 // Allow enough time for real OpenAI calls
 jest.setTimeout(250000);
 
-const isComplete = (doc: LooseLessonPlan) => {
+const isComplete = (doc: PartialLessonPlan) => {
   const parseResult = CompletedLessonPlanSchema.safeParse(doc);
-
-  if (!parseResult.success) {
-    console.log(parseResult.error?.flatten().fieldErrors);
-  }
 
   return parseResult.success;
 };
@@ -33,7 +28,7 @@ const runTurn = async (
   persistedState: AilaPersistedState,
   runtime: AilaRuntimeContext,
 ) => {
-  let nextDocCapture: LooseLessonPlan | null = null;
+  let nextDocCapture: PartialLessonPlan | null = null;
   let messageCapture = "";
   const callbacks: AilaTurnCallbacks = {
     onPlannerComplete: () => void 0,
@@ -68,18 +63,20 @@ describe("ailaTurn e2e happy path with continue loop", () => {
             Promise.resolve({
               error: null,
               data: {
-                version: "v2",
+                version: "v3",
                 questions: [],
                 imageAttributions: [],
+                imageMetadata: [],
               },
             }),
           "exitQuiz--maths": () =>
             Promise.resolve({
               error: null,
               data: {
-                version: "v2",
+                version: "v3",
                 questions: [],
                 imageAttributions: [],
+                imageMetadata: [],
               },
             }),
         },
@@ -98,7 +95,7 @@ describe("ailaTurn e2e happy path with continue loop", () => {
       relevantLessons: null,
     };
 
-    let currentDoc: LooseLessonPlan = persisted.initialDocument;
+    let currentDoc: PartialLessonPlan = persisted.initialDocument;
     let iterations = 0;
     const maxIterations = 15;
 

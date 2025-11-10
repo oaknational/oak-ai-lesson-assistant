@@ -54,7 +54,7 @@ export async function vectorSearch({
   const startAt = new Date();
   const queryResponse = await executePrismaQueryRaw({
     prisma,
-    queryEmbedding,
+    queryVector,
     keyStageSlugs: keyStageSlugs.map(keyStageForSearch),
     subjectSlugs,
     limit,

@@ -37,7 +37,9 @@ export const createPlannerAgent = ({
       },
       {
         role: "developer" as const,
-        content: relevantLessonsPromptPart(relevantLessons),
+        content: relevantLessonsPromptPart(
+          relevantLessons ? relevantLessons.map((r) => r.lessonPlan) : null,
+        ),
       },
       {
         role: "developer" as const,
