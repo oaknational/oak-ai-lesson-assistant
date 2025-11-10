@@ -9,11 +9,6 @@ import {
   parseSubjectsForRagSearch,
 } from "@oakai/rag";
 
-import {
-  type CompletedLessonPlan,
-  CompletedLessonPlanSchemaWithoutLength,
-} from "protocol/schema";
-import { migrateLessonPlan } from "protocol/schemas/versioning/migrateLessonPlan";
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
 import z from "zod";
@@ -31,6 +26,11 @@ import {
 } from "../../lib/agents/compatibility/streamHandling";
 import { interact } from "../../lib/agents/interact";
 import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
+import {
+  type CompletedLessonPlan,
+  CompletedLessonPlanSchemaWithoutLength,
+} from "../../protocol/schema";
+import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
