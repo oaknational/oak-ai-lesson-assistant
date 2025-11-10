@@ -108,7 +108,7 @@
     "p-limit": "^6.1.0",
     "partial-json-parser": "^1.2.2",
     "posthog-js": "^1.201.0",
-    "posthog-node": "^4.3.2",
+    "posthog-node": "^5.10.4",
     "pptxgenjs": "^3.12.0",
     "ramda": "^0.30.1",
     "react": "18.2.0",

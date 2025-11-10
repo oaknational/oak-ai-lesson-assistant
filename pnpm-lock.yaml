@@ -298,8 +298,8 @@ importers:
         specifier: ^1.201.0
         version: 1.201.0
       posthog-node:
-        specifier: ^4.3.2
-        version: 4.3.2
+        specifier: ^5.10.4
+        version: 5.11.0
       pptxgenjs:
         specifier: ^3.12.0
         version: 3.12.0
@@ -7492,6 +7492,10 @@ packages:
   /@portabletext/types@2.0.13:
     resolution: {integrity: sha512-5xk5MSyQU9CrDho3Rsguj38jhijhD36Mk8S6mZo3huv6PM+t4M/5kJN2KFIxgvt4ONpvOEs1pVIZAV0cL0Vi+Q==}
     engines: {node: ^14.13.1 || >=16.0.0 || >=18.0.0}
+    dev: false
+
+  /@posthog/core@1.5.0:
+    resolution: {integrity: sha512-oxfV20QMNwH30jKybUyqi3yGuMghULQz1zkJgQG3rjpHDxhD2vDN6E7UpmaqgphMIvGG3Q+DgfU10zfSPA7w7w==}
     dev: false
 
   /@preact/signals-core@1.8.0:
@@ -22654,14 +22658,11 @@ packages:
       web-vitals: 4.2.4
     dev: false
 
-  /posthog-node@4.3.2:
-    resolution: {integrity: sha512-vy8Mt9IEfniUgqQ1rOCQ31CBO1VNqDGd3ZtHlWR9/YfU6RiuK+9pUXPb4h6HTGzQmjL8NFnjd8K8NMXSX8S6MQ==}
-    engines: {node: '>=15.0.0'}
+  /posthog-node@5.11.0:
+    resolution: {integrity: sha512-9+gmWp/7AEryJMi0+/ywJjKQhpkmcjxf+eT030fTIIPvFTF84zeeagdZBGNC/Nh2Jc0grIAW6O1n5lxXiX3daA==}
+    engines: {node: '>=20'}
     dependencies:
-      axios: 1.9.0
-      rusha: 0.8.14
-    transitivePeerDependencies:
-      - debug
+      '@posthog/core': 1.5.0
     dev: false
 
   /pprof-format@2.1.0:
@@ -23849,10 +23850,6 @@ packages:
   /runes@0.4.3:
     resolution: {integrity: sha512-K6p9y4ZyL9wPzA+PMDloNQPfoDGTiFYDvdlXznyGKgD10BJpcAosvATKrExRKOrNLgD8E7Um7WGW0lxsnOuNLg==}
     engines: {node: '>=4.0.0'}
-    dev: false
-
-  /rusha@0.8.14:
-    resolution: {integrity: sha512-cLgakCUf6PedEu15t8kbsjnwIFFR2D4RfL+W3iWFJ4iac7z4B0ZI8fxy4R3J956kAI68HclCFGL8MPoUVC3qVA==}
     dev: false
 
   /rxjs@6.6.7:

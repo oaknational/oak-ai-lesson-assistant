@@ -32,11 +32,10 @@ function getPrimaryEmail(user: UserJSON): string {
 
 async function syncUserToPosthog(user: UserJSON) {
   const featureFlagGroup = user.public_metadata.labs?.featureFlagGroup ?? "";
-  posthogAiBetaServerClient.identify({
+  await posthogAiBetaServerClient.identifyImmediate({
     distinctId: getPrimaryEmail(user),
     properties: { featureFlagGroup },
   });
-  await posthogAiBetaServerClient.flush();
   log.info("featureFlagGroup synced:", user.id, featureFlagGroup);
 }
 
