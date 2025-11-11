@@ -55,12 +55,22 @@ export async function handleThreatDetectionError(
   }
 
   try {
-    log.info("Sending slack notification for threat detection");
+    log.info("Sending slack notification for threat detection", {
+      userId,
+      chatId,
+    });
 
     const parsedThreatData = threatDetectionResultSchema.safeParse(error.cause);
     const parsedRawThreatData = lakeraGuardResponseSchema.safeParse(
       parsedThreatData.data?.rawResponse,
     );
+
+    if (!parsedRawThreatData.success) {
+      log.warn("Failed to parse Lakera threat detection data, using fallback", {
+        error: parsedRawThreatData.error,
+        rawData: parsedThreatData.data?.rawResponse,
+      });
+    }
 
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
@@ -69,8 +79,8 @@ export async function handleThreatDetectionError(
         content: msg.content,
       }));
 
-    await inngest.send({
-      name: "app/slack.notifyThreatDetectionAila",
+    const eventPayload = {
+      name: "app/slack.notifyThreatDetectionAila" as const,
       user: {
         id: userId,
       },
@@ -82,6 +92,22 @@ export async function handleThreatDetectionError(
           : { flagged: true },
         messages: userMessages,
       },
+    };
+
+    log.info("Sending Inngest event", {
+      eventName: eventPayload.name,
+      userId,
+      chatId,
+      messageCount: userMessages.length,
+      threatDataSuccess: parsedRawThreatData.success,
+    });
+
+    await inngest.send(eventPayload);
+
+    log.info("Successfully sent Inngest event", {
+      eventName: eventPayload.name,
+      userId,
+      chatId,
     });
   } catch (e) {
     log.error("Error scheduling slack notification", e);

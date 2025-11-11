@@ -22,14 +22,21 @@ export const notifyThreatDetectionAila = inngest.createFunction(
   },
   { event: "app/slack.notifyThreatDetectionAila" },
   async ({ event, step }) => {
+    log.info("notifyThreatDetectionAila function triggered", {
+      eventName: event.name,
+      eventId: event.id,
+      hasUserData: !!event.user,
+      hasEventData: !!event.data,
+    });
+
     await step.run("Send message to slack", async () => {
       try {
-        log.info("Attempting to send Aila threat detection to Slack", {
-          userId: event.user.id,
-          chatId: event.data.chatId,
-        });
-
         const args = notifyThreatDetectionAilaSchema.data.parse(event.data);
+
+        log.info("Attempting to send Aila threat detection to Slack", {
+          userId: event.user?.id,
+          chatId: args.chatId,
+        });
 
         const getSlackThreadDetectionsData = formatThreatDetectionWithMessages(
           args.threatDetection,
@@ -68,8 +75,8 @@ export const notifyThreatDetectionAila = inngest.createFunction(
         log.error(
           "Failed to send Aila threat detection to Slack",
           {
-            userId: event.user.id,
-            chatId: event.data.chatId,
+            userId: event.user?.id,
+            chatId: event.data?.chatId,
             error: error instanceof Error ? error.message : String(error),
           },
           error,

@@ -21,18 +21,25 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
   },
   { event: "app/slack.notifyThreatDetectionTeachingMaterials" },
   async ({ event, step }) => {
+    log.info("notifyThreatDetectionTeachingMaterials function triggered", {
+      eventName: event.name,
+      eventId: event.id,
+      hasUserData: !!event.user,
+      hasEventData: !!event.data,
+    });
+
     await step.run("Send message to slack", async () => {
       try {
+        const args = notifyThreatDetectionTeachingMaterialsSchema.data.parse(
+          event.data,
+        );
+
         log.info(
           "Attempting to send Teaching Materials threat detection to Slack",
           {
-            userId: event.user.id,
-            id: event.data.id,
+            userId: event.user?.id,
+            id: args.id,
           },
-        );
-
-        const args = notifyThreatDetectionTeachingMaterialsSchema.data.parse(
-          event.data,
         );
 
         const getSlackThreadDetectionsData = formatThreatDetectionWithMessages(
@@ -71,8 +78,8 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
         log.error(
           "Failed to send Teaching Materials threat detection to Slack",
           {
-            userId: event.user.id,
-            id: event.data.id,
+            userId: event.user?.id,
+            id: event.data?.id,
             error: error instanceof Error ? error.message : String(error),
           },
           error,
