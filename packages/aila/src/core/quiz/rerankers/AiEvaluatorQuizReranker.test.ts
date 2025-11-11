@@ -4,11 +4,13 @@ import type { ParsedChatCompletion } from "openai/resources/beta/chat/completion
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { evaluateQuiz } from "../OpenAIRanker";
-import { cachedQuiz } from "../fixtures/CachedImageQuiz";
+import {
+  cachedQuiz,
+  createMockQuestionPool,
+} from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import type { QuizQuestionWithRawJson } from "../interfaces";
+import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
-import { type RatingResponse } from "./RerankerStructuredOutputSchema";
 
 jest.mock("../OpenAIRanker");
 
@@ -16,13 +18,13 @@ const log = aiLogger("aila:quiz");
 
 describe("AiEvaluatorQuizReranker", () => {
   let reranker: AiEvaluatorQuizReranker;
-  let mockQuizzes: QuizQuestionWithRawJson[][];
+  let mockQuestionPools: QuizQuestionPool[];
   let mockLessonPlan: PartialLessonPlan;
   let mockQuizType: QuizPath;
 
   beforeEach(() => {
     reranker = new AiEvaluatorQuizReranker();
-    mockQuizzes = [cachedQuiz];
+    mockQuestionPools = [createMockQuestionPool(cachedQuiz)];
     mockLessonPlan = CircleTheoremLesson;
     mockQuizType = "/starterQuiz";
     jest.clearAllMocks();
@@ -46,7 +48,7 @@ describe("AiEvaluatorQuizReranker", () => {
 
       await expect(
         reranker.evaluateQuizArray(
-          mockQuizzes,
+          mockQuestionPools,
           mockLessonPlan,
           mockQuizType,
           false,
@@ -84,7 +86,7 @@ describe("AiEvaluatorQuizReranker", () => {
       (evaluateQuiz as jest.Mock).mockResolvedValueOnce(mockResponse);
 
       const result = await reranker.evaluateQuizArray(
-        mockQuizzes,
+        mockQuestionPools,
         mockLessonPlan,
         mockQuizType,
         false,
