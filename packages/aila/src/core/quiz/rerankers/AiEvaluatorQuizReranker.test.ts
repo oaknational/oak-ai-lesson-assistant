@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
+import { evaluateQuiz } from "../services/OpenAIRanker";
 import {
   cachedQuiz,
   createMockQuestionPool,
@@ -12,7 +12,7 @@ import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
 
-jest.mock("../OpenAIRanker");
+jest.mock("../services/OpenAIRanker");
 
 const log = aiLogger("aila:quiz");
 

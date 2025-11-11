@@ -29,7 +29,7 @@ import type {
   SearchResponseBody,
   SimplifiedResult,
 } from "../interfaces";
-import { CohereReranker } from "../rerankers";
+import { CohereReranker } from "../services/CohereReranker";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 

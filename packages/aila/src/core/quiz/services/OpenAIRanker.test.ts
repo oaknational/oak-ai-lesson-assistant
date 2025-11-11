@@ -1,7 +1,7 @@
 import { combinePromptsAndQuestions, quizToLLMMessages } from "./OpenAIRanker";
-import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
-import type { QuizQuestionWithRawJson } from "./interfaces";
+import { QuizInspectionSystemPrompt } from "../QuestionAssesmentPrompt";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { QuizQuestionWithRawJson } from "../interfaces";
 
 describe("quizToLLMMessagesTest", () => {
   it("Should convert into valid OpenAI message format", () => {

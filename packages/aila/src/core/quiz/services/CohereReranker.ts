@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { CohereClient } from "cohere-ai";
 
-import type { SimplifiedResult } from "./interfaces";
+import type { SimplifiedResult } from "../interfaces";
 
 const log = aiLogger("quiz");
 

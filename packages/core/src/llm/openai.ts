@@ -16,7 +16,8 @@ export type CreateOpenAIClientProps =
         | "legacy-lesson-planner"
         | "image-alt-text"
         | "maths-reranker"
-        | "maths-composer";
+        | "maths-composer"
+        | "maths-quiz-images";
     };
 
 function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {

@@ -13,7 +13,7 @@ import type {
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
-import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
+import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,

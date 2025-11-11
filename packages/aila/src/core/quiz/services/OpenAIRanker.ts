@@ -5,11 +5,11 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 import { z } from "zod";
 
-import type { PartialLessonPlan, QuizPath } from "../../protocol/schema";
-import { constrainImageUrl } from "../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
-import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import type { QuizQuestionWithRawJson, RatingResponse } from "./interfaces";
-import { unpackLessonPlanForPrompt } from "./unpackLessonPlan";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import { constrainImageUrl } from "../../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
+import { QuizInspectionSystemPrompt } from "../QuestionAssesmentPrompt";
+import type { QuizQuestionWithRawJson, RatingResponse } from "../interfaces";
+import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 // OpenAI model constant
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";

@@ -131,12 +131,12 @@ function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
     lines.push(`ML Semantic Search`);
     lines.push(`Search query: "${pool.source.semanticQuery}"`);
   } else if (pool.source.type === "basedOn") {
-    lines.push(`Based On Lesson`);
+    lines.push(`User-selected "Based On" Lesson`);
     lines.push(
       `Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})`,
     );
   } else if (pool.source.type === "ailaRag") {
-    lines.push(`Aila RAG`);
+    lines.push(`Similar lessons RAG`);
     lines.push(
       `Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})`,
     );

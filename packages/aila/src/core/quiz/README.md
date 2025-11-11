@@ -6,11 +6,64 @@ The quiz module generates, evaluates, and selects quiz questions for AI-generate
 
 The quiz generation system follows a three-stage pipeline where each stage is independently configurable:
 
-```
-Lesson Plan → [Generators (1+)] → [Reranker (1)] → [Selector (1)] → Final Quiz
+```mermaid
+graph LR
+    BASED_ON[Generator:<br/>basedOnRag]
+    AILA_RAG[Generator:<br/>ailaRag]
+    ML_SINGLE[Generator:<br/>ml-single-term]
+    ML_MULTI[Generator:<br/>ml-multi-term]
+
+    BASED_ON ==>|Pool| POOLS[Question Pools]
+    AILA_RAG ==>|Pools| POOLS
+    ML_SINGLE -->|Pools| POOLS
+    ML_MULTI ==>|Pools| POOLS
+
+    POOLS ==> RERANK_CHOICE{Reranker Type}
+
+    RERANK_CHOICE ==> NOOP[NoOpReranker<br/>Skip ranking]
+    RERANK_CHOICE --> AI_EVAL[AiEvaluatorQuizReranker<br/>LLM scoring]
+    RERANK_CHOICE --> RETURN_FIRST[ReturnFirstReranker<br/>Simple fallback]
+
+    NOOP ==>|Empty ratings| SELECTOR{Selector Type}
+    AI_EVAL -->|Ratings| SELECTOR
+    RETURN_FIRST -->|Ratings| SELECTOR
+
+    SELECTOR --> SIMPLE[SimpleQuizSelector<br/>Pick top-rated pool]
+    SELECTOR ==> IMG_PROC[ImageDescriptionService<br/>Cache & generate descriptions]
+
+    IMG_PROC ==> COMPOSER[LLMQuizComposer<br/>Compose best 6 questions]
+
+    classDef component fill:#e8f5e9
+    classDef reranker fill:#f1f8e9
+
+    class BASED_ON,AILA_RAG,ML_SINGLE,ML_MULTI,SIMPLE,COMPOSER component
+    class NOOP,AI_EVAL,RETURN_FIRST reranker
+
+    style POOLS fill:#fff3e0
+    style IMG_PROC fill:#e1f5ff
 ```
 
-Each stage can be configured with different strategies to experiment with quiz quality and generation approaches.
+### Pipeline Stages
+
+**Stage 1: Generators** (run in parallel)
+- Multiple generators retrieve candidates from different sources
+- Each returns `QuizQuestionPool[]` with source metadata
+
+**Stage 2: Reranker**
+- Evaluates and scores question pools
+- Options: NoOpReranker, AiEvaluatorQuizReranker, ReturnFirstReranker
+- Returns `RatingResponse[]` (or empty for no-op)
+
+**Stage 3: Selector**
+- Selects final 6 questions from all pools
+- Options:
+  - **SimpleQuizSelector**: Picks from highest-rated pool (no image processing)
+  - **LLMQuizComposer**: Processes images then intelligently composes quiz
+    - Extract images from all candidate pools
+    - Check Redis cache for existing descriptions
+    - Generate descriptions for uncached images (vision LLM)
+    - Replace markdown images with text descriptions
+    - LLM composition to select best 6 questions
 
 ### 1. Generators (`generators/`)
 
@@ -89,8 +142,57 @@ const quiz = await quizService.buildQuiz(
 
 This pipeline:
 1. Generates candidates from user's source lesson (if specified), RAG lessons, and ML semantic search
-2. Skips the reranking step (no-op)
-3. Uses AI to intelligently select the best questions from all pools, mixing results rather than picking a single best generator
+2. Processes images: extracts URLs, checks cache, generates descriptions for uncached images
+3. Skips the reranking step (no-op)
+4. Uses AI to intelligently select the best questions from all pools, mixing results rather than picking a single best generator
+
+## Services (`services/`)
+
+Shared services used across the quiz generation system:
+
+### ImageDescriptionService
+
+Processes images in quiz questions by converting them to text descriptions before LLM composition.
+
+**Capabilities:**
+- Extract image URLs from question markdown (`![alt](url)`)
+- Batch cache lookups using Redis `mget` for efficiency
+- Generate pedagogical descriptions using GPT-4o-mini vision model
+- Rate limiting (10 concurrent vision API calls)
+- Replace images with text: `![image](url)` → `[IMAGE: description]`
+
+**Caching:**
+- **Key format**: `quiz:image-description:${url}`
+- **Storage**: Redis/KV (90-day TTL)
+- **Strategy**: Check cache first, generate only for misses, store results
+
+**Description Quality:**
+- ✓ Focus on mathematical content (numbers, variables, equations, shapes)
+- ✓ Include directly labeled numbers
+- ✗ Avoid measuring values from scales/grids (prevents hallucination)
+- ✓ Keep to 1-2 sentences
+
+Examples:
+- ✓ "A right triangle with sides labeled 3cm, 4cm, and hypotenuse x"
+- ✓ "A bar chart comparing categories walk, car, and bus"
+- ✗ "A colorful diagram with shapes on white background"
+
+**Testing:**
+- `scripts/test-image-descriptions.ts` - Test description generation
+- `scripts/generate-image-html.ts` - Visualize descriptions in browser
+- `scripts/clear-image-cache.ts` - Manage cache
+
+### OpenAIRanker
+
+Evaluates quiz questions using OpenAI models with vision support for rating question quality and alignment with lesson objectives.
+
+### CohereReranker
+
+Reranks candidate questions using Cohere's cross-encoder model for improved relevance scoring.
+
+### LessonSlugQuizLookup
+
+Looks up quiz questions by lesson slug using Elasticsearch, supporting both starter and exit quiz retrieval.
 
 ## External Dependencies
 
@@ -98,7 +200,12 @@ This pipeline:
   - Requires: `I_DOT_AI_ELASTIC_CLOUD_ID`, `I_DOT_AI_ELASTIC_KEY`
 - **Cohere API**: For reranking documents
   - Requires: `COHERE_API_KEY`
-- **OpenAI**: For LLM-based quiz evaluation
+- **OpenAI**: For LLM-based quiz evaluation and vision-based image descriptions
+  - Vision model: GPT-4o-mini for image descriptions
+  - Reasoning model: o4-mini for quiz composition and evaluation
+- **Redis/KV**: For caching image descriptions
+  - Uses `@vercel/kv` instance
+  - 90-day TTL for image descriptions
 - **Prisma**: For database access to lesson plans
 
 ## Testing
