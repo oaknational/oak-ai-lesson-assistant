@@ -60,6 +60,7 @@ export const notifyThreatDetectionAila = inngest.createFunction(
             actionsBlock({
               userActionsProps: { userId: event.user.id },
               chatActionsProps: { chatId: args.chatId },
+              lakeraTimestamp: new Date(),
             }),
           ],
         });

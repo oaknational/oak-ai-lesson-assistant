@@ -79,12 +79,40 @@ export function chatLinkBlock(chatId: string): SectionBlock {
   };
 }
 
+/**
+ * Generate a URL to the Lakera dashboard with a time range around the given timestamp
+ * Creates a ±10 minute window around the detection time
+ *
+ * @param timestamp - Optional timestamp (defaults to now)
+ * @returns URL to Lakera dashboard filtered to the time range
+ */
+export function getLakeraDashboardUrl(timestamp?: Date): string {
+  const detectionTime = timestamp ?? new Date();
+  const startTime = new Date(detectionTime.getTime() - 10 * 60 * 1000); // -10 minutes
+  const endTime = new Date(detectionTime.getTime() + 10 * 60 * 1000); // +10 minutes
+
+  const params = new URLSearchParams({
+    page: "1",
+    pageSize: "100",
+    sortBy: "Timestamp",
+    sortDirection: "DESC",
+    timezone: "UTC",
+    start: startTime.toISOString(),
+    end: endTime.toISOString(),
+    period: "unset",
+  });
+
+  return `https://platform.lakera.ai/dashboard/requests/detections?${params.toString()}`;
+}
+
 export function actionsBlock({
   userActionsProps,
   chatActionsProps,
+  lakeraTimestamp,
 }: {
   userActionsProps?: { userId: string };
   chatActionsProps?: { chatId: string };
+  lakeraTimestamp?: Date;
 }): ActionsBlock {
   const userActions: ActionsBlock["elements"] = userActionsProps
     ? [
@@ -128,9 +156,22 @@ export function actionsBlock({
       ]
     : [];
 
+  const lakeraActions: ActionsBlock["elements"] = lakeraTimestamp
+    ? [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Lakera console",
+          },
+          url: getLakeraDashboardUrl(lakeraTimestamp),
+        },
+      ]
+    : [];
+
   return {
     type: "actions",
-    elements: [...userActions, ...chatActions],
+    elements: [...userActions, ...chatActions, ...lakeraActions],
   };
 }
 

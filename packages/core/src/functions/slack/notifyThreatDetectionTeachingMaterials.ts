@@ -60,7 +60,10 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
               requestId: getSlackThreadDetectionsData.requestId,
               userAction: args.userAction,
             }),
-            actionsBlock({ userActionsProps: { userId: event.user.id } }),
+            actionsBlock({
+              userActionsProps: { userId: event.user.id },
+              lakeraTimestamp: new Date(),
+            }),
           ],
         });
 
