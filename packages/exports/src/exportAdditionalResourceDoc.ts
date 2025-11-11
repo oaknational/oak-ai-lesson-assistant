@@ -91,7 +91,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
         userEmail,
         onStateChange,
         folderId:
-          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_RESOURCES,
+          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_MATERIALS,
       });
 
       if ("error" in result) {
@@ -127,7 +127,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
           log.info("Answers document state change", state);
         },
         folderId:
-          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_RESOURCES,
+          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_MATERIALS,
       });
 
       if ("error" in answersResult) {
@@ -168,7 +168,7 @@ export const exportAdditionalResourceDoc = async <InputData, TemplateData>({
         userEmail,
         onStateChange,
         folderId:
-          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_RESOURCES,
+          process.env.GOOGLE_DRIVE_OUTPUT_FOLDER_ID_ADDITIONAL_MATERIALS,
       });
 
       if ("error" in result) {
