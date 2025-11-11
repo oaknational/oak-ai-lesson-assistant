@@ -2,11 +2,11 @@ import { aiLogger } from "@oakai/logger";
 
 import { CohereClient } from "cohere-ai";
 
-import type { DocumentReranker, SimplifiedResult } from "./interfaces";
+import type { SimplifiedResult } from "./interfaces";
 
 const log = aiLogger("quiz");
 
-export class CohereReranker implements DocumentReranker {
+export class CohereReranker {
   private readonly cohere: CohereClient;
 
   constructor() {

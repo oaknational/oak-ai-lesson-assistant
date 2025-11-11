@@ -5,50 +5,59 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import type { QuizQuestionWithRawJson } from "../interfaces";
+import type { QuizQuestionPool } from "../interfaces";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
-// TODO: GCLOMAX - Separate out starter and exit quizzes.
 export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
-  async mappedQuizFromAilaRagRelevantLessons(
-    lessonPlan: PartialLessonPlan,
+  async poolsFromAilaRagRelevantLessons(
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[][]> {
+  ): Promise<QuizQuestionPool[]> {
     log.info(
       "Getting quizzes for relevant lessons:",
       ailaRagRelevantLessons.map((lesson) => "\n- " + lesson.title),
     );
     // TODO: MG - This is a load of DB queries and may make it spiky.
-    const quizPromises = ailaRagRelevantLessons.map((relevantLesson) =>
-      this.questionArrayFromPlanId(relevantLesson.lessonPlanId, quizType),
-    );
+    const poolPromises = ailaRagRelevantLessons.map(async (relevantLesson) => {
+      const questions = await this.questionArrayFromPlanId(
+        relevantLesson.lessonPlanId,
+        quizType,
+      );
+      if (questions.length === 0) {
+        return null;
+      }
+      return {
+        questions,
+        source: {
+          type: "ailaRag" as const,
+          lessonPlanId: relevantLesson.lessonPlanId,
+          lessonTitle: relevantLesson.title,
+        },
+      } satisfies QuizQuestionPool;
+    });
 
-    const quizzes = await Promise.all(quizPromises);
-    return quizzes.filter((quiz) => quiz.length > 0);
+    const pools = await Promise.all(poolPromises);
+    return pools.filter((pool) => pool !== null);
   }
 
-  async generateMathsStarterQuizPatch(
+  async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    return await this.mappedQuizFromAilaRagRelevantLessons(
-      lessonPlan,
+  ): Promise<QuizQuestionPool[]> {
+    return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
       "/starterQuiz",
     );
   }
 
-  //   TODO: GCLOMAX - make this unique for starter and exit quizzes.
-  async generateMathsExitQuizPatch(
+  async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    return await this.mappedQuizFromAilaRagRelevantLessons(
-      lessonPlan,
+  ): Promise<QuizQuestionPool[]> {
+    return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
       "/exitQuiz",
     );

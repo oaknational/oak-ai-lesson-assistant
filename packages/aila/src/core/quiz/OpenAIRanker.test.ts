@@ -53,7 +53,7 @@ describe("quizToLLMMessagesTest", () => {
         },
       ],
     };
-    const result = quizToLLMMessages(testInput as QuizQuestionWithRawJson);
+    const _result = quizToLLMMessages(testInput as QuizQuestionWithRawJson);
     const ans = true;
     expect(ans).toBe(true);
   });
@@ -110,7 +110,7 @@ describe("fullOpenAIQuiz", () => {
         },
       ],
     };
-    const result = combinePromptsAndQuestions(
+    const _result = combinePromptsAndQuestions(
       testLessonPlan,
       [testInput as QuizQuestionWithRawJson],
       QuizInspectionSystemPrompt,

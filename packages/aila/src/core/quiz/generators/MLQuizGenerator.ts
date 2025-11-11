@@ -1,20 +1,35 @@
 // ML-based Quiz Generator
 import { aiLogger } from "@oakai/logger";
 
+import { Client } from "@elastic/elasticsearch";
 import type {
   SearchHit,
   SearchHitsMetadata,
 } from "@elastic/elasticsearch/lib/api/types";
+import { CohereClient } from "cohere-ai";
+import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 
-import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type {
+  PartialLessonPlan,
+  QuizPath,
+  QuizV1Question,
+} from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schema";
+import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
   CustomSource,
+  QuizQuestionPool,
   QuizQuestionWithRawJson,
+  SearchResponseBody,
+  SimplifiedResult,
 } from "../interfaces";
+import { CohereReranker } from "../rerankers";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -34,18 +49,41 @@ function quizSpecificInstruction(quizType: QuizPath) {
 }
 
 export class MLQuizGenerator extends BaseQuizGenerator {
-  private async unpackAndSearch(
-    lessonPlan: PartialLessonPlan,
-  ): Promise<SearchHit<CustomSource>[]> {
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    // Using hybrid search combining BM25 and vector similarity
-    const results = await this.searchWithHybrid(
-      "oak-vector-2025-04-16",
-      qq,
-      100,
-      0.5, // 50/50 weight between BM25 and vector search
-    );
-    return results.hits;
+  protected client: Client;
+  protected cohere: CohereClient;
+  public openai: OpenAI;
+  protected rerankService: CohereReranker;
+
+  constructor() {
+    super();
+
+    if (
+      !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
+      !process.env.I_DOT_AI_ELASTIC_KEY
+    ) {
+      throw new Error(
+        "Environment variables for Elastic Cloud ID and API Key must be set",
+      );
+    }
+
+    this.client = new Client({
+      cloud: {
+        id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID,
+      },
+      auth: {
+        apiKey: process.env.I_DOT_AI_ELASTIC_KEY,
+      },
+    });
+
+    this.cohere = new CohereClient({
+      token: process.env.COHERE_API_KEY as string,
+    });
+
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    this.rerankService = new CohereReranker();
   }
 
   /**
@@ -86,19 +124,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     return quizQuestions2DArray;
   }
 
-  // This should return an array of questions - sometimes there are more than six questions, these are split later.
-  private async generateMathsQuizML(
-    lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[]> {
-    this.isValidLessonPlan(lessonPlan);
-    const hits = await this.unpackAndSearch(lessonPlan);
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    const customIds = await this.rerankAndExtractCustomIds(hits, qq);
-    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
-    return quizQuestions;
-  }
-
-  public async generateMathsQuizMLWithSemanticQueries(
+  public async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionWithRawJson[]> {
@@ -115,10 +141,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       0.5, // 50/50 weight between BM25 and vector search
     );
 
-    // const quizQuestions = await this.retrieveAndProcessQuestions(semanticQueries);
     const customIds = await this.rerankAndExtractCustomIds(
       results.hits,
       concatenatedQueries,
+      10,
     );
     const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
     return quizQuestions;
@@ -165,21 +191,13 @@ Generate a list of 1-3 semantic search queries`;
         ),
       });
 
-      const content = response.choices[0]?.message?.content;
-      if (!content) {
+      const parsedContent = response.choices[0]?.message?.parsed;
+      if (!parsedContent) {
         log.warn(
-          "OpenAI returned empty content for semantic search generation",
+          "OpenAI returned empty parsed content for semantic search generation",
         );
         return { queries: [] };
       }
-
-      // Parse the content through the schema to ensure type safety
-      const parsedContent = SemanticSearchSchema.parse({
-        queries: content
-          .split("\n")
-          .map((query) => query.trim())
-          .filter((query) => query.length > 0 && !query.match(/^\d+\.?\s*$/)),
-      });
 
       log.info(
         `Generated ${parsedContent.queries.length} semantic search queries for lesson plan`,
@@ -193,36 +211,264 @@ Generate a list of 1-3 semantic search queries`;
     }
   }
 
-  // TODO: GCLOMAX - Change for starter and exit quizzes.
-  public async generateMathsStarterQuizPatch(
+  public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz = await this.generateMathsQuizMLWithSemanticQueries(
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizML(
       lessonPlan,
       "/starterQuiz",
     );
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
-      lessonPlan,
-      quiz,
-      "/starterQuiz",
-    );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} starter Quizzes`);
-    return quiz2DArray;
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from prior knowledge",
+        },
+      } satisfies QuizQuestionPool,
+    ];
   }
-  public async generateMathsExitQuizPatch(
+
+  public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz: QuizQuestionWithRawJson[] =
-      await this.generateMathsQuizMLWithSemanticQueries(
-        lessonPlan,
-        "/exitQuiz",
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizML(lessonPlan, "/exitQuiz");
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from key learning points",
+        },
+      } satisfies QuizQuestionPool,
+    ];
+  }
+
+  // === ML-specific search and processing methods ===
+
+  protected transformHits(hits: SearchHit<CustomSource>[]): SimplifiedResult[] {
+    return hits
+      .map((hit) => {
+        const source = hit._source;
+
+        if (!source) {
+          log.warn("Hit source is undefined:", hit);
+          return null;
+        }
+
+        if (
+          typeof source.text !== "string" ||
+          typeof source.questionUid !== "string"
+        ) {
+          log.warn("Hit is missing required fields:", hit);
+          return null;
+        }
+
+        return {
+          text: source.text,
+          custom_id: source.questionUid,
+        };
+      })
+      .filter((item): item is SimplifiedResult => item !== null);
+  }
+
+  protected async searchWithBM25(
+    index: string,
+    field: string,
+    query: string,
+    _size: number = 10,
+  ): Promise<SearchHitsMetadata<CustomSource>> {
+    try {
+      log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
+      const response = await this.client.search<CustomSource>({
+        index: "oak-vector-2025-04-16",
+        query: {
+          bool: {
+            must: [{ match: { text: query } }],
+            filter: [{ term: { isLegacy: false } }],
+          },
+        },
+      });
+      log.info(`search response found ${response.hits.hits.length} hits`);
+      if (!response.hits) {
+        throw new Error("No hits property in the search response");
+      }
+
+      return response.hits;
+    } catch (error) {
+      log.error("Error searching Elasticsearch:", error);
+      if (error instanceof Error) {
+        log.error("Error message:", error.message);
+        log.error("Error stack:", error.stack);
+      }
+      throw error;
+    }
+  }
+
+  public async createEmbedding(text: string): Promise<number[]> {
+    try {
+      const response = await this.openai.embeddings.create({
+        model: "text-embedding-3-large",
+        input: text,
+        encoding_format: "float",
+        dimensions: 768,
+      });
+
+      return response.data[0]?.embedding || [];
+    } catch (error) {
+      log.error("Error creating embedding:", error);
+      throw error;
+    }
+  }
+
+  protected async searchWithHybrid(
+    index: string,
+    query: string,
+    size: number = 100,
+    hybridWeight: number = 0.5,
+  ): Promise<SearchHitsMetadata<CustomSource>> {
+    try {
+      log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
+
+      const queryEmbedding = await this.createEmbedding(query);
+
+      const response = await this.client.search<CustomSource>({
+        index,
+        size,
+        query: {
+          bool: {
+            must: [
+              {
+                function_score: {
+                  query: {
+                    bool: {
+                      should: [
+                        {
+                          match: {
+                            text: {
+                              query,
+                              boost: 1 - hybridWeight,
+                            },
+                          },
+                        },
+                        {
+                          script_score: {
+                            query: { match_all: {} },
+                            script: {
+                              source: `
+                                if (doc['embedding'].size() == 0) {
+                                  return 0;
+                                }
+                                return cosineSimilarity(params.query_vector, 'embedding') + 1.0;
+                              `,
+                              params: {
+                                query_vector: queryEmbedding,
+                              },
+                            },
+                            boost: hybridWeight,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  boost_mode: "sum",
+                },
+              },
+            ],
+            filter: [{ term: { isLegacy: false } }],
+          },
+        },
+      });
+
+      if (!response.hits) {
+        throw new Error("No hits property in the search response");
+      }
+
+      log.info(`Hybrid search found ${response.hits.hits.length} hits`);
+
+      return response.hits;
+    } catch (error) {
+      log.error("Error performing hybrid search:", error);
+      if (error instanceof Error) {
+        log.error("Error message:", error.message);
+        log.error("Error stack:", error.stack);
+      }
+      throw error;
+    }
+  }
+
+  protected async rerankDocuments(
+    query: string,
+    docs: SimplifiedResult[],
+    topN: number = 10,
+  ) {
+    if (docs.length === 0) {
+      log.error("No documents to rerank");
+      return [];
+    }
+
+    try {
+      const jsonDocs = docs.map((doc) =>
+        JSON.stringify({
+          text: doc.text,
+          custom_id: doc.custom_id,
+        }),
       );
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
-      lessonPlan,
-      quiz,
-      "/exitQuiz",
+
+      const response = await this.cohere.rerank({
+        model: "rerank-v3.5",
+        query: query,
+        documents: jsonDocs,
+        topN: topN,
+        rankFields: ["text"],
+        returnDocuments: true,
+      });
+
+      return response.results;
+    } catch (error) {
+      log.error("Error during reranking:", error);
+      return [];
+    }
+  }
+
+  protected extractCustomId(doc: RerankResponseResultsItem): string {
+    try {
+      const parsedText = JSON.parse(
+        doc.document?.text || "",
+      ) as SimplifiedResult;
+      if (!parsedText || typeof parsedText !== "object") {
+        throw new Error("Parsed text is not an object");
+      }
+
+      if (!parsedText.custom_id || typeof parsedText.custom_id !== "string") {
+        throw new Error("custom_id is not a string");
+      }
+
+      return parsedText.custom_id;
+    } catch (error) {
+      log.error("Error in extractCustomId:", error);
+      throw new Error("Failed to extract custom_id");
+    }
+  }
+
+  protected async rerankAndExtractCustomIds(
+    hits: SearchHit<CustomSource>[],
+    query: string,
+    topN: number,
+  ): Promise<string[]> {
+    const simplifiedResults = this.transformHits(hits);
+    const rerankedResults = await this.rerankDocuments(
+      query,
+      simplifiedResults,
+      topN,
     );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} exit questions`);
-    return quiz2DArray;
+    return rerankedResults.map(this.extractCustomId);
+  }
+
+  protected async retrieveAndProcessQuestions(
+    customIds: string[],
+  ): Promise<QuizQuestionWithRawJson[]> {
+    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
+    return quizQuestions;
   }
 }

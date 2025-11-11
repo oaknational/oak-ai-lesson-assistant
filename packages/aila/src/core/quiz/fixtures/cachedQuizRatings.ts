@@ -1,4 +1,4 @@
-import type { RatingResponse } from "../rerankers/RerankerStructuredOutputSchema";
+import type { RatingResponse } from "../interfaces";
 
 // Fixture 1
 const fixture1: RatingResponse = {
