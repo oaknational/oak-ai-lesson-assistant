@@ -67,7 +67,7 @@ describe("combinePromptsAndQuestions", () => {
         rawQuiz: parsedRawQuiz as NonNullable<HasuraQuiz>,
       },
     ];
-    const openAIMessage = combinePromptsAndQuestions(
+    const _openAIMessage = combinePromptsAndQuestions(
       lessonPlan,
       questions,
       QuizInspectionSystemPrompt,

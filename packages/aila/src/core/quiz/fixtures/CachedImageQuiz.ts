@@ -1,9 +1,6 @@
 /* cspell:disable */
 import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
-import type {
-  QuizQuestionPool,
-  QuizQuestionWithRawJson,
-} from "../interfaces";
+import type { QuizQuestionPool, QuizQuestionWithRawJson } from "../interfaces";
 
 export const cachedQuiz: QuizQuestionWithRawJson[] = [
   {
@@ -254,16 +251,6 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
     ],
   },
 ];
-
-export const cachedExitQuizV1Patch: PatchDocument = {
-  type: "patch",
-  reasoning: "adding maths quiz because i need to teach the kids about this",
-  value: {
-    op: "add",
-    path: "/exitQuiz",
-    value: cachedQuiz,
-  },
-};
 
 export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
   {

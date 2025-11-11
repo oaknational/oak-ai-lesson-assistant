@@ -5,17 +5,10 @@ import { Client } from "@elastic/elasticsearch";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 
-import type { JsonPatchDocument } from "../../../protocol/jsonPatchProtocol";
-import {
-  JsonPatchDocumentSchema,
-  PatchQuizV1,
-} from "../../../protocol/jsonPatchProtocol";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
-  QuizOperationType,
   QuizPath,
-  QuizV1,
   QuizV1Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
@@ -23,13 +16,12 @@ import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
   AilaQuizCandidateGenerator,
-  CustomSource,
   LessonSlugQuizLookup,
   QuizQuestionPool,
   QuizQuestionTextOnlySource,
   QuizQuestionWithRawJson,
+  SearchResponseBody,
 } from "../interfaces";
-import type { SearchResponseBody } from "../types";
 
 const log = aiLogger("aila:quiz");
 

@@ -26,10 +26,10 @@ import type {
   CustomSource,
   QuizQuestionPool,
   QuizQuestionWithRawJson,
+  SearchResponseBody,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
-import type { SearchResponseBody } from "../types";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -224,7 +224,6 @@ Generate a list of 1-3 semantic search queries`;
         source: {
           type: "mlSemanticSearch",
           semanticQuery: "Generated from prior knowledge",
-          mappedToLearningGoal: lessonPlan.priorKnowledge?.join("; "),
         },
       } satisfies QuizQuestionPool,
     ];
@@ -240,7 +239,6 @@ Generate a list of 1-3 semantic search queries`;
         source: {
           type: "mlSemanticSearch",
           semanticQuery: "Generated from key learning points",
-          mappedToLearningGoal: lessonPlan.keyLearningPoints?.join("; "),
         },
       } satisfies QuizQuestionPool,
     ];

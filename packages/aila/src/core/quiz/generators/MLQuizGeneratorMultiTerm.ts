@@ -85,7 +85,7 @@ Generate a list of 3-6 semantic search queries`;
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: "gpt-4.1",
         messages: [
           {
             role: "user",

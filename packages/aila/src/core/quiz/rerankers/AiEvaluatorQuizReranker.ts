@@ -7,16 +7,13 @@ import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
+import { evaluateQuiz, ratingResponseSchema } from "../OpenAIRanker";
 import type {
   AilaQuizReranker,
   QuizQuestionPool,
   QuizQuestionWithRawJson,
+  RatingResponse,
 } from "../interfaces";
-import {
-  type RatingResponse,
-  ratingResponseSchema,
-} from "./RerankerStructuredOutputSchema";
 
 const log = aiLogger("aila:quiz");
 

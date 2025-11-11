@@ -1,3 +1,4 @@
+import type { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -13,27 +14,19 @@ import type {
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
-  BaseType,
-  MaxRatingFunctionApplier,
-  RatingFunction,
-} from "./ChoiceModels";
-import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
-import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
 
-// TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
-// Replicate is just returning json anyway.
-export interface DocumentReranker {
-  rerankDocuments(
-    query: string,
-    docs: SimplifiedResult[],
-    topN: number,
-  ): Promise<RerankResponseResultsItem[]>;
-}
+export type SearchResponseBody<T = unknown> = SearchResponse<T>;
+
+// Rating response from rerankers
+export type RatingResponse = {
+  rating: number;
+  justification: string;
+};
 
 export interface AilaQuizService {
   generateMathsExitQuizPatch(
@@ -64,34 +57,32 @@ export interface AilaQuizComposer {
 }
 
 export interface FullQuizService {
-  quizSelector: QuizSelector<BaseType>;
+  quizSelector: QuizSelector;
   quizReranker: AilaQuizReranker;
   quizGenerators: AilaQuizCandidateGenerator[];
-  createBestQuiz(
-    quizType: quizPatchType,
+  buildQuiz(
+    quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<LatestQuiz>;
 }
-
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 // Legacy interfaces - used by reranker/selector until we migrate to composer
 export interface AilaQuizReranker {
   evaluateQuizArray(
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
-    quizType: quizPatchType,
+    quizType: QuizPath,
   ): Promise<RatingResponse[]>;
 }
 
-export interface QuizSelector<T extends BaseType> {
-  selectBestQuiz(
+export interface QuizSelector {
+  selectQuestions(
     questionPools: QuizQuestionPool[],
-    ratings: T[],
-  ): QuizQuestionWithRawJson[];
-  ratingFunction: RatingFunction<T>;
-  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
+    ratings: RatingResponse[],
+    lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+  ): Promise<QuizQuestionWithRawJson[]>;
 }
 
 export interface CustomSource {
@@ -147,7 +138,6 @@ export interface QuizQuestionPool {
     | {
         type: "mlSemanticSearch";
         semanticQuery: string;
-        mappedToLearningGoal?: string;
       };
 }
 
@@ -186,7 +176,5 @@ export interface AilaQuizRerankerFactory {
 }
 
 export interface QuizSelectorFactory {
-  createQuizSelector<T extends BaseType>(
-    selectorType: QuizSelectorType,
-  ): QuizSelector<T>;
+  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

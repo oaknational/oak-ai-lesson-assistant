@@ -1,7 +1,7 @@
 import type { Client } from "@elastic/elasticsearch";
 import type { OpenAI } from "openai";
 
-import { QuizV1Schema } from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
@@ -40,20 +40,22 @@ describe("MLQuizGenerator", () => {
 
     result.forEach((pool) => {
       pool.questions.forEach((item) => {
-        expect(QuizV1Schema.safeParse(item).success).toBe(true);
+        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
       });
     });
   });
 
   it("should generate an exit quiz", async () => {
     const result =
-      await mlQuizGenerator.generateMathsExitQuizCandidates(CircleTheoremLesson);
+      await mlQuizGenerator.generateMathsExitQuizCandidates(
+        CircleTheoremLesson,
+      );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
     result.forEach((pool) => {
       pool.questions.forEach((item) => {
-        expect(QuizV1Schema.safeParse(item).success).toBe(true);
+        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
       });
     });
   });

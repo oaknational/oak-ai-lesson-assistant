@@ -1,23 +1,14 @@
-import type { z } from "zod";
-
-import type { BaseType } from "../ChoiceModels";
-import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
-import type {
-  AilaQuizCandidateGenerator,
-  AilaQuizReranker,
-  QuizSelector,
-} from "../interfaces";
-import { AilaQuizRerankerFactoryImpl } from "../rerankers/AilaQuizRerankerFactory";
-import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
+import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
+import { ReturnFirstReranker } from "../rerankers/ReturnFirstReranker";
+import { SimpleQuizSelector } from "../selectors/SimpleQuizSelector";
 import { BaseFullQuizService } from "./BaseFullQuizService";
 
 export class BasedOnQuizService extends BaseFullQuizService {
-  public quizGenerators: AilaQuizCandidateGenerator[] = [
-    AilaQuizFactory.createQuizGenerator("basedOnRag"),
-  ];
-  public quizReranker: AilaQuizReranker =
-    new AilaQuizRerankerFactoryImpl().createAilaQuizReranker("return-first");
+  constructor() {
+    const generators = [new BasedOnRagQuizGenerator()];
+    const reranker = new ReturnFirstReranker();
+    const selector = new SimpleQuizSelector();
 
-  public quizSelector: QuizSelector<BaseType> =
-    new QuizSelectorFactoryImpl().createQuizSelector("simple");
+    super(generators, selector, reranker);
+  }
 }
