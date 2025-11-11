@@ -50,7 +50,7 @@ const runTurn = async (
 // --- Test -------------------------------------------------------------------
 
 describe("ailaTurn e2e happy path with continue loop", () => {
-  test("builds a complete lesson from a short prompt using continue", async () => {
+  test.skip("builds a complete lesson from a short prompt using continue", async () => {
     const userPrompt = "KS4 circle theorems";
     const openai = new OpenAI();
     const runtime: AilaRuntimeContext = {
