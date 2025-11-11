@@ -1,5 +1,4 @@
 import { router } from "../trpc";
-import { additionalMaterialsRouter } from "./additionalMaterials";
 import { adminRouter } from "./admin";
 import { analyticsRouter } from "./analytics";
 import { appRouter } from "./app";
@@ -14,6 +13,7 @@ import { moderationsRouter } from "./moderations";
 import { newFeatureFlag } from "./newFeatureFlag";
 import { snippetRouter } from "./snippet";
 import { subjectAndKeyStagesRouter } from "./subjectsAndKeyStage";
+import { teachingMaterialsRouter } from "./teachingMaterialsRouter";
 
 export const oakAppRouter = router({
   app: appRouter,
@@ -29,7 +29,7 @@ export const oakAppRouter = router({
   moderations: moderationsRouter,
   health: healthRouter,
   admin: adminRouter,
-  additionalMaterials: additionalMaterialsRouter,
+  teachingMaterials: teachingMaterialsRouter,
   analytics: analyticsRouter,
 });
 

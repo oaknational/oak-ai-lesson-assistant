@@ -1,0 +1,147 @@
+import { create } from "zustand";
+
+import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";
+import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
+import type { TrpcUtils } from "@/utils/trpc";
+
+import { logStoreUpdates } from "../zustandHelpers";
+import { handleAnalytics } from "./actionFunctions/handleAnalytics";
+import { handleCreateMaterialSession } from "./actionFunctions/handleCreateMaterialSession";
+import { handleDownload } from "./actionFunctions/handleDownload";
+import { handleFetchOwaLesson } from "./actionFunctions/handleFetchOwaLesson";
+import {
+  handleResetFormState,
+  handleSetActiveDropdown,
+  handleSetSubject,
+  handleSetTitle,
+  handleSetYear,
+} from "./actionFunctions/handleFormState";
+import { handleGenerateMaterial } from "./actionFunctions/handleGenerateMaterial";
+import { handleRefineMaterial } from "./actionFunctions/handleRefineMaterial";
+import { handleSetDocType } from "./actionFunctions/handleSetDocType";
+import { handleSetGeneration } from "./actionFunctions/handleSetGeneration";
+import { handleSetIsLoadingLessonPlan } from "./actionFunctions/handleSetIsLoadingLessonPlan";
+import handleSetIsMaterialLoading, {
+  handleSetIsMaterialRefining,
+} from "./actionFunctions/handleSetIsMaterialLoading";
+import { handleSetPageData } from "./actionFunctions/handleSetPageData";
+import { handleSetStepNumber } from "./actionFunctions/handleSetStepNumber";
+import { handleSubmitLessonPlan } from "./actionFunctions/handleSubmitLessonPlan";
+import { handleUndoRefinement } from "./actionFunctions/handleUndoRefinement";
+import type { TeachingMaterialsState } from "./types";
+
+export * from "./types";
+
+const DEFAULT_STATE = {
+  id: null,
+  stepNumber: 0,
+  isLoadingLessonPlan: false,
+  isMaterialLoading: false,
+  isMaterialRefining: false,
+  source: "aila" as const,
+  isDownloading: false,
+  error: null,
+  pageData: {
+    lessonPlan: {
+      lessonId: "",
+      title: "",
+      keyStage: "",
+      subject: "",
+      topic: "",
+      learningOutcome: "",
+      learningCycles: [],
+      priorKnowledge: [],
+      keyLearningPoints: [],
+      misconceptions: [],
+      keywords: [],
+      starterQuiz: undefined,
+      cycle1: undefined,
+      cycle2: undefined,
+      cycle3: undefined,
+      exitQuiz: undefined,
+      additionalMaterials: undefined,
+    },
+  },
+  generation: null,
+  docType: null,
+  formState: {
+    subject: null,
+    title: null,
+    year: null,
+    activeDropdown: null,
+  },
+  moderation: undefined,
+  threatDetection: undefined,
+  refinementGenerationHistory: [],
+};
+
+export const createTeachingMaterialsStore = (
+  props: TeachingMaterialsPageProps,
+  track: TrackFns,
+  trpc: TrpcUtils,
+  initState?: Partial<TeachingMaterialsState>,
+  refreshAuth?: () => Promise<void>,
+) => {
+  const teachingMaterialsStore = create<TeachingMaterialsState>()(
+    (set, get) => ({
+      ...DEFAULT_STATE,
+      source: props.source ?? "aila",
+      stepNumber: props.initialStep ?? 0,
+      isMaterialLoading: props.source === "owa" && props.initialStep === 3,
+      ...initState,
+      actions: {
+        // Setters
+        setStepNumber: handleSetStepNumber(set, get),
+        setPageData: handleSetPageData(set, get),
+        setGeneration: handleSetGeneration(set, get),
+        setDocType: handleSetDocType(set, get),
+        setId: (id: string | null) => set({ id }),
+        setIsLoadingLessonPlan: handleSetIsLoadingLessonPlan(set, get),
+        setSource: (source: "aila" | "owa") => set({ source }),
+        setIsMaterialLoading: handleSetIsMaterialLoading(set, get),
+        setIsMaterialRefining: handleSetIsMaterialRefining(set, get),
+        setIsResourceDownloading: (isDownloading: boolean) =>
+          set({ isDownloading }),
+        setThreatDetection: (threatDetection: boolean) => {
+          set({ threatDetection });
+        },
+        // Form state setters
+        setSubject: handleSetSubject(set, get),
+        setTitle: handleSetTitle(set, get),
+        setYear: handleSetYear(set, get),
+        setActiveDropdown: handleSetActiveDropdown(set, get),
+        resetFormState: handleResetFormState(set, get),
+
+        // Business logic actions
+        submitLessonPlan: handleSubmitLessonPlan(set, get, trpc),
+        generateMaterial: handleGenerateMaterial(set, get, trpc),
+        refineMaterial: handleRefineMaterial(set, get, trpc),
+        downloadMaterial: handleDownload(set, get),
+
+        // OWA data loading
+        fetchOwaData: handleFetchOwaLesson(set, get, trpc, refreshAuth),
+
+        // History management actions
+        undoRefinement: handleUndoRefinement(set, get),
+
+        createMaterialSession: handleCreateMaterialSession(
+          set,
+          get,
+          trpc,
+          refreshAuth,
+        ),
+
+        // Analytics actions
+        analytics: handleAnalytics(set, get, track),
+
+        // Reset store to default state
+        resetToDefault: () => set(() => ({ ...DEFAULT_STATE })),
+      },
+    }),
+  );
+
+  // Log store updates
+  logStoreUpdates(teachingMaterialsStore, "teaching-materials");
+
+  return teachingMaterialsStore;
+};

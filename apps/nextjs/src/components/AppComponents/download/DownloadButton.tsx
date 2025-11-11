@@ -46,7 +46,7 @@ export const DownloadButton = ({
   const errorMessage = data && "message" in data ? data.message : "";
   const { track } = useAnalytics();
 
-  const { icon, ext, analyticsResourceType } = getExportsConfig(exportsType);
+  const { icon, ext, analyticsMaterialType } = getExportsConfig(exportsType);
 
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserExportLink.useMutation();
@@ -62,7 +62,7 @@ export const DownloadButton = ({
       >
         <Link
           onClick={() =>
-            trackDownload(ext, analyticsResourceType, lesson, track, chatId)
+            trackDownload(ext, analyticsMaterialType, lesson, track, chatId)
           }
           className="flex w-full items-center justify-start gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=${ext}&lessonTitle=${lessonTitle}`}
@@ -79,7 +79,7 @@ export const DownloadButton = ({
         <span className="my-12 h-[2px] w-full bg-black opacity-15" />
         <Link
           onClick={() =>
-            trackDownload("pdf", analyticsResourceType, lesson, track, chatId)
+            trackDownload("pdf", analyticsMaterialType, lesson, track, chatId)
           }
           className="flex w-full items-center justify-start gap-15 hover:underline"
           href={`/api/aila-download?fileId=${fileId}&ext=pdf&lessonTitle=${lessonTitle}`}
@@ -99,7 +99,7 @@ export const DownloadButton = ({
           onClick={() =>
             trackDownload(
               "share to google drive",
-              analyticsResourceType,
+              analyticsMaterialType,
               lesson,
               track,
               chatId,

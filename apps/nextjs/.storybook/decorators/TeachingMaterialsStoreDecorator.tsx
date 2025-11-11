@@ -4,14 +4,14 @@ import type { Decorator } from "@storybook/react";
 import { fn } from "@storybook/test";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
-import { ResourcesStoresContext } from "@/stores/ResourcesStoreProvider";
-import { createResourcesStore } from "@/stores/resourcesStore";
-import type { ResourcesState } from "@/stores/resourcesStore/types";
+import { TeachingMaterialsStoresContext } from "@/stores/TeachingMaterialsStoreProvider";
+import { createTeachingMaterialsStore } from "@/stores/teachingMaterialsStore";
+import type { TeachingMaterialsState } from "@/stores/teachingMaterialsStore/types";
 import type { TrpcUtils } from "@/utils/trpc";
 
 declare module "@storybook/csf" {
   interface Parameters {
-    resourcesStoreState?: Partial<ResourcesState>;
+    resourcesStoreState?: Partial<TeachingMaterialsState>;
   }
 }
 
@@ -27,8 +27,8 @@ const mockTrpc: TrpcUtils = {
     query: fn(),
     mutation: fn(),
     subscription: fn(),
-    additionalMaterials: {
-      generateAdditionalMaterial: {
+    teachingMaterials: {
+      generateTeachingMaterial: {
         mutate: fn(),
       },
       createMaterialSession: {
@@ -53,12 +53,12 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
 ) => {
   const stores = useMemo(() => {
     // Default values for the store
-    const defaultState: Partial<ResourcesState> = {
+    const defaultState: Partial<TeachingMaterialsState> = {
       stepNumber: 0,
       docType: "additional-glossary",
       source: "aila",
-      isResourcesLoading: false,
-      isResourceRefining: false,
+      isMaterialLoading: false,
+      isMaterialRefining: false,
       pageData: {
         lessonPlan: {
           lessonId: "mock-lesson-id",
@@ -79,7 +79,7 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
     };
 
     // Create the store with merged initial values from parameters
-    const resourcesStore = createResourcesStore(
+    const resourcesStore = createTeachingMaterialsStore(
       {},
       trackEvents,
       mockTrpc,
@@ -87,13 +87,13 @@ export const TeachingMaterialsStoreDecorator: Decorator = (
     );
 
     return {
-      resources: resourcesStore,
+      teachingMaterials: resourcesStore,
     };
   }, [parameters.resourcesStoreState]);
 
   return (
-    <ResourcesStoresContext.Provider value={stores}>
+    <TeachingMaterialsStoresContext.Provider value={stores}>
       <Story />
-    </ResourcesStoresContext.Provider>
+    </TeachingMaterialsStoresContext.Provider>
   );
 };
