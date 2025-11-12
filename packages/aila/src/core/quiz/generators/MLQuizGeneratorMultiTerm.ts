@@ -145,9 +145,8 @@ Generate a list of 3-6 semantic search queries`;
       `V2: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
     );
 
-    const questions = await this.retrievalService.retrieveQuestionsByIds(
-      questionUids,
-    );
+    const questions =
+      await this.retrievalService.retrieveQuestionsByIds(questionUids);
 
     return {
       questions,

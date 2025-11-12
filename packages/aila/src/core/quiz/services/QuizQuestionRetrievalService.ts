@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 import { Client } from "@elastic/elasticsearch";
+import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 
@@ -116,7 +116,11 @@ export class QuizQuestionRetrievalService {
       // TODO: Should we throw here instead of returning null?
       // Current behavior silently filters out invalid questions
       if (error instanceof z.ZodError) {
-        log.error("Source validation error:", error.errors);
+        log.error("Validation error:", {
+          errors: error.errors,
+          jsonStringPreview: jsonString.substring(0, 300),
+          rawJsonPreview: rawQuizString.substring(0, 300),
+        });
       } else if (error instanceof SyntaxError) {
         log.error("JSON parsing error:", error.message);
       } else {

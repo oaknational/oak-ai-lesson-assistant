@@ -35,17 +35,21 @@ describe("QuizQuestionRetrievalService", () => {
 
     it("should filter out non-existent questions but preserve order of found ones", async () => {
       const mixedUids = [
-        "QUES-EYPJ1-67826",           // Real (should be first in results)
-        "QUES-NONEXISTENT-00001",     // Fake (should be filtered out)
-        "QUES-XXXXX-STRICT",          // Real placeholder (should be second in results)
-        "QUES-NONEXISTENT-00002",     // Fake (should be filtered out)
+        "QUES-EYPJ1-67826", // Real (should be first in results)
+        "QUES-NONEXISTENT-00001", // Fake (should be filtered out)
+        "QUES-XXXXX-STRICT", // Real placeholder (should be second in results)
+        "QUES-NONEXISTENT-00002", // Fake (should be filtered out)
       ];
 
       const questions = await service.retrieveQuestionsByIds(mixedUids);
 
       // Should only get real questions in the order they appeared in input
-      const foundIds = questions.map((q) => q.sourceUid).filter((id): id is string => !!id);
-      const expectedRealUids = mixedUids.filter((uid) => foundIds.includes(uid));
+      const foundIds = questions
+        .map((q) => q.sourceUid)
+        .filter((id): id is string => !!id);
+      const expectedRealUids = mixedUids.filter((uid) =>
+        foundIds.includes(uid),
+      );
 
       expect(foundIds).toEqual(expectedRealUids);
 

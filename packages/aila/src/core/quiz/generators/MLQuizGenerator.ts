@@ -6,10 +6,7 @@ import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
-import type {
-  PartialLessonPlan,
-  QuizPath,
-} from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   CustomSource,
   QuizQuestionPool,
@@ -114,9 +111,8 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       concatenatedQueries,
       10,
     );
-    const quizQuestions = await this.retrievalService.retrieveQuestionsByIds(
-      questionUids,
-    );
+    const quizQuestions =
+      await this.retrievalService.retrieveQuestionsByIds(questionUids);
     return quizQuestions;
   }
 

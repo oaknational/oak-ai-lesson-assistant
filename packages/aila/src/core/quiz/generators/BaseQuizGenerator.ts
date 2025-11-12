@@ -8,8 +8,6 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
@@ -17,6 +15,8 @@ import type {
   QuizQuestionWithSourceData,
   SearchResponseBody,
 } from "../interfaces";
+import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
