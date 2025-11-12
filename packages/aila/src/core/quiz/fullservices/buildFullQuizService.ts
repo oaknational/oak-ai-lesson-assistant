@@ -31,6 +31,7 @@ import { aiLogger } from "@oakai/logger";
 import { AilaRagQuizGenerator } from "../generators/AilaRagQuizGenerator";
 import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
 import { MLQuizGenerator } from "../generators/MLQuizGenerator";
+import { MLQuizGeneratorMultiTerm } from "../generators/MLQuizGeneratorMultiTerm";
 import type {
   AilaQuizCandidateGenerator,
   AilaQuizReranker,
@@ -58,6 +59,8 @@ function createGenerator(type: QuizGeneratorType): AilaQuizCandidateGenerator {
       return new AilaRagQuizGenerator();
     case "ml":
       return new MLQuizGenerator();
+    case "ml-multi-term":
+      return new MLQuizGeneratorMultiTerm();
     case "basedOnRag":
       return new BasedOnRagQuizGenerator();
   }

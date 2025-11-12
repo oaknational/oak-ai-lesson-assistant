@@ -84,9 +84,9 @@ export class AilaChat implements AilaChatService {
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
     this.fullQuizService = buildFullQuizService({
-      quizSelector: "llm-quiz-composer",
-      quizReranker: "no-op",
       quizGenerators: aila.options.quizGenerators,
+      quizReranker: "no-op",
+      quizSelector: "llm-quiz-composer",
     });
   }
 
