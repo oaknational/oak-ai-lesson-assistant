@@ -118,7 +118,7 @@ export class AilaModeration implements AilaModerationFeature {
         lastAssistantMessage,
         content,
       );
-      this.reportModerationToAnalytics(moderationResult, moderation);
+      await this.reportModerationToAnalytics(moderationResult, moderation);
 
       if (isToxic(moderationResult)) {
         for (const plugin of this._aila.plugins ?? []) {
@@ -141,11 +141,11 @@ export class AilaModeration implements AilaModerationFeature {
     return messageWithoutPersistence;
   }
 
-  public reportModerationToAnalytics(
+  public async reportModerationToAnalytics(
     moderationResult: ModerationResult,
     moderation: Moderation,
   ) {
-    this._aila.analytics?.reportModerationResult({
+    await this._aila.analytics?.reportModerationResult({
       distinctId: this._aila.userId,
       event: "moderation_result",
       properties: {

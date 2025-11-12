@@ -1,4 +1,4 @@
-export const generateAdditionalMaterialWithAdaptsOutputId = JSON.stringify([
+export const generateTeachingMaterialWithAdaptsOutputId = JSON.stringify([
   {
     result: {
       data: {
@@ -57,7 +57,7 @@ export const generateAdditionalMaterialWithAdaptsOutputId = JSON.stringify([
   },
 ]);
 
-export const generateAdditionalMaterialWithoutAdaptsOutputId = JSON.stringify([
+export const generateTeachingMaterialWithoutAdaptsOutputId = JSON.stringify([
   {
     result: {
       data: {

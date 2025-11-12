@@ -1,10 +1,10 @@
-import type { LessonPlanSchemaTeachingMaterials } from "@oakai/additional-materials/src/documents/additionalMaterials/sharedSchema";
 import type {
   Keyword,
   LatestQuiz,
   LatestQuizQuestion,
   Misconception,
 } from "@oakai/aila/src/protocol/schema";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
 import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
 import { isArray, isTruthy } from "remeda";

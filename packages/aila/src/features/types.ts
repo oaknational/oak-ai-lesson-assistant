@@ -22,7 +22,7 @@ export interface AilaAnalyticsFeature {
   initialiseAnalyticsContext(): void;
   reportUsageMetrics(responseBody: string, startedAt?: number): Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reportModerationResult(moderationResultEvent: any): void;
+  reportModerationResult(moderationResultEvent: any): Promise<void>;
   shutdown(): Promise<void>;
 }
 

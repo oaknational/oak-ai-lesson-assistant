@@ -115,7 +115,7 @@ export const messages = {
             op: "add",
             path: "/additionalMaterials",
             value: {
-              id: "additional-materials-test-id",
+              id: "teaching-materials-test-id",
               title: "Homework Task",
             },
           },

@@ -61,7 +61,7 @@ export class SafetyViolations {
       },
     });
 
-    posthogAiBetaServerClient.capture({
+    await posthogAiBetaServerClient.captureImmediate({
       distinctId: userId,
       event: "Safety Violation",
       properties: {
@@ -107,15 +107,14 @@ export class SafetyViolations {
     // NOTE: Clerk is the source of truth for user data, so we don't record the ban in prisma
     await clerkClient.users.banUser(userId);
 
-    posthogAiBetaServerClient.capture({
+    await posthogAiBetaServerClient.captureImmediate({
       distinctId: userId,
       event: "User Banned",
     });
-    posthogAiBetaServerClient.identify({
+    await posthogAiBetaServerClient.identifyImmediate({
       distinctId: userId,
       properties: { banned: true },
     });
-    await posthogAiBetaServerClient.flush();
     await inngest.send({
       name: "app/slack.notifyUserBan",
       user: { id: userId },
@@ -185,15 +184,14 @@ export class SafetyViolations {
       this.logger.info(`Unbanning user ${userId}`);
       await clerkClient.users.unbanUser(userId);
 
-      posthogAiBetaServerClient.capture({
+      await posthogAiBetaServerClient.captureImmediate({
         distinctId: userId,
         event: "User Unbanned",
       });
-      posthogAiBetaServerClient.identify({
+      await posthogAiBetaServerClient.identifyImmediate({
         distinctId: userId,
         properties: { banned: false },
       });
-      await posthogAiBetaServerClient.flush();
     }
   }
 }
