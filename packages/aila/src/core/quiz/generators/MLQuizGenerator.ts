@@ -1,35 +1,23 @@
 // ML-based Quiz Generator
 import { aiLogger } from "@oakai/logger";
 
-import { Client } from "@elastic/elasticsearch";
-import type {
-  SearchHit,
-  SearchHitsMetadata,
-} from "@elastic/elasticsearch/lib/api/types";
-import { CohereClient } from "cohere-ai";
-import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 
 import type {
   PartialLessonPlan,
   QuizPath,
-  QuizV1Question,
 } from "../../../protocol/schema";
-import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
-import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
-  CustomHit,
   CustomSource,
   QuizQuestionPool,
-  QuizQuestionWithRawJson,
-  SearchResponseBody,
-  SimplifiedResult,
+  QuizQuestionWithSourceData,
 } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
+import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -49,41 +37,21 @@ function quizSpecificInstruction(quizType: QuizPath) {
 }
 
 export class MLQuizGenerator extends BaseQuizGenerator {
-  protected client: Client;
-  protected cohere: CohereClient;
-  public openai: OpenAI;
+  protected searchService: ElasticsearchQuizSearchService;
+  protected retrievalService: QuizQuestionRetrievalService;
   protected rerankService: CohereReranker;
+  public openai: OpenAI;
 
   constructor() {
     super();
 
-    if (
-      !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
-      !process.env.I_DOT_AI_ELASTIC_KEY
-    ) {
-      throw new Error(
-        "Environment variables for Elastic Cloud ID and API Key must be set",
-      );
-    }
-
-    this.client = new Client({
-      cloud: {
-        id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID,
-      },
-      auth: {
-        apiKey: process.env.I_DOT_AI_ELASTIC_KEY,
-      },
-    });
-
-    this.cohere = new CohereClient({
-      token: process.env.COHERE_API_KEY as string,
-    });
+    this.searchService = new ElasticsearchQuizSearchService();
+    this.retrievalService = new QuizQuestionRetrievalService();
+    this.rerankService = new CohereReranker();
 
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
-
-    this.rerankService = new CohereReranker();
   }
 
   /**
@@ -107,10 +75,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
     lessonPlan: PartialLessonPlan,
-    quizQuestions: QuizQuestionWithRawJson[],
+    quizQuestions: QuizQuestionWithSourceData[],
     quizType: QuizPath,
-  ): QuizQuestionWithRawJson[][] {
-    const quizQuestions2DArray: QuizQuestionWithRawJson[][] = [];
+  ): QuizQuestionWithSourceData[][] {
+    const quizQuestions2DArray: QuizQuestionWithSourceData[][] = [];
     log.info(
       `MLQuizGenerator: Splitting ${quizQuestions.length} questions into chunks of 6`,
     );
@@ -127,26 +95,28 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   public async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     // Using hybrid search combining BM25 and vector similarity
     const semanticQueries: z.infer<typeof SemanticSearchSchema> =
       await this.generateSemanticSearchQueries(lessonPlan, quizType);
 
     const concatenatedQueries: string = semanticQueries.queries.join(" ");
 
-    const results = await this.searchWithHybrid(
+    const results = await this.searchService.searchWithHybrid(
       "oak-vector-2025-04-16",
       concatenatedQueries,
       100,
       0.5, // 50/50 weight between BM25 and vector search
     );
 
-    const customIds = await this.rerankAndExtractCustomIds(
+    const questionUids = await this.rerankAndExtractQuestionUids(
       results.hits,
       concatenatedQueries,
       10,
     );
-    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
+    const quizQuestions = await this.retrievalService.retrieveQuestionsByIds(
+      questionUids,
+    );
     return quizQuestions;
   }
 
@@ -246,229 +216,17 @@ Generate a list of 1-3 semantic search queries`;
 
   // === ML-specific search and processing methods ===
 
-  protected transformHits(hits: SearchHit<CustomSource>[]): SimplifiedResult[] {
-    return hits
-      .map((hit) => {
-        const source = hit._source;
-
-        if (!source) {
-          log.warn("Hit source is undefined:", hit);
-          return null;
-        }
-
-        if (
-          typeof source.text !== "string" ||
-          typeof source.questionUid !== "string"
-        ) {
-          log.warn("Hit is missing required fields:", hit);
-          return null;
-        }
-
-        return {
-          text: source.text,
-          custom_id: source.questionUid,
-        };
-      })
-      .filter((item): item is SimplifiedResult => item !== null);
-  }
-
-  protected async searchWithBM25(
-    index: string,
-    field: string,
-    query: string,
-    _size: number = 10,
-  ): Promise<SearchHitsMetadata<CustomSource>> {
-    try {
-      log.info(`Searching index: ${index}, field: ${field}, query: ${query}`);
-      const response = await this.client.search<CustomSource>({
-        index: "oak-vector-2025-04-16",
-        query: {
-          bool: {
-            must: [{ match: { text: query } }],
-            filter: [{ term: { isLegacy: false } }],
-          },
-        },
-      });
-      log.info(`search response found ${response.hits.hits.length} hits`);
-      if (!response.hits) {
-        throw new Error("No hits property in the search response");
-      }
-
-      return response.hits;
-    } catch (error) {
-      log.error("Error searching Elasticsearch:", error);
-      if (error instanceof Error) {
-        log.error("Error message:", error.message);
-        log.error("Error stack:", error.stack);
-      }
-      throw error;
-    }
-  }
-
-  public async createEmbedding(text: string): Promise<number[]> {
-    try {
-      const response = await this.openai.embeddings.create({
-        model: "text-embedding-3-large",
-        input: text,
-        encoding_format: "float",
-        dimensions: 768,
-      });
-
-      return response.data[0]?.embedding || [];
-    } catch (error) {
-      log.error("Error creating embedding:", error);
-      throw error;
-    }
-  }
-
-  protected async searchWithHybrid(
-    index: string,
-    query: string,
-    size: number = 100,
-    hybridWeight: number = 0.5,
-  ): Promise<SearchHitsMetadata<CustomSource>> {
-    try {
-      log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
-
-      const queryEmbedding = await this.createEmbedding(query);
-
-      const response = await this.client.search<CustomSource>({
-        index,
-        size,
-        query: {
-          bool: {
-            must: [
-              {
-                function_score: {
-                  query: {
-                    bool: {
-                      should: [
-                        {
-                          match: {
-                            text: {
-                              query,
-                              boost: 1 - hybridWeight,
-                            },
-                          },
-                        },
-                        {
-                          script_score: {
-                            query: { match_all: {} },
-                            script: {
-                              source: `
-                                if (doc['embedding'].size() == 0) {
-                                  return 0;
-                                }
-                                return cosineSimilarity(params.query_vector, 'embedding') + 1.0;
-                              `,
-                              params: {
-                                query_vector: queryEmbedding,
-                              },
-                            },
-                            boost: hybridWeight,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                  boost_mode: "sum",
-                },
-              },
-            ],
-            filter: [{ term: { isLegacy: false } }],
-          },
-        },
-      });
-
-      if (!response.hits) {
-        throw new Error("No hits property in the search response");
-      }
-
-      log.info(`Hybrid search found ${response.hits.hits.length} hits`);
-
-      return response.hits;
-    } catch (error) {
-      log.error("Error performing hybrid search:", error);
-      if (error instanceof Error) {
-        log.error("Error message:", error.message);
-        log.error("Error stack:", error.stack);
-      }
-      throw error;
-    }
-  }
-
-  protected async rerankDocuments(
-    query: string,
-    docs: SimplifiedResult[],
-    topN: number = 10,
-  ) {
-    if (docs.length === 0) {
-      log.error("No documents to rerank");
-      return [];
-    }
-
-    try {
-      const jsonDocs = docs.map((doc) =>
-        JSON.stringify({
-          text: doc.text,
-          custom_id: doc.custom_id,
-        }),
-      );
-
-      const response = await this.cohere.rerank({
-        model: "rerank-v3.5",
-        query: query,
-        documents: jsonDocs,
-        topN: topN,
-        rankFields: ["text"],
-        returnDocuments: true,
-      });
-
-      return response.results;
-    } catch (error) {
-      log.error("Error during reranking:", error);
-      return [];
-    }
-  }
-
-  protected extractCustomId(doc: RerankResponseResultsItem): string {
-    try {
-      const parsedText = JSON.parse(
-        doc.document?.text || "",
-      ) as SimplifiedResult;
-      if (!parsedText || typeof parsedText !== "object") {
-        throw new Error("Parsed text is not an object");
-      }
-
-      if (!parsedText.custom_id || typeof parsedText.custom_id !== "string") {
-        throw new Error("custom_id is not a string");
-      }
-
-      return parsedText.custom_id;
-    } catch (error) {
-      log.error("Error in extractCustomId:", error);
-      throw new Error("Failed to extract custom_id");
-    }
-  }
-
-  protected async rerankAndExtractCustomIds(
+  protected async rerankAndExtractQuestionUids(
     hits: SearchHit<CustomSource>[],
     query: string,
     topN: number,
   ): Promise<string[]> {
-    const simplifiedResults = this.transformHits(hits);
-    const rerankedResults = await this.rerankDocuments(
+    const simplifiedResults = this.searchService.transformHits(hits);
+    const rerankedResults = await this.rerankService.rerankDocuments(
       query,
       simplifiedResults,
       topN,
     );
-    return rerankedResults.map(this.extractCustomId);
-  }
-
-  protected async retrieveAndProcessQuestions(
-    customIds: string[],
-  ): Promise<QuizQuestionWithRawJson[]> {
-    const quizQuestions = await this.questionArrayFromCustomIds(customIds);
-    return quizQuestions;
+    return rerankedResults.map((result) => result.document.questionUid);
   }
 }

@@ -2,24 +2,19 @@ import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
-import invariant from "tiny-invariant";
-import { z } from "zod";
 
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
-  QuizV1Question,
 } from "../../../protocol/schema";
-import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
   QuizQuestionPool,
-  QuizQuestionTextOnlySource,
-  QuizQuestionWithRawJson,
+  QuizQuestionWithSourceData,
   SearchResponseBody,
 } from "../interfaces";
 
@@ -30,6 +25,7 @@ const log = aiLogger("aila:quiz");
 export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   protected client: Client;
   protected quizLookup: LessonSlugQuizLookup;
+  protected retrievalService: QuizQuestionRetrievalService;
 
   constructor() {
     if (
@@ -51,6 +47,7 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
     });
 
     this.quizLookup = new ElasticLessonQuizLookup();
+    this.retrievalService = new QuizQuestionRetrievalService();
   }
 
   abstract generateMathsExitQuizCandidates(
@@ -94,52 +91,14 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
 
   public async questionArrayFromCustomIds(
     questionUids: string[],
-  ): Promise<QuizQuestionWithRawJson[]> {
-    const response = await this.client.search<QuizQuestionTextOnlySource>({
-      index: "quiz-questions-text-only-2025-04-16",
-      body: {
-        query: {
-          bool: {
-            must: [
-              {
-                terms: {
-                  "metadata.questionUid.keyword": questionUids,
-                },
-              },
-            ],
-          },
-        },
-      },
-    });
-    if (!response.hits.hits[0]?._source) {
-      log.error("No questions found for questionUids: ", questionUids);
-      return Promise.resolve([]);
-    } else {
-      // Gives us an array of quiz questions or null, which are then filtered out.
-      // We convert the raw json to a quiz question with raw json object
-      const filteredQuizQuestions: QuizQuestionWithRawJson[] =
-        response.hits.hits
-          .map((hit) => {
-            if (!hit._source) {
-              log.error("Hit source is undefined");
-              return null;
-            }
-            // const quizQuestion = this.parseQuizQuestion(hit._source.text);
-            const quizQuestion = this.parseQuizQuestionWithRawJson(
-              hit._source.text,
-              hit._source.metadata.raw_json,
-            );
-            return quizQuestion;
-          })
-          .filter((item): item is QuizQuestionWithRawJson => item !== null);
-      return Promise.resolve(filteredQuizQuestions);
-    }
+  ): Promise<QuizQuestionWithSourceData[]> {
+    return this.retrievalService.retrieveQuestionsByIds(questionUids);
   }
 
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
@@ -156,7 +115,7 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
@@ -183,50 +142,5 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
       },
     });
     return response;
-  }
-
-  private parseQuizQuestion(jsonString: string): QuizV1Question | null {
-    try {
-      const data = JSON.parse(jsonString);
-
-      return QuizV1QuestionSchema.parse(data);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        log.error("Validation error:", error.errors);
-      } else if (error instanceof SyntaxError) {
-        log.error(
-          "OFFENDING JSON STRING: ",
-          JSON.stringify(jsonString, null, 2),
-        );
-        log.error("JSON parsing error:", error.message);
-      } else {
-        log.error("An unexpected error occurred:", error);
-      }
-      return null;
-    }
-  }
-  private parseQuizQuestionWithRawJson(
-    jsonString: string,
-    rawQuizString: string,
-  ): QuizQuestionWithRawJson | null {
-    const quizQuestion = this.parseQuizQuestion(jsonString);
-    if (!quizQuestion) {
-      return null;
-    }
-    if (!rawQuizString) {
-      return null;
-    }
-    const parsedRawQuiz = JSON.parse(rawQuizString) as HasuraQuiz;
-    invariant(parsedRawQuiz, "Parsed raw quiz is null");
-
-    // Handle case where rawQuiz is a single object instead of an array
-    const normalizedRawQuiz = Array.isArray(parsedRawQuiz)
-      ? parsedRawQuiz
-      : [parsedRawQuiz];
-
-    return {
-      ...quizQuestion,
-      rawQuiz: normalizedRawQuiz,
-    };
   }
 }

@@ -128,24 +128,26 @@ Generate a list of 3-6 semantic search queries`;
   ): Promise<QuizQuestionPool> {
     log.info(`V2: Searching for: "${query}"`);
 
-    const results = await this.searchWithHybrid(
+    const results = await this.searchService.searchWithHybrid(
       "oak-vector-2025-04-16",
       query,
       SEARCH_SIZE,
       0.5,
     );
 
-    const customIds = await this.rerankAndExtractCustomIds(
+    const questionUids = await this.rerankAndExtractQuestionUids(
       results.hits,
       query,
       candidatesPerQuery,
     );
 
     log.info(
-      `V2: Found ${customIds.length} candidates for query: "${query.substring(0, 50)}..."`,
+      `V2: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
     );
 
-    const questions = await this.retrieveAndProcessQuestions(customIds);
+    const questions = await this.retrievalService.retrieveQuestionsByIds(
+      questionUids,
+    );
 
     return {
       questions,

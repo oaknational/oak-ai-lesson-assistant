@@ -5,7 +5,7 @@ import type {
   PartialLessonPlan,
   QuizV1,
 } from "../../../protocol/schema";
-import type { QuizQuestionPool, QuizQuestionWithRawJson } from "../interfaces";
+import type { QuizQuestionPool, QuizQuestionWithSourceData } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");

@@ -12,7 +12,7 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
-import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
@@ -53,7 +53,7 @@ export interface AilaQuizComposer {
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]>;
+  ): Promise<QuizQuestionWithSourceData[]>;
 }
 
 export interface FullQuizService {
@@ -82,7 +82,7 @@ export interface QuizSelector {
     ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]>;
+  ): Promise<QuizQuestionWithSourceData[]>;
 }
 
 export interface CustomSource {
@@ -104,8 +104,9 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-export interface QuizQuestionWithRawJson extends QuizV1Question {
-  rawQuiz: NonNullable<HasuraQuiz>;
+export interface QuizQuestionWithSourceData extends QuizV1Question {
+  sourceUid: string;
+  source: HasuraQuizQuestion;
 }
 
 export interface CustomHit {
@@ -114,16 +115,11 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string; // This will be populated with questionUid from the source
-}
-
-export interface SimplifiedResultQuestion {
-  text: string;
   questionUid: string;
 }
 
 export interface QuizQuestionPool {
-  questions: QuizQuestionWithRawJson[];
+  questions: QuizQuestionWithSourceData[];
   source:
     | {
         type: "basedOn";

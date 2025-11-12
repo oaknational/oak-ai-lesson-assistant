@@ -3,7 +3,10 @@ import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { quizEffectivenessPrompt } from "../QuestionAssesmentPrompt";
-import type { QuizQuestionPool, QuizQuestionWithRawJson } from "../interfaces";
+import type {
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
+} from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 // Schema for the LLM's composition response
@@ -146,11 +149,11 @@ function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
 }
 
 function formatQuestion(
-  question: QuizQuestionWithRawJson,
+  question: QuizQuestionWithSourceData,
   poolIndex: number,
   questionIndex: number,
 ): string {
-  const questionUid = question.rawQuiz[0]?.questionUid || "unknown";
+  const questionUid = question.sourceUid;
   const answers = question.answers
     .map((answer, i) => `${i + 1}. ${answer}`)
     .join("\n");

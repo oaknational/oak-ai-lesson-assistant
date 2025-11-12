@@ -1,50 +1,49 @@
 /* cspell:disable */
 import type { PatchDocument } from "../../../protocol/jsonPatchProtocol";
-import type { QuizQuestionPool, QuizQuestionWithRawJson } from "../interfaces";
+import type { QuizQuestionPool, QuizQuestionWithSourceData } from "../interfaces";
 
-export const cachedQuiz: QuizQuestionWithRawJson[] = [
+export const cachedQuiz: QuizQuestionWithSourceData[] = [
   {
     question: "How many degrees in 2 right angles?",
     answers: ["180°"],
     distractors: ["60°", "90°"],
-    rawQuiz: [
-      {
-        questionId: 229205,
-        questionUid: "QUES-BPWF2-29205",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-BPWF2-29205",
+    source: {
+      questionId: 229205,
+      questionUid: "QUES-BPWF2-29205",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "Adjacent multiples of 8 can be found by increasing or decreasing a multiple by {{ }}.",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "Adjacent multiples of 8 can be found by increasing or decreasing a multiple by {{ }}.",
-            type: "text",
+            answer: [
+              {
+                text: "8",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
+          },
+          {
+            answer: [
+              {
+                text: "eight",
+                type: "text",
+              },
+            ],
+            answer_is_default: false,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "8",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-            {
-              answer: [
-                {
-                  text: "eight",
-                  type: "text",
-                },
-              ],
-              answer_is_default: false,
-            },
-          ],
-        },
-        feedback: "Yes, adjacent multiples have a difference of 8.",
-        hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
-        active: false,
       },
-    ],
+      feedback: "Yes, adjacent multiples have a difference of 8.",
+      hint: "Think about the words increase and decrease. You could think of adding and subtracting.",
+      active: false,
+    },
   },
   {
     question:
@@ -54,36 +53,35 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
       "No distractors for short answer",
       "No distractors for short answer",
     ],
-    rawQuiz: [
-      {
-        questionId: 229206,
-        questionUid: "QUES-RLYY2-29206",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-RLYY2-29206",
+    source: {
+      questionId: 229206,
+      questionUid: "QUES-RLYY2-29206",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "Two shapes are {{}} if the only difference between them is their size.",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "Two shapes are {{}} if the only difference between them is their size.",
-            type: "text",
+            answer: [
+              {
+                text: "similar",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "similar",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-          ],
-        },
-        feedback:
-          "Correct! Similar shapes have the same shape but different sizes.",
-        hint: "Think about shapes that look the same but are different sizes.",
-        active: true,
       },
-    ],
+      feedback:
+        "Correct! Similar shapes have the same shape but different sizes.",
+      hint: "Think about shapes that look the same but are different sizes.",
+      active: true,
+    },
   },
   {
     question:
@@ -93,36 +91,35 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
       "No distractors for short answer",
       "No distractors for short answer",
     ],
-    rawQuiz: [
-      {
-        questionId: 229207,
-        questionUid: "QUES-XRES2-29207",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-XRES2-29207",
+    source: {
+      questionId: 229207,
+      questionUid: "QUES-XRES2-29207",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "A fruit stall is having a sale. It sells cherries in boxes of four pairs. How many cherries are there in six packs? There will be {{ }} in six packs.",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "A fruit stall is having a sale. It sells cherries in boxes of four pairs. How many cherries are there in six packs? There will be {{ }} in six packs.",
-            type: "text",
+            answer: [
+              {
+                text: "24",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "24",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-          ],
-        },
-        feedback:
-          "Correct! 4 pairs = 8 cherries per box. 6 boxes × 8 cherries = 24 cherries.",
-        hint: "Each box contains 4 pairs of cherries. How many cherries is that per box?",
-        active: true,
       },
-    ],
+      feedback:
+        "Correct! 4 pairs = 8 cherries per box. 6 boxes × 8 cherries = 24 cherries.",
+      hint: "Each box contains 4 pairs of cherries. How many cherries is that per box?",
+      active: true,
+    },
   },
   {
     question:
@@ -134,54 +131,53 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
       "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
       "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
     ],
-    rawQuiz: [
-      {
-        questionId: 229208,
-        questionUid: "QUES-RKQC2-29208",
-        questionType: "multiple-choice",
-        questionStem: [
+    sourceUid: "QUES-RKQC2-29208",
+    source: {
+      questionId: 229208,
+      questionUid: "QUES-RKQC2-29208",
+      questionType: "multiple-choice",
+      questionStem: [
+        {
+          text: "In which image is the circumference labelled with a question mark?",
+          type: "text",
+        },
+      ],
+      answers: {
+        "multiple-choice": [
           {
-            text: "In which image is the circumference labelled with a question mark?",
-            type: "text",
+            answer: [
+              {
+                text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
+                type: "text",
+              },
+            ],
+            answer_is_correct: true,
+          },
+          {
+            answer: [
+              {
+                text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
+          },
+          {
+            answer: [
+              {
+                text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
           },
         ],
-        answers: {
-          "multiple-choice": [
-            {
-              answer: [
-                {
-                  text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: true,
-            },
-            {
-              answer: [
-                {
-                  text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703163380/pz6cn5k4wmowycnjq5am.png)",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-            {
-              answer: [
-                {
-                  text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/mr09mrwkqdtk1dvjdoi0.png)",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-          ],
-        },
-        feedback:
-          "Correct! The first image shows the circumference marked with a question mark.",
-        hint: "Look for the image where the circumference (the distance around the circle) is marked with a question mark.",
-        active: true,
       },
-    ],
+      feedback:
+        "Correct! The first image shows the circumference marked with a question mark.",
+      hint: "Look for the image where the circumference (the distance around the circle) is marked with a question mark.",
+      active: true,
+    },
   },
   {
     question:
@@ -191,189 +187,185 @@ export const cachedQuiz: QuizQuestionWithRawJson[] = [
       "congruent as the three interior angles are all the same.",
       "neither similar nor congruent.",
     ],
-    rawQuiz: [
-      {
-        questionId: 229209,
-        questionUid: "QUES-FZZN2-29209",
-        questionType: "multiple-choice",
-        questionStem: [
+    sourceUid: "QUES-FZZN2-29209",
+    source: {
+      questionId: 229209,
+      questionUid: "QUES-FZZN2-29209",
+      questionType: "multiple-choice",
+      questionStem: [
+        {
+          text: "Complete the statement. Triangle ABC and triangle XYZ are ____________.",
+          type: "text",
+        },
+        {
+          type: "image",
+          image_object: {
+            secure_url:
+              "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
+            metadata: {
+              attribution: "Two triangles with labeled angles",
+            },
+          },
+        },
+      ],
+      answers: {
+        "multiple-choice": [
           {
-            text: "Complete the statement. Triangle ABC and triangle XYZ are ____________.",
-            type: "text",
+            answer: [
+              {
+                text: "similar as the three interior angles are the same.",
+                type: "text",
+              },
+            ],
+            answer_is_correct: true,
           },
           {
-            type: "image",
-            image_object: {
-              secure_url:
-                "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
-              metadata: {
-                attribution: "Two triangles with labeled angles",
+            answer: [
+              {
+                text: "congruent as the three interior angles are all the same.",
+                type: "text",
               },
-            },
+            ],
+            answer_is_correct: false,
+          },
+          {
+            answer: [
+              {
+                text: "neither similar nor congruent.",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
           },
         ],
-        answers: {
-          "multiple-choice": [
-            {
-              answer: [
-                {
-                  text: "similar as the three interior angles are the same.",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: true,
-            },
-            {
-              answer: [
-                {
-                  text: "congruent as the three interior angles are all the same.",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-            {
-              answer: [
-                {
-                  text: "neither similar nor congruent.",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-          ],
-        },
-        feedback:
-          "Correct! The triangles are similar because they have the same angles.",
-        hint: "Look at the angles in both triangles. Are they the same?",
-        active: true,
       },
-    ],
+      feedback:
+        "Correct! The triangles are similar because they have the same angles.",
+      hint: "Look at the angles in both triangles. Are they the same?",
+      active: true,
+    },
   },
 ];
 
-export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
+export const cachedBadQuiz: QuizQuestionWithSourceData[] = [
   {
     question: "angles?????",
     answers: ["180"],
     distractors: ["elephant", "banana"],
-    rawQuiz: [
-      {
-        questionId: 999001,
-        questionUid: "QUES-BAD1-999001",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-BAD1-999001",
+    source: {
+      questionId: 999001,
+      questionUid: "QUES-BAD1-999001",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "angles?????",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "angles?????",
-            type: "text",
+            answer: [
+              {
+                text: "180",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "180",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-          ],
-        },
-        feedback: "idk man just put 180",
-        hint: "just guess lol",
-        active: true,
       },
-    ],
+      feedback: "idk man just put 180",
+      hint: "just guess lol",
+      active: true,
+    },
   },
   {
     question:
       "SHAPES ARE WHAT WHEN THEY LOOK KINDA THE SAME BUT DIFFERENT SIZES????????",
     answers: ["similar", "Similar", "SIMILAR", "similar"],
     distractors: ["idk", "maybe"],
-    rawQuiz: [
-      {
-        questionId: 999002,
-        questionUid: "QUES-BAD2-999002",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-BAD2-999002",
+    source: {
+      questionId: 999002,
+      questionUid: "QUES-BAD2-999002",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "SHAPES ARE WHAT WHEN THEY LOOK KINDA THE SAME BUT DIFFERENT SIZES????????",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "SHAPES ARE WHAT WHEN THEY LOOK KINDA THE SAME BUT DIFFERENT SIZES????????",
-            type: "text",
+            answer: [
+              {
+                text: "similar",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
+          },
+          {
+            answer: [
+              {
+                text: "Similar",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
+          },
+          {
+            answer: [
+              {
+                text: "SIMILAR",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "similar",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-            {
-              answer: [
-                {
-                  text: "Similar",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-            {
-              answer: [
-                {
-                  text: "SIMILAR",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-          ],
-        },
-        feedback: "whatever just put similar",
-        hint: "just type similar in any case",
-        active: true,
       },
-    ],
+      feedback: "whatever just put similar",
+      hint: "just type similar in any case",
+      active: true,
+    },
   },
   {
     question:
       "cherries cost £5 per box and boxes have 8 cherries but then there's a sale for 20% off and you buy 3 boxes how many cherries????",
     answers: ["24"],
     distractors: ["£12", "sale price"],
-    rawQuiz: [
-      {
-        questionId: 999003,
-        questionUid: "QUES-BAD3-999003",
-        questionType: "short-answer",
-        questionStem: [
+    sourceUid: "QUES-BAD3-999003",
+    source: {
+      questionId: 999003,
+      questionUid: "QUES-BAD3-999003",
+      questionType: "short-answer",
+      questionStem: [
+        {
+          text: "cherries cost £5 per box and boxes have 8 cherries but then there's a sale for 20% off and you buy 3 boxes how many cherries????",
+          type: "text",
+        },
+      ],
+      answers: {
+        "short-answer": [
           {
-            text: "cherries cost £5 per box and boxes have 8 cherries but then there's a sale for 20% off and you buy 3 boxes how many cherries????",
-            type: "text",
+            answer: [
+              {
+                text: "24",
+                type: "text",
+              },
+            ],
+            answer_is_default: true,
           },
         ],
-        answers: {
-          "short-answer": [
-            {
-              answer: [
-                {
-                  text: "24",
-                  type: "text",
-                },
-              ],
-              answer_is_default: true,
-            },
-          ],
-        },
-        feedback: "math is hard",
-        hint: "just put 24 trust me",
-        active: true,
       },
-    ],
+      feedback: "math is hard",
+      hint: "just put 24 trust me",
+      active: true,
+    },
   },
   {
     question: "which one has the ? on it lol",
@@ -381,121 +373,119 @@ export const cachedBadQuiz: QuizQuestionWithRawJson[] = [
       "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
     ],
     distractors: ["this one", "the other one"],
-    rawQuiz: [
-      {
-        questionId: 999004,
-        questionUid: "QUES-BAD4-999004",
-        questionType: "multiple-choice",
-        questionStem: [
+    sourceUid: "QUES-BAD4-999004",
+    source: {
+      questionId: 999004,
+      questionUid: "QUES-BAD4-999004",
+      questionType: "multiple-choice",
+      questionStem: [
+        {
+          text: "which one has the ? on it lol",
+          type: "text",
+        },
+      ],
+      answers: {
+        "multiple-choice": [
           {
-            text: "which one has the ? on it lol",
-            type: "text",
+            answer: [
+              {
+                text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
+                type: "text",
+              },
+            ],
+            answer_is_correct: true,
+          },
+          {
+            answer: [
+              {
+                text: "this one",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
+          },
+          {
+            answer: [
+              {
+                text: "the other one",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
           },
         ],
-        answers: {
-          "multiple-choice": [
-            {
-              answer: [
-                {
-                  text: "![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1703169784/fg4uyx41rfnksbvav2nh.png)",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: true,
-            },
-            {
-              answer: [
-                {
-                  text: "this one",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-            {
-              answer: [
-                {
-                  text: "the other one",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-          ],
-        },
-        feedback: "just click the first one",
-        hint: "look for the ? mark",
-        active: true,
       },
-    ],
+      feedback: "just click the first one",
+      hint: "look for the ? mark",
+      active: true,
+    },
   },
   {
     question:
       "triangles ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png)",
     answers: ["theyre the same angles init"],
     distractors: ["they look pretty", "triangles are my favourite shape"],
-    rawQuiz: [
-      {
-        questionId: 999005,
-        questionUid: "QUES-BAD5-999005",
-        questionType: "multiple-choice",
-        questionStem: [
+    sourceUid: "QUES-BAD5-999005",
+    source: {
+      questionId: 999005,
+      questionUid: "QUES-BAD5-999005",
+      questionType: "multiple-choice",
+      questionStem: [
+        {
+          text: "triangles",
+          type: "text",
+        },
+        {
+          type: "image",
+          image_object: {
+            secure_url:
+              "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
+            metadata: {
+              attribution: "some triangles or whatever",
+            },
+          },
+        },
+      ],
+      answers: {
+        "multiple-choice": [
           {
-            text: "triangles",
-            type: "text",
+            answer: [
+              {
+                text: "theyre the same angles init",
+                type: "text",
+              },
+            ],
+            answer_is_correct: true,
           },
           {
-            type: "image",
-            image_object: {
-              secure_url:
-                "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
-              metadata: {
-                attribution: "some triangles or whatever",
+            answer: [
+              {
+                text: "they look pretty",
+                type: "text",
               },
-            },
+            ],
+            answer_is_correct: false,
+          },
+          {
+            answer: [
+              {
+                text: "triangles are my favourite shape",
+                type: "text",
+              },
+            ],
+            answer_is_correct: false,
           },
         ],
-        answers: {
-          "multiple-choice": [
-            {
-              answer: [
-                {
-                  text: "theyre the same angles init",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: true,
-            },
-            {
-              answer: [
-                {
-                  text: "they look pretty",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-            {
-              answer: [
-                {
-                  text: "triangles are my favourite shape",
-                  type: "text",
-                },
-              ],
-              answer_is_correct: false,
-            },
-          ],
-        },
-        feedback: "bruh just look at the angles",
-        hint: "the angles are the same innit",
-        active: true,
       },
-    ],
+      feedback: "bruh just look at the angles",
+      hint: "the angles are the same innit",
+      active: true,
+    },
   },
 ];
 
 export function createMockQuestionPool(
-  questions: QuizQuestionWithRawJson[],
+  questions: QuizQuestionWithSourceData[],
   id: string = "test-id",
   title: string = "Test Lesson",
 ): QuizQuestionPool {

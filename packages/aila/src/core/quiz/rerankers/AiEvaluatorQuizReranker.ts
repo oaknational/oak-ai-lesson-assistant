@@ -11,7 +11,7 @@ import { evaluateQuiz, ratingResponseSchema } from "../services/OpenAIRanker";
 import type {
   AilaQuizReranker,
   QuizQuestionPool,
-  QuizQuestionWithRawJson,
+  QuizQuestionWithSourceData,
   RatingResponse,
 } from "../interfaces";
 

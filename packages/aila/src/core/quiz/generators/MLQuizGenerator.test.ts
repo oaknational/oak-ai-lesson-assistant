@@ -5,25 +5,6 @@ import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
-describe("IntegrationTests", () => {
-  let mlQuizGenerator: MLQuizGenerator;
-
-  // Set timeout to 30 seconds for all tests in this block
-  jest.setTimeout(30000);
-
-  beforeEach(() => {
-    mlQuizGenerator = new MLQuizGenerator();
-  });
-
-  it("should generate embedding", async () => {
-    const embedding = await mlQuizGenerator.createEmbedding(
-      "circle theorems and angles",
-    );
-    expect(embedding).toBeDefined();
-    expect(embedding.length).toBe(768);
-  });
-});
-
 describe("MLQuizGenerator", () => {
   let mlQuizGenerator: MLQuizGenerator = new MLQuizGenerator();
 
@@ -58,14 +39,6 @@ describe("MLQuizGenerator", () => {
         expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
       });
     });
-  });
-
-  it("should generate embedding", async () => {
-    const embedding = await mlQuizGenerator.createEmbedding(
-      "circle theorems and angles",
-    );
-    expect(embedding).toBeDefined();
-    expect(embedding.length).toBe(768);
   });
 
   it("should generate semantic search queries", async () => {
@@ -121,6 +94,7 @@ describe("MLQuizGenerator", () => {
 
     // Check that each question has the required properties
     result.forEach((question) => {
+      expect(question).toBeDefined();
       expect(question).toHaveProperty("question");
       expect(question).toHaveProperty("answers");
       expect(question).toHaveProperty("distractors");

@@ -98,10 +98,9 @@ async function testComposer() {
       log.info(`Selected ${selectedQuestions.length} questions:\n`);
 
       selectedQuestions.forEach((q, i) => {
-        const questionUid = q.rawQuiz[0]?.questionUid || "unknown";
         const questionText = q.question || "";
         log.info(
-          `${i + 1}. [${questionUid}] ${questionText.substring(0, 100)}${questionText.length > 100 ? "..." : ""}`,
+          `${i + 1}. [${q.sourceUid}] ${questionText.substring(0, 100)}${questionText.length > 100 ? "..." : ""}`,
         );
         log.info(
           `   Answers: ${q.answers.length}, Distractors: ${q.distractors.length}`,

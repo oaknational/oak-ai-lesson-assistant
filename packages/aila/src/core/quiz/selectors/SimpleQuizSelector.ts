@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   QuizQuestionPool,
-  QuizQuestionWithRawJson,
+  QuizQuestionWithSourceData,
   QuizSelector,
   RatingResponse,
 } from "../interfaces";
@@ -16,7 +16,7 @@ export class SimpleQuizSelector implements QuizSelector {
     ratings: RatingResponse[],
     _lessonPlan: PartialLessonPlan,
     _quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     // Find highest rated quiz
     let maxRating = -Infinity;
     let selectedIndex = 0;
