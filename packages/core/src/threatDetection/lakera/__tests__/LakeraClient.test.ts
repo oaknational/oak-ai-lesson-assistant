@@ -123,7 +123,7 @@ describe("LakeraClient", () => {
         ok: false,
         status: 401,
         statusText: "Unauthorized",
-        json: async () => ({ error: "Invalid API key" }),
+        json: () => ({ error: "Invalid API key" }),
       });
 
       const client = new LakeraClient({
@@ -157,7 +157,7 @@ describe("LakeraClient", () => {
       mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => mockResponse,
+        json: () => mockResponse,
       });
 
       const client = new LakeraClient({
@@ -185,7 +185,7 @@ describe("LakeraClient", () => {
       mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => mockResponse,
+        json: () => mockResponse,
       });
 
       const client = new LakeraClient({
