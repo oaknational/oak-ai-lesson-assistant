@@ -37,7 +37,7 @@ describe("QuizQuestionRetrievalService", () => {
       const mixedUids = [
         "QUES-EYPJ1-67826",           // Real (should be first in results)
         "QUES-NONEXISTENT-00001",     // Fake (should be filtered out)
-        "QUES-XXXXX-XXXXX",           // Real (should be second in results)
+        "QUES-XXXXX-STRICT",          // Real placeholder (should be second in results)
         "QUES-NONEXISTENT-00002",     // Fake (should be filtered out)
       ];
 

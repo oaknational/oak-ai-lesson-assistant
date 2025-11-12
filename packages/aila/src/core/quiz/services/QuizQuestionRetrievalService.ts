@@ -1,5 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
+import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 import { Client } from "@elastic/elasticsearch";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -71,16 +72,7 @@ export class QuizQuestionRetrievalService {
     }
 
     const parsedQuestions: QuizQuestionWithSourceData[] = response.hits.hits
-      .map((hit) => {
-        if (!hit._source) {
-          log.error("Hit source is undefined");
-          return null;
-        }
-        return this.parseQuizQuestionWithSourceData(
-          hit._source.text,
-          hit._source.metadata.raw_json,
-        );
-      })
+      .map((hit) => this.parseQuizQuestionWithSourceData(hit))
       .filter((item): item is QuizQuestionWithSourceData => item !== null);
 
     // Sort to match input order - Elasticsearch terms query doesn't preserve order
@@ -91,41 +83,29 @@ export class QuizQuestionRetrievalService {
     return orderedQuestions;
   }
 
-  private parseQuizQuestion(jsonString: string): QuizV1Question | null {
-    try {
-      const data = JSON.parse(jsonString);
-      return QuizV1QuestionSchema.parse(data);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        log.error("Validation error:", error.errors);
-      } else if (error instanceof SyntaxError) {
-        log.error(
-          "OFFENDING JSON STRING: ",
-          JSON.stringify(jsonString, null, 2),
-        );
-        log.error("JSON parsing error:", error.message);
-      } else {
-        log.error("An unexpected error occurred:", error);
-      }
-      return null;
-    }
-  }
-
   private parseQuizQuestionWithSourceData(
-    jsonString: string,
-    rawQuizString: string,
+    hit: SearchHit<QuizQuestionTextOnlySource>,
   ): QuizQuestionWithSourceData | null {
-    const quizQuestion = this.parseQuizQuestion(jsonString);
-    if (!quizQuestion) {
+    if (!hit._source) {
+      log.error("Hit source is undefined");
       return null;
     }
+
+    const jsonString = hit._source.text;
+    const rawQuizString = hit._source.metadata.raw_json;
+
     if (!rawQuizString) {
       return null;
     }
 
     try {
-      const data = JSON.parse(rawQuizString);
-      const source = hasuraQuizQuestionSchema.parse(data);
+      // Parse QuizV1 format from text field
+      const questionData = JSON.parse(jsonString);
+      const quizQuestion = QuizV1QuestionSchema.parse(questionData);
+
+      // Parse HasuraQuizQuestion format from raw_json field
+      const sourceData = JSON.parse(rawQuizString);
+      const source = hasuraQuizQuestionSchema.parse(sourceData);
 
       return {
         ...quizQuestion,
