@@ -44,8 +44,7 @@ const parseVercelEnv = (
 const environment = parseEnvironment(process.env.NEXT_PUBLIC_ENVIRONMENT);
 
 const cspConfig: CspConfig = {
-  // strictCsp: process.env.STRICT_CSP === "true",
-  strictCsp: true,
+  strictCsp: process.env.STRICT_CSP === "true",
   environment,
 
   posthogApiKey: process.env.NEXT_PUBLIC_POSTHOG_OAK_API_KEY ?? "",
