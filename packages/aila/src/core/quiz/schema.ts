@@ -2,7 +2,12 @@ import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
 // Generator Types
-export const QuizGeneratorTypeSchema = z.enum(["rag", "ml", "basedOnRag"]);
+export const QuizGeneratorTypeSchema = z.enum([
+  "rag",
+  "ml",
+  "mlMultiTerm",
+  "basedOnRag",
+]);
 export type QuizGeneratorType = z.infer<typeof QuizGeneratorTypeSchema>;
 
 // Reranker Types
