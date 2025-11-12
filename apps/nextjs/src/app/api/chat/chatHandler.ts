@@ -49,7 +49,7 @@ function getQuizGenerators(): QuizGeneratorType[] {
   if (envValue) {
     const generators = envValue.split(",").map((g) => g.trim());
     const validGenerators = generators.filter((g): g is QuizGeneratorType =>
-      ["rag", "ml", "basedOnRag"].includes(g),
+      ["rag", "ml", "basedOnRag", "ml-multi-term"].includes(g),
     );
     if (validGenerators.length > 0) {
       return validGenerators;

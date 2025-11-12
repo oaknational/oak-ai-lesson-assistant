@@ -12,7 +12,12 @@ export type CreateOpenAIClientProps =
       app: "lesson-assistant" | "moderation";
     }
   | {
-      app: "legacy-lesson-planner" | "image-alt-text" | "maths-reranker";
+      app:
+        | "legacy-lesson-planner"
+        | "image-alt-text"
+        | "maths-reranker"
+        | "maths-composer"
+        | "maths-quiz-images";
     };
 
 function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {

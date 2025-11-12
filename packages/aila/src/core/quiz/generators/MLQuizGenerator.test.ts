@@ -1,28 +1,9 @@
 import type { Client } from "@elastic/elasticsearch";
 import type { OpenAI } from "openai";
 
-import { QuizV1Schema } from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
-
-describe("IntegrationTests", () => {
-  let mlQuizGenerator: MLQuizGenerator;
-
-  // Set timeout to 30 seconds for all tests in this block
-  jest.setTimeout(30000);
-
-  beforeEach(() => {
-    mlQuizGenerator = new MLQuizGenerator();
-  });
-
-  it("should generate embedding", async () => {
-    const embedding = await mlQuizGenerator.createEmbedding(
-      "circle theorems and angles",
-    );
-    expect(embedding).toBeDefined();
-    expect(embedding.length).toBe(768);
-  });
-});
 
 describe("MLQuizGenerator", () => {
   let mlQuizGenerator: MLQuizGenerator = new MLQuizGenerator();
@@ -32,32 +13,32 @@ describe("MLQuizGenerator", () => {
 
   it("should generate a starter quiz", async () => {
     const result =
-      await mlQuizGenerator.generateMathsStarterQuizPatch(CircleTheoremLesson);
+      await mlQuizGenerator.generateMathsStarterQuizCandidates(
+        CircleTheoremLesson,
+      );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
 
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    result.forEach((pool) => {
+      pool.questions.forEach((item) => {
+        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
+      });
     });
   });
 
   it("should generate an exit quiz", async () => {
     const result =
-      await mlQuizGenerator.generateMathsExitQuizPatch(CircleTheoremLesson);
+      await mlQuizGenerator.generateMathsExitQuizCandidates(
+        CircleTheoremLesson,
+      );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    result.forEach((pool) => {
+      pool.questions.forEach((item) => {
+        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
+      });
     });
-  });
-
-  it("should generate embedding", async () => {
-    const embedding = await mlQuizGenerator.createEmbedding(
-      "circle theorems and angles",
-    );
-    expect(embedding).toBeDefined();
-    expect(embedding.length).toBe(768);
   });
 
   it("should generate semantic search queries", async () => {
@@ -102,7 +83,7 @@ describe("MLQuizGenerator", () => {
     jest.setTimeout(60000); // 60 seconds
 
     // This test makes real API calls to OpenAI and Elasticsearch
-    const result = await mlQuizGenerator.generateMathsQuizMLWithSemanticQueries(
+    const result = await mlQuizGenerator.generateMathsQuizML(
       CircleTheoremLesson,
       "/starterQuiz",
     );
@@ -113,6 +94,7 @@ describe("MLQuizGenerator", () => {
 
     // Check that each question has the required properties
     result.forEach((question) => {
+      expect(question).toBeDefined();
       expect(question).toHaveProperty("question");
       expect(question).toHaveProperty("answers");
       expect(question).toHaveProperty("distractors");

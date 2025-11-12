@@ -105,7 +105,7 @@
     "next": "14.2.33",
     "object-hash": "^3.0.0",
     "openai": "^4.96.0",
-    "p-limit": "^6.1.0",
+    "p-limit": "^7.2.0",
     "partial-json-parser": "^1.2.2",
     "posthog-js": "^1.201.0",
     "posthog-node": "^5.10.4",
