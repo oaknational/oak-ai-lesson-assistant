@@ -19,8 +19,20 @@ try {
   }
 }
 
-const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
-const BRANCH = serverRuntimeConfig?.BRANCH as string | undefined;
+// Try to get from Next.js serverRuntimeConfig first, fallback to env vars
+const CONTEXT =
+  (serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined) ??
+  process.env.CONTEXT ?? // Netlify
+  (process.env.VERCEL_ENV === "production"
+    ? "production"
+    : process.env.VERCEL_ENV === "preview"
+      ? "deploy-preview"
+      : undefined);
+
+const BRANCH =
+  (serverRuntimeConfig?.BRANCH as string | undefined) ??
+  process.env.BRANCH ??
+  process.env.VERCEL_GIT_COMMIT_REF;
 
 function getInngestEnv() {
   if (CONTEXT === "production") {
@@ -39,6 +51,14 @@ function isJestEnvironment() {
 
 const inngestEnv = getInngestEnv();
 const inngestEventKey = process.env.INNGEST_EVENT_KEY;
+
+log.info("Inngest environment configuration", {
+  inngestEnv,
+  context: CONTEXT,
+  branch: BRANCH,
+  nodeEnv: process.env.NODE_ENV,
+  hasEventKey: !!inngestEventKey,
+});
 
 if (!inngestEventKey) {
   throw new Error("Missing env var INNGEST_EVENT_KEY");
