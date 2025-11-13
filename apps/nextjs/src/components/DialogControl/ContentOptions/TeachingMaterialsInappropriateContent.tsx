@@ -1,0 +1,59 @@
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+
+import invariant from "tiny-invariant";
+
+import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
+import {
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
+import {
+  moderationSelector,
+  pageDataSelector,
+} from "@/stores/teachingMaterialsStore/selectors";
+
+import TeachingMaterialsModerationFeedback from "./TeachingMaterialsModerationFeedback";
+
+type TeachingMaterialsInappropriateContentProps = {
+  closeDialog: () => void;
+};
+
+const TeachingMaterialsInappropriateContent = ({
+  closeDialog,
+}: Readonly<TeachingMaterialsInappropriateContentProps>) => {
+  const { resetToDefault } = useTeachingMaterialsActions();
+  const moderation = useTeachingMaterialsStore(moderationSelector);
+  const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
+  invariant(moderation, "Moderation data is required for this component");
+  const { submitSurveyWithOutClosing } = usePosthogFeedbackSurvey({
+    surveyName: "Moderation feedback",
+  });
+
+  return (
+    <TeachingMaterialsModerationFeedback
+      closeDialog={closeDialog}
+      resetToDefault={resetToDefault}
+      heading="Potential misuse of Aila detected"
+      message={
+        "Aila is designed to create classroom-appropriate content. This topic has been identified as potentially unsuitable, preventing you from continuing to create teaching materials. Continuing to generate inappropriate content will result in your account being blocked. If you believe this is an error, please provide feedback."
+      }
+      submitSurvey={(feedback) => {
+        submitSurveyWithOutClosing({
+          $survey_response: getSafetyResult(moderation),
+          $survey_response_1: moderation.categories,
+          $survey_response_2: null,
+          $survey_response_3: id,
+          $survey_response_4: feedback,
+          $survey_response_5: "teaching-materials",
+        });
+      }}
+      backButtonLabel="Back"
+      onBack={() => {
+        resetToDefault();
+        closeDialog();
+      }}
+    />
+  );
+};
+
+export default TeachingMaterialsInappropriateContent;

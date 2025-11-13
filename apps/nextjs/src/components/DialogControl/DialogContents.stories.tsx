@@ -107,26 +107,26 @@ export const DemoInterstitialLimited: Story = {
   ],
 };
 
-export const AdditionalMaterialsModeration: Story = {
+export const TeachingMaterialsModeration: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-moderation",
+    dialogWindow: "teaching-materials-moderation",
   },
   decorators: [TeachingMaterialsStoreDecorator],
 };
 
-export const AdditionalMaterialsThreatDetected: Story = {
+export const TeachingMaterialsThreatDetected: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-threat-detected",
+    dialogWindow: "teaching-materials-threat-detected",
   },
   decorators: [TeachingMaterialsStoreDecorator],
 };
 
-export const AdditionalMaterialsRateLimit: Story = {
+export const TeachingMaterialsRateLimit: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-rate-limit",
+    dialogWindow: "teaching-materials-rate-limit",
   },
   decorators: [
     TeachingMaterialsStoreDecorator,
@@ -138,10 +138,10 @@ export const AdditionalMaterialsRateLimit: Story = {
   ],
 };
 
-export const AdditionalMaterialsRateLimitDemo: Story = {
+export const TeachingMaterialsRateLimitDemo: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-rate-limit",
+    dialogWindow: "teaching-materials-rate-limit",
     auth: "signedInDemo",
   },
   decorators: [
@@ -154,26 +154,26 @@ export const AdditionalMaterialsRateLimitDemo: Story = {
   ],
 };
 
-export const AdditionalMaterialsInappropriateContent: Story = {
+export const TeachingMaterialsInappropriateContent: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-toxic-moderation",
+    dialogWindow: "teaching-materials-toxic-moderation",
   },
   decorators: [TeachingMaterialsStoreDecorator],
 };
 
-export const AdditionalMaterialsStartAgain: Story = {
+export const TeachingMaterialsStartAgain: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-start-again",
+    dialogWindow: "teaching-materials-start-again",
   },
   decorators: [TeachingMaterialsStoreDecorator],
 };
 
-export const AdditionalMaterialsError: Story = {
+export const TeachingMaterialsError: Story = {
   args: {},
   parameters: {
-    dialogWindow: "additional-materials-error",
+    dialogWindow: "teaching-materials-error",
   },
   decorators: [TeachingMaterialsStoreDecorator],
 };

@@ -14,9 +14,7 @@ jest.mock("@oakai/core/src/inngest", () => ({
 describe("chat route user functions", () => {
   describe("reportRateLimitError", () => {
     it("should report rate limit exceeded to PostHog when userId is provided", async () => {
-      jest.spyOn(posthogAiBetaServerClient, "identify");
-      jest.spyOn(posthogAiBetaServerClient, "capture");
-      jest.spyOn(posthogAiBetaServerClient, "shutdown");
+      jest.spyOn(posthogAiBetaServerClient, "captureImmediate");
 
       const userId = "testUserId";
       const error = new RateLimitExceededError(
@@ -28,10 +26,7 @@ describe("chat route user functions", () => {
 
       await reportRateLimitError(error, userId, chatId);
 
-      expect(posthogAiBetaServerClient.identify).toHaveBeenCalledWith({
-        distinctId: userId,
-      });
-      expect(posthogAiBetaServerClient.capture).toHaveBeenCalledWith({
+      expect(posthogAiBetaServerClient.captureImmediate).toHaveBeenCalledWith({
         distinctId: userId,
         event: "open_ai_completion_rate_limited",
         properties: {
@@ -40,7 +35,6 @@ describe("chat route user functions", () => {
           resets_at: error.reset,
         },
       });
-      expect(posthogAiBetaServerClient.shutdown).toHaveBeenCalled();
     });
 
     it("should trigger a slack notification", async () => {

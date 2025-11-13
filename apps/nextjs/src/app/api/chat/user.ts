@@ -37,10 +37,7 @@ export async function reportRateLimitError(
   chatId: string,
 ): Promise<void> {
   return startSpan("handle-rate-limit-error", { chatId, userId }, async () => {
-    posthogAiBetaServerClient.identify({
-      distinctId: userId,
-    });
-    posthogAiBetaServerClient.capture({
+    await posthogAiBetaServerClient.captureImmediate({
       distinctId: userId,
       event: "open_ai_completion_rate_limited",
       properties: {
@@ -49,7 +46,6 @@ export async function reportRateLimitError(
         resets_at: error.reset,
       },
     });
-    await posthogAiBetaServerClient.shutdown();
 
     await inngest.send({
       name: "app/slack.notifyRateLimit",

@@ -41,15 +41,13 @@ export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
     const metricsPayload = this.calculateMetrics(responseBody, startedAt);
     // #TODO This is calling outside of the package and it should probably
     // be moved into the Aila package
-    await Promise.resolve(
-      reportCompletionAnalyticsEvent(metricsPayload, this._posthogClient),
-    );
+    await reportCompletionAnalyticsEvent(metricsPayload, this._posthogClient);
   }
 
-  public reportModerationResult(
+  public async reportModerationResult(
     moderationResultEvent: ModerationAnalyticsEvent,
   ) {
-    this._posthogClient.capture(moderationResultEvent);
+    await this._posthogClient.captureImmediate(moderationResultEvent);
   }
 
   public async shutdown() {

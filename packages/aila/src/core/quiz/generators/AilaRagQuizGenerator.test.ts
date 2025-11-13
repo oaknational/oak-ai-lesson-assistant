@@ -26,6 +26,7 @@ describe("AilaRagQuizGenerator", () => {
     const result = await quizGenerator.mappedQuizFromAilaRagRelevantLessons(
       CircleTheoremLesson,
       mockRelevantLessons,
+      "/starterQuiz",
     );
     // console.log(JSON.stringify(result, null, 2));
     expect(result).toBeDefined();

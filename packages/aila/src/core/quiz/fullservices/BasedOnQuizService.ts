@@ -15,7 +15,7 @@ export class BasedOnQuizService extends BaseFullQuizService {
   public quizGenerators: AilaQuizGeneratorService[] = [
     AilaQuizFactory.createQuizGenerator("basedOnRag"),
   ];
-  public quizReranker: AilaQuizReranker<z.ZodType<BaseType>> =
+  public quizReranker: AilaQuizReranker =
     new AilaQuizRerankerFactoryImpl().createAilaQuizReranker("return-first");
 
   public quizSelector: QuizSelector<BaseType> =

@@ -1,0 +1,129 @@
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
+import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
+import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
+import { type PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
+import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
+
+import type { SignedInAuthObject } from "@clerk/backend/internal";
+
+import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
+import { getMockModerationResult } from "./moderationFixtures";
+import { recordSafetyViolation } from "./safetyUtils";
+
+const log = aiLogger("teaching-materials");
+
+interface GeneratePartialLessonPlanParams {
+  prisma: PrismaClientWithAccelerate;
+  userId: string;
+  input: PartialLessonContextSchemaType;
+  auth: SignedInAuthObject;
+}
+
+export type GeneratePartialLessonPlanResponse =
+  | {
+      threatDetection: boolean;
+      lesson: PartialLessonPlan | null;
+      lessonId: string;
+      moderation: ModerationResult;
+    }
+  | {
+      threatDetection: boolean;
+      lesson: null;
+      lessonId: string;
+      moderation: ModerationResult;
+    };
+/**
+ * Generates a partial lesson plan based on the provided context
+ */
+export async function generatePartialLessonPlan({
+  prisma,
+  auth,
+  userId,
+  input,
+}: GeneratePartialLessonPlanParams) {
+  log.info("Generating partial lesson plan");
+
+  const mockModerationResult = getMockModerationResult(input.title);
+  const mockToxicResult = mockModerationResult && isToxic(mockModerationResult);
+
+  const lakeraResult = await performLakeraThreatCheck({
+    messages: [{ role: "user", content: `${input.subject} - ${input.title}` }],
+  });
+
+  const lesson = await generatePartialLessonPlanObject({
+    provider: "openai",
+    parsedInput: { context: input },
+  });
+
+  if (!lesson) {
+    throw new Error("Failed to generate lesson plan");
+  }
+
+  const moderation = await generateTeachingMaterialModeration({
+    input: JSON.stringify(lesson),
+    provider: "openai",
+  });
+
+  const interaction = await prisma.additionalMaterialInteraction.create({
+    data: {
+      userId,
+      inputText: `${input.subject} - ${input.title}`,
+      config: {
+        resourceType: "partial-lesson-plan",
+        resourceTypeVersion: 1,
+      },
+      output: lesson,
+      outputModeration: moderation,
+      inputThreatDetection: {
+        flagged: lakeraResult.flagged,
+        metadata: lakeraResult,
+      },
+    },
+  });
+
+  if (isToxic(moderation) || mockToxicResult) {
+    await recordSafetyViolation({
+      prisma,
+      auth,
+      interactionId: interaction.id,
+      violationType: "MODERATION",
+      userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
+    });
+
+    return {
+      threatDetection: false,
+      lesson: null,
+      lessonId: interaction.id,
+      moderation: mockModerationResult ?? moderation,
+    };
+  }
+
+  if (lakeraResult.flagged) {
+    await recordSafetyViolation({
+      prisma,
+      auth,
+      interactionId: interaction.id,
+      violationType: "THREAT",
+      userAction: "PARTIAL_LESSON_GENERATION",
+      moderation: mockModerationResult ?? moderation,
+    });
+
+    return {
+      threatDetection: true,
+      lesson: null,
+      lessonId: interaction.id,
+      moderation,
+    };
+  }
+
+  return {
+    threatDetection: false,
+    lesson,
+    lessonId: interaction.id,
+    moderation: mockModerationResult ?? moderation,
+  };
+}

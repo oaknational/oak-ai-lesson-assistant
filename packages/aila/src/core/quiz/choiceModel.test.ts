@@ -1,7 +1,7 @@
 import { selectHighestRated } from "./ChoiceModels";
-import type { TestRating } from "./rerankers/RerankerStructuredOutputSchema";
+import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
 
-const testRatingArray: TestRating[] = [
+const testRatingArray: RatingResponse[] = [
   {
     rating: 0.2,
     justification: "Justification 1",

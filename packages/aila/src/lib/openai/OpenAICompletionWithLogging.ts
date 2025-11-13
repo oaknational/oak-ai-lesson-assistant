@@ -72,13 +72,13 @@ export async function OpenAICompletionWithLogging(
   const { completion, metricsPayload } =
     await performCompletionAndFetchMetricsPayload(payload, options);
   const metrics = await reportMetrics(metricsPayload);
-  reportCompletionAnalyticsEvent(metricsPayload);
+  await reportCompletionAnalyticsEvent(metricsPayload);
 
   log.info("Open AI Metrics", metrics);
   return { completion, metrics };
 }
 
-export function reportCompletionAnalyticsEvent(
+export async function reportCompletionAnalyticsEvent(
   payload: MetricsPayload,
   posthog?: PostHog,
 ) {
@@ -86,10 +86,7 @@ export function reportCompletionAnalyticsEvent(
     return;
   }
   const posthogClient = posthog ?? posthogAiBetaServerClient;
-  posthogClient.identify({
-    distinctId: payload.userId ?? payload.prompt ?? "bot",
-  });
-  posthogClient.capture({
+  await posthogClient.captureImmediate({
     distinctId: payload.userId ?? payload.prompt ?? "bot",
     event: "open_ai_completion_performed",
     properties: {
