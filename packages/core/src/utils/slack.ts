@@ -242,10 +242,10 @@ export function formatThreatAsMarkdown(
   // Detected threats section
   if (detectedThreats.length > 0) {
     markdown += "*Detected Threats:*\n";
-    detectedThreats.forEach((threat) => {
+    for (const threat of detectedThreats) {
       markdown += `• *Type:* \`${threat.detectorType}\`\n`;
       markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
-    });
+    }
     markdown += "\n";
   }
 

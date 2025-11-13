@@ -8,7 +8,10 @@ import { aiLogger } from "@oakai/logger";
 const log = aiLogger("teaching-materials-threat-detection");
 
 // Re-export types for backward compatibility
-export type { Message, LakeraGuardResponse };
+export type {
+  Message,
+  LakeraGuardResponse,
+} from "@oakai/core/src/threatDetection/lakera";
 
 /**
  * Perform threat detection check using Lakera Guard API
