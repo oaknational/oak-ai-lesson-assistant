@@ -1,9 +1,9 @@
-import type { LakeraGuardResponse } from "@oakai/additional-materials/src/threatDetection/lakeraThreatCheck";
 import { SafetyViolations, inngest } from "@oakai/core";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
+import type { LakeraGuardResponse } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
