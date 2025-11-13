@@ -167,9 +167,12 @@ describe("LakeraClient", () => {
 
       await client.checkMessages([{ role: "user", content: "test" }]);
 
-      const requestBody = JSON.parse(
-        (mockFetch.mock.calls[0]?.[1] as RequestInit)?.body as string,
-      ) as { project_id: string; payload: boolean; breakdown: boolean };
+      const fetchCallArgs = mockFetch.mock.calls[0] as [string, RequestInit];
+      const requestBody = JSON.parse(fetchCallArgs?.[1]?.body as string) as {
+        project_id: string;
+        payload: boolean;
+        breakdown: boolean;
+      };
       expect(requestBody.project_id).toBe("my-project-id");
       expect(requestBody.payload).toBe(true);
       expect(requestBody.breakdown).toBe(true);
@@ -198,9 +201,10 @@ describe("LakeraClient", () => {
         { role: "assistant", content: "Hi there!" },
       ]);
 
-      const requestBody = JSON.parse(
-        (mockFetch.mock.calls[0]?.[1] as RequestInit)?.body as string,
-      ) as { messages: Array<{ role: string; content: string }> };
+      const fetchCallArgs = mockFetch.mock.calls[0] as [string, RequestInit];
+      const requestBody = JSON.parse(fetchCallArgs?.[1]?.body as string) as {
+        messages: Array<{ role: string; content: string }>;
+      };
       expect(requestBody.messages).toHaveLength(3);
     });
 
