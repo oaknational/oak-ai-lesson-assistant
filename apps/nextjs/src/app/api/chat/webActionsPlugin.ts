@@ -33,6 +33,7 @@ export const createWebActionsPlugin: PluginCreator = (
           userId: aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
           chatId: aila.chatId ?? "unknown",
           error,
+          messages: aila.messages,
           prisma,
         },
         SafetyViolations,

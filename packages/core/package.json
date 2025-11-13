@@ -29,6 +29,7 @@
     "seed:dev": "dotenv -e ../../.env -- pnpm seed",
     "seed:prd": "pnpm doppler:run:prd -- pnpm seed",
     "seed:stg": "pnpm doppler:run:stg -- pnpm seed",
+    "test": "jest --config jest.config.mjs",
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
@@ -70,6 +71,9 @@
   },
   "devDependencies": {
     "@oakai/prettier-config": "*",
-    "inngest-cli": "^0.29.0"
+    "@types/jest": "^30.0.0",
+    "inngest-cli": "^0.29.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.2.5"
   }
 }

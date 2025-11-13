@@ -62,6 +62,7 @@ export type LoggerKey =
   | "ingest"
   | "inngest"
   | "judgements"
+  | "lakera-client"
   | "lessons"
   | "lessons:scrolling"
   | "lessons:store"

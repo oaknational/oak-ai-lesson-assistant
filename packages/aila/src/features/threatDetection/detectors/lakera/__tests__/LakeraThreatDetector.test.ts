@@ -1,5 +1,6 @@
+import type { Message } from "@oakai/core/src/threatDetection/lakera";
+
 import { LakeraThreatDetector } from "../LakeraThreatDetector";
-import type { Message } from "../schema";
 
 describe("LakeraThreatDetector", () => {
   let detector: LakeraThreatDetector;

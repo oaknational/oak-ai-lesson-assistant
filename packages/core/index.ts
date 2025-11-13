@@ -19,6 +19,8 @@ import { generateQuizQuestionEmbeddings } from "./src/functions/quizQuestion/gen
 import { notifyModeration } from "./src/functions/slack/notifyModeration";
 import { notifyModerationTeachingMaterials } from "./src/functions/slack/notifyModerationTeachingMaterials";
 import { notifyRateLimit } from "./src/functions/slack/notifyRateLimit";
+import { notifyThreatDetectionAila } from "./src/functions/slack/notifyThreatDetectionAila";
+import { notifyThreatDetectionTeachingMaterials } from "./src/functions/slack/notifyThreatDetectionTeachingMaterials";
 import { notifyUserBan } from "./src/functions/slack/notifyUserBan";
 import { embedAllSnippets } from "./src/functions/snippet/embedAll";
 import { generateSnippetsForAllQuestions } from "./src/functions/snippet/generateForAllQuestions";
@@ -63,6 +65,8 @@ export const functions = [
   generatePlanForLesson,
   generateAllLessonPlans,
   notifyModeration,
+  notifyThreatDetectionAila,
+  notifyThreatDetectionTeachingMaterials,
   notifyModerationTeachingMaterials,
   notifyRateLimit,
   notifyUserBan,

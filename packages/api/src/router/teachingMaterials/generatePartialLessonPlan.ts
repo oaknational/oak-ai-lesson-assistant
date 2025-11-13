@@ -49,8 +49,13 @@ export async function generatePartialLessonPlan({
   const mockModerationResult = getMockModerationResult(input.title);
   const mockToxicResult = mockModerationResult && isToxic(mockModerationResult);
 
+  // Store messages for threat detection
+  const messages = [
+    { role: "user" as const, content: `${input.subject} - ${input.title}` },
+  ];
+
   const lakeraResult = await performLakeraThreatCheck({
-    messages: [{ role: "user", content: `${input.subject} - ${input.title}` }],
+    messages,
   });
 
   const lesson = await generatePartialLessonPlanObject({
@@ -109,7 +114,8 @@ export async function generatePartialLessonPlan({
       interactionId: interaction.id,
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
-      moderation: mockModerationResult ?? moderation,
+      messages: messages,
+      threatDetection: lakeraResult,
     });
 
     return {

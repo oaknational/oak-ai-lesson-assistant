@@ -1,48 +1,31 @@
+import {
+  LakeraClient,
+  type LakeraGuardResponse,
+  type Message,
+} from "@oakai/core/src/threatDetection/lakera";
 import { aiLogger } from "@oakai/logger";
-
-import { z } from "zod";
 
 const log = aiLogger("teaching-materials-threat-detection");
 
-const messageSchema = z.object({
-  role: z.enum(["system", "user", "assistant"]),
-  content: z.string(),
-});
+// Re-export types for backward compatibility
+export type {
+  Message,
+  LakeraGuardResponse,
+} from "@oakai/core/src/threatDetection/lakera";
 
-export type Message = z.infer<typeof messageSchema>;
-
-export const lakeraGuardRequestSchema = z.object({
-  messages: z.array(messageSchema),
-  project_id: z.string().optional(),
-  payload: z.boolean().optional(),
-  breakdown: z.boolean().optional(),
-  metadata: z.record(z.any()).optional(),
-  dev_info: z.boolean().optional(),
-});
-
-export const lakeraGuardResponseSchema = z.object({
-  flagged: z.boolean(),
-  payload: z.array(z.unknown()),
-  metadata: z.object({
-    request_uuid: z.string(),
-  }),
-  breakdown: z.array(
-    z.object({
-      project_id: z.string(),
-      policy_id: z.string(),
-      detector_id: z.string(),
-      detector_type: z.string(),
-      detected: z.boolean(),
-      message_id: z.number(),
-    }),
-  ),
-});
-
-export type LakeraGuardResponse = z.infer<typeof lakeraGuardResponseSchema>;
-
+/**
+ * Perform threat detection check using Lakera Guard API
+ *
+ * @param messages - Array of messages to check for threats
+ * @param projectId - Optional project ID (defaults to LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES env var)
+ * @param apiKey - Optional API key (defaults to LAKERA_GUARD_API_KEY env var)
+ * @param URL - Optional API URL (defaults to LAKERA_GUARD_URL env var or https://api.lakera.ai/v2/guard)
+ * @returns Promise resolving to LakeraGuardResponse
+ */
 export async function performLakeraThreatCheck({
   messages,
-  projectId = process.env.LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES,
+  projectId = process.env.LAKERA_GUARD_PROJECT_ID_ADDITIONAL_RESOURCES ??
+    process.env.LAKERA_GUARD_PROJECT_ID,
   apiKey = process.env.LAKERA_GUARD_API_KEY,
   URL = process.env.LAKERA_GUARD_URL,
 }: {
@@ -50,46 +33,27 @@ export async function performLakeraThreatCheck({
   projectId?: string;
   apiKey?: string;
   URL?: string;
-}): Promise<z.infer<typeof lakeraGuardResponseSchema>> {
+}): Promise<LakeraGuardResponse> {
   if (!apiKey) {
     log.error("Lakera API key not found");
     throw new Error("Lakera API key not found");
   }
-  if (!projectId) {
-    log.error("Lakera projectId key not found");
-    throw new Error("Lakera projectId not found");
-  }
-  if (!URL) {
-    log.error("Lakera URL was not found");
-    throw new Error("Lakera projectId not found");
-  }
 
-  const requestBody = {
-    messages,
-    ...(projectId && { project_id: projectId }),
-    payload: true,
-    breakdown: true,
-  };
-
-  const parsedBody = lakeraGuardRequestSchema.parse(requestBody);
-
-  const response = await fetch(URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(parsedBody),
+  // Create LakeraClient instance
+  const client = new LakeraClient({
+    apiKey,
+    projectId,
+    apiUrl: URL,
   });
 
-  const responseData = await response.json();
+  // Use the shared client to check messages
+  const result = await client.checkMessages(messages);
 
-  const parsed = lakeraGuardResponseSchema.parse(responseData);
-
-  log.info("Lakera API response", {
-    parsed,
-    status: response.status,
+  log.info("Lakera threat check completed", {
+    flagged: result.flagged,
+    breakdownCount: result.breakdown?.length ?? 0,
+    payloadCount: result.payload?.length ?? 0,
   });
 
-  return parsed;
+  return result;
 }

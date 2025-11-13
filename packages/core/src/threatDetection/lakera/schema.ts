@@ -1,10 +1,16 @@
 import { z } from "zod";
 
-const messageSchema = z.object({
+/**
+ * Schema for a message sent to Lakera Guard API
+ */
+export const messageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
   content: z.string(),
 });
 
+/**
+ * Schema for the request body sent to Lakera Guard API
+ */
 export const lakeraGuardRequestSchema = z.object({
   messages: z.array(messageSchema),
   project_id: z.string().optional(),
@@ -14,6 +20,10 @@ export const lakeraGuardRequestSchema = z.object({
   dev_info: z.boolean().optional(),
 });
 
+/**
+ * Schema for a payload item in the Lakera Guard response
+ * Contains the detected text and its position
+ */
 const payloadItemSchema = z.object({
   start: z.number(),
   end: z.number(),
@@ -22,6 +32,10 @@ const payloadItemSchema = z.object({
   labels: z.array(z.string()).optional(), // Only present for custom regex matches
 });
 
+/**
+ * Schema for a breakdown item in the Lakera Guard response
+ * Provides details about each detector that ran
+ */
 const breakdownItemSchema = z.object({
   project_id: z.string(),
   policy_id: z.string(),
@@ -30,7 +44,10 @@ const breakdownItemSchema = z.object({
   detected: z.boolean(),
 });
 
-// Dev info schema
+/**
+ * Schema for development info in the Lakera Guard response
+ * Provides version and build information about the Lakera Guard service
+ */
 const devInfoSchema = z.object({
   git_revision: z.string().length(8), // First 8 characters of commit hash
   git_timestamp: z.string().datetime({ offset: true }), // ISO 8601 format
@@ -38,12 +55,19 @@ const devInfoSchema = z.object({
   version: z.string(), // Semantic version string
 });
 
-// Response Schema
+/**
+ * Schema for the response from Lakera Guard API
+ */
 export const lakeraGuardResponseSchema = z.object({
   flagged: z.boolean(),
   payload: z.array(payloadItemSchema).optional(),
   breakdown: z.array(breakdownItemSchema).optional(),
   dev_info: devInfoSchema.optional(),
+  metadata: z
+    .object({
+      request_uuid: z.string(),
+    })
+    .optional(),
 });
 
 // Type definitions
