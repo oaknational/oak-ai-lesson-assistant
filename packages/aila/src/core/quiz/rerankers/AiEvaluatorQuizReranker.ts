@@ -2,12 +2,12 @@ import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
+import pLimit from "p-limit";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { evaluateQuiz } from "../OpenAIRanker";
-import { processArray, withRandomDelay } from "../apiCallingUtils";
 import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
 import {
   type RatingResponse,
@@ -28,11 +28,9 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
       return this.cachedEvaluateQuizArray(quizArray, lessonPlan, quizType);
     }
 
-    // Decorates to delay the evaluation of each quiz. There is probably a better library for this.
-    const delayedRetrieveQuiz = withRandomDelay<
-      [QuizQuestionWithRawJson[]],
-      ParsedChatCompletion<RatingResponse>
-    >(
+    const limiter = pLimit(10);
+    const outputRatings = await limiter.map(
+      quizArray,
       async (quiz: QuizQuestionWithRawJson[]) => {
         try {
           const result = await evaluateQuiz(
@@ -50,15 +48,7 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
           throw error instanceof Error ? error : new Error(String(error));
         }
       },
-      1000,
-      5000,
     );
-
-    // Process array allows async eval in parallel, the above decorator tries to prevent rate limiting.
-    const outputRatings = await processArray<
-      QuizQuestionWithRawJson[],
-      ParsedChatCompletion<RatingResponse>
-    >(quizArray, delayedRetrieveQuiz);
 
     const extractedOutputRatings = outputRatings.map((item): RatingResponse => {
       if (item instanceof Error) {
