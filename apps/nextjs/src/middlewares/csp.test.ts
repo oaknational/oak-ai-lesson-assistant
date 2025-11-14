@@ -14,9 +14,6 @@ function generatePoliciesForEnvironment(env: CspEnvironment): string {
   const config: CspConfig = {
     strictCsp: true,
     environment: env,
-    sentryEnv: "test",
-    sentryRelease: "1.0.0",
-    sentryReportUri: "https://sentry.io/report",
     cspReportSampleRate: "1",
     vercelEnv: env === "preview" ? "preview" : "production",
     enabledPolicies: {
@@ -28,6 +25,8 @@ function generatePoliciesForEnvironment(env: CspEnvironment): string {
       vercel: env === "preview",
       localhost: env === "development",
     },
+    posthogApiKey: "",
+    posthogHost: "",
   };
 
   const result = addCspHeaders(mockResponse, mockRequest, config);
