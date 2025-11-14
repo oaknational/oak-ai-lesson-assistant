@@ -1,0 +1,75 @@
+name: Lint Diff
+
+on:
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  lint-diff:
+    name: Check for new lint errors
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for diff
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install deps (with cache)
+        run: pnpm install
+
+      - name: Prisma generate (no engine)
+        run: pnpm turbo db-generate:no-engine --cache-dir=".turbo"
+
+      - name: Run ESLint diff check
+        id: lint-diff
+        continue-on-error: true
+        run: |
+          # Get the base branch (usually main)
+          BASE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            BASE_BRANCH="origin/${{ github.base_ref }}"
+          fi
+
+          # Create a directory for the output
+          mkdir -p ./lint-results
+
+          # Run ESLint with diff plugin and output to JSON
+          echo "Running ESLint diff against $BASE_BRANCH..."
+          pnpm eslint --plugin diff --ext .js,.jsx,.ts,.tsx --format json --diff="$BASE_BRANCH" . > ./lint-results/eslint-diff.json || true
+
+          # Process the results using our TypeScript script
+          OUTPUT=$(pnpm tsx .github/actions/scripts/process-lint-diff.ts ./lint-results/eslint-diff.json ./lint-results/comment.md)
+
+          # Extract the error and warning counts from the output
+          ERROR_COUNT=$(echo "$OUTPUT" | grep "::set-output name=error_count::" | cut -d':' -f3)
+          WARNING_COUNT=$(echo "$OUTPUT" | grep "::set-output name=warning_count::" | cut -d':' -f3)
+
+          # Set outputs for use in later steps
+          echo "error_count=${ERROR_COUNT:-0}" >> $GITHUB_OUTPUT
+          echo "warning_count=${WARNING_COUNT:-0}" >> $GITHUB_OUTPUT
+
+          # Check if there are any errors and fail if so
+          if [ "${ERROR_COUNT:-0}" -gt 0 ] || [ "${WARNING_COUNT:-0}" -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Comment on PR with lint results
+        if: always() && (steps.lint-diff.outputs.error_count != '0' || steps.lint-diff.outputs.warning_count != '0')
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { postLintComment } = require(`${process.env.GITHUB_WORKSPACE}/.github/actions/scripts/post-lint-comment.ts`);
+            await postLintComment('./lint-results/comment.md');
