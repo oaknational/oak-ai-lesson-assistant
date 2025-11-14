@@ -47,7 +47,7 @@ const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
   environment,
 
-  posthogApiKey: process.env.NEXT_PUBLIC_POSTHOG_OAK_API_KEY ?? "",
+  posthogApiKey: process.env.NEXT_PUBLIC_POSTHOG_API_KEY ?? "",
   posthogHost: process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "",
   cspReportSampleRate: process.env.NEXT_PUBLIC_CSP_REPORT_SAMPLE_RATE ?? "1",
   vercelEnv: parseVercelEnv(process.env.VERCEL_ENV),
