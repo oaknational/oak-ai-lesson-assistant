@@ -73,7 +73,9 @@ export function createMessageToUserAgent({
         relevantLessons &&
         relevantLessons?.length > 0 && {
           role: "developer" as const,
-          content: relevantLessonsPromptPart(relevantLessons),
+          content: relevantLessonsPromptPart(
+            relevantLessons.map((r) => r.lessonPlan),
+          ),
         },
       {
         role: "developer" as const,
