@@ -10,7 +10,7 @@ import type { PartialLessonPlan, QuizPath } from "../../protocol/schema";
 import { constrainImageUrl } from "../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
 import type { BaseType } from "./ChoiceModels";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import type { QuizQuestionWithRawJson } from "./interfaces";
+import type { QuizQuestionWithSourceData } from "./interfaces";
 import { unpackLessonPlanForPrompt } from "./unpackLessonPlan";
 
 // Create a logger instance for the quiz module
@@ -52,7 +52,9 @@ function processStringWithImages(text: string): ChatContent[] {
     .filter((part): part is ChatContent => part !== null);
 }
 
-function quizToLLMMessages(quizQuestion: QuizQuestionWithRawJson): ChatMessage {
+function quizToLLMMessages(
+  quizQuestion: QuizQuestionWithSourceData,
+): ChatMessage {
   const content: ChatContent[] = [];
 
   // Process question
@@ -88,7 +90,7 @@ function contentListToUser(messages: ChatContent[]): ChatMessage {
  * @returns {ChatMessage} A formatted ChatMessage object ready for use with OpenAI API.
  */
 function quizQuestionsToOpenAIMessageFormat(
-  questions: QuizQuestionWithRawJson[],
+  questions: QuizQuestionWithSourceData[],
 ): ChatMessage {
   const content: ChatContent[] = [];
   const promptList = questions.map((question) => quizToLLMMessages(question));
@@ -113,7 +115,7 @@ function quizQuestionsToOpenAIMessageFormat(
  */
 function combinePromptsAndQuestions(
   lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithRawJson[],
+  questions: QuizQuestionWithSourceData[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   quizType: QuizPath,
 ): ChatMessage[] {
@@ -169,7 +171,7 @@ async function evaluateQuiz<
   T extends z.ZodType<BaseType & Record<string, unknown>>,
 >(
   lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithRawJson[],
+  questions: QuizQuestionWithSourceData[],
   max_tokens: number = 4000,
   ranking_schema: T,
   quizType: QuizPath,

@@ -1,4 +1,7 @@
-import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type {
+  HasuraQuiz,
+  HasuraQuizQuestion,
+} from "../../protocol/schemas/quiz/rawQuiz";
 import { combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
@@ -39,7 +42,7 @@ const parsedRawQuiz = [
       },
     ],
     questionType: "short-answer",
-  },
+  } satisfies HasuraQuizQuestion,
 ];
 
 describe("combinePromptsAndQuestions", () => {
@@ -54,7 +57,8 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<HasuraQuiz>,
+        sourceUid: "QUES-BPWF2-29205",
+        source: parsedRawQuiz[0]!,
       },
       {
         question:
@@ -64,10 +68,11 @@ describe("combinePromptsAndQuestions", () => {
         feedback: "",
         hint: "",
         html: [""],
-        rawQuiz: parsedRawQuiz as NonNullable<HasuraQuiz>,
+        sourceUid: "QUES-BPWF2-29205",
+        source: parsedRawQuiz[0]!,
       },
     ];
-    const openAIMessage = combinePromptsAndQuestions(
+    const _openAIMessage = combinePromptsAndQuestions(
       lessonPlan,
       questions,
       QuizInspectionSystemPrompt,

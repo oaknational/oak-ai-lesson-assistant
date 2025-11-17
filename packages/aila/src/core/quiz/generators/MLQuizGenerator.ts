@@ -13,7 +13,8 @@ import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
   CustomHit,
   CustomSource,
-  QuizQuestionWithRawJson,
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
 } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
@@ -69,10 +70,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
     lessonPlan: PartialLessonPlan,
-    quizQuestions: QuizQuestionWithRawJson[],
+    quizQuestions: QuizQuestionWithSourceData[],
     quizType: QuizPath,
-  ): QuizQuestionWithRawJson[][] {
-    const quizQuestions2DArray: QuizQuestionWithRawJson[][] = [];
+  ): QuizQuestionWithSourceData[][] {
+    const quizQuestions2DArray: QuizQuestionWithSourceData[][] = [];
     log.info(
       `MLQuizGenerator: Splitting ${quizQuestions.length} questions into chunks of 6`,
     );
@@ -89,7 +90,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // This should return an array of questions - sometimes there are more than six questions, these are split later.
   private async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     this.isValidLessonPlan(lessonPlan);
     const hits = await this.unpackAndSearch(lessonPlan);
     const qq = this.unpackLessonPlanForRecommender(lessonPlan);
@@ -101,7 +102,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   public async generateMathsQuizMLWithSemanticQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     // Using hybrid search combining BM25 and vector similarity
     const semanticQueries: z.infer<typeof SemanticSearchSchema> =
       await this.generateSemanticSearchQueries(lessonPlan, quizType);
@@ -185,36 +186,63 @@ Generate a list of 1-3 semantic search queries`;
     }
   }
 
-  // TODO: GCLOMAX - Change for starter and exit quizzes.
-  public async generateMathsStarterQuizPatch(
+  public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz = await this.generateMathsQuizMLWithSemanticQueries(
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizMLWithSemanticQueries(
       lessonPlan,
       "/starterQuiz",
     );
+
+    const semanticQueries = await this.generateSemanticSearchQueries(
+      lessonPlan,
+      "/starterQuiz",
+    );
+
     const quiz2DArray = this.splitQuestionsIntoSixAndPad(
       lessonPlan,
-      quiz,
+      questions,
       "/starterQuiz",
     );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} starter Quizzes`);
-    return quiz2DArray;
+
+    log.info(`MLGenerator: Generated ${quiz2DArray.length} starter quiz pools`);
+
+    return quiz2DArray.map((questionSet, index) => ({
+      questions: questionSet,
+      source: {
+        type: "mlSemanticSearch" as const,
+        semanticQuery: semanticQueries.queries[index] || "Generated query",
+      },
+    }));
   }
-  public async generateMathsExitQuizPatch(
+
+  public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const quiz: QuizQuestionWithRawJson[] =
-      await this.generateMathsQuizMLWithSemanticQueries(
-        lessonPlan,
-        "/exitQuiz",
-      );
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
+  ): Promise<QuizQuestionPool[]> {
+    const questions = await this.generateMathsQuizMLWithSemanticQueries(
       lessonPlan,
-      quiz,
       "/exitQuiz",
     );
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} exit questions`);
-    return quiz2DArray;
+
+    const semanticQueries = await this.generateSemanticSearchQueries(
+      lessonPlan,
+      "/exitQuiz",
+    );
+
+    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
+      lessonPlan,
+      questions,
+      "/exitQuiz",
+    );
+
+    log.info(`MLGenerator: Generated ${quiz2DArray.length} exit quiz pools`);
+
+    return quiz2DArray.map((questionSet, index) => ({
+      questions: questionSet,
+      source: {
+        type: "mlSemanticSearch" as const,
+        semanticQuery: semanticQueries.queries[index] || "Generated query",
+      },
+    }));
   }
 }
