@@ -8,10 +8,9 @@ import {
   createMockQuestionPool,
 } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import type { QuizQuestionPool } from "../interfaces";
+import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { evaluateQuiz } from "../services/OpenAIRanker";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
-import type { RatingResponse } from "./RerankerStructuredOutputSchema";
 
 jest.mock("../services/OpenAIRanker");
 
