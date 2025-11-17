@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import type {
-  AilaQuizGeneratorService,
+  AilaQuizCandidateGenerator,
   FullQuizService,
   QuizSelectorFactory,
 } from "../interfaces";
@@ -20,7 +20,7 @@ export class CompositeFullQuizServiceBuilder {
   private readonly rerankerFactory: AilaQuizRerankerFactoryImpl =
     new AilaQuizRerankerFactoryImpl();
   public build(settings: QuizBuilderSettings): FullQuizService {
-    const generatorArray: AilaQuizGeneratorService[] = [];
+    const generatorArray: AilaQuizCandidateGenerator[] = [];
 
     const selector = this.selectorFactory.createQuizSelector(
       settings.quizSelector,
