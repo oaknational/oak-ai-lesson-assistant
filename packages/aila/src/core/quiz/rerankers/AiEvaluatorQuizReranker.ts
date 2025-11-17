@@ -11,12 +11,9 @@ import type {
   AilaQuizReranker,
   QuizQuestionPool,
   QuizQuestionWithSourceData,
+  RatingResponse,
 } from "../interfaces";
-import { evaluateQuiz } from "../services/OpenAIRanker";
-import {
-  type RatingResponse,
-  ratingResponseSchema,
-} from "./RerankerStructuredOutputSchema";
+import { evaluateQuiz, ratingResponseSchema } from "../services/OpenAIRanker";
 
 const log = aiLogger("aila:quiz");
 
