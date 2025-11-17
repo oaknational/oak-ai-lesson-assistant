@@ -1,21 +1,20 @@
 // ML-based Quiz Generator
 import { aiLogger } from "@oakai/logger";
 
-import type {
-  SearchHit,
-  SearchHitsMetadata,
-} from "@elastic/elasticsearch/lib/api/types";
+import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
+import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { missingQuizQuestion } from "../fixtures/MissingQuiz";
 import type {
-  CustomHit,
   CustomSource,
   QuizQuestionPool,
   QuizQuestionWithSourceData,
 } from "../interfaces";
+import { CohereReranker } from "../services/CohereReranker";
+import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -35,18 +34,21 @@ function quizSpecificInstruction(quizType: QuizPath) {
 }
 
 export class MLQuizGenerator extends BaseQuizGenerator {
-  private async unpackAndSearch(
-    lessonPlan: PartialLessonPlan,
-  ): Promise<SearchHit<CustomSource>[]> {
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    // Using hybrid search combining BM25 and vector similarity
-    const results = await this.searchWithHybrid(
-      "oak-vector-2025-04-16",
-      qq,
-      100,
-      0.5, // 50/50 weight between BM25 and vector search
-    );
-    return results.hits;
+  protected searchService: ElasticsearchQuizSearchService;
+  protected retrievalService: QuizQuestionRetrievalService;
+  protected rerankService: CohereReranker;
+  public openai: OpenAI;
+
+  constructor() {
+    super();
+
+    this.searchService = new ElasticsearchQuizSearchService();
+    this.retrievalService = new QuizQuestionRetrievalService();
+    this.rerankService = new CohereReranker();
+
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
   }
 
   /**
@@ -87,19 +89,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     return quizQuestions2DArray;
   }
 
-  // This should return an array of questions - sometimes there are more than six questions, these are split later.
-  private async generateMathsQuizML(
-    lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithSourceData[]> {
-    this.isValidLessonPlan(lessonPlan);
-    const hits = await this.unpackAndSearch(lessonPlan);
-    const qq = this.unpackLessonPlanForRecommender(lessonPlan);
-    const customIds = await this.rerankAndExtractCustomIds(hits, qq);
-    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
-    return quizQuestions;
-  }
-
-  public async generateMathsQuizMLWithSemanticQueries(
+  public async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionWithSourceData[]> {
@@ -109,19 +99,20 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
     const concatenatedQueries: string = semanticQueries.queries.join(" ");
 
-    const results = await this.searchWithHybrid(
+    const results = await this.searchService.searchWithHybrid(
       "oak-vector-2025-04-16",
       concatenatedQueries,
       100,
       0.5, // 50/50 weight between BM25 and vector search
     );
 
-    // const quizQuestions = await this.retrieveAndProcessQuestions(semanticQueries);
-    const customIds = await this.rerankAndExtractCustomIds(
+    const questionUids = await this.rerankAndExtractQuestionUids(
       results.hits,
       concatenatedQueries,
+      10,
     );
-    const quizQuestions = await this.retrieveAndProcessQuestions(customIds);
+    const quizQuestions =
+      await this.retrievalService.retrieveQuestionsByIds(questionUids);
     return quizQuestions;
   }
 
@@ -189,60 +180,49 @@ Generate a list of 1-3 semantic search queries`;
   public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionPool[]> {
-    const questions = await this.generateMathsQuizMLWithSemanticQueries(
+    const questions = await this.generateMathsQuizML(
       lessonPlan,
       "/starterQuiz",
     );
-
-    const semanticQueries = await this.generateSemanticSearchQueries(
-      lessonPlan,
-      "/starterQuiz",
-    );
-
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
-      lessonPlan,
-      questions,
-      "/starterQuiz",
-    );
-
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} starter quiz pools`);
-
-    return quiz2DArray.map((questionSet, index) => ({
-      questions: questionSet,
-      source: {
-        type: "mlSemanticSearch" as const,
-        semanticQuery: semanticQueries.queries[index] || "Generated query",
-      },
-    }));
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from prior knowledge",
+        },
+      } satisfies QuizQuestionPool,
+    ];
   }
 
   public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
   ): Promise<QuizQuestionPool[]> {
-    const questions = await this.generateMathsQuizMLWithSemanticQueries(
-      lessonPlan,
-      "/exitQuiz",
+    const questions = await this.generateMathsQuizML(lessonPlan, "/exitQuiz");
+    return [
+      {
+        questions,
+        source: {
+          type: "mlSemanticSearch",
+          semanticQuery: "Generated from key learning points",
+        },
+      } satisfies QuizQuestionPool,
+    ];
+  }
+
+  // === ML-specific search and processing methods ===
+
+  protected async rerankAndExtractQuestionUids(
+    hits: SearchHit<CustomSource>[],
+    query: string,
+    topN: number,
+  ): Promise<string[]> {
+    const simplifiedResults = this.searchService.transformHits(hits);
+    const rerankedResults = await this.rerankService.rerankDocuments(
+      query,
+      simplifiedResults,
+      topN,
     );
-
-    const semanticQueries = await this.generateSemanticSearchQueries(
-      lessonPlan,
-      "/exitQuiz",
-    );
-
-    const quiz2DArray = this.splitQuestionsIntoSixAndPad(
-      lessonPlan,
-      questions,
-      "/exitQuiz",
-    );
-
-    log.info(`MLGenerator: Generated ${quiz2DArray.length} exit quiz pools`);
-
-    return quiz2DArray.map((questionSet, index) => ({
-      questions: questionSet,
-      source: {
-        type: "mlSemanticSearch" as const,
-        semanticQuery: semanticQueries.queries[index] || "Generated query",
-      },
-    }));
+    return rerankedResults.map((result) => result.document.questionUid);
   }
 }
