@@ -533,11 +533,13 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   protected async rerankAndExtractCustomIds(
     hits: SearchHit<CustomSource>[],
     query: string,
+    topN: number = 10,
   ): Promise<string[]> {
     const simplifiedResults = this.transformHits(hits);
     const rerankedResults = await this.rerankDocuments(
       query,
       simplifiedResults,
+      topN,
     );
     return rerankedResults.map(this.extractCustomId);
   }
