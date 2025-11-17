@@ -13,7 +13,7 @@ import { evaluateQuiz } from "../services/OpenAIRanker";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
 import type { RatingResponse } from "./RerankerStructuredOutputSchema";
 
-jest.mock("../OpenAIRanker");
+jest.mock("../services/OpenAIRanker");
 
 const log = aiLogger("aila:quiz");
 

@@ -2,9 +2,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
-import OpenAI from "openai";
-import { zodResponseFormat } from "openai/helpers/zod";
-import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
@@ -15,29 +12,16 @@ import type {
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
-import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
+import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
-
-const SemanticSearchSchema = z.object({
-  queries: z.array(z.string()).describe("A list of semantic search queries"),
-});
-
-function quizSpecificInstruction(quizType: QuizPath) {
-  if (quizType === "/starterQuiz") {
-    return `The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.`;
-  } else if (quizType === "/exitQuiz") {
-    return `The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning. Please consider alignment with the "key learning points" and "learning outcome" sections of the lesson plan.`;
-  }
-  throw new Error(`Unsupported quiz type: ${quizType as string}`);
-}
 
 export class MLQuizGenerator extends BaseQuizGenerator {
   protected searchService: ElasticsearchQuizSearchService;
   protected retrievalService: QuizQuestionRetrievalService;
   protected rerankService: CohereReranker;
-  public openai: OpenAI;
+  protected queryGenerator: SemanticQueryGenerator;
 
   constructor() {
     super();
@@ -45,10 +29,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     this.searchService = new ElasticsearchQuizSearchService();
     this.retrievalService = new QuizQuestionRetrievalService();
     this.rerankService = new CohereReranker();
-
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    this.queryGenerator = new SemanticQueryGenerator();
   }
 
   /**
@@ -94,8 +75,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     quizType: QuizPath,
   ): Promise<QuizQuestionWithSourceData[]> {
     // Using hybrid search combining BM25 and vector similarity
-    const semanticQueries: z.infer<typeof SemanticSearchSchema> =
-      await this.generateSemanticSearchQueries(lessonPlan, quizType);
+    const semanticQueries = await this.generateSemanticSearchQueries(
+      lessonPlan,
+      quizType,
+    );
 
     const concatenatedQueries: string = semanticQueries.queries.join(" ");
 
@@ -122,59 +105,11 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   public async generateSemanticSearchQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<z.infer<typeof SemanticSearchSchema>> {
-    const unpackedContent = unpackLessonPlanForPrompt(lessonPlan);
-
-    const prompt = `Based on the following lesson plan content, generate a series of semantic search queries that could be used to find relevant quiz questions from a question bank for questions from the UK mathematics curriculum.
-
-The search queries should:
-- Focus on key concepts, topics, and learning outcomes
-- Use educational terminology appropriate for the subject and key stage
-- Be specific enough to find relevant questions but broad enough to capture variations
-- Include different question types (knowledge, understanding, application)
-- Consider prerequisite knowledge and common misconceptions
-
-Lesson plan content:
-${unpackedContent}
-
-You should generate queries for a ${quizType} quiz. ${quizSpecificInstruction(quizType)}
-
-Generate a list of 1-3 semantic search queries`;
-
-    try {
-      const response = await this.openai.beta.chat.completions.parse({
-        model: "gpt-4.1",
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        max_completion_tokens: 1000,
-        response_format: zodResponseFormat(
-          SemanticSearchSchema,
-          "SemanticSearchQueries",
-        ),
-      });
-
-      const parsedContent = response.choices[0]?.message?.parsed;
-      if (!parsedContent) {
-        log.warn(
-          "OpenAI returned empty parsed content for semantic search generation",
-        );
-        return { queries: [] };
-      }
-
-      log.info(
-        `Generated ${parsedContent.queries.length} semantic search queries for lesson plan`,
-      );
-      return parsedContent;
-    } catch (error) {
-      log.error("Failed to generate semantic search queries:", error);
-      throw new Error(
-        "Failed to generate semantic search queries from lesson plan",
-      );
-    }
+  ) {
+    return this.queryGenerator.generateSemanticSearchQueries(
+      lessonPlan,
+      quizType,
+    );
   }
 
   public async generateMathsStarterQuizCandidates(
