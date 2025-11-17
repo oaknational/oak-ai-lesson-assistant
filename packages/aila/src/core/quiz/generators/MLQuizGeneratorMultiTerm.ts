@@ -119,7 +119,10 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
     const pools = await Promise.all(
       semanticQueries.queries.map(async (query) => {
-        const questions = await this.searchAndRetrieveForQuery(query, POOL_SIZE);
+        const questions = await this.searchAndRetrieveForQuery(
+          query,
+          POOL_SIZE,
+        );
         return {
           questions,
           source: {

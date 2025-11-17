@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { QuizPath } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
+import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
 import { BasedOnQuizService } from "./BasedOnQuizService";
 
 const log = aiLogger("quiz");
@@ -24,15 +24,14 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
   });
 
   it("should have a basedOnRag quiz generator", () => {
-    const expectedGenerator = AilaQuizFactory.createQuizGenerator("basedOnRag");
     expect(quizService.quizGenerators[0]).toBeInstanceOf(
-      expectedGenerator.constructor,
+      BasedOnRagQuizGenerator,
     );
   });
 
-  describe("createBestQuiz", () => {
+  describe("buildQuiz", () => {
     it("should create a starter quiz", async () => {
-      const quiz = await quizService.createBestQuiz(
+      const quiz = await quizService.buildQuiz(
         "/starterQuiz" as QuizPath,
         CircleTheoremLesson,
       );
@@ -47,7 +46,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     });
 
     it("should create an exit quiz", async () => {
-      const quiz = await quizService.createBestQuiz(
+      const quiz = await quizService.buildQuiz(
         "/exitQuiz" as QuizPath,
         CircleTheoremLesson,
       );
@@ -62,10 +61,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
     it("should handle invalid quiz paths", async () => {
       await expect(
-        quizService.createBestQuiz(
-          "/invalidQuiz" as QuizPath,
-          CircleTheoremLesson,
-        ),
+        quizService.buildQuiz("/invalidQuiz" as QuizPath, CircleTheoremLesson),
       ).rejects.toThrow();
     });
   });
