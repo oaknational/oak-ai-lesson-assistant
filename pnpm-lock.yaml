@@ -142,8 +142,8 @@ importers:
         specifier: '*'
         version: link:../../packages/teaching-materials
       '@oaknational/oak-components':
-        specifier: ^1.142.2
-        version: 1.142.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        specifier: ^1.160.0
+        version: 1.163.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -6184,8 +6184,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.142.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-/OVSoxjuAe64fO2TNZm0dhWj92wnfnGV9eDetVpRPWyjCLG/ST93vpk06h0Ppf8SzTLbCYJMyz9sQv+5ftW5Ng==}
+  /@oaknational/oak-components@1.163.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-ZKXsj7liFEkmTdT/giN6C7M15R6JOZiFkNfEQCyFVlXGaZW4hfZjYyOID4goiLj9zGm55S8Vi/vlQV7mb0k5Pw==}
     peerDependencies:
       next: '>=14.2.12'
       next-cloudinary: '>=6.16.0'

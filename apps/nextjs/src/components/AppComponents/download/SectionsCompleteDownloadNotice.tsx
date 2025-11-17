@@ -5,7 +5,7 @@ import AiIcon from "@/components/SVGParts/AiIcon";
 const SectionsCompleteDownloadNotice = () => {
   return (
     <OakBox
-      $pa="inner-padding-m"
+      $pa="spacing-16"
       $background="mint50"
       $borderColor="border-decorative1-stronger"
       $borderStyle="solid"
@@ -13,7 +13,7 @@ const SectionsCompleteDownloadNotice = () => {
       $ba="border-solid-m"
     >
       <OakFlex
-        $gap="all-spacing-5"
+        $gap="spacing-20"
         $alignItems={["flex-start", "center"]}
         $flexDirection={["column", "row"]}
       >

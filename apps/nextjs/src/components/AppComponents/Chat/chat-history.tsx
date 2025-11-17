@@ -54,10 +54,10 @@ export function ChatHistory() {
     >
       <OakBox
         $position="absolute"
-        $top="all-spacing-6"
-        $right="all-spacing-3"
+        $top="spacing-24"
+        $right="spacing-12"
         $borderRadius="border-radius-circle"
-        $height="space-between-xxl"
+        $height="spacing-72"
       >
         <OakLink element="button" onClick={() => setOpenSidebar(false)}>
           <OakSpan $opacity="transparent" $font="body-3">
@@ -75,8 +75,8 @@ export function ChatHistory() {
             <span className="rotate-45">
               <OakIcon
                 iconName="cross"
-                $width="all-spacing-6"
-                $height="all-spacing-6"
+                $width="spacing-24"
+                $height="spacing-24"
               />
             </span>
             <span>Create with AI</span>

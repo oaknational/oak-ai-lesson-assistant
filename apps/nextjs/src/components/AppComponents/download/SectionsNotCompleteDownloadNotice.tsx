@@ -25,7 +25,7 @@ const SectionsNotCompleteDownloadNotice = ({
   const inCompleteSections = sections.filter((section) => !section.complete);
   return (
     <OakBox
-      $pa="inner-padding-m"
+      $pa="spacing-16"
       $background="lemon30"
       $borderColor="border-decorative5-stronger"
       $borderStyle="solid"
@@ -33,7 +33,7 @@ const SectionsNotCompleteDownloadNotice = ({
       $ba="border-solid-m"
     >
       <OakFlex
-        $gap="all-spacing-5"
+        $gap="spacing-20"
         $alignItems={["flex-start", "center"]}
         $flexDirection={["column", "row"]}
       >
@@ -43,10 +43,7 @@ const SectionsNotCompleteDownloadNotice = ({
           your resources.
         </OakP>
       </OakFlex>
-      <OakBox
-        $pl={["inner-padding-none", "inner-padding-xl5"]}
-        $mt="space-between-s"
-      >
+      <OakBox $pl={["spacing-0", "spacing-56"]} $mt="spacing-16">
         <OakLink
           element="button"
           iconName={showMissingSections ? "chevron-up" : "chevron-down"}
@@ -59,13 +56,13 @@ const SectionsNotCompleteDownloadNotice = ({
         </OakLink>
         {showMissingSections && (
           <>
-            <OakUL $mv="space-between-m" $ml="space-between-s">
+            <OakUL $mv="spacing-24" $ml="spacing-16">
               {inCompleteSections.map((section) => (
                 <OakLI
                   key={section.key}
                   $font="body-2"
                   $listStyle="disc"
-                  $pv="inner-padding-xs"
+                  $pv="spacing-8"
                 >
                   <OakP $font="body-2">{section.label}</OakP>
                 </OakLI>

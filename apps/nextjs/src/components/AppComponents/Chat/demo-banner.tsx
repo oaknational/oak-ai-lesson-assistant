@@ -26,8 +26,8 @@ export function DemoBanner({
       $alignItems={"center"}
       $bb={"border-solid-m"}
       $background={"lemon"}
-      $pv={["inner-padding-ssx", "inner-padding-xs"]}
-      $ph={"inner-padding-xl"}
+      $pv={["spacing-4", "spacing-8"]}
+      $ph={"spacing-24"}
       data-testid={testId}
     >
       <OakSpan $font={["body-3", "body-2", "body-1"]}>
@@ -44,7 +44,6 @@ export function DemoBanner({
           contact us for full access
         </OakLink>
       </OakSpan>
-
       <OakFlex $flexGrow={1} />
       {remaining !== undefined && (
         <OakBox $display={["none", "none", "block"]}>

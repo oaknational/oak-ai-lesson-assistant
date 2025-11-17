@@ -20,7 +20,7 @@ export const ImageAttribution = ({ quiz }: ImageAttributionProps) => {
   }
 
   return (
-    <OakBox $mt="space-between-m" $color="text-subdued">
+    <OakBox $mt="spacing-24" $color="text-subdued">
       <OakSpan $font="body-3">
         {formattedAttribution.segments.map((segment, index) => (
           <OakSpan

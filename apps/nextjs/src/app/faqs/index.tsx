@@ -40,54 +40,54 @@ export const FAQPageContent = () => {
     <OakMaxWidth>
       <OakFlex $justifyContent="space-between">
         <OakBox $display={["none", "block"]}>
-          <OakBox $pb="inner-padding-xl8" $mb="space-between-xl">
+          <OakBox $pb="spacing-80" $mb="spacing-56">
             <OakHeading tag="h1" $font="heading-3">
               FAQs
             </OakHeading>
           </OakBox>
 
-          <OakUL $position="sticky" $top="all-spacing-14">
-            <OakLI $pv="inner-padding-ssx">
+          <OakUL $position="sticky" $top="spacing-92">
+            <OakLI $pv="spacing-4">
               <OakLink onClick={() => scrollToRefWithOffset(startingRef)}>
                 Getting started
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-ssx">
+            <OakLI $pv="spacing-4">
               <OakLink onClick={() => scrollToRefWithOffset(featuresRef)}>
                 Features and functionality
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-ssx">
+            <OakLI $pv="spacing-4">
               <OakLink onClick={() => scrollToRefWithOffset(supportRef)}>
                 Support and assistance
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-ssx">
+            <OakLI $pv="spacing-4">
               <OakLink onClick={() => scrollToRefWithOffset(accessibilityRef)}>
                 Accessibility
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-ssx">
+            <OakLI $pv="spacing-4">
               <OakLink onClick={() => scrollToRefWithOffset(usageRef)}>
                 Usage and best practices
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-xs">
+            <OakLI $pv="spacing-8">
               <OakLink onClick={() => scrollToRefWithOffset(technicalRef)}>
                 Technical
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-xs">
+            <OakLI $pv="spacing-8">
               <OakLink onClick={() => scrollToRefWithOffset(updatesRef)}>
                 Updates and enhancements
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-xs">
+            <OakLI $pv="spacing-8">
               <OakLink onClick={() => scrollToRefWithOffset(concernsRef)}>
                 Other concerns
               </OakLink>
             </OakLI>
-            <OakLI $pv="inner-padding-xs">
+            <OakLI $pv="spacing-8">
               <OakLink onClick={() => scrollToRefWithOffset(dataRef)}>
                 Data privacy and security
               </OakLink>
@@ -104,8 +104,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Getting started
             </OakHeading>
@@ -115,8 +115,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               How do I sign up for Aila?
             </OakHeading>
@@ -127,8 +127,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               How much does it cost to use Aila?
             </OakHeading>
@@ -140,8 +140,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What are the system requirements for using Aila?
             </OakHeading>
@@ -153,8 +153,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What is a beta product?
             </OakHeading>
@@ -171,8 +171,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-m"
-              $mb="space-between-l"
+              $mt="spacing-24"
+              $mb="spacing-48"
             >
               Is there a tutorial or guide available to help me get started?
             </OakHeading>
@@ -190,8 +190,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Features and functionality
             </OakHeading>
@@ -201,8 +201,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What features does Aila offer?
             </OakHeading>
@@ -218,8 +218,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Can I customise lessons?
             </OakHeading>
@@ -234,12 +234,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What are the advantages of using Aila?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Aila has been based upon Oak&apos;s{" "}
               <OakLink href="https://www.thenational.academy/blog/our-approach-to-curriculum">
                 curriculum principles
@@ -249,21 +249,21 @@ export const FAQPageContent = () => {
               outcome and breaking that down into manageable chunks of learning,
               our learning cycles.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               It encourages you to think about the prior knowledge that students
               will require for the lesson, the vocabulary that will need to be
               explicitly taught during the lesson, the key knowledge that you
               want pupils to take from the lesson and the common misconceptions
               or errors that pupils make in this topic.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Our learning cycles are designed to ensure clear explanations - we
               provide image and slide text suggestions to allow for dual coding,
               we&apos;ve ensured slide design minimises extraneous cognitive
               load for students and built-in regular checks for understanding
               tasks followed by lots of practice for students.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               The process is designed to be flexible. You can tweak and change
               the lesson as it is being created to suit the needs of your
               pupils, as you know them best! The beauty of Aila is that it
@@ -271,7 +271,7 @@ export const FAQPageContent = () => {
               you craft a lesson that is accessible and appropriate for your
               students.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Aila uses a technique called retrieval augmented generation (RAG)
               to incorporate the high-quality Oak content, which has been
               carefully and expertly created by real-life teachers and
@@ -284,8 +284,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Why has Oak created Aila when other AI assistants are already
               available?
@@ -305,12 +305,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What are the limitations of Aila&apos;s features?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               We know that images are really important to support explanations
               and Aila doesn&apos;t currently produce images or diagrams. Image
               production is a feature that will come with a future iteration of
@@ -319,14 +319,14 @@ export const FAQPageContent = () => {
               an appropriate image with Google.
             </OakP>
 
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               We are aware that complex concepts may require more than one slide
               to support their explanation. We are developing this feature but
               think this is the part of a lesson that will need the most
               development from a teacher after export.
             </OakP>
 
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Large Language Models are not as good at producing high-quality
               content for some subjects and this is a limitation of Aila. We
               know that the output isn&apos;t as good in certain subjects yet,
@@ -336,8 +336,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Why does Aila only output in Oak format?
             </OakHeading>
@@ -351,8 +351,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Why is there only one type of questioning in the quizzes?
             </OakHeading>
@@ -364,7 +364,7 @@ export const FAQPageContent = () => {
               them short answer questions or even add additional question types
               to your slides.
             </OakP>
-            <OakP $mb="space-between-xs">
+            <OakP $mb="spacing-12">
               Aila is still very much in development and we&apos;re aiming to
               add more question types in future.
             </OakP>
@@ -374,8 +374,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Support and assistance
             </OakHeading>
@@ -385,13 +385,13 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Is support available if I encounter any issues or have questions?
             </OakHeading>
 
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Yes, we provide comprehensive support to assist with any issues or
               questions users may have. You can contact us via{" "}
               <OakLink href="mailto:help@thenational.academy">email.</OakLink>
@@ -399,12 +399,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Can I provide feedback or suggest improvements for Aila?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Yes, please do! We love to hear how users are finding our
               resources and how we can improve them. Submit your{" "}
               <OakLink href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform">
@@ -416,12 +416,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Are there resources available for troubleshooting common problems?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               The more feedback we receive from users, the more we can identify
               common problems and provide troubleshooting tips.
             </OakP>
@@ -431,8 +431,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Accessibility
             </OakHeading>
@@ -442,13 +442,13 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Are there features in place to support diverse learners and
               educators?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               We want as many people as possible to be able to use Aila. You
               should be able to; change colours, contrast levels, and fonts;
               read and use most of the website while zoomed in up to 400%;
@@ -467,12 +467,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Can lesson plans be adapted for students with SEND?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Of course! You can prompt Aila to factor in your pupils&apos;
               needs when generating your lesson plan. Try asking Aila to produce
               texts of different reading ages, sentence starters, or alternative
@@ -486,8 +486,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Usage and best practices
             </OakHeading>
@@ -497,26 +497,26 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What are some best practices for maximising the effectiveness of
               Aila?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Work with Aila to co-create your lesson. Before you proceed to the
               next steps of co-creating your lesson with Aila, it is important
               to check that you are happy with your lesson outcomes and learning
               cycle outcomes, as this will determine the content for the rest of
               the lesson.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               If you want the content to be adapted for a specific geographical
               context, reading age or a specific pupil need, tell Aila at the
               start so that that is taken into consideration when designing the
               lesson content.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               The additional materials section of the lesson is the most
               flexible. If you would like teacher instructions for a practical
               lesson, model answers, essay-style questions, narratives for your
@@ -530,8 +530,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Technical
             </OakHeading>
@@ -541,18 +541,18 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               How does Aila work?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Aila is built to use Chat GPT4, but we are also evaluating other
               models. We have written a 9,000-word prompt that provides very
               specific guidance on what excellence looks like for each section
               of a lesson.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Aila also uses retrieval augmented generation (RAG) to integrate
               the high-quality content of Oak&apos;s human-planned lessons into
               the lessons being delivered. This means that the accuracy of the
@@ -565,8 +565,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Updates and enhancements
             </OakHeading>
@@ -576,12 +576,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Are there plans for future enhancements or new features?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Yes, we strive to constantly improve our resources, taking into
               account feedback from our users - Aila is still very much in
               development. We aim to release future iterations of Aila that
@@ -591,12 +591,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Can users suggest features for future updates?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Of course, we would love to hear your thoughts and suggestions for
               other features that would support your teaching. Please{" "}
               <OakLink href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform">
@@ -607,12 +607,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               How often are updates released for Aila?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               We&apos;re still in the beta phase, which means that whilst
               we&apos;re allowing teachers to use it, it&apos;s still prone to
               bugs and errors, and is still under constant development.
@@ -623,23 +623,23 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               How will Aila be evaluated?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               The team at Oak constantly evaluates Aila, and we are designing
               multiple approaches to this. We carry out consistency checks and
               ensure that it follows the instructions we have built into the
               prompt, and evaluate the quality of content being produced.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               We aim to evaluate several factors, such as Americanisms, cultural
               biases, the appropriateness of the literacy level, checking that
               the learning cycles increase in difficulty, and more.
             </OakP>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Nonetheless, generative AI will make mistakes, and the outputs
               should be checked carefully.
             </OakP>
@@ -649,8 +649,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Other concerns
             </OakHeading>
@@ -660,12 +660,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Is Oak trying to replace teachers with AI?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Absolutely not! At Oak, we share the brilliance of teachers from
               across the country through our resources, and our Aila is no
               different. It is designed to keep teachers in the driving seat,
@@ -677,8 +677,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Data privacy and security
             </OakHeading>
@@ -688,12 +688,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Is Aila safe to use?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Generative AI will make mistakes, and no two outputs are the same.
               With that in mind, it&apos;s important to check any AI-generated
               content thoroughly before using it in the classroom. We have put
@@ -707,12 +707,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Can I have unlimited use?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               In order to prevent misuse, we&apos;ve restricted and protected
               the volume of requests that can be made, lessons, and resources
               that can be generated. If you&apos;re reaching these limits,
@@ -725,12 +725,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               What ethical measures are you putting in place?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               Generative AI is a new and cutting-edge technology, and it&apos;s
               important that anyone developing AI products actively takes into
               account privacy, security and ethical considerations. We have
@@ -738,52 +738,52 @@ export const FAQPageContent = () => {
               including;
             </OakP>
             <OakUL className="mb-6 list-disc pl-12">
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 UNESCO&apos;s core principles on{" "}
                 <OakLink href="https://www.unesco.org/en/artificial-intelligence/recommendation-ethics">
                   a human-rights centred approach to the Ethics of AI
                 </OakLink>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 US office for Edtech;{" "}
                 <OakLink href="https://tech.ed.gov/ai/">
                   Artificial Intelligence and the Future of Teaching and
                   Learning
                 </OakLink>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 UK DfE position on{" "}
                 <OakLink href="https://www.gov.uk/government/publications/generative-artificial-intelligence-in-education/generative-artificial-intelligence-ai-in-education">
                   Generative artificial intelligence (AI) in education
                 </OakLink>
               </OakLI>
             </OakUL>
-            <OakP $mb="space-between-s">Aila is designed to:</OakP>
+            <OakP $mb="spacing-16">Aila is designed to:</OakP>
             <OakUL className="mb-6 list-disc pl-12">
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 <OakP>
                   keep the human in the loop, informing and involving expert
                   teachers and educators in the process
                 </OakP>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 <OakP>
                   not involve the input of personal information to LLMs
                 </OakP>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 <OakP>
                   allow us to evaluate cultural biases that may be present in
                   the generated content
                 </OakP>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 <OakP>
                   create guardrails around the generative AI to improve
                   pedagogical alignment
                 </OakP>
               </OakLI>
-              <OakLI $pv="inner-padding-xs">
+              <OakLI $pv="spacing-8">
                 <OakP>
                   be transparent and explainable to users; we openly share the
                   underlying prompts
@@ -796,8 +796,8 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h2"
               $font="heading-5"
-              $mt="space-between-xxl"
-              $mb="space-between-s"
+              $mt="spacing-72"
+              $mb="spacing-16"
             >
               Aila
             </OakHeading>
@@ -807,12 +807,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Why did you decide to name Oak&apos;s AI lesson assistant, Aila?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               The name is an acronym for &apos;AI lesson assistant&apos;. We
               wanted the name to have &apos;AI&apos; in it, as our research
               found that teachers would be more likely to use an AI product if
@@ -829,12 +829,12 @@ export const FAQPageContent = () => {
             <OakHeading
               tag="h3"
               $font="body-1-bold"
-              $mt="space-between-l"
-              $mb="space-between-s"
+              $mt="spacing-48"
+              $mb="spacing-16"
             >
               Why did you give it a human name?
             </OakHeading>
-            <OakP $mb="space-between-s">
+            <OakP $mb="spacing-16">
               In Aila&apos;s initial testing phases, users reported being unsure
               of how to &apos;talk&apos; to the assistant. Giving it a name
               humanises the chatbot and encourages more natural conversation.
