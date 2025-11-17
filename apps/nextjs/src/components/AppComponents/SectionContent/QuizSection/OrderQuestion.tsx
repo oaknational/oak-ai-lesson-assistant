@@ -37,11 +37,11 @@ export const OrderQuestion = ({
 
   return (
     <OakBox
-      $mb="space-between-l"
+      $mb="spacing-48"
       role="group"
       aria-label={`Question ${questionNumber}: Ordering`}
     >
-      <OakFlex $mb="space-between-s">
+      <OakFlex $mb="spacing-16">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
           markdown={processedText}
@@ -55,7 +55,7 @@ export const OrderQuestion = ({
           <OakFlex
             key={index}
             $alignItems="center"
-            $mb="space-between-xs"
+            $mb="spacing-12"
             role="listitem"
             aria-label={`Item in position ${item.correctIndex}: ${item.text}`}
           >

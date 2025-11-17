@@ -51,11 +51,11 @@ const StepOne = ({
 
   return (
     <>
-      <OakFlex $gap={"space-between-m"} $flexDirection="column">
+      <OakFlex $gap={"spacing-24"} $flexDirection="column">
         {!!showValidationError && (
           <FormValidationWarning errorMessage={showValidationError} />
         )}
-        <OakFlex $mv={"space-between-s"}>
+        <OakFlex $mv={"spacing-16"}>
           <OakFlex $flexDirection={"column"}>
             <OakRadioGroup
               name="radio-group"
@@ -66,17 +66,17 @@ const StepOne = ({
                 setShowValidationError("");
               }}
               $flexDirection="column"
-              $gap={"space-between-m"}
+              $gap={"spacing-24"}
             >
               {materialTypes.map((materialType) => (
                 <OakLabel key={materialType.id}>
                   <OakRadioButton
                     id={materialType.id}
                     value={materialType.id}
-                    radioInnerSize="all-spacing-5"
-                    radioOuterSize="all-spacing-6"
+                    radioInnerSize="spacing-20"
+                    radioOuterSize="spacing-24"
                     label={
-                      <OakFlex $flexDirection="column" $ml="space-between-ssx">
+                      <OakFlex $flexDirection="column" $ml="spacing-8">
                         <OakP $font="body-2-bold">
                           {materialType.displayName}
                         </OakP>

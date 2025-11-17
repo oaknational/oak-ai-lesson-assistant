@@ -67,15 +67,15 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
   return (
     <>
       <OakFlex $flexDirection="column">
-        <OakFlex $flexDirection="column" $mb="space-between-xxl">
-          <OakHeading $mb={"space-between-xs"} tag="h2" $font={"heading-6"}>
+        <OakFlex $flexDirection="column" $mb="spacing-72">
+          <OakHeading $mb={"spacing-12"} tag="h2" $font={"heading-6"}>
             Learning outcome
           </OakHeading>
-          <OakP $mb={"space-between-m"} $font="body-2">
+          <OakP $mb={"spacing-24"} $font="body-2">
             {pageData.lessonPlan.learningOutcome}
           </OakP>
 
-          <OakHeading $mb={"space-between-xs"} tag="h2" $font={"heading-6"}>
+          <OakHeading $mb={"spacing-12"} tag="h2" $font={"heading-6"}>
             Key learning points
           </OakHeading>
 

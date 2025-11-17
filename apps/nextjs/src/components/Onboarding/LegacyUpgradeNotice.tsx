@@ -10,16 +10,16 @@ export const LegacyUpgradeNotice = () => {
     <SignUpSignInLayout loaded>
       <OakBox
         $mh="auto"
-        $ml={[null, "space-between-l"]}
+        $ml={[null, "spacing-48"]}
         $borderRadius="border-radius-m"
         $background="white"
-        $pa="inner-padding-xl2"
-        $maxWidth={"all-spacing-22"}
+        $pa="spacing-32"
+        $maxWidth={"spacing-640"}
       >
         <OakHeading $font="heading-6" tag="h1">
           Preparing your account
         </OakHeading>
-        <OakFlex $mt="space-between-s" $width={"100%"} $justifyContent="center">
+        <OakFlex $mt="spacing-16" $width={"100%"} $justifyContent="center">
           <LoadingWheel />
         </OakFlex>
       </OakBox>

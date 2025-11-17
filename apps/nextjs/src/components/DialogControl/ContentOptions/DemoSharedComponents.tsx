@@ -10,7 +10,7 @@ export function DialogContainer({
       $flexDirection={"column"}
       $justifyContent={"center"}
       $alignItems={"flex-start"}
-      $gap="all-spacing-4"
+      $gap="spacing-16"
       $height={"100%"}
       $width={"100%"}
     >

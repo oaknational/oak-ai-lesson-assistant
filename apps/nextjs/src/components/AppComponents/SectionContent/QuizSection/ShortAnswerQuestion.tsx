@@ -31,11 +31,11 @@ export const ShortAnswerQuestion = ({
 
   return (
     <OakBox
-      $mb="space-between-l"
+      $mb="spacing-48"
       role="group"
       aria-label={`Question ${questionNumber}: Short answer`}
     >
-      <OakFlex $mb="space-between-s">
+      <OakFlex $mb="spacing-16">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
           markdown={processedText}
@@ -45,7 +45,7 @@ export const ShortAnswerQuestion = ({
       </OakFlex>
 
       {!hasInlineAnswer && (
-        <OakBox $mb="space-between-m" aria-label="Answer">
+        <OakBox $mb="spacing-24" aria-label="Answer">
           <OakBox
             $font="body-2-bold"
             $color="text-success"

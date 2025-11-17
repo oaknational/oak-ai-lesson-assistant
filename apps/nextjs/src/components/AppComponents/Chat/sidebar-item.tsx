@@ -38,12 +38,12 @@ export function SidebarItem({ chat }: SidebarItemProps) {
       $alignItems="center"
       $background={isHovered ? `grey30` : `white`}
       $transition="standard-ease"
-      $pa="inner-padding-ssx"
+      $pa="spacing-4"
       $borderRadius="border-radius-s"
     >
       <OakFlex
         $justifyContent="flex-start"
-        $gap="all-spacing-2"
+        $gap="spacing-8"
         $alignItems="center"
       >
         {chat.isShared ? (

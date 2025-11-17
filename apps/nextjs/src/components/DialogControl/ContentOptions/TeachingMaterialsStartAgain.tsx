@@ -61,35 +61,31 @@ const TeachingMaterialsStartAgain = ({
       $width="100%"
       $height="100%"
       $flexDirection="column"
-      $ph={["inner-padding-m", "inner-padding-xl8"]}
-      $mb="space-between-m"
+      $ph={["spacing-16", "spacing-80"]}
+      $mb="spacing-24"
     >
-      <OakFlex
-        $gap={"space-between-m"}
-        $flexDirection="column"
-        $mb="space-between-m"
-      >
-        <OakHeading $font="heading-5" tag="h1" $mb="space-between-ssx">
+      <OakFlex $gap={"spacing-24"} $flexDirection="column" $mb="spacing-24">
+        <OakHeading $font="heading-5" tag="h1" $mb="spacing-8">
           What would you like to create?
         </OakHeading>
 
-        <OakFlex $flexDirection="column" $mb="space-between-ssx">
+        <OakFlex $flexDirection="column" $mb="spacing-8">
           <OakRadioGroup
             name="create-option"
             onChange={(value) => setSelectedOption(value.target.value)}
             $flexDirection="column"
-            $gap="space-between-m2"
+            $gap="spacing-32"
           >
             <OakRadioButton
               id="current-lesson"
               value="current-lesson"
-              radioInnerSize="all-spacing-5"
-              radioOuterSize="all-spacing-6"
+              radioInnerSize="spacing-20"
+              radioOuterSize="spacing-24"
               label={
                 <OakFlex
                   $flexDirection="column"
-                  $ml="space-between-xs"
-                  $gap={"space-between-sssx"}
+                  $ml="spacing-12"
+                  $gap={"spacing-4"}
                 >
                   <OakP $font="heading-7">
                     A teaching material for the current lesson
@@ -102,13 +98,13 @@ const TeachingMaterialsStartAgain = ({
             <OakRadioButton
               id="new-lesson"
               value="new-lesson"
-              radioInnerSize="all-spacing-5"
-              radioOuterSize="all-spacing-6"
+              radioInnerSize="spacing-20"
+              radioOuterSize="spacing-24"
               label={
                 <OakFlex
                   $flexDirection="column"
-                  $ml="space-between-xs"
-                  $gap={"space-between-sssx"}
+                  $ml="spacing-12"
+                  $gap={"spacing-4"}
                 >
                   <OakP $font="heading-7">
                     A new lesson or teaching material
@@ -129,8 +125,7 @@ const TeachingMaterialsStartAgain = ({
           Continue
         </OakPrimaryButton>
       </OakFlex>
-
-      <OakFlex $flexDirection="column" $mt="space-between-ssx">
+      <OakFlex $flexDirection="column" $mt="spacing-8">
         <OakP $font="body-2">
           Don&apos;t forget to{" "}
           <OakSecondaryLink
