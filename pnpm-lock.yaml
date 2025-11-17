@@ -145,8 +145,8 @@ importers:
         specifier: '*'
         version: link:../../packages/teaching-materials
       '@oaknational/oak-components':
-        specifier: ^1.142.2
-        version: 1.142.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
+        specifier: ^1.160.0
+        version: 1.160.0(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@18.2.0)(react@18.2.0)(zod@3.23.8)
@@ -158,7 +158,7 @@ importers:
         version: 3.1.0(react@18.2.0)
       '@prisma/client':
         specifier: ^6.3.1
-        version: 6.3.1(typescript@5.9.2)
+        version: 6.3.1(prisma@6.3.1)(typescript@5.9.2)
       '@prisma/extension-accelerate':
         specifier: ^1.2.1
         version: 1.2.1(@prisma/client@6.3.1)
@@ -601,7 +601,7 @@ importers:
         version: 0.11.0(@pollyjs/core@6.0.6)
       ts-jest:
         specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.28.5)(esbuild@0.21.5)(jest@30.2.0)(typescript@5.9.2)
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -941,7 +941,7 @@ importers:
         version: 30.2.0(@types/node@20.17.9)(ts-node@10.9.2)
       ts-jest:
         specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.28.5)(esbuild@0.21.5)(jest@30.2.0)(typescript@5.9.2)
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
 
   packages/ingest:
     dependencies:
@@ -1008,7 +1008,7 @@ importers:
         version: 0.11.0(@pollyjs/core@6.0.6)
       ts-jest:
         specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.28.5)(esbuild@0.21.5)(jest@30.2.0)(typescript@5.9.2)
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
 
   packages/logger:
     dependencies:
@@ -1073,7 +1073,7 @@ importers:
         version: 30.2.0(@types/node@20.17.9)(ts-node@10.9.2)
       ts-jest:
         specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.28.5)(esbuild@0.21.5)(jest@30.2.0)(typescript@5.9.2)
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
 
   packages/teaching-materials:
     dependencies:
@@ -6797,8 +6797,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.142.2(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
-    resolution: {integrity: sha512-/OVSoxjuAe64fO2TNZm0dhWj92wnfnGV9eDetVpRPWyjCLG/ST93vpk06h0Ppf8SzTLbCYJMyz9sQv+5ftW5Ng==}
+  /@oaknational/oak-components@1.160.0(next-cloudinary@6.17.4)(next@14.2.33)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.11):
+    resolution: {integrity: sha512-3w3UWPwoVbdf2FEWjVGhRmWlnJ/iD/xcZba4Kdb0BexdK7HIM7WlZ7MEXgxCHfcHEzZJeKNBzatdnFxI8M3/Vg==}
     peerDependencies:
       next: '>=14.2.12'
       next-cloudinary: '>=6.16.0'
@@ -7822,22 +7822,6 @@ packages:
       typescript: 5.9.2
     dev: false
 
-  /@prisma/client@6.3.1(typescript@5.9.2):
-    resolution: {integrity: sha512-ARAJaPs+eBkemdky/XU3cvGRl+mIPHCN2lCXsl5Vlb0E2gV+R6IN7aCI8CisRGszEZondwIsW9Iz8EJkTdykyA==}
-    engines: {node: '>=18.18'}
-    requiresBuild: true
-    peerDependencies:
-      prisma: '*'
-      typescript: '>=5.1.0'
-    peerDependenciesMeta:
-      prisma:
-        optional: true
-      typescript:
-        optional: true
-    dependencies:
-      typescript: 5.9.2
-    dev: false
-
   /@prisma/debug@3.8.1:
     resolution: {integrity: sha512-ft4VPTYME1UBJ7trfrBuF2w9jX1ipDy786T9fAEskNGb+y26gPDqz5fiEWc2kgHNeVdz/qTI/V3wXILRyEcgxQ==}
     dependencies:
@@ -7867,7 +7851,7 @@ packages:
     peerDependencies:
       '@prisma/client': '>=4.16.1'
     dependencies:
-      '@prisma/client': 6.3.1(typescript@5.9.2)
+      '@prisma/client': 6.3.1(prisma@6.3.1)(typescript@5.9.2)
     dev: false
 
   /@prisma/fetch-engine@6.3.1:
@@ -26493,45 +26477,6 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-jest@29.2.5(@babel/core@7.28.5)(esbuild@0.21.5)(jest@30.2.0)(typescript@5.9.2):
-    resolution: {integrity: sha512-KD8zB2aAZrcKIdGk4OwpJggeLcH1FgrICqDSROWqlnJXGCXK4Mn6FcdK2B6670Xr73lHMG1kHw8R87A0ecZ+vA==}
-    engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': '>=7.0.0-beta.0 <8'
-      '@jest/transform': ^29.0.0
-      '@jest/types': ^29.0.0
-      babel-jest: ^29.0.0
-      esbuild: '*'
-      jest: ^29.0.0
-      typescript: '>=4.3 <6'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@jest/transform':
-        optional: true
-      '@jest/types':
-        optional: true
-      babel-jest:
-        optional: true
-      esbuild:
-        optional: true
-    dependencies:
-      '@babel/core': 7.28.5
-      bs-logger: 0.2.6
-      ejs: 3.1.10
-      esbuild: 0.21.5
-      fast-json-stable-stringify: 2.1.0
-      jest: 30.2.0(@types/node@20.17.9)(ts-node@10.9.2)
-      jest-util: 29.7.0
-      json5: 2.2.3
-      lodash.memoize: 4.1.2
-      make-error: 1.3.6
-      semver: 7.7.1
-      typescript: 5.9.2
-      yargs-parser: 21.1.1
-    dev: true
-
   /ts-jest@29.2.5(@babel/core@7.28.5)(jest@30.0.0)(typescript@5.9.2):
     resolution: {integrity: sha512-KD8zB2aAZrcKIdGk4OwpJggeLcH1FgrICqDSROWqlnJXGCXK4Mn6FcdK2B6670Xr73lHMG1kHw8R87A0ecZ+vA==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
@@ -26561,6 +26506,44 @@ packages:
       ejs: 3.1.10
       fast-json-stable-stringify: 2.1.0
       jest: 30.0.0
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.7.1
+      typescript: 5.9.2
+      yargs-parser: 21.1.1
+    dev: true
+
+  /ts-jest@29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2):
+    resolution: {integrity: sha512-KD8zB2aAZrcKIdGk4OwpJggeLcH1FgrICqDSROWqlnJXGCXK4Mn6FcdK2B6670Xr73lHMG1kHw8R87A0ecZ+vA==}
+    engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/transform': ^29.0.0
+      '@jest/types': ^29.0.0
+      babel-jest: ^29.0.0
+      esbuild: '*'
+      jest: ^29.0.0
+      typescript: '>=4.3 <6'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/transform':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.28.5
+      bs-logger: 0.2.6
+      ejs: 3.1.10
+      fast-json-stable-stringify: 2.1.0
+      jest: 30.2.0(@types/node@20.17.9)(ts-node@10.9.2)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2

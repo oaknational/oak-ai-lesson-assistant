@@ -43,7 +43,7 @@ const CheckForUnderstandingQuiz = ({
   }
 
   return (
-    <OakBox $mt="space-between-s">
+    <OakBox $mt="spacing-16">
       {checkForUnderstandingQuiz.questions.map((question, index) => {
         if (question.questionType === "multiple-choice") {
           return (
@@ -83,7 +83,7 @@ export const CycleSection = ({ cycleSection }: CycleSectionProps) => {
       <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
         <OakHeading tag="h2">{cycle.title ?? "…"}</OakHeading>
 
-        <OakHeading tag="h3" $mt="space-between-m">
+        <OakHeading tag="h3" $mt="spacing-24">
           Explanation
         </OakHeading>
         <MemoizedReactMarkdownWithStyles
@@ -92,22 +92,20 @@ export const CycleSection = ({ cycleSection }: CycleSectionProps) => {
           }
         />
       </OakBox>
-
       {/* Quiz section without prose styling to prevent checkbox alignment issues */}
       <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
-        <OakHeading tag="h3" $mt="space-between-m">
+        <OakHeading tag="h3" $mt="spacing-24">
           Check for understanding
         </OakHeading>
       </OakBox>
       <CheckForUnderstandingQuiz cycle={cycle} />
-
       <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
-        <OakHeading tag="h3" $mt="space-between-m">
+        <OakHeading tag="h3" $mt="spacing-24">
           Practice
         </OakHeading>
         <MemoizedReactMarkdownWithStyles markdown={cycle.practice ?? "…"} />
 
-        <OakHeading tag="h3" $mt="space-between-m">
+        <OakHeading tag="h3" $mt="spacing-24">
           Feedback
         </OakHeading>
         <MemoizedReactMarkdownWithStyles markdown={cycle.feedback ?? "…"} />

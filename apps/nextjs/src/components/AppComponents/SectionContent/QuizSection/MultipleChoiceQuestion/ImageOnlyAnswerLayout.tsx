@@ -32,7 +32,7 @@ export const ImageOnlyAnswerLayout = ({
   );
 
   return (
-    <OakFlex $flexWrap="wrap" $gap="space-between-xs">
+    <OakFlex $flexWrap="wrap" $gap="spacing-12">
       {answers.map((answer, index) => {
         const letter = String.fromCharCode(97 + index);
         return (
@@ -46,7 +46,7 @@ export const ImageOnlyAnswerLayout = ({
               $flexGrow={1}
               $alignItems="center"
               $justifyContent="center"
-              $mb="space-between-xs"
+              $mb="spacing-12"
             >
               <MemoizedReactMarkdownWithStyles
                 markdown={answer.text}

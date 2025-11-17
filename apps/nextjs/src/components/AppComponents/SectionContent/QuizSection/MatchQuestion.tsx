@@ -38,11 +38,11 @@ export const MatchQuestion = ({
 
   return (
     <OakBox
-      $mb="space-between-l"
+      $mb="spacing-48"
       role="group"
       aria-label={`Question ${questionNumber}: Matching`}
     >
-      <OakFlex $mb="space-between-s">
+      <OakFlex $mb="spacing-16">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
           markdown={processedText}
@@ -50,16 +50,15 @@ export const MatchQuestion = ({
           components={components}
         />
       </OakFlex>
-
       <OakFlex
-        $gap={["space-between-s", "space-between-l"]}
+        $gap={["spacing-16", "spacing-48"]}
         $flexDirection={["column", "row"]}
         role="group"
         aria-label="Matching exercise"
       >
         {/* Left column - questions */}
         <OakBox
-          $minWidth={["auto", "all-spacing-15"]}
+          $minWidth={["auto", "spacing-100"]}
           role="list"
           aria-label="Items to match"
         >
@@ -69,8 +68,8 @@ export const MatchQuestion = ({
               <OakFlex
                 key={index}
                 $alignItems="center"
-                $mb="space-between-s"
-                $minHeight="all-spacing-7"
+                $mb="spacing-16"
+                $minHeight="spacing-32"
                 role="listitem"
                 aria-label={`Match item ${letter}: ${pair.left}`}
               >
@@ -89,8 +88,8 @@ export const MatchQuestion = ({
             <OakFlex
               key={index}
               $alignItems="center"
-              $mb="space-between-s"
-              $minHeight="all-spacing-7"
+              $mb="spacing-16"
+              $minHeight="spacing-32"
               role="listitem"
               aria-label={`Matches with ${item.label}: ${item.text}`}
             >
