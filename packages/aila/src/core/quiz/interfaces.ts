@@ -18,7 +18,6 @@ import type {
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "./ChoiceModels";
-import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
@@ -27,6 +26,12 @@ import type {
 } from "./schema";
 
 export type SearchResponseBody<T = unknown> = SearchResponse<T>;
+
+// Rating response from rerankers
+export type RatingResponse = {
+  rating: number;
+  justification: string;
+};
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -118,7 +123,7 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string;
+  questionUid: string;
 }
 
 export interface QuizQuestionPool {
