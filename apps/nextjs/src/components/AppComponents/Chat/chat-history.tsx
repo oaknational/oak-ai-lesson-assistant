@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import {
   OakBox,
   OakIcon,
+  OakInformativeModal,
+  OakInformativeModalFooter,
   OakLink,
-  OakModal,
-  OakModalFooter,
   OakSpan,
 } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
@@ -40,16 +40,16 @@ export function ChatHistory() {
     }
   }, [openSidebar]);
   return (
-    <OakModal
+    <OakInformativeModal
       data-testid="sidebar"
       isLeftHandSide={false}
       zIndex={0}
       isOpen={openSidebar}
       onClose={() => setOpenSidebar(false)}
       footerSlot={
-        <OakModalFooter>
+        <OakInformativeModalFooter>
           <ClearHistory isEnabled={true} />
-        </OakModalFooter>
+        </OakInformativeModalFooter>
       }
     >
       <OakBox
@@ -102,6 +102,6 @@ export function ChatHistory() {
           <SidebarList />
         </React.Suspense>
       </div>
-    </OakModal>
+    </OakInformativeModal>
   );
 }
