@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { OpenAICallReranker } from "./OpenAIRanker";
-import type { ChatMessage } from "./OpenAIRanker";
+import { OpenAICallReranker } from "./services/OpenAIRanker";
+import type { ChatMessage } from "./services/OpenAIRanker";
 
 const testSchema = z.object({
   justification: z.string(),

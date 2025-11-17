@@ -1,24 +1,33 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
-import { aiLogger } from "@oakai/logger";
 
 import type { OpenAI } from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
-import type { z } from "zod";
+import { z } from "zod";
 
-import type { PartialLessonPlan, QuizPath } from "../../protocol/schema";
-import { constrainImageUrl } from "../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
-import type { BaseType } from "./ChoiceModels";
-import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import type { QuizQuestionWithSourceData } from "./interfaces";
-import { unpackLessonPlanForPrompt } from "./unpackLessonPlan";
-
-// Create a logger instance for the quiz module
-const log = aiLogger("aila:quiz");
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import { constrainImageUrl } from "../../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
+import { QuizInspectionSystemPrompt } from "../QuestionAssesmentPrompt";
+import type { QuizQuestionWithSourceData, RatingResponse } from "../interfaces";
+import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 // OpenAI model constant
 // const OPENAI_MODEL = "gpt-4o-2024-08-06";
 const OPENAI_MODEL: string = "o4-mini";
+
+const IS_REASONING_MODEL = OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini";
+
+// Zod schema for AI evaluator rating responses
+export const ratingResponseSchema = z.object({
+  justification: z
+    .string()
+    .describe("The chain of thought that led to the rating"),
+  rating: z
+    .number()
+    .describe(
+      "The rating for the given criteria and response taking the chain of thought into account. The rating is a float between 0 and 1.",
+    ),
+}) satisfies z.ZodType<RatingResponse>;
 
 type ChatContent = OpenAI.Chat.Completions.ChatCompletionContentPart;
 
@@ -167,9 +176,7 @@ function combinePromptsAndQuestions(
  * @param {QuizPath} quizType - The type of quiz being evaluated (determines which lesson plan section to use).
  * @returns {Promise<ParsedChatCompletion<z.infer<T>>>} A promise that resolves to the parsed OpenAI chat completion response.
  */
-async function evaluateQuiz<
-  T extends z.ZodType<BaseType & Record<string, unknown>>,
->(
+async function evaluateQuiz<T extends z.ZodType<RatingResponse>>(
   lessonPlan: PartialLessonPlan,
   questions: QuizQuestionWithSourceData[],
   max_tokens: number = 4000,
@@ -199,159 +206,29 @@ export {
 };
 
 /**
- * Implements a cross-encoder approach using OpenAI's API by manipulating logit biases.
- * This function allows for comparing multiple options by analyzing token probabilities.
- *
- * @async
- * @function
- * @param {OpenAI.Chat.Completions.ChatCompletionSystemMessageParam} reranking_prompt - The system prompt for reranking.
- * @param {ChatMessage[]} reranking_messages - The messages to be ranked (must be fewer than 10).
- * @param {number} [bias_constant=100] - The bias value to apply to tokens.
- * @returns {Promise<OpenAI.Chat.Completions.ChatCompletion>} A promise that resolves to the OpenAI chat completion response.
- */
-
-/**
  * Makes an OpenAI API call for reranking with schema validation using the beta completions API.
  *
  * @async
  * @function
  * @param {ChatMessage[]} messages - The messages to send to the OpenAI API.
  * @param {number} [max_tokens=500] - The maximum number of tokens to generate.
- * @param {z.ZodType<BaseType & Record<string, unknown>>} schema - The Zod schema for response validation.
+ * @param {z.ZodType<RatingResponse>} schema - The Zod schema for response validation.
  * @returns {Promise<ParsedChatCompletion<z.infer<typeof schema>>>} A promise that resolves to the parsed OpenAI chat completion.
  */
 export async function OpenAICallReranker(
   messages: ChatMessage[],
   max_tokens: number = 500,
-  schema: z.ZodType<BaseType & Record<string, unknown>>,
+  schema: z.ZodType<RatingResponse>,
 ): Promise<ParsedChatCompletion<z.infer<typeof schema>>> {
   const openai = createOpenAIClient({ app: "maths-reranker" });
-  const startTime = Date.now();
-  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
-    const response = await openai.beta.chat.completions.parse({
-      model: OPENAI_MODEL,
-      max_completion_tokens: 4000,
-      messages,
-      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
-    });
-    return response;
-  } else {
-    const response = await openai.beta.chat.completions.parse({
-      model: OPENAI_MODEL,
-      max_tokens,
-      messages,
-      response_format: zodResponseFormat(schema, "QuizRatingResponse"),
-    });
-    return response;
-  }
-}
 
-/**
- * A test function that makes a simple OpenAI API call with image inputs.
- * Used for testing the OpenAI client configuration.
- *
- * @async
- * @function
- * @returns {Promise<string | undefined>} The content of the OpenAI response or undefined.
- */
-export async function DummyOpenAICall() {
-  const userId = "test-user-id";
-  const chatId = "test-chat-id";
-  const openai = createOpenAIClient({ app: "maths-reranker" });
-
-  const messages = [
-    {
-      role: "user",
-      content: [
-        {
-          type: "text",
-          text: "What are in these images? Is there any difference between them?",
-        },
-        {
-          type: "image_url",
-          image_url: {
-            url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-            detail: "high",
-          },
-        },
-        {
-          type: "image_url",
-          image_url: {
-            url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-            detail: "high",
-          },
-        },
-      ],
-    },
-  ];
-  //  This adds an id to each message.
-  if (OPENAI_MODEL === "o3" || OPENAI_MODEL === "o4-mini") {
-    const response = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      max_completion_tokens: 500,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: "What are in these images? Is there any difference between them?",
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-                detail: "high",
-              },
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-                detail: "high",
-              },
-            },
-          ],
-        },
-      ],
-    });
-    log.info("Image description received:", response);
-    log.info("Image description received:", response.choices[0]);
-
-    return response.choices[0]?.message.content;
-  } else {
-    const response = await openai.chat.completions.create({
-      model: OPENAI_MODEL,
-      max_tokens: 500,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: "What are in these images? Is there any difference between them?",
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-                detail: "high",
-              },
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg",
-                detail: "high",
-              },
-            },
-          ],
-        },
-      ],
-    });
-    log.info("Image description received:", response);
-    log.info("Image description received:", response.choices[0]);
-
-    return response.choices[0]?.message.content;
-  }
+  const response = await openai.beta.chat.completions.parse({
+    model: OPENAI_MODEL,
+    ...(IS_REASONING_MODEL
+      ? { max_completion_tokens: max_tokens }
+      : { max_tokens }),
+    messages,
+    response_format: zodResponseFormat(schema, "QuizRatingResponse"),
+  });
+  return response;
 }

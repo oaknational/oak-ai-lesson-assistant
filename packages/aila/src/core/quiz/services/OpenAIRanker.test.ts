@@ -1,7 +1,7 @@
+import { QuizInspectionSystemPrompt } from "../QuestionAssesmentPrompt";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import type { QuizQuestionWithSourceData } from "../interfaces";
 import { combinePromptsAndQuestions, quizToLLMMessages } from "./OpenAIRanker";
-import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
-import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
-import type { QuizQuestionWithSourceData } from "./interfaces";
 
 describe("quizToLLMMessagesTest", () => {
   it("Should convert into valid OpenAI message format", () => {
@@ -52,7 +52,7 @@ describe("quizToLLMMessagesTest", () => {
         active: true,
       },
     };
-    const result = quizToLLMMessages(testInput as QuizQuestionWithSourceData);
+    const _result = quizToLLMMessages(testInput as QuizQuestionWithSourceData);
     const ans = true;
     expect(ans).toBe(true);
   });
@@ -108,7 +108,7 @@ describe("fullOpenAIQuiz", () => {
         active: true,
       },
     };
-    const result = combinePromptsAndQuestions(
+    const _result = combinePromptsAndQuestions(
       testLessonPlan,
       [testInput as QuizQuestionWithSourceData],
       QuizInspectionSystemPrompt,
