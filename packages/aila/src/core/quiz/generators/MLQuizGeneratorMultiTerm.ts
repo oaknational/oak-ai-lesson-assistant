@@ -6,7 +6,10 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { QuizQuestionWithRawJson } from "../interfaces";
+import type {
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
+} from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -128,7 +131,7 @@ Generate a list of 3-6 semantic search queries`;
   private async searchAndRetrieveForQuery(
     query: string,
     topN: number,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     log.info(`MLQuizGeneratorMultiTerm: Searching for: "${query}"`);
 
     const results = await this.searchWithHybrid(
@@ -156,7 +159,7 @@ Generate a list of 3-6 semantic search queries`;
   private async retrieveQuestionsForAllQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[][]> {
+  ): Promise<QuizQuestionPool[]> {
     const semanticQueries: z.infer<typeof SemanticSearchSchema> =
       await this.generateSemanticSearchQueries(lessonPlan, quizType);
 
@@ -174,49 +177,58 @@ Generate a list of 3-6 semantic search queries`;
       `MLQuizGeneratorMultiTerm: Targeting ${POOL_SIZE} candidates per query`,
     );
 
-    const questionArrays = await Promise.all(
-      semanticQueries.queries.map((query) =>
-        this.searchAndRetrieveForQuery(query, POOL_SIZE),
-      ),
+    const pools = await Promise.all(
+      semanticQueries.queries.map(async (query) => {
+        const questions = await this.searchAndRetrieveForQuery(query, POOL_SIZE);
+        return {
+          questions,
+          source: {
+            type: "mlSemanticSearch" as const,
+            semanticQuery: query,
+          },
+        } satisfies QuizQuestionPool;
+      }),
     );
 
-    const totalQuestions = questionArrays.reduce(
-      (sum, arr) => sum + arr.length,
+    const totalQuestions = pools.reduce(
+      (sum, pool) => sum + pool.questions.length,
       0,
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Collected ${totalQuestions} total candidates across ${questionArrays.length} pools`,
+      `MLQuizGeneratorMultiTerm: Collected ${totalQuestions} total candidates across ${pools.length} pools`,
     );
 
-    return questionArrays;
+    return pools;
   }
 
-  public async generateMathsStarterQuizPatch(
+  public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const questionArrays = await this.retrieveQuestionsForAllQueries(
+  ): Promise<QuizQuestionPool[]> {
+    const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/starterQuiz",
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Generated ${questionArrays.length} starter quiz pools`,
+      `MLQuizGeneratorMultiTerm: Generated ${pools.length} starter quiz pools`,
     );
-    return questionArrays;
+
+    return pools;
   }
 
-  public async generateMathsExitQuizPatch(
+  public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-  ): Promise<QuizQuestionWithRawJson[][]> {
-    const questionArrays = await this.retrieveQuestionsForAllQueries(
+  ): Promise<QuizQuestionPool[]> {
+    const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/exitQuiz",
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Generated ${questionArrays.length} exit quiz pools`,
+      `MLQuizGeneratorMultiTerm: Generated ${pools.length} exit quiz pools`,
     );
-    return questionArrays;
+
+    return pools;
   }
 }
