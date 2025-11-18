@@ -84,7 +84,7 @@ invariant(
   "GOOGLE_DOCS_ADDITIONAL_QUIZ_ID is required",
 );
 
-export const getAdditionalResourcesTemplateId = ({
+export const getTeachingMaterialsTemplateId = ({
   docType,
   withAnswers = false,
 }: {
@@ -123,5 +123,5 @@ export const getAllTemplateIdsForDocType = (docType: string): string[] => {
   }
 
   // For other document types, just return the single template ID
-  return [getAdditionalResourcesTemplateId({ docType: docType })];
+  return [getTeachingMaterialsTemplateId({ docType: docType })];
 };

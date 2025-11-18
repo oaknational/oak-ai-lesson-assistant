@@ -34,15 +34,12 @@ export async function serverSideFeatureFlag(
       const user = await clerkClient.users.getUser(userId);
       const userEmail = user.emailAddresses?.[0]?.emailAddress;
 
-      posthogAiBetaServerClient.identify({
+      await posthogAiBetaServerClient.identifyImmediate({
         distinctId: userId,
         properties: {
           email: userEmail,
         },
       });
-
-      // Flush the queue to ensure the identification is sent
-      await posthogAiBetaServerClient.flush();
 
       // Mark user as identified in our cache
       await kv.set(identifiedKey, "true", { ex: 86400 }); // Cache for 24 hours

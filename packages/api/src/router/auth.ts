@@ -108,7 +108,7 @@ export const authRouter = router({
       },
     });
 
-    posthogAiBetaServerClient.identify({
+    await posthogAiBetaServerClient.identifyImmediate({
       distinctId: userId,
       properties: {
         isDemoUser,

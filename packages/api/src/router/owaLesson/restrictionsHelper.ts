@@ -9,7 +9,7 @@ import type {
 } from "./schemas";
 import type { TRPCWorksResponse } from "./types";
 
-const log = aiLogger("additional-materials");
+const log = aiLogger("teaching-materials");
 
 const RESTRICTED_CONTENT_GUIDANCE_TYPES = [
   "Depiction or discussion of sexual violence",

@@ -77,8 +77,8 @@ export const userBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(rateLimiter));
 
-const additionalMaterialRateLimiter = rateLimits.additionalMaterial.standard;
+const teachingMaterialRateLimiter = rateLimits.teachingMaterial.standard;
 
-export const additionalMaterialUserBasedRateLimitProcedure = publicProcedure
+export const teachingMaterialUserBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
-  .use(createRateLimiterMiddleware(additionalMaterialRateLimiter));
+  .use(createRateLimiterMiddleware(teachingMaterialRateLimiter));

@@ -2,6 +2,9 @@ require("@testing-library/jest-dom");
 
 process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 
+// Mock p-limit for ESM compatibility
+jest.mock("p-limit");
+
 // Mock Next.js Image component
 jest.mock("next/image", () => ({
   __esModule: true,

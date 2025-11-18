@@ -1,3 +1,11 @@
+## [1.54.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.0...v1.54.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* improve starter/exit quiz alignment with priorKnowledge and keyLearningPoints ([#825](https://github.com/oaknational/oak-ai-lesson-assistant/issues/825)) ([6df31bf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6df31bf0c579cd55ff7b0ef098f14ed1177c73dd))
+* posthog server patterns ([#827](https://github.com/oaknational/oak-ai-lesson-assistant/issues/827)) ([389ace5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/389ace5018fd90a9d13e1ff75fd4730d91c58f82))
+
 # [1.54.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.53.0...v1.54.0) (2025-10-22)
 
 

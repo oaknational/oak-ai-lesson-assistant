@@ -93,7 +93,7 @@ export const DownloadAllButton = ({
   const errorMessage = data && "message" in data ? data.message : "";
 
   const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
-  const { icon, ext, analyticsResourceType } = getExportsConfig("all");
+  const { icon, ext, analyticsMaterialType } = getExportsConfig("all");
   const { isSuccess, isError, mutateAsync, isLoading } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
   const { track } = useAnalytics();
@@ -154,7 +154,7 @@ export const DownloadAllButton = ({
       >
         <Link
           onClick={() => {
-            trackDownload(ext, analyticsResourceType, lesson, track, chatId);
+            trackDownload(ext, analyticsMaterialType, lesson, track, chatId);
             handleZipDownloadStatus();
           }}
           className="flex w-full items-center justify-start gap-15 hover:underline"

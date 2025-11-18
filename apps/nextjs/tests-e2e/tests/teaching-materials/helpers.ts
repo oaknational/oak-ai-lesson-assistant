@@ -4,17 +4,17 @@ import type { Page } from "@playwright/test";
 
 import {
   createMaterialSessionResponse,
-  generateAdditionalMaterialWithAdaptsOutputId,
-  generateAdditionalMaterialWithoutAdaptsOutputId,
   generatePartialLessonPlanObjectResponse,
+  generateTeachingMaterialWithAdaptsOutputId,
+  generateTeachingMaterialWithoutAdaptsOutputId,
   updateMaterialSessionResponse,
 } from "./fixtures";
 
-const log = aiLogger("additional-materials:testing");
+const log = aiLogger("teaching-materials:testing");
 
 export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
   await page.route(
-    "**/api/trpc/main/additionalMaterials.generatePartialLessonPlanObject?batch=1",
+    "**/api/trpc/main/teachingMaterials.generatePartialLessonPlanObject?batch=1",
     async (route, request) => {
       const postData = request.postDataJSON();
       log.info(
@@ -32,7 +32,7 @@ export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
 
   // Intercept createMaterialSession calls
   await page.route(
-    "**/api/trpc/main/additionalMaterials.createMaterialSession?batch=1",
+    "**/api/trpc/main/teachingMaterials.createMaterialSession?batch=1",
     async (route, request) => {
       const postData = request.postDataJSON();
       log.info(
@@ -50,7 +50,7 @@ export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
 
   // Intercept updateMaterialSession calls
   await page.route(
-    "**/api/trpc/main/additionalMaterials.updateMaterialSession?batch=1",
+    "**/api/trpc/main/teachingMaterials.updateMaterialSession?batch=1",
     async (route, request) => {
       const postData = request.postDataJSON();
       log.info(
@@ -67,18 +67,18 @@ export const applyTeachingMaterialsMockAPIRequests = async (page: Page) => {
   );
 
   await page.route(
-    "**/api/trpc/main/additionalMaterials.generateAdditionalMaterial?batch=1",
+    "**/api/trpc/main/teachingMaterials.generateTeachingMaterial?batch=1",
     async (route, request) => {
       const postData: { json: { adaptsOutputId: string } }[] =
         request.postDataJSON() ?? [];
       log.info(
-        "Intercepted generateAdditionalMaterial tRPC call with params:",
+        "Intercepted generateTeachingMaterial tRPC call with params:",
         postData,
       );
 
       const body = postData[0]?.json?.adaptsOutputId
-        ? generateAdditionalMaterialWithAdaptsOutputId
-        : generateAdditionalMaterialWithoutAdaptsOutputId;
+        ? generateTeachingMaterialWithAdaptsOutputId
+        : generateTeachingMaterialWithoutAdaptsOutputId;
 
       await route.fulfill({
         status: 200,
