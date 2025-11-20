@@ -1,3 +1,16 @@
+# [1.55.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.1...v1.55.0) (2025-11-20)
+
+
+### Bug Fixes
+
+* **quiz:** use parsed response for semantic search query generation ([#838](https://github.com/oaknational/oak-ai-lesson-assistant/issues/838)) ([3c21cec](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3c21cec06d3f466db367b22b2f1d671c8b577e21))
+
+
+### Features
+
+* **quiz:** add MLQuizGeneratorMultiTerm with separate pool strategy ([#840](https://github.com/oaknational/oak-ai-lesson-assistant/issues/840)) ([2850ad6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2850ad6515c9c4b388823b906d14b60377a720ee))
+* threat detection slack message  ([#832](https://github.com/oaknational/oak-ai-lesson-assistant/issues/832)) ([6f60bad](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6f60bad014bf4a2ee0c2413245f26a3810420085))
+
 ## [1.54.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.0...v1.54.1) (2025-11-13)
 
 
