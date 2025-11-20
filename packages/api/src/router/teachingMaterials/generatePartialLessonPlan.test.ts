@@ -1,3 +1,4 @@
+import type { LakeraGuardResponse } from "@oakai/core/src/threatDetection/lakera";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type {
   ModerationResult,
@@ -192,7 +193,6 @@ describe("generatePartialLessonPlan", () => {
           detector_id: "detector-1",
           detector_type: "type-1",
           detected: true,
-          message_id: 1,
         },
       ],
     });
@@ -244,7 +244,6 @@ describe("generatePartialLessonPlan", () => {
                 detector_id: "detector-1",
                 detector_type: "type-1",
                 detected: true,
-                message_id: 1,
               },
             ],
           },
@@ -329,21 +328,7 @@ describe("generatePartialLessonPlan", () => {
   });
 
   it("should handle threat detection and return null lesson", async () => {
-    const threatResult: {
-      payload: unknown[];
-      metadata: {
-        request_uuid: string;
-      };
-      flagged: boolean;
-      breakdown: {
-        project_id: string;
-        policy_id: string;
-        detector_id: string;
-        detector_type: string;
-        detected: boolean;
-        message_id: number;
-      }[];
-    } = {
+    const threatResult: LakeraGuardResponse = {
       flagged: true,
       metadata: { request_uuid: "123" },
       payload: [],
@@ -354,7 +339,6 @@ describe("generatePartialLessonPlan", () => {
           detector_id: "detector-1",
           detector_type: "type-1",
           detected: true,
-          message_id: 1,
         },
       ],
     };
@@ -381,7 +365,13 @@ describe("generatePartialLessonPlan", () => {
       interactionId: "mock-interaction-id",
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
-      moderation: mockModerationResult,
+      messages: [
+        {
+          role: "user",
+          content: "Mathematics - Test Lesson",
+        },
+      ],
+      threatDetection: threatResult,
     });
 
     expect(

@@ -22,6 +22,9 @@ try {
 const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
 const BRANCH = serverRuntimeConfig?.BRANCH as string | undefined;
 
+log.info("Inngest CONTEXT:", CONTEXT);
+log.info("Inngest BRANCH:", BRANCH);
+
 function getInngestEnv() {
   if (CONTEXT === "production") {
     return "production";
@@ -40,6 +43,13 @@ function isJestEnvironment() {
 const inngestEnv = getInngestEnv();
 const inngestEventKey = process.env.INNGEST_EVENT_KEY;
 
+log.info("Inngest environment configuration", {
+  inngestEnv,
+  context: CONTEXT,
+  branch: BRANCH,
+  nodeEnv: process.env.NODE_ENV,
+  hasEventKey: !!inngestEventKey,
+});
 if (!inngestEventKey) {
   throw new Error("Missing env var INNGEST_EVENT_KEY");
 }
