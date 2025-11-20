@@ -1,6 +1,6 @@
 import type { QuizV1Question } from "@oakai/aila/src/protocol/schemas/quiz/quizV1";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { MathJaxDecorator } from "@/storybook/decorators/MathJaxDecorator";

@@ -1,5 +1,5 @@
 import type { Moderation as ModerationType } from "@prisma/client";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
 import { chromaticParams } from "@/storybook/chromatic";

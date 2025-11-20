@@ -6,8 +6,8 @@ import {
 } from "@oaknational/oak-components";
 import { OakConsentProvider } from "@oaknational/oak-consent-client";
 import { init } from "@sentry/nextjs";
-import type { Decorator } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Decorator } from "@storybook/nextjs";
+import { fn } from "storybook/test";
 
 import type { ConsentState } from "../../src/components/ContextProviders/CookieConsentProvider";
 import { ServicePolicyMap } from "../../src/lib/cookie-consent/ServicePolicyMap";
@@ -26,7 +26,7 @@ interface MockConsentConfig {
   requiresInteraction?: boolean;
 }
 
-declare module "@storybook/csf" {
+declare module "storybook/internal/csf" {
   interface Parameters {
     consentConfig?: MockConsentConfig;
   }

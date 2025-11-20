@@ -1,4 +1,4 @@
-import "@storybook/csf";
+import "storybook/internal/csf";
 
 type ChromaticModes = "mobile" | "mobile-wide" | "desktop" | "desktop-wide";
 
@@ -23,7 +23,7 @@ export function chromaticParams(modes: ChromaticModes[]) {
   };
 }
 
-declare module "@storybook/csf" {
+declare module "storybook/internal/csf" {
   interface Parameters {
     /**
      * Parameters for chromatic

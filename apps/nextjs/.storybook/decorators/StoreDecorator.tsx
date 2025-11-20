@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import type { Decorator } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Decorator } from "@storybook/nextjs";
+import { fn } from "storybook/test";
 
 import type { TrackFns } from "@/components/ContextProviders/AnalyticsProvider";
 import type { AilaStores } from "@/stores/AilaStoresProvider";
@@ -21,7 +21,7 @@ import {
 } from "@/stores/moderationStore";
 import { type TrpcUtils } from "@/utils/trpc";
 
-declare module "@storybook/csf" {
+declare module "storybook/internal/csf" {
   interface Parameters {
     moderationStoreState?: Partial<ModerationState>;
     chatStoreState?: Partial<ChatState>;

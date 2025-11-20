@@ -1,6 +1,6 @@
 import React from "react";
 
-import type { Decorator } from "@storybook/react";
+import type { Decorator } from "@storybook/nextjs";
 import invariant from "tiny-invariant";
 
 import {
@@ -8,7 +8,7 @@ import {
   type DemoContextProps,
 } from "@/components/ContextProviders/Demo";
 
-declare module "@storybook/csf" {
+declare module "storybook/internal/csf" {
   interface Parameters {
     demoContext?: DemoContextProps;
   }
