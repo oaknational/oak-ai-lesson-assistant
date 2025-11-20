@@ -165,21 +165,13 @@ Generate a list of 1-3 semantic search queries`;
         ),
       });
 
-      const content = response.choices[0]?.message?.content;
-      if (!content) {
+      const parsedContent = response.choices[0]?.message?.parsed;
+      if (!parsedContent) {
         log.warn(
-          "OpenAI returned empty content for semantic search generation",
+          "OpenAI returned empty parsed content for semantic search generation",
         );
         return { queries: [] };
       }
-
-      // Parse the content through the schema to ensure type safety
-      const parsedContent = SemanticSearchSchema.parse({
-        queries: content
-          .split("\n")
-          .map((query) => query.trim())
-          .filter((query) => query.length > 0 && !query.match(/^\d+\.?\s*$/)),
-      });
 
       log.info(
         `Generated ${parsedContent.queries.length} semantic search queries for lesson plan`,

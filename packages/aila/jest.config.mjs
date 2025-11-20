@@ -39,6 +39,7 @@ const config = {
   coverageReporters: ["lcov", "text"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   coverageDirectory: "coverage",
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
 };
 
 export default config;

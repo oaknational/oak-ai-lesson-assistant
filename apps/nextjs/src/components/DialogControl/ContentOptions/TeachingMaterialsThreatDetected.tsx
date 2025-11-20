@@ -50,7 +50,7 @@ const TeachingMaterialsThreatDetected = ({
       }}
       backButtonLabel="Back to lesson details"
       onBack={() => {
-        setStepNumber(1);
+        setStepNumber(0);
         closeDialog();
       }}
     />

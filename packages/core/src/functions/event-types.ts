@@ -22,6 +22,8 @@ import { embedQuizQuestionSchema } from "./quizQuestion/generateQuizQuestionEmbe
 import { notifyModerationSchema } from "./slack/notifyModeration.schema";
 import { notifyModerationTeachingMaterialsSchema } from "./slack/notifyModerationTeachingMaterials.schema";
 import { notifyRateLimitSchema } from "./slack/notifyRateLimit.schema";
+import { notifyThreatDetectionAilaSchema } from "./slack/notifyThreatDetectionAila.schema";
+import { notifyThreatDetectionTeachingMaterialsSchema } from "./slack/notifyThreatDetectionTeachingMaterials.schema";
 import { notifyUserBanSchema } from "./slack/notifyUserBan.schema";
 import { embedAllSnippetsSchema } from "./snippet/embedAll.schema";
 import { generateSnippetsForAllQuestionsSchema } from "./snippet/generateQuestionSnippets.schema";
@@ -64,6 +66,9 @@ const schemas = {
   "app/snippet.generateForAllQuestions": generateSnippetsForAllQuestionsSchema,
   "app/slack.notifyRateLimit": notifyRateLimitSchema,
   "app/slack.notifyModeration": notifyModerationSchema,
+  "app/slack.notifyThreatDetectionAila": notifyThreatDetectionAilaSchema,
+  "app/slack.notifyThreatDetectionTeachingMaterials":
+    notifyThreatDetectionTeachingMaterialsSchema,
   "app/slack.notifyModerationTeachingMaterials":
     notifyModerationTeachingMaterialsSchema,
   "app/slack.notifyUserBan": notifyUserBanSchema,
