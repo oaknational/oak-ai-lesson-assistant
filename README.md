@@ -100,6 +100,7 @@ pnpm run docker-bootstrap
    ```
 
    3b. Local Prisma with Essential Tables Seeded from a Live Environment (Fast)
+
    1. Apply the Prisma schema to your local database:
 
    ```shell
