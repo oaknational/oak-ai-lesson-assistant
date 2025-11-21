@@ -1,6 +1,6 @@
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
 

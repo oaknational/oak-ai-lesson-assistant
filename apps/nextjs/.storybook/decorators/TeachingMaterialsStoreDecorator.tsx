@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import type { Decorator } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Decorator } from "@storybook/nextjs";
+import { fn } from "storybook/test";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { TeachingMaterialsStoresContext } from "@/stores/TeachingMaterialsStoreProvider";
@@ -9,7 +9,7 @@ import { createTeachingMaterialsStore } from "@/stores/teachingMaterialsStore";
 import type { TeachingMaterialsState } from "@/stores/teachingMaterialsStore/types";
 import type { TrpcUtils } from "@/utils/trpc";
 
-declare module "@storybook/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     resourcesStoreState?: Partial<TeachingMaterialsState>;
   }

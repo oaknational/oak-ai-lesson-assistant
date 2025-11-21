@@ -1,8 +1,8 @@
-import type { Decorator } from "@storybook/react";
+import type { Decorator } from "@storybook/nextjs";
 
-import { ClerkProvider } from "./nextjsComponents";
+import { ClerkProvider } from "../../src/mocks/clerk/nextjsComponents";
 
-declare module "@storybook/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     auth?: "loading" | "signedIn" | "signedInDemo" | "signedOut";
   }

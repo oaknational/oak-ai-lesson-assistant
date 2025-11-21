@@ -16,7 +16,7 @@
     "isolatedModules": true,
     "incremental": true,
     "noEmit": true,
-    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"],
+    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/nextjs"],
     "baseUrl": "./src",
     "paths": {
       "@/components/*": ["components/*"],

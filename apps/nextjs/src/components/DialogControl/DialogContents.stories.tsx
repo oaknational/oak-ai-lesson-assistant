@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { HttpResponse, http } from "msw";
 import { SurveyQuestionType, SurveyType } from "posthog-js";
 import type { PostHog } from "posthog-js";
+import { fn } from "storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";

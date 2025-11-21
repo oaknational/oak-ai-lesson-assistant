@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { within } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { within } from "storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 
