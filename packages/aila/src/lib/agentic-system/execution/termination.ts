@@ -27,7 +27,9 @@ export async function terminateWithResponse(
       await terminateWithCustomMessage("No relevant lessons found.", context);
       return;
     } else {
-      const message = displayRelevantLessons(relevantLessons);
+      const message = displayRelevantLessons(
+        relevantLessons.map((lesson) => lesson.lessonPlan),
+      );
       await terminateWithCustomMessage(message, context);
       return;
     }

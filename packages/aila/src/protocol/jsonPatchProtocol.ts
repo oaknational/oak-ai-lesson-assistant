@@ -344,7 +344,7 @@ export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
 export const ValidPatchDocumentSchema = PatchDocumentSchema;
 export type ValidPatchDocument = z.infer<typeof ValidPatchDocumentSchema>;
 
-const PatchDocumentOptionalSchema = z.object({
+export const PatchDocumentOptionalSchema = z.object({
   type: z.literal("patch"),
   reasoning: z.string(),
   value: JsonPatchValueOptionalSchema,
