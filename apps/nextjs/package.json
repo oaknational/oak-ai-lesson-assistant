@@ -144,6 +144,7 @@
     "@estruyf/github-actions-reporter": "^1.7.0",
     "@playwright/test": "^1.51.1",
     "@sentry/webpack-plugin": "^2.21.1",
+    "@storybook/addon-docs": "^10.0.8",
     "@storybook/addon-links": "^10.0.8",
     "@storybook/addon-onboarding": "^10.0.8",
     "@storybook/nextjs": "^10.0.8",
@@ -158,6 +159,7 @@
     "avo": "^3.2.14",
     "concurrently": "^8.2.2",
     "dotenv-cli": "^6.0.0",
+    "eslint-plugin-storybook": "10.0.8",
     "graphql": "^16.9.0",
     "jest": "^30.0.0",
     "msw": "^2.6.5",
@@ -168,9 +170,7 @@
     "tailwindcss": "^3.3.7",
     "ts-jest": "^29.2.5",
     "typescript": "5.9.2",
-    "web-streams-polyfill": "^4.0.0",
-    "eslint-plugin-storybook": "10.0.8",
-    "@storybook/addon-docs": "^10.0.8"
+    "web-streams-polyfill": "^4.0.0"
   },
   "engines": {
     "node": ">=20.9.0",
