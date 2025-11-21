@@ -50,20 +50,28 @@ export async function vectorSearch({
     throw new Error("No subjects provided");
   }
 
-  const queryEmbedding = `[${queryVector.join(",")}]`;
   const limit = 50;
   const startAt = new Date();
   const queryResponse = await executePrismaQueryRaw({
     prisma,
-    queryEmbedding,
+    queryVector,
     keyStageSlugs: keyStageSlugs.map(keyStageForSearch),
     subjectSlugs,
     limit,
   });
+
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const preParsedResults = await Promise.all(queryResponse.map(preparseResult));
+
   const results = preParsedResults
-    .filter(parseResult({ onError: (e) => parseErrors.push(e) }))
+    .filter(
+      parseResult({
+        onError: (e) => {
+          log.error("ERROR!!!");
+          return parseErrors.push(e);
+        },
+      }),
+    )
     .map((result) => ({
       ...result,
       lessonPlan: {
