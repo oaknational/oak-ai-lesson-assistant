@@ -8,7 +8,7 @@ import {
   analyticsContext,
 } from "../../src/components/ContextProviders/AnalyticsProvider";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     analyticsContext?: Partial<AnalyticsContext>;
   }

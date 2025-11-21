@@ -17,14 +17,14 @@ import {
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { DialogProvider } from "../src/components/AppComponents/DialogContext";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
-import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
+import { ClerkDecorator } from "./decorators/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
 import { ChromaticValidationDecorator } from "./decorators/ChromaticValidationDecorator";
 import { MathJaxDecorator } from "./decorators/MathJaxDecorator";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     msw?: MswParameters["msw"];
   }

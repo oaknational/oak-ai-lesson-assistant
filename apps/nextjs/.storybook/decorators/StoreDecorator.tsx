@@ -21,7 +21,7 @@ import {
 } from "@/stores/moderationStore";
 import { type TrpcUtils } from "@/utils/trpc";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     moderationStoreState?: Partial<ModerationState>;
     chatStoreState?: Partial<ChatState>;

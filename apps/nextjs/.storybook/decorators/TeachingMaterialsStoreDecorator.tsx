@@ -9,7 +9,7 @@ import { createTeachingMaterialsStore } from "@/stores/teachingMaterialsStore";
 import type { TeachingMaterialsState } from "@/stores/teachingMaterialsStore/types";
 import type { TrpcUtils } from "@/utils/trpc";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     resourcesStoreState?: Partial<TeachingMaterialsState>;
   }

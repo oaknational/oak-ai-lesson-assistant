@@ -8,7 +8,7 @@ import {
   type DemoContextProps,
 } from "@/components/ContextProviders/Demo";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     demoContext?: DemoContextProps;
   }

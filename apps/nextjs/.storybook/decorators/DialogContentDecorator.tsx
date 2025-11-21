@@ -6,7 +6,7 @@ import { fn } from "storybook/test";
 import type { DialogTypes } from "../../src/components/AppComponents/Chat/Chat/types";
 import { DialogContext } from "../../src/components/AppComponents/DialogContext";
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     dialogWindow?: DialogTypes;
   }

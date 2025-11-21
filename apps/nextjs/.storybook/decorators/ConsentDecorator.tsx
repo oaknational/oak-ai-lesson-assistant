@@ -26,7 +26,7 @@ interface MockConsentConfig {
   requiresInteraction?: boolean;
 }
 
-declare module "storybook/internal/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     consentConfig?: MockConsentConfig;
   }
