@@ -1,3 +1,15 @@
+# [1.56.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.55.0...v1.56.0) (2025-11-21)
+
+
+### Bug Fixes
+
+* omit quizzes from rag to lower input tokens ([#852](https://github.com/oaknational/oak-ai-lesson-assistant/issues/852)) ([b010282](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b0102826a8cad832debe552f823981be615e34ad))
+
+
+### Features
+
+* update sql query for new rag schema ([#851](https://github.com/oaknational/oak-ai-lesson-assistant/issues/851)) ([ec488d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ec488d7cacaaaa11b7a9acbcf2297e086ca1e2fa))
+
 # [1.55.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.1...v1.55.0) (2025-11-20)
 
 
