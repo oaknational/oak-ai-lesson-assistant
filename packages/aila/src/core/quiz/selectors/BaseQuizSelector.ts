@@ -3,7 +3,11 @@ import type {
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "../ChoiceModels";
-import type { QuizQuestionWithRawJson, QuizSelector } from "../interfaces";
+import type {
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
+  QuizSelector,
+} from "../interfaces";
 
 export abstract class BaseQuizSelector<T extends BaseType>
   implements QuizSelector<T>
@@ -11,17 +15,17 @@ export abstract class BaseQuizSelector<T extends BaseType>
   public abstract ratingFunction: RatingFunction<T>;
   public abstract maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   public selectBestQuiz(
-    quizzes: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     ratingsSchemas: T[],
-  ): QuizQuestionWithRawJson[] {
+  ): QuizQuestionWithSourceData[] {
     const selectedIndex = this.maxRatingFunctionApplier(
       ratingsSchemas,
       this.ratingFunction,
     );
-    const selectedQuiz = quizzes[selectedIndex];
-    if (selectedQuiz === undefined) {
-      throw new Error("Selected quiz is undefined");
+    const selectedPool = questionPools[selectedIndex];
+    if (selectedPool === undefined) {
+      throw new Error("Selected quiz pool is undefined");
     }
-    return selectedQuiz;
+    return selectedPool.questions;
   }
 }

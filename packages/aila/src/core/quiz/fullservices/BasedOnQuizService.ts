@@ -3,7 +3,7 @@ import type { z } from "zod";
 import type { BaseType } from "../ChoiceModels";
 import { AilaQuizFactory } from "../generators/AilaQuizGeneratorFactory";
 import type {
-  AilaQuizGeneratorService,
+  AilaQuizCandidateGenerator,
   AilaQuizReranker,
   QuizSelector,
 } from "../interfaces";
@@ -12,7 +12,7 @@ import { QuizSelectorFactoryImpl } from "../selectors/QuizSelectorFactory";
 import { BaseFullQuizService } from "./BaseFullQuizService";
 
 export class BasedOnQuizService extends BaseFullQuizService {
-  public quizGenerators: AilaQuizGeneratorService[] = [
+  public quizGenerators: AilaQuizCandidateGenerator[] = [
     AilaQuizFactory.createQuizGenerator("basedOnRag"),
   ];
   public quizReranker: AilaQuizReranker =

@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 
-import { QuizV1Schema } from "../../../protocol/schemas/quiz/quizV1";
+import { QuizV1QuestionSchema } from "../../../protocol/schemas/quiz/quizV1";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 
@@ -23,8 +23,7 @@ describe("AilaRagQuizGenerator", () => {
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
     ];
 
-    const result = await quizGenerator.mappedQuizFromAilaRagRelevantLessons(
-      CircleTheoremLesson,
+    const result = await quizGenerator.poolsFromAilaRagRelevantLessons(
       mockRelevantLessons,
       "/starterQuiz",
     );
@@ -32,8 +31,10 @@ describe("AilaRagQuizGenerator", () => {
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
-    for (const quiz of result) {
-      expect(QuizV1Schema.safeParse(quiz).success).toBe(true);
+    for (const pool of result) {
+      for (const quiz of pool.questions) {
+        expect(QuizV1QuestionSchema.safeParse(quiz).success).toBe(true);
+      }
     }
   });
   it("Should retrieve questions from a given questionUid", async () => {
@@ -77,7 +78,7 @@ describe("AilaRagQuizGenerator", () => {
       { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
     ];
-    const result = await quizGenerator.generateMathsStarterQuizPatch(
+    const result = await quizGenerator.generateMathsStarterQuizCandidates(
       CircleTheoremLesson,
       mockRelevantLessons,
     );
@@ -86,9 +87,9 @@ describe("AilaRagQuizGenerator", () => {
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(1);
-    expect(result[0]![0]!.question).toBeDefined();
-    expect(result[0]![0]!.answers).toBeDefined();
-    expect(result[0]![0]!.distractors).toBeDefined();
-    log.info("Quiz generated with rag: ", result[0]![0]);
+    expect(result[0]!.questions[0]!.question).toBeDefined();
+    expect(result[0]!.questions[0]!.answers).toBeDefined();
+    expect(result[0]!.questions[0]!.distractors).toBeDefined();
+    log.info("Quiz generated with rag: ", result[0]!.questions[0]);
   });
 });

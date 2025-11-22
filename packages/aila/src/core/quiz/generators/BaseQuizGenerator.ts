@@ -26,14 +26,15 @@ import type {
   QuizV1Question,
 } from "../../../protocol/schema";
 import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import type { HasuraQuiz } from "../../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
 import { ElasticLessonQuizLookup } from "../LessonSlugQuizMapping";
 import type {
-  AilaQuizGeneratorService,
+  AilaQuizCandidateGenerator,
   CustomSource,
   LessonSlugQuizLookup,
+  QuizQuestionPool,
   QuizQuestionTextOnlySource,
-  QuizQuestionWithRawJson,
+  QuizQuestionWithSourceData,
   SimplifiedResult,
 } from "../interfaces";
 import { CohereReranker } from "../rerankers";
@@ -45,7 +46,7 @@ const log = aiLogger("aila:quiz");
 // Quiz generator takes a lesson plan and returns a quiz object.
 // Quiz rerankers take a lesson plan and returns a list of quiz objects ranked by suitability.
 // Quiz selectors take a list of quiz objects and rankings and select the best one according to some criteria or logic defined by a rating function.
-export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
+export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   protected client: Client;
   protected cohere: CohereClient;
   public openai: OpenAI;
@@ -85,15 +86,15 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     this.quizLookup = new ElasticLessonQuizLookup();
   }
 
-  // The below is overly bloated and a mid-step in refactoring.
-  abstract generateMathsStarterQuizPatch(
+  abstract generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
-  abstract generateMathsExitQuizPatch(
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<QuizQuestionPool[]>;
+
+  abstract generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
+    relevantLessons?: AilaRagRelevantLesson[],
+  ): Promise<QuizQuestionPool[]>;
 
   public async generateMathsQuizFromRagPlanId(
     planIds: string,
@@ -179,7 +180,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   }
   public async questionArrayFromCustomIds(
     questionUids: string[],
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
       index: "quiz-questions-text-only-2025-04-16",
       body: {
@@ -201,22 +202,21 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       return Promise.resolve([]);
     } else {
       // Gives us an array of quiz questions or null, which are then filtered out.
-      // We convert the raw json to a quiz question with raw json object
-      const filteredQuizQuestions: QuizQuestionWithRawJson[] =
+      // We convert the raw json to a quiz question with source data
+      const filteredQuizQuestions: QuizQuestionWithSourceData[] =
         response.hits.hits
           .map((hit) => {
             if (!hit._source) {
               log.error("Hit source is undefined");
               return null;
             }
-            // const quizQuestion = this.parseQuizQuestion(hit._source.text);
-            const quizQuestion = this.parseQuizQuestionWithRawJson(
+            const quizQuestion = this.parseQuizQuestionWithSourceData(
               hit._source.text,
               hit._source.metadata.raw_json,
             );
             return quizQuestion;
           })
-          .filter((item): item is QuizQuestionWithRawJson => item !== null);
+          .filter((item): item is QuizQuestionWithSourceData => item !== null);
       return Promise.resolve(filteredQuizQuestions);
     }
   }
@@ -224,7 +224,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
@@ -241,7 +241,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath = "/starterQuiz",
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
@@ -546,7 +546,7 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
 
   protected async retrieveAndProcessQuestions(
     customIds: string[],
-  ): Promise<QuizQuestionWithRawJson[]> {
+  ): Promise<QuizQuestionWithSourceData[]> {
     const quizQuestions = await this.questionArrayFromCustomIds(customIds);
     return quizQuestions;
   }
@@ -591,6 +591,8 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     try {
       const data = JSON.parse(jsonString);
 
+      // TODO: At the moment the indexed "text" field is QuizV1Question which is limited to multiple choice
+      //       We should either update the index to use QuizV3, or we should parse the raw HasuraQuizQuestion data into QuizV3 format
       return QuizV1QuestionSchema.parse(data);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -607,10 +609,10 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
       return null;
     }
   }
-  private parseQuizQuestionWithRawJson(
+  private parseQuizQuestionWithSourceData(
     jsonString: string,
     rawQuizString: string,
-  ): QuizQuestionWithRawJson | null {
+  ): QuizQuestionWithSourceData | null {
     const quizQuestion = this.parseQuizQuestion(jsonString);
     if (!quizQuestion) {
       return null;
@@ -618,17 +620,14 @@ export abstract class BaseQuizGenerator implements AilaQuizGeneratorService {
     if (!rawQuizString) {
       return null;
     }
-    const parsedRawQuiz = JSON.parse(rawQuizString) as HasuraQuiz;
-    invariant(parsedRawQuiz, "Parsed raw quiz is null");
 
-    // Handle case where rawQuiz is a single object instead of an array
-    const normalizedRawQuiz = Array.isArray(parsedRawQuiz)
-      ? parsedRawQuiz
-      : [parsedRawQuiz];
+    const source = JSON.parse(rawQuizString) as HasuraQuizQuestion;
+    invariant(source, "Parsed source is null");
 
     return {
       ...quizQuestion,
-      rawQuiz: normalizedRawQuiz,
+      sourceUid: source.questionUid,
+      source,
     };
   }
 }
