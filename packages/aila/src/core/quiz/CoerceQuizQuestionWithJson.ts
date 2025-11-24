@@ -3,16 +3,17 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import { convertHasuraQuizToV3 } from "../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { QuizQuestionWithRawJson } from "./interfaces";
+import type { QuizQuestionWithSourceData } from "./interfaces";
 
 export function coerceQuizQuestionWithJson(
-  quizQuestion: QuizQuestionWithRawJson,
+  quizQuestion: QuizQuestionWithSourceData,
 ): LatestQuiz {
-  return convertHasuraQuizToV3(quizQuestion.rawQuiz);
+  return convertHasuraQuizToV3([quizQuestion.source]);
 }
 
+// TODO: why split into questions and then wrap each one in an array
 export function coerceQuizQuestionWithJsonArray(
-  quizQuestions: QuizQuestionWithRawJson[],
+  quizQuestions: QuizQuestionWithSourceData[],
 ): LatestQuiz {
   const quizzes = quizQuestions.map((quizQuestion) =>
     coerceQuizQuestionWithJson(quizQuestion),

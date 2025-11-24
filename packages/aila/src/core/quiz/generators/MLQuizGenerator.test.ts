@@ -1,7 +1,7 @@
 import type { Client } from "@elastic/elasticsearch";
 import type { OpenAI } from "openai";
 
-import { QuizV1Schema } from "../../../protocol/schema";
+import { QuizV1QuestionSchema } from "../../../protocol/schemas/quiz/quizV1";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
@@ -31,24 +31,32 @@ describe("MLQuizGenerator", () => {
   jest.setTimeout(30000);
 
   it("should generate a starter quiz", async () => {
-    const result =
-      await mlQuizGenerator.generateMathsStarterQuizPatch(CircleTheoremLesson);
-    expect(result).toBeDefined();
-    expect(result.length).toBeGreaterThan(0);
+    const pools =
+      await mlQuizGenerator.generateMathsStarterQuizCandidates(
+        CircleTheoremLesson,
+      );
+    expect(pools).toBeDefined();
+    expect(pools.length).toBeGreaterThan(0);
 
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    pools.forEach((pool) => {
+      pool.questions.forEach((question) => {
+        expect(QuizV1QuestionSchema.safeParse(question).success).toBe(true);
+      });
     });
   });
 
   it("should generate an exit quiz", async () => {
-    const result =
-      await mlQuizGenerator.generateMathsExitQuizPatch(CircleTheoremLesson);
-    expect(result).toBeDefined();
-    expect(result.length).toBeGreaterThan(0);
-    expect(Array.isArray(result)).toBe(true);
-    result.forEach((item) => {
-      expect(QuizV1Schema.safeParse(item).success).toBe(true);
+    const pools =
+      await mlQuizGenerator.generateMathsExitQuizCandidates(
+        CircleTheoremLesson,
+      );
+    expect(pools).toBeDefined();
+    expect(pools.length).toBeGreaterThan(0);
+    expect(Array.isArray(pools)).toBe(true);
+    pools.forEach((pool) => {
+      pool.questions.forEach((question) => {
+        expect(QuizV1QuestionSchema.safeParse(question).success).toBe(true);
+      });
     });
   });
 

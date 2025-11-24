@@ -1,7 +1,7 @@
 import { generateMock } from "@anatine/zod-mock";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
+import type { AilaQuizReranker, QuizQuestionPool } from "../interfaces";
 import {
   type RatingResponse,
   ratingResponseSchema,
@@ -10,11 +10,11 @@ import {
 // This reranker returns the first quiz in the list. It is used for testing and hacky workarounds.
 export class ReturnFirstReranker implements AilaQuizReranker {
   public evaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     _lessonPlan: PartialLessonPlan,
     _quizType: QuizPath,
   ): Promise<RatingResponse[]> {
-    const output = quizzes.map(() => {
+    const output = questionPools.map(() => {
       const dummySchema = generateMock(ratingResponseSchema);
       dummySchema.rating = 0;
       return dummySchema;
