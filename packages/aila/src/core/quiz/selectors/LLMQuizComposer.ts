@@ -19,8 +19,8 @@ import {
 
 const log = aiLogger("aila:quiz");
 
-const OPENAI_MODEL = "gpt-4o-mini";
-const IS_REASONING_MODEL = false;
+const OPENAI_MODEL = "o4-mini";
+const IS_REASONING_MODEL = true;
 
 /**
  * LLM-based Quiz Composer that actively selects questions from candidate pools
