@@ -93,15 +93,13 @@ describe("MLQuizGenerator", () => {
     expect(result.length).toBeGreaterThan(0);
 
     // Check that each question has the required properties
-    result.forEach((question) => {
-      expect(question).toBeDefined();
-      expect(question).toHaveProperty("question");
-      expect(question).toHaveProperty("answers");
-      expect(question).toHaveProperty("distractors");
-      expect(Array.isArray(question.answers)).toBe(true);
-      expect(Array.isArray(question.distractors)).toBe(true);
-      expect(question.answers.length).toBeGreaterThan(0);
-      expect(question.distractors.length).toBeGreaterThan(0);
+    result.forEach((ragQuestion) => {
+      expect(ragQuestion).toBeDefined();
+      expect(ragQuestion).toHaveProperty("question");
+      expect(ragQuestion).toHaveProperty("sourceUid");
+      expect(ragQuestion).toHaveProperty("source");
+      expect(ragQuestion.question).toHaveProperty("questionType");
+      expect(ragQuestion.question).toHaveProperty("question");
     });
   });
 });

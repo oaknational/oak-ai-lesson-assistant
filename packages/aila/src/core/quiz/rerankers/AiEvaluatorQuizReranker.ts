@@ -10,7 +10,7 @@ import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   AilaQuizReranker,
   QuizQuestionPool,
-  QuizQuestionWithSourceData,
+  RagQuizQuestion,
   RatingResponse,
 } from "../interfaces";
 import { evaluateQuiz, ratingResponseSchema } from "../services/OpenAIRanker";

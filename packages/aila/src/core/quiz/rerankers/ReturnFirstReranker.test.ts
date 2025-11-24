@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   cachedQuiz,
   createMockQuestionPool,
-} from "../fixtures/CachedImageQuiz";
+} from "../fixtures/quizQuestionFixtures";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 
 const log = aiLogger("aila:quiz");

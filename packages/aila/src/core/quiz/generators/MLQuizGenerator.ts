@@ -7,7 +7,7 @@ import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   CustomSource,
   QuizQuestionPool,
-  QuizQuestionWithSourceData,
+  RagQuizQuestion,
 } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
@@ -53,10 +53,10 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   // If there are no questions for padding, we pad with empty questions.
   private splitQuestionsIntoSixAndPad(
     lessonPlan: PartialLessonPlan,
-    quizQuestions: QuizQuestionWithSourceData[],
+    quizQuestions: RagQuizQuestion[],
     quizType: QuizPath,
-  ): QuizQuestionWithSourceData[][] {
-    const quizQuestions2DArray: QuizQuestionWithSourceData[][] = [];
+  ): RagQuizQuestion[][] {
+    const quizQuestions2DArray: RagQuizQuestion[][] = [];
     log.info(
       `MLQuizGenerator: Splitting ${quizQuestions.length} questions into chunks of 6`,
     );
@@ -73,7 +73,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   public async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     // Using hybrid search combining BM25 and vector similarity
     const semanticQueries = await this.generateSemanticSearchQueries(
       lessonPlan,

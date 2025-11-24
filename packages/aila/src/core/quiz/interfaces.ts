@@ -12,6 +12,10 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
+import type {
+  ImageMetadata,
+  QuizV3Question,
+} from "../../protocol/schemas/quiz/quizV3";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   QuizRecommenderType,
@@ -80,7 +84,7 @@ export interface QuizSelector {
     ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]>;
+  ): Promise<RagQuizQuestion[]>;
 }
 
 export interface CustomSource {
@@ -102,11 +106,16 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-// TODO: At the moment the indexed "text" field is QuizV1Question which is limited to multiple choice
-//       We should either update the index to use QuizV3, or we should parse the raw HasuraQuizQuestion data into QuizV3
-export interface QuizQuestionWithSourceData extends QuizV1Question {
+/**
+ * Quiz question retrieved from RAG (Elasticsearch).
+ * Contains the parsed V3 question (supporting all question types),
+ * source data, and associated image metadata.
+ */
+export interface RagQuizQuestion {
+  question: QuizV3Question;
   sourceUid: string;
   source: HasuraQuizQuestion;
+  imageMetadata: ImageMetadata[];
 }
 
 export interface CustomHit {
@@ -119,7 +128,7 @@ export interface SimplifiedResult {
 }
 
 export interface QuizQuestionPool {
-  questions: QuizQuestionWithSourceData[];
+  questions: RagQuizQuestion[];
   source:
     | {
         type: "basedOn";

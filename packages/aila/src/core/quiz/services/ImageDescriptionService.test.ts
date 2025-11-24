@@ -46,11 +46,16 @@ function createMockQuestionPool(
   return {
     questions: [
       {
-        question,
-        answers,
-        distractors,
+        question: {
+          questionType: "multiple-choice",
+          question,
+          answers,
+          distractors,
+          hint: null,
+        },
         sourceUid: "test-uid",
         source: createMockHasuraQuestion(),
+        imageMetadata: [],
       },
     ],
     source: {
@@ -76,7 +81,7 @@ describe("ImageDescriptionService", () => {
           "Here is ![alt](http://example.com/image.png) an image",
         ),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toEqual(["http://example.com/image.png"]);
     });
 
@@ -84,7 +89,7 @@ describe("ImageDescriptionService", () => {
       const questionPools = [
         createMockQuestionPool("![img1](url.png) and ![img2](url.png)"),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toEqual(["url.png"]);
     });
 
@@ -96,7 +101,7 @@ describe("ImageDescriptionService", () => {
           ["Distractor ![d](d.png)"],
         ),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toHaveLength(3);
       expect(urls).toContain("q.png");
       expect(urls).toContain("a.png");
@@ -119,7 +124,7 @@ describe("ImageDescriptionService", () => {
     });
 
     it("should leave images unchanged if no description", () => {
-      const descriptions = new Map();
+      const descriptions = new Map<string, string>();
 
       const text = "Calculate the area of ![triangle](img.png)";
       const result = ImageDescriptionService.replaceImagesWithDescriptions(
@@ -166,15 +171,13 @@ describe("ImageDescriptionService", () => {
         descriptions,
       );
 
-      expect(result[0]?.questions[0]?.question).toContain(
-        "[IMAGE: test image]",
-      );
-      expect(result[0]?.questions[0]?.answers[0]).toContain(
-        "[IMAGE: test image]",
-      );
-      expect(result[0]?.questions[0]?.distractors[0]).toContain(
-        "[IMAGE: test image]",
-      );
+      const q = result[0]?.questions[0]?.question;
+      expect(q?.questionType).toBe("multiple-choice");
+      if (q?.questionType === "multiple-choice") {
+        expect(q.question).toContain("[IMAGE: test image]");
+        expect(q.answers[0]).toContain("[IMAGE: test image]");
+        expect(q.distractors[0]).toContain("[IMAGE: test image]");
+      }
     });
   });
 

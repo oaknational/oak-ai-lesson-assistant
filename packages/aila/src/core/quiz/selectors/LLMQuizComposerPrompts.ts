@@ -3,10 +3,7 @@ import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { quizEffectivenessPrompt } from "../QuestionAssesmentPrompt";
-import type {
-  QuizQuestionPool,
-  QuizQuestionWithSourceData,
-} from "../interfaces";
+import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 // Schema for the LLM's composition response
@@ -148,29 +145,90 @@ function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
 }
 
 function formatQuestion(
-  question: QuizQuestionWithSourceData,
+  question: RagQuizQuestion,
   poolIndex: number,
   questionIndex: number,
 ): string {
   const questionUid = question.sourceUid;
-  const answers = question.answers
-    .map((answer, i) => `${i + 1}. ${answer}`)
-    .join("\n");
-  const distractors = question.distractors
-    .map((distractor, i) => `${i + 1}. ${distractor}`)
-    .join("\n");
+  const q = question.question;
 
-  return dedent`
+  // Format based on question type
+  switch (q.questionType) {
+    case "multiple-choice": {
+      const answers = q.answers
+        .map((answer, i) => `${i + 1}. ${answer}`)
+        .join("\n");
+      const distractors = q.distractors
+        .map((distractor, i) => `${i + 1}. ${distractor}`)
+        .join("\n");
 
-    ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
-    ${question.question}
+      return dedent`
 
-    Correct answer(s):
-    ${answers}
+        ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
+        Type: Multiple Choice
+        ${q.question}
 
-    Distractors:
-    ${distractors}
-  `;
+        Correct answer(s):
+        ${answers}
+
+        Distractors:
+        ${distractors}
+      `;
+    }
+
+    case "short-answer": {
+      const answers = q.answers
+        .map((answer, i) => `${i + 1}. ${answer}`)
+        .join("\n");
+
+      return dedent`
+
+        ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
+        Type: Short Answer
+        ${q.question}
+
+        Acceptable answer(s):
+        ${answers}
+      `;
+    }
+
+    case "match": {
+      const pairs = q.pairs
+        .map((pair, i) => `${i + 1}. ${pair.left} → ${pair.right}`)
+        .join("\n");
+
+      return dedent`
+
+        ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
+        Type: Match
+        ${q.question}
+
+        Correct pairs:
+        ${pairs}
+      `;
+    }
+
+    case "order": {
+      const items = q.items.map((item, i) => `${i + 1}. ${item}`).join("\n");
+
+      return dedent`
+
+        ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
+        Type: Order
+        ${q.question}
+
+        Correct order:
+        ${items}
+      `;
+    }
+
+    default: {
+      const _exhaustiveCheck: never = q;
+      throw new Error(
+        `Unknown question type: ${(_exhaustiveCheck as { questionType: string }).questionType}`,
+      );
+    }
+  }
 }
 
 function buildCompositionRequirements(quizType: QuizPath): string {

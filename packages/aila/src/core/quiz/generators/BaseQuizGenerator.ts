@@ -12,7 +12,7 @@ import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
   QuizQuestionPool,
-  QuizQuestionWithSourceData,
+  RagQuizQuestion,
   SearchResponseBody,
 } from "../interfaces";
 import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
@@ -91,14 +91,14 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
 
   public async questionArrayFromCustomIds(
     questionUids: string[],
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     return this.retrievalService.retrieveQuestionsByIds(questionUids);
   }
 
   public async questionArrayFromPlanIdLookUpTable(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     const lessonSlug = await this.getLessonSlugFromPlanId(planId);
     if (!lessonSlug) {
       throw new Error("Lesson slug not found for planId: " + planId);
@@ -115,7 +115,7 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   public async questionArrayFromPlanId(
     planId: string,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     return await this.questionArrayFromPlanIdLookUpTable(planId, quizType);
   }
 
