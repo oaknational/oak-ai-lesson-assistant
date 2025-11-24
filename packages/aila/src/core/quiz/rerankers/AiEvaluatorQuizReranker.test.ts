@@ -7,7 +7,7 @@ import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import {
   cachedQuiz,
   createMockQuestionPool,
-} from "../fixtures/quizQuestionFixtures";
+} from "../fixtures/quizQuestion.fixture";
 import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { evaluateQuiz } from "../services/OpenAIRanker";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
