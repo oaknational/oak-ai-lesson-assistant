@@ -30,7 +30,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
+import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type {
   AilaQuizCandidateGenerator,
   AilaQuizReranker,
@@ -101,6 +101,6 @@ export class BaseFullQuizService implements FullQuizService {
       lessonPlan,
       quizType,
     );
-    return coerceQuizQuestionWithJsonArray(selectedQuestions);
+    return convertHasuraQuizToV3(selectedQuestions.map((q) => q.source));
   }
 }
