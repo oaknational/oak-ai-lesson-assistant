@@ -179,14 +179,10 @@ Generate a list of 3-6 semantic search queries`;
 
     const pools = await Promise.all(
       semanticQueries.queries.map(async (query) => {
-<<<<<<< HEAD
         const questions = await this.searchAndRetrieveForQuery(
           query,
           POOL_SIZE,
         );
-=======
-        const questions = await this.searchAndRetrieveForQuery(query, POOL_SIZE);
->>>>>>> 87ff5158 (fix(quiz): update MLQuizGeneratorMultiTerm to use QuizQuestionPool types)
         return {
           questions,
           source: {
