@@ -217,7 +217,7 @@ export const cachedQuiz: RagQuizQuestion[] = [
           type: "image",
           image_object: {
             secure_url:
-              "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
+              "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
             metadata: {
               attribution: "Two triangles with labeled angles",
             },
@@ -477,7 +477,7 @@ export const cachedBadQuiz: RagQuizQuestion[] = [
           type: "image",
           image_object: {
             secure_url:
-              "http://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
+              "https://oaknationalacademy-res.cloudinary.com/image/upload/v1706110974/fukcqeavzcevgjhmm1n4.png",
             metadata: {
               attribution: "some triangles or whatever",
             },
