@@ -10,6 +10,6 @@
       "next/*": ["mocks/next/*"],
       "@clerk/*": ["mocks/clerk/*"]
     },
-    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/react"]
+    "types": ["jest", "node", "@testing-library/jest-dom", "@storybook/nextjs"]
   }
 }
