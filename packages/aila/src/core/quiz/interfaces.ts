@@ -8,14 +8,10 @@ import type {
   QuizPath,
 } from "../../protocol/schema";
 import type {
+  ImageMetadata,
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
-import type {
-  ImageMetadata,
-  QuizV3Question,
-} from "../../protocol/schemas/quiz/quizV3";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   QuizRecommenderType,
@@ -107,12 +103,13 @@ export interface QuizQuestionTextOnlySource {
 }
 
 /**
- * Quiz question retrieved from RAG (Elasticsearch).
- * Contains the parsed V3 question (supporting all question types),
+ * Quiz question used throughout the quiz RAG pipeline.
+ * Retrieved from Elasticsearch, contains the question in Latest format
+ * (supporting all question types: multiple-choice, short-answer, match, order),
  * source data, and associated image metadata.
  */
 export interface RagQuizQuestion {
-  question: QuizV3Question;
+  question: LatestQuizQuestion;
   sourceUid: string;
   source: HasuraQuizQuestion;
   imageMetadata: ImageMetadata[];
