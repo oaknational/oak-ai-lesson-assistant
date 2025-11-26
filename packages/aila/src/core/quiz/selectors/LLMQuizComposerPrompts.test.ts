@@ -1,5 +1,8 @@
 import type { PartialLessonPlan } from "../../../protocol/schema";
-import type { QuizQuestionPool, QuizQuestionWithSourceData } from "../interfaces";
+import type {
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
+} from "../interfaces";
 import { buildCompositionPrompt } from "./LLMQuizComposerPrompts";
 
 const mockQuestion = (
