@@ -6,19 +6,18 @@ export async function fetchPolicyDocument({
 }: {
   slug: string;
 }): Promise<PolicyDocument | undefined> {
-  const query = `*[_type == "aiPolicyPage"]{
+  const query = `*[_type == "aiPolicyPage" && slug.current == $slug][0]{
   title,
   "slug": slug.current,
-  fake_updatedAt,
   body[]{
     ...,
   },
-  ...seoFields[]
 }`;
 
-  const result = await sanityClient.fetch<PolicyDocument[]>(query);
+  const policyDocument = await sanityClient.fetch<PolicyDocument | null>(
+    query,
+    { slug },
+  );
 
-  const policyDocument = result.filter((policy) => policy.slug === slug)[0];
-
-  return policyDocument;
+  return policyDocument ?? undefined;
 }

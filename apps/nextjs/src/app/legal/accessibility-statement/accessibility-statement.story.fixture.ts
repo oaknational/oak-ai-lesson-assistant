@@ -4,7 +4,6 @@ export const accessibilityStatementFixture: { pageData: PolicyDocument } = {
   pageData: {
     title: "Accessibility Statement",
     slug: "accessibility-statement",
-    fake_updatedAt: null,
     body: [
       {
         style: "h1",
