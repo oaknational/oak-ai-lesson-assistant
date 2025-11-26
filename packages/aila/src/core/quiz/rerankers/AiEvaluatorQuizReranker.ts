@@ -7,12 +7,12 @@ import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
 import type {
   AilaQuizReranker,
   QuizQuestionPool,
   QuizQuestionWithSourceData,
 } from "../interfaces";
+import { evaluateQuiz } from "../services/OpenAIRanker";
 import {
   type RatingResponse,
   ratingResponseSchema,

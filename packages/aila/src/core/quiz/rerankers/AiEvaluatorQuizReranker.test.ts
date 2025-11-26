@@ -3,17 +3,17 @@ import { aiLogger } from "@oakai/logger";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
 import {
   cachedQuiz,
   createMockQuestionPool,
 } from "../fixtures/CachedImageQuiz";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import type { QuizQuestionPool } from "../interfaces";
+import { evaluateQuiz } from "../services/OpenAIRanker";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
 import type { RatingResponse } from "./RerankerStructuredOutputSchema";
 
-jest.mock("../OpenAIRanker");
+jest.mock("../services/OpenAIRanker");
 
 const log = aiLogger("aila:quiz");
 

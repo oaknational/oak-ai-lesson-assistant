@@ -2,9 +2,9 @@ import type {
   HasuraQuiz,
   HasuraQuizQuestion,
 } from "../../protocol/schemas/quiz/rawQuiz";
-import { combinePromptsAndQuestions } from "./OpenAIRanker";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import { combinePromptsAndQuestions } from "./services/OpenAIRanker";
 
 const parsedRawQuiz = [
   {

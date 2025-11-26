@@ -3,8 +3,12 @@ import { aiLogger } from "@oakai/logger";
 import { Client } from "@elastic/elasticsearch";
 import { z } from "zod";
 
-import type { QuizPath } from "../../protocol/schema";
-import type { LessonSlugQuizLookup, QuizIDSource, QuizSet } from "./interfaces";
+import type { QuizPath } from "../../../protocol/schema";
+import type {
+  LessonSlugQuizLookup,
+  QuizIDSource,
+  QuizSet,
+} from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
