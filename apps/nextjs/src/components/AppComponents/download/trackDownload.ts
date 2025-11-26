@@ -9,7 +9,7 @@ import type {
 
 export function trackDownload(
   resourceFileType: ResourceFileTypeValueType,
-  analyticsResourceType: ResourceTypeValueType | ResourceTypeValueType[],
+  analyticsMaterialType: ResourceTypeValueType | ResourceTypeValueType[],
   lesson: PartialLessonPlan,
   track: ReturnType<typeof useAnalytics>["track"],
   chatId: string,
@@ -17,9 +17,9 @@ export function trackDownload(
   track.lessonPlanResourcesDownloaded({
     chatId,
     ...getLessonTrackingProps({ lesson }),
-    resourceType: Array.isArray(analyticsResourceType)
-      ? analyticsResourceType
-      : [analyticsResourceType],
+    resourceType: Array.isArray(analyticsMaterialType)
+      ? analyticsMaterialType
+      : [analyticsMaterialType],
     resourceFileType,
   });
 }

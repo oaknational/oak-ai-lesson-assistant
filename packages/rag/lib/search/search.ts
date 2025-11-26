@@ -60,10 +60,19 @@ export async function vectorSearch({
     limit,
   });
   log.info(`Prisma returned ${queryResponse.length} results`);
+
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const preParsedResults = await Promise.all(queryResponse.map(preparseResult));
+
   const results = preParsedResults
-    .filter(parseResult({ onError: (e) => parseErrors.push(e) }))
+    .filter(
+      parseResult({
+        onError: (e) => {
+          log.error("ERROR!!!");
+          return parseErrors.push(e);
+        },
+      }),
+    )
     .map((result) => ({
       ...result,
       lessonPlan: {

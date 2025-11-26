@@ -1,6 +1,8 @@
 import { inngest } from "../../inngest";
 import {
   actionsBlock,
+  createHeaderBlock,
+  createModerationSectionBlock,
   slackNotificationChannelId,
   slackWebClient,
   userIdBlock,
@@ -9,7 +11,7 @@ import { notifyModerationTeachingMaterialsSchema } from "./notifyModerationTeach
 
 export const notifyModerationTeachingMaterials = inngest.createFunction(
   {
-    name: "Notify in slack when a user's input is flagged for moderation in teaching materials",
+    name: "Notify in slack when toxic user input is detected in teaching materials",
     id: "app-slack-notify-moderation-teaching-materials",
   },
   { event: "app/slack.notifyModerationTeachingMaterials" },
@@ -21,41 +23,17 @@ export const notifyModerationTeachingMaterials = inngest.createFunction(
 
       const response = await slackWebClient.chat.postMessage({
         channel: slackNotificationChannelId,
-        text: "Toxic user input detected",
+        text: "Toxic user input detected - Teaching materials",
         blocks: [
-          {
-            type: "header",
-            text: {
-              type: "plain_text",
-              text: `${args.violationType === "THREAT" ? "Threat " : "Toxic user input "}detected - Teaching materials`,
-            },
-          },
+          createHeaderBlock("Toxic user input detected - Teaching materials"),
           userIdBlock(event.user.id),
-          {
-            type: "section",
-            fields: [
-              {
-                type: "mrkdwn",
-                text: `*Id*: ${args.id}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Justification*: ${args.justification}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Categories*: \`${args.categories.join("`, `")}\``,
-              },
-              {
-                type: "mrkdwn",
-                text: `*User action*:  ${args.userAction}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Violation type*:  ${args.violationType}`,
-              },
-            ],
-          },
+          createModerationSectionBlock({
+            id: args.id,
+            justification: args.justification,
+            categories: args.categories,
+            userAction: args.userAction,
+            violationType: "MODERATION",
+          }),
           actionsBlock({ userActionsProps: { userId: event.user.id } }),
         ],
       });

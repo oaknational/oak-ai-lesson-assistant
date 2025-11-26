@@ -8,10 +8,10 @@ export type DialogTypes =
   | "demo-share-locked"
   | "clear-history"
   | "clear-single-chat"
-  | "additional-materials-moderation"
-  | "additional-materials-toxic-moderation"
-  | "additional-materials-threat-detected"
-  | "additional-materials-rate-limit"
-  | "additional-materials-error"
-  | "additional-materials-start-again"
-  | "additional-materials-user-feedback";
+  | "teaching-materials-moderation"
+  | "teaching-materials-toxic-moderation"
+  | "teaching-materials-threat-detected"
+  | "teaching-materials-rate-limit"
+  | "teaching-materials-error"
+  | "teaching-materials-start-again"
+  | "teaching-materials-user-feedback";

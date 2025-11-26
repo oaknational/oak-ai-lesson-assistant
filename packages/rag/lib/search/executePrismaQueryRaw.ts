@@ -42,6 +42,6 @@ export function executePrismaQueryRaw({
       AND subject_slug IN (${Prisma.join(subjectSlugs)})
       AND is_published = true
     ORDER BY distance asc
-    LIMIT 50;
+    LIMIT ${limit};
   `;
 }

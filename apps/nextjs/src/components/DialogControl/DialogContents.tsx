@@ -10,13 +10,6 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
-import AdditionalMaterialsError from "./ContentOptions/AdditionalMaterialsError";
-import AdditionalMaterialsInappropriateContent from "./ContentOptions/AdditionalMaterialsInappropriateContent";
-import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
-import AdditionalMaterialsRateLimit from "./ContentOptions/AdditionalMaterialsRateLimit";
-import AdditionalMaterialsStartAgain from "./ContentOptions/AdditionalMaterialsStartAgain";
-import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
-import AdditionalMaterialsUserFeedback from "./ContentOptions/AdditionalMaterialsUserFeedback";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -24,6 +17,13 @@ import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
 import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
+import AdditionalMaterialsError from "./ContentOptions/TeachingMaterialsError";
+import AdditionalMaterialsInappropriateContent from "./ContentOptions/TeachingMaterialsInappropriateContent";
+import AdditionalMaterialsModeration from "./ContentOptions/TeachingMaterialsModeration";
+import AdditionalMaterialsRateLimit from "./ContentOptions/TeachingMaterialsRateLimit";
+import AdditionalMaterialsStartAgain from "./ContentOptions/TeachingMaterialsStartAgain";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/TeachingMaterialsThreatDetected";
+import AdditionalMaterialsUserFeedback from "./ContentOptions/TeachingMaterialsUserFeedback";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
@@ -61,33 +61,33 @@ const dialogTitlesAndIcons: Record<
     title: "Are you absolutely sure?",
     iconName: null,
   },
-  "additional-materials-moderation": {
+  "teaching-materials-moderation": {
     title: "",
     iconName: null,
   },
-  "additional-materials-threat-detected": {
+  "teaching-materials-threat-detected": {
     title: "",
     iconName: null,
   },
-  "additional-materials-rate-limit": {
+  "teaching-materials-rate-limit": {
     title: "",
     iconName: null,
   },
-  "additional-materials-toxic-moderation": {
+  "teaching-materials-toxic-moderation": {
     title: "",
     iconName: null,
     hideClosedButton: true,
   },
-  "additional-materials-error": {
+  "teaching-materials-error": {
     title: "An error occurred",
     iconName: "warning",
     hideClosedButton: true,
   },
-  "additional-materials-start-again": {
+  "teaching-materials-start-again": {
     title: "",
     iconName: null,
   },
-  "additional-materials-user-feedback": {
+  "teaching-materials-user-feedback": {
     title: "",
     iconName: null,
   },
@@ -170,27 +170,27 @@ const DialogContents = ({
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-moderation" && (
+            {dialogWindow === "teaching-materials-moderation" && (
               <AdditionalMaterialsModeration closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-threat-detected" && (
+            {dialogWindow === "teaching-materials-threat-detected" && (
               <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-rate-limit" && (
+            {dialogWindow === "teaching-materials-rate-limit" && (
               <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-toxic-moderation" && (
+            {dialogWindow === "teaching-materials-toxic-moderation" && (
               <AdditionalMaterialsInappropriateContent
                 closeDialog={closeDialog}
               />
             )}
-            {dialogWindow === "additional-materials-start-again" && (
+            {dialogWindow === "teaching-materials-start-again" && (
               <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-error" && (
+            {dialogWindow === "teaching-materials-error" && (
               <AdditionalMaterialsError closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-user-feedback" && (
+            {dialogWindow === "teaching-materials-user-feedback" && (
               <AdditionalMaterialsUserFeedback closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>

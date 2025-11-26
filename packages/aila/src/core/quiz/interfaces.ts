@@ -1,3 +1,4 @@
+import type { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -11,19 +12,26 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
-import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   BaseType,
   MaxRatingFunctionApplier,
   RatingFunction,
 } from "./ChoiceModels";
-import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
+
+export type SearchResponseBody<T = unknown> = SearchResponse<T>;
+
+// Rating response from rerankers
+export type RatingResponse = {
+  rating: number;
+  justification: string;
+};
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -41,20 +49,20 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizGeneratorService {
-  generateMathsExitQuizPatch(
+export interface AilaQuizCandidateGenerator {
+  generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
-  generateMathsStarterQuizPatch(
+  ): Promise<QuizQuestionPool[]>;
+  generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
+  ): Promise<QuizQuestionPool[]>;
 }
 
 export interface AilaQuizReranker {
   evaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<RatingResponse[]>;
@@ -63,7 +71,7 @@ export interface AilaQuizReranker {
 export interface FullQuizService {
   quizSelector: QuizSelector<BaseType>;
   quizReranker: AilaQuizReranker;
-  quizGenerators: AilaQuizGeneratorService[];
+  quizGenerators: AilaQuizCandidateGenerator[];
   createBestQuiz(
     quizType: quizPatchType,
     lessonPlan: PartialLessonPlan,
@@ -76,9 +84,9 @@ export interface QuizSelector<T extends BaseType> {
   ratingFunction: RatingFunction<T>;
   maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
   selectBestQuiz(
-    quizzes: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     ratingsSchemas: T[],
-  ): QuizQuestionWithRawJson[];
+  ): QuizQuestionWithSourceData[];
 }
 
 export type quizPatchType = "/starterQuiz" | "/exitQuiz";
@@ -102,8 +110,11 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-export interface QuizQuestionWithRawJson extends QuizV1Question {
-  rawQuiz: NonNullable<HasuraQuiz>;
+// TODO: At the moment the indexed "text" field is QuizV1Question which is limited to multiple choice
+//       We should either update the index to use QuizV3, or we should parse the raw HasuraQuizQuestion data into QuizV3
+export interface QuizQuestionWithSourceData extends QuizV1Question {
+  sourceUid: string;
+  source: HasuraQuizQuestion;
 }
 
 export interface CustomHit {
@@ -112,7 +123,26 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string; // This will be populated with questionUid from the source
+  questionUid: string;
+}
+
+export interface QuizQuestionPool {
+  questions: QuizQuestionWithSourceData[];
+  source:
+    | {
+        type: "basedOn";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "ailaRag";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "mlSemanticSearch";
+        semanticQuery: string;
+      };
 }
 
 export interface Document {

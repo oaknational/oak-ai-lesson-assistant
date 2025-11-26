@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Decorator } from "@storybook/react";
+import { Decorator } from "@storybook/nextjs";
 
 import { OakMathJaxContext } from "../../src/components/MathJax/MathJaxContext";
 

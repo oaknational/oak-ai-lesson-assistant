@@ -6,6 +6,8 @@ import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 
+import { omit } from "remeda";
+
 import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../../constants";
 import { tryWithErrorReporting } from "../../../helpers/errorReporting";
 import { LLMResponseJsonSchema } from "../../../protocol/jsonPatchProtocol";
@@ -102,7 +104,9 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         subjectSlugs,
       });
       const stringifiedRelevantLessonPlans = JSON.stringify(
-        relevantLessonPlans,
+        relevantLessonPlans.map((l) =>
+          omit(l.lessonPlan, ["starterQuiz", "exitQuiz"]),
+        ),
         null,
         2,
       );

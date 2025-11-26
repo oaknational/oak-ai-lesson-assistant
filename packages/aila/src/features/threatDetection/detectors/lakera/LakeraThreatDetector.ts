@@ -1,3 +1,9 @@
+import {
+  type BreakdownItem,
+  LakeraClient,
+  type LakeraGuardResponse,
+  type Message,
+} from "@oakai/core/src/threatDetection/lakera";
 import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
@@ -9,15 +15,11 @@ import {
   type ThreatDetectionResult,
   type ThreatSeverity,
 } from "../AilaThreatDetector";
-import type { BreakdownItem, LakeraGuardResponse, Message } from "./schema";
-import { lakeraGuardRequestSchema, lakeraGuardResponseSchema } from "./schema";
 
 const log = aiLogger("aila:threat");
 
 export class LakeraThreatDetector extends AilaThreatDetector {
-  private readonly apiKey: string;
-  private readonly projectId?: string;
-  private readonly apiUrl?: string;
+  private readonly lakeraClient: LakeraClient;
 
   constructor() {
     super();
@@ -28,9 +30,11 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     if (!apiKey)
       throw new Error("LAKERA_GUARD_API_KEY environment variable not set");
 
-    this.apiKey = apiKey;
-    this.projectId = projectId;
-    this.apiUrl = apiUrl;
+    this.lakeraClient = new LakeraClient({
+      apiKey,
+      projectId,
+      apiUrl,
+    });
   }
 
   protected async authenticate(): Promise<void> {
@@ -73,65 +77,8 @@ export class LakeraThreatDetector extends AilaThreatDetector {
   private async callLakeraAPI(
     messages: Message[],
   ): Promise<LakeraGuardResponse> {
-    const requestBody = {
-      messages,
-      ...(this.projectId && { project_id: this.projectId }),
-      payload: true,
-      breakdown: true,
-    };
-
-    log.info("Lakera API request", {
-      url: this.apiUrl,
-      projectId: this.projectId,
-      exactRequestBody: JSON.stringify(requestBody),
-      messages: messages.map((m) => ({
-        role: m.role,
-        contentLength: m.content.length,
-        contentPreview: m.content.slice(0, 100),
-      })),
-    });
-
-    const parsedBody = lakeraGuardRequestSchema.parse(requestBody);
-
-    log.info("Lakera API request", {
-      url: this.apiUrl,
-      projectId: this.projectId,
-      exactRequestBody: JSON.stringify(parsedBody),
-      messages: messages.map((m) => ({
-        role: m.role,
-        contentLength: m.content.length,
-        contentPreview: m.content.slice(0, 100),
-      })),
-    });
-
-    const response = await fetch("https://api.lakera.ai/v2/guard", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify(parsedBody),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      log.error("Lakera API error", {
-        status: response.status,
-        statusText: response.statusText,
-        responseBody: responseData,
-        requestBody: parsedBody,
-      });
-      throw new Error(`Lakera API error: ${response.statusText}`);
-    }
-
-    const parsed = lakeraGuardResponseSchema.parse(responseData);
-    log.info("Lakera API response parsed", {
-      flagged: parsed.flagged,
-      breakdown: parsed.breakdown,
-      payload: parsed.payload,
-    });
-    return parsed;
+    // Use the shared LakeraClient for API calls
+    return await this.lakeraClient.checkMessages(messages);
   }
 
   private getHighestThreatFromBreakdown(

@@ -171,6 +171,7 @@ export class AilaChat implements AilaChatService {
         userId: this.userId ?? "anonymous",
         chatId: this.id,
         error,
+        messages: this.messages,
       });
       await this.enqueue(errorObject);
     } else if (error instanceof Error) {

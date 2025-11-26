@@ -15,9 +15,9 @@ const debugBase = debug("ai");
 debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
-  | "additional-materials"
-  | "additional-materials:testing"
-  | "additional-materials-threat-detection"
+  | "teaching-materials"
+  | "teaching-materials:testing"
+  | "teaching-materials-threat-detection"
   | "admin"
   | "aila"
   | "aila:agents"
@@ -62,6 +62,7 @@ export type LoggerKey =
   | "ingest"
   | "inngest"
   | "judgements"
+  | "lakera-client"
   | "lessons"
   | "lessons:scrolling"
   | "lessons:store"
@@ -77,6 +78,7 @@ export type LoggerKey =
   | "scrolling"
   | "snippets"
   | "testing"
+  | "teaching-materials"
   | "tracing"
   | "transcripts"
   | "trpc"

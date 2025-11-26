@@ -1,3 +1,36 @@
+# [1.56.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.55.0...v1.56.0) (2025-11-21)
+
+
+### Bug Fixes
+
+* omit quizzes from rag to lower input tokens ([#852](https://github.com/oaknational/oak-ai-lesson-assistant/issues/852)) ([b010282](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b0102826a8cad832debe552f823981be615e34ad))
+
+
+### Features
+
+* update sql query for new rag schema ([#851](https://github.com/oaknational/oak-ai-lesson-assistant/issues/851)) ([ec488d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ec488d7cacaaaa11b7a9acbcf2297e086ca1e2fa))
+
+# [1.55.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.1...v1.55.0) (2025-11-20)
+
+
+### Bug Fixes
+
+* **quiz:** use parsed response for semantic search query generation ([#838](https://github.com/oaknational/oak-ai-lesson-assistant/issues/838)) ([3c21cec](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3c21cec06d3f466db367b22b2f1d671c8b577e21))
+
+
+### Features
+
+* **quiz:** add MLQuizGeneratorMultiTerm with separate pool strategy ([#840](https://github.com/oaknational/oak-ai-lesson-assistant/issues/840)) ([2850ad6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2850ad6515c9c4b388823b906d14b60377a720ee))
+* threat detection slack message  ([#832](https://github.com/oaknational/oak-ai-lesson-assistant/issues/832)) ([6f60bad](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6f60bad014bf4a2ee0c2413245f26a3810420085))
+
+## [1.54.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.54.0...v1.54.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* improve starter/exit quiz alignment with priorKnowledge and keyLearningPoints ([#825](https://github.com/oaknational/oak-ai-lesson-assistant/issues/825)) ([6df31bf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6df31bf0c579cd55ff7b0ef098f14ed1177c73dd))
+* posthog server patterns ([#827](https://github.com/oaknational/oak-ai-lesson-assistant/issues/827)) ([389ace5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/389ace5018fd90a9d13e1ff75fd4730d91c58f82))
+
 # [1.54.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.53.0...v1.54.0) (2025-10-22)
 
 
