@@ -13,9 +13,9 @@ import { z } from "zod";
  * @param messages - Array of messages containing role and content
  * @returns Array of messages with prompt text extracted
  */
-export function extractPromptTextFromMessages<T extends string>(
-  messages: { role: T; content: string }[],
-) {
+export function extractPromptTextFromMessages<
+  T extends { role: string; content: string },
+>(messages: T[]) {
   return messages.map((m) => {
     if (m.role === "user") {
       // User messages are always just text

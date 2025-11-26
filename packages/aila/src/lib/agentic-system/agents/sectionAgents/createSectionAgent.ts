@@ -3,8 +3,10 @@ import type OpenAI from "openai";
 import type { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
-import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
-import type { AilaExecutionContext } from "../../types";
+import type {
+  AgenticRagLessonPlanResult,
+  AilaExecutionContext,
+} from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
@@ -41,7 +43,7 @@ export function createSectionAgent<ResponseType>({
     description: string;
     openai: OpenAI;
     contentFromDocument: (
-      document: PartialLessonPlan | RagLessonPlan,
+      document: PartialLessonPlan,
     ) => ResponseType | undefined;
   }) => ({
     id,
