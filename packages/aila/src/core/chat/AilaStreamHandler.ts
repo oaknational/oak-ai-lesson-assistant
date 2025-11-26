@@ -368,7 +368,7 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                const quiz = await this._chat.fullQuizService.buildQuiz(
                   "/starterQuiz",
                   ctx.currentTurn.document,
                 );
@@ -386,7 +386,7 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                const quiz = await this._chat.fullQuizService.buildQuiz(
                   "/exitQuiz",
                   ctx.currentTurn.document,
                 );
