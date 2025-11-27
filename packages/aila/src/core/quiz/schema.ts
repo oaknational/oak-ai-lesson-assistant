@@ -5,13 +5,17 @@ import { z } from "zod";
 export const QuizGeneratorTypeSchema = z.enum([
   "rag",
   "ml",
-  "mlMultiTerm",
+  "ml-multi-term",
   "basedOnRag",
 ]);
 export type QuizGeneratorType = z.infer<typeof QuizGeneratorTypeSchema>;
 
 // Reranker Types
-export const QuizRerankerTypeSchema = z.enum(["ai-evaluator", "return-first"]);
+export const QuizRerankerTypeSchema = z.enum([
+  "ai-evaluator",
+  "return-first",
+  "no-op",
+]);
 export type QuizRerankerType = z.infer<typeof QuizRerankerTypeSchema>;
 
 // Strategy Types
@@ -21,7 +25,7 @@ export type RetrievalStrategy = z.infer<typeof RetrievalStrategySchema>;
 export const RerankerStrategySchema = z.enum(["openai", "elastic", "blended"]);
 export type RerankerStrategy = z.infer<typeof RerankerStrategySchema>;
 
-export const QuizSelectorTypeSchema = z.enum(["simple"]);
+export const QuizSelectorTypeSchema = z.enum(["simple", "llm-quiz-composer"]);
 export type QuizSelectorType = z.infer<typeof QuizSelectorTypeSchema>;
 
 export const QuizPatchTypeSchema = z.enum(["/starterQuiz", "/exitQuiz"]);

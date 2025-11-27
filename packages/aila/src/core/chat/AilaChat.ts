@@ -28,7 +28,7 @@ import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
+import { buildFullQuizService } from "../quiz/fullservices/buildFullQuizService";
 import type { FullQuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
@@ -83,7 +83,7 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
-    this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
+    this.fullQuizService = buildFullQuizService({
       quizSelector: "simple",
       quizReranker: "ai-evaluator",
       quizGenerators: aila.options.quizGenerators,

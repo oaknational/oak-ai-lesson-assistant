@@ -14,11 +14,6 @@ import type {
 import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
-  BaseType,
-  MaxRatingFunctionApplier,
-  RatingFunction,
-} from "./ChoiceModels";
-import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
@@ -69,27 +64,24 @@ export interface AilaQuizReranker {
 }
 
 export interface FullQuizService {
-  quizSelector: QuizSelector<BaseType>;
+  quizSelector: QuizSelector;
   quizReranker: AilaQuizReranker;
   quizGenerators: AilaQuizCandidateGenerator[];
-  createBestQuiz(
-    quizType: quizPatchType,
+  buildQuiz(
+    quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<LatestQuiz>;
 }
 
-// Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
-export interface QuizSelector<T extends BaseType> {
-  ratingFunction: RatingFunction<T>;
-  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
-  selectBestQuiz(
+export interface QuizSelector {
+  selectQuestions(
     questionPools: QuizQuestionPool[],
-    ratingsSchemas: T[],
-  ): QuizQuestionWithSourceData[];
+    ratings: RatingResponse[],
+    lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+  ): Promise<QuizQuestionWithSourceData[]>;
 }
-
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
@@ -199,7 +191,5 @@ export interface AilaQuizRerankerFactory {
 }
 
 export interface QuizSelectorFactory {
-  createQuizSelector<T extends BaseType>(
-    selectorType: QuizSelectorType,
-  ): QuizSelector<T>;
+  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

@@ -223,7 +223,7 @@ export class AilaStreamHandler {
       onUpdate: streamHandler, // This is the new part
       customAgents: {
         mathsStarterQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.createBestQuiz(
+          const quiz = await this._chat.fullQuizService.buildQuiz(
             "/starterQuiz",
             document,
             this._chat.relevantLessons ?? [],
@@ -232,7 +232,7 @@ export class AilaStreamHandler {
           return quiz;
         },
         mathsExitQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.createBestQuiz(
+          const quiz = await this._chat.fullQuizService.buildQuiz(
             "/exitQuiz",
             document,
             this._chat.relevantLessons ?? [],
@@ -368,7 +368,7 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                const quiz = await this._chat.fullQuizService.buildQuiz(
                   "/starterQuiz",
                   ctx.currentTurn.document,
                 );
@@ -386,7 +386,7 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.createBestQuiz(
+                const quiz = await this._chat.fullQuizService.buildQuiz(
                   "/exitQuiz",
                   ctx.currentTurn.document,
                 );
