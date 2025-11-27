@@ -270,7 +270,7 @@ export class ImageDescriptionService {
     text: string,
     descriptions: Map<string, string>,
   ): string {
-    return text.replace(
+    return text.replaceAll(
       /!\[([^\]]*)\]\(([^)]{1,2000})\)/g,
       (match, _alt, url: string) => {
         const description = descriptions.get(url);
