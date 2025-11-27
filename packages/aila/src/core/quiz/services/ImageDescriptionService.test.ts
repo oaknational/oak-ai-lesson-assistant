@@ -4,6 +4,13 @@ import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz"
 import type { QuizQuestionPool } from "../interfaces";
 import { ImageDescriptionService } from "./ImageDescriptionService";
 
+// Subclass to expose protected methods for testing
+class TestableImageDescriptionService extends ImageDescriptionService {
+  public extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
+    return super.extractImageUrls(questionPools);
+  }
+}
+
 jest.mock("@vercel/kv", () => ({
   kv: {
     mget: jest.fn(),
@@ -62,10 +69,10 @@ function createMockQuestionPool(
 }
 
 describe("ImageDescriptionService", () => {
-  let service: ImageDescriptionService;
+  let service: TestableImageDescriptionService;
 
   beforeEach(() => {
-    service = new ImageDescriptionService();
+    service = new TestableImageDescriptionService();
     jest.clearAllMocks();
   });
 
@@ -76,7 +83,7 @@ describe("ImageDescriptionService", () => {
           "Here is ![alt](http://example.com/image.png) an image",
         ),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toEqual(["http://example.com/image.png"]);
     });
 
@@ -84,7 +91,7 @@ describe("ImageDescriptionService", () => {
       const questionPools = [
         createMockQuestionPool("![img1](url.png) and ![img2](url.png)"),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toEqual(["url.png"]);
     });
 
@@ -96,7 +103,7 @@ describe("ImageDescriptionService", () => {
           ["Distractor ![d](d.png)"],
         ),
       ];
-      const urls = (service as any).extractImageUrls(questionPools);
+      const urls = service.extractImageUrls(questionPools);
       expect(urls).toHaveLength(3);
       expect(urls).toContain("q.png");
       expect(urls).toContain("a.png");
@@ -119,7 +126,7 @@ describe("ImageDescriptionService", () => {
     });
 
     it("should leave images unchanged if no description", () => {
-      const descriptions = new Map();
+      const descriptions = new Map<string, string>();
 
       const text = "Calculate the area of ![triangle](img.png)";
       const result = ImageDescriptionService.replaceImagesWithDescriptions(

@@ -61,7 +61,7 @@ export class ImageDescriptionService {
   /**
    * Extract all unique image URLs from question pools
    */
-  private extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
+  protected extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
     const urlSet = new Set<string>();
 
     for (const pool of questionPools) {
