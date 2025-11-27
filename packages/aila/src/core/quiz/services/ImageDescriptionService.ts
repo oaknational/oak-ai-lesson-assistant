@@ -62,7 +62,7 @@ export class ImageDescriptionService {
    * Extract all unique image URLs from question pools
    * Uses string serialization to avoid type-specific traversal
    */
-  public extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
+  protected extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
     const poolsJson = JSON.stringify(questionPools);
     const imageRegex = /!\[[^\]]*\]\(([^)]{1,2000})\)/g;
 

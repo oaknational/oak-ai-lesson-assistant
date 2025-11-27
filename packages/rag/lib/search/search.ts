@@ -59,6 +59,7 @@ export async function vectorSearch({
     subjectSlugs,
     limit,
   });
+  log.info(`Prisma returned ${queryResponse.length} results`);
 
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const preParsedResults = await Promise.all(queryResponse.map(preparseResult));

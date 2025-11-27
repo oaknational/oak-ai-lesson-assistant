@@ -4,6 +4,13 @@ import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz"
 import type { QuizQuestionPool } from "../interfaces";
 import { ImageDescriptionService } from "./ImageDescriptionService";
 
+// Subclass to expose protected methods for testing
+class TestableImageDescriptionService extends ImageDescriptionService {
+  public extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
+    return super.extractImageUrls(questionPools);
+  }
+}
+
 jest.mock("@vercel/kv", () => ({
   kv: {
     mget: jest.fn(),
@@ -67,10 +74,10 @@ function createMockQuestionPool(
 }
 
 describe("ImageDescriptionService", () => {
-  let service: ImageDescriptionService;
+  let service: TestableImageDescriptionService;
 
   beforeEach(() => {
-    service = new ImageDescriptionService();
+    service = new TestableImageDescriptionService();
     jest.clearAllMocks();
   });
 

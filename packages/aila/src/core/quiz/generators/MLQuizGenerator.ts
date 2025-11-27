@@ -158,6 +158,6 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       simplifiedResults,
       topN,
     );
-    return rerankedResults.map((result) => result.document.questionUid);
+    return rerankedResults.map((result) => result.questionUid);
   }
 }
