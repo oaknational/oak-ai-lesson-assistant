@@ -2,128 +2,119 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { generateMock } from "@anatine/zod-mock";
 
-import { CompletedLessonPlanSchema } from "../../../aila/src/protocol/schema";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../../aila/src/protocol/schema";
 import type { RagLogger } from "../../types";
+import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
 import { vectorSearch } from "./search";
 
-const mockLessonPlan1 = generateMock(CompletedLessonPlanSchema);
-const mockLessonPlan2 = generateMock(CompletedLessonPlanSchema);
+jest.mock("./executePrismaQueryRaw", () => ({
+  __esModule: true,
+  executePrismaQueryRaw: jest.fn(),
+}));
 
-// Mocked Prisma client
-const mockPrisma = {
-  $queryRaw: jest.fn(),
-} as unknown as PrismaClientWithAccelerate;
-
-// Mock logger
-const mockLog: RagLogger = {
-  info: jest.fn(),
-  error: jest.fn(),
-};
-
-describe.skip("vectorSearch", () => {
-  const mockQueryVector = [0.1, 0.2, 0.3];
-  const mockFilters = {
-    keyStageSlugs: ["ks1", "ks2"],
-    subjectSlugs: ["math", "science"],
+describe("vectorSearch", () => {
+  const prisma = {} as PrismaClientWithAccelerate;
+  const log: RagLogger = {
+    info: jest.fn(),
+    error: jest.fn(),
   };
 
-  const mockResults = [
-    {
-      rag_lesson_plan_id: "plan1",
-      lesson_plan: mockLessonPlan1,
-      key: "key1",
-      value_text: "value1",
-      distance: 0.5,
-    },
-    {
-      rag_lesson_plan_id: "plan2",
-      lesson_plan: mockLessonPlan2,
-      key: "key2",
-      value_text: "value2",
-      distance: 0.8,
-    },
-  ];
+  const mockedExecutePrismaQueryRaw =
+    executePrismaQueryRaw as jest.MockedFunction<typeof executePrismaQueryRaw>;
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("throws an error if no key stages are provided", async () => {
-    await expect(
-      vectorSearch({
-        prisma: mockPrisma,
-        log: mockLog,
-        queryVector: mockQueryVector,
-        filters: {
-          keyStageSlugs: [],
-          subjectSlugs: mockFilters.subjectSlugs,
-        },
-      }),
-    ).rejects.toThrow("No key stages provided");
-  });
+  it("returns only the first five unique lesson plans in the order returned by the database", async () => {
+    const baseLessonPlan = {
+      ...generateMock(CompletedLessonPlanSchemaWithoutLength),
+      keyStage: "ks1",
+    };
 
-  it("throws an error if no subjects are provided", async () => {
-    await expect(
-      vectorSearch({
-        prisma: mockPrisma,
-        log: mockLog,
-        queryVector: mockQueryVector,
-        filters: {
-          keyStageSlugs: mockFilters.keyStageSlugs,
-          subjectSlugs: [],
-        },
-      }),
-    ).rejects.toThrow("No subjects provided");
-  });
-
-  it("fetches and returns unique lesson plans", async () => {
-    (mockPrisma.$queryRaw as jest.Mock).mockResolvedValueOnce(mockResults);
-
-    const result = await vectorSearch({
-      prisma: mockPrisma,
-      log: mockLog,
-      queryVector: mockQueryVector,
-      filters: mockFilters,
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    expect((mockPrisma.$queryRaw as jest.Mock).mock.calls[0][0][0]).toEqual(
-      expect.stringContaining("SELECT"),
-    );
-
-    expect(result).toEqual([
+    const mockRawResults = [
       {
-        rag_lesson_plan_id: "plan1",
-        lesson_plan: mockLessonPlan1,
-        key: "key1",
-        value_text: "value1",
+        ragLessonPlanId: "plan-1",
+        oakLessonId: 1,
+        oakLessonSlug: "slug-1",
+        lessonPlan: baseLessonPlan,
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.1,
+      },
+      {
+        ragLessonPlanId: "plan-2",
+        oakLessonId: 2,
+        oakLessonSlug: "slug-2",
+        lessonPlan: { ...baseLessonPlan, keyStage: "ks2" },
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.3,
+      },
+      {
+        ragLessonPlanId: "plan-3",
+        oakLessonId: 3,
+        oakLessonSlug: "slug-3",
+        lessonPlan: { ...baseLessonPlan, keyStage: "ks3" },
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.4,
+      },
+      {
+        ragLessonPlanId: "plan-1",
+        oakLessonId: 1,
+        oakLessonSlug: "slug-1-duplicate",
+        lessonPlan: baseLessonPlan,
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.2,
+      },
+      {
+        ragLessonPlanId: "plan-4",
+        oakLessonId: 4,
+        oakLessonSlug: "slug-4",
+        lessonPlan: { ...baseLessonPlan, keyStage: "ks4" },
+        matchedKey: "key",
+        matchedValue: "value",
         distance: 0.5,
       },
       {
-        rag_lesson_plan_id: "plan2",
-        lesson_plan: mockLessonPlan2,
-        key: "key2",
-        value_text: "value2",
-        distance: 0.8,
+        ragLessonPlanId: "plan-5",
+        oakLessonId: 5,
+        oakLessonSlug: "slug-5",
+        lessonPlan: { ...baseLessonPlan, keyStage: "ks1" },
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.6,
       },
-    ]);
-  });
+      {
+        ragLessonPlanId: "plan-6",
+        oakLessonId: 6,
+        oakLessonSlug: "slug-6",
+        lessonPlan: { ...baseLessonPlan, keyStage: "ks2" },
+        matchedKey: "key",
+        matchedValue: "value",
+        distance: 0.7,
+      },
+    ];
+    mockedExecutePrismaQueryRaw.mockResolvedValue(mockRawResults);
 
-  it("logs the processing time and unique lesson plans count", async () => {
-    (mockPrisma.$queryRaw as jest.Mock).mockResolvedValueOnce(mockResults);
-
-    await vectorSearch({
-      prisma: mockPrisma,
-      log: mockLog,
-      queryVector: mockQueryVector,
-      filters: mockFilters,
+    const results = await vectorSearch({
+      prisma,
+      log,
+      queryVector: [0.1],
+      filters: { keyStageSlugs: ["key-stage-1"], subjectSlugs: ["maths"] },
     });
 
-    expect(mockLog.info).toHaveBeenCalledWith(
-      expect.stringContaining("Fetched 2 lesson plans"),
-    );
-    expect(mockLog.info).toHaveBeenCalledWith(
-      expect.stringContaining("Unique lesson plans: 2"),
-    );
+    expect(results).toHaveLength(5);
+    expect(results.map((result) => result.ragLessonPlanId)).toEqual([
+      "plan-1",
+      "plan-2",
+      "plan-3",
+      "plan-4",
+      "plan-5",
+    ]);
+    expect(results[0]?.oakLessonSlug).toBe("slug-1");
+    expect(results[0]?.lessonPlan.keyStage).toBe("key-stage-1");
   });
 });
