@@ -140,7 +140,9 @@ function buildCandidatePoolsHeader(): string {
 
 function poolToMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
   const header = poolHeaderMarkdown(pool, poolIndex);
-  const questions = pool.questions.map((q) => questionToMarkdown(q)).join("\n\n");
+  const questions = pool.questions
+    .map((q) => questionToMarkdown(q))
+    .join("\n\n");
 
   return `${header}\n\n${questions}`;
 }
