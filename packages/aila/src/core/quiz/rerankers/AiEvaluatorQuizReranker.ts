@@ -7,8 +7,12 @@ import { pick } from "remeda";
 import { Md5 } from "ts-md5";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { evaluateQuiz } from "../OpenAIRanker";
-import type { AilaQuizReranker, QuizQuestionWithRawJson } from "../interfaces";
+import type {
+  AilaQuizReranker,
+  QuizQuestionPool,
+  QuizQuestionWithSourceData,
+} from "../interfaces";
+import { evaluateQuiz } from "../services/OpenAIRanker";
 import {
   type RatingResponse,
   ratingResponseSchema,
@@ -19,23 +23,23 @@ const log = aiLogger("aila:quiz");
 export class AiEvaluatorQuizReranker implements AilaQuizReranker {
   // Takes a quiz array and evaluates it using the rating schema and quiz type and returns an array of evaluation schema objects.
   public async evaluateQuizArray(
-    quizArray: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     useCache: boolean = true,
   ): Promise<RatingResponse[]> {
     if (useCache) {
-      return this.cachedEvaluateQuizArray(quizArray, lessonPlan, quizType);
+      return this.cachedEvaluateQuizArray(questionPools, lessonPlan, quizType);
     }
 
     const limiter = pLimit(10);
     const outputRatings = await limiter.map(
-      quizArray,
-      async (quiz: QuizQuestionWithRawJson[]) => {
+      questionPools,
+      async (pool: QuizQuestionPool) => {
         try {
           const result = await evaluateQuiz(
             lessonPlan,
-            quiz,
+            pool.questions,
             4000,
             ratingResponseSchema,
             quizType,
@@ -69,7 +73,7 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
   }
 
   public async cachedEvaluateQuizArray(
-    quizArray: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<RatingResponse[]> {
@@ -85,7 +89,7 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
 
     const hash = Md5.hashStr(
       JSON.stringify({
-        quizArray,
+        questionPools,
         relevantLessonPlanData,
         ratingSchema: ratingResponseSchema,
         quizType,
@@ -107,7 +111,7 @@ export class AiEvaluatorQuizReranker implements AilaQuizReranker {
     log.info(`Cache miss for key: ${cacheKey}, evaluating for openAI`);
     // No caching otherwise we will get stuck in a loop.
     const evaluatedQuizzes = await this.evaluateQuizArray(
-      quizArray,
+      questionPools,
       lessonPlan,
       quizType,
       false,

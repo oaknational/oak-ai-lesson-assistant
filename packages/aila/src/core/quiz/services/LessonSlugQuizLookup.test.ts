@@ -1,5 +1,5 @@
 /* eslint-disable @cspell/spellchecker */
-import { ElasticLessonQuizLookup } from "./LessonSlugQuizMapping";
+import { ElasticLessonQuizLookup } from "./LessonSlugQuizLookup";
 
 const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 

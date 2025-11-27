@@ -1,5 +1,3 @@
-import "@storybook/csf";
-
 type ChromaticModes = "mobile" | "mobile-wide" | "desktop" | "desktop-wide";
 
 export function chromaticParams(modes: ChromaticModes[]) {
@@ -23,7 +21,7 @@ export function chromaticParams(modes: ChromaticModes[]) {
   };
 }
 
-declare module "@storybook/csf" {
+declare module "@storybook/nextjs" {
   interface Parameters {
     /**
      * Parameters for chromatic

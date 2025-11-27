@@ -2,7 +2,7 @@ import React from "react";
 
 import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";
