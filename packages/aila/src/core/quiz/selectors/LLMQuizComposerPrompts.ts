@@ -2,10 +2,8 @@ import dedent from "dedent";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type {
-  QuizQuestionPool,
-  QuizQuestionWithSourceData,
-} from "../interfaces";
+import { quizEffectivenessPrompt } from "../QuestionAssesmentPrompt";
+import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 function buildQuestionSelectionCriteria(quizType: QuizPath): string {
@@ -68,7 +66,7 @@ export function buildCompositionPrompt(
     buildLessonPlanSummary(lessonPlan),
     "---",
     buildCandidatePoolsHeader(),
-    ...questionPools.map((pool, idx) => formatPool(pool, idx)),
+    ...questionPools.map((pool, idx) => poolToMarkdown(pool, idx)),
   ];
 
   return sections.join("\n\n");
@@ -140,14 +138,16 @@ function buildCandidatePoolsHeader(): string {
   `;
 }
 
-function formatPool(pool: QuizQuestionPool, poolIndex: number): string {
-  const header = formatPoolHeader(pool, poolIndex);
-  const questions = pool.questions.map((q) => formatQuestion(q)).join("\n\n");
+function poolToMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
+  const header = poolHeaderMarkdown(pool, poolIndex);
+  const questions = pool.questions
+    .map((q) => questionToMarkdown(q))
+    .join("\n\n");
 
   return `${header}\n\n${questions}`;
 }
 
-function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
+function poolHeaderMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
   if (pool.source.type === "mlSemanticSearch") {
     return dedent`
       ## Pool ${poolIndex + 1}: ML Semantic Search
@@ -166,22 +166,75 @@ function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
   }
 }
 
-function formatQuestion(question: QuizQuestionWithSourceData): string {
-  const answers = question.answers
-    .map((answer, i) => `${i + 1}. ${answer}`)
-    .join("\n");
-  const distractors = question.distractors
-    .map((distractor, i) => `${i + 1}. ${distractor}`)
-    .join("\n");
+function questionToMarkdown(question: RagQuizQuestion): string {
+  const q = question.question;
 
-  return dedent`
-    ### Question UID:${question.sourceUid}
-    ${question.question}
+  switch (q.questionType) {
+    case "multiple-choice": {
+      const answers = q.answers.map((a, i) => `${i + 1}. ${a}`).join("\n");
+      const distractors = q.distractors
+        .map((d, i) => `${i + 1}. ${d}`)
+        .join("\n");
 
-    Correct answer(s):
-    ${answers}
+      return dedent`
+        ### Question UID:${question.sourceUid}
+        Type: Multiple Choice
+        ${q.question}
 
-    Distractors:
-    ${distractors}
-  `;
+        Correct answer(s):
+        ${answers}
+
+        Distractors:
+        ${distractors}
+      `;
+    }
+
+    case "short-answer": {
+      const answers = q.answers.map((a, i) => `${i + 1}. ${a}`).join("\n");
+
+      return dedent`
+        ### Question UID:${question.sourceUid}
+        Type: Short Answer
+        ${q.question}
+
+        Acceptable answer(s):
+        ${answers}
+      `;
+    }
+
+    case "match": {
+      const pairs = q.pairs
+        .map((p, i) => `${i + 1}. ${p.left} → ${p.right}`)
+        .join("\n");
+
+      return dedent`
+        ### Question UID:${question.sourceUid}
+        Type: Match
+        ${q.question}
+
+        Correct pairs:
+        ${pairs}
+      `;
+    }
+
+    case "order": {
+      const items = q.items.map((item, i) => `${i + 1}. ${item}`).join("\n");
+
+      return dedent`
+        ### Question UID:${question.sourceUid}
+        Type: Order
+        ${q.question}
+
+        Correct order:
+        ${items}
+      `;
+    }
+
+    default: {
+      const _exhaustiveCheck: never = q;
+      throw new Error(
+        `Unknown question type: ${(_exhaustiveCheck as { questionType: string }).questionType}`,
+      );
+    }
+  }
 }

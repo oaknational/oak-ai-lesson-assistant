@@ -6,8 +6,8 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   QuizQuestionPool,
-  QuizQuestionWithSourceData,
   QuizSelector,
+  RagQuizQuestion,
   RatingResponse,
 } from "../interfaces";
 import { ImageDescriptionService } from "../services/ImageDescriptionService";
@@ -37,7 +37,7 @@ export class LLMQuizComposer implements QuizSelector {
     ratings: RatingResponse[], // Ignored - composer makes its own decisions
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     this.logCompositionStart(questionPools, quizType);
 
     if (questionPools.length === 0) {
@@ -127,11 +127,11 @@ export class LLMQuizComposer implements QuizSelector {
   private mapResponseToQuestions(
     response: CompositionResponse,
     questionPools: QuizQuestionPool[],
-  ): QuizQuestionWithSourceData[] {
+  ): RagQuizQuestion[] {
     log.info(`Overall strategy: ${response.overallStrategy}`);
 
     // Build lookup map of UID -> question from all pools
-    const questionsByUid = new Map<string, QuizQuestionWithSourceData>();
+    const questionsByUid = new Map<string, RagQuizQuestion>();
     questionPools.forEach((pool) => {
       pool.questions.forEach((question) => {
         questionsByUid.set(question.sourceUid, question);
@@ -151,7 +151,7 @@ export class LLMQuizComposer implements QuizSelector {
         log.info(`Selected: ${selection.questionUid} - ${selection.reasoning}`);
         return question;
       })
-      .filter((q): q is QuizQuestionWithSourceData => q !== null);
+      .filter((q): q is RagQuizQuestion => q !== null);
 
     if (selectedQuestions.length < 6) {
       log.warn(

@@ -53,11 +53,16 @@ function createMockQuestionPool(
   return {
     questions: [
       {
-        question,
-        answers,
-        distractors,
+        question: {
+          questionType: "multiple-choice",
+          question,
+          answers,
+          distractors,
+          hint: null,
+        },
         sourceUid: "test-uid",
         source: createMockHasuraQuestion(),
+        imageMetadata: [],
       },
     ],
     source: {
@@ -173,15 +178,13 @@ describe("ImageDescriptionService", () => {
         descriptions,
       );
 
-      expect(result[0]?.questions[0]?.question).toContain(
-        "[IMAGE: test image]",
-      );
-      expect(result[0]?.questions[0]?.answers[0]).toContain(
-        "[IMAGE: test image]",
-      );
-      expect(result[0]?.questions[0]?.distractors[0]).toContain(
-        "[IMAGE: test image]",
-      );
+      const q = result[0]?.questions[0]?.question;
+      expect(q?.questionType).toBe("multiple-choice");
+      if (q?.questionType === "multiple-choice") {
+        expect(q.question).toContain("[IMAGE: test image]");
+        expect(q.answers[0]).toContain("[IMAGE: test image]");
+        expect(q.distractors[0]).toContain("[IMAGE: test image]");
+      }
     });
   });
 

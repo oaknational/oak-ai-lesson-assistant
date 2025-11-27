@@ -60,37 +60,19 @@ export interface ImageDescriptionMap {
 export class ImageDescriptionService {
   /**
    * Extract all unique image URLs from question pools
+   * Uses string serialization to avoid type-specific traversal
    */
   protected extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
-    const urlSet = new Set<string>();
-
-    for (const pool of questionPools) {
-      for (const question of pool.questions) {
-        this.extractUrlsFromText(question.question, urlSet);
-
-        question.answers.forEach((answer) => {
-          this.extractUrlsFromText(answer, urlSet);
-        });
-
-        question.distractors.forEach((distractor) => {
-          this.extractUrlsFromText(distractor, urlSet);
-        });
-      }
-    }
-
-    return Array.from(urlSet);
-  }
-
-  /**
-   * Extract image URLs from markdown text
-   */
-  private extractUrlsFromText(text: string, urlSet: Set<string>): void {
+    const poolsJson = JSON.stringify(questionPools);
     const imageRegex = /!\[[^\]]*\]\(([^)]{1,2000})\)/g;
 
-    [...text.matchAll(imageRegex)]
+    const urlSet = new Set<string>();
+    [...poolsJson.matchAll(imageRegex)]
       .map((match) => match[1])
       .filter((url): url is string => Boolean(url))
       .forEach((url) => urlSet.add(url));
+
+    return Array.from(urlSet);
   }
 
   /**
@@ -288,7 +270,7 @@ export class ImageDescriptionService {
     text: string,
     descriptions: Map<string, string>,
   ): string {
-    return text.replace(
+    return text.replaceAll(
       /!\[([^\]]*)\]\(([^)]{1,2000})\)/g,
       (match, _alt, url: string) => {
         const description = descriptions.get(url);
@@ -308,21 +290,32 @@ export class ImageDescriptionService {
     questionPools: QuizQuestionPool[],
     descriptions: Map<string, string>,
   ): QuizQuestionPool[] {
-    return questionPools.map((pool) => ({
-      ...pool,
-      questions: pool.questions.map((question) => ({
-        ...question,
-        question: this.replaceImagesWithDescriptions(
-          question.question,
-          descriptions,
-        ),
-        answers: question.answers.map((answer) =>
-          this.replaceImagesWithDescriptions(answer, descriptions),
-        ),
-        distractors: question.distractors.map((distractor) =>
-          this.replaceImagesWithDescriptions(distractor, descriptions),
-        ),
-      })),
-    }));
+    const cloned = structuredClone(questionPools);
+
+    const replace = (text: string) =>
+      this.replaceImagesWithDescriptions(text, descriptions);
+
+    cloned.forEach((pool) => {
+      pool.questions.forEach((rq) => {
+        const q = rq.question;
+        q.question = replace(q.question);
+
+        if (q.questionType === "multiple-choice") {
+          q.answers = q.answers.map(replace);
+          q.distractors = q.distractors.map(replace);
+        } else if (q.questionType === "short-answer") {
+          q.answers = q.answers.map(replace);
+        } else if (q.questionType === "match") {
+          q.pairs.forEach((p) => {
+            p.left = replace(p.left);
+            p.right = replace(p.right);
+          });
+        } else if (q.questionType === "order") {
+          q.items = q.items.map(replace);
+        }
+      });
+    });
+
+    return cloned;
   }
 }

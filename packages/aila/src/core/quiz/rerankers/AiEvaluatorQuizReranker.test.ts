@@ -3,11 +3,11 @@ import { aiLogger } from "@oakai/logger";
 import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import {
   cachedQuiz,
   createMockQuestionPool,
-} from "../fixtures/CachedImageQuiz";
-import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+} from "../fixtures/quizQuestion.fixture";
 import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { evaluateQuiz } from "../services/OpenAIRanker";
 import { AiEvaluatorQuizReranker } from "./AiEvaluatorQuizReranker";
