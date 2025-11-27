@@ -252,6 +252,7 @@ export class QuizRagDebugService {
       overallStrategy: string;
       selectedQuestions: { questionUid: string; reasoning: string }[];
     };
+    composerTimingMs: number;
     selectedQuestions: RagQuizQuestion[];
   }> {
     if (questionPools.length === 0) {
@@ -262,17 +263,20 @@ export class QuizRagDebugService {
           cacheMisses: 0,
           generatedCount: 0,
           descriptions: [],
+          timingMs: 0,
         },
         composerPrompt: "",
         composerResponse: {
           overallStrategy: "No pools provided",
           selectedQuestions: [],
         },
+        composerTimingMs: 0,
         selectedQuestions: [],
       };
     }
 
-    // Process images
+    // Process images with timing
+    const imageStart = Date.now();
     const imageService = new ImageDescriptionService();
     const { descriptions, cacheHits, cacheMisses, generatedCount } =
       await imageService.getImageDescriptions(questionPools);
@@ -291,6 +295,7 @@ export class QuizRagDebugService {
         });
       }
     }
+    const imageTimingMs = Date.now() - imageStart;
 
     const imageDescriptionsDebug: ImageDescriptionDebugResult = {
       totalImages: descriptions.size,
@@ -298,10 +303,11 @@ export class QuizRagDebugService {
       cacheMisses,
       generatedCount,
       descriptions: imageDescriptionEntries,
+      timingMs: imageTimingMs,
     };
 
     log.info(
-      `QuizRagDebugService: Image descriptions - ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated)`,
+      `QuizRagDebugService: Image descriptions - ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated) in ${imageTimingMs}ms`,
     );
 
     // Replace images with descriptions for LLM composition
@@ -318,8 +324,12 @@ export class QuizRagDebugService {
       quizType,
     );
 
-    // Call OpenAI
+    // Call OpenAI with timing
+    const composerStart = Date.now();
     const composerResponse = await this.callOpenAI(composerPrompt);
+    const composerTimingMs = Date.now() - composerStart;
+
+    log.info(`QuizRagDebugService: Composer completed in ${composerTimingMs}ms`);
 
     // Map response to questions
     const selectedQuestions = this.mapResponseToQuestions(
@@ -331,6 +341,7 @@ export class QuizRagDebugService {
       imageDescriptions: imageDescriptionsDebug,
       composerPrompt,
       composerResponse,
+      composerTimingMs,
       selectedQuestions,
     };
   }

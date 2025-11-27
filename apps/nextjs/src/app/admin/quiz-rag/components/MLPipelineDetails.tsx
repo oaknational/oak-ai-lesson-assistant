@@ -5,33 +5,24 @@ import { useState } from "react";
 import type { MLMultiTermDebugResult } from "@oakai/aila/src/core/quiz/debug";
 import type { MLSearchTermDebugResult } from "@oakai/aila/src/core/quiz/debug/types";
 
+import { LearnBlock } from "../view";
 import { QuestionCard } from "./QuestionCard";
+
+// Helper to format ms as seconds
+function formatSeconds(ms: number): string {
+  return (ms / 1000).toFixed(1) + "s";
+}
 
 interface MLPipelineDetailsProps {
   result: MLMultiTermDebugResult;
 }
 
 export function MLPipelineDetails({ result }: MLPipelineDetailsProps) {
-  const totalCandidates = result.pools.reduce(
-    (sum, p) => sum + p.questions.length,
-    0,
-  );
-
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">ML Multi-Term Generator</h3>
-        <span className="text-sm text-gray-500">
-          {result.searchTerms.length} queries, {totalCandidates} total
-          candidates, {result.timingMs}ms
-        </span>
-      </div>
-
-      <div className="space-y-3">
-        {result.searchTerms.map((term, idx) => (
-          <SearchTermAccordion key={idx} term={term} index={idx} />
-        ))}
-      </div>
+    <div className="space-y-6">
+      {result.searchTerms.map((term, idx) => (
+        <SearchTermAccordion key={idx} term={term} index={idx} />
+      ))}
     </div>
   );
 }
@@ -64,12 +55,14 @@ function SearchTermAccordion({
           <span className="font-medium">Query {index + 1}:</span>{" "}
           <span className="text-gray-600">&quot;{term.query}&quot;</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">{term.timingMs}ms</span>
+        <div className="flex items-center gap-6">
+          <span className="text-sm text-gray-500">
+            {formatSeconds(term.timingMs)}
+          </span>
           <span className="text-sm text-gray-500">
             {term.finalCandidates.length} candidates
           </span>
-          <span className="text-gray-400">{isOpen ? "▼" : "▶"}</span>
+          <span className="ml-4 text-gray-400">{isOpen ? "▼" : "▶"}</span>
         </div>
       </button>
 
@@ -80,6 +73,14 @@ function SearchTermAccordion({
             <h4 className="mb-2 font-medium">
               Elasticsearch Hits ({term.elasticsearchHits.length} total)
             </h4>
+            <LearnBlock>
+              <p className="text-sm text-gray-600">
+                These are the raw results from Elasticsearch hybrid search. The
+                score combines BM25 text relevance (keyword matching) with
+                vector similarity (semantic meaning). Higher scores indicate
+                better matches to the search query.
+              </p>
+            </LearnBlock>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead className="bg-gray-50">
@@ -102,8 +103,10 @@ function SearchTermAccordion({
                       <td className="px-3 py-2 font-mono text-xs">
                         {hit.questionUid}
                       </td>
-                      <td className="max-w-md truncate px-3 py-2">
-                        {hit.text.substring(0, 100)}...
+                      <td className="max-w-2xl px-3 py-2">
+                        <span className="line-clamp-4">
+                          {hit.text.substring(0, 500)}
+                        </span>
                       </td>
                       <td className="px-3 py-2 text-xs">{hit.lessonSlug}</td>
                     </tr>
@@ -128,6 +131,15 @@ function SearchTermAccordion({
             <h4 className="mb-2 font-medium">
               Cohere Reranking ({term.cohereResults.length} results)
             </h4>
+            <LearnBlock>
+              <p className="text-sm text-gray-600">
+                Cohere&apos;s reranker uses a cross-encoder model to score how
+                well each question matches the search query. Unlike embedding
+                similarity, it considers the full context of both texts
+                together. The top 3 (highlighted in green) become candidates for
+                the final quiz.
+              </p>
+            </LearnBlock>
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead className="bg-gray-50">

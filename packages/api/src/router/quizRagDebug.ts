@@ -67,6 +67,33 @@ const EXAMPLE_LESSON_PLANS = [
     },
   },
   {
+    id: "circle-theorems-based-on",
+    label: "Circle Theorems - with basedOn (KS4 Maths)",
+    plan: {
+      title: "Circle theorems",
+      subject: "maths",
+      keyStage: "key-stage-4",
+      topic: "Circle theorems",
+      learningOutcome:
+        "I can apply circle theorems to solve problems involving angles in circles.",
+      priorKnowledge: [
+        "I can identify and name parts of a circle including radius, diameter, chord, tangent, and arc.",
+        "I can calculate angles in triangles and quadrilaterals.",
+        "I understand that angles on a straight line sum to 180°.",
+      ],
+      keyLearningPoints: [
+        "The angle at the centre is twice the angle at the circumference.",
+        "Angles in the same segment are equal.",
+        "The angle in a semicircle is 90°.",
+        "Opposite angles of a cyclic quadrilateral sum to 180°.",
+      ],
+      basedOn: {
+        id: "circle-theorems-i",
+        title: "Circle theorems I",
+      },
+    },
+  },
+  {
     id: "solving-equations",
     label: "Solving Linear Equations (KS3 Maths)",
     plan: {

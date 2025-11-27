@@ -13,23 +13,27 @@ import { trpc } from "@/utils/trpc";
 type InputMethod = "chatId" | "example" | "json";
 
 interface InputSectionProps {
-  onLessonPlanChange: (plan: PartialLessonPlan) => void;
+  onLessonPlanChange: (plan: PartialLessonPlan | null) => void;
   onQuizTypeChange: (type: QuizPath) => void;
   onRelevantLessonsChange: (lessons: AilaRagRelevantLesson[]) => void;
+  selectedPlan: PartialLessonPlan | null;
+  quizType: QuizPath;
 }
 
 export function InputSection({
   onLessonPlanChange,
   onQuizTypeChange,
   onRelevantLessonsChange,
+  selectedPlan,
+  quizType,
 }: InputSectionProps) {
   const [inputMethod, setInputMethod] = useState<InputMethod>("example");
   const [chatId, setChatId] = useState("");
   const [jsonInput, setJsonInput] = useState("");
   const [selectedExample, setSelectedExample] = useState("");
-  const [quizType, setQuizType] = useState<QuizPath>("/starterQuiz");
   const [parseError, setParseError] = useState<string | null>(null);
   const [chatLookupEnabled, setChatLookupEnabled] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const examples = trpc.quizRagDebug.getExampleLessonPlans.useQuery();
   const chatLookup = trpc.quizRagDebug.getLessonPlanByChatId.useQuery(
@@ -48,16 +52,17 @@ export function InputSection({
     onLessonPlanChange(chatLookup.data.lessonPlan);
     onRelevantLessonsChange(chatLookup.data.relevantLessons);
     setChatLookupEnabled(false);
+    setIsExpanded(false);
   }
 
   const handleExampleChange = (exampleId: string) => {
     setSelectedExample(exampleId);
     const example = examples.data?.find((ex) => ex.id === exampleId);
     if (example) {
-      // Cast to PartialLessonPlan - example plans are typed in the router
       const plan = example.plan as unknown as PartialLessonPlan;
       onLessonPlanChange(plan);
       onRelevantLessonsChange([]);
+      setIsExpanded(false);
     }
   };
 
@@ -67,18 +72,55 @@ export function InputSection({
       const parsed = JSON.parse(jsonInput) as PartialLessonPlan;
       onLessonPlanChange(parsed);
       onRelevantLessonsChange([]);
+      setIsExpanded(false);
     } catch (e) {
       setParseError("Invalid JSON: " + (e as Error).message);
     }
   };
 
-  const handleQuizTypeChange = (type: QuizPath) => {
-    setQuizType(type);
-    onQuizTypeChange(type);
+  const handleClear = () => {
+    onLessonPlanChange(null);
+    setSelectedExample("");
+    setChatId("");
+    setJsonInput("");
+    setIsExpanded(true);
   };
 
+  // Collapsed view when plan is selected
+  if (selectedPlan && !isExpanded) {
+    return (
+      <div className="rounded-lg border bg-white p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div>
+              <p className="font-medium">{selectedPlan.title}</p>
+              <p className="text-sm text-gray-500">
+                {selectedPlan.subject} • {selectedPlan.keyStage} •{" "}
+                {quizType === "/starterQuiz" ? "Starter Quiz" : "Exit Quiz"}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="rounded bg-gray-100 px-3 py-1.5 text-sm hover:bg-gray-200"
+            >
+              Edit
+            </button>
+            <button
+              onClick={handleClear}
+              className="rounded bg-gray-100 px-3 py-1.5 text-sm hover:bg-gray-200"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4 rounded-lg border bg-white p-4">
+    <div className="space-y-4 rounded-lg border bg-white p-6">
       {/* Tab buttons */}
       <div className="flex gap-2 border-b pb-2">
         {(["chatId", "example", "json"] as InputMethod[]).map((method) => (
@@ -184,13 +226,13 @@ export function InputSection({
       {/* Quiz type selection */}
       <div className="border-t pt-4">
         <label className="mb-2 block text-sm font-medium">Quiz Type</label>
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-2">
           <label className="flex items-center gap-2">
             <input
               type="radio"
               value="/starterQuiz"
               checked={quizType === "/starterQuiz"}
-              onChange={() => handleQuizTypeChange("/starterQuiz")}
+              onChange={() => onQuizTypeChange("/starterQuiz")}
             />
             Starter Quiz (Prior Knowledge)
           </label>
@@ -199,7 +241,7 @@ export function InputSection({
               type="radio"
               value="/exitQuiz"
               checked={quizType === "/exitQuiz"}
-              onChange={() => handleQuizTypeChange("/exitQuiz")}
+              onChange={() => onQuizTypeChange("/exitQuiz")}
             />
             Exit Quiz (Key Learning Points)
           </label>

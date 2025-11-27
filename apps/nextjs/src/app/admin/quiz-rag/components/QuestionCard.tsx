@@ -9,17 +9,65 @@ interface QuestionCardProps {
   compact?: boolean;
 }
 
+// Parse text and render inline images from markdown syntax
+function RenderTextWithImages({ text }: { text: string }) {
+  // Match markdown image syntax: ![alt](url)
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const parts: (string | { type: "image"; url: string; alt: string })[] = [];
+
+  let lastIndex = 0;
+  let match;
+
+  while ((match = imageRegex.exec(text)) !== null) {
+    // Add text before the image
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    // Add the image
+    parts.push({ type: "image", url: match[2] ?? "", alt: match[1] ?? "" });
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  if (parts.length === 0) {
+    return <span>{text}</span>;
+  }
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        typeof part === "string" ? (
+          <span key={i}>{part}</span>
+        ) : (
+          <img
+            key={i}
+            src={part.url}
+            alt={part.alt || "Question image"}
+            className="my-2 inline-block max-h-32 rounded border"
+          />
+        ),
+      )}
+    </>
+  );
+}
+
 export function QuestionCard({ question, compact = false }: QuestionCardProps) {
   const q = question.question;
 
   if (compact) {
     return (
-      <div className="rounded border bg-gray-50 p-3">
+      <div className="rounded-lg border bg-gray-50 p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
             <span className="text-xs text-gray-500">{question.sourceUid}</span>
             <MathJaxWrap>
-              <p className="mt-1 text-sm">{q.question}</p>
+              <p className="mt-1 text-sm">
+                <RenderTextWithImages text={q.question} />
+              </p>
             </MathJaxWrap>
           </div>
           <span className="bg-blue-100 text-blue-700 whitespace-nowrap rounded px-2 py-1 text-xs">
@@ -31,8 +79,8 @@ export function QuestionCard({ question, compact = false }: QuestionCardProps) {
   }
 
   return (
-    <div className="rounded-lg border bg-white p-4 shadow-sm">
-      <div className="mb-2 flex items-start justify-between">
+    <div className="rounded-lg border bg-white p-6 shadow-sm">
+      <div className="mb-3 flex items-start justify-between">
         <span className="font-mono text-xs text-gray-500">
           {question.sourceUid}
         </span>
@@ -42,29 +90,37 @@ export function QuestionCard({ question, compact = false }: QuestionCardProps) {
       </div>
 
       <MathJaxWrap>
-        <p className="mb-4 font-medium">{q.question}</p>
+        <div className="mb-4 text-base font-medium">
+          <RenderTextWithImages text={q.question} />
+        </div>
       </MathJaxWrap>
 
       {q.questionType === "multiple-choice" && (
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div>
-            <p className="text-xs font-medium text-green-700">
+            <p className="mb-1 text-sm font-medium text-green-700">
               Correct answers:
             </p>
             <MathJaxWrap>
-              <ul className="ml-4 list-disc text-sm">
+              <ul className="ml-6 list-disc space-y-1 text-sm">
                 {q.answers.map((a, i) => (
-                  <li key={i}>{a}</li>
+                  <li key={i}>
+                    <RenderTextWithImages text={a} />
+                  </li>
                 ))}
               </ul>
             </MathJaxWrap>
           </div>
           <div>
-            <p className="text-xs font-medium text-red-700">Distractors:</p>
+            <p className="mb-1 text-sm font-medium text-red-700">
+              Distractors:
+            </p>
             <MathJaxWrap>
-              <ul className="ml-4 list-disc text-sm text-gray-600">
+              <ul className="ml-6 list-disc space-y-1 text-sm text-gray-600">
                 {q.distractors.map((d, i) => (
-                  <li key={i}>{d}</li>
+                  <li key={i}>
+                    <RenderTextWithImages text={d} />
+                  </li>
                 ))}
               </ul>
             </MathJaxWrap>
@@ -74,13 +130,15 @@ export function QuestionCard({ question, compact = false }: QuestionCardProps) {
 
       {q.questionType === "short-answer" && (
         <div>
-          <p className="text-xs font-medium text-green-700">
+          <p className="mb-1 text-sm font-medium text-green-700">
             Acceptable answers:
           </p>
           <MathJaxWrap>
-            <ul className="ml-4 list-disc text-sm">
+            <ul className="ml-6 list-disc space-y-1 text-sm">
               {q.answers.map((a, i) => (
-                <li key={i}>{a}</li>
+                <li key={i}>
+                  <RenderTextWithImages text={a} />
+                </li>
               ))}
             </ul>
           </MathJaxWrap>
@@ -89,12 +147,13 @@ export function QuestionCard({ question, compact = false }: QuestionCardProps) {
 
       {q.questionType === "match" && (
         <div>
-          <p className="text-xs font-medium text-gray-700">Pairs:</p>
+          <p className="mb-1 text-sm font-medium text-gray-700">Pairs:</p>
           <MathJaxWrap>
-            <ul className="ml-4 text-sm">
+            <ul className="ml-6 space-y-1 text-sm">
               {q.pairs.map((p, i) => (
                 <li key={i}>
-                  {p.left} → {p.right}
+                  <RenderTextWithImages text={p.left} /> →{" "}
+                  <RenderTextWithImages text={p.right} />
                 </li>
               ))}
             </ul>
@@ -104,32 +163,18 @@ export function QuestionCard({ question, compact = false }: QuestionCardProps) {
 
       {q.questionType === "order" && (
         <div>
-          <p className="text-xs font-medium text-gray-700">Correct order:</p>
+          <p className="mb-1 text-sm font-medium text-gray-700">
+            Correct order:
+          </p>
           <MathJaxWrap>
-            <ol className="ml-4 list-decimal text-sm">
+            <ol className="ml-6 list-decimal space-y-1 text-sm">
               {q.items.map((item, i) => (
-                <li key={i}>{item}</li>
+                <li key={i}>
+                  <RenderTextWithImages text={item} />
+                </li>
               ))}
             </ol>
           </MathJaxWrap>
-        </div>
-      )}
-
-      {question.imageMetadata.length > 0 && (
-        <div className="mt-3 border-t pt-3">
-          <p className="mb-2 text-xs text-gray-500">
-            Contains {question.imageMetadata.length} image(s):
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {question.imageMetadata.map((img, i) => (
-              <img
-                key={i}
-                src={img.imageUrl}
-                alt={`Question image ${i + 1}`}
-                className="h-16 w-auto rounded border object-contain"
-              />
-            ))}
-          </div>
         </div>
       )}
     </div>

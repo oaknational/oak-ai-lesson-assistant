@@ -39,6 +39,7 @@ export interface QuizRagDebugResult {
     imageDescriptions: ImageDescriptionDebugResult;
     composerPrompt: string;
     composerResponse: CompositionResponse;
+    composerTimingMs: number;
     selectedQuestions: RagQuizQuestion[];
   };
   finalQuiz: LatestQuiz;
@@ -110,6 +111,7 @@ export interface ImageDescriptionDebugResult {
   cacheMisses: number;
   generatedCount: number;
   descriptions: ImageDescriptionEntry[];
+  timingMs: number;
 }
 
 /**
