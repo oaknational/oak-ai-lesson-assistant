@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 
-import { QuizV1QuestionSchema } from "../../../protocol/schemas/quiz/quizV1";
+import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 
@@ -33,7 +33,9 @@ describe("AilaRagQuizGenerator", () => {
     // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
     for (const pool of result) {
       for (const quiz of pool.questions) {
-        expect(QuizV1QuestionSchema.safeParse(quiz).success).toBe(true);
+        expect(QuizV3QuestionSchema.safeParse(quiz.question).success).toBe(
+          true,
+        );
       }
     }
   });
