@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 import { z } from "zod";
 
+import type { CohereRerankDebug } from "../debug/types";
 import type { SimplifiedResult } from "../interfaces";
 
 const log = aiLogger("quiz");
@@ -66,6 +67,66 @@ export class CohereReranker {
     } catch (error) {
       log.error("Error during reranking:", error);
       return [];
+    }
+  }
+
+  /**
+   * Reranks documents and returns debug information including all results
+   * Used by the debug pipeline to show intermediate results
+   */
+  public async rerankDocumentsWithDebug(
+    query: string,
+    docs: SimplifiedResult[],
+    topN: number = 10,
+  ): Promise<{
+    topResults: RerankResult[];
+    allResults: CohereRerankDebug[];
+  }> {
+    if (docs.length === 0) {
+      log.error("No documents to rerank");
+      return { topResults: [], allResults: [] };
+    }
+
+    try {
+      const cohereDocuments = docs.map((doc) => ({
+        text: doc.text,
+        questionUid: doc.questionUid,
+      }));
+
+      // Request all results for debug visibility
+      const response = await this.cohere.rerank({
+        model: "rerank-v3.5",
+        query: query,
+        documents: cohereDocuments,
+        topN: docs.length, // Get all for debug
+        rankFields: ["text"],
+        returnDocuments: true,
+      });
+
+      const allResults: CohereRerankDebug[] = response.results.map((result) => {
+        const doc = docs[result.index];
+        return {
+          questionUid: cohereResponseSchema.parse(result.document).questionUid,
+          text: doc?.text ?? "",
+          originalIndex: result.index,
+          relevanceScore: result.relevanceScore,
+        };
+      });
+
+      // Get top N for actual results
+      const topResults: RerankResult[] = response.results
+        .slice(0, topN)
+        .map((result) => ({
+          index: result.index,
+          relevanceScore: result.relevanceScore,
+          questionUid: cohereResponseSchema.parse(result.document).questionUid,
+        }));
+
+      log.info(`Reranked ${docs.length} documents, returning top ${topN}`);
+      return { topResults, allResults };
+    } catch (error) {
+      log.error("Error during reranking with debug:", error);
+      return { topResults: [], allResults: [] };
     }
   }
 }

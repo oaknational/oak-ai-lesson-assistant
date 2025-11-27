@@ -7,6 +7,7 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import OpenAI from "openai";
 
+import type { ElasticsearchHitDebug } from "../debug/types";
 import type { CustomSource, SimplifiedResult } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
@@ -169,5 +170,45 @@ export class ElasticsearchQuizSearchService {
         };
       })
       .filter((item): item is SimplifiedResult => item !== null);
+  }
+
+  /**
+   * Performs hybrid search and returns debug information including scores
+   * Used by the debug pipeline to show intermediate results
+   */
+  public async searchWithHybridDebug(
+    index: string,
+    query: string,
+    size: number = 100,
+    hybridWeight: number = 0.5,
+  ): Promise<{
+    hitsWithScores: ElasticsearchHitDebug[];
+    simplifiedResults: SimplifiedResult[];
+  }> {
+    const rawHits = await this.searchWithHybrid(
+      index,
+      query,
+      size,
+      hybridWeight,
+    );
+
+    const hitsWithScores: ElasticsearchHitDebug[] = rawHits.hits
+      .map((hit) => {
+        const source = hit._source;
+        if (!source || !source.questionUid || !source.text) {
+          return null;
+        }
+        return {
+          questionUid: source.questionUid,
+          text: source.text,
+          score: hit._score ?? 0,
+          lessonSlug: source.lessonSlug ?? "",
+        };
+      })
+      .filter((item): item is ElasticsearchHitDebug => item !== null);
+
+    const simplifiedResults = this.transformHits(rawHits.hits);
+
+    return { hitsWithScores, simplifiedResults };
   }
 }
