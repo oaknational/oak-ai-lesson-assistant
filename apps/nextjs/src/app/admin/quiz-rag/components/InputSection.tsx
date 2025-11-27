@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type {
   AilaRagRelevantLesson,
@@ -33,7 +33,14 @@ export function InputSection({
   const [selectedExample, setSelectedExample] = useState("");
   const [parseError, setParseError] = useState<string | null>(null);
   const [chatLookupEnabled, setChatLookupEnabled] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(!selectedPlan);
+
+  // Collapse when a plan is loaded externally (e.g., from persisted results)
+  useEffect(() => {
+    if (selectedPlan) {
+      setIsExpanded(false);
+    }
+  }, [selectedPlan]);
 
   const examples = trpc.quizRagDebug.getExampleLessonPlans.useQuery();
   const chatLookup = trpc.quizRagDebug.getLessonPlanByChatId.useQuery(

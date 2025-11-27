@@ -16,7 +16,7 @@ function RenderTextWithImages({ text }: { text: string }) {
   const parts: (string | { type: "image"; url: string; alt: string })[] = [];
 
   let lastIndex = 0;
-  let match;
+  let match: RegExpExecArray | null;
 
   while ((match = imageRegex.exec(text)) !== null) {
     // Add text before the image
@@ -24,7 +24,9 @@ function RenderTextWithImages({ text }: { text: string }) {
       parts.push(text.slice(lastIndex, match.index));
     }
     // Add the image
-    parts.push({ type: "image", url: match[2] ?? "", alt: match[1] ?? "" });
+    const url = match[2];
+    const alt = match[1];
+    parts.push({ type: "image", url: url ?? "", alt: alt ?? "" });
     lastIndex = match.index + match[0].length;
   }
 

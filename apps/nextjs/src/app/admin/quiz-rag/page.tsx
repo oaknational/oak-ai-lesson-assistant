@@ -66,6 +66,15 @@ export default function QuizRagDebugPage() {
 
   const { persistedResult, saveResult, clearResult } = usePersistedResult();
 
+  // Sync lesson plan and quiz type from persisted result on load
+  useEffect(() => {
+    if (persistedResult && !lessonPlan) {
+      setLessonPlan(persistedResult.input.lessonPlan);
+      setQuizType(persistedResult.input.quizType);
+      setRelevantLessons(persistedResult.input.relevantLessons);
+    }
+  }, [persistedResult, lessonPlan]);
+
   const runPipeline = trpc.quizRagDebug.runDebugPipeline.useMutation({
     onSuccess: (data) => {
       saveResult(data as QuizRagDebugResult);
@@ -139,54 +148,30 @@ export default function QuizRagDebugPage() {
         />
 
         {/* Action Panel */}
-        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6">
-          {!lessonPlan ? (
-            <p className="text-center text-gray-500">
-              Select an example or enter a lesson plan above to get started
-            </p>
-          ) : (
-            <div className="flex flex-col items-center gap-4">
-              <div className="text-center">
-                <p className="text-sm text-gray-500">Lesson plan loaded:</p>
-                <p className="text-lg font-medium">
-                  {lessonPlan.title || "Untitled lesson"}
-                </p>
-                {lessonPlan.subject && lessonPlan.keyStage && (
-                  <p className="text-sm text-gray-500">
-                    {lessonPlan.subject} • {lessonPlan.keyStage}
-                  </p>
-                )}
-              </div>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={handleRunPipeline}
-                  disabled={runPipeline.isLoading}
-                  className="rounded-lg bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
-                >
-                  {runPipeline.isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <span className="animate-spin">⏳</span> Running
-                      Pipeline...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      ▶ Run Pipeline
-                    </span>
-                  )}
-                </button>
-                {result && (
-                  <button
-                    onClick={() => {
-                      runPipeline.reset();
-                      clearResult();
-                    }}
-                    className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
-                  >
-                    Clear Results
-                  </button>
-                )}
-              </div>
-            </div>
+        <div className="flex items-center justify-center gap-4">
+          <button
+            onClick={handleRunPipeline}
+            disabled={runPipeline.isLoading || !lessonPlan}
+            className="rounded-lg bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
+          >
+            {runPipeline.isLoading ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin">⏳</span> Running Pipeline...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">▶ Run Pipeline</span>
+            )}
+          </button>
+          {result && (
+            <button
+              onClick={() => {
+                runPipeline.reset();
+                clearResult();
+              }}
+              className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
+            >
+              Clear Results
+            </button>
           )}
         </div>
 

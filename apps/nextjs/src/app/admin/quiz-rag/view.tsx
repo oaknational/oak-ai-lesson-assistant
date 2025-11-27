@@ -8,9 +8,13 @@ import type {
   MLMultiTermDebugResult,
   QuizRagDebugResult,
 } from "@oakai/aila/src/core/quiz/debug";
-import type { RagQuizQuestion } from "@oakai/aila/src/core/quiz/interfaces";
+import type {
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "@oakai/aila/src/core/quiz/interfaces";
 
 import { MathJaxWrap } from "@/components/MathJax";
+import { QuizSection } from "@/components/AppComponents/SectionContent/QuizSection";
 
 import { MLPipelineDetails } from "./components/MLPipelineDetails";
 import { QuestionCard } from "./components/QuestionCard";
@@ -254,6 +258,11 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
             prompt={result.selector.composerPrompt}
             response={result.selector.composerResponse}
             selectedQuestions={result.selector.selectedQuestions}
+            pools={[
+              ...(result.generators.basedOnRag?.pools ?? []),
+              ...(result.generators.ailaRag?.pools ?? []),
+              ...(result.generators.mlMultiTerm?.pools ?? []),
+            ]}
           />
         </Section>
 
@@ -275,10 +284,7 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
           color="pink"
           stats={`${result.finalQuiz.questions.length} questions, ${formatSeconds(result.timing.totalMs)} total`}
         >
-          <FinalQuizDisplay
-            questions={result.selector.selectedQuestions}
-            quiz={result.finalQuiz}
-          />
+          <FinalQuizDisplay quiz={result.finalQuiz} />
         </Section>
       </div>
     </ViewModeContext.Provider>
@@ -589,11 +595,24 @@ function ImageDescriptionsView({
   );
 }
 
+// Helper to format pool source for display
+function formatPoolSource(pool: QuizQuestionPool): string {
+  switch (pool.source.type) {
+    case "basedOn":
+      return `BasedOn: ${pool.source.lessonTitle}`;
+    case "ailaRag":
+      return `AilaRag: ${pool.source.lessonTitle}`;
+    case "mlSemanticSearch":
+      return `ML: "${pool.source.semanticQuery}"`;
+  }
+}
+
 // Composer Section
 function ComposerSection({
   prompt,
   response,
   selectedQuestions,
+  pools,
 }: {
   prompt: string;
   response: {
@@ -601,10 +620,19 @@ function ComposerSection({
     selectedQuestions: { questionUid: string; reasoning: string }[];
   };
   selectedQuestions: RagQuizQuestion[];
+  pools: QuizQuestionPool[];
 }) {
   const copyPrompt = () => {
     void navigator.clipboard.writeText(prompt);
   };
+
+  // Build a map of questionUid -> pool source
+  const questionToPool = new Map<string, QuizQuestionPool>();
+  pools.forEach((pool) => {
+    pool.questions.forEach((q) => {
+      questionToPool.set(q.sourceUid, pool);
+    });
+  });
 
   return (
     <div className="space-y-8">
@@ -620,12 +648,26 @@ function ComposerSection({
           </button>
         }
       >
+        <LearnBlock>
+          <p className="text-sm text-gray-600">
+            The full prompt sent to the LLM, including all candidate questions
+            with their text, answers, and image descriptions. The model uses
+            this to select the best 6 questions for the quiz.
+          </p>
+        </LearnBlock>
         <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
           {prompt}
         </pre>
       </SubSection>
 
       <SubSection title="Overall Strategy" defaultOpen>
+        <LearnBlock>
+          <p className="text-sm text-gray-600">
+            The model&apos;s high-level reasoning about how it approached
+            selecting questions, including considerations for topic coverage,
+            difficulty progression, and learning objectives.
+          </p>
+        </LearnBlock>
         <p className="text-sm text-gray-700">{response.overallStrategy}</p>
       </SubSection>
 
@@ -634,17 +676,29 @@ function ComposerSection({
         stats={`${response.selectedQuestions.length} questions`}
         defaultOpen
       >
+        <LearnBlock>
+          <p className="text-sm text-gray-600">
+            The model&apos;s reasoning for each selected question, explaining
+            why it was chosen and how it fits into the overall quiz structure.
+          </p>
+        </LearnBlock>
         <div className="space-y-2">
           {response.selectedQuestions.map((selection, i) => {
             const question = selectedQuestions.find(
               (q) => q.sourceUid === selection.questionUid,
             );
+            const pool = questionToPool.get(selection.questionUid);
             return (
               <div key={i} className="rounded border bg-gray-50 p-3">
                 <div className="mb-1 flex items-start justify-between">
                   <span className="font-mono text-xs text-gray-500">
                     {i + 1}. {selection.questionUid}
                   </span>
+                  {pool && (
+                    <span className="rounded bg-gray-200 px-2 py-0.5 text-xs text-gray-600">
+                      {formatPoolSource(pool)}
+                    </span>
+                  )}
                 </div>
                 <p className="mb-2 text-sm italic text-gray-600">
                   {selection.reasoning}
@@ -665,24 +719,13 @@ function ComposerSection({
 
 // Final Quiz Display
 function FinalQuizDisplay({
-  questions,
   quiz,
 }: {
-  questions: RagQuizQuestion[];
   quiz: QuizRagDebugResult["finalQuiz"];
 }) {
   return (
-    <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-2">
-        {questions.map((q, i) => (
-          <div key={q.sourceUid}>
-            <p className="mb-1 text-sm font-medium text-gray-500">
-              Question {i + 1}
-            </p>
-            <QuestionCard question={q} />
-          </div>
-        ))}
-      </div>
+    <div className="rounded-lg border bg-white p-6">
+      <QuizSection quizSection={quiz} />
     </div>
   );
 }

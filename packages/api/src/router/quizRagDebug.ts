@@ -1,6 +1,11 @@
 import { QuizRagDebugService } from "@oakai/aila/src/core/quiz/debug";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { aiLogger } from "@oakai/logger";
+import {
+  getRelevantLessonPlans,
+  parseKeyStagesForRagSearch,
+  parseSubjectsForRagSearch,
+} from "@oakai/rag";
 
 import { z } from "zod";
 
@@ -198,10 +203,38 @@ export const quizRagDebugRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      const { lessonPlan, quizType, relevantLessons } = input;
+      const { lessonPlan, quizType } = input;
+      let { relevantLessons } = input;
 
       log.info(`Running debug pipeline for ${quizType}`);
       log.info(`Lesson plan: ${lessonPlan.title}`);
+
+      // Auto-fetch relevant lessons if not provided and we have the required metadata
+      if (
+        relevantLessons.length === 0 &&
+        lessonPlan.title &&
+        lessonPlan.subject &&
+        lessonPlan.keyStage
+      ) {
+        log.info(`Fetching relevant lessons for: ${lessonPlan.title}`);
+        const subjectSlugs = parseSubjectsForRagSearch(lessonPlan.subject);
+        const keyStageSlugs = parseKeyStagesForRagSearch(lessonPlan.keyStage);
+
+        const ragResults = await getRelevantLessonPlans({
+          title: lessonPlan.title,
+          subjectSlugs,
+          keyStageSlugs,
+        });
+
+        relevantLessons = ragResults.map((result) => ({
+          oakLessonId: result.oakLessonId,
+          lessonPlanId: result.ragLessonPlanId,
+          title: result.lessonPlan.title,
+        }));
+
+        log.info(`Auto-fetched ${relevantLessons.length} relevant lessons`);
+      }
+
       log.info(`Relevant lessons: ${relevantLessons.length}`);
 
       const debugService = new QuizRagDebugService();
