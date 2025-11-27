@@ -2,12 +2,34 @@ import dedent from "dedent";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { quizEffectivenessPrompt } from "../QuestionAssesmentPrompt";
 import type {
   QuizQuestionPool,
   QuizQuestionWithSourceData,
 } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
+
+function buildQuestionSelectionCriteria(quizType: QuizPath): string {
+  const relevanceDescription =
+    quizType === "/starterQuiz"
+      ? "Questions address the specific prior knowledge outlined in the lesson plan and probe the depth of understanding of prerequisite concepts."
+      : "Questions target the key learning points and learning outcome, requiring students to demonstrate understanding of the core concepts.";
+
+  return dedent`
+    SELECTION CRITERIA:
+
+    An effective quiz has:
+
+    1. **Relevance**: ${relevanceDescription}
+
+    2. **Cognitive range**: A mix of recall, application, and analysis questions appropriate to the lesson objectives. Questions should match the appropriate level of thinking for the lesson's objectives, challenging students to think critically rather than merely recall information.
+
+    3. **Clarity**: Questions are clear, unambiguous, and focused on specific knowledge or skills rather than being overly broad.
+
+    4. **Diagnostic value**: Answers reveal student understanding, potential misconceptions, and gaps in knowledge. Good quiz questions provide valuable information that helps identify what needs to be addressed during the lesson.
+
+    5. **Answer quality**: Answer options are well-designed. Correct answers are unambiguous, and incorrect options reflect common misconceptions, helping diagnose student misunderstandings.
+  `;
+}
 
 // Schema for the LLM's composition response
 export const CompositionResponseSchema = z.object({
@@ -36,26 +58,24 @@ export function buildCompositionPrompt(
   lessonPlan: PartialLessonPlan,
   quizType: QuizPath,
 ): string {
-  const lessonPlanUnpacked = unpackLessonPlanForPrompt(lessonPlan);
-
   const sections = [
     buildSystemContext(),
+    "---",
     buildQuizTypeInstructions(lessonPlan, quizType),
-    `LESSON PLAN:\n${lessonPlanUnpacked}`,
+    "---",
+    buildQuestionSelectionCriteria(quizType),
+    "---",
+    buildLessonPlanSummary(lessonPlan),
+    "---",
     buildCandidatePoolsHeader(),
     ...questionPools.map((pool, idx) => formatPool(pool, idx)),
-    buildCompositionRequirements(quizType),
   ];
 
-  return sections.join("\n");
+  return sections.join("\n\n");
 }
 
 function buildSystemContext(): string {
-  return dedent`
-    You are a mathematics education specialist composing a quiz for Oak National Academy, leaders in UK teaching.
-
-    ${quizEffectivenessPrompt}
-  `;
+  return "You are a mathematics education specialist selecting quiz questions for Oak National Academy lesson plans.";
 }
 
 function buildQuizTypeInstructions(
@@ -83,7 +103,7 @@ function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
     - Identify misconceptions
     - Reactivate prerequisite concepts
 
-    Your quiz MUST align with the "prior knowledge" section of the lesson plan.${priorKnowledgeList}
+    Your quiz must align with the "prior knowledge" section of the lesson plan.${priorKnowledgeList}
   `;
 }
 
@@ -102,57 +122,51 @@ function buildExitQuizInstructions(lessonPlan: PartialLessonPlan): string {
     - Identify misconceptions
     - Consolidate the learning
 
-    Your quiz MUST align with the "key learning points" and "learning outcome" sections of the lesson plan.${learningPointsList}
+    Your quiz must align with the "key learning points" and "learning outcome" sections of the lesson plan.${learningPointsList}
   `;
+}
+
+function buildLessonPlanSummary(lessonPlan: PartialLessonPlan): string {
+  return `LESSON PLAN:
+
+${unpackLessonPlanForPrompt(lessonPlan)}`;
 }
 
 function buildCandidatePoolsHeader(): string {
   return dedent`
+    CANDIDATE QUESTIONS:
 
-    ---
-
-    CANDIDATE QUESTION POOLS:
-
-    I have retrieved candidate questions from multiple sources. Your task is to select EXACTLY 6 questions that work together as a cohesive, pedagogically sound quiz.
+    Below are candidate questions from Oak's existing lesson data. Select 6 questions that work together as a cohesive, pedagogically sound quiz.
   `;
 }
 
 function formatPool(pool: QuizQuestionPool, poolIndex: number): string {
   const header = formatPoolHeader(pool, poolIndex);
-  const questions = pool.questions
-    .map((q, qIdx) => formatQuestion(q, poolIndex, qIdx))
-    .join("");
+  const questions = pool.questions.map((q) => formatQuestion(q)).join("\n\n");
 
-  return `${header}\n\nQuestions in this pool (${pool.questions.length}):\n${questions}`;
+  return `${header}\n\n${questions}`;
 }
 
 function formatPoolHeader(pool: QuizQuestionPool, poolIndex: number): string {
-  const lines = [`\n## Pool ${poolIndex + 1}: `];
-
   if (pool.source.type === "mlSemanticSearch") {
-    lines.push(`ML Semantic Search`);
-    lines.push(`Search query: "${pool.source.semanticQuery}"`);
+    return dedent`
+      ## Pool ${poolIndex + 1}: ML Semantic Search
+      Search query: "${pool.source.semanticQuery}"
+    `;
   } else if (pool.source.type === "basedOn") {
-    lines.push(`Based On Lesson`);
-    lines.push(
-      `Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})`,
-    );
-  } else if (pool.source.type === "ailaRag") {
-    lines.push(`Aila RAG`);
-    lines.push(
-      `Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})`,
-    );
+    return dedent`
+      ## Pool ${poolIndex + 1}: User-selected source lesson
+      Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})
+    `;
+  } else {
+    return dedent`
+      ## Pool ${poolIndex + 1}: RAG lesson on a similar topic
+      Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})
+    `;
   }
-
-  return lines.join("\n");
 }
 
-function formatQuestion(
-  question: QuizQuestionWithSourceData,
-  poolIndex: number,
-  questionIndex: number,
-): string {
-  const questionUid = question.sourceUid;
+function formatQuestion(question: QuizQuestionWithSourceData): string {
   const answers = question.answers
     .map((answer, i) => `${i + 1}. ${answer}`)
     .join("\n");
@@ -161,8 +175,7 @@ function formatQuestion(
     .join("\n");
 
   return dedent`
-
-    ### Question ${poolIndex + 1}.${questionIndex + 1} [UID: ${questionUid}]
+    ### Question UID:${question.sourceUid}
     ${question.question}
 
     Correct answer(s):
@@ -170,31 +183,5 @@ function formatQuestion(
 
     Distractors:
     ${distractors}
-  `;
-}
-
-function buildCompositionRequirements(quizType: QuizPath): string {
-  const focusArea =
-    quizType === "/starterQuiz"
-      ? "all prior knowledge points"
-      : "all key learning points";
-
-  return dedent`
-
-    ---
-
-    COMPOSITION REQUIREMENTS:
-
-    1. **Coverage**: Ensure the quiz addresses ${focusArea}
-    2. **Diversity**: Include questions at different cognitive levels (recall, application, analysis)
-    3. **Balance**: Mix question types and difficulty levels appropriately
-    4. **Pedagogical soundness**: Questions should work together as a cohesive assessment
-    5. **Quality**: Prioritize clear, well-written questions with good distractors
-
-    Select EXACTLY 6 questions. For each selection, provide:
-    - The questionUid (from the [UID: ...] label)
-    - Brief reasoning for why you selected it
-
-    Also provide a brief overall strategy explaining how your selections work together.
   `;
 }

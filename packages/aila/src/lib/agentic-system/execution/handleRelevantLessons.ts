@@ -30,7 +30,7 @@ export async function handleRelevantLessons(
     return true;
   }
   context.currentTurn.relevantLessons =
-    await context.runtime.fetchRelevantLessons();
+    await context.runtime.fetchRelevantLessons({ title, subject, keyStage });
   context.currentTurn.relevantLessonsFetched = true;
 
   if (context.currentTurn.relevantLessons.length > 0) {

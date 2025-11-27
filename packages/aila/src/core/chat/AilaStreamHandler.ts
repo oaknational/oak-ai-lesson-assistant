@@ -1,14 +1,25 @@
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { RAG } from "@oakai/core/src/rag";
-import { prisma as globalPrisma } from "@oakai/db/client";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import { getRagLessonPlansByIds } from "@oakai/rag";
+import {
+  getRagLessonPlansByIds,
+  getRelevantLessonPlans,
+  parseKeyStagesForRagSearch,
+  parseSubjectsForRagSearch,
+} from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 import invariant from "tiny-invariant";
-import { z } from "zod";
+import z from "zod";
 
 import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../constants";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
+import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
+import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
+import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
+import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import {
   createInteractStreamHandler,
   streamInteractResultToClient,
@@ -20,6 +31,7 @@ import {
   CompletedLessonPlanSchemaWithoutLength,
 } from "../../protocol/schema";
 import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
+import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
@@ -95,7 +107,10 @@ export class AilaStreamHandler {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
-      if (!this._chat.aila.options.useAgenticAila) {
+      if (
+        !this._chat.aila.options.useAgenticAila &&
+        !this._chat.aila.options.useLegacyAgenticAila
+      ) {
         await this.span("set-up-generation", async () => {
           await this._chat.setupGeneration();
         });
@@ -112,6 +127,10 @@ export class AilaStreamHandler {
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
           await this.startAgentStream();
+        });
+      } else if (this._chat.aila.options.useLegacyAgenticAila) {
+        await this.span("start-agent-stream-legacy", async () => {
+          await this.startAgentStreamLegacy();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -174,7 +193,7 @@ export class AilaStreamHandler {
     this._patchEnqueuer.setController(controller);
   }
 
-  private async startAgentStream() {
+  private async startAgentStreamLegacy() {
     await this._chat.enqueue({
       type: "comment",
       value: "CHAT_START",
@@ -221,7 +240,7 @@ export class AilaStreamHandler {
 
           return quiz;
         },
-        fetchRagData: async ({ document }) => {
+        fetchRagData: async ({ document }): Promise<CompletedLessonPlan[]> => {
           const chatId = this._chat.id;
           const userId = this._chat.userId ?? undefined;
           const prisma = globalPrisma;
@@ -273,7 +292,7 @@ export class AilaStreamHandler {
                 (lesson) => lesson.lessonPlanId,
               ),
             });
-            return results;
+            return results.map((r) => r.lessonPlan);
           }
 
           const lessonPlanResults = await fetchRelevantLessonPlans({
@@ -299,6 +318,110 @@ export class AilaStreamHandler {
       initialDocument,
       interactResult,
     );
+  }
+
+  private async startAgentStream() {
+    await this._chat.enqueue({
+      type: "comment",
+      value: "CHAT_START",
+    });
+
+    const initialDocument = {
+      ...this._chat.aila.document.content,
+    };
+
+    const openai = createOpenAIClient({
+      app: "lesson-assistant",
+      chatMeta: {
+        chatId: this._chat.id,
+        userId: this._chat.userId,
+      },
+    });
+
+    const ailaTurnCallbacks = createAilaTurnCallbacks({
+      chat: this._chat,
+      controller: this._controller!,
+    });
+
+    const relevantLessonsPopulated = this._chat.relevantLessons
+      ? await getRagLessonPlansByIds({
+          lessonPlanIds: this._chat.relevantLessons.map(
+            (lesson) => lesson.lessonPlanId,
+          ),
+        })
+      : [];
+
+    await ailaTurn({
+      callbacks: ailaTurnCallbacks,
+      persistedState: {
+        messages: extractPromptTextFromMessages(this._chat.messages),
+        initialDocument,
+        relevantLessons: relevantLessonsPopulated,
+      },
+      runtime: {
+        config: {
+          mathsQuizEnabled: true,
+        },
+        plannerAgent: createOpenAIPlannerAgent(openai),
+        sectionAgents: createSectionAgentRegistry({
+          openai,
+          customAgentHandlers: {
+            "starterQuiz--maths": async (ctx) => {
+              try {
+                const quiz = await this._chat.fullQuizService.buildQuiz(
+                  "/starterQuiz",
+                  ctx.currentTurn.document,
+                );
+
+                return { error: null, data: quiz };
+              } catch (error) {
+                log.error("Error generating starter quiz", { error });
+                return {
+                  error: {
+                    message:
+                      "Failed to generate a starter quiz with maths quiz engine",
+                  },
+                };
+              }
+            },
+            "exitQuiz--maths": async (ctx) => {
+              try {
+                const quiz = await this._chat.fullQuizService.buildQuiz(
+                  "/exitQuiz",
+                  ctx.currentTurn.document,
+                );
+
+                return { error: null, data: quiz };
+              } catch (error) {
+                log.error("Error generating exit quiz", { error });
+                return {
+                  error: {
+                    message:
+                      "Failed to generate an exit quiz with maths quiz engine",
+                  },
+                };
+              }
+            },
+          },
+        }),
+        messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+        fetchRelevantLessons: async ({ title, subject, keyStage }) => {
+          const subjectSlugs = parseSubjectsForRagSearch(subject);
+          const keyStageSlugs = parseKeyStagesForRagSearch(keyStage);
+          const relevantLessons = await getRelevantLessonPlans({
+            title,
+            subjectSlugs,
+            keyStageSlugs,
+          });
+          const persistedRelevantLessons = relevantLessons.map((result) => ({
+            lessonPlanId: result.ragLessonPlanId,
+            title: result.lessonPlan.title,
+          }));
+          this._chat.relevantLessons = persistedRelevantLessons;
+          return relevantLessons;
+        },
+      },
+    });
   }
 
   private async startLLMStream() {

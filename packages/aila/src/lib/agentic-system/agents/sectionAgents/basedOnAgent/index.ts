@@ -16,8 +16,8 @@ export const basedOnAgent = createSectionAgent({
           "The following lessons were shown to the user:",
           JSON.stringify(
             ctx.persistedState.relevantLessons.map((lesson) => ({
-              id: lesson.id,
-              title: lesson.title,
+              id: lesson.ragLessonPlanId,
+              title: lesson.lessonPlan.title,
             })),
           ),
         ].join("\n\n"),

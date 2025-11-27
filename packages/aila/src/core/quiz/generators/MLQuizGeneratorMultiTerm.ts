@@ -78,11 +78,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
       topN,
     );
 
-    // TODO: Verify this extraction is correct - CohereReranker now returns typed results
-    // with questionUid on the document object. Previously used extractCustomId which parsed JSON.
-    const questionUids = rerankedResults.map(
-      (result) => result.document.questionUid,
-    );
+    const questionUids = rerankedResults.map((result) => result.questionUid);
 
     log.info(
       `MLQuizGeneratorMultiTerm: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
