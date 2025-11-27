@@ -10,6 +10,7 @@ import type {
   QuizSelector,
   RatingResponse,
 } from "../interfaces";
+import { ImageDescriptionService } from "../services/ImageDescriptionService";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
@@ -18,8 +19,8 @@ import {
 
 const log = aiLogger("aila:quiz");
 
-const OPENAI_MODEL = "gpt-4o-mini";
-const IS_REASONING_MODEL = false;
+const OPENAI_MODEL = "o4-mini";
+const IS_REASONING_MODEL = true;
 
 /**
  * LLM-based Quiz Composer that actively selects questions from candidate pools
@@ -44,7 +45,27 @@ export class LLMQuizComposer implements QuizSelector {
       return [];
     }
 
-    const prompt = buildCompositionPrompt(questionPools, lessonPlan, quizType);
+    // Process images: extract URLs, get/generate descriptions, replace in text
+    const imageService = new ImageDescriptionService();
+    const { descriptions, cacheHits, cacheMisses, generatedCount } =
+      await imageService.getImageDescriptions(questionPools);
+
+    log.info(
+      `Image descriptions: ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated)`,
+    );
+
+    // Replace images with descriptions for LLM composition
+    const poolsWithDescriptions =
+      ImageDescriptionService.applyDescriptionsToQuestions(
+        questionPools,
+        descriptions,
+      );
+
+    const prompt = buildCompositionPrompt(
+      poolsWithDescriptions,
+      lessonPlan,
+      quizType,
+    );
     const response = await this.callOpenAI(prompt);
     const selectedQuestions = this.mapResponseToQuestions(
       response,
