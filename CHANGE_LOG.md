@@ -1,3 +1,11 @@
+## [1.56.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.0...v1.56.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* restore accessibility statement page with Sanity CMS ([#857](https://github.com/oaknational/oak-ai-lesson-assistant/issues/857)) ([247f483](https://github.com/oaknational/oak-ai-lesson-assistant/commit/247f483e9ceef5de055e449a40f8a8fecd4db2b9))
+* upgrade Storybook to 10.0.8 to resolve webpack 5.102.1 compatibility ([#850](https://github.com/oaknational/oak-ai-lesson-assistant/issues/850)) ([51979fb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/51979fbf280ec1231686c1b6305904c0b0abce3e))
+
 # [1.56.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.55.0...v1.56.0) (2025-11-21)
 
 
