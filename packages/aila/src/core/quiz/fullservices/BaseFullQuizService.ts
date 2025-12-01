@@ -37,6 +37,7 @@ import type {
   FullQuizService,
   QuizSelector,
 } from "../interfaces";
+import type { Tracer } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -59,35 +60,45 @@ export class BaseFullQuizService implements FullQuizService {
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
+    tracer?: Tracer,
   ): Promise<LatestQuiz> {
+    const rootSpan = tracer?.startSpan("pipeline");
+
     const poolPromises = this.quizGenerators.map((quizGenerator) => {
-      if (quizType === "/starterQuiz") {
-        return quizGenerator.generateMathsStarterQuizCandidates(
-          lessonPlan,
-          ailaRagRelevantLessons,
-        );
-      } else if (quizType === "/exitQuiz") {
-        return quizGenerator.generateMathsExitQuizCandidates(
-          lessonPlan,
-          ailaRagRelevantLessons,
-        );
-      }
-      throw new Error(`Invalid quiz type: ${quizType as string}`);
+      const span = rootSpan?.startChild(quizGenerator.spanName);
+
+      const promise =
+        quizType === "/starterQuiz"
+          ? quizGenerator.generateMathsStarterQuizCandidates(
+              lessonPlan,
+              ailaRagRelevantLessons,
+              span,
+            )
+          : quizType === "/exitQuiz"
+            ? quizGenerator.generateMathsExitQuizCandidates(
+                lessonPlan,
+                ailaRagRelevantLessons,
+                span,
+              )
+            : Promise.reject(
+                new Error(`Invalid quiz type: ${quizType as string}`),
+              );
+
+      return promise.then((pools) => {
+        span?.setData("result", pools.length > 0 ? { pools } : null);
+        span?.end();
+        return pools;
+      });
     });
 
     const poolArrays = await Promise.all(poolPromises);
     const questionPools = poolArrays.flat();
 
-    const quizRankings = await this.quizReranker.evaluateQuizArray(
-      questionPools,
-      lessonPlan,
-      quizType,
-    );
-
-    if (!quizRankings[0]) {
+    if (questionPools.length === 0) {
       log.error(
-        `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
+        `No question pools generated for ${quizType} - lesson plan: ${lessonPlan.title}`,
       );
+      rootSpan?.end();
       return {
         version: "v3",
         questions: [],
@@ -95,12 +106,23 @@ export class BaseFullQuizService implements FullQuizService {
       };
     }
 
+    const quizRankings = await this.quizReranker.evaluateQuizArray(
+      questionPools,
+      lessonPlan,
+      quizType,
+    );
+
+    const selectorSpan = rootSpan?.startChild("selector");
     const selectedQuestions = await this.quizSelector.selectQuestions(
       questionPools,
       quizRankings,
       lessonPlan,
       quizType,
+      selectorSpan,
     );
+    selectorSpan?.end();
+    rootSpan?.end();
+
     return buildQuizFromQuestions(selectedQuestions);
   }
 }

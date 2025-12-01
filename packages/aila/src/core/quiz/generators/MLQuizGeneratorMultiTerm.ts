@@ -3,6 +3,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { GeneratorStage } from "../debug/types";
 import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
@@ -26,6 +27,8 @@ const POOL_SIZE = 3;
  * - Returns separate pools maintaining semantic grouping
  */
 export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
+  readonly spanName: GeneratorStage = "mlMultiTerm";
+
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
   protected rerankService: CohereReranker;

@@ -197,5 +197,4 @@ export class ElasticsearchQuizSearchService {
       })
       .filter((item): item is SimplifiedResult => item !== null);
   }
-
 }

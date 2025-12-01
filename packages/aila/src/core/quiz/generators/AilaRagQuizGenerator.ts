@@ -5,6 +5,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
+import type { GeneratorStage } from "../debug/types";
 import type { QuizQuestionPool } from "../interfaces";
 import type { Span } from "../tracing";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
@@ -13,6 +14,7 @@ const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
 export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
+  override readonly spanName: GeneratorStage = "ailaRag";
   async poolsFromAilaRagRelevantLessons(
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath,

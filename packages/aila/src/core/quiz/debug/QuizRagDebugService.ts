@@ -1,35 +1,20 @@
-import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
-
-import { zodResponseFormat } from "openai/helpers/zod";
 
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import { buildQuizFromQuestions } from "../buildQuizObject";
-import { AilaRagQuizGenerator } from "../generators/AilaRagQuizGenerator";
-import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
-import { MLQuizGeneratorMultiTerm } from "../generators/MLQuizGeneratorMultiTerm";
-import type {
-  QuizQuestionPool,
-  RagQuizQuestion,
-} from "../interfaces";
-import { NoOpReranker } from "../rerankers/NoOpReranker";
-import {
-  CompositionResponseSchema,
-  buildCompositionPrompt,
-} from "../selectors/LLMQuizComposerPrompts";
-import { ImageDescriptionService } from "../services/ImageDescriptionService";
-import type { CompletedSpan } from "../tracing";
-import { createTracer } from "../tracing";
+import { buildFullQuizService } from "../fullservices/buildFullQuizService";
+import type { RagQuizQuestion } from "../interfaces";
+import type { CompletedSpan, Tracer } from "../tracing";
 import type {
   CohereRerankDebug,
+  ComposerLlmResult,
+  ComposerPromptResult,
   ElasticsearchHitDebug,
   GeneratorDebugResult,
   ImageDescriptionDebugResult,
-  ImageDescriptionEntry,
   MLMultiTermDebugResult,
   MLSearchTermDebugResult,
   QuizRagDebugResult,
@@ -37,249 +22,245 @@ import type {
 
 const log = aiLogger("aila:quiz");
 
-const OPENAI_MODEL = "o4-mini";
-const IS_REASONING_MODEL = true;
-
 /**
- * Debug service that orchestrates the Quiz RAG pipeline with full visibility
- * into intermediate results at each stage.
+ * Debug service that runs the production Quiz RAG pipeline with tracing
+ * and extracts detailed debug information from completed spans.
  */
 export class QuizRagDebugService {
   /**
-   * Run the full debug pipeline and return all intermediate results
+   * Run the debug pipeline with a tracer for streaming updates.
+   * Uses production buildQuiz and extracts debug info from spans.
    */
   async runDebugPipeline(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-    relevantLessons: AilaRagRelevantLesson[] = [],
+    relevantLessons: AilaRagRelevantLesson[],
+    tracer: Tracer,
   ): Promise<QuizRagDebugResult> {
     const startTime = Date.now();
 
-    log.info(`QuizRagDebugService: Starting debug pipeline for ${quizType}`);
+    log.info(`QuizRagDebugService: Starting pipeline for ${quizType}`);
 
-    // Stage 1: Run generators with timing
-    const generatorsStart = Date.now();
-    const generatorResults = await this.runGeneratorsWithDebug(
-      lessonPlan,
+    // Use production service with tracer
+    const service = buildFullQuizService({
+      quizGenerators: ["basedOnRag", "rag", "ml-multi-term"],
+      quizReranker: "no-op",
+      quizSelector: "llm-quiz-composer",
+    });
+
+    const finalQuiz = await service.buildQuiz(
       quizType,
+      lessonPlan,
       relevantLessons,
+      tracer,
     );
-    const generatorsMs = Date.now() - generatorsStart;
-
-    // Combine all pools
-    const allPools = [
-      ...(generatorResults.basedOnRag?.pools ?? []),
-      ...(generatorResults.ailaRag?.pools ?? []),
-      ...(generatorResults.mlMultiTerm?.pools ?? []),
-    ];
-
-    log.info(
-      `QuizRagDebugService: Generators produced ${allPools.length} pools`,
-    );
-
-    // Stage 2: Reranker (no-op)
-    const rerankerStart = Date.now();
-    const reranker = new NoOpReranker();
-    const ratings = await reranker.evaluateQuizArray(
-      allPools,
-      lessonPlan,
-      quizType,
-    );
-    const rerankerMs = Date.now() - rerankerStart;
-
-    // Stage 3: Selector with debug
-    const selectorStart = Date.now();
-    const selectorResult = await this.runSelectorWithDebug(
-      allPools,
-      lessonPlan,
-      quizType,
-    );
-    const selectorMs = Date.now() - selectorStart;
-
-    // Build final quiz
-    const finalQuiz = buildQuizFromQuestions(selectorResult.selectedQuestions);
 
     const totalMs = Date.now() - startTime;
     log.info(`QuizRagDebugService: Pipeline complete in ${totalMs}ms`);
 
+    // Extract debug results from completed spans
+    const spans = tracer.getCompletedSpans();
+    const debugResult = this.extractDebugResultFromSpans(
+      spans,
+      lessonPlan,
+      quizType,
+      relevantLessons,
+      finalQuiz,
+      totalMs,
+    );
+
+    return debugResult;
+  }
+
+  /**
+   * Extract QuizRagDebugResult from completed tracer spans.
+   * Throws if expected pipeline structure is missing.
+   */
+  private extractDebugResultFromSpans(
+    spans: CompletedSpan[],
+    lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+    relevantLessons: AilaRagRelevantLesson[],
+    finalQuiz: QuizRagDebugResult["finalQuiz"],
+    totalMs: number,
+  ): QuizRagDebugResult {
+    const pipelineSpan = spans.find((s) => s.name === "pipeline");
+    if (!pipelineSpan) {
+      throw new Error(
+        "Pipeline span not found - tracer may not have been passed to buildQuiz",
+      );
+    }
+
+    const generators: QuizRagDebugResult["generators"] = {};
+
+    // Extract generator results
+    const basedOnSpan = this.findChildSpan(pipelineSpan, "basedOnRag");
+    if (basedOnSpan) {
+      const result = basedOnSpan.data["result"] as {
+        pools: GeneratorDebugResult["pools"];
+      } | null;
+      if (result?.pools) {
+        generators.basedOnRag = {
+          generatorType: "basedOnRag",
+          pools: result.pools,
+          metadata: {
+            sourceLesson: lessonPlan.basedOn?.title,
+            sourceLessonSlug: lessonPlan.basedOn?.id,
+          },
+          timingMs: basedOnSpan.durationMs,
+        };
+      }
+    }
+
+    const ailaRagSpan = this.findChildSpan(pipelineSpan, "ailaRag");
+    if (ailaRagSpan) {
+      const result = ailaRagSpan.data["result"] as {
+        pools: GeneratorDebugResult["pools"];
+      } | null;
+      if (result?.pools) {
+        generators.ailaRag = {
+          generatorType: "rag",
+          pools: result.pools,
+          metadata: {
+            sourceLesson: relevantLessons.map((l) => l.title).join(", "),
+          },
+          timingMs: ailaRagSpan.durationMs,
+        };
+      }
+    }
+
+    const mlSpan = this.findChildSpan(pipelineSpan, "mlMultiTerm");
+    if (mlSpan) {
+      const result = mlSpan.data["result"] as {
+        pools: GeneratorDebugResult["pools"];
+      } | null;
+      if (result?.pools) {
+        const searchTerms = this.extractMLSearchTermsFromSpan(mlSpan);
+        generators.mlMultiTerm = {
+          generatorType: "ml-multi-term",
+          pools: result.pools,
+          searchTerms,
+          timingMs: mlSpan.durationMs,
+        };
+      }
+    }
+
+    // Extract selector results
+    // Note: selector span may not exist if pipeline returned early (e.g., no pools found)
+    const selectorSpan = this.findChildSpan(pipelineSpan, "selector");
+
+    // Default empty selector result for early-return case
+    const emptySelector = {
+      type: "llm-quiz-composer" as const,
+      imageDescriptions: {
+        totalImages: 0,
+        cacheHits: 0,
+        cacheMisses: 0,
+        generatedCount: 0,
+        descriptions: [] as ImageDescriptionDebugResult["descriptions"],
+        timingMs: 0,
+      },
+      composerPrompt: "",
+      composerResponse: {
+        overallStrategy: "Pipeline returned early - no pools to select from",
+        selectedQuestions: [] as { questionUid: string; reasoning: string }[],
+      },
+      composerTimingMs: 0,
+      selectedQuestions: [] as RagQuizQuestion[],
+    };
+
+    if (!selectorSpan) {
+      // Pipeline returned early (no pools) - return with empty selector
+      return {
+        input: { lessonPlan, quizType, relevantLessons },
+        generators,
+        reranker: { type: "no-op", ratings: [] },
+        selector: emptySelector,
+        finalQuiz,
+        timing: {
+          totalMs,
+          generatorsMs:
+            (basedOnSpan?.durationMs ?? 0) +
+            (ailaRagSpan?.durationMs ?? 0) +
+            (mlSpan?.durationMs ?? 0),
+          rerankerMs: 0,
+          selectorMs: 0,
+        },
+      };
+    }
+
+    const imageSpan = this.findChildSpan(selectorSpan, "imageDescriptions");
+    const promptSpan = this.findChildSpan(selectorSpan, "composerPrompt");
+    const llmSpan = this.findChildSpan(selectorSpan, "composerLlm");
+
+    if (!promptSpan || !llmSpan) {
+      throw new Error(
+        "Composer spans not found - selector started but didn't complete",
+      );
+    }
+
+    const imageResult = imageSpan?.data["result"] as
+      | ImageDescriptionDebugResult
+      | undefined;
+    const promptResult = promptSpan.data["result"] as
+      | ComposerPromptResult
+      | undefined;
+    const llmResult = llmSpan.data["result"] as ComposerLlmResult | undefined;
+
+    if (!promptResult || !llmResult) {
+      throw new Error("Composer result data missing from spans");
+    }
+
     return {
       input: { lessonPlan, quizType, relevantLessons },
-      generators: generatorResults,
-      reranker: { type: "no-op", ratings },
+      generators,
+      reranker: { type: "no-op", ratings: [] },
       selector: {
         type: "llm-quiz-composer",
-        ...selectorResult,
+        imageDescriptions: imageResult ?? emptySelector.imageDescriptions,
+        composerPrompt: promptResult.prompt,
+        composerResponse: llmResult.response,
+        composerTimingMs: llmResult.timingMs,
+        selectedQuestions: llmResult.selectedQuestions,
       },
       finalQuiz,
       timing: {
         totalMs,
-        generatorsMs,
-        rerankerMs,
-        selectorMs,
+        generatorsMs:
+          (basedOnSpan?.durationMs ?? 0) +
+          (ailaRagSpan?.durationMs ?? 0) +
+          (mlSpan?.durationMs ?? 0),
+        rerankerMs: 0,
+        selectorMs: selectorSpan?.durationMs ?? 0,
       },
     };
   }
 
   /**
-   * Run all generators and capture debug results
+   * Find a child span by name.
    */
-  private async runGeneratorsWithDebug(
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-    relevantLessons: AilaRagRelevantLesson[],
-  ): Promise<QuizRagDebugResult["generators"]> {
-    const results: QuizRagDebugResult["generators"] = {};
-
-    // Run in parallel
-    const [basedOnResult, ailaRagResult, mlResult] = await Promise.all([
-      this.runBasedOnGenerator(lessonPlan, quizType),
-      this.runAilaRagGenerator(lessonPlan, quizType, relevantLessons),
-      this.runMLMultiTermGenerator(lessonPlan, quizType),
-    ]);
-
-    if (basedOnResult) results.basedOnRag = basedOnResult;
-    if (ailaRagResult) results.ailaRag = ailaRagResult;
-    if (mlResult) results.mlMultiTerm = mlResult;
-
-    return results;
+  private findChildSpan(
+    parent: CompletedSpan | undefined,
+    name: string,
+  ): CompletedSpan | undefined {
+    return parent?.children.find((s) => s.name === name);
   }
 
   /**
-   * Run BasedOnRag generator
+   * Extract ML search term debug results from the mlMultiTerm span.
    */
-  private async runBasedOnGenerator(
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-  ): Promise<GeneratorDebugResult | undefined> {
-    if (!lessonPlan.basedOn?.id) {
-      log.info(
-        "QuizRagDebugService: No basedOn lesson, skipping BasedOnRag generator",
-      );
-      return undefined;
-    }
-
-    const start = Date.now();
-    const generator = new BasedOnRagQuizGenerator();
-
-    const pools =
-      quizType === "/starterQuiz"
-        ? await generator.generateMathsStarterQuizCandidates(lessonPlan)
-        : await generator.generateMathsExitQuizCandidates(lessonPlan);
-
-    if (pools.length === 0) {
-      return undefined;
-    }
-
-    return {
-      generatorType: "basedOnRag",
-      pools,
-      metadata: {
-        sourceLesson: lessonPlan.basedOn.title,
-        sourceLessonSlug: lessonPlan.basedOn.id,
-      },
-      timingMs: Date.now() - start,
-    };
-  }
-
-  /**
-   * Run AilaRag generator
-   */
-  private async runAilaRagGenerator(
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-    relevantLessons: AilaRagRelevantLesson[],
-  ): Promise<GeneratorDebugResult | undefined> {
-    if (relevantLessons.length === 0) {
-      log.info(
-        "QuizRagDebugService: No relevant lessons, skipping AilaRag generator",
-      );
-      return undefined;
-    }
-
-    const start = Date.now();
-    const generator = new AilaRagQuizGenerator();
-
-    const pools =
-      quizType === "/starterQuiz"
-        ? await generator.generateMathsStarterQuizCandidates(
-            lessonPlan,
-            relevantLessons,
-          )
-        : await generator.generateMathsExitQuizCandidates(
-            lessonPlan,
-            relevantLessons,
-          );
-
-    if (pools.length === 0) {
-      return undefined;
-    }
-
-    return {
-      generatorType: "rag",
-      pools,
-      metadata: {
-        sourceLesson: relevantLessons.map((l) => l.title).join(", "),
-      },
-      timingMs: Date.now() - start,
-    };
-  }
-
-  /**
-   * Run ML Multi-Term generator with full debug output using tracer
-   */
-  private async runMLMultiTermGenerator(
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-  ): Promise<MLMultiTermDebugResult | undefined> {
-    const tracer = createTracer();
-    const rootSpan = tracer.startSpan("ml-multi-term");
-
-    const start = Date.now();
-    const generator = new MLQuizGeneratorMultiTerm();
-
-    const pools =
-      quizType === "/starterQuiz"
-        ? await generator.generateMathsStarterQuizCandidates(
-            lessonPlan,
-            undefined,
-            rootSpan,
-          )
-        : await generator.generateMathsExitQuizCandidates(
-            lessonPlan,
-            undefined,
-            rootSpan,
-          );
-
-    rootSpan.end();
-
-    if (pools.length === 0) {
-      return undefined;
-    }
-
-    // Extract search term debug results from span tree
-    const searchTerms = this.extractSearchTermsFromSpans(
-      tracer.getCompletedSpans(),
-      pools,
-    );
-
-    return {
-      generatorType: "ml-multi-term",
-      pools,
-      searchTerms,
-      timingMs: Date.now() - start,
-    };
-  }
-
-  /**
-   * Extract search term debug results from completed spans
-   */
-  private extractSearchTermsFromSpans(
-    spans: CompletedSpan[],
-    pools: QuizQuestionPool[],
+  private extractMLSearchTermsFromSpan(
+    mlSpan: CompletedSpan,
   ): MLSearchTermDebugResult[] {
     const results: MLSearchTermDebugResult[] = [];
 
-    // Build a lookup map of sourceUid -> question from all pools
+    // Build a lookup of questionUid -> question from pools
+    const pools =
+      (
+        mlSpan.data["result"] as {
+          pools: { questions: RagQuizQuestion[] }[];
+        } | null
+      )?.pools ?? [];
     const questionsByUid = new Map<string, RagQuizQuestion>();
     pools.forEach((pool) => {
       pool.questions.forEach((q) => {
@@ -287,12 +268,8 @@ export class QuizRagDebugService {
       });
     });
 
-    // Find the root ml-multi-term span
-    const rootSpan = spans.find((s) => s.name === "ml-multi-term");
-    if (!rootSpan) return results;
-
     // Find query spans (named "query-0", "query-1", etc.)
-    const querySpans = rootSpan.children.filter((s) =>
+    const querySpans = mlSpan.children.filter((s) =>
       s.name.startsWith("query-"),
     );
 
@@ -300,10 +277,7 @@ export class QuizRagDebugService {
       const query = querySpan.data["query"] as string | undefined;
       if (!query) continue;
 
-      // Find elasticsearch and cohere child spans
-      const esSpan = querySpan.children.find(
-        (s) => s.name === "elasticsearch",
-      );
+      const esSpan = querySpan.children.find((s) => s.name === "elasticsearch");
       const cohereSpan = querySpan.children.find((s) => s.name === "cohere");
 
       const elasticsearchHits: ElasticsearchHitDebug[] =
@@ -316,7 +290,6 @@ export class QuizRagDebugService {
         | string[]
         | undefined;
 
-      // Map UIDs to full question objects
       const finalCandidates: RagQuizQuestion[] = (candidateUids ?? [])
         .map((uid) => questionsByUid.get(uid))
         .filter((q): q is RagQuizQuestion => q !== undefined);
@@ -331,201 +304,5 @@ export class QuizRagDebugService {
     }
 
     return results;
-  }
-
-  /**
-   * Run selector stage with debug output
-   */
-  private async runSelectorWithDebug(
-    questionPools: QuizQuestionPool[],
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-  ): Promise<{
-    imageDescriptions: ImageDescriptionDebugResult;
-    composerPrompt: string;
-    composerResponse: {
-      overallStrategy: string;
-      selectedQuestions: { questionUid: string; reasoning: string }[];
-    };
-    composerTimingMs: number;
-    selectedQuestions: RagQuizQuestion[];
-  }> {
-    if (questionPools.length === 0) {
-      return {
-        imageDescriptions: {
-          totalImages: 0,
-          cacheHits: 0,
-          cacheMisses: 0,
-          generatedCount: 0,
-          descriptions: [],
-          timingMs: 0,
-        },
-        composerPrompt: "",
-        composerResponse: {
-          overallStrategy: "No pools provided",
-          selectedQuestions: [],
-        },
-        composerTimingMs: 0,
-        selectedQuestions: [],
-      };
-    }
-
-    // Process images with timing
-    const imageStart = Date.now();
-    const imageService = new ImageDescriptionService();
-    const { descriptions, cacheHits, cacheMisses, generatedCount } =
-      await imageService.getImageDescriptions(questionPools);
-
-    // Build debug-friendly image descriptions list
-    const imageDescriptionEntries: ImageDescriptionEntry[] = [];
-    const allImageUrls = this.extractAllImageUrls(questionPools);
-    for (const url of allImageUrls) {
-      const description = descriptions.get(url);
-      if (description) {
-        imageDescriptionEntries.push({
-          url,
-          description,
-          wasCached:
-            cacheHits > 0 && imageDescriptionEntries.length < cacheHits,
-        });
-      }
-    }
-    const imageTimingMs = Date.now() - imageStart;
-
-    const imageDescriptionsDebug: ImageDescriptionDebugResult = {
-      totalImages: descriptions.size,
-      cacheHits,
-      cacheMisses,
-      generatedCount,
-      descriptions: imageDescriptionEntries,
-      timingMs: imageTimingMs,
-    };
-
-    log.info(
-      `QuizRagDebugService: Image descriptions - ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated) in ${imageTimingMs}ms`,
-    );
-
-    // Replace images with descriptions for LLM composition
-    const poolsWithDescriptions =
-      ImageDescriptionService.applyDescriptionsToQuestions(
-        questionPools,
-        descriptions,
-      );
-
-    // Build composition prompt
-    const composerPrompt = buildCompositionPrompt(
-      poolsWithDescriptions,
-      lessonPlan,
-      quizType,
-    );
-
-    // Call OpenAI with timing
-    const composerStart = Date.now();
-    const composerResponse = await this.callOpenAI(composerPrompt);
-    const composerTimingMs = Date.now() - composerStart;
-
-    log.info(`QuizRagDebugService: Composer completed in ${composerTimingMs}ms`);
-
-    // Map response to questions
-    const selectedQuestions = this.mapResponseToQuestions(
-      composerResponse,
-      questionPools,
-    );
-
-    return {
-      imageDescriptions: imageDescriptionsDebug,
-      composerPrompt,
-      composerResponse,
-      composerTimingMs,
-      selectedQuestions,
-    };
-  }
-
-  /**
-   * Extract all image URLs from question pools
-   */
-  private extractAllImageUrls(questionPools: QuizQuestionPool[]): string[] {
-    const poolsJson = JSON.stringify(questionPools);
-    const imageRegex = /!\[[^\]]*\]\(([^)]{1,2000})\)/g;
-
-    const urlSet = new Set<string>();
-    [...poolsJson.matchAll(imageRegex)]
-      .map((match) => match[1])
-      .filter((url): url is string => Boolean(url))
-      .forEach((url) => urlSet.add(url));
-
-    return Array.from(urlSet);
-  }
-
-  /**
-   * Call OpenAI for quiz composition
-   */
-  private async callOpenAI(prompt: string) {
-    const openai = createOpenAIClient({ app: "quiz-composer" });
-
-    try {
-      const response = await openai.beta.chat.completions.parse({
-        model: OPENAI_MODEL,
-        ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 4000 }
-          : { max_tokens: 4000 }),
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
-        response_format: zodResponseFormat(
-          CompositionResponseSchema,
-          "QuizComposition",
-        ),
-      });
-
-      const parsed = response.choices[0]?.message?.parsed;
-      if (!parsed) {
-        throw new Error("OpenAI returned no parsed response");
-      }
-
-      return parsed;
-    } catch (error) {
-      log.error(
-        "QuizRagDebugService: Failed to compose quiz with OpenAI:",
-        error,
-      );
-      throw new Error("Quiz composition failed");
-    }
-  }
-
-  /**
-   * Map OpenAI response to actual question objects
-   */
-  private mapResponseToQuestions(
-    response: {
-      overallStrategy: string;
-      selectedQuestions: { questionUid: string; reasoning: string }[];
-    },
-    questionPools: QuizQuestionPool[],
-  ): RagQuizQuestion[] {
-    // Build lookup map of UID -> question from all pools
-    const questionsByUid = new Map<string, RagQuizQuestion>();
-    questionPools.forEach((pool) => {
-      pool.questions.forEach((question) => {
-        questionsByUid.set(question.sourceUid, question);
-      });
-    });
-
-    // Map selections to questions, filtering out any not found
-    const selectedQuestions = response.selectedQuestions
-      .map((selection) => {
-        const question = questionsByUid.get(selection.questionUid);
-        if (!question) {
-          log.warn(`Question ${selection.questionUid} not found in any pool`);
-          return null;
-        }
-        return question;
-      })
-      .filter((q): q is RagQuizQuestion => q !== null);
-
-    return selectedQuestions;
   }
 }

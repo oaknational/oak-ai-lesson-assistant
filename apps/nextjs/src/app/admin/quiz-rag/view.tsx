@@ -5,16 +5,16 @@ import { createContext, useContext, useState } from "react";
 import type {
   GeneratorDebugResult,
   ImageDescriptionDebugResult,
-  MLMultiTermDebugResult,
   QuizRagDebugResult,
+  QuizRagStreamingReport,
 } from "@oakai/aila/src/core/quiz/debug";
 import type {
   QuizQuestionPool,
   RagQuizQuestion,
 } from "@oakai/aila/src/core/quiz/interfaces";
 
-import { MathJaxWrap } from "@/components/MathJax";
 import { QuizSection } from "@/components/AppComponents/SectionContent/QuizSection";
+import { MathJaxWrap } from "@/components/MathJax";
 
 import { MLPipelineDetails } from "./components/MLPipelineDetails";
 import { QuestionCard } from "./components/QuestionCard";
@@ -27,9 +27,35 @@ export const useViewMode = () => useContext(ViewModeContext);
 interface QuizRagDebugViewProps {
   result: QuizRagDebugResult;
   viewMode: ViewMode;
+  streamingReport?: QuizRagStreamingReport | null;
+  isStreaming?: boolean;
 }
 
-export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
+export function QuizRagDebugView({
+  result,
+  viewMode,
+  streamingReport,
+  isStreaming = false,
+}: QuizRagDebugViewProps) {
+  const stages = streamingReport?.stages;
+
+  // Helper to check stage status
+  const isStageLoading = (stageName: keyof NonNullable<typeof stages>) =>
+    stages?.[stageName]?.status === "running";
+
+  const isStageComplete = (stageName: keyof NonNullable<typeof stages>) =>
+    stages?.[stageName]?.status === "complete";
+
+  // Get data from result first, fall back to streaming report
+  const basedOnRag =
+    result.generators.basedOnRag ?? stages?.basedOnRag?.result ?? undefined;
+  const ailaRag =
+    result.generators.ailaRag ?? stages?.ailaRag?.result ?? undefined;
+  const mlMultiTerm =
+    result.generators.mlMultiTerm ?? stages?.mlMultiTerm?.result ?? undefined;
+  const imageDescriptions =
+    result.selector?.imageDescriptions ?? stages?.imageDescriptions?.result;
+
   return (
     <ViewModeContext.Provider value={viewMode}>
       <div>
@@ -108,53 +134,51 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
           </LearnBlock>
           <GeneratorAccordion
             title="BasedOnRag"
-            disabled={!result.generators.basedOnRag}
+            disabled={!basedOnRag && isStageComplete("basedOnRag")}
             disabledReason="no basedOn"
+            loading={isStageLoading("basedOnRag")}
             stats={
-              result.generators.basedOnRag
+              basedOnRag
                 ? {
-                    pools: result.generators.basedOnRag.pools.length,
-                    questions: result.generators.basedOnRag.pools.reduce(
+                    pools: basedOnRag.pools.length,
+                    questions: basedOnRag.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: result.generators.basedOnRag.timingMs,
+                    timing: basedOnRag.timingMs,
                   }
                 : undefined
             }
           >
-            {result.generators.basedOnRag && (
-              <GeneratorSection result={result.generators.basedOnRag} />
-            )}
+            {basedOnRag && <GeneratorSection result={basedOnRag} />}
           </GeneratorAccordion>
 
           <LearnBlock variant="section">
             <p className="max-w-3xl text-base leading-relaxed text-gray-600">
               <strong>AilaRag</strong> uses lessons that were identified as
-              relevant during the chat conversation. These are lessons that
-              Aila found while helping create the lesson plan.
+              relevant during the chat conversation. These are lessons that Aila
+              found while helping create the lesson plan.
             </p>
           </LearnBlock>
           <GeneratorAccordion
             title="AilaRag"
-            disabled={!result.generators.ailaRag}
+            disabled={!ailaRag && isStageComplete("ailaRag")}
             disabledReason="no relevant lessons"
+            loading={isStageLoading("ailaRag")}
             stats={
-              result.generators.ailaRag
+              ailaRag
                 ? {
-                    pools: result.generators.ailaRag.pools.length,
-                    questions: result.generators.ailaRag.pools.reduce(
+                    pools: ailaRag.pools.length,
+                    questions: ailaRag.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: result.generators.ailaRag.timingMs,
+                    timing: ailaRag.timingMs,
                   }
                 : undefined
             }
           >
-            {result.generators.ailaRag && (
-              <GeneratorSection result={result.generators.ailaRag} />
-            )}
+            {ailaRag && <GeneratorSection result={ailaRag} />}
           </GeneratorAccordion>
 
           <LearnBlock variant="section">
@@ -186,24 +210,23 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
           </LearnBlock>
           <GeneratorAccordion
             title="ML Multi-Term"
-            disabled={!result.generators.mlMultiTerm}
+            disabled={!mlMultiTerm && isStageComplete("mlMultiTerm")}
+            loading={isStageLoading("mlMultiTerm")}
             stats={
-              result.generators.mlMultiTerm
+              mlMultiTerm
                 ? {
-                    pools: result.generators.mlMultiTerm.pools.length,
-                    questions: result.generators.mlMultiTerm.pools.reduce(
+                    pools: mlMultiTerm.pools.length,
+                    questions: mlMultiTerm.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: result.generators.mlMultiTerm.timingMs,
+                    timing: mlMultiTerm.timingMs,
                   }
                 : undefined
             }
             defaultOpen
           >
-            {result.generators.mlMultiTerm && (
-              <MLPipelineDetails result={result.generators.mlMultiTerm} />
-            )}
+            {mlMultiTerm && <MLPipelineDetails result={mlMultiTerm} />}
           </GeneratorAccordion>
         </div>
 
@@ -223,9 +246,18 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
         <Section
           title="Image Descriptions"
           color="lemon"
-          stats={`${result.selector.imageDescriptions.totalImages} images, ${result.selector.imageDescriptions.cacheHits} cached, ${formatSeconds(result.selector.imageDescriptions.timingMs)}`}
+          loading={isStageLoading("imageDescriptions")}
+          stats={
+            imageDescriptions
+              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs)}`
+              : undefined
+          }
         >
-          <ImageDescriptionsView result={result.selector.imageDescriptions} />
+          {imageDescriptions ? (
+            <ImageDescriptionsView result={imageDescriptions} />
+          ) : (
+            <p className="text-gray-400">Waiting for image processing...</p>
+          )}
         </Section>
 
         {/* Stage 3: LLM Composer */}
@@ -245,25 +277,34 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
         <Section
           title="LLM Composer"
           color="lavender"
-          stats={(() => {
-            const totalCandidates = [
-              ...(result.generators.basedOnRag?.pools ?? []),
-              ...(result.generators.ailaRag?.pools ?? []),
-              ...(result.generators.mlMultiTerm?.pools ?? []),
-            ].reduce((sum, pool) => sum + pool.questions.length, 0);
-            return `${totalCandidates} candidates, ${result.selector.selectedQuestions.length} selected, ${formatSeconds(result.selector.composerTimingMs)}`;
-          })()}
+          loading={isStageLoading("composerLlm")}
+          stats={
+            result.selector
+              ? (() => {
+                  const totalCandidates = [
+                    ...(basedOnRag?.pools ?? []),
+                    ...(ailaRag?.pools ?? []),
+                    ...(mlMultiTerm?.pools ?? []),
+                  ].reduce((sum, pool) => sum + pool.questions.length, 0);
+                  return `${totalCandidates} candidates, ${result.selector.selectedQuestions.length} selected, ${formatSeconds(result.selector.composerTimingMs)}`;
+                })()
+              : undefined
+          }
         >
-          <ComposerSection
-            prompt={result.selector.composerPrompt}
-            response={result.selector.composerResponse}
-            selectedQuestions={result.selector.selectedQuestions}
-            pools={[
-              ...(result.generators.basedOnRag?.pools ?? []),
-              ...(result.generators.ailaRag?.pools ?? []),
-              ...(result.generators.mlMultiTerm?.pools ?? []),
-            ]}
-          />
+          {result.selector ? (
+            <ComposerSection
+              prompt={result.selector.composerPrompt}
+              response={result.selector.composerResponse}
+              selectedQuestions={result.selector.selectedQuestions}
+              pools={[
+                ...(basedOnRag?.pools ?? []),
+                ...(ailaRag?.pools ?? []),
+                ...(mlMultiTerm?.pools ?? []),
+              ]}
+            />
+          ) : (
+            <p className="text-gray-400">Waiting for LLM composition...</p>
+          )}
         </Section>
 
         {/* Final Quiz */}
@@ -282,9 +323,18 @@ export function QuizRagDebugView({ result, viewMode }: QuizRagDebugViewProps) {
           title="Final Quiz"
           defaultOpen
           color="pink"
-          stats={`${result.finalQuiz.questions.length} questions, ${formatSeconds(result.timing.totalMs)} total`}
+          loading={isStreaming && !isStageComplete("composerLlm")}
+          stats={
+            result.finalQuiz
+              ? `${result.finalQuiz.questions.length} questions, ${formatSeconds(result.timing.totalMs)} total`
+              : undefined
+          }
         >
-          <FinalQuizDisplay quiz={result.finalQuiz} />
+          {result.finalQuiz ? (
+            <FinalQuizDisplay quiz={result.finalQuiz} />
+          ) : (
+            <p className="text-gray-400">Waiting for quiz generation...</p>
+          )}
         </Section>
       </div>
     </ViewModeContext.Provider>
@@ -312,8 +362,7 @@ export function LearnBlock({
 }
 
 // Standard paragraph styling for learn content
-const learnParagraphClass =
-  "max-w-3xl text-base leading-relaxed text-gray-600";
+const learnParagraphClass = "max-w-3xl text-base leading-relaxed text-gray-600";
 
 // Paragraph component that only renders in Learn mode
 export function LearnParagraph({ children }: { children: React.ReactNode }) {
@@ -363,10 +412,7 @@ function SubSection({
         <div className="flex items-center gap-4">
           {stats && <span className="text-sm text-gray-500">{stats}</span>}
           {actions && (
-            <div
-              className="flex gap-2"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
               {actions}
             </div>
           )}
@@ -385,12 +431,14 @@ function Section({
   defaultOpen = false,
   color = "gray",
   stats,
+  loading = false,
 }: {
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
   color?: StageColor;
   stats?: string;
+  loading?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const colors = stageColors[color];
@@ -403,9 +451,19 @@ function Section({
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between px-8 py-4 text-left"
       >
-        <h2 className="text-lg font-semibold">{title}</h2>
+        <div className="flex items-center gap-3">
+          {loading ? (
+            <span>⏳</span>
+          ) : stats ? (
+            <span className="text-green-600">✓</span>
+          ) : (
+            <span className="text-gray-400">○</span>
+          )}
+          <h2 className="text-lg font-semibold">{title}</h2>
+        </div>
         <div className="flex items-center gap-6">
           {stats && <span className="text-sm text-gray-600">{stats}</span>}
+          {loading && <span className="text-blue-600 text-sm">Running...</span>}
           <span className="text-gray-400">{isOpen ? "▼" : "▶"}</span>
         </div>
       </button>
@@ -422,6 +480,7 @@ function GeneratorAccordion({
   defaultOpen = false,
   disabled = false,
   disabledReason,
+  loading = false,
 }: {
   title: string;
   stats?: { pools: number; questions: number; timing: number };
@@ -429,6 +488,7 @@ function GeneratorAccordion({
   defaultOpen?: boolean;
   disabled?: boolean;
   disabledReason?: string;
+  loading?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen && !disabled);
 
@@ -449,8 +509,20 @@ function GeneratorAccordion({
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between px-5 py-4 text-left"
       >
-        <span className="text-lg font-semibold">{title}</span>
+        <div className="flex items-center gap-3">
+          {loading ? (
+            <span>⏳</span>
+          ) : stats ? (
+            <span className="text-green-600">✓</span>
+          ) : (
+            <span className="text-gray-400">○</span>
+          )}
+          <span className="text-lg font-semibold">{title}</span>
+        </div>
         <div className="flex items-center gap-4">
+          {loading && !stats && (
+            <span className="text-blue-600 text-sm">Running...</span>
+          )}
           {stats && (
             <>
               <span className="text-sm text-gray-600">
@@ -642,7 +714,7 @@ function ComposerSection({
         actions={
           <button
             onClick={copyPrompt}
-            className="text-sm text-blue-600 hover:underline"
+            className="text-blue-600 text-sm hover:underline"
           >
             Copy
           </button>
@@ -718,11 +790,7 @@ function ComposerSection({
 }
 
 // Final Quiz Display
-function FinalQuizDisplay({
-  quiz,
-}: {
-  quiz: QuizRagDebugResult["finalQuiz"];
-}) {
+function FinalQuizDisplay({ quiz }: { quiz: QuizRagDebugResult["finalQuiz"] }) {
   return (
     <div className="rounded-lg border bg-white p-6">
       <QuizSection quizSection={quiz} />

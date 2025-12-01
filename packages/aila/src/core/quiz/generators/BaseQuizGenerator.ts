@@ -8,6 +8,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
+import type { GeneratorStage } from "../debug/types";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
@@ -24,6 +25,8 @@ const log = aiLogger("aila:quiz");
 // Base abstract class for quiz generators
 // Generators return structured candidate pools instead of pre-assembled quizzes
 export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
+  abstract readonly spanName: GeneratorStage;
+
   protected client: Client;
   protected quizLookup: LessonSlugQuizLookup;
   protected retrievalService: QuizQuestionRetrievalService;

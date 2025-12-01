@@ -122,3 +122,77 @@ export interface ImageDescriptionEntry {
   description: string;
   wasCached: boolean;
 }
+
+/**
+ * Pipeline stage names for generators (used for tracing spans)
+ */
+export type GeneratorStage = "basedOnRag" | "ailaRag" | "mlMultiTerm";
+
+/**
+ * Pipeline stage names for selector (used for tracing spans)
+ */
+export type SelectorStage =
+  | "imageDescriptions"
+  | "composerPrompt"
+  | "composerLlm";
+
+/**
+ * All pipeline stage names
+ */
+export type PipelineStage = GeneratorStage | SelectorStage;
+
+/**
+ * Status for a streaming pipeline stage
+ */
+export type StreamingStageStatus = "pending" | "running" | "complete" | "error";
+
+/**
+ * State for a single stage in the streaming report
+ */
+export interface StreamingStageState<T = unknown> {
+  status: StreamingStageStatus;
+  startedAt?: number;
+  completedAt?: number;
+  durationMs?: number;
+  result?: T;
+  error?: string;
+}
+
+/**
+ * Composer prompt result - available before LLM call completes
+ */
+export interface ComposerPromptResult {
+  prompt: string;
+  candidateCount: number;
+}
+
+/**
+ * Composer LLM result - available after LLM call completes
+ */
+export interface ComposerLlmResult {
+  response: {
+    overallStrategy: string;
+    selectedQuestions: { questionUid: string; reasoning: string }[];
+  };
+  selectedQuestions: RagQuizQuestion[];
+  timingMs: number;
+}
+
+/**
+ * Full streaming report that gets updated and emitted as pipeline progresses.
+ * This is the single source of truth for pipeline state during streaming.
+ */
+export interface QuizRagStreamingReport {
+  stages: {
+    basedOnRag: StreamingStageState<GeneratorDebugResult | null>;
+    ailaRag: StreamingStageState<GeneratorDebugResult | null>;
+    mlMultiTerm: StreamingStageState<MLMultiTermDebugResult | null>;
+    imageDescriptions: StreamingStageState<ImageDescriptionDebugResult>;
+    composerPrompt: StreamingStageState<ComposerPromptResult>;
+    composerLlm: StreamingStageState<ComposerLlmResult>;
+  };
+  status: "running" | "complete" | "error";
+  error?: string;
+  startedAt: number;
+  completedAt?: number;
+}

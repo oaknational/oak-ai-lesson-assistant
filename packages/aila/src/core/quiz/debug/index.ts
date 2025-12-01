@@ -8,4 +8,12 @@ export type {
   CohereRerankDebug,
   ImageDescriptionDebugResult,
   ImageDescriptionEntry,
+  GeneratorStage,
+  SelectorStage,
+  PipelineStage,
+  StreamingStageStatus,
+  StreamingStageState,
+  ComposerPromptResult,
+  ComposerLlmResult,
+  QuizRagStreamingReport,
 } from "./types";

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-floating-promises */
+
 /**
  * Manual test script for the Quiz RAG Tracer
  *
  * Run with: npx tsx packages/aila/src/core/quiz/tracing/test-tracer.ts
  */
-
 import { createTracer } from "./Tracer";
 import type { CompletedSpan, InstrumentationStrategy } from "./types";
 
@@ -106,7 +106,10 @@ async function testInstrumentation() {
   span.end();
 
   console.log("Started spans:", startedSpans);
-  console.log("Ended spans:", endedSpans.map((s) => s.name));
+  console.log(
+    "Ended spans:",
+    endedSpans.map((s) => s.name),
+  );
   console.log(
     "✅ Instrumentation test passed:",
     startedSpans.length === 2 && endedSpans.length === 2,
@@ -230,7 +233,9 @@ async function testMLPipelineSimulation() {
 
 // Test 6: Full Debug Pipeline Simulation (mirrors QuizRagDebugService)
 async function testFullDebugPipeline() {
-  console.log("\n=== Test 6: Full Debug Pipeline (Frontend Data Extraction) ===");
+  console.log(
+    "\n=== Test 6: Full Debug Pipeline (Frontend Data Extraction) ===",
+  );
 
   const tracer = createTracer();
   const pipelineSpan = tracer.startSpan("quiz-rag-pipeline");
@@ -298,9 +303,24 @@ async function testFullDebugPipeline() {
           esSpan.setData("index", "oak-vector-2025-04-16");
           esSpan.setData("hitCount", 50);
           esSpan.setData("hitsWithScores", [
-            { questionUid: `q${i}-1`, text: "Sample question 1", score: 0.95, lessonSlug: "lesson-a" },
-            { questionUid: `q${i}-2`, text: "Sample question 2", score: 0.89, lessonSlug: "lesson-b" },
-            { questionUid: `q${i}-3`, text: "Sample question 3", score: 0.82, lessonSlug: "lesson-c" },
+            {
+              questionUid: `q${i}-1`,
+              text: "Sample question 1",
+              score: 0.95,
+              lessonSlug: "lesson-a",
+            },
+            {
+              questionUid: `q${i}-2`,
+              text: "Sample question 2",
+              score: 0.89,
+              lessonSlug: "lesson-b",
+            },
+            {
+              questionUid: `q${i}-3`,
+              text: "Sample question 3",
+              score: 0.82,
+              lessonSlug: "lesson-c",
+            },
           ]);
           esSpan.end();
 
@@ -310,13 +330,32 @@ async function testFullDebugPipeline() {
           cohereSpan.setData("inputCount", 50);
           cohereSpan.setData("topN", 3);
           cohereSpan.setData("allResults", [
-            { questionUid: `q${i}-1`, text: "Sample question 1", originalIndex: 0, relevanceScore: 0.92 },
-            { questionUid: `q${i}-3`, text: "Sample question 3", originalIndex: 2, relevanceScore: 0.85 },
-            { questionUid: `q${i}-2`, text: "Sample question 2", originalIndex: 1, relevanceScore: 0.78 },
+            {
+              questionUid: `q${i}-1`,
+              text: "Sample question 1",
+              originalIndex: 0,
+              relevanceScore: 0.92,
+            },
+            {
+              questionUid: `q${i}-3`,
+              text: "Sample question 3",
+              originalIndex: 2,
+              relevanceScore: 0.85,
+            },
+            {
+              questionUid: `q${i}-2`,
+              text: "Sample question 2",
+              originalIndex: 1,
+              relevanceScore: 0.78,
+            },
           ]);
           cohereSpan.end();
 
-          querySpan.setData("finalCandidates", [`q${i}-1`, `q${i}-3`, `q${i}-2`]);
+          querySpan.setData("finalCandidates", [
+            `q${i}-1`,
+            `q${i}-3`,
+            `q${i}-2`,
+          ]);
           querySpan.end();
         }),
       );
@@ -354,9 +393,21 @@ async function testFullDebugPipeline() {
   imageSpan.setData("cacheMisses", 3);
   imageSpan.setData("generatedCount", 3);
   imageSpan.setData("descriptions", [
-    { url: "https://example.com/img1.png", description: "A diagram of chloroplast", wasCached: true },
-    { url: "https://example.com/img2.png", description: "Light reaction pathway", wasCached: true },
-    { url: "https://example.com/img3.png", description: "ATP synthase structure", wasCached: false },
+    {
+      url: "https://example.com/img1.png",
+      description: "A diagram of chloroplast",
+      wasCached: true,
+    },
+    {
+      url: "https://example.com/img2.png",
+      description: "Light reaction pathway",
+      wasCached: true,
+    },
+    {
+      url: "https://example.com/img3.png",
+      description: "ATP synthase structure",
+      wasCached: false,
+    },
   ]);
   imageSpan.end();
 
@@ -366,14 +417,27 @@ async function testFullDebugPipeline() {
   llmSpan.setData("model", "o4-mini");
   llmSpan.setData("prompt", "Select 6 questions from the following pools...");
   llmSpan.setData("response", {
-    overallStrategy: "Selected questions covering all key learning points with cognitive diversity",
+    overallStrategy:
+      "Selected questions covering all key learning points with cognitive diversity",
     selectedQuestions: [
-      { questionUid: "q0-1", reasoning: "Tests understanding of light reactions" },
-      { questionUid: "q1-1", reasoning: "Assesses chloroplast structure knowledge" },
-      { questionUid: "q2-1", reasoning: "Evaluates ATP synthesis comprehension" },
+      {
+        questionUid: "q0-1",
+        reasoning: "Tests understanding of light reactions",
+      },
+      {
+        questionUid: "q1-1",
+        reasoning: "Assesses chloroplast structure knowledge",
+      },
+      {
+        questionUid: "q2-1",
+        reasoning: "Evaluates ATP synthesis comprehension",
+      },
       { questionUid: "q0-3", reasoning: "Application-level question" },
       { questionUid: "q1-2", reasoning: "Analysis of cell processes" },
-      { questionUid: "q2-3", reasoning: "Synthesis question connecting concepts" },
+      {
+        questionUid: "q2-3",
+        reasoning: "Synthesis question connecting concepts",
+      },
     ],
   });
   llmSpan.end();
@@ -427,7 +491,9 @@ async function testFullDebugPipeline() {
 
     if (ailaRagSpan) {
       console.log(`  AilaRag (${ailaRagSpan.durationMs}ms):`);
-      console.log(`    Relevant lessons: ${(ailaRagSpan.data["relevantLessons"] as any[])?.length}`);
+      console.log(
+        `    Relevant lessons: ${(ailaRagSpan.data["relevantLessons"] as any[])?.length}`,
+      );
       console.log(`    Questions: ${ailaRagSpan.data["questionCount"]}`);
     }
 
@@ -440,7 +506,9 @@ async function testFullDebugPipeline() {
       console.log(`    Generated queries: ${queries?.length}`);
 
       // Extract per-query details
-      const querySpans = mlSpan.children.filter((s) => /^query-\d+$/.test(s.name));
+      const querySpans = mlSpan.children.filter((s) =>
+        /^query-\d+$/.test(s.name),
+      );
       console.log(`    Search terms: ${querySpans.length}`);
 
       querySpans.forEach((qs, i) => {
@@ -448,20 +516,30 @@ async function testFullDebugPipeline() {
         const cohereSpan = findChild(qs, "cohere");
 
         console.log(`\n    Query ${i}: "${qs.data["query"]}"`);
-        console.log(`      ES hits: ${esSpan?.data["hitCount"]} (${esSpan?.durationMs}ms)`);
-        console.log(`      Cohere reranked: ${(cohereSpan?.data["allResults"] as any[])?.length} (${cohereSpan?.durationMs}ms)`);
-        console.log(`      Final candidates: ${(qs.data["finalCandidates"] as string[])?.length}`);
+        console.log(
+          `      ES hits: ${esSpan?.data["hitCount"]} (${esSpan?.durationMs}ms)`,
+        );
+        console.log(
+          `      Cohere reranked: ${(cohereSpan?.data["allResults"] as any[])?.length} (${cohereSpan?.durationMs}ms)`,
+        );
+        console.log(
+          `      Final candidates: ${(qs.data["finalCandidates"] as string[])?.length}`,
+        );
 
         // Show top ES hits
         const esHits = esSpan?.data["hitsWithScores"] as any[];
         if (esHits?.length) {
-          console.log(`      Top ES hit: ${esHits[0].questionUid} (score: ${esHits[0].score})`);
+          console.log(
+            `      Top ES hit: ${esHits[0].questionUid} (score: ${esHits[0].score})`,
+          );
         }
 
         // Show Cohere results
         const cohereResults = cohereSpan?.data["allResults"] as any[];
         if (cohereResults?.length) {
-          console.log(`      Top Cohere: ${cohereResults[0].questionUid} (relevance: ${cohereResults[0].relevanceScore})`);
+          console.log(
+            `      Top Cohere: ${cohereResults[0].questionUid} (relevance: ${cohereResults[0].relevanceScore})`,
+          );
         }
       });
     }
@@ -483,7 +561,9 @@ async function testFullDebugPipeline() {
       const descriptions = imageSpan.data["descriptions"] as any[];
       console.log(`    Descriptions:`);
       descriptions?.slice(0, 2).forEach((d) => {
-        console.log(`      - ${d.url.substring(0, 30)}... → "${d.description}" (cached: ${d.wasCached})`);
+        console.log(
+          `      - ${d.url.substring(0, 30)}... → "${d.description}" (cached: ${d.wasCached})`,
+        );
       });
     }
 
@@ -492,8 +572,12 @@ async function testFullDebugPipeline() {
       console.log(`    Model: ${llmSpan.data["model"]}`);
 
       const response = llmSpan.data["response"] as any;
-      console.log(`    Strategy: ${response?.overallStrategy?.substring(0, 50)}...`);
-      console.log(`    Selected questions: ${response?.selectedQuestions?.length}`);
+      console.log(
+        `    Strategy: ${response?.overallStrategy?.substring(0, 50)}...`,
+      );
+      console.log(
+        `    Selected questions: ${response?.selectedQuestions?.length}`,
+      );
 
       response?.selectedQuestions?.slice(0, 3).forEach((sq: any) => {
         console.log(`      - ${sq.questionUid}: ${sq.reasoning}`);

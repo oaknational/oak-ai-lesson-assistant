@@ -53,9 +53,15 @@ export class LLMQuizComposer implements QuizSelector {
 
     // Process images: extract URLs, get/generate descriptions, replace in text
     const imageService = new ImageDescriptionService();
-    const imageSpan = span?.startChild("image-descriptions");
+    const imageSpan = span?.startChild("imageDescriptions");
     const { descriptions, cacheHits, cacheMisses, generatedCount } =
       await imageService.getImageDescriptions(questionPools, imageSpan);
+    imageSpan?.setData("result", {
+      totalImages: descriptions.size,
+      cacheHits,
+      cacheMisses,
+      generatedCount,
+    });
     imageSpan?.end();
 
     log.info(
@@ -69,35 +75,37 @@ export class LLMQuizComposer implements QuizSelector {
         descriptions,
       );
 
+    // Build prompt (separate span so streaming can show prompt while waiting for LLM)
+    const promptSpan = span?.startChild("composerPrompt");
     const prompt = buildCompositionPrompt(
       poolsWithDescriptions,
       lessonPlan,
       quizType,
     );
+    const candidateCount = questionPools.reduce(
+      (sum, p) => sum + p.questions.length,
+      0,
+    );
+    promptSpan?.setData("result", { prompt, candidateCount });
+    promptSpan?.end();
 
-    const llmSpan = span?.startChild("llm-call");
+    // Call LLM
+    const llmSpan = span?.startChild("composerLlm");
+    const llmStart = Date.now();
     const response = await this.callOpenAI(prompt);
-    llmSpan?.end();
+    const timingMs = Date.now() - llmStart;
 
     const selectedQuestions = this.mapResponseToQuestions(
       response,
       questionPools,
     );
 
-    // Record debug data if span is provided
-    if (span) {
-      span.setData("prompt", prompt);
-      span.setData("response", response);
-      span.setData(
-        "selectedQuestions",
-        selectedQuestions.map((q) => ({
-          sourceUid: q.sourceUid,
-          questionText:
-            q.question.question.substring(0, 100) +
-            (q.question.question.length > 100 ? "..." : ""),
-        })),
-      );
-    }
+    llmSpan?.setData("result", {
+      response,
+      selectedQuestions,
+      timingMs,
+    });
+    llmSpan?.end();
 
     log.info(`LLM Composer: selected ${selectedQuestions.length} questions`);
 

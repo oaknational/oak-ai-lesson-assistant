@@ -2,25 +2,25 @@
 
 import { useEffect, useState } from "react";
 
-import type { QuizRagDebugResult } from "@oakai/aila/src/core/quiz/debug";
+import type {
+  QuizRagDebugResult,
+  QuizRagStreamingReport,
+  StreamingStageStatus,
+} from "@oakai/aila/src/core/quiz/debug";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
-import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
-import LoadingWheel from "@/components/LoadingWheel";
 import { OakMathJaxContext } from "@/components/MathJax";
-import { trpc } from "@/utils/trpc";
 
 import { InputSection } from "./components/InputSection";
+import { useStreamingDebug } from "./useStreamingDebug";
 import { QuizRagDebugView } from "./view";
-
-const log = aiLogger("admin");
 
 const STORAGE_KEY = "quiz-rag-debug-result";
 
@@ -65,6 +65,7 @@ export default function QuizRagDebugPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("learn");
 
   const { persistedResult, saveResult, clearResult } = usePersistedResult();
+  const streaming = useStreamingDebug();
 
   // Sync lesson plan and quiz type from persisted result on load
   useEffect(() => {
@@ -75,16 +76,16 @@ export default function QuizRagDebugPage() {
     }
   }, [persistedResult, lessonPlan]);
 
-  const runPipeline = trpc.quizRagDebug.runDebugPipeline.useMutation({
-    onSuccess: (data) => {
-      saveResult(data as QuizRagDebugResult);
-    },
-    onError: (error) => {
-      log.error("Pipeline error:", error);
-    },
-  });
+  // Save result when complete
+  useEffect(() => {
+    if (streaming.result) {
+      saveResult(streaming.result);
+    }
+  }, [streaming.result, saveResult]);
 
-  const result = (runPipeline.data as QuizRagDebugResult) ?? persistedResult;
+  const isRunning = streaming.isRunning;
+  const error = streaming.error;
+  const result = streaming.result ?? persistedResult;
 
   if (user.isLoaded && !user.isSignedIn) {
     redirect("/sign-in?next=/admin/quiz-rag");
@@ -92,16 +93,16 @@ export default function QuizRagDebugPage() {
 
   const handleRunPipeline = () => {
     if (!lessonPlan) return;
-    // Transform null to undefined for fields that need it
     const cleanedPlan = {
       ...lessonPlan,
       topic: lessonPlan.topic ?? undefined,
     };
-    runPipeline.mutate({
-      lessonPlan: cleanedPlan,
-      quizType,
-      relevantLessons,
-    });
+    void streaming.runPipeline(cleanedPlan, quizType, relevantLessons);
+  };
+
+  const handleClear = () => {
+    streaming.reset();
+    clearResult();
   };
 
   return (
@@ -151,10 +152,10 @@ export default function QuizRagDebugPage() {
         <div className="flex items-center justify-center gap-4">
           <button
             onClick={handleRunPipeline}
-            disabled={runPipeline.isLoading || !lessonPlan}
+            disabled={isRunning || !lessonPlan}
             className="rounded-lg bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
           >
-            {runPipeline.isLoading ? (
+            {isRunning ? (
               <span className="flex items-center gap-2">
                 <span className="animate-spin">⏳</span> Running Pipeline...
               </span>
@@ -162,36 +163,29 @@ export default function QuizRagDebugPage() {
               <span className="flex items-center gap-2">▶ Run Pipeline</span>
             )}
           </button>
-          {result && (
+          {(result || isRunning) && (
             <button
-              onClick={() => {
-                runPipeline.reset();
-                clearResult();
-              }}
+              onClick={handleClear}
               className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
             >
-              Clear Results
+              {isRunning ? "Cancel" : "Clear Results"}
             </button>
           )}
         </div>
 
-        {runPipeline.isLoading && (
-          <div className="flex items-center gap-4">
-            <LoadingWheel />
-            <span>
-              Running quiz RAG pipeline... This may take 30-60 seconds.
-            </span>
-          </div>
+        {/* Streaming Progress - detailed pipeline status */}
+        {isRunning && streaming.report && (
+          <StreamingProgressPanel report={streaming.report} />
         )}
 
-        {runPipeline.error && (
+        {error && (
           <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-            Error: {runPipeline.error.message}
+            Error: {error.message}
           </div>
         )}
 
         {/* Sticky Lesson Context Bar */}
-        {result && (
+        {result?.input && (
           <div className="sticky top-24 z-10 -mx-4 rounded-lg border bg-white/95 px-6 py-4 shadow-sm backdrop-blur-sm">
             <div className="flex items-start justify-between gap-8">
               <div className="flex items-center gap-6">
@@ -203,7 +197,9 @@ export default function QuizRagDebugPage() {
                       ? "Starter Quiz"
                       : "Exit Quiz"}
                   </p>
-                  <p className="font-semibold">{result.input.lessonPlan.title}</p>
+                  <p className="font-semibold">
+                    {result.input.lessonPlan.title}
+                  </p>
                 </div>
               </div>
               <div className="max-w-2xl">
@@ -242,8 +238,159 @@ export default function QuizRagDebugPage() {
           </div>
         )}
 
-        {result && <QuizRagDebugView result={result} viewMode={viewMode} />}
+        {/* Show view with streaming data during pipeline run, or final result */}
+        {(result?.input || (isRunning && lessonPlan)) && (
+          <QuizRagDebugView
+            result={
+              result ?? {
+                // Partial result for streaming - will be populated progressively
+                input: {
+                  lessonPlan: lessonPlan!,
+                  quizType,
+                  relevantLessons,
+                },
+                generators: {},
+                reranker: { type: "no-op", ratings: [] },
+                selector:
+                  undefined as unknown as QuizRagDebugResult["selector"],
+                finalQuiz:
+                  undefined as unknown as QuizRagDebugResult["finalQuiz"],
+                timing: {
+                  totalMs: 0,
+                  generatorsMs: 0,
+                  rerankerMs: 0,
+                  selectorMs: 0,
+                },
+              }
+            }
+            viewMode={viewMode}
+            streamingReport={streaming.report}
+            isStreaming={isRunning}
+          />
+        )}
       </div>
     </OakMathJaxContext>
   );
+}
+
+// Streaming Progress Panel - Visual pipeline progress during streaming
+function StreamingProgressPanel({
+  report,
+}: {
+  report: QuizRagStreamingReport;
+}) {
+  type StageConfig = {
+    key: keyof QuizRagStreamingReport["stages"];
+    label: string;
+    color: "mint" | "lemon" | "lavender" | "pink";
+    description: string;
+  };
+
+  const stageConfig: StageConfig[] = [
+    {
+      key: "basedOnRag",
+      label: "BasedOnRag",
+      color: "mint",
+      description: "Questions from basedOn lesson",
+    },
+    {
+      key: "ailaRag",
+      label: "AilaRag",
+      color: "mint",
+      description: "Questions from relevant lessons",
+    },
+    {
+      key: "mlMultiTerm",
+      label: "ML Multi-Term",
+      color: "mint",
+      description: "Semantic search + Cohere rerank",
+    },
+    {
+      key: "imageDescriptions",
+      label: "Images",
+      color: "lemon",
+      description: "GPT-4o image descriptions",
+    },
+    {
+      key: "composerPrompt",
+      label: "Prompt",
+      color: "lavender",
+      description: "Build composition prompt",
+    },
+    {
+      key: "composerLlm",
+      label: "LLM",
+      color: "lavender",
+      description: "o4-mini quiz composition",
+    },
+  ];
+
+  const colorClasses = {
+    mint: "border-mint bg-mint30",
+    lemon: "border-lemon bg-lemon30",
+    lavender: "border-lavender bg-lavender30",
+    pink: "border-pink bg-pink30",
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <span>⏳</span>
+        <h3 className="text-lg font-semibold">Running Pipeline...</h3>
+      </div>
+
+      <div className="flex gap-2">
+        {stageConfig.map(({ key, label, color, description }) => {
+          const stage = report.stages[key];
+          const isActive = stage.status === "running";
+          const isComplete = stage.status === "complete";
+
+          return (
+            <div
+              key={key}
+              className={`flex-1 rounded-xl border-2 p-3 transition-all ${
+                isActive
+                  ? `${colorClasses[color]} shadow-md`
+                  : isComplete
+                    ? `${colorClasses[color]} opacity-90`
+                    : "border-gray-200 bg-gray-50 opacity-50"
+              }`}
+            >
+              <div className="mb-1 flex items-center gap-2">
+                <StageStatusIcon status={stage.status} />
+                <span className="text-sm font-semibold">{label}</span>
+              </div>
+              <p className="text-xs text-gray-600">{description}</p>
+              {stage.status === "complete" && stage.durationMs && (
+                <p className="mt-1 text-xs text-gray-500">
+                  {(stage.durationMs / 1000).toFixed(1)}s
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function StageStatusIcon({
+  status,
+  small = false,
+}: {
+  status: StreamingStageStatus;
+  small?: boolean;
+}) {
+  const size = small ? "text-xs" : "text-sm";
+
+  switch (status) {
+    case "pending":
+      return <span className={`${size} text-gray-400`}>○</span>;
+    case "running":
+      return <span className={size}>⏳</span>;
+    case "complete":
+      return <span className={`${size} text-green-600`}>✓</span>;
+    case "error":
+      return <span className={`${size} text-red-600`}>✗</span>;
+  }
 }
