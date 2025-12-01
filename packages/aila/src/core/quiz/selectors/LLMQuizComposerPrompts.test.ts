@@ -1,19 +1,64 @@
 import type { PartialLessonPlan } from "../../../protocol/schema";
-import type {
-  QuizQuestionPool,
-  QuizQuestionWithSourceData,
-} from "../interfaces";
+import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { buildCompositionPrompt } from "./LLMQuizComposerPrompts";
 
-const mockQuestion = (
+const mockMultipleChoice = (
   uid: string,
   questionText: string,
-): QuizQuestionWithSourceData => ({
-  question: questionText,
-  answers: ["Correct answer 1", "Correct answer 2"],
-  distractors: ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"],
+): RagQuizQuestion => ({
+  question: {
+    questionType: "multiple-choice",
+    question: questionText,
+    hint: null,
+    answers: ["Correct answer 1", "Correct answer 2"],
+    distractors: ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"],
+  },
   sourceUid: uid,
-  source: {} as QuizQuestionWithSourceData["source"],
+  source: {} as RagQuizQuestion["source"],
+  imageMetadata: [],
+});
+
+const mockShortAnswer = (
+  uid: string,
+  questionText: string,
+): RagQuizQuestion => ({
+  question: {
+    questionType: "short-answer",
+    question: questionText,
+    hint: null,
+    answers: ["Acceptable answer 1", "Acceptable answer 2"],
+  },
+  sourceUid: uid,
+  source: {} as RagQuizQuestion["source"],
+  imageMetadata: [],
+});
+
+const mockMatch = (uid: string, questionText: string): RagQuizQuestion => ({
+  question: {
+    questionType: "match",
+    question: questionText,
+    hint: null,
+    pairs: [
+      { left: "Term A", right: "Definition A" },
+      { left: "Term B", right: "Definition B" },
+      { left: "Term C", right: "Definition C" },
+    ],
+  },
+  sourceUid: uid,
+  source: {} as RagQuizQuestion["source"],
+  imageMetadata: [],
+});
+
+const mockOrder = (uid: string, questionText: string): RagQuizQuestion => ({
+  question: {
+    questionType: "order",
+    question: questionText,
+    hint: null,
+    items: ["First step", "Second step", "Third step", "Fourth step"],
+  },
+  sourceUid: uid,
+  source: {} as RagQuizQuestion["source"],
+  imageMetadata: [],
 });
 
 const mockLessonPlan: PartialLessonPlan = {
@@ -41,8 +86,8 @@ const mockQuestionPools: QuizQuestionPool[] = [
       semanticQuery: "adding fractions with different denominators",
     },
     questions: [
-      mockQuestion("q1", "What is 1/2 + 1/4?"),
-      mockQuestion("q2", "Find the sum of 2/3 and 1/6"),
+      mockMultipleChoice("q1", "What is 1/2 + 1/4?"),
+      mockShortAnswer("q2", "Calculate 2/3 + 1/6 and simplify your answer"),
     ],
   },
   {
@@ -51,7 +96,10 @@ const mockQuestionPools: QuizQuestionPool[] = [
       lessonPlanId: "lesson-123",
       lessonTitle: "Introduction to Fractions",
     },
-    questions: [mockQuestion("q3", "Which fraction is equivalent to 2/4?")],
+    questions: [
+      mockMatch("q3", "Match each fraction to its equivalent decimal"),
+      mockOrder("q4", "Put these steps for adding fractions in order"),
+    ],
   },
 ];
 

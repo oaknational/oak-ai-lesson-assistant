@@ -1,7 +1,7 @@
 import type { Client } from "@elastic/elasticsearch";
 import type { OpenAI } from "openai";
 
-import { QuizV1QuestionSchema } from "../../../protocol/schema";
+import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
@@ -21,7 +21,9 @@ describe("MLQuizGenerator", () => {
 
     result.forEach((pool) => {
       pool.questions.forEach((item) => {
-        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
+        expect(QuizV3QuestionSchema.safeParse(item.question).success).toBe(
+          true,
+        );
       });
     });
   });
@@ -36,7 +38,9 @@ describe("MLQuizGenerator", () => {
     expect(Array.isArray(result)).toBe(true);
     result.forEach((pool) => {
       pool.questions.forEach((item) => {
-        expect(QuizV1QuestionSchema.safeParse(item).success).toBe(true);
+        expect(QuizV3QuestionSchema.safeParse(item.question).success).toBe(
+          true,
+        );
       });
     });
   });
@@ -93,15 +97,13 @@ describe("MLQuizGenerator", () => {
     expect(result.length).toBeGreaterThan(0);
 
     // Check that each question has the required properties
-    result.forEach((question) => {
-      expect(question).toBeDefined();
-      expect(question).toHaveProperty("question");
-      expect(question).toHaveProperty("answers");
-      expect(question).toHaveProperty("distractors");
-      expect(Array.isArray(question.answers)).toBe(true);
-      expect(Array.isArray(question.distractors)).toBe(true);
-      expect(question.answers.length).toBeGreaterThan(0);
-      expect(question.distractors.length).toBeGreaterThan(0);
+    result.forEach((ragQuestion) => {
+      expect(ragQuestion).toBeDefined();
+      expect(ragQuestion).toHaveProperty("question");
+      expect(ragQuestion).toHaveProperty("sourceUid");
+      expect(ragQuestion).toHaveProperty("source");
+      expect(ragQuestion.question).toHaveProperty("questionType");
+      expect(ragQuestion.question).toHaveProperty("question");
     });
   });
 });

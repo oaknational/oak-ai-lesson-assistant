@@ -3,10 +3,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type {
-  QuizQuestionPool,
-  QuizQuestionWithSourceData,
-} from "../interfaces";
+import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
@@ -61,7 +58,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
   private async searchAndRetrieveForQuery(
     query: string,
     topN: number,
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     log.info(`MLQuizGeneratorMultiTerm: Searching for: "${query}"`);
 
     const results = await this.searchService.searchWithHybrid(

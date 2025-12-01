@@ -65,6 +65,7 @@ Below are candidate questions from Oak's existing lesson data. Select 6 question
 Search query: "adding fractions with different denominators"
 
 ### Question UID:q1
+Type: Multiple Choice
 What is 1/2 + 1/4?
 
 Correct answer(s):
@@ -77,31 +78,34 @@ Distractors:
 3. Wrong answer 3
 
 ### Question UID:q2
-Find the sum of 2/3 and 1/6
+Type: Short Answer
+Calculate 2/3 + 1/6 and simplify your answer
 
-Correct answer(s):
-1. Correct answer 1
-2. Correct answer 2
-
-Distractors:
-1. Wrong answer 1
-2. Wrong answer 2
-3. Wrong answer 3
+Acceptable answer(s):
+1. Acceptable answer 1
+2. Acceptable answer 2
 
 ## Pool 2: User-selected source lesson
 Source: Introduction to Fractions (lesson-123)
 
 ### Question UID:q3
-Which fraction is equivalent to 2/4?
+Type: Match
+Match each fraction to its equivalent decimal
 
-Correct answer(s):
-1. Correct answer 1
-2. Correct answer 2
+Correct pairs:
+1. Term A → Definition A
+2. Term B → Definition B
+3. Term C → Definition C
 
-Distractors:
-1. Wrong answer 1
-2. Wrong answer 2
-3. Wrong answer 3"
+### Question UID:q4
+Type: Order
+Put these steps for adding fractions in order
+
+Correct order:
+1. First step
+2. Second step
+3. Third step
+4. Fourth step"
 `;
 
 exports[`buildCompositionPrompt full prompt snapshots starter quiz prompt 1`] = `
@@ -169,6 +173,7 @@ Below are candidate questions from Oak's existing lesson data. Select 6 question
 Search query: "adding fractions with different denominators"
 
 ### Question UID:q1
+Type: Multiple Choice
 What is 1/2 + 1/4?
 
 Correct answer(s):
@@ -181,29 +186,32 @@ Distractors:
 3. Wrong answer 3
 
 ### Question UID:q2
-Find the sum of 2/3 and 1/6
+Type: Short Answer
+Calculate 2/3 + 1/6 and simplify your answer
 
-Correct answer(s):
-1. Correct answer 1
-2. Correct answer 2
-
-Distractors:
-1. Wrong answer 1
-2. Wrong answer 2
-3. Wrong answer 3
+Acceptable answer(s):
+1. Acceptable answer 1
+2. Acceptable answer 2
 
 ## Pool 2: User-selected source lesson
 Source: Introduction to Fractions (lesson-123)
 
 ### Question UID:q3
-Which fraction is equivalent to 2/4?
+Type: Match
+Match each fraction to its equivalent decimal
 
-Correct answer(s):
-1. Correct answer 1
-2. Correct answer 2
+Correct pairs:
+1. Term A → Definition A
+2. Term B → Definition B
+3. Term C → Definition C
 
-Distractors:
-1. Wrong answer 1
-2. Wrong answer 2
-3. Wrong answer 3"
+### Question UID:q4
+Type: Order
+Put these steps for adding fractions in order
+
+Correct order:
+1. First step
+2. Second step
+3. Third step
+4. Fourth step"
 `;

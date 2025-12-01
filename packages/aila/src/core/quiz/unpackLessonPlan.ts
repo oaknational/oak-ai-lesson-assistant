@@ -6,13 +6,14 @@ export function unpackLessonPlanForPrompt(
   const sections: string[] = [];
 
   // Basic information
-  const basicInfo: string[] = [];
-  if (lessonPlan.title) basicInfo.push(`Title: ${lessonPlan.title}`);
-  if (lessonPlan.subject) basicInfo.push(`Subject: ${lessonPlan.subject}`);
-  if (lessonPlan.keyStage) basicInfo.push(`Key Stage: ${lessonPlan.keyStage}`);
-  if (lessonPlan.topic) basicInfo.push(`Topic: ${lessonPlan.topic}`);
-  if (lessonPlan.learningOutcome)
-    basicInfo.push(`Learning Outcome: ${lessonPlan.learningOutcome}`);
+  const basicInfo = [
+    lessonPlan.title && `Title: ${lessonPlan.title}`,
+    lessonPlan.subject && `Subject: ${lessonPlan.subject}`,
+    lessonPlan.keyStage && `Key Stage: ${lessonPlan.keyStage}`,
+    lessonPlan.topic && `Topic: ${lessonPlan.topic}`,
+    lessonPlan.learningOutcome &&
+      `Learning Outcome: ${lessonPlan.learningOutcome}`,
+  ].filter(Boolean);
   if (basicInfo.length > 0) sections.push(basicInfo.join("\n"));
 
   // Learning cycles
