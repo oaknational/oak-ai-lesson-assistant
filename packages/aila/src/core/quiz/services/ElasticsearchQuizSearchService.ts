@@ -7,8 +7,8 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import OpenAI from "openai";
 
-import type { ElasticsearchHitDebug } from "../debug/types";
 import type { CustomSource, SimplifiedResult } from "../interfaces";
+import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -66,12 +66,14 @@ export class ElasticsearchQuizSearchService {
   /**
    * Performs hybrid search combining BM25 and vector similarity
    * @param hybridWeight - Weight for vector search (0.0-1.0), BM25 gets (1 - hybridWeight)
+   * @param span - Optional tracing span. When provided, records hits with scores for debugging.
    */
   public async searchWithHybrid(
     index: string,
     query: string,
     size: number = 100,
     hybridWeight: number = 0.5,
+    span?: Span,
   ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
@@ -132,6 +134,30 @@ export class ElasticsearchQuizSearchService {
 
       log.info(`Hybrid search found ${response.hits.hits.length} hits`);
 
+      // Record debug data if span is provided
+      if (span) {
+        span.setData("query", query);
+        span.setData("size", size);
+        span.setData("hitCount", response.hits.hits.length);
+        span.setData(
+          "hitsWithScores",
+          response.hits.hits
+            .map((hit) => {
+              const source = hit._source;
+              if (!source || !source.questionUid || !source.text) {
+                return null;
+              }
+              return {
+                questionUid: source.questionUid,
+                text: source.text,
+                score: hit._score ?? 0,
+                lessonSlug: source.lessonSlug ?? "",
+              };
+            })
+            .filter(Boolean),
+        );
+      }
+
       return response.hits;
     } catch (error) {
       log.error("Error performing hybrid search:", error);
@@ -172,43 +198,4 @@ export class ElasticsearchQuizSearchService {
       .filter((item): item is SimplifiedResult => item !== null);
   }
 
-  /**
-   * Performs hybrid search and returns debug information including scores
-   * Used by the debug pipeline to show intermediate results
-   */
-  public async searchWithHybridDebug(
-    index: string,
-    query: string,
-    size: number = 100,
-    hybridWeight: number = 0.5,
-  ): Promise<{
-    hitsWithScores: ElasticsearchHitDebug[];
-    simplifiedResults: SimplifiedResult[];
-  }> {
-    const rawHits = await this.searchWithHybrid(
-      index,
-      query,
-      size,
-      hybridWeight,
-    );
-
-    const hitsWithScores: ElasticsearchHitDebug[] = rawHits.hits
-      .map((hit) => {
-        const source = hit._source;
-        if (!source || !source.questionUid || !source.text) {
-          return null;
-        }
-        return {
-          questionUid: source.questionUid,
-          text: source.text,
-          score: hit._score ?? 0,
-          lessonSlug: source.lessonSlug ?? "",
-        };
-      })
-      .filter((item): item is ElasticsearchHitDebug => item !== null);
-
-    const simplifiedResults = this.transformHits(rawHits.hits);
-
-    return { hitsWithScores, simplifiedResults };
-  }
 }

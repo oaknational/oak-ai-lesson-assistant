@@ -5,17 +5,16 @@ import { zodResponseFormat } from "openai/helpers/zod";
 
 import type {
   AilaRagRelevantLesson,
-  LatestQuiz,
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
 import { buildQuizFromQuestions } from "../buildQuizObject";
 import { AilaRagQuizGenerator } from "../generators/AilaRagQuizGenerator";
 import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
+import { MLQuizGeneratorMultiTerm } from "../generators/MLQuizGeneratorMultiTerm";
 import type {
   QuizQuestionPool,
   RagQuizQuestion,
-  RatingResponse,
 } from "../interfaces";
 import { NoOpReranker } from "../rerankers/NoOpReranker";
 import {
@@ -23,12 +22,16 @@ import {
   buildCompositionPrompt,
 } from "../selectors/LLMQuizComposerPrompts";
 import { ImageDescriptionService } from "../services/ImageDescriptionService";
-import { MLQuizGeneratorMultiTermDebug } from "./MLQuizGeneratorMultiTermDebug";
+import type { CompletedSpan } from "../tracing";
+import { createTracer } from "../tracing";
 import type {
+  CohereRerankDebug,
+  ElasticsearchHitDebug,
   GeneratorDebugResult,
   ImageDescriptionDebugResult,
   ImageDescriptionEntry,
   MLMultiTermDebugResult,
+  MLSearchTermDebugResult,
   QuizRagDebugResult,
 } from "./types";
 
@@ -222,20 +225,112 @@ export class QuizRagDebugService {
   }
 
   /**
-   * Run ML Multi-Term generator with full debug output
+   * Run ML Multi-Term generator with full debug output using tracer
    */
   private async runMLMultiTermGenerator(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<MLMultiTermDebugResult | undefined> {
-    const generator = new MLQuizGeneratorMultiTermDebug();
-    const result = await generator.generateWithDebug(lessonPlan, quizType);
+    const tracer = createTracer();
+    const rootSpan = tracer.startSpan("ml-multi-term");
 
-    if (result.pools.length === 0) {
+    const start = Date.now();
+    const generator = new MLQuizGeneratorMultiTerm();
+
+    const pools =
+      quizType === "/starterQuiz"
+        ? await generator.generateMathsStarterQuizCandidates(
+            lessonPlan,
+            undefined,
+            rootSpan,
+          )
+        : await generator.generateMathsExitQuizCandidates(
+            lessonPlan,
+            undefined,
+            rootSpan,
+          );
+
+    rootSpan.end();
+
+    if (pools.length === 0) {
       return undefined;
     }
 
-    return result;
+    // Extract search term debug results from span tree
+    const searchTerms = this.extractSearchTermsFromSpans(
+      tracer.getCompletedSpans(),
+      pools,
+    );
+
+    return {
+      generatorType: "ml-multi-term",
+      pools,
+      searchTerms,
+      timingMs: Date.now() - start,
+    };
+  }
+
+  /**
+   * Extract search term debug results from completed spans
+   */
+  private extractSearchTermsFromSpans(
+    spans: CompletedSpan[],
+    pools: QuizQuestionPool[],
+  ): MLSearchTermDebugResult[] {
+    const results: MLSearchTermDebugResult[] = [];
+
+    // Build a lookup map of sourceUid -> question from all pools
+    const questionsByUid = new Map<string, RagQuizQuestion>();
+    pools.forEach((pool) => {
+      pool.questions.forEach((q) => {
+        questionsByUid.set(q.sourceUid, q);
+      });
+    });
+
+    // Find the root ml-multi-term span
+    const rootSpan = spans.find((s) => s.name === "ml-multi-term");
+    if (!rootSpan) return results;
+
+    // Find query spans (named "query-0", "query-1", etc.)
+    const querySpans = rootSpan.children.filter((s) =>
+      s.name.startsWith("query-"),
+    );
+
+    for (const querySpan of querySpans) {
+      const query = querySpan.data["query"] as string | undefined;
+      if (!query) continue;
+
+      // Find elasticsearch and cohere child spans
+      const esSpan = querySpan.children.find(
+        (s) => s.name === "elasticsearch",
+      );
+      const cohereSpan = querySpan.children.find((s) => s.name === "cohere");
+
+      const elasticsearchHits: ElasticsearchHitDebug[] =
+        (esSpan?.data["hitsWithScores"] as ElasticsearchHitDebug[]) ?? [];
+
+      const cohereResults: CohereRerankDebug[] =
+        (cohereSpan?.data["allResults"] as CohereRerankDebug[]) ?? [];
+
+      const candidateUids = querySpan.data["finalCandidates"] as
+        | string[]
+        | undefined;
+
+      // Map UIDs to full question objects
+      const finalCandidates: RagQuizQuestion[] = (candidateUids ?? [])
+        .map((uid) => questionsByUid.get(uid))
+        .filter((q): q is RagQuizQuestion => q !== undefined);
+
+      results.push({
+        query,
+        elasticsearchHits,
+        cohereResults,
+        finalCandidates,
+        timingMs: querySpan.durationMs,
+      });
+    }
+
+    return results;
   }
 
   /**

@@ -3,8 +3,8 @@ import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 import { z } from "zod";
 
-import type { CohereRerankDebug } from "../debug/types";
 import type { SimplifiedResult } from "../interfaces";
+import type { Span } from "../tracing";
 
 const log = aiLogger("quiz");
 
@@ -31,10 +31,16 @@ export class CohereReranker {
     });
   }
 
+  /**
+   * Reranks documents using Cohere's rerank model.
+   * @param span - Optional tracing span. When provided, requests all results
+   *               from Cohere (not just topN) and records them for debugging.
+   */
   public async rerankDocuments(
     query: string,
     docs: SimplifiedResult[],
     topN: number = 10,
+    span?: Span,
   ): Promise<RerankResult[]> {
     if (docs.length === 0) {
       log.error("No documents to rerank");
@@ -47,20 +53,46 @@ export class CohereReranker {
         questionUid: doc.questionUid,
       }));
 
+      // When tracing, request all results for debug visibility
+      const requestTopN = span ? docs.length : topN;
+
       const response = await this.cohere.rerank({
         model: "rerank-v3.5",
         query: query,
         documents: cohereDocuments,
-        topN: topN,
+        topN: requestTopN,
         rankFields: ["text"],
         returnDocuments: true,
       });
 
-      const results: RerankResult[] = response.results.map((result) => ({
-        index: result.index,
-        relevanceScore: result.relevanceScore,
-        questionUid: cohereResponseSchema.parse(result.document).questionUid,
-      }));
+      // Record debug data if span is provided
+      if (span) {
+        span.setData("query", query);
+        span.setData("inputCount", docs.length);
+        span.setData("topN", topN);
+        span.setData(
+          "allResults",
+          response.results.map((result) => {
+            const doc = docs[result.index];
+            return {
+              questionUid: cohereResponseSchema.parse(result.document)
+                .questionUid,
+              text: doc?.text ?? "",
+              originalIndex: result.index,
+              relevanceScore: result.relevanceScore,
+            };
+          }),
+        );
+      }
+
+      // Return only topN results
+      const results: RerankResult[] = response.results
+        .slice(0, topN)
+        .map((result) => ({
+          index: result.index,
+          relevanceScore: result.relevanceScore,
+          questionUid: cohereResponseSchema.parse(result.document).questionUid,
+        }));
 
       log.info("Ranked documents:", results);
       return results;
@@ -70,63 +102,4 @@ export class CohereReranker {
     }
   }
 
-  /**
-   * Reranks documents and returns debug information including all results
-   * Used by the debug pipeline to show intermediate results
-   */
-  public async rerankDocumentsWithDebug(
-    query: string,
-    docs: SimplifiedResult[],
-    topN: number = 10,
-  ): Promise<{
-    topResults: RerankResult[];
-    allResults: CohereRerankDebug[];
-  }> {
-    if (docs.length === 0) {
-      log.error("No documents to rerank");
-      return { topResults: [], allResults: [] };
-    }
-
-    try {
-      const cohereDocuments = docs.map((doc) => ({
-        text: doc.text,
-        questionUid: doc.questionUid,
-      }));
-
-      // Request all results for debug visibility
-      const response = await this.cohere.rerank({
-        model: "rerank-v3.5",
-        query: query,
-        documents: cohereDocuments,
-        topN: docs.length, // Get all for debug
-        rankFields: ["text"],
-        returnDocuments: true,
-      });
-
-      const allResults: CohereRerankDebug[] = response.results.map((result) => {
-        const doc = docs[result.index];
-        return {
-          questionUid: cohereResponseSchema.parse(result.document).questionUid,
-          text: doc?.text ?? "",
-          originalIndex: result.index,
-          relevanceScore: result.relevanceScore,
-        };
-      });
-
-      // Get top N for actual results
-      const topResults: RerankResult[] = response.results
-        .slice(0, topN)
-        .map((result) => ({
-          index: result.index,
-          relevanceScore: result.relevanceScore,
-          questionUid: cohereResponseSchema.parse(result.document).questionUid,
-        }));
-
-      log.info(`Reranked ${docs.length} documents, returning top ${topN}`);
-      return { topResults, allResults };
-    } catch (error) {
-      log.error("Error during reranking with debug:", error);
-      return { topResults: [], allResults: [] };
-    }
-  }
 }

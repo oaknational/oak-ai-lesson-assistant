@@ -6,6 +6,7 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import type { QuizQuestionPool } from "../interfaces";
+import type { Span } from "../tracing";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -44,8 +45,9 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   }
 
   async generateMathsStarterQuizCandidates(
-    lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _lessonPlan: PartialLessonPlan,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
+    _span?: Span,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
@@ -54,8 +56,9 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   }
 
   async generateMathsExitQuizCandidates(
-    lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _lessonPlan: PartialLessonPlan,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
+    _span?: Span,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,

@@ -48,10 +48,12 @@ export interface AilaQuizCandidateGenerator {
   generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    span?: import("./tracing").Span,
   ): Promise<QuizQuestionPool[]>;
   generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    span?: import("./tracing").Span,
   ): Promise<QuizQuestionPool[]>;
 }
 
@@ -80,6 +82,7 @@ export interface QuizSelector {
     ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    span?: import("./tracing").Span,
   ): Promise<RagQuizQuestion[]>;
 }
 

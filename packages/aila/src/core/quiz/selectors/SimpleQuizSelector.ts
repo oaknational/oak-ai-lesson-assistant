@@ -7,6 +7,7 @@ import type {
   RagQuizQuestion,
   RatingResponse,
 } from "../interfaces";
+import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -16,6 +17,7 @@ export class SimpleQuizSelector implements QuizSelector {
     ratings: RatingResponse[],
     _lessonPlan: PartialLessonPlan,
     _quizType: QuizPath,
+    _span?: Span,
   ): Promise<RagQuizQuestion[]> {
     // Find highest rated quiz
     let maxRating = -Infinity;

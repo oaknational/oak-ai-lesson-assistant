@@ -1,5 +1,4 @@
 export { QuizRagDebugService } from "./QuizRagDebugService";
-export { MLQuizGeneratorMultiTermDebug } from "./MLQuizGeneratorMultiTermDebug";
 export type {
   QuizRagDebugResult,
   GeneratorDebugResult,

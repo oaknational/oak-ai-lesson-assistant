@@ -11,6 +11,7 @@ import type {
   RatingResponse,
 } from "../interfaces";
 import { ImageDescriptionService } from "../services/ImageDescriptionService";
+import type { Span } from "../tracing";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
@@ -32,11 +33,16 @@ const IS_REASONING_MODEL = true;
  * - Alignment with lesson plan objectives
  */
 export class LLMQuizComposer implements QuizSelector {
+  /**
+   * Select questions from candidate pools using LLM reasoning.
+   * @param span - Optional tracing span. When provided, records prompt, response, and selections.
+   */
   public async selectQuestions(
     questionPools: QuizQuestionPool[],
     ratings: RatingResponse[], // Ignored - composer makes its own decisions
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    span?: Span,
   ): Promise<RagQuizQuestion[]> {
     this.logCompositionStart(questionPools, quizType);
 
@@ -47,8 +53,10 @@ export class LLMQuizComposer implements QuizSelector {
 
     // Process images: extract URLs, get/generate descriptions, replace in text
     const imageService = new ImageDescriptionService();
+    const imageSpan = span?.startChild("image-descriptions");
     const { descriptions, cacheHits, cacheMisses, generatedCount } =
-      await imageService.getImageDescriptions(questionPools);
+      await imageService.getImageDescriptions(questionPools, imageSpan);
+    imageSpan?.end();
 
     log.info(
       `Image descriptions: ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated)`,
@@ -66,11 +74,30 @@ export class LLMQuizComposer implements QuizSelector {
       lessonPlan,
       quizType,
     );
+
+    const llmSpan = span?.startChild("llm-call");
     const response = await this.callOpenAI(prompt);
+    llmSpan?.end();
+
     const selectedQuestions = this.mapResponseToQuestions(
       response,
       questionPools,
     );
+
+    // Record debug data if span is provided
+    if (span) {
+      span.setData("prompt", prompt);
+      span.setData("response", response);
+      span.setData(
+        "selectedQuestions",
+        selectedQuestions.map((q) => ({
+          sourceUid: q.sourceUid,
+          questionText:
+            q.question.question.substring(0, 100) +
+            (q.question.question.length > 100 ? "..." : ""),
+        })),
+      );
+    }
 
     log.info(`LLM Composer: selected ${selectedQuestions.length} questions`);
 

@@ -7,6 +7,7 @@ import pLimit from "p-limit";
 import { z } from "zod";
 
 import type { QuizQuestionPool } from "../interfaces";
+import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -215,21 +216,30 @@ export class ImageDescriptionService {
    * Get or generate descriptions for all images in question pools
    *
    * @param questionPools - The question pools to extract images from
+   * @param span - Optional tracing span. When provided, records cache stats and descriptions.
    * @returns Map of image URL to description, plus cache statistics
    */
   public async getImageDescriptions(
     questionPools: QuizQuestionPool[],
+    span?: Span,
   ): Promise<ImageDescriptionMap> {
     const imageUrls = this.extractImageUrls(questionPools);
 
     if (imageUrls.length === 0) {
       log.info("No images found in question pools");
-      return {
-        descriptions: new Map(),
+      const result = {
+        descriptions: new Map<string, string>(),
         cacheHits: 0,
         cacheMisses: 0,
         generatedCount: 0,
       };
+      if (span) {
+        span.setData("totalImages", 0);
+        span.setData("cacheHits", 0);
+        span.setData("cacheMisses", 0);
+        span.setData("generatedCount", 0);
+      }
+      return result;
     }
 
     log.info(`Found ${imageUrls.length} unique images`);
@@ -250,6 +260,22 @@ export class ImageDescriptionService {
 
     // Combine cached and generated
     const allDescriptions = new Map([...cached, ...generated]);
+
+    // Record debug data if span is provided
+    if (span) {
+      span.setData("totalImages", imageUrls.length);
+      span.setData("cacheHits", cacheHits);
+      span.setData("cacheMisses", cacheMisses);
+      span.setData("generatedCount", generated.size);
+      span.setData(
+        "descriptions",
+        Array.from(allDescriptions.entries()).map(([url, description]) => ({
+          url,
+          description,
+          wasCached: cached.has(url),
+        })),
+      );
+    }
 
     return {
       descriptions: allDescriptions,

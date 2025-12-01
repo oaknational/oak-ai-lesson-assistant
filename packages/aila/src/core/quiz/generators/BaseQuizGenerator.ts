@@ -17,6 +17,7 @@ import type {
 } from "../interfaces";
 import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
+import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -53,11 +54,13 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   abstract generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    span?: Span,
   ): Promise<QuizQuestionPool[]>;
 
   abstract generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
+    span?: Span,
   ): Promise<QuizQuestionPool[]>;
 
   public async getLessonSlugFromPlanId(planId: string): Promise<string | null> {
