@@ -110,7 +110,7 @@ export default function QuizRagDebugPage() {
       <div className="space-y-8">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Quiz RAG Debug Tool</h1>
+            <h1 className="text-3xl font-bold">Quiz RAG Debug Tool</h1>
             <p className="mt-2 text-gray-600">
               Run and inspect the Quiz RAG pipeline with full visibility into
               each stage.
@@ -140,13 +140,76 @@ export default function QuizRagDebugPage() {
           </div>
         </div>
 
-        <InputSection
-          onLessonPlanChange={setLessonPlan}
-          onQuizTypeChange={setQuizType}
-          onRelevantLessonsChange={setRelevantLessons}
-          selectedPlan={lessonPlan}
-          quizType={quizType}
-        />
+        {/* Pipeline Overview (Learn mode only) */}
+        {viewMode === "learn" && (
+          <div>
+            <h2 className="mb-3 text-2xl font-bold text-gray-900">
+              Pipeline Overview
+            </h2>
+            <p className="mb-6 max-w-3xl text-base leading-relaxed text-gray-600">
+              The Quiz RAG pipeline generates quiz questions by retrieving
+              relevant questions from Oak&apos;s question bank and selecting the
+              best matches for the lesson plan.
+            </p>
+
+            {/* Visual Pipeline Diagram - Vertical */}
+            <div className="mx-auto max-w-2xl">
+              <div className="flex items-center gap-12">
+                <div className="w-32 shrink-0 rounded-lg bg-mint px-3 py-5 text-center font-medium">
+                  Generators
+                </div>
+                <p className="text-sm text-gray-500">
+                  Retrieve candidate questions from multiple sources (BasedOn,
+                  AilaRag, ML Multi-Term)
+                </p>
+              </div>
+              <div className="w-32 text-center text-gray-400">↓</div>
+              <div className="flex items-center gap-12">
+                <div className="w-32 shrink-0 rounded-lg bg-lemon px-3 py-5 text-center font-medium">
+                  Images
+                </div>
+                <p className="text-sm text-gray-500">
+                  Generate text descriptions of images using GPT-4o vision
+                </p>
+              </div>
+              <div className="w-32 text-center text-gray-400">↓</div>
+              <div className="flex items-center gap-12">
+                <div className="w-32 shrink-0 rounded-lg bg-lavender px-3 py-5 text-center font-medium">
+                  Composer
+                </div>
+                <p className="text-sm text-gray-500">
+                  Select the 6 best questions based on learning objectives
+                </p>
+              </div>
+              <div className="w-32 text-center text-gray-400">↓</div>
+              <div className="flex items-center gap-12">
+                <div className="w-32 shrink-0 rounded-lg bg-pink px-3 py-5 text-center font-medium">
+                  Final Quiz
+                </div>
+                <p className="text-sm text-gray-500">
+                  The selected questions in order, ready for the lesson plan
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="h-8" />
+
+        <div>
+          <h2 className="mb-3 text-2xl font-bold text-gray-900">
+            Lesson Input
+          </h2>
+          <InputSection
+            onLessonPlanChange={setLessonPlan}
+            onQuizTypeChange={setQuizType}
+            onRelevantLessonsChange={setRelevantLessons}
+            selectedPlan={lessonPlan}
+            quizType={quizType}
+          />
+        </div>
+
+        <div className="h-8" />
 
         {/* Action Panel */}
         <div className="flex items-center justify-center gap-4">
@@ -157,7 +220,7 @@ export default function QuizRagDebugPage() {
           >
             {isRunning ? (
               <span className="flex items-center gap-2">
-                <span className="animate-spin">⏳</span> Running Pipeline...
+                <span className="animate-spin">⚙️</span> Running Pipeline...
               </span>
             ) : (
               <span className="flex items-center gap-2">▶ Run Pipeline</span>
@@ -181,60 +244,6 @@ export default function QuizRagDebugPage() {
         {error && (
           <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
             Error: {error.message}
-          </div>
-        )}
-
-        {/* Sticky Lesson Context Bar */}
-        {result?.input && (
-          <div className="sticky top-24 z-10 -mx-4 rounded-lg border bg-white/95 px-6 py-4 shadow-sm backdrop-blur-sm">
-            <div className="flex items-start justify-between gap-8">
-              <div className="flex items-center gap-6">
-                <div>
-                  <p className="text-sm text-gray-500">
-                    {result.input.lessonPlan.subject} •{" "}
-                    {result.input.lessonPlan.keyStage} •{" "}
-                    {result.input.quizType === "/starterQuiz"
-                      ? "Starter Quiz"
-                      : "Exit Quiz"}
-                  </p>
-                  <p className="font-semibold">
-                    {result.input.lessonPlan.title}
-                  </p>
-                </div>
-              </div>
-              <div className="max-w-2xl">
-                {result.input.quizType === "/starterQuiz" &&
-                  result.input.lessonPlan.priorKnowledge &&
-                  result.input.lessonPlan.priorKnowledge.length > 0 && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500">
-                        Prior Knowledge:
-                      </p>
-                      <ul className="list-inside list-disc text-sm text-gray-700">
-                        {result.input.lessonPlan.priorKnowledge.map((pk, i) => (
-                          <li key={i}>{pk}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                {result.input.quizType === "/exitQuiz" &&
-                  result.input.lessonPlan.keyLearningPoints &&
-                  result.input.lessonPlan.keyLearningPoints.length > 0 && (
-                    <div>
-                      <p className="text-xs font-medium text-gray-500">
-                        Key Learning Points:
-                      </p>
-                      <ul className="list-inside list-disc text-sm text-gray-700">
-                        {result.input.lessonPlan.keyLearningPoints.map(
-                          (klp, i) => (
-                            <li key={i}>{klp}</li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
-                  )}
-              </div>
-            </div>
           </div>
         )}
 
@@ -335,7 +344,7 @@ function StreamingProgressPanel({
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <span>⏳</span>
+        <span className="animate-spin">⚙️</span>
         <h3 className="text-lg font-semibold">Running Pipeline...</h3>
       </div>
 
@@ -385,9 +394,9 @@ function StageStatusIcon({
 
   switch (status) {
     case "pending":
-      return <span className={`${size} text-gray-400`}>○</span>;
+      return <span className={`${size} text-gray-400`}>⏳</span>;
     case "running":
-      return <span className={size}>⏳</span>;
+      return <span className={`${size} animate-spin`}>⚙️</span>;
     case "complete":
       return <span className={`${size} text-green-600`}>✓</span>;
     case "error":

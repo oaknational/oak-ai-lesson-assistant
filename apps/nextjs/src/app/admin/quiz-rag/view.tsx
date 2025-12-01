@@ -59,61 +59,8 @@ export function QuizRagDebugView({
   return (
     <ViewModeContext.Provider value={viewMode}>
       <div>
-        {/* Pipeline Overview (Learn mode only) */}
-        <div className="h-12" />
-        <LearnBlock variant="hero">
-          <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Quiz RAG Pipeline Overview
-          </h2>
-          <p className="mb-6 max-w-3xl text-base leading-relaxed text-gray-600">
-            The Quiz RAG pipeline generates quiz questions by retrieving
-            relevant questions from Oak&apos;s question bank and selecting the
-            best matches for the lesson plan.
-          </p>
-
-          {/* Visual Pipeline Diagram - Vertical */}
-          <div className="mx-auto mt-12 max-w-2xl">
-            <div className="flex items-center gap-12">
-              <div className="w-32 shrink-0 rounded-lg bg-mint px-3 py-5 text-center font-medium">
-                Generators
-              </div>
-              <p className="text-sm text-gray-500">
-                Retrieve candidate questions from multiple sources (BasedOn,
-                AilaRag, ML Multi-Term)
-              </p>
-            </div>
-            <div className="w-32 text-center text-gray-400">↓</div>
-            <div className="flex items-center gap-12">
-              <div className="w-32 shrink-0 rounded-lg bg-lemon px-3 py-5 text-center font-medium">
-                Images
-              </div>
-              <p className="text-sm text-gray-500">
-                Generate text descriptions of images using GPT-4o vision
-              </p>
-            </div>
-            <div className="w-32 text-center text-gray-400">↓</div>
-            <div className="flex items-center gap-12">
-              <div className="w-32 shrink-0 rounded-lg bg-lavender px-3 py-5 text-center font-medium">
-                Composer
-              </div>
-              <p className="text-sm text-gray-500">
-                Select the 6 best questions based on learning objectives
-              </p>
-            </div>
-            <div className="w-32 text-center text-gray-400">↓</div>
-            <div className="flex items-center gap-12">
-              <div className="w-32 shrink-0 rounded-lg bg-pink px-3 py-5 text-center font-medium">
-                Final Quiz
-              </div>
-              <p className="text-sm text-gray-500">
-                The selected questions in order, ready for the lesson plan
-              </p>
-            </div>
-          </div>
-        </LearnBlock>
-
         {/* Stage 1: Generators */}
-        <div className="h-24" />
+        <div className="h-12" />
         <LearnBlock variant="section">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">
             Stage 1: Generators
@@ -145,7 +92,10 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: basedOnRag.timingMs,
+                    timing:
+                      basedOnRag.timingMs ??
+                      stages?.basedOnRag?.durationMs ??
+                      0,
                   }
                 : undefined
             }
@@ -173,7 +123,8 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: ailaRag.timingMs,
+                    timing:
+                      ailaRag.timingMs ?? stages?.ailaRag?.durationMs ?? 0,
                   }
                 : undefined
             }
@@ -220,7 +171,10 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: mlMultiTerm.timingMs,
+                    timing:
+                      mlMultiTerm.timingMs ??
+                      stages?.mlMultiTerm?.durationMs ??
+                      0,
                   }
                 : undefined
             }
@@ -249,7 +203,7 @@ export function QuizRagDebugView({
           loading={isStageLoading("imageDescriptions")}
           stats={
             imageDescriptions
-              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs)}`
+              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs ?? stages?.imageDescriptions?.durationMs ?? 0)}`
               : undefined
           }
         >
@@ -323,7 +277,6 @@ export function QuizRagDebugView({
           title="Final Quiz"
           defaultOpen
           color="pink"
-          loading={isStreaming && !isStageComplete("composerLlm")}
           stats={
             result.finalQuiz
               ? `${result.finalQuiz.questions.length} questions, ${formatSeconds(result.timing.totalMs)} total`
@@ -453,11 +406,11 @@ function Section({
       >
         <div className="flex items-center gap-3">
           {loading ? (
-            <span>⏳</span>
+            <span className="animate-spin">⚙️</span>
           ) : stats ? (
             <span className="text-green-600">✓</span>
           ) : (
-            <span className="text-gray-400">○</span>
+            <span className="text-gray-400">⏳</span>
           )}
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
@@ -511,11 +464,11 @@ function GeneratorAccordion({
       >
         <div className="flex items-center gap-3">
           {loading ? (
-            <span>⏳</span>
+            <span className="animate-spin">⚙️</span>
           ) : stats ? (
             <span className="text-green-600">✓</span>
           ) : (
-            <span className="text-gray-400">○</span>
+            <span className="text-gray-400">⏳</span>
           )}
           <span className="text-lg font-semibold">{title}</span>
         </div>
@@ -792,7 +745,7 @@ function ComposerSection({
 // Final Quiz Display
 function FinalQuizDisplay({ quiz }: { quiz: QuizRagDebugResult["finalQuiz"] }) {
   return (
-    <div className="rounded-lg border bg-white p-6">
+    <div className="mx-auto max-w-xl rounded-lg border bg-white p-12">
       <QuizSection quizSection={quiz} />
     </div>
   );

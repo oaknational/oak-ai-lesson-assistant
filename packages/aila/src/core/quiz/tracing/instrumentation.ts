@@ -139,6 +139,61 @@ function isReportStage(name: string): name is PipelineStage {
   return REPORT_STAGES.has(name as PipelineStage);
 }
 
+interface QuestionLike {
+  sourceUid: string;
+}
+
+interface PoolLike {
+  questions: QuestionLike[];
+}
+
+/**
+ * Extract searchTerms data from mlMultiTerm child spans.
+ * This allows streaming the detailed search data without waiting for
+ * QuizRagDebugService to reconstruct it post-pipeline.
+ */
+function extractSearchTermsFromChildren(mlSpan: CompletedSpan): unknown[] {
+  const searchTerms: unknown[] = [];
+
+  // Build lookup map from pools to convert UIDs to full questions
+  const result = mlSpan.data["result"] as { pools?: PoolLike[] } | null;
+  const questionsByUid = new Map<string, QuestionLike>();
+  if (result?.pools) {
+    for (const pool of result.pools) {
+      for (const q of pool.questions) {
+        questionsByUid.set(q.sourceUid, q);
+      }
+    }
+  }
+
+  // Find query spans (named "query-0", "query-1", etc.)
+  const querySpans = mlSpan.children.filter((s) => s.name.startsWith("query-"));
+
+  for (const querySpan of querySpans) {
+    const query = querySpan.data["query"] as string | undefined;
+    if (!query) continue;
+
+    const esSpan = querySpan.children.find((s) => s.name === "elasticsearch");
+    const cohereSpan = querySpan.children.find((s) => s.name === "cohere");
+
+    // Convert candidate UIDs to full question objects
+    const candidateUids = (querySpan.data["finalCandidates"] as string[]) ?? [];
+    const finalCandidates = candidateUids
+      .map((uid) => questionsByUid.get(uid))
+      .filter((q): q is QuestionLike => q !== undefined);
+
+    searchTerms.push({
+      query,
+      elasticsearchHits: esSpan?.data["hitsWithScores"] ?? [],
+      cohereResults: cohereSpan?.data["allResults"] ?? [],
+      finalCandidates,
+      timingMs: querySpan.durationMs,
+    });
+  }
+
+  return searchTerms;
+}
+
 /**
  * Creates a report-based streaming instrumentation that maintains a cumulative
  * report and emits it after each update.
@@ -205,12 +260,22 @@ export function createReportStreamingInstrumentation(): ReportStreamingInstrumen
       if (!isReportStage(span.name)) return;
 
       const startedAt = stages[span.name].startedAt;
+      let result = span.data["result"];
+
+      // For mlMultiTerm, extract searchTerms from child spans
+      if (span.name === "mlMultiTerm" && span.children.length > 0) {
+        const searchTerms = extractSearchTermsFromChildren(span);
+        if (searchTerms.length > 0) {
+          result = { ...((result as object) ?? {}), searchTerms };
+        }
+      }
+
       stages[span.name] = {
         status: "complete",
         startedAt,
         completedAt: Date.now(),
         durationMs: span.durationMs,
-        result: span.data["result"],
+        result,
       };
       emitReport();
     },

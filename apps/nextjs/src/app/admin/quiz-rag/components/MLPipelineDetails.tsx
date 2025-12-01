@@ -18,6 +18,14 @@ interface MLPipelineDetailsProps {
 }
 
 export function MLPipelineDetails({ result }: MLPipelineDetailsProps) {
+  if (!result.searchTerms || result.searchTerms.length === 0) {
+    return (
+      <div className="py-4 text-center text-gray-500">
+        No search terms available
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {result.searchTerms.map((term, idx) => (

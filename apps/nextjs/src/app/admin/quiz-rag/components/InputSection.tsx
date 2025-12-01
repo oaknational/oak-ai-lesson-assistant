@@ -95,19 +95,38 @@ export function InputSection({
 
   // Collapsed view when plan is selected
   if (selectedPlan && !isExpanded) {
+    const learningPoints =
+      quizType === "/starterQuiz"
+        ? selectedPlan.priorKnowledge
+        : selectedPlan.keyLearningPoints;
+
     return (
       <div className="rounded-lg border bg-white p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div>
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="mb-3">
               <p className="font-medium">{selectedPlan.title}</p>
               <p className="text-sm text-gray-500">
                 {selectedPlan.subject} • {selectedPlan.keyStage} •{" "}
                 {quizType === "/starterQuiz" ? "Starter Quiz" : "Exit Quiz"}
               </p>
             </div>
+            {learningPoints && learningPoints.length > 0 && (
+              <div>
+                <p className="mb-1 text-xs font-medium text-gray-500">
+                  {quizType === "/starterQuiz"
+                    ? "Prior Knowledge:"
+                    : "Key Learning Points:"}
+                </p>
+                <ul className="list-inside list-disc space-y-0.5 text-sm text-gray-600">
+                  {learningPoints.map((point, i) => (
+                    <li key={i}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex shrink-0 gap-2">
             <button
               onClick={() => setIsExpanded(true)}
               className="rounded bg-gray-100 px-3 py-1.5 text-sm hover:bg-gray-200"

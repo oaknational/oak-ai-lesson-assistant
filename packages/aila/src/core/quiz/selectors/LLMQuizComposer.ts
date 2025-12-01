@@ -61,6 +61,8 @@ export class LLMQuizComposer implements QuizSelector {
       cacheHits,
       cacheMisses,
       generatedCount,
+      // Include descriptions array from span data for streaming
+      descriptions: imageSpan?.getData()["descriptions"],
     });
     imageSpan?.end();
 
@@ -133,8 +135,8 @@ export class LLMQuizComposer implements QuizSelector {
       const response = await openai.beta.chat.completions.parse({
         model: OPENAI_MODEL,
         ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 4000 }
-          : { max_tokens: 4000 }),
+          ? { max_completion_tokens: 16000 }
+          : { max_tokens: 8000 }),
         messages: [
           {
             role: "user",
