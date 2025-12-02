@@ -256,6 +256,11 @@ export function QuizRagDebugView({
                 ...(mlMultiTerm?.pools ?? []),
               ]}
             />
+          ) : stages?.composerPrompt?.result?.prompt ? (
+            <ComposerPromptPreview
+              prompt={stages.composerPrompt.result.prompt}
+              isLlmRunning={stages?.composerLlm?.status === "running"}
+            />
           ) : (
             <p className="text-gray-400">Waiting for LLM composition...</p>
           )}
@@ -284,7 +289,7 @@ export function QuizRagDebugView({
           }
         >
           {result.finalQuiz ? (
-            <FinalQuizDisplay quiz={result.finalQuiz} />
+            <FinalQuizDisplay quiz={result.finalQuiz} fullResult={result} />
           ) : (
             <p className="text-gray-400">Waiting for quiz generation...</p>
           )}
@@ -632,6 +637,54 @@ function formatPoolSource(pool: QuizQuestionPool): string {
   }
 }
 
+// Composer Prompt Preview - shown while LLM is generating
+function ComposerPromptPreview({
+  prompt,
+  isLlmRunning,
+}: {
+  prompt: string;
+  isLlmRunning: boolean;
+}) {
+  const copyPrompt = () => {
+    void navigator.clipboard.writeText(prompt);
+  };
+
+  return (
+    <div className="space-y-8">
+      <SubSection
+        title="Composition Prompt"
+        stats={`${prompt.length.toLocaleString()} chars`}
+        actions={
+          <button
+            onClick={copyPrompt}
+            className="text-blue-600 text-sm hover:underline"
+          >
+            Copy
+          </button>
+        }
+      >
+        <LearnBlock>
+          <p className="text-sm text-gray-600">
+            The full prompt sent to the LLM, including all candidate questions
+            with their text, answers, and image descriptions. The model uses
+            this to select the best 6 questions for the quiz.
+          </p>
+        </LearnBlock>
+        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+          {prompt}
+        </pre>
+      </SubSection>
+
+      {isLlmRunning && (
+        <div className="py-8 text-center text-gray-500">
+          <span className="mr-2 inline-block animate-spin">⚙️</span>
+          Generating quiz selections...
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Composer Section
 function ComposerSection({
   prompt,
@@ -743,10 +796,58 @@ function ComposerSection({
 }
 
 // Final Quiz Display
-function FinalQuizDisplay({ quiz }: { quiz: QuizRagDebugResult["finalQuiz"] }) {
+function FinalQuizDisplay({
+  quiz,
+  fullResult,
+}: {
+  quiz: QuizRagDebugResult["finalQuiz"];
+  fullResult: QuizRagDebugResult;
+}) {
+  const mode = useViewMode();
+  const [showJson, setShowJson] = useState(mode === "eval");
+
+  const copyQuizJson = () => {
+    void navigator.clipboard.writeText(JSON.stringify(quiz, null, 2));
+  };
+
+  const copyFullReport = () => {
+    void navigator.clipboard.writeText(JSON.stringify(fullResult, null, 2));
+  };
+
   return (
-    <div className="mx-auto max-w-xl rounded-lg border bg-white p-12">
-      <QuizSection quizSection={quiz} />
+    <div className="space-y-4">
+      <div className="mx-auto max-w-xl rounded-lg border bg-white p-12">
+        <QuizSection quizSection={quiz} />
+      </div>
+
+      <div className="flex items-center justify-center gap-2">
+        <button
+          onClick={copyQuizJson}
+          className="text-blue-600 text-sm hover:underline"
+        >
+          Copy Quiz JSON
+        </button>
+        <span className="text-gray-300">|</span>
+        <button
+          onClick={copyFullReport}
+          className="text-blue-600 text-sm hover:underline"
+        >
+          Copy Full Report
+        </button>
+        <span className="text-gray-300">|</span>
+        <button
+          onClick={() => setShowJson(!showJson)}
+          className="text-blue-600 text-sm hover:underline"
+        >
+          {showJson ? "Hide" : "Show"} JSON
+        </button>
+      </div>
+
+      {showJson && (
+        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+          {JSON.stringify(quiz, null, 2)}
+        </pre>
+      )}
     </div>
   );
 }
