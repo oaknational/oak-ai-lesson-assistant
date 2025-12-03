@@ -13,14 +13,13 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
-import type { GeneratorStage } from "./debug/types";
+import type { Task } from "./instrumentation";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
-import type { Span, Tracer } from "./tracing";
 
 export type SearchResponseBody<T = unknown> = SearchResponse<T>;
 
@@ -47,17 +46,16 @@ export interface AilaQuizService {
 }
 
 export interface AilaQuizCandidateGenerator {
-  readonly spanName: GeneratorStage;
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
 
   generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-    span?: Span,
   ): Promise<QuizQuestionPool[]>;
   generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-    span?: Span,
   ): Promise<QuizQuestionPool[]>;
 }
 
@@ -77,7 +75,7 @@ export interface FullQuizService {
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-    tracer?: Tracer,
+    task?: Task,
   ): Promise<LatestQuiz>;
 }
 
@@ -87,7 +85,6 @@ export interface QuizSelector {
     ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-    span?: Span,
   ): Promise<RagQuizQuestion[]>;
 }
 

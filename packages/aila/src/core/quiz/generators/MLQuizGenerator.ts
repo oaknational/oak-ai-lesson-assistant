@@ -4,7 +4,6 @@ import { aiLogger } from "@oakai/logger";
 import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { GeneratorStage } from "../debug/types";
 import type {
   CustomSource,
   QuizQuestionPool,
@@ -19,7 +18,8 @@ import { BaseQuizGenerator } from "./BaseQuizGenerator";
 const log = aiLogger("aila:quiz");
 
 export class MLQuizGenerator extends BaseQuizGenerator {
-  readonly spanName: GeneratorStage = "mlMultiTerm";
+  readonly name = "mlSingleTerm";
+
   protected searchService: ElasticsearchQuizSearchService;
   protected retrievalService: QuizQuestionRetrievalService;
   protected rerankService: CohereReranker;

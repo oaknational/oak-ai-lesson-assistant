@@ -3,12 +3,11 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { GeneratorStage } from "../debug/types";
 import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import type { Span } from "../tracing";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -27,7 +26,7 @@ const POOL_SIZE = 3;
  * - Returns separate pools maintaining semantic grouping
  */
 export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
-  readonly spanName: GeneratorStage = "mlMultiTerm";
+  readonly name = "mlMultiTerm";
 
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
@@ -57,37 +56,26 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
   /**
    * Searches and retrieves questions for a single query
-   * @param span - Optional tracing span for this query
    */
   private async searchAndRetrieveForQuery(
     query: string,
     topN: number,
-    span?: Span,
   ): Promise<RagQuizQuestion[]> {
     log.info(`MLQuizGeneratorMultiTerm: Searching for: "${query}"`);
 
-    span?.setData("query", query);
-
-    const esSpan = span?.startChild("elasticsearch");
     const results = await this.searchService.searchWithHybrid(
       "oak-vector-2025-04-16",
       query,
       SEARCH_SIZE,
       0.5,
-      esSpan,
     );
-    esSpan?.end();
 
     const simplifiedResults = this.searchService.transformHits(results.hits);
-
-    const cohereSpan = span?.startChild("cohere");
     const rerankedResults = await this.rerankService.rerankDocuments(
       query,
       simplifiedResults,
       topN,
-      cohereSpan,
     );
-    cohereSpan?.end();
 
     const questionUids = rerankedResults.map((result) => result.questionUid);
 
@@ -98,26 +86,17 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     const questions =
       await this.retrievalService.retrieveQuestionsByIds(questionUids);
 
-    span?.setData(
-      "finalCandidates",
-      questions.map((q) => q.sourceUid),
-    );
-
     return questions;
   }
 
   private async retrieveQuestionsForAllQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-    span?: Span,
   ): Promise<QuizQuestionPool[]> {
-    const queryGenSpan = span?.startChild("query-generation");
     const semanticQueries = await this.generateSemanticSearchQueries(
       lessonPlan,
       quizType,
     );
-    queryGenSpan?.setData("queries", semanticQueries.queries);
-    queryGenSpan?.end();
 
     if (semanticQueries.queries.length === 0) {
       log.warn(
@@ -134,15 +113,11 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     );
 
     const pools = await Promise.all(
-      semanticQueries.queries.map(async (query, index) => {
-        const querySpan = span?.startChild(`query-${index}`);
+      semanticQueries.queries.map(async (query) => {
         const questions = await this.searchAndRetrieveForQuery(
           query,
           POOL_SIZE,
-          querySpan,
         );
-        querySpan?.end();
-
         return {
           questions,
           source: {
@@ -167,13 +142,10 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
   public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _relevantLessons?: unknown, // Not used by ML generator
-    span?: Span,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/starterQuiz",
-      span,
     );
 
     log.info(
@@ -185,13 +157,10 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
   public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _relevantLessons?: unknown, // Not used by ML generator
-    span?: Span,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/exitQuiz",
-      span,
     );
 
     log.info(

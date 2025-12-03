@@ -8,7 +8,6 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import type { GeneratorStage } from "../debug/types";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
@@ -18,14 +17,14 @@ import type {
 } from "../interfaces";
 import { ElasticLessonQuizLookup } from "../services/LessonSlugQuizLookup";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
-import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
 // Base abstract class for quiz generators
 // Generators return structured candidate pools instead of pre-assembled quizzes
 export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
-  abstract readonly spanName: GeneratorStage;
+  /** Name used for instrumentation/tracing */
+  abstract readonly name: string;
 
   protected client: Client;
   protected quizLookup: LessonSlugQuizLookup;
@@ -57,13 +56,11 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
   abstract generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-    span?: Span,
   ): Promise<QuizQuestionPool[]>;
 
   abstract generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-    span?: Span,
   ): Promise<QuizQuestionPool[]>;
 
   public async getLessonSlugFromPlanId(planId: string): Promise<string | null> {

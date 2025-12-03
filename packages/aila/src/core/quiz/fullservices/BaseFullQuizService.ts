@@ -31,13 +31,13 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import { buildQuizFromQuestions } from "../buildQuizObject";
+import type { Task } from "../instrumentation";
 import type {
   AilaQuizCandidateGenerator,
   AilaQuizReranker,
   FullQuizService,
   QuizSelector,
 } from "../interfaces";
-import type { Tracer } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -60,45 +60,64 @@ export class BaseFullQuizService implements FullQuizService {
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-    tracer?: Tracer,
+    task?: Task,
   ): Promise<LatestQuiz> {
-    const rootSpan = tracer?.startSpan("pipeline");
-
+    // Run all generators in parallel, each wrapped in its own task
     const poolPromises = this.quizGenerators.map((quizGenerator) => {
-      const span = rootSpan?.startChild(quizGenerator.spanName);
+      const generateFn = async () => {
+        if (quizType === "/starterQuiz") {
+          return quizGenerator.generateMathsStarterQuizCandidates(
+            lessonPlan,
+            ailaRagRelevantLessons,
+          );
+        } else if (quizType === "/exitQuiz") {
+          return quizGenerator.generateMathsExitQuizCandidates(
+            lessonPlan,
+            ailaRagRelevantLessons,
+          );
+        }
+        throw new Error(`Invalid quiz type: ${quizType as string}`);
+      };
 
-      const promise =
-        quizType === "/starterQuiz"
-          ? quizGenerator.generateMathsStarterQuizCandidates(
-              lessonPlan,
-              ailaRagRelevantLessons,
-              span,
-            )
-          : quizType === "/exitQuiz"
-            ? quizGenerator.generateMathsExitQuizCandidates(
-                lessonPlan,
-                ailaRagRelevantLessons,
-                span,
-              )
-            : Promise.reject(
-                new Error(`Invalid quiz type: ${quizType as string}`),
-              );
-
-      return promise.then((pools) => {
-        span?.setData("result", pools.length > 0 ? { pools } : null);
-        span?.end();
-        return pools;
-      });
+      // Wrap in task.child if instrumentation is enabled
+      if (task) {
+        return task.child(quizGenerator.name, async (generatorTask) => {
+          const pools = await generateFn();
+          generatorTask.setData("poolCount", pools.length);
+          generatorTask.setData(
+            "questionCount",
+            pools.reduce((sum, p) => sum + p.questions.length, 0),
+          );
+          return pools;
+        });
+      }
+      return generateFn();
     });
 
     const poolArrays = await Promise.all(poolPromises);
     const questionPools = poolArrays.flat();
 
-    if (questionPools.length === 0) {
-      log.error(
-        `No question pools generated for ${quizType} - lesson plan: ${lessonPlan.title}`,
+    // Rerank the question pools
+    const rerankerFn = async () => {
+      return this.quizReranker.evaluateQuizArray(
+        questionPools,
+        lessonPlan,
+        quizType,
       );
-      rootSpan?.end();
+    };
+
+    const quizRankings = task
+      ? await task.child("reranker", async (rerankerTask) => {
+          const rankings = await rerankerFn();
+          rerankerTask.setData("rankingCount", rankings.length);
+          return rankings;
+        })
+      : await rerankerFn();
+
+    if (!quizRankings[0]) {
+      log.error(
+        `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
+      );
       return {
         version: "v3",
         questions: [],
@@ -106,22 +125,23 @@ export class BaseFullQuizService implements FullQuizService {
       };
     }
 
-    const quizRankings = await this.quizReranker.evaluateQuizArray(
-      questionPools,
-      lessonPlan,
-      quizType,
-    );
+    // Select final questions
+    const selectorFn = async () => {
+      return this.quizSelector.selectQuestions(
+        questionPools,
+        quizRankings,
+        lessonPlan,
+        quizType,
+      );
+    };
 
-    const selectorSpan = rootSpan?.startChild("selector");
-    const selectedQuestions = await this.quizSelector.selectQuestions(
-      questionPools,
-      quizRankings,
-      lessonPlan,
-      quizType,
-      selectorSpan,
-    );
-    selectorSpan?.end();
-    rootSpan?.end();
+    const selectedQuestions = task
+      ? await task.child("selector", async (selectorTask) => {
+          const questions = await selectorFn();
+          selectorTask.setData("selectedCount", questions.length);
+          return questions;
+        })
+      : await selectorFn();
 
     return buildQuizFromQuestions(selectedQuestions);
   }
