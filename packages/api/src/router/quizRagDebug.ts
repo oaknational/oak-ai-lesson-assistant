@@ -9,6 +9,36 @@ import { router } from "../trpc";
 const log = aiLogger("admin");
 
 // Example lesson plans for the dropdown
+function createBasedOnExample(lessonId: string) {
+  return {
+    id: "circle-theorems-based-on",
+    label: "Circle Theorems - with basedOn (KS4 Maths)",
+    plan: {
+      title: "Circle theorems",
+      subject: "maths",
+      keyStage: "key-stage-4",
+      topic: "Circle theorems",
+      learningOutcome:
+        "I can apply circle theorems to solve problems involving angles in circles.",
+      priorKnowledge: [
+        "I can identify and name parts of a circle including radius, diameter, chord, tangent, and arc.",
+        "I can calculate angles in triangles and quadrilaterals.",
+        "I understand that angles on a straight line sum to 180°.",
+      ],
+      keyLearningPoints: [
+        "The angle at the centre is twice the angle at the circumference.",
+        "Angles in the same segment are equal.",
+        "The angle in a semicircle is 90°.",
+        "Opposite angles of a cyclic quadrilateral sum to 180°.",
+      ],
+      basedOn: {
+        id: lessonId,
+        title: "Problem solving with circle theorems",
+      },
+    },
+  };
+}
+
 const EXAMPLE_LESSON_PLANS = [
   {
     id: "circle-theorems",
@@ -31,33 +61,6 @@ const EXAMPLE_LESSON_PLANS = [
         "The angle in a semicircle is 90°.",
         "Opposite angles of a cyclic quadrilateral sum to 180°.",
       ],
-    },
-  },
-  {
-    id: "circle-theorems-based-on",
-    label: "Circle Theorems - with basedOn (KS4 Maths)",
-    plan: {
-      title: "Circle theorems",
-      subject: "maths",
-      keyStage: "key-stage-4",
-      topic: "Circle theorems",
-      learningOutcome:
-        "I can apply circle theorems to solve problems involving angles in circles.",
-      priorKnowledge: [
-        "I can identify and name parts of a circle including radius, diameter, chord, tangent, and arc.",
-        "I can calculate angles in triangles and quadrilaterals.",
-        "I understand that angles on a straight line sum to 180°.",
-      ],
-      keyLearningPoints: [
-        "The angle at the centre is twice the angle at the circumference.",
-        "Angles in the same segment are equal.",
-        "The angle in a semicircle is 90°.",
-        "Opposite angles of a cyclic quadrilateral sum to 180°.",
-      ],
-      basedOn: {
-        id: "circle-theorems-i",
-        title: "Circle theorems I",
-      },
     },
   },
   {
@@ -151,9 +154,23 @@ export const quizRagDebugRouter = router({
     }),
 
   /**
-   * Get example lesson plans for the dropdown
+   * Get example lesson plans for the dropdown.
    */
-  getExampleLessonPlans: adminProcedure.query(() => {
-    return EXAMPLE_LESSON_PLANS;
+  getExampleLessonPlans: adminProcedure.query(async ({ ctx }) => {
+    const basedOnLesson = await ctx.prisma.ragLessonPlan.findFirst({
+      where: {
+        oakLessonSlug: "problem-solving-with-circle-theorems",
+        isPublished: true,
+      },
+      select: { id: true },
+    });
+
+    if (!basedOnLesson) {
+      throw new Error(
+        "RAG lesson 'problem-solving-with-circle-theorems' not found - ensure RAG data is loaded",
+      );
+    }
+
+    return [...EXAMPLE_LESSON_PLANS, createBasedOnExample(basedOnLesson.id)];
   }),
 });
