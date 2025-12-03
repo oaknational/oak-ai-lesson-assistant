@@ -110,9 +110,8 @@ function IconInfoCardLink({
           background={background}
         />
       </OakBox>
-
       <OakFlex $flexDirection="column" $gap="space-between-sssx" $width="100%">
-        <OakHeading $font="heading-6" tag="h4" $color="black">
+        <OakHeading $font="heading-6" tag="h4" $color="text-primary">
           {title}
         </OakHeading>
 
@@ -311,7 +310,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
           <OakBoxCustomMaxWidth
             $display={["flex", "none"]}
-            $borderColor="black"
+            $borderColor="border-primary"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
             customMaxWidth={600}
@@ -332,7 +331,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
         <OakFlexCustomMaxWidthWithHalfWidth
           $display={["none", "flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -363,7 +362,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         </OakHeading>
         <OakBoxCustomMaxWidth
           $display={["flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -437,7 +436,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
             <OakBoxCustomMaxWidth
               $display={["flex"]}
-              $borderColor="black"
+              $borderColor="border-primary"
               $borderStyle={"solid"}
               $ba={"border-solid-xl"}
               customMaxWidth={600}

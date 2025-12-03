@@ -52,7 +52,7 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
         as="header"
         $height="all-spacing-12"
         $width="100%"
-        $background="white"
+        $background="bg-primary"
         $ph="inner-padding-m"
         $justifyContent="space-between"
       >

@@ -12,7 +12,7 @@ export const LegacyUpgradeNotice = () => {
         $mh="auto"
         $ml={[null, "space-between-l"]}
         $borderRadius="border-radius-m"
-        $background="white"
+        $background="bg-primary"
         $pa="inner-padding-xl2"
         $maxWidth={"all-spacing-22"}
       >

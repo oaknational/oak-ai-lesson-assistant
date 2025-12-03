@@ -55,12 +55,11 @@ export const MultipleChoiceQuestion = ({
           components={components}
         />
       </OakFlex>
-
       {isImageOnlyAnswers ? (
         <ImageOnlyAnswerLayout answers={answers} />
       ) : (
         // Text-based answers: vertical list layout
-        <OakBox>
+        (<OakBox>
           {answers.map((answer, index) => {
             const letter = String.fromCharCode(97 + index);
             return (
@@ -85,7 +84,7 @@ export const MultipleChoiceQuestion = ({
               </OakFlex>
             );
           })}
-        </OakBox>
+        </OakBox>)
       )}
     </OakBox>
   );

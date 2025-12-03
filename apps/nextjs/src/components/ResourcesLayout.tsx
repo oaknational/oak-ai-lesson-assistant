@@ -42,7 +42,7 @@ const TeachingMaterialsLayout = ({
         $pt="inner-padding-xl7"
         $pb="inner-padding-xl"
         $flexDirection="column"
-        $background={"lavender30"}
+        $background={"bg-decorative3-very-subdued"}
         $ph={["inner-padding-xl", "inner-padding-xl4"]}
       >
         <OakMaxWidth
@@ -51,7 +51,7 @@ const TeachingMaterialsLayout = ({
             "space-between-m",
           ]}
           $position={"relative"}
-          $background="white"
+          $background="bg-primary"
           $borderRadius="border-radius-m"
           $mh="space-between-m"
           $width="100%"
@@ -67,7 +67,7 @@ const TeachingMaterialsLayout = ({
           >
             <OakFlex
               $bb="border-solid-s"
-              $borderColor="grey40"
+              $borderColor="border-neutral-lighter"
               $pb="inner-padding-l"
               $mb="space-between-m"
               $flexDirection="column"

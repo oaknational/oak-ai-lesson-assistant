@@ -42,11 +42,9 @@ const extractSectionsToEdit = (messageStr: string) => {
     return [];
   }
   // '"sectionsToEdit":["a","b","c"]' => ["a", "b", "c"]
-  return (
-    sectionsToEditStr
-      .replace('"sectionsToEdit":', "")
-      .match(/([a-zA-Z0-9])+/g) ?? []
-  );
+  return (sectionsToEditStr
+    .replace('"sectionsToEdit":', "")
+    .match(/([a-zA-Z0-9])+/g) ?? []);
 };
 
 export const handleMessagesUpdated = (

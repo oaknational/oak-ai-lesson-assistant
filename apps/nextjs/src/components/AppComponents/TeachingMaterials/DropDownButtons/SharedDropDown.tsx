@@ -83,7 +83,7 @@ export const SharedDropDown = ({
                 style={{ width: "100%" }}
               />
               {errorMessage && (
-                <OakP $color="red" $font="body-3" $mt="space-between-xs">
+                <OakP $color="text-error" $font="body-3" $mt="space-between-xs">
                   {errorMessage}
                 </OakP>
               )}

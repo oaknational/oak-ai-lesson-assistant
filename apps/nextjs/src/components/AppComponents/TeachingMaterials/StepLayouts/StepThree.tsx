@@ -94,13 +94,12 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
 
         <OakP $font="body-2">
           {`If these details look right for your lesson, create your ${docTypeName}. If not return to the `}
-          <OakLink color="black" onClick={() => setStepNumber(1)}>
+          <OakLink color="text-primary" onClick={() => setStepNumber(1)}>
             previous page
           </OakLink>
           {` and tell Aila what your lesson should include.`}
         </OakP>
       </OakFlex>
-
       <ResourcesFooter>
         <SharedNavigationButtons
           backLabel="Back a step"
