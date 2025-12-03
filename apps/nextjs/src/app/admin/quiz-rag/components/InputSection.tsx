@@ -125,6 +125,14 @@ export function InputSection({
                 </ul>
               </div>
             )}
+            {selectedPlan.basedOn && (
+              <div className="border-amber-200 bg-amber-50 mt-3 rounded border px-3 py-2">
+                <p className="text-amber-800 text-xs font-medium">Based On:</p>
+                <p className="text-amber-900 text-sm">
+                  {selectedPlan.basedOn.title}
+                </p>
+              </div>
+            )}
           </div>
           <div className="flex shrink-0 gap-2">
             <button

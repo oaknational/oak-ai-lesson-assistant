@@ -33,7 +33,9 @@ export const CompositionResponseSchema = z.object({
   overallStrategy: z
     .string()
     .describe(
-      "Brief explanation of how the selected questions work together as a cohesive quiz",
+      "Explain your selection strategy: which sources you prioritised, " +
+        "why you did or didn't use questions from the user-selected source lesson (if provided), " +
+        "and how the selected questions work together as a cohesive quiz",
     ),
   selectedQuestions: z
     .array(

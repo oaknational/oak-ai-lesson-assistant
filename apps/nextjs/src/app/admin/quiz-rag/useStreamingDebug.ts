@@ -111,8 +111,8 @@ export function useStreamingDebug() {
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || "Failed to start pipeline");
+          const errorData = (await response.json()) as { error?: string };
+          throw new Error(errorData.error ?? "Failed to start pipeline");
         }
 
         if (!response.body) {
