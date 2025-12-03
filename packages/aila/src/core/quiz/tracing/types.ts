@@ -49,28 +49,6 @@ export interface Tracer {
 }
 
 /**
- * Event emitted during streaming instrumentation.
- * Used to progressively update the debug UI as pipeline stages execute.
- */
-export interface StreamEvent {
-  type: "start" | "end" | "complete" | "error";
-  stage: string;
-  data?: unknown;
-  timestamp: number;
-}
-
-/**
- * Result of creating a streaming instrumentation.
- * Contains both the instrumentation strategy and an async iterator
- * for consuming events.
- */
-export interface StreamingInstrumentationResult {
-  instrumentation: InstrumentationStrategy;
-  eventIterator: AsyncIterable<StreamEvent>;
-  complete: () => void;
-}
-
-/**
  * Result of creating a report-based streaming instrumentation.
  * The report is updated in-place as spans start/end, and emitted
  * via the iterator after each update.

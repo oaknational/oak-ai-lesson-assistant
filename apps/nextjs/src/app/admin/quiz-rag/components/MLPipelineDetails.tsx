@@ -5,13 +5,9 @@ import { useState } from "react";
 import type { MLMultiTermDebugResult } from "@oakai/aila/src/core/quiz/debug";
 import type { MLSearchTermDebugResult } from "@oakai/aila/src/core/quiz/debug/types";
 
+import { formatSeconds } from "../utils";
 import { LearnBlock } from "../view";
 import { QuestionCard } from "./QuestionCard";
-
-// Helper to format ms as seconds
-function formatSeconds(ms: number): string {
-  return (ms / 1000).toFixed(1) + "s";
-}
 
 interface MLPipelineDetailsProps {
   result: MLMultiTermDebugResult;

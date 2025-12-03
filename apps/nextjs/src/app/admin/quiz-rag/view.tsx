@@ -19,6 +19,7 @@ import { MathJaxWrap } from "@/components/MathJax";
 import { MLPipelineDetails } from "./components/MLPipelineDetails";
 import { QuestionCard } from "./components/QuestionCard";
 import type { ViewMode } from "./page";
+import { formatSeconds } from "./utils";
 
 // Context for view mode
 export const ViewModeContext = createContext<ViewMode>("learn");
@@ -329,11 +330,6 @@ export function LearnParagraph({ children }: { children: React.ReactNode }) {
   return <p className={learnParagraphClass}>{children}</p>;
 }
 
-// Helper to format ms as seconds
-function formatSeconds(ms: number): string {
-  return (ms / 1000).toFixed(1) + "s";
-}
-
 // Stage color mapping
 type StageColor = "mint" | "lemon" | "lavender" | "pink" | "gray";
 const stageColors: Record<StageColor, { bg: string; border: string }> = {
@@ -506,12 +502,7 @@ function GeneratorAccordion({
 }
 
 // Generator Section for basedOnRag and ailaRag
-function GeneratorSection({
-  result,
-}: {
-  title?: string;
-  result: GeneratorDebugResult;
-}) {
+function GeneratorSection({ result }: { result: GeneratorDebugResult }) {
   return (
     <div className="space-y-3">
       {result.metadata?.sourceLesson && (

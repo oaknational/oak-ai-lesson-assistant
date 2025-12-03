@@ -1,5 +1,3 @@
-import * as Sentry from "@sentry/node";
-
 import type { QuizRagStreamingReport } from "../debug/types";
 
 /**
@@ -12,119 +10,7 @@ import type {
   InstrumentationStrategy,
   ReportStreamingInstrumentationResult,
   Span,
-  StreamEvent,
-  StreamingInstrumentationResult,
 } from "./types";
-
-/**
- * Sentry instrumentation strategy.
- * Creates breadcrumbs for each completed span, useful for debugging
- * production issues.
- */
-export const sentryInstrumentation: InstrumentationStrategy = {
-  onSpanEnd: (span: CompletedSpan) => {
-    Sentry.addBreadcrumb({
-      category: "quiz-rag",
-      message: span.name,
-      data: {
-        durationMs: span.durationMs,
-        ...span.data,
-      },
-      level: "info",
-    });
-  },
-};
-
-/**
- * No-op instrumentation strategy.
- * Spans are still collected by the tracer but no callbacks are invoked.
- * Useful when you only need to retrieve spans via tracer.getCompletedSpans().
- */
-export const noopInstrumentation: InstrumentationStrategy = {};
-
-/**
- * Creates a streaming instrumentation that emits events via an async iterator.
- * Used for real-time updates to the debug UI as pipeline stages execute.
- *
- * Events are queued and yielded to consumers. The iterator blocks waiting
- * for new events when the queue is empty.
- *
- * Call `complete()` when the pipeline finishes to signal the iterator to end.
- */
-export function createStreamingInstrumentation(): StreamingInstrumentationResult {
-  const eventQueue: StreamEvent[] = [];
-  let resolveNext: ((event: StreamEvent | null) => void) | null = null;
-  let isComplete = false;
-
-  const pushEvent = (event: StreamEvent) => {
-    if (isComplete) return;
-
-    if (resolveNext) {
-      resolveNext(event);
-      resolveNext = null;
-    } else {
-      eventQueue.push(event);
-    }
-  };
-
-  const instrumentation: InstrumentationStrategy = {
-    onSpanStart: (span: Span) => {
-      pushEvent({
-        type: "start",
-        stage: span.name,
-        timestamp: Date.now(),
-      });
-    },
-    onSpanEnd: (span: CompletedSpan) => {
-      pushEvent({
-        type: "end",
-        stage: span.name,
-        data: span.data,
-        timestamp: Date.now(),
-      });
-    },
-  };
-
-  const eventIterator: AsyncIterable<StreamEvent> = {
-    [Symbol.asyncIterator]() {
-      return {
-        async next(): Promise<IteratorResult<StreamEvent>> {
-          // Return queued events first
-          if (eventQueue.length > 0) {
-            return { value: eventQueue.shift()!, done: false };
-          }
-
-          // If complete and queue is empty, we're done
-          if (isComplete) {
-            return { value: undefined as unknown as StreamEvent, done: true };
-          }
-
-          // Wait for next event
-          const event = await new Promise<StreamEvent | null>((resolve) => {
-            resolveNext = resolve;
-          });
-
-          if (event === null) {
-            return { value: undefined as unknown as StreamEvent, done: true };
-          }
-
-          return { value: event, done: false };
-        },
-      };
-    },
-  };
-
-  const complete = () => {
-    isComplete = true;
-    // Resolve any pending wait with null to signal completion
-    if (resolveNext) {
-      resolveNext(null);
-      resolveNext = null;
-    }
-  };
-
-  return { instrumentation, eventIterator, complete };
-}
 
 const REPORT_STAGES: Set<PipelineStage> = new Set([
   "basedOnRag",
@@ -149,8 +35,11 @@ interface PoolLike {
 
 /**
  * Extract searchTerms data from mlMultiTerm child spans.
- * This allows streaming the detailed search data without waiting for
- * QuizRagDebugService to reconstruct it post-pipeline.
+ *
+ * Note: QuizRagDebugService has similar extraction logic (extractMLSearchTermsFromSpan).
+ * This version exists separately because it runs during streaming to provide immediate
+ * feedback, while the debug service version reconstructs data post-pipeline for the
+ * final result. Both are needed for different timing requirements.
  */
 function extractSearchTermsFromChildren(mlSpan: CompletedSpan): unknown[] {
   const searchTerms: unknown[] = [];
@@ -234,9 +123,7 @@ export function createReportStreamingInstrumentation(): ReportStreamingInstrumen
     if (isComplete) return;
 
     // Clone and cast to QuizRagStreamingReport at output boundary
-    const snapshot = JSON.parse(
-      JSON.stringify(report),
-    ) as QuizRagStreamingReport;
+    const snapshot = structuredClone(report) as QuizRagStreamingReport;
 
     if (resolveNext) {
       resolveNext(snapshot);
@@ -327,8 +214,7 @@ export function createReportStreamingInstrumentation(): ReportStreamingInstrumen
     }
   };
 
-  const getReport = () =>
-    JSON.parse(JSON.stringify(report)) as QuizRagStreamingReport;
+  const getReport = () => structuredClone(report) as QuizRagStreamingReport;
 
   return { instrumentation, reportIterator, complete, getReport };
 }
