@@ -18,6 +18,8 @@ import { BaseQuizGenerator } from "./BaseQuizGenerator";
 const log = aiLogger("aila:quiz");
 
 export class MLQuizGenerator extends BaseQuizGenerator {
+  readonly name = "mlSingleTerm";
+
   protected searchService: ElasticsearchQuizSearchService;
   protected retrievalService: QuizQuestionRetrievalService;
   protected rerankService: CohereReranker;

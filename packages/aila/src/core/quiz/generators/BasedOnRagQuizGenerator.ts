@@ -13,6 +13,8 @@ const log = aiLogger("aila:quiz");
 
 // RAG-based Quiz Generator
 export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
+  readonly name = "basedOnRag";
+
   private async generateQuizCandidates(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,

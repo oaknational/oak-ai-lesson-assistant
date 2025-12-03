@@ -23,6 +23,9 @@ const log = aiLogger("aila:quiz");
 // Base abstract class for quiz generators
 // Generators return structured candidate pools instead of pre-assembled quizzes
 export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
+  /** Name used for instrumentation/tracing */
+  abstract readonly name: string;
+
   protected client: Client;
   protected quizLookup: LessonSlugQuizLookup;
   protected retrievalService: QuizQuestionRetrievalService;
