@@ -4,6 +4,7 @@
  * Each Task knows its path in the tree and updates both Sentry and the Report.
  */
 import * as Sentry from "@sentry/nextjs";
+import type { Span } from "@sentry/nextjs";
 
 import type { Report } from "./Report";
 
@@ -11,6 +12,7 @@ export class Task {
   constructor(
     private report: Report,
     private path: string[],
+    private span?: Span,
   ) {}
 
   /**
@@ -31,27 +33,25 @@ export class Task {
     this.report.startAtPath(childPath);
     this.report.emit();
 
-    const childTask = new Task(this.report, childPath);
-
-    const execute = async (): Promise<T> => {
-      try {
-        const result = await fn(childTask);
-        this.report.endAtPath(childPath);
-        this.report.emit();
-        return result;
-      } catch (error) {
-        this.report.errorAtPath(childPath, error);
-        this.report.emit();
-        throw error;
-      }
-    };
-
     return Sentry.startSpan(
       {
         name: `quiz.${name}`,
         op: "quiz.task",
+        parentSpan: this.span,
       },
-      execute,
+      async (childSpan) => {
+        const childTask = new Task(this.report, childPath, childSpan);
+        try {
+          const result = await fn(childTask);
+          this.report.endAtPath(childPath);
+          this.report.emit();
+          return result;
+        } catch (error) {
+          this.report.errorAtPath(childPath, error);
+          this.report.emit();
+          throw error;
+        }
+      },
     );
   }
 }

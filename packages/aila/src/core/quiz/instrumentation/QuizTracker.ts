@@ -51,27 +51,24 @@ export function createQuizTracker(
 
   return {
     async run<T>(fn: (task: Task) => Promise<T>): Promise<T> {
-      const rootTask = new Task(report, []);
-
-      const execute = async (): Promise<T> => {
-        try {
-          const result = await fn(rootTask);
-          report.complete();
-          report.emit();
-          return result;
-        } catch (error) {
-          report.complete();
-          report.emit();
-          throw error;
-        }
-      };
-
       return Sentry.startSpan(
         {
           name: "quiz.pipeline",
           op: "quiz.pipeline",
         },
-        execute,
+        async (rootSpan) => {
+          const rootTask = new Task(report, [], rootSpan);
+          try {
+            const result = await fn(rootTask);
+            report.complete();
+            report.emit();
+            return result;
+          } catch (error) {
+            report.complete();
+            report.emit();
+            throw error;
+          }
+        },
       );
     },
 
