@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import {
   OakBox,
   OakIcon,
+  OakInformativeModal,
+  OakInformativeModalFooter,
   OakLink,
-  OakModal,
-  OakModalFooter,
   OakSpan,
 } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
@@ -40,24 +40,24 @@ export function ChatHistory() {
     }
   }, [openSidebar]);
   return (
-    <OakModal
+    <OakInformativeModal
       data-testid="sidebar"
       isLeftHandSide={false}
       zIndex={0}
       isOpen={openSidebar}
       onClose={() => setOpenSidebar(false)}
       footerSlot={
-        <OakModalFooter>
+        <OakInformativeModalFooter>
           <ClearHistory isEnabled={true} />
-        </OakModalFooter>
+        </OakInformativeModalFooter>
       }
     >
       <OakBox
         $position="absolute"
-        $top="all-spacing-6"
-        $right="all-spacing-3"
+        $top="spacing-24"
+        $right="spacing-12"
         $borderRadius="border-radius-circle"
-        $height="space-between-xxl"
+        $height="spacing-72"
       >
         <OakLink element="button" onClick={() => setOpenSidebar(false)}>
           <OakSpan $opacity="transparent" $font="body-3">
@@ -75,8 +75,8 @@ export function ChatHistory() {
             <span className="rotate-45">
               <OakIcon
                 iconName="cross"
-                $width="all-spacing-6"
-                $height="all-spacing-6"
+                $width="spacing-24"
+                $height="spacing-24"
               />
             </span>
             <span>Create with AI</span>
@@ -102,6 +102,6 @@ export function ChatHistory() {
           <SidebarList />
         </React.Suspense>
       </div>
-    </OakModal>
+    </OakInformativeModal>
   );
 }

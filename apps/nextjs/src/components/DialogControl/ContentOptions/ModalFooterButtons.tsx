@@ -18,8 +18,8 @@ const ModalFooterButtons = ({
       $width="100%"
       $justifyContent="center"
       $alignItems="center"
-      $gap="all-spacing-3"
-      $pb="inner-padding-m"
+      $gap="spacing-12"
+      $pb="spacing-16"
     >
       {actionButtonStates()}
       <OakLinkNoUnderline

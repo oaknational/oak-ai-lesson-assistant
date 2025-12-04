@@ -36,7 +36,7 @@ const DemoShareLockedDialog = ({
           contact us for full access.
         </a>
       </OakP>
-      <OakFlex $justifyContent="center" $width="100%" $mt="space-between-m">
+      <OakFlex $justifyContent="center" $width="100%" $mt="spacing-24">
         <OakPrimaryButton onClick={closeDialog}>
           Back to lesson
         </OakPrimaryButton>

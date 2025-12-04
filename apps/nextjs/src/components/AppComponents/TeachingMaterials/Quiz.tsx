@@ -12,16 +12,16 @@ type QuizProps = {
 export const Quiz = ({ generation }: QuizProps) => {
   return (
     <MathJaxWrap>
-      <OakFlex $gap="space-between-m" $flexDirection={"column"} $width={"100%"}>
+      <OakFlex $gap="spacing-24" $flexDirection={"column"} $width={"100%"}>
         {generation.questions.map((question, questionIndex) => (
           <OakBox
             key={`${questionIndex}-${question.question}`}
-            $mb="space-between-m"
+            $mb="spacing-24"
           >
             <OakP $font="body-2">
               {questionIndex + 1}. {question.question}
             </OakP>
-            <OakBox $mb="space-between-s" />
+            <OakBox $mb="spacing-16" />
 
             {question.options.map((option, optionIndex) => {
               const letter = String.fromCharCode(97 + optionIndex); // a, b, c
@@ -30,11 +30,11 @@ export const Quiz = ({ generation }: QuizProps) => {
                 <OakFlex
                   key={`${option.text}-${optionIndex}`}
                   $alignItems="flex-start"
-                  $mb="space-between-s"
+                  $mb="spacing-16"
                 >
                   <OakSpan
                     $font={option.isCorrect ? "body-2-bold" : "body-2"}
-                    $mr="space-between-xs"
+                    $mr="spacing-12"
                   >
                     {letter})
                   </OakSpan>

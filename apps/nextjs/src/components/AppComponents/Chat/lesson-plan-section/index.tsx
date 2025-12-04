@@ -64,10 +64,10 @@ export const LessonPlanSection = ({
     <DropDownSectionWrapper
       $borderColor="black"
       $bb="border-solid-m"
-      $pv="inner-padding-xl"
+      $pv="spacing-24"
       ref={sectionRef}
     >
-      <OakFlex $gap="all-spacing-2">
+      <OakFlex $gap="spacing-8">
         <OakBox>
           {status === "streaming" && <LoadingWheel />}
           {status === "loaded" && <Icon icon="tick" size="sm" />}

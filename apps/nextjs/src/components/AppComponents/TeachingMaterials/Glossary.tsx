@@ -14,13 +14,13 @@ export const Glossary = ({
   }
 
   return (
-    <OakFlex $gap="space-between-s" $flexDirection="column">
+    <OakFlex $gap="spacing-16" $flexDirection="column">
       {generation.glossary.map((item, index) => (
         <OakFlex
           key={`${item.term}-${index}`}
           $flexDirection="row"
           $alignItems="flex-start"
-          $mb="space-between-xs"
+          $mb="spacing-12"
           $flexWrap="wrap"
         >
           <OakP $font="body-2-bold">
