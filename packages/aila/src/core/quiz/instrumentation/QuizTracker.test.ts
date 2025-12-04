@@ -1,0 +1,172 @@
+import * as Sentry from "@sentry/nextjs";
+
+import { createQuizTracker } from "./QuizTracker";
+import type { ReportNode } from "./Report";
+
+jest.mock("@sentry/nextjs", () => ({
+  startSpan: jest.fn((opts, fn) => fn({ name: opts.name })),
+}));
+
+// Strip timing fields for snapshot stability
+function stripTiming(node: ReportNode): unknown {
+  return {
+    status: node.status,
+    ...(node.error && { error: node.error }),
+    ...(Object.keys(node.data).length && { data: node.data }),
+    ...(Object.keys(node.children).length && {
+      children: Object.fromEntries(
+        Object.entries(node.children).map(([k, v]) => [k, stripTiming(v)]),
+      ),
+    }),
+  };
+}
+
+describe("QuizTracker", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // Reset to default implementation
+    (Sentry.startSpan as jest.Mock).mockImplementation((opts, fn) =>
+      fn({ name: opts.name }),
+    );
+  });
+
+  describe("report tree structure", () => {
+    it("builds nested children correctly", async () => {
+      const tracker = createQuizTracker();
+
+      await tracker.run(async (task) => {
+        await task.child("generator", async (task) => {
+          await task.child("query-0", async (task) => {
+            task.setData("query", "test query");
+          });
+        });
+      });
+
+      const report = tracker.getReport();
+      expect(stripTiming(report)).toMatchSnapshot();
+    });
+
+    it("handles parallel children", async () => {
+      const tracker = createQuizTracker();
+
+      await tracker.run(async (task) => {
+        await Promise.all([
+          task.child("a", async () => {}),
+          task.child("b", async () => {}),
+        ]);
+      });
+
+      const report = tracker.getReport();
+      expect(Object.keys(report.children)).toEqual(["a", "b"]);
+    });
+
+    it("marks error status on failure", async () => {
+      const tracker = createQuizTracker();
+
+      await expect(
+        tracker.run(async (task) => {
+          await task.child("failing", async () => {
+            throw new Error("boom");
+          });
+        }),
+      ).rejects.toThrow("boom");
+
+      const report = tracker.getReport();
+      expect(report.children.failing?.status).toBe("error");
+      expect(report.children.failing?.error).toBe("boom");
+    });
+  });
+
+  describe("sentry spans", () => {
+    it("creates root span with quiz.pipeline", async () => {
+      const tracker = createQuizTracker();
+      await tracker.run(async () => {});
+
+      expect(Sentry.startSpan).toHaveBeenCalledWith(
+        { name: "quiz.pipeline", op: "quiz.pipeline" },
+        expect.any(Function),
+      );
+    });
+
+    it("creates child spans with explicit parentSpan", async () => {
+      const mockRootSpan = { name: "root" };
+      (Sentry.startSpan as jest.Mock).mockImplementation((opts, fn) => {
+        if (opts.name === "quiz.pipeline") return fn(mockRootSpan);
+        return fn({ name: opts.name });
+      });
+
+      const tracker = createQuizTracker();
+      await tracker.run(async (task) => {
+        await task.child("myTask", async () => {});
+      });
+
+      expect(Sentry.startSpan).toHaveBeenCalledWith(
+        { name: "quiz.myTask", op: "quiz.task", parentSpan: mockRootSpan },
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe("onUpdate hook", () => {
+    it("is called on child start", async () => {
+      const updates: ReportNode[] = [];
+      const tracker = createQuizTracker({
+        onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
+      });
+
+      await tracker.run(async (task) => {
+        await task.child("test", async () => {});
+      });
+
+      const startUpdate = updates.find(
+        (u) => u.children.test?.status === "running",
+      );
+      expect(startUpdate).toBeDefined();
+    });
+
+    it("is called on child complete", async () => {
+      const updates: ReportNode[] = [];
+      const tracker = createQuizTracker({
+        onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
+      });
+
+      await tracker.run(async (task) => {
+        await task.child("test", async () => {});
+      });
+
+      const completeUpdate = updates.find(
+        (u) => u.children.test?.status === "complete",
+      );
+      expect(completeUpdate).toBeDefined();
+    });
+
+    it("is called on setData", async () => {
+      const updates: ReportNode[] = [];
+      const tracker = createQuizTracker({
+        onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
+      });
+
+      await tracker.run(async (task) => {
+        task.setData("foo", "bar");
+      });
+
+      const dataUpdate = updates.find((u) => u.data.foo === "bar");
+      expect(dataUpdate).toBeDefined();
+    });
+  });
+
+  describe("timing", () => {
+    it("records duration on completed tasks", async () => {
+      const tracker = createQuizTracker();
+
+      await tracker.run(async (task) => {
+        await task.child("timed", async () => {
+          await new Promise((r) => setTimeout(r, 10));
+        });
+      });
+
+      const report = tracker.getReport();
+      expect(report.children.timed?.durationMs).toBeGreaterThanOrEqual(10);
+    });
+  });
+});
