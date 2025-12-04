@@ -5,3 +5,4 @@ export {
   type QuizTracker,
   type QuizTrackerOptions,
 } from "./QuizTracker";
+export { createMockTask } from "./testing";
