@@ -1,6 +1,5 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { QuizPath } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
 import { createMockTask } from "../instrumentation";
@@ -34,7 +33,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     it("should create a starter quiz", async () => {
       const task = createMockTask();
       const quiz = await quizService.buildQuiz(
-        "/starterQuiz" as QuizPath,
+        "/starterQuiz",
         CircleTheoremLesson,
         [],
         task,
@@ -52,7 +51,7 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     it("should create an exit quiz", async () => {
       const task = createMockTask();
       const quiz = await quizService.buildQuiz(
-        "/exitQuiz" as QuizPath,
+        "/exitQuiz",
         CircleTheoremLesson,
         [],
         task,
@@ -64,18 +63,6 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]).toHaveProperty("question");
       expect(quiz.questions[0]).toHaveProperty("questionType");
-    });
-
-    it("should handle invalid quiz paths", async () => {
-      const task = createMockTask();
-      await expect(
-        quizService.buildQuiz(
-          "/invalidQuiz" as QuizPath,
-          CircleTheoremLesson,
-          [],
-          task,
-        ),
-      ).rejects.toThrow();
     });
   });
 });

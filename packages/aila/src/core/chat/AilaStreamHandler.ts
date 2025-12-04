@@ -382,7 +382,7 @@ export class AilaStreamHandler {
                   this._chat.fullQuizService.buildQuiz(
                     "/starterQuiz",
                     ctx.currentTurn.document,
-                    [],
+                    this._chat.relevantLessons ?? [],
                     task,
                   ),
                 );
@@ -405,7 +405,7 @@ export class AilaStreamHandler {
                   this._chat.fullQuizService.buildQuiz(
                     "/exitQuiz",
                     ctx.currentTurn.document,
-                    [],
+                    this._chat.relevantLessons ?? [],
                     task,
                   ),
                 );

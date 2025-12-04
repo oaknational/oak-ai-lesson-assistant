@@ -21,8 +21,6 @@ import type {
   QuizServiceSettings,
 } from "./schema";
 
-export type SearchResponseBody<T = unknown> = SearchResponse<T>;
-
 // Rating response from rerankers
 export type RatingResponse = {
   rating: number;
