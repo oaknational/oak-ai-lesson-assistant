@@ -1,15 +1,10 @@
 import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
-import {
-  adjectives,
-  animals,
-  colors,
-  uniqueNamesGenerator,
-} from "unique-names-generator";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
 import type { LakeraGuardResponse } from "../threatDetection/lakera";
 import type { Message } from "../threatDetection/lakera/schema";
+import { generateFriendlyId } from "./friendlyId";
 
 if (
   !process.env.SLACK_NOTIFICATION_CHANNEL_ID ||
@@ -42,11 +37,7 @@ if (!clerkAppId) {
 }
 
 export function userIdBlock(userId: string): SectionBlock {
-  const friendlyId = uniqueNamesGenerator({
-    dictionaries: [adjectives, colors, animals],
-    separator: "-",
-    seed: userId,
-  });
+  const friendlyId = generateFriendlyId(userId);
 
   return {
     type: "section",

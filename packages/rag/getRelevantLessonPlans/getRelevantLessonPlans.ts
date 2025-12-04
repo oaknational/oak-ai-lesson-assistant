@@ -27,7 +27,7 @@ export async function getRelevantLessonPlans({
 }): Promise<RagLessonPlanResult[]> {
   log.info(`Getting embedding for title: ${title}`);
   const queryVector = await getEmbedding({ text: title, openai });
-  log.info("Got embedding");
+  log.info("Got embedding", JSON.stringify(queryVector));
 
   log.info(`Searching vector database for lesson plans`);
   const vectorSearchResults = await vectorSearch({

@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
-import type { ParsedChatCompletion } from "openai/resources/beta/chat/completions.mjs";
 import pLimit from "p-limit";
 import { pick } from "remeda";
 import { Md5 } from "ts-md5";
@@ -10,13 +9,9 @@ import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   AilaQuizReranker,
   QuizQuestionPool,
-  QuizQuestionWithSourceData,
+  RatingResponse,
 } from "../interfaces";
-import { evaluateQuiz } from "../services/OpenAIRanker";
-import {
-  type RatingResponse,
-  ratingResponseSchema,
-} from "./RerankerStructuredOutputSchema";
+import { evaluateQuiz, ratingResponseSchema } from "../services/OpenAIRanker";
 
 const log = aiLogger("aila:quiz");
 

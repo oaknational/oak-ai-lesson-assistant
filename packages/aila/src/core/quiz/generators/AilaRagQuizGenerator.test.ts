@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 
-import { QuizV1QuestionSchema } from "../../../protocol/schemas/quiz/quizV1";
+import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 
@@ -33,7 +33,9 @@ describe("AilaRagQuizGenerator", () => {
     // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
     for (const pool of result) {
       for (const quiz of pool.questions) {
-        expect(QuizV1QuestionSchema.safeParse(quiz).success).toBe(true);
+        expect(QuizV3QuestionSchema.safeParse(quiz.question).success).toBe(
+          true,
+        );
       }
     }
   });
@@ -47,8 +49,8 @@ describe("AilaRagQuizGenerator", () => {
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(1);
     expect(result[0]!.question).toBeDefined();
-    expect(result[0]!.answers).toBeDefined();
-    expect(result[0]!.distractors).toBeDefined();
+    expect(result[0]!.question.question).toBeDefined();
+    expect(result[0]!.sourceUid).toBeDefined();
   });
 
   it("Should search for questions and provide a hit", async () => {
@@ -88,8 +90,8 @@ describe("AilaRagQuizGenerator", () => {
     expect(Array.isArray(result)).toBe(true);
     // expect(result.length).toBe(1);
     expect(result[0]!.questions[0]!.question).toBeDefined();
-    expect(result[0]!.questions[0]!.answers).toBeDefined();
-    expect(result[0]!.questions[0]!.distractors).toBeDefined();
+    expect(result[0]!.questions[0]!.question.question).toBeDefined();
+    expect(result[0]!.questions[0]!.sourceUid).toBeDefined();
     log.info("Quiz generated with rag: ", result[0]!.questions[0]);
   });
 });

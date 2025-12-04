@@ -8,7 +8,7 @@ import { z } from "zod";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { constrainImageUrl } from "../../../protocol/schemas/quiz/conversion/cloudinaryImageHelper";
 import { QuizInspectionSystemPrompt } from "../QuestionAssesmentPrompt";
-import type { QuizQuestionWithSourceData, RatingResponse } from "../interfaces";
+import type { RagQuizQuestion, RatingResponse } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 // OpenAI model constant
@@ -61,29 +61,55 @@ function processStringWithImages(text: string): ChatContent[] {
     .filter((part): part is ChatContent => part !== null);
 }
 
-function quizToLLMMessages(
-  quizQuestion: QuizQuestionWithSourceData,
-): ChatMessage {
+function quizToLLMMessages(ragQuestion: RagQuizQuestion): ChatMessage {
   const content: ChatContent[] = [];
+  const q = ragQuestion.question;
 
-  // Process question
-  content.push(...processStringWithImages(quizQuestion.question));
+  // Process question text
+  content.push(...processStringWithImages(q.question));
 
-  // Process answers
-  content.push({ type: "text" as const, text: "\n\nCorrect answer(s):" });
-  quizQuestion.answers.forEach((answer, index) => {
-    content.push({ type: "text" as const, text: `${index + 1}: ` });
-    content.push(...processStringWithImages(answer));
-    content.push({ type: "text" as const, text: "\n" });
-  });
+  // Format based on question type
+  if (q.questionType === "multiple-choice") {
+    content.push({ type: "text" as const, text: "\n\nCorrect answer(s):" });
+    q.answers.forEach((answer, index) => {
+      content.push({ type: "text" as const, text: `${index + 1}: ` });
+      content.push(...processStringWithImages(answer));
+      content.push({ type: "text" as const, text: "\n" });
+    });
 
-  // Process distractors
-  content.push({ type: "text" as const, text: "\n\nDistractors:" });
-  quizQuestion.distractors.forEach((distractor, index) => {
-    content.push({ type: "text" as const, text: `${index + 1}: ` });
-    content.push(...processStringWithImages(distractor));
-    content.push({ type: "text" as const, text: "\n" });
-  });
+    content.push({ type: "text" as const, text: "\n\nDistractors:" });
+    q.distractors.forEach((distractor, index) => {
+      content.push({ type: "text" as const, text: `${index + 1}: ` });
+      content.push(...processStringWithImages(distractor));
+      content.push({ type: "text" as const, text: "\n" });
+    });
+  } else if (q.questionType === "short-answer") {
+    content.push({
+      type: "text" as const,
+      text: "\n\nAcceptable answer(s):",
+    });
+    q.answers.forEach((answer, index) => {
+      content.push({ type: "text" as const, text: `${index + 1}: ` });
+      content.push(...processStringWithImages(answer));
+      content.push({ type: "text" as const, text: "\n" });
+    });
+  } else if (q.questionType === "match") {
+    content.push({ type: "text" as const, text: "\n\nCorrect pairs:" });
+    q.pairs.forEach((pair, index) => {
+      content.push({ type: "text" as const, text: `${index + 1}: ` });
+      content.push(...processStringWithImages(pair.left));
+      content.push({ type: "text" as const, text: " → " });
+      content.push(...processStringWithImages(pair.right));
+      content.push({ type: "text" as const, text: "\n" });
+    });
+  } else if (q.questionType === "order") {
+    content.push({ type: "text" as const, text: "\n\nCorrect order:" });
+    q.items.forEach((item, index) => {
+      content.push({ type: "text" as const, text: `${index + 1}: ` });
+      content.push(...processStringWithImages(item));
+      content.push({ type: "text" as const, text: "\n" });
+    });
+  }
 
   return { role: "user" as const, content };
 }
@@ -99,7 +125,7 @@ function contentListToUser(messages: ChatContent[]): ChatMessage {
  * @returns {ChatMessage} A formatted ChatMessage object ready for use with OpenAI API.
  */
 function quizQuestionsToOpenAIMessageFormat(
-  questions: QuizQuestionWithSourceData[],
+  questions: RagQuizQuestion[],
 ): ChatMessage {
   const content: ChatContent[] = [];
   const promptList = questions.map((question) => quizToLLMMessages(question));
@@ -124,7 +150,7 @@ function quizQuestionsToOpenAIMessageFormat(
  */
 function combinePromptsAndQuestions(
   lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithSourceData[],
+  questions: RagQuizQuestion[],
   systemPrompt: OpenAI.Chat.Completions.ChatCompletionSystemMessageParam,
   quizType: QuizPath,
 ): ChatMessage[] {
@@ -178,7 +204,7 @@ function combinePromptsAndQuestions(
  */
 async function evaluateQuiz<T extends z.ZodType<RatingResponse>>(
   lessonPlan: PartialLessonPlan,
-  questions: QuizQuestionWithSourceData[],
+  questions: RagQuizQuestion[],
   max_tokens: number = 4000,
   ranking_schema: T,
   quizType: QuizPath,

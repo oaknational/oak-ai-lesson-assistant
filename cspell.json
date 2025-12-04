@@ -315,6 +315,7 @@
     "zrange",
     "zrem",
     "mathjax",
-    "resvg"
+    "resvg",
+    "murmurhash"
   ]
 }

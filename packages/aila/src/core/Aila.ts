@@ -149,7 +149,7 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._document.content = persistedLessonPlan;
     }
-    if (!this.options.useAgenticAila) {
+    if (!this.options.useAgenticAila && !this.options.useLegacyAgenticAila) {
       await this._document.initialiseContentFromMessages(this._chat.messages);
     }
 
@@ -171,6 +171,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       useAgenticAila: options?.useAgenticAila ?? false,
+      useLegacyAgenticAila: options?.useLegacyAgenticAila ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
     };

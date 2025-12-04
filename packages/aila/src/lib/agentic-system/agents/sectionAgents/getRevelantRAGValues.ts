@@ -1,7 +1,6 @@
 import { isTruthy } from "remeda";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
-import type { RagLessonPlan } from "../../../../utils/rag/fetchRagContent";
 import type { AilaExecutionContext } from "../../types";
 
 export function getRelevantRAGValues<ResponseType>({
@@ -10,7 +9,7 @@ export function getRelevantRAGValues<ResponseType>({
 }: {
   ctx: AilaExecutionContext;
   contentFromDocument: (
-    document: PartialLessonPlan | RagLessonPlan,
+    document: PartialLessonPlan,
   ) => ResponseType | undefined;
 }): {
   /**
@@ -28,13 +27,15 @@ export function getRelevantRAGValues<ResponseType>({
 } {
   const exemplarContent =
     ctx.persistedState.relevantLessons
+      ?.map((lesson) => lesson.lessonPlan)
       ?.map(contentFromDocument)
       .filter(isTruthy) ?? [];
+
   const basedOnLesson = ctx.persistedState.relevantLessons?.find(
-    (lesson) => lesson.id === ctx.currentTurn.document.basedOn?.id,
+    (lesson) => lesson.ragLessonPlanId === ctx.currentTurn.document.basedOn?.id,
   );
   const basedOnContent = basedOnLesson
-    ? contentFromDocument(basedOnLesson)
+    ? contentFromDocument(basedOnLesson.lessonPlan)
     : undefined;
   const currentValue = contentFromDocument(ctx.currentTurn.document);
 
