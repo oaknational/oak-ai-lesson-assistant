@@ -2,11 +2,19 @@
 
 import { createContext, useContext, useState } from "react";
 
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import {
+  type GeneratorData,
+  type ImageDescriptionsData,
+  type ReportNode,
+  extractGeneratorData,
+  extractImageDescriptionsData,
+  getChild,
+} from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   QuizQuestionPool,
   RagQuizQuestion,
 } from "@oakai/aila/src/core/quiz/interfaces";
+import type { LatestQuiz } from "@oakai/aila/src/protocol/schema";
 
 import { QuizSection } from "@/components/AppComponents/SectionContent/QuizSection";
 import { MathJaxWrap } from "@/components/MathJax";
@@ -14,103 +22,25 @@ import { MathJaxWrap } from "@/components/MathJax";
 import { MLPipelineDetails } from "./components/MLPipelineDetails";
 import { QuestionCard } from "./components/QuestionCard";
 import type { ViewMode } from "./page";
-import type { QuizDebugResult } from "./useStreamingDebug";
 import { formatSeconds } from "./utils";
-
-/**
- * Helper to safely get a child node from the report tree
- */
-function getChild(
-  node: ReportNode | undefined,
-  name: string,
-): ReportNode | undefined {
-  return node?.children[name];
-}
-
-/**
- * Generator result data extracted from ReportNode
- */
-interface GeneratorData {
-  pools: QuizQuestionPool[];
-  timingMs?: number;
-  metadata?: { sourceLesson?: string };
-}
-
-/**
- * Image descriptions data extracted from ReportNode
- */
-interface ImageDescriptionsData {
-  totalImages: number;
-  cacheHits: number;
-  cacheMisses: number;
-  generatedCount: number;
-  descriptions: Array<{ url: string; description: string; wasCached: boolean }>;
-  timingMs?: number;
-}
 
 // Context for view mode
 export const ViewModeContext = createContext<ViewMode>("learn");
 export const useViewMode = () => useContext(ViewModeContext);
 
 interface QuizRagDebugViewProps {
-  result: QuizDebugResult | null;
   viewMode: ViewMode;
   report: ReportNode | null;
   isStreaming?: boolean;
 }
 
-/**
- * Extract generator data from a ReportNode
- */
-function extractGeneratorData(
-  node: ReportNode | undefined,
-): GeneratorData | undefined {
-  if (!node) return undefined;
-  const pools = node.data.pools as QuizQuestionPool[] | undefined;
-  if (!pools) return undefined;
-  return {
-    pools,
-    timingMs: node.durationMs,
-    metadata: node.data.metadata as { sourceLesson?: string } | undefined,
-  };
-}
-
-/**
- * Extract image descriptions data from a ReportNode
- */
-function extractImageDescriptions(
-  node: ReportNode | undefined,
-): ImageDescriptionsData | undefined {
-  if (!node?.data) return undefined;
-  const { totalImages, cacheHits, cacheMisses, generatedCount, descriptions } =
-    node.data as {
-      totalImages?: number;
-      cacheHits?: number;
-      cacheMisses?: number;
-      generatedCount?: number;
-      descriptions?: Array<{
-        url: string;
-        description: string;
-        wasCached: boolean;
-      }>;
-    };
-  if (totalImages === undefined) return undefined;
-  return {
-    totalImages,
-    cacheHits: cacheHits ?? 0,
-    cacheMisses: cacheMisses ?? 0,
-    generatedCount: generatedCount ?? 0,
-    descriptions: descriptions ?? [],
-    timingMs: node.durationMs,
-  };
-}
-
 export function QuizRagDebugView({
-  result,
   viewMode,
   report,
   isStreaming = false,
 }: QuizRagDebugViewProps) {
+  // TODO: use Zod schema parsing instead of type cast
+  const quiz = report?.data.quiz as LatestQuiz | undefined;
   // Helper to check stage status from report tree
   const getNodeStatus = (path: string[]) => {
     let node: ReportNode | undefined = report ?? undefined;
@@ -133,11 +63,11 @@ export function QuizRagDebugView({
   const composerPromptNode = getChild(selectorNode, "composerPrompt");
   const composerLlmNode = getChild(selectorNode, "composerLlm");
 
-  // Get data from nodes
+  // Get data from nodes (extractors use Zod validation and return undefined if not complete)
   const basedOnRag = extractGeneratorData(basedOnRagNode);
   const ailaRag = extractGeneratorData(ailaRagNode);
   const mlMultiTerm = extractGeneratorData(mlMultiTermNode);
-  const imageDescriptions = extractImageDescriptions(imageDescriptionsNode);
+  const imageDescriptions = extractImageDescriptionsData(imageDescriptionsNode);
 
   return (
     <ViewModeContext.Provider value={viewMode}>
@@ -175,7 +105,7 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: basedOnRag.timingMs ?? 0,
+                    timing: basedOnRagNode?.durationMs ?? 0,
                   }
                 : undefined
             }
@@ -203,7 +133,7 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: ailaRag.timingMs ?? 0,
+                    timing: ailaRagNode?.durationMs ?? 0,
                   }
                 : undefined
             }
@@ -250,7 +180,7 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: mlMultiTerm.timingMs ?? 0,
+                    timing: mlMultiTermNode?.durationMs ?? 0,
                   }
                 : undefined
             }
@@ -284,7 +214,7 @@ export function QuizRagDebugView({
           loading={isStageLoading(["selector", "imageDescriptions"])}
           stats={
             imageDescriptions
-              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs ?? 0)}`
+              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptionsNode?.durationMs ?? 0)}`
               : undefined
           }
         >
@@ -381,13 +311,13 @@ export function QuizRagDebugView({
           defaultOpen
           color="pink"
           stats={
-            result?.quiz
-              ? `${result.quiz.questions.length} questions, ${formatSeconds(report?.durationMs ?? 0)} total`
+            quiz
+              ? `${quiz.questions.length} questions, ${formatSeconds(report?.durationMs ?? 0)} total`
               : undefined
           }
         >
-          {result?.quiz ? (
-            <FinalQuizDisplay quiz={result.quiz} report={report} />
+          {quiz ? (
+            <FinalQuizDisplay quiz={quiz} report={report} />
           ) : (
             <p className="text-gray-400">Waiting for quiz generation...</p>
           )}
@@ -601,30 +531,23 @@ function GeneratorAccordion({
 // Generator Section for basedOnRag and ailaRag
 function GeneratorSection({ result }: { result: GeneratorData }) {
   return (
-    <div className="space-y-3">
-      {result.metadata?.sourceLesson && (
-        <p className="text-sm text-gray-600">
-          Source: {result.metadata.sourceLesson}
-        </p>
-      )}
-      <div className="space-y-2">
-        {result.pools.map((pool, idx) => (
-          <div key={idx} className="rounded-lg border bg-white p-4">
-            <p className="mb-2 text-sm font-medium">
-              Pool {idx + 1}:{" "}
-              {pool.source.type === "basedOn" && pool.source.lessonTitle}
-              {pool.source.type === "ailaRag" && pool.source.lessonTitle}
-              {pool.source.type === "mlSemanticSearch" &&
-                `"${pool.source.semanticQuery}"`}
-            </p>
-            <div className="space-y-2">
-              {pool.questions.map((q) => (
-                <QuestionCard key={q.sourceUid} question={q} compact />
-              ))}
-            </div>
+    <div className="space-y-2">
+      {result.pools.map((pool, idx) => (
+        <div key={idx} className="rounded-lg border bg-white p-4">
+          <p className="mb-2 text-sm font-medium">
+            Pool {idx + 1}:{" "}
+            {pool.source.type === "basedOn" && pool.source.lessonTitle}
+            {pool.source.type === "ailaRag" && pool.source.lessonTitle}
+            {pool.source.type === "mlSemanticSearch" &&
+              `"${pool.source.semanticQuery}"`}
+          </p>
+          <div className="space-y-2">
+            {pool.questions.map((q) => (
+              <QuestionCard key={q.sourceUid} question={q} compact />
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -884,7 +807,7 @@ function FinalQuizDisplay({
   quiz,
   report,
 }: {
-  quiz: QuizDebugResult["quiz"];
+  quiz: LatestQuiz;
   report: ReportNode | null;
 }) {
   const mode = useViewMode();

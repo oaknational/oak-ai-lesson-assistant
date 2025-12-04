@@ -1,14 +1,10 @@
 import { buildFullQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildFullQuizService";
-import {
-  type ReportNode,
-  createQuizTracker,
-} from "@oakai/aila/src/core/quiz/instrumentation";
+import { createQuizTracker } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
-import type { LatestQuiz } from "@oakai/aila/src/protocol/schemas/quiz";
 import { aiLogger } from "@oakai/logger";
 import {
   getRelevantLessonPlans,
@@ -18,6 +14,8 @@ import {
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+
+import type { SSEEvent } from "@/app/admin/quiz-rag/types";
 
 const log = aiLogger("admin");
 
@@ -30,31 +28,6 @@ async function isAdmin(userId: string): Promise<boolean> {
   return user.emailAddresses.some((email) =>
     email.emailAddress.endsWith("@thenational.academy"),
   );
-}
-
-/**
- * Final result combining the report tree and the generated quiz
- */
-interface QuizDebugResult {
-  report: ReportNode;
-  quiz: LatestQuiz;
-  input: {
-    lessonPlan: PartialLessonPlan;
-    quizType: QuizPath;
-    relevantLessons: AilaRagRelevantLesson[];
-  };
-}
-
-/**
- * SSE event types for the streaming response.
- * - "report": Updated pipeline report with current stage states
- * - "complete": Final result with full debug data
- * - "error": Pipeline error
- */
-interface SSEEvent {
-  type: "report" | "complete" | "error";
-  data: ReportNode | QuizDebugResult | { message: string };
-  timestamp: number;
 }
 
 export async function POST(request: Request) {
@@ -143,20 +116,22 @@ export async function POST(request: Request) {
       });
 
       try {
-        const quiz = await tracker.run((task) =>
-          service.buildQuiz(quizType, lessonPlan, relevantLessons, task),
-        );
+        await tracker.run(async (task) => {
+          const quiz = await service.buildQuiz(
+            quizType,
+            lessonPlan,
+            relevantLessons,
+            task,
+          );
+          task.addData({ quiz });
+        });
 
         const report = tracker.getReport();
         log.info(`Pipeline complete in ${report.durationMs}ms`);
 
         sendEvent({
           type: "complete",
-          data: {
-            report,
-            quiz,
-            input: { lessonPlan, quizType, relevantLessons },
-          },
+          data: report,
           timestamp: Date.now(),
         });
       } catch (error) {

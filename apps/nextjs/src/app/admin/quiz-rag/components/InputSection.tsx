@@ -32,10 +32,8 @@ export function InputSection({
   const [jsonInput, setJsonInput] = useState("");
   const [selectedExample, setSelectedExample] = useState("");
   const [parseError, setParseError] = useState<string | null>(null);
-  const [chatLookupEnabled, setChatLookupEnabled] = useState(false);
   const [isExpanded, setIsExpanded] = useState(!selectedPlan);
 
-  // Collapse when a plan is loaded externally (e.g., from persisted results)
   useEffect(() => {
     if (selectedPlan) {
       setIsExpanded(false);
@@ -45,22 +43,18 @@ export function InputSection({
   const examples = trpc.quizRagDebug.getExampleLessonPlans.useQuery();
   const chatLookup = trpc.quizRagDebug.getLessonPlanByChatId.useQuery(
     { chatId },
-    { enabled: chatLookupEnabled && chatId.length > 10 },
+    { enabled: false },
   );
 
-  const handleChatIdSubmit = () => {
-    if (chatId.length > 10) {
-      setChatLookupEnabled(true);
+  const handleChatIdSubmit = async () => {
+    if (chatId.length < 10) return;
+    const result = await chatLookup.refetch();
+    if (result.data) {
+      onLessonPlanChange(result.data.lessonPlan);
+      onRelevantLessonsChange(result.data.relevantLessons);
+      setIsExpanded(false);
     }
   };
-
-  // When chat data is loaded, apply it
-  if (chatLookup.data && chatLookupEnabled) {
-    onLessonPlanChange(chatLookup.data.lessonPlan);
-    onRelevantLessonsChange(chatLookup.data.relevantLessons);
-    setChatLookupEnabled(false);
-    setIsExpanded(false);
-  }
 
   const handleExampleChange = (exampleId: string) => {
     setSelectedExample(exampleId);
@@ -182,24 +176,18 @@ export function InputSection({
             <input
               type="text"
               value={chatId}
-              onChange={(e) => {
-                setChatId(e.target.value);
-                setChatLookupEnabled(false);
-              }}
+              onChange={(e) => setChatId(e.target.value)}
               placeholder="Enter chat/lesson plan ID..."
               className="flex-1 rounded border px-3 py-2"
             />
             <button
-              onClick={handleChatIdSubmit}
-              disabled={chatId.length < 10}
+              onClick={() => void handleChatIdSubmit()}
+              disabled={chatId.length < 10 || chatLookup.isFetching}
               className="rounded bg-gray-200 px-4 py-2 hover:bg-gray-300 disabled:opacity-50"
             >
-              Look up
+              {chatLookup.isFetching ? "Loading..." : "Look up"}
             </button>
           </div>
-          {chatLookup.isLoading && (
-            <p className="text-sm text-gray-500">Loading...</p>
-          )}
           {chatLookup.data && (
             <p className="text-sm text-green-600">
               Found: {chatLookup.data.title} ({chatLookup.data.lessonPlan.title}

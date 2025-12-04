@@ -5,50 +5,24 @@ import { useCallback, useRef, useState } from "react";
 import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
-  LatestQuiz,
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
+import type { SSEEvent } from "./types";
+
 const log = aiLogger("admin");
-
-/**
- * Final result from the debug pipeline
- */
-export interface QuizDebugResult {
-  report: ReportNode;
-  quiz: LatestQuiz;
-  input: {
-    lessonPlan: PartialLessonPlan;
-    quizType: QuizPath;
-    relevantLessons: AilaRagRelevantLesson[];
-  };
-}
-
-/**
- * SSE event from the streaming endpoint.
- * - "report": Updated pipeline report tree
- * - "complete": Final result with quiz and full report
- * - "error": Pipeline error
- */
-interface SSEEvent {
-  type: "report" | "complete" | "error";
-  data: ReportNode | QuizDebugResult | { message: string };
-  timestamp: number;
-}
 
 export interface StreamingState {
   isRunning: boolean;
   error: Error | null;
-  result: QuizDebugResult | null;
   report: ReportNode | null;
 }
 
 const initialState: StreamingState = {
   isRunning: false,
   error: null,
-  result: null,
   report: null,
 };
 
@@ -65,18 +39,11 @@ export function useStreamingDebug() {
   const handleEvent = useCallback((event: SSEEvent) => {
     log.info(`Stream event: ${event.type}`);
 
-    if (event.type === "report") {
+    if (event.type === "report" || event.type === "complete") {
       setState((prev) => ({
         ...prev,
         report: event.data as ReportNode,
-      }));
-    } else if (event.type === "complete") {
-      const result = event.data as QuizDebugResult;
-      setState((prev) => ({
-        ...prev,
-        isRunning: false,
-        result,
-        report: result.report,
+        isRunning: event.type !== "complete",
       }));
     } else if (event.type === "error") {
       const errorData = event.data as { message: string };
