@@ -83,11 +83,13 @@ export class BaseFullQuizService implements FullQuizService {
       if (task) {
         return task.child(quizGenerator.name, async (generatorTask) => {
           const pools = await generateFn();
-          generatorTask.setData("poolCount", pools.length);
-          generatorTask.setData(
-            "questionCount",
-            pools.reduce((sum, p) => sum + p.questions.length, 0),
-          );
+          generatorTask.addData({
+            poolCount: pools.length,
+            questionCount: pools.reduce(
+              (sum, p) => sum + p.questions.length,
+              0,
+            ),
+          });
           return pools;
         });
       }
@@ -109,7 +111,7 @@ export class BaseFullQuizService implements FullQuizService {
     const quizRankings = task
       ? await task.child("reranker", async (rerankerTask) => {
           const rankings = await rerankerFn();
-          rerankerTask.setData("rankingCount", rankings.length);
+          rerankerTask.addData({ rankingCount: rankings.length });
           return rankings;
         })
       : await rerankerFn();
@@ -138,7 +140,7 @@ export class BaseFullQuizService implements FullQuizService {
     const selectedQuestions = task
       ? await task.child("selector", async (selectorTask) => {
           const questions = await selectorFn();
-          selectorTask.setData("selectedCount", questions.length);
+          selectorTask.addData({ selectedCount: questions.length });
           return questions;
         })
       : await selectorFn();

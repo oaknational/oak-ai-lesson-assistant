@@ -86,11 +86,11 @@ export class Report {
   }
 
   /**
-   * Set data on a task at the given path.
+   * Merge data into a task at the given path.
    */
-  setAtPath(path: string[], key: string, value: unknown): void {
+  mergeAtPath(path: string[], data: Record<string, unknown>): void {
     const node = path.length === 0 ? this.root : this.getNode(path);
-    node.data[key] = value;
+    Object.assign(node.data, data);
   }
 
   /**
