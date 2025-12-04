@@ -59,62 +59,44 @@ export class BaseFullQuizService implements FullQuizService {
   public async buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
-    task?: Task,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<LatestQuiz> {
-    // Run all generators in parallel, each wrapped in its own task
-    const poolPromises = this.quizGenerators.map((quizGenerator) => {
-      const generateFn = async () => {
-        if (quizType === "/starterQuiz") {
-          return quizGenerator.generateMathsStarterQuizCandidates(
-            lessonPlan,
-            ailaRagRelevantLessons,
-          );
-        } else if (quizType === "/exitQuiz") {
-          return quizGenerator.generateMathsExitQuizCandidates(
-            lessonPlan,
-            ailaRagRelevantLessons,
-          );
-        }
-        throw new Error(`Invalid quiz type: ${quizType as string}`);
-      };
+    // Run all generators in parallel
+    const poolPromises = this.quizGenerators.map((generator) =>
+      task.child(generator.name, async (t) => {
+        const pools =
+          quizType === "/starterQuiz"
+            ? await generator.generateMathsStarterQuizCandidates(
+                lessonPlan,
+                ailaRagRelevantLessons,
+              )
+            : await generator.generateMathsExitQuizCandidates(
+                lessonPlan,
+                ailaRagRelevantLessons,
+              );
 
-      // Wrap in task.child if instrumentation is enabled
-      if (task) {
-        return task.child(quizGenerator.name, async (generatorTask) => {
-          const pools = await generateFn();
-          generatorTask.addData({
-            poolCount: pools.length,
-            questionCount: pools.reduce(
-              (sum, p) => sum + p.questions.length,
-              0,
-            ),
-          });
-          return pools;
+        t.addData({
+          poolCount: pools.length,
+          questionCount: pools.reduce((sum, p) => sum + p.questions.length, 0),
         });
-      }
-      return generateFn();
-    });
+        return pools;
+      }),
+    );
 
     const poolArrays = await Promise.all(poolPromises);
     const questionPools = poolArrays.flat();
 
     // Rerank the question pools
-    const rerankerFn = async () => {
-      return this.quizReranker.evaluateQuizArray(
+    const quizRankings = await task.child("reranker", async (t) => {
+      const rankings = await this.quizReranker.evaluateQuizArray(
         questionPools,
         lessonPlan,
         quizType,
       );
-    };
-
-    const quizRankings = task
-      ? await task.child("reranker", async (rerankerTask) => {
-          const rankings = await rerankerFn();
-          rerankerTask.addData({ rankingCount: rankings.length });
-          return rankings;
-        })
-      : await rerankerFn();
+      t.addData({ rankingCount: rankings.length });
+      return rankings;
+    });
 
     if (!quizRankings[0]) {
       log.error(
@@ -128,22 +110,16 @@ export class BaseFullQuizService implements FullQuizService {
     }
 
     // Select final questions
-    const selectorFn = async () => {
-      return this.quizSelector.selectQuestions(
+    const selectedQuestions = await task.child("selector", async (t) => {
+      const questions = await this.quizSelector.selectQuestions(
         questionPools,
         quizRankings,
         lessonPlan,
         quizType,
       );
-    };
-
-    const selectedQuestions = task
-      ? await task.child("selector", async (selectorTask) => {
-          const questions = await selectorFn();
-          selectorTask.addData({ selectedCount: questions.length });
-          return questions;
-        })
-      : await selectorFn();
+      t.addData({ selectedCount: questions.length });
+      return questions;
+    });
 
     return buildQuizFromQuestions(selectedQuestions);
   }

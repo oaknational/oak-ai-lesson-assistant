@@ -74,8 +74,8 @@ export interface FullQuizService {
   buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-    task?: Task,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<LatestQuiz>;
 }
 
