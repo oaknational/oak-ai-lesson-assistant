@@ -6,8 +6,8 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import pLimit from "p-limit";
 import { z } from "zod";
 
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
-import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -216,30 +216,29 @@ export class ImageDescriptionService {
    * Get or generate descriptions for all images in question pools
    *
    * @param questionPools - The question pools to extract images from
-   * @param span - Optional tracing span. When provided, records cache stats and descriptions.
+   * @param task - Task for tracking metrics
    * @returns Map of image URL to description, plus cache statistics
    */
   public async getImageDescriptions(
     questionPools: QuizQuestionPool[],
-    span?: Span,
+    task: Task,
   ): Promise<ImageDescriptionMap> {
     const imageUrls = this.extractImageUrls(questionPools);
 
     if (imageUrls.length === 0) {
       log.info("No images found in question pools");
-      const result = {
+      task.addData({
+        totalImages: 0,
+        cacheHits: 0,
+        cacheMisses: 0,
+        generatedCount: 0,
+      });
+      return {
         descriptions: new Map<string, string>(),
         cacheHits: 0,
         cacheMisses: 0,
         generatedCount: 0,
       };
-      if (span) {
-        span.setData("totalImages", 0);
-        span.setData("cacheHits", 0);
-        span.setData("cacheMisses", 0);
-        span.setData("generatedCount", 0);
-      }
-      return result;
     }
 
     log.info(`Found ${imageUrls.length} unique images`);
@@ -261,21 +260,20 @@ export class ImageDescriptionService {
     // Combine cached and generated
     const allDescriptions = new Map([...cached, ...generated]);
 
-    // Record debug data if span is provided
-    if (span) {
-      span.setData("totalImages", imageUrls.length);
-      span.setData("cacheHits", cacheHits);
-      span.setData("cacheMisses", cacheMisses);
-      span.setData("generatedCount", generated.size);
-      span.setData(
-        "descriptions",
-        Array.from(allDescriptions.entries()).map(([url, description]) => ({
+    // Record tracking data
+    task.addData({
+      totalImages: imageUrls.length,
+      cacheHits,
+      cacheMisses,
+      generatedCount: generated.size,
+      descriptions: Array.from(allDescriptions.entries()).map(
+        ([url, description]) => ({
           url,
           description,
           wasCached: cached.has(url),
-        })),
-      );
-    }
+        }),
+      ),
+    });
 
     return {
       descriptions: allDescriptions,

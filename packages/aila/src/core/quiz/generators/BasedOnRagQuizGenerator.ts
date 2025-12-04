@@ -4,8 +4,8 @@ import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
-  QuizV1,
 } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -45,14 +45,16 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
 
   async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return this.generateQuizCandidates(lessonPlan, "/starterQuiz");
   }
 
   async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return this.generateQuizCandidates(lessonPlan, "/exitQuiz");
   }

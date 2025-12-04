@@ -8,6 +8,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type {
   AilaQuizCandidateGenerator,
   LessonSlugQuizLookup,
@@ -55,12 +56,14 @@ export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
 
   abstract generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
 
   abstract generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
 
   public async getLessonSlugFromPlanId(planId: string): Promise<string | null> {

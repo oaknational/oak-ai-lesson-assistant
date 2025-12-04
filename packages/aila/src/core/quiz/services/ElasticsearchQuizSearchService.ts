@@ -7,8 +7,8 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import OpenAI from "openai";
 
+import type { Task } from "../instrumentation";
 import type { CustomSource, SimplifiedResult } from "../interfaces";
-import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -66,14 +66,14 @@ export class ElasticsearchQuizSearchService {
   /**
    * Performs hybrid search combining BM25 and vector similarity
    * @param hybridWeight - Weight for vector search (0.0-1.0), BM25 gets (1 - hybridWeight)
-   * @param span - Optional tracing span. When provided, records hits with scores for debugging.
+   * @param task - Task for tracking debug data
    */
   public async searchWithHybrid(
     index: string,
     query: string,
     size: number = 100,
     hybridWeight: number = 0.5,
-    span?: Span,
+    task: Task,
   ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
@@ -134,29 +134,26 @@ export class ElasticsearchQuizSearchService {
 
       log.info(`Hybrid search found ${response.hits.hits.length} hits`);
 
-      // Record debug data if span is provided
-      if (span) {
-        span.setData("query", query);
-        span.setData("size", size);
-        span.setData("hitCount", response.hits.hits.length);
-        span.setData(
-          "hitsWithScores",
-          response.hits.hits
-            .map((hit) => {
-              const source = hit._source;
-              if (!source || !source.questionUid || !source.text) {
-                return null;
-              }
-              return {
-                questionUid: source.questionUid,
-                text: source.text,
-                score: hit._score ?? 0,
-                lessonSlug: source.lessonSlug ?? "",
-              };
-            })
-            .filter(Boolean),
-        );
-      }
+      // Record debug data
+      task.addData({
+        query,
+        size,
+        hitCount: response.hits.hits.length,
+        hitsWithScores: response.hits.hits
+          .map((hit) => {
+            const source = hit._source;
+            if (!source || !source.questionUid || !source.text) {
+              return null;
+            }
+            return {
+              questionUid: source.questionUid,
+              text: source.text,
+              score: hit._score ?? 0,
+              lessonSlug: source.lessonSlug ?? "",
+            };
+          })
+          .filter(Boolean),
+      });
 
       return response.hits;
     } catch (error) {

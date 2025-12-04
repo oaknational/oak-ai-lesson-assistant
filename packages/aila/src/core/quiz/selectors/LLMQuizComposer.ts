@@ -4,6 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { zodResponseFormat } from "openai/helpers/zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type {
   QuizQuestionPool,
   QuizSelector,
@@ -11,7 +12,6 @@ import type {
   RatingResponse,
 } from "../interfaces";
 import { ImageDescriptionService } from "../services/ImageDescriptionService";
-import type { Span } from "../tracing";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
@@ -33,16 +33,12 @@ const IS_REASONING_MODEL = true;
  * - Alignment with lesson plan objectives
  */
 export class LLMQuizComposer implements QuizSelector {
-  /**
-   * Select questions from candidate pools using LLM reasoning.
-   * @param span - Optional tracing span. When provided, records prompt, response, and selections.
-   */
   public async selectQuestions(
     questionPools: QuizQuestionPool[],
-    ratings: RatingResponse[], // Ignored - composer makes its own decisions
+    _ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-    span?: Span,
+    task: Task,
   ): Promise<RagQuizQuestion[]> {
     this.logCompositionStart(questionPools, quizType);
 
@@ -53,61 +49,56 @@ export class LLMQuizComposer implements QuizSelector {
 
     // Process images: extract URLs, get/generate descriptions, replace in text
     const imageService = new ImageDescriptionService();
-    const imageSpan = span?.startChild("imageDescriptions");
-    const { descriptions, cacheHits, cacheMisses, generatedCount } =
-      await imageService.getImageDescriptions(questionPools, imageSpan);
-    imageSpan?.setData("result", {
-      totalImages: descriptions.size,
-      cacheHits,
-      cacheMisses,
-      generatedCount,
-      // Include descriptions array from span data for streaming
-      descriptions: imageSpan?.getData()["descriptions"],
-    });
-    imageSpan?.end();
-
-    log.info(
-      `Image descriptions: ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated)`,
+    const { descriptions, poolsWithDescriptions } = await task.child(
+      "imageDescriptions",
+      async (t) => {
+        const result = await imageService.getImageDescriptions(
+          questionPools,
+          t,
+        );
+        return {
+          descriptions: result.descriptions,
+          poolsWithDescriptions:
+            ImageDescriptionService.applyDescriptionsToQuestions(
+              questionPools,
+              result.descriptions,
+            ),
+        };
+      },
     );
 
-    // Replace images with descriptions for LLM composition
-    const poolsWithDescriptions =
-      ImageDescriptionService.applyDescriptionsToQuestions(
-        questionPools,
-        descriptions,
-      );
+    log.info(`Image descriptions: ${descriptions.size} total processed`);
 
-    // Build prompt (separate span so streaming can show prompt while waiting for LLM)
-    const promptSpan = span?.startChild("composerPrompt");
-    const prompt = buildCompositionPrompt(
-      poolsWithDescriptions,
-      lessonPlan,
-      quizType,
+    // Build prompt (separate task so streaming can show prompt while waiting for LLM)
+    const { prompt, candidateCount } = await task.child(
+      "composerPrompt",
+      async (t) => {
+        const builtPrompt = buildCompositionPrompt(
+          poolsWithDescriptions,
+          lessonPlan,
+          quizType,
+        );
+        const count = questionPools.reduce(
+          (sum, p) => sum + p.questions.length,
+          0,
+        );
+        t.addData({ prompt: builtPrompt, candidateCount: count });
+        return { prompt: builtPrompt, candidateCount: count };
+      },
     );
-    const candidateCount = questionPools.reduce(
-      (sum, p) => sum + p.questions.length,
-      0,
-    );
-    promptSpan?.setData("result", { prompt, candidateCount });
-    promptSpan?.end();
 
     // Call LLM
-    const llmSpan = span?.startChild("composerLlm");
-    const llmStart = Date.now();
-    const response = await this.callOpenAI(prompt);
-    const timingMs = Date.now() - llmStart;
+    const selectedQuestions = await task.child("composerLlm", async (t) => {
+      const llmStart = Date.now();
+      const response = await this.callOpenAI(prompt);
+      const timingMs = Date.now() - llmStart;
 
-    const selectedQuestions = this.mapResponseToQuestions(
-      response,
-      questionPools,
-    );
+      const questions = this.mapResponseToQuestions(response, questionPools);
 
-    llmSpan?.setData("result", {
-      response,
-      selectedQuestions,
-      timingMs,
+      t.addData({ response, selectedQuestions: questions, timingMs });
+
+      return questions;
     });
-    llmSpan?.end();
 
     log.info(`LLM Composer: selected ${selectedQuestions.length} questions`);
 

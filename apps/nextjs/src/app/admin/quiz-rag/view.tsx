@@ -2,12 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 
-import type {
-  GeneratorDebugResult,
-  ImageDescriptionDebugResult,
-  QuizRagDebugResult,
-  QuizRagStreamingReport,
-} from "@oakai/aila/src/core/quiz/debug";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   QuizQuestionPool,
   RagQuizQuestion,
@@ -19,43 +14,130 @@ import { MathJaxWrap } from "@/components/MathJax";
 import { MLPipelineDetails } from "./components/MLPipelineDetails";
 import { QuestionCard } from "./components/QuestionCard";
 import type { ViewMode } from "./page";
+import type { QuizDebugResult } from "./useStreamingDebug";
 import { formatSeconds } from "./utils";
+
+/**
+ * Helper to safely get a child node from the report tree
+ */
+function getChild(
+  node: ReportNode | undefined,
+  name: string,
+): ReportNode | undefined {
+  return node?.children[name];
+}
+
+/**
+ * Generator result data extracted from ReportNode
+ */
+interface GeneratorData {
+  pools: QuizQuestionPool[];
+  timingMs?: number;
+  metadata?: { sourceLesson?: string };
+}
+
+/**
+ * Image descriptions data extracted from ReportNode
+ */
+interface ImageDescriptionsData {
+  totalImages: number;
+  cacheHits: number;
+  cacheMisses: number;
+  generatedCount: number;
+  descriptions: Array<{ url: string; description: string; wasCached: boolean }>;
+  timingMs?: number;
+}
 
 // Context for view mode
 export const ViewModeContext = createContext<ViewMode>("learn");
 export const useViewMode = () => useContext(ViewModeContext);
 
 interface QuizRagDebugViewProps {
-  result: QuizRagDebugResult;
+  result: QuizDebugResult | null;
   viewMode: ViewMode;
-  streamingReport?: QuizRagStreamingReport | null;
+  report: ReportNode | null;
   isStreaming?: boolean;
+}
+
+/**
+ * Extract generator data from a ReportNode
+ */
+function extractGeneratorData(
+  node: ReportNode | undefined,
+): GeneratorData | undefined {
+  if (!node) return undefined;
+  const pools = node.data.pools as QuizQuestionPool[] | undefined;
+  if (!pools) return undefined;
+  return {
+    pools,
+    timingMs: node.durationMs,
+    metadata: node.data.metadata as { sourceLesson?: string } | undefined,
+  };
+}
+
+/**
+ * Extract image descriptions data from a ReportNode
+ */
+function extractImageDescriptions(
+  node: ReportNode | undefined,
+): ImageDescriptionsData | undefined {
+  if (!node?.data) return undefined;
+  const { totalImages, cacheHits, cacheMisses, generatedCount, descriptions } =
+    node.data as {
+      totalImages?: number;
+      cacheHits?: number;
+      cacheMisses?: number;
+      generatedCount?: number;
+      descriptions?: Array<{
+        url: string;
+        description: string;
+        wasCached: boolean;
+      }>;
+    };
+  if (totalImages === undefined) return undefined;
+  return {
+    totalImages,
+    cacheHits: cacheHits ?? 0,
+    cacheMisses: cacheMisses ?? 0,
+    generatedCount: generatedCount ?? 0,
+    descriptions: descriptions ?? [],
+    timingMs: node.durationMs,
+  };
 }
 
 export function QuizRagDebugView({
   result,
   viewMode,
-  streamingReport,
+  report,
   isStreaming = false,
 }: QuizRagDebugViewProps) {
-  const stages = streamingReport?.stages;
+  // Helper to check stage status from report tree
+  const getNodeStatus = (path: string[]) => {
+    let node: ReportNode | undefined = report ?? undefined;
+    for (const segment of path) {
+      node = node?.children[segment];
+    }
+    return node?.status;
+  };
 
-  // Helper to check stage status
-  const isStageLoading = (stageName: keyof NonNullable<typeof stages>) =>
-    stages?.[stageName]?.status === "running";
+  const isStageLoading = (path: string[]) => getNodeStatus(path) === "running";
+  const isStageComplete = (path: string[]) =>
+    getNodeStatus(path) === "complete";
 
-  const isStageComplete = (stageName: keyof NonNullable<typeof stages>) =>
-    stages?.[stageName]?.status === "complete";
+  // Extract data from report tree
+  const basedOnRagNode = getChild(report ?? undefined, "basedOnRag");
+  const ailaRagNode = getChild(report ?? undefined, "ailaRag");
+  const mlMultiTermNode = getChild(report ?? undefined, "mlMultiTerm");
+  const selectorNode = getChild(report ?? undefined, "selector");
+  const imageDescriptionsNode = getChild(selectorNode, "imageDescriptions");
+  const composerPromptNode = getChild(selectorNode, "composerPrompt");
+  const composerLlmNode = getChild(selectorNode, "composerLlm");
 
-  // Get data from result first, fall back to streaming report
-  const basedOnRag =
-    result.generators.basedOnRag ?? stages?.basedOnRag?.result ?? undefined;
-  const ailaRag =
-    result.generators.ailaRag ?? stages?.ailaRag?.result ?? undefined;
-  const mlMultiTerm =
-    result.generators.mlMultiTerm ?? stages?.mlMultiTerm?.result ?? undefined;
-  const imageDescriptions =
-    result.selector?.imageDescriptions ?? stages?.imageDescriptions?.result;
+  // Get data from nodes
+  const basedOnRag = extractGeneratorData(basedOnRagNode);
+  const ailaRag = extractGeneratorData(ailaRagNode);
+  const mlMultiTerm = extractGeneratorData(mlMultiTermNode);
+  const imageDescriptions = extractImageDescriptions(imageDescriptionsNode);
 
   return (
     <ViewModeContext.Provider value={viewMode}>
@@ -82,9 +164,9 @@ export function QuizRagDebugView({
           </LearnBlock>
           <GeneratorAccordion
             title="BasedOnRag"
-            disabled={!basedOnRag && isStageComplete("basedOnRag")}
+            disabled={!basedOnRag && isStageComplete(["basedOnRag"])}
             disabledReason="no basedOn"
-            loading={isStageLoading("basedOnRag")}
+            loading={isStageLoading(["basedOnRag"])}
             stats={
               basedOnRag
                 ? {
@@ -93,10 +175,7 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing:
-                      basedOnRag.timingMs ??
-                      stages?.basedOnRag?.durationMs ??
-                      0,
+                    timing: basedOnRag.timingMs ?? 0,
                   }
                 : undefined
             }
@@ -113,9 +192,9 @@ export function QuizRagDebugView({
           </LearnBlock>
           <GeneratorAccordion
             title="AilaRag"
-            disabled={!ailaRag && isStageComplete("ailaRag")}
+            disabled={!ailaRag && isStageComplete(["rag"])}
             disabledReason="no relevant lessons"
-            loading={isStageLoading("ailaRag")}
+            loading={isStageLoading(["rag"])}
             stats={
               ailaRag
                 ? {
@@ -124,8 +203,7 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing:
-                      ailaRag.timingMs ?? stages?.ailaRag?.durationMs ?? 0,
+                    timing: ailaRag.timingMs ?? 0,
                   }
                 : undefined
             }
@@ -162,8 +240,8 @@ export function QuizRagDebugView({
           </LearnBlock>
           <GeneratorAccordion
             title="ML Multi-Term"
-            disabled={!mlMultiTerm && isStageComplete("mlMultiTerm")}
-            loading={isStageLoading("mlMultiTerm")}
+            disabled={!mlMultiTerm && isStageComplete(["mlMultiTerm"])}
+            loading={isStageLoading(["mlMultiTerm"])}
             stats={
               mlMultiTerm
                 ? {
@@ -172,16 +250,18 @@ export function QuizRagDebugView({
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing:
-                      mlMultiTerm.timingMs ??
-                      stages?.mlMultiTerm?.durationMs ??
-                      0,
+                    timing: mlMultiTerm.timingMs ?? 0,
                   }
                 : undefined
             }
             defaultOpen
           >
-            {mlMultiTerm && <MLPipelineDetails result={mlMultiTerm} />}
+            {mlMultiTerm && mlMultiTermNode && (
+              <MLPipelineDetails
+                result={mlMultiTerm}
+                reportNode={mlMultiTermNode}
+              />
+            )}
           </GeneratorAccordion>
         </div>
 
@@ -201,10 +281,10 @@ export function QuizRagDebugView({
         <Section
           title="Image Descriptions"
           color="lemon"
-          loading={isStageLoading("imageDescriptions")}
+          loading={isStageLoading(["selector", "imageDescriptions"])}
           stats={
             imageDescriptions
-              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs ?? stages?.imageDescriptions?.durationMs ?? 0)}`
+              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptions.timingMs ?? 0)}`
               : undefined
           }
         >
@@ -232,35 +312,52 @@ export function QuizRagDebugView({
         <Section
           title="LLM Composer"
           color="lavender"
-          loading={isStageLoading("composerLlm")}
+          loading={isStageLoading(["selector", "composerLlm"])}
           stats={
-            result.selector
+            composerLlmNode?.status === "complete"
               ? (() => {
                   const totalCandidates = [
                     ...(basedOnRag?.pools ?? []),
                     ...(ailaRag?.pools ?? []),
                     ...(mlMultiTerm?.pools ?? []),
                   ].reduce((sum, pool) => sum + pool.questions.length, 0);
-                  return `${totalCandidates} candidates, ${result.selector.selectedQuestions.length} selected, ${formatSeconds(result.selector.composerTimingMs)}`;
+                  const selectedCount =
+                    (
+                      composerLlmNode.data.selectedQuestions as
+                        | RagQuizQuestion[]
+                        | undefined
+                    )?.length ?? 0;
+                  return `${totalCandidates} candidates, ${selectedCount} selected, ${formatSeconds(composerLlmNode.durationMs ?? 0)}`;
                 })()
               : undefined
           }
         >
-          {result.selector ? (
+          {composerLlmNode?.status === "complete" ? (
             <ComposerSection
-              prompt={result.selector.composerPrompt}
-              response={result.selector.composerResponse}
-              selectedQuestions={result.selector.selectedQuestions}
+              prompt={(composerPromptNode?.data.prompt as string) ?? ""}
+              response={
+                composerLlmNode.data.response as {
+                  overallStrategy: string;
+                  selectedQuestions: {
+                    questionUid: string;
+                    reasoning: string;
+                  }[];
+                }
+              }
+              selectedQuestions={
+                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??
+                []
+              }
               pools={[
                 ...(basedOnRag?.pools ?? []),
                 ...(ailaRag?.pools ?? []),
                 ...(mlMultiTerm?.pools ?? []),
               ]}
             />
-          ) : stages?.composerPrompt?.result?.prompt ? (
+          ) : composerPromptNode?.data.prompt ? (
             <ComposerPromptPreview
-              prompt={stages.composerPrompt.result.prompt}
-              isLlmRunning={stages?.composerLlm?.status === "running"}
+              prompt={composerPromptNode.data.prompt as string}
+              isLlmRunning={composerLlmNode?.status === "running"}
             />
           ) : (
             <p className="text-gray-400">Waiting for LLM composition...</p>
@@ -284,13 +381,13 @@ export function QuizRagDebugView({
           defaultOpen
           color="pink"
           stats={
-            result.finalQuiz
-              ? `${result.finalQuiz.questions.length} questions, ${formatSeconds(result.timing.totalMs)} total`
+            result?.quiz
+              ? `${result.quiz.questions.length} questions, ${formatSeconds(report?.durationMs ?? 0)} total`
               : undefined
           }
         >
-          {result.finalQuiz ? (
-            <FinalQuizDisplay quiz={result.finalQuiz} fullResult={result} />
+          {result?.quiz ? (
+            <FinalQuizDisplay quiz={result.quiz} report={report} />
           ) : (
             <p className="text-gray-400">Waiting for quiz generation...</p>
           )}
@@ -502,7 +599,7 @@ function GeneratorAccordion({
 }
 
 // Generator Section for basedOnRag and ailaRag
-function GeneratorSection({ result }: { result: GeneratorDebugResult }) {
+function GeneratorSection({ result }: { result: GeneratorData }) {
   return (
     <div className="space-y-3">
       {result.metadata?.sourceLesson && (
@@ -533,11 +630,7 @@ function GeneratorSection({ result }: { result: GeneratorDebugResult }) {
 }
 
 // Image Descriptions View
-function ImageDescriptionsView({
-  result,
-}: {
-  result: ImageDescriptionDebugResult;
-}) {
+function ImageDescriptionsView({ result }: { result: ImageDescriptionsData }) {
   const [showAll, setShowAll] = useState(false);
 
   if (result.totalImages === 0) {
@@ -789,10 +882,10 @@ function ComposerSection({
 // Final Quiz Display
 function FinalQuizDisplay({
   quiz,
-  fullResult,
+  report,
 }: {
-  quiz: QuizRagDebugResult["finalQuiz"];
-  fullResult: QuizRagDebugResult;
+  quiz: QuizDebugResult["quiz"];
+  report: ReportNode | null;
 }) {
   const mode = useViewMode();
   const [showJson, setShowJson] = useState(mode === "eval");
@@ -802,7 +895,7 @@ function FinalQuizDisplay({
   };
 
   const copyFullReport = () => {
-    void navigator.clipboard.writeText(JSON.stringify(fullResult, null, 2));
+    void navigator.clipboard.writeText(JSON.stringify(report, null, 2));
   };
 
   return (

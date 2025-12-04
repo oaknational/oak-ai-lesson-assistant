@@ -3,10 +3,10 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -60,22 +60,31 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
   private async searchAndRetrieveForQuery(
     query: string,
     topN: number,
+    task: Task,
   ): Promise<RagQuizQuestion[]> {
     log.info(`MLQuizGeneratorMultiTerm: Searching for: "${query}"`);
 
-    const results = await this.searchService.searchWithHybrid(
-      "oak-vector-2025-04-16",
-      query,
-      SEARCH_SIZE,
-      0.5,
-    );
+    const results = await task.child("elasticsearch", async (t) => {
+      const hits = await this.searchService.searchWithHybrid(
+        "oak-vector-2025-04-16",
+        query,
+        SEARCH_SIZE,
+        0.5,
+        t,
+      );
+      return hits;
+    });
 
     const simplifiedResults = this.searchService.transformHits(results.hits);
-    const rerankedResults = await this.rerankService.rerankDocuments(
-      query,
-      simplifiedResults,
-      topN,
-    );
+
+    const rerankedResults = await task.child("cohere", async (t) => {
+      return this.rerankService.rerankDocuments(
+        query,
+        simplifiedResults,
+        topN,
+        t,
+      );
+    });
 
     const questionUids = rerankedResults.map((result) => result.questionUid);
 
@@ -86,17 +95,24 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     const questions =
       await this.retrievalService.retrieveQuestionsByIds(questionUids);
 
+    task.addData({ finalCandidates: questions });
+
     return questions;
   }
 
   private async retrieveQuestionsForAllQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    task: Task,
   ): Promise<QuizQuestionPool[]> {
-    const semanticQueries = await this.generateSemanticSearchQueries(
-      lessonPlan,
-      quizType,
-    );
+    const semanticQueries = await task.child("queryGeneration", async (t) => {
+      const result = await this.generateSemanticSearchQueries(
+        lessonPlan,
+        quizType,
+      );
+      t.addData({ queries: result.queries });
+      return result;
+    });
 
     if (semanticQueries.queries.length === 0) {
       log.warn(
@@ -113,18 +129,22 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     );
 
     const pools = await Promise.all(
-      semanticQueries.queries.map(async (query) => {
-        const questions = await this.searchAndRetrieveForQuery(
-          query,
-          POOL_SIZE,
-        );
-        return {
-          questions,
-          source: {
-            type: "mlSemanticSearch" as const,
-            semanticQuery: query,
-          },
-        } satisfies QuizQuestionPool;
+      semanticQueries.queries.map(async (query, index) => {
+        return task.child(`query-${index}`, async (t) => {
+          t.addData({ query });
+          const questions = await this.searchAndRetrieveForQuery(
+            query,
+            POOL_SIZE,
+            t,
+          );
+          return {
+            questions,
+            source: {
+              type: "mlSemanticSearch" as const,
+              semanticQuery: query,
+            },
+          } satisfies QuizQuestionPool;
+        });
       }),
     );
 
@@ -142,10 +162,13 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
   public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
+    _relevantLessons: [],
+    task: Task,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/starterQuiz",
+      task,
     );
 
     log.info(
@@ -157,10 +180,13 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
   public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
+    _relevantLessons: [],
+    task: Task,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
       lessonPlan,
       "/exitQuiz",
+      task,
     );
 
     log.info(

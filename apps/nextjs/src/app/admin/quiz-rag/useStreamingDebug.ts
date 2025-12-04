@@ -2,12 +2,10 @@
 
 import { useCallback, useRef, useState } from "react";
 
-import type {
-  QuizRagDebugResult,
-  QuizRagStreamingReport,
-} from "@oakai/aila/src/core/quiz/debug";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
+  LatestQuiz,
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
@@ -16,22 +14,35 @@ import { aiLogger } from "@oakai/logger";
 const log = aiLogger("admin");
 
 /**
+ * Final result from the debug pipeline
+ */
+export interface QuizDebugResult {
+  report: ReportNode;
+  quiz: LatestQuiz;
+  input: {
+    lessonPlan: PartialLessonPlan;
+    quizType: QuizPath;
+    relevantLessons: AilaRagRelevantLesson[];
+  };
+}
+
+/**
  * SSE event from the streaming endpoint.
- * - "report": Updated pipeline report with current stage states
- * - "complete": Final result with full debug data
+ * - "report": Updated pipeline report tree
+ * - "complete": Final result with quiz and full report
  * - "error": Pipeline error
  */
 interface SSEEvent {
   type: "report" | "complete" | "error";
-  data: QuizRagStreamingReport | QuizRagDebugResult | { message: string };
+  data: ReportNode | QuizDebugResult | { message: string };
   timestamp: number;
 }
 
 export interface StreamingState {
   isRunning: boolean;
   error: Error | null;
-  result: QuizRagDebugResult | null;
-  report: QuizRagStreamingReport | null;
+  result: QuizDebugResult | null;
+  report: ReportNode | null;
 }
 
 const initialState: StreamingState = {
@@ -57,13 +68,15 @@ export function useStreamingDebug() {
     if (event.type === "report") {
       setState((prev) => ({
         ...prev,
-        report: event.data as QuizRagStreamingReport,
+        report: event.data as ReportNode,
       }));
     } else if (event.type === "complete") {
+      const result = event.data as QuizDebugResult;
       setState((prev) => ({
         ...prev,
         isRunning: false,
-        result: event.data as QuizRagDebugResult,
+        result,
+        report: result.report,
       }));
     } else if (event.type === "error") {
       const errorData = event.data as { message: string };

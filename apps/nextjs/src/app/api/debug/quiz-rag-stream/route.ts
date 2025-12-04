@@ -1,17 +1,14 @@
-import type {
-  QuizRagDebugResult,
-  QuizRagStreamingReport,
-} from "@oakai/aila/src/core/quiz/debug";
-import { QuizRagDebugService } from "@oakai/aila/src/core/quiz/debug";
+import { buildFullQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildFullQuizService";
 import {
-  createReportStreamingInstrumentation,
-  createTracer,
-} from "@oakai/aila/src/core/quiz/tracing";
+  type ReportNode,
+  createQuizTracker,
+} from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
+import type { LatestQuiz } from "@oakai/aila/src/protocol/schemas/quiz";
 import { aiLogger } from "@oakai/logger";
 import {
   getRelevantLessonPlans,
@@ -36,6 +33,19 @@ async function isAdmin(userId: string): Promise<boolean> {
 }
 
 /**
+ * Final result combining the report tree and the generated quiz
+ */
+interface QuizDebugResult {
+  report: ReportNode;
+  quiz: LatestQuiz;
+  input: {
+    lessonPlan: PartialLessonPlan;
+    quizType: QuizPath;
+    relevantLessons: AilaRagRelevantLesson[];
+  };
+}
+
+/**
  * SSE event types for the streaming response.
  * - "report": Updated pipeline report with current stage states
  * - "complete": Final result with full debug data
@@ -43,7 +53,7 @@ async function isAdmin(userId: string): Promise<boolean> {
  */
 interface SSEEvent {
   type: "report" | "complete" | "error";
-  data: QuizRagStreamingReport | QuizRagDebugResult | { message: string };
+  data: ReportNode | QuizDebugResult | { message: string };
   timestamp: number;
 }
 
@@ -105,14 +115,6 @@ export async function POST(request: Request) {
     log.info(`Auto-fetched ${relevantLessons.length} relevant lessons`);
   }
 
-  // Create report-based streaming instrumentation
-  // The report accumulates stage states and emits after each update
-  const { instrumentation, reportIterator, complete } =
-    createReportStreamingInstrumentation();
-  const tracer = createTracer({ instrumentation });
-
-  const debugService = new QuizRagDebugService();
-
   // Create a ReadableStream for SSE
   const stream = new ReadableStream({
     async start(controller) {
@@ -123,45 +125,47 @@ export async function POST(request: Request) {
         controller.enqueue(encoder.encode(data));
       };
 
-      // Start pipeline in background - instrumentation updates report as spans complete
-      const pipelinePromise = debugService
-        .runDebugPipeline(lessonPlan, quizType, relevantLessons, tracer)
-        .then((result) => {
-          log.info(`Pipeline complete in ${result.timing.totalMs}ms`);
-          return result;
-        })
-        .catch((error) => {
-          log.error("Pipeline error:", error);
-          sendEvent({
-            type: "error",
-            data: { message: String(error) },
-            timestamp: Date.now(),
-          });
-          throw error;
-        })
-        .finally(() => {
-          complete();
-        });
-
-      // Stream report updates as they arrive
-      try {
-        for await (const report of reportIterator) {
+      // Create tracker with onUpdate for streaming
+      const tracker = createQuizTracker({
+        onUpdate: (snapshot) => {
           sendEvent({
             type: "report",
-            data: report,
+            data: snapshot,
             timestamp: Date.now(),
           });
-        }
+        },
+      });
 
-        // Send final complete event with full debug result
-        const result = await pipelinePromise;
+      const service = buildFullQuizService({
+        quizGenerators: ["basedOnRag", "rag", "ml-multi-term"],
+        quizReranker: "no-op",
+        quizSelector: "llm-quiz-composer",
+      });
+
+      try {
+        const quiz = await tracker.run((task) =>
+          service.buildQuiz(quizType, lessonPlan, relevantLessons, task),
+        );
+
+        const report = tracker.getReport();
+        log.info(`Pipeline complete in ${report.durationMs}ms`);
+
         sendEvent({
           type: "complete",
-          data: result,
+          data: {
+            report,
+            quiz,
+            input: { lessonPlan, quizType, relevantLessons },
+          },
           timestamp: Date.now(),
         });
       } catch (error) {
-        log.error("Streaming error:", error);
+        log.error("Pipeline error:", error);
+        sendEvent({
+          type: "error",
+          data: { message: String(error) },
+          timestamp: Date.now(),
+        });
       } finally {
         controller.close();
       }

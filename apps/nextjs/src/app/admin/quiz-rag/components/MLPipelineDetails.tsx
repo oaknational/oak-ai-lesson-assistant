@@ -2,19 +2,113 @@
 
 import { useState } from "react";
 
-import type { MLMultiTermDebugResult } from "@oakai/aila/src/core/quiz/debug";
-import type { MLSearchTermDebugResult } from "@oakai/aila/src/core/quiz/debug/types";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import type {
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "@oakai/aila/src/core/quiz/interfaces";
 
 import { formatSeconds } from "../utils";
 import { LearnBlock } from "../view";
 import { QuestionCard } from "./QuestionCard";
 
-interface MLPipelineDetailsProps {
-  result: MLMultiTermDebugResult;
+/**
+ * Data extracted from a query ReportNode
+ */
+interface QueryTermData {
+  query: string;
+  elasticsearchHits: Array<{
+    questionUid: string;
+    text: string;
+    score: number;
+    lessonSlug: string;
+  }>;
+  cohereResults: Array<{
+    questionUid: string;
+    text: string;
+    originalIndex: number;
+    relevanceScore: number;
+  }>;
+  finalCandidates: RagQuizQuestion[];
+  timingMs: number;
 }
 
-export function MLPipelineDetails({ result }: MLPipelineDetailsProps) {
-  if (!result.searchTerms || result.searchTerms.length === 0) {
+interface GeneratorData {
+  pools: QuizQuestionPool[];
+  timingMs?: number;
+}
+
+interface MLPipelineDetailsProps {
+  result: GeneratorData;
+  reportNode: ReportNode;
+}
+
+/**
+ * Extract query data from query-N children of the report node
+ */
+function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
+  const terms: QueryTermData[] = [];
+
+  // Find all query-N children
+  const queryKeys = Object.keys(reportNode.children)
+    .filter((key) => key.startsWith("query-"))
+    .sort((a, b) => {
+      const numA = parseInt(a.split("-")[1] ?? "0");
+      const numB = parseInt(b.split("-")[1] ?? "0");
+      return numA - numB;
+    });
+
+  for (const key of queryKeys) {
+    const queryNode = reportNode.children[key];
+    if (!queryNode) continue;
+
+    const esNode = queryNode.children.elasticsearch;
+    const cohereNode = queryNode.children.cohere;
+
+    // Extract ES hits
+    const esHits =
+      (esNode?.data.hitsWithScores as Array<{
+        questionUid: string;
+        text: string;
+        score: number;
+        lessonSlug: string;
+      }>) ?? [];
+
+    // Extract Cohere results
+    const cohereResults =
+      (cohereNode?.data.allResults as Array<{
+        questionUid: string;
+        text: string;
+        originalIndex: number;
+        relevanceScore: number;
+      }>) ?? [];
+
+    // Extract final candidates
+    const finalCandidates =
+      (queryNode.data.finalCandidates as RagQuizQuestion[]) ?? [];
+
+    terms.push({
+      query:
+        (queryNode.data.query as string) ??
+        (esNode?.data.query as string) ??
+        "",
+      elasticsearchHits: esHits,
+      cohereResults,
+      finalCandidates,
+      timingMs: queryNode.durationMs ?? 0,
+    });
+  }
+
+  return terms;
+}
+
+export function MLPipelineDetails({
+  result,
+  reportNode,
+}: MLPipelineDetailsProps) {
+  const searchTerms = extractQueryTerms(reportNode);
+
+  if (searchTerms.length === 0) {
     return (
       <div className="py-4 text-center text-gray-500">
         No search terms available
@@ -24,7 +118,7 @@ export function MLPipelineDetails({ result }: MLPipelineDetailsProps) {
 
   return (
     <div className="space-y-6">
-      {result.searchTerms.map((term, idx) => (
+      {searchTerms.map((term, idx) => (
         <SearchTermAccordion key={idx} term={term} index={idx} />
       ))}
     </div>
@@ -35,7 +129,7 @@ function SearchTermAccordion({
   term,
   index,
 }: {
-  term: MLSearchTermDebugResult;
+  term: QueryTermData;
   index: number;
 }) {
   const [isOpen, setIsOpen] = useState(false);

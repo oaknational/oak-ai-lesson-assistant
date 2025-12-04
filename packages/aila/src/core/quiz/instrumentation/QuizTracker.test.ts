@@ -1,10 +1,16 @@
+import type { Span } from "@sentry/nextjs";
 import * as Sentry from "@sentry/nextjs";
 
 import { createQuizTracker } from "./QuizTracker";
 import type { ReportNode } from "./Report";
 
+const mockSpan = (name: string) => ({ name }) as unknown as Span;
+
 jest.mock("@sentry/nextjs", () => ({
-  startSpan: jest.fn((opts, fn) => fn({ name: opts.name })),
+  startSpan: jest.fn(
+    <T>(opts: { name: string }, fn: (span: Span) => T): T =>
+      fn(mockSpan(opts.name)),
+  ),
 }));
 
 // Strip timing fields for snapshot stability
@@ -25,9 +31,9 @@ describe("QuizTracker", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     // Reset to default implementation
-    (Sentry.startSpan as jest.Mock).mockImplementation((opts, fn) =>
-      fn({ name: opts.name }),
-    );
+    jest
+      .mocked(Sentry.startSpan)
+      .mockImplementation((opts, fn) => fn(mockSpan(opts.name)));
   });
 
   describe("report tree structure", () => {
@@ -37,7 +43,7 @@ describe("QuizTracker", () => {
       await tracker.run(async (task) => {
         await task.child("generator", async (task) => {
           await task.child("query-0", async (task) => {
-            task.setData("query", "test query");
+            task.addData({ query: "test query" });
           });
         });
       });
@@ -89,10 +95,10 @@ describe("QuizTracker", () => {
     });
 
     it("creates child spans with explicit parentSpan", async () => {
-      const mockRootSpan = { name: "root" };
-      (Sentry.startSpan as jest.Mock).mockImplementation((opts, fn) => {
+      const mockRootSpan = mockSpan("root");
+      jest.mocked(Sentry.startSpan).mockImplementation((opts, fn) => {
         if (opts.name === "quiz.pipeline") return fn(mockRootSpan);
-        return fn({ name: opts.name });
+        return fn(mockSpan(opts.name));
       });
 
       const tracker = createQuizTracker();
@@ -140,14 +146,14 @@ describe("QuizTracker", () => {
       expect(completeUpdate).toBeDefined();
     });
 
-    it("is called on setData", async () => {
+    it("is called on addData", async () => {
       const updates: ReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
 
       await tracker.run(async (task) => {
-        task.setData("foo", "bar");
+        task.addData({ foo: "bar" });
       });
 
       const dataUpdate = updates.find((u) => u.data.foo === "bar");

@@ -16,10 +16,11 @@ export class Task {
   ) {}
 
   /**
-   * Set data on this task. Triggers a report emit for real-time streaming.
+   * Add data to this task. Merges with existing data.
+   * Triggers a report emit for real-time streaming.
    */
-  setData(key: string, value: unknown): void {
-    this.report.setAtPath(this.path, key, value);
+  addData(data: Record<string, unknown>): void {
+    this.report.mergeAtPath(this.path, data);
     this.report.emit();
   }
 

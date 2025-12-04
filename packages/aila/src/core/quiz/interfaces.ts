@@ -51,11 +51,13 @@ export interface AilaQuizCandidateGenerator {
 
   generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
   generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
 }
 
@@ -74,8 +76,8 @@ export interface FullQuizService {
   buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-    task?: Task,
+    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<LatestQuiz>;
 }
 
@@ -85,6 +87,7 @@ export interface QuizSelector {
     ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    task: Task,
   ): Promise<RagQuizQuestion[]>;
 }
 

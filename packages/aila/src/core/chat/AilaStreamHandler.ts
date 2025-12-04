@@ -377,9 +377,14 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/starterQuiz",
-                  ctx.currentTurn.document,
+                const tracker = createQuizTracker();
+                const quiz = await tracker.run((task) =>
+                  this._chat.fullQuizService.buildQuiz(
+                    "/starterQuiz",
+                    ctx.currentTurn.document,
+                    [],
+                    task,
+                  ),
                 );
 
                 return { error: null, data: quiz };
@@ -395,9 +400,14 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/exitQuiz",
-                  ctx.currentTurn.document,
+                const tracker = createQuizTracker();
+                const quiz = await tracker.run((task) =>
+                  this._chat.fullQuizService.buildQuiz(
+                    "/exitQuiz",
+                    ctx.currentTurn.document,
+                    [],
+                    task,
+                  ),
                 );
 
                 return { error: null, data: quiz };

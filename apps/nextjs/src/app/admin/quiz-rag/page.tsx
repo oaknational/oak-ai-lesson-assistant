@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import type {
-  QuizRagDebugResult,
-  QuizRagStreamingReport,
-  StreamingStageStatus,
-} from "@oakai/aila/src/core/quiz/debug";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -19,7 +15,7 @@ import { redirect } from "next/navigation";
 import { OakMathJaxContext } from "@/components/MathJax";
 
 import { InputSection } from "./components/InputSection";
-import { useStreamingDebug } from "./useStreamingDebug";
+import { type QuizDebugResult, useStreamingDebug } from "./useStreamingDebug";
 import { QuizRagDebugView } from "./view";
 
 const STORAGE_KEY = "quiz-rag-debug-result";
@@ -27,20 +23,20 @@ const STORAGE_KEY = "quiz-rag-debug-result";
 // Persist results to localStorage for hot-reload survival
 function usePersistedResult() {
   const [persistedResult, setPersistedResult] =
-    useState<QuizRagDebugResult | null>(null);
+    useState<QuizDebugResult | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setPersistedResult(JSON.parse(stored) as QuizRagDebugResult);
+        setPersistedResult(JSON.parse(stored) as QuizDebugResult);
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }
     }
   }, []);
 
-  const saveResult = (result: QuizRagDebugResult) => {
+  const saveResult = (result: QuizDebugResult) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
     setPersistedResult(result);
   };
@@ -248,32 +244,11 @@ export default function QuizRagDebugPage() {
         )}
 
         {/* Show view with streaming data during pipeline run, or final result */}
-        {(result?.input || (isRunning && lessonPlan)) && (
+        {(result || (isRunning && streaming.report)) && (
           <QuizRagDebugView
-            result={
-              result ?? {
-                // Partial result for streaming - will be populated progressively
-                input: {
-                  lessonPlan: lessonPlan!,
-                  quizType,
-                  relevantLessons,
-                },
-                generators: {},
-                reranker: { type: "no-op", ratings: [] },
-                selector:
-                  undefined as unknown as QuizRagDebugResult["selector"],
-                finalQuiz:
-                  undefined as unknown as QuizRagDebugResult["finalQuiz"],
-                timing: {
-                  totalMs: 0,
-                  generatorsMs: 0,
-                  rerankerMs: 0,
-                  selectorMs: 0,
-                },
-              }
-            }
+            result={result}
             viewMode={viewMode}
-            streamingReport={streaming.report}
+            report={streaming.report ?? result?.report ?? null}
             isStreaming={isRunning}
           />
         )}
@@ -283,13 +258,9 @@ export default function QuizRagDebugPage() {
 }
 
 // Streaming Progress Panel - Visual pipeline progress during streaming
-function StreamingProgressPanel({
-  report,
-}: {
-  report: QuizRagStreamingReport;
-}) {
+function StreamingProgressPanel({ report }: { report: ReportNode }) {
   type StageConfig = {
-    key: keyof QuizRagStreamingReport["stages"];
+    path: string[];
     label: string;
     color: "mint" | "lemon" | "lavender" | "pink";
     description: string;
@@ -297,37 +268,37 @@ function StreamingProgressPanel({
 
   const stageConfig: StageConfig[] = [
     {
-      key: "basedOnRag",
+      path: ["basedOnRag"],
       label: "BasedOnRag",
       color: "mint",
       description: "Questions from basedOn lesson",
     },
     {
-      key: "ailaRag",
+      path: ["ailaRag"],
       label: "AilaRag",
       color: "mint",
       description: "Questions from relevant lessons",
     },
     {
-      key: "mlMultiTerm",
+      path: ["mlMultiTerm"],
       label: "ML Multi-Term",
       color: "mint",
       description: "Semantic search + Cohere rerank",
     },
     {
-      key: "imageDescriptions",
+      path: ["selector", "imageDescriptions"],
       label: "Images",
       color: "lemon",
       description: "GPT-4o image descriptions",
     },
     {
-      key: "composerPrompt",
+      path: ["selector", "composerPrompt"],
       label: "Prompt",
       color: "lavender",
       description: "Build composition prompt",
     },
     {
-      key: "composerLlm",
+      path: ["selector", "composerLlm"],
       label: "LLM",
       color: "lavender",
       description: "o4-mini quiz composition",
@@ -341,6 +312,15 @@ function StreamingProgressPanel({
     pink: "border-pink bg-pink30",
   };
 
+  // Get node by path
+  const getNode = (path: string[]): ReportNode | undefined => {
+    let node: ReportNode | undefined = report;
+    for (const segment of path) {
+      node = node?.children[segment];
+    }
+    return node;
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
@@ -349,14 +329,15 @@ function StreamingProgressPanel({
       </div>
 
       <div className="flex gap-2">
-        {stageConfig.map(({ key, label, color, description }) => {
-          const stage = report.stages[key];
-          const isActive = stage.status === "running";
-          const isComplete = stage.status === "complete";
+        {stageConfig.map(({ path, label, color, description }) => {
+          const node = getNode(path);
+          const status = node?.status ?? "pending";
+          const isActive = status === "running";
+          const isComplete = status === "complete";
 
           return (
             <div
-              key={key}
+              key={path.join(".")}
               className={`flex-1 rounded-xl border-2 p-3 transition-all ${
                 isActive
                   ? `${colorClasses[color]} shadow-md`
@@ -366,13 +347,13 @@ function StreamingProgressPanel({
               }`}
             >
               <div className="mb-1 flex items-center gap-2">
-                <StageStatusIcon status={stage.status} />
+                <StageStatusIcon status={status} />
                 <span className="text-sm font-semibold">{label}</span>
               </div>
               <p className="text-xs text-gray-600">{description}</p>
-              {stage.status === "complete" && stage.durationMs && (
+              {status === "complete" && node?.durationMs && (
                 <p className="mt-1 text-xs text-gray-500">
-                  {(stage.durationMs / 1000).toFixed(1)}s
+                  {(node.durationMs / 1000).toFixed(1)}s
                 </p>
               )}
             </div>
@@ -383,11 +364,13 @@ function StreamingProgressPanel({
   );
 }
 
+type NodeStatus = ReportNode["status"];
+
 function StageStatusIcon({
   status,
   small = false,
 }: {
-  status: StreamingStageStatus;
+  status: NodeStatus;
   small?: boolean;
 }) {
   const size = small ? "text-xs" : "text-sm";

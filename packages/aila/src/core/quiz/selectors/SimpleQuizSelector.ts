@@ -1,13 +1,13 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type {
   QuizQuestionPool,
   QuizSelector,
   RagQuizQuestion,
   RatingResponse,
 } from "../interfaces";
-import type { Span } from "../tracing";
 
 const log = aiLogger("aila:quiz");
 
@@ -17,7 +17,7 @@ export class SimpleQuizSelector implements QuizSelector {
     ratings: RatingResponse[],
     _lessonPlan: PartialLessonPlan,
     _quizType: QuizPath,
-    _span?: Span,
+    _task: Task,
   ): Promise<RagQuizQuestion[]> {
     // Find highest rated quiz
     let maxRating = -Infinity;

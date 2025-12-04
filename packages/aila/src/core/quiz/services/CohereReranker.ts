@@ -3,8 +3,8 @@ import { aiLogger } from "@oakai/logger";
 import { CohereClient } from "cohere-ai";
 import { z } from "zod";
 
+import type { Task } from "../instrumentation";
 import type { SimplifiedResult } from "../interfaces";
-import type { Span } from "../tracing";
 
 const log = aiLogger("quiz");
 
@@ -33,14 +33,13 @@ export class CohereReranker {
 
   /**
    * Reranks documents using Cohere's rerank model.
-   * @param span - Optional tracing span. When provided, requests all results
-   *               from Cohere (not just topN) and records them for debugging.
+   * @param task - Task for tracking debug data. Requests all results for visibility.
    */
   public async rerankDocuments(
     query: string,
     docs: SimplifiedResult[],
     topN: number = 10,
-    span?: Span,
+    task: Task,
   ): Promise<RerankResult[]> {
     if (docs.length === 0) {
       log.error("No documents to rerank");
@@ -53,37 +52,32 @@ export class CohereReranker {
         questionUid: doc.questionUid,
       }));
 
-      // When tracing, request all results for debug visibility
-      const requestTopN = span ? docs.length : topN;
-
+      // Request all results for debug visibility
       const response = await this.cohere.rerank({
         model: "rerank-v3.5",
         query: query,
         documents: cohereDocuments,
-        topN: requestTopN,
+        topN: docs.length,
         rankFields: ["text"],
         returnDocuments: true,
       });
 
-      // Record debug data if span is provided
-      if (span) {
-        span.setData("query", query);
-        span.setData("inputCount", docs.length);
-        span.setData("topN", topN);
-        span.setData(
-          "allResults",
-          response.results.map((result) => {
-            const doc = docs[result.index];
-            return {
-              questionUid: cohereResponseSchema.parse(result.document)
-                .questionUid,
-              text: doc?.text ?? "",
-              originalIndex: result.index,
-              relevanceScore: result.relevanceScore,
-            };
-          }),
-        );
-      }
+      // Record debug data
+      task.addData({
+        query,
+        inputCount: docs.length,
+        topN,
+        allResults: response.results.map((result) => {
+          const doc = docs[result.index];
+          return {
+            questionUid: cohereResponseSchema.parse(result.document)
+              .questionUid,
+            text: doc?.text ?? "",
+            originalIndex: result.index,
+            relevanceScore: result.relevanceScore,
+          };
+        }),
+      });
 
       // Return only topN results
       const results: RerankResult[] = response.results
