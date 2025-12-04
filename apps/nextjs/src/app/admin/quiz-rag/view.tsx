@@ -824,7 +824,9 @@ function FinalQuizDisplay({
   return (
     <div className="space-y-4">
       <div className="mx-auto max-w-xl rounded-lg border bg-white p-12">
-        <QuizSection quizSection={quiz} />
+        <MathJaxWrap>
+          <QuizSection quizSection={quiz} />
+        </MathJaxWrap>
       </div>
 
       <div className="flex items-center justify-center gap-2">
