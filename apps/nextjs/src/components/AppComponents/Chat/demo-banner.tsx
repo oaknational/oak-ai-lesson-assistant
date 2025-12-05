@@ -25,7 +25,7 @@ export function DemoBanner({
     <OakFlex
       $alignItems={"center"}
       $bb={"border-solid-m"}
-      $background={"lemon"}
+      $background={"bg-decorative5-main"}
       $pv={["inner-padding-ssx", "inner-padding-xs"]}
       $ph={"inner-padding-xl"}
       data-testid={testId}
@@ -38,13 +38,12 @@ export function DemoBanner({
         <OakLink
           iconName="chevron-right"
           isTrailingIcon
-          color="black"
+          color="text-primary"
           href={contactHref}
         >
           contact us for full access
         </OakLink>
       </OakSpan>
-
       <OakFlex $flexGrow={1} />
       {remaining !== undefined && (
         <OakBox $display={["none", "none", "block"]}>

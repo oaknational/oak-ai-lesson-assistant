@@ -14,7 +14,7 @@ const StepLoadingScreen = ({
       $left="all-spacing-0"
       $right="all-spacing-0"
       $bottom="all-spacing-0"
-      $background="white"
+      $background="bg-primary"
     >
       <OakFlex
         $mh="space-between-l"

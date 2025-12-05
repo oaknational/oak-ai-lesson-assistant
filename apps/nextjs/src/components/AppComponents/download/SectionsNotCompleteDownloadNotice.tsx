@@ -26,7 +26,7 @@ const SectionsNotCompleteDownloadNotice = ({
   return (
     <OakBox
       $pa="inner-padding-m"
-      $background="lemon30"
+      $background="bg-decorative5-very-subdued"
       $borderColor="border-decorative5-stronger"
       $borderStyle="solid"
       $borderRadius="border-radius-m"

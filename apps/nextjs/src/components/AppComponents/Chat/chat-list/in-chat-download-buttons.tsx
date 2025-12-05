@@ -79,7 +79,7 @@ const InnerInChatButton = ({
     <OakFlex
       $pa="inner-padding-m"
       $gap="all-spacing-3"
-      $background="white"
+      $background="bg-primary"
       $borderRadius="border-radius-m"
       $alignItems="center"
       $dropShadow="drop-shadow-standard"

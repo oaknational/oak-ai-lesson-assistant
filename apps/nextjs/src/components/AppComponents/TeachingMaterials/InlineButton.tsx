@@ -13,7 +13,7 @@ const InlineButton = forwardRef<HTMLButtonElement, InlineButtonProps>(
       <OakFlex
         as="button"
         $ba="border-solid-s"
-        $borderColor="grey50"
+        $borderColor="border-neutral"
         $borderRadius="border-radius-m"
         $ph="inner-padding-xs"
         $pv="inner-padding-ssx"

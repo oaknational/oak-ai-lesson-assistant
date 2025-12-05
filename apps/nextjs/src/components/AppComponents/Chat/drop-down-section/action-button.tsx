@@ -20,8 +20,8 @@ const ActionButton = ({ children, onClick, tooltip }: ActionButtonProps) => {
       tooltip={tooltip}
       tooltipPosition="top-left"
       isOpen={showTooltip}
-      $background="black"
-      $color="white"
+      $background="bg-inverted"
+      $color="text-inverted"
     >
       <OakBox
         onMouseEnter={() => {
