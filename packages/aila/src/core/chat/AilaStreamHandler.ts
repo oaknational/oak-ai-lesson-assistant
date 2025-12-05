@@ -33,6 +33,7 @@ import {
 import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
+import { createQuizTracker } from "../quiz/instrumentation";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
 
@@ -223,19 +224,27 @@ export class AilaStreamHandler {
       onUpdate: streamHandler, // This is the new part
       customAgents: {
         mathsStarterQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.buildQuiz(
-            "/starterQuiz",
-            document,
-            this._chat.relevantLessons ?? [],
+          const tracker = createQuizTracker();
+          const quiz = await tracker.run((task) =>
+            this._chat.fullQuizService.buildQuiz(
+              "/starterQuiz",
+              document,
+              this._chat.relevantLessons ?? [],
+              task,
+            ),
           );
 
           return quiz;
         },
         mathsExitQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.buildQuiz(
-            "/exitQuiz",
-            document,
-            this._chat.relevantLessons ?? [],
+          const tracker = createQuizTracker();
+          const quiz = await tracker.run((task) =>
+            this._chat.fullQuizService.buildQuiz(
+              "/exitQuiz",
+              document,
+              this._chat.relevantLessons ?? [],
+              task,
+            ),
           );
 
           return quiz;
@@ -368,9 +377,14 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/starterQuiz",
-                  ctx.currentTurn.document,
+                const tracker = createQuizTracker();
+                const quiz = await tracker.run((task) =>
+                  this._chat.fullQuizService.buildQuiz(
+                    "/starterQuiz",
+                    ctx.currentTurn.document,
+                    this._chat.relevantLessons ?? [],
+                    task,
+                  ),
                 );
 
                 return { error: null, data: quiz };
@@ -386,9 +400,14 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/exitQuiz",
-                  ctx.currentTurn.document,
+                const tracker = createQuizTracker();
+                const quiz = await tracker.run((task) =>
+                  this._chat.fullQuizService.buildQuiz(
+                    "/exitQuiz",
+                    ctx.currentTurn.document,
+                    this._chat.relevantLessons ?? [],
+                    task,
+                  ),
                 );
 
                 return { error: null, data: quiz };

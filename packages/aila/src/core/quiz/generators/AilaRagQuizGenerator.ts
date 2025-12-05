@@ -5,13 +5,16 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
-import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
+import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
 // This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
-export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
+export class AilaRagQuizGenerator extends BaseQuizGenerator {
+  readonly name = "ailaRag";
+
   async poolsFromAilaRagRelevantLessons(
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
     quizType: QuizPath,
@@ -44,8 +47,9 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   }
 
   async generateMathsStarterQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
@@ -54,8 +58,9 @@ export class AilaRagQuizGenerator extends BasedOnRagQuizGenerator {
   }
 
   async generateMathsExitQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,

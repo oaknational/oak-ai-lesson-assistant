@@ -9,6 +9,7 @@ import { SectionContent } from "../../SectionContent";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
+import { QuizDebugButton } from "./quiz-debug-button";
 import { sectionTitle } from "./sectionTitle";
 
 export type DropDownSectionContentProps = Readonly<{
@@ -49,6 +50,12 @@ export const DropDownSectionContent = ({
           sectionPath={sectionKey}
           sectionValue={value}
         />
+
+        {(sectionKey === "starterQuiz" || sectionKey === "exitQuiz") && (
+          <QuizDebugButton
+            quizType={`/${sectionKey}` as "/starterQuiz" | "/exitQuiz"}
+          />
+        )}
       </OakFlex>
     </OakFlex>
   );

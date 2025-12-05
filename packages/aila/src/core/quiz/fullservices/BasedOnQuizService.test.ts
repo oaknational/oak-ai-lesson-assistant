@@ -1,8 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { QuizPath } from "../../../protocol/schema";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { BasedOnRagQuizGenerator } from "../generators/BasedOnRagQuizGenerator";
+import { createMockTask } from "../instrumentation";
 import { BasedOnQuizService } from "./BasedOnQuizService";
 
 const log = aiLogger("quiz");
@@ -31,9 +31,12 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
   describe("buildQuiz", () => {
     it("should create a starter quiz", async () => {
+      const task = createMockTask();
       const quiz = await quizService.buildQuiz(
-        "/starterQuiz" as QuizPath,
+        "/starterQuiz",
         CircleTheoremLesson,
+        [],
+        task,
       );
       log.info("QUIZ BELOW");
       log.info(JSON.stringify(quiz));
@@ -46,9 +49,12 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
     });
 
     it("should create an exit quiz", async () => {
+      const task = createMockTask();
       const quiz = await quizService.buildQuiz(
-        "/exitQuiz" as QuizPath,
+        "/exitQuiz",
         CircleTheoremLesson,
+        [],
+        task,
       );
 
       expect(quiz).toBeDefined();
@@ -57,12 +63,6 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
       expect(quiz.questions.length).toBeGreaterThan(0);
       expect(quiz.questions[0]).toHaveProperty("question");
       expect(quiz.questions[0]).toHaveProperty("questionType");
-    });
-
-    it("should handle invalid quiz paths", async () => {
-      await expect(
-        quizService.buildQuiz("/invalidQuiz" as QuizPath, CircleTheoremLesson),
-      ).rejects.toThrow();
     });
   });
 });

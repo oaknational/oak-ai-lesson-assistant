@@ -6,6 +6,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import pLimit from "p-limit";
 import { z } from "zod";
 
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
@@ -215,17 +216,25 @@ export class ImageDescriptionService {
    * Get or generate descriptions for all images in question pools
    *
    * @param questionPools - The question pools to extract images from
+   * @param task - Task for tracking metrics
    * @returns Map of image URL to description, plus cache statistics
    */
   public async getImageDescriptions(
     questionPools: QuizQuestionPool[],
+    task: Task,
   ): Promise<ImageDescriptionMap> {
     const imageUrls = this.extractImageUrls(questionPools);
 
     if (imageUrls.length === 0) {
       log.info("No images found in question pools");
+      task.addData({
+        totalImages: 0,
+        cacheHits: 0,
+        cacheMisses: 0,
+        generatedCount: 0,
+      });
       return {
-        descriptions: new Map(),
+        descriptions: new Map<string, string>(),
         cacheHits: 0,
         cacheMisses: 0,
         generatedCount: 0,
@@ -250,6 +259,21 @@ export class ImageDescriptionService {
 
     // Combine cached and generated
     const allDescriptions = new Map([...cached, ...generated]);
+
+    // Record tracking data
+    task.addData({
+      totalImages: imageUrls.length,
+      cacheHits,
+      cacheMisses,
+      generatedCount: generated.size,
+      descriptions: Array.from(allDescriptions.entries()).map(
+        ([url, description]) => ({
+          url,
+          description,
+          wasCached: cached.has(url),
+        }),
+      ),
+    });
 
     return {
       descriptions: allDescriptions,
