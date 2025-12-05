@@ -1,44 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 
 import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
-import type {
-  AilaRagRelevantLesson,
-  PartialLessonPlan,
-  QuizPath,
-} from "@oakai/aila/src/protocol/schema";
+import type { QuizPath } from "@oakai/aila/src/protocol/schema";
 
 import { useUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 
 import { OakMathJaxContext } from "@/components/MathJax";
 
 import { InputSection } from "./components/InputSection";
-import { useStreamingDebug } from "./useStreamingDebug";
+import { createQuizRagDebugStore, useQuizRagDebugStore } from "./store";
 import { QuizRagDebugView } from "./view";
 
-export type ViewMode = "learn" | "eval";
+export type { ViewMode } from "./store";
 
 export default function QuizRagDebugPage() {
   const user = useUser();
-  const [lessonPlan, setLessonPlan] = useState<PartialLessonPlan | null>(null);
-  const [quizType, setQuizType] = useState<QuizPath>("/starterQuiz");
-  const [relevantLessons, setRelevantLessons] = useState<
-    AilaRagRelevantLesson[]
-  >([]);
-  const [viewMode, setViewMode] = useState<ViewMode>("learn");
+  const searchParams = useSearchParams();
+  const urlChatId = searchParams.get("chatId");
+  const urlQuizType = searchParams.get("quizType") as QuizPath | null;
 
-  const streaming = useStreamingDebug();
+  const initialQuizType =
+    urlQuizType === "/starterQuiz" || urlQuizType === "/exitQuiz"
+      ? urlQuizType
+      : "/starterQuiz";
+
+  // Create store instance for this page
+  const store = useMemo(
+    () => createQuizRagDebugStore(initialQuizType),
+    [initialQuizType],
+  );
+
+  // Select state from store
+  const lessonPlan = useQuizRagDebugStore(store, (s) => s.lessonPlan);
+  const viewMode = useQuizRagDebugStore(store, (s) => s.viewMode);
+  const loadedReport = useQuizRagDebugStore(store, (s) => s.loadedReport);
+  const isRunning = useQuizRagDebugStore(store, (s) => s.isRunning);
+  const error = useQuizRagDebugStore(store, (s) => s.error);
+  const streamingReport = useQuizRagDebugStore(store, (s) => s.streamingReport);
+
+  // Select actions from store
+  const setViewMode = useQuizRagDebugStore(store, (s) => s.setViewMode);
+  const setLoadedReport = useQuizRagDebugStore(store, (s) => s.setLoadedReport);
+  const runPipeline = useQuizRagDebugStore(store, (s) => s.runPipeline);
+  const resetPipeline = useQuizRagDebugStore(store, (s) => s.resetPipeline);
+
+  const activeReport = loadedReport ?? streamingReport;
 
   if (user.isLoaded && !user.isSignedIn) {
     redirect("/sign-in?next=/admin/quiz-rag");
   }
-
-  const handleRunPipeline = () => {
-    if (!lessonPlan) return;
-    void streaming.runPipeline(lessonPlan, quizType, relevantLessons);
-  };
 
   return (
     <OakMathJaxContext>
@@ -132,62 +145,69 @@ export default function QuizRagDebugPage() {
         <div className="h-8" />
 
         <div>
-          <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Lesson Input
+          <h2 className="mb-4 text-2xl font-bold text-gray-900">
+            Generate a Quiz
           </h2>
-          <InputSection
-            onLessonPlanChange={setLessonPlan}
-            onQuizTypeChange={setQuizType}
-            onRelevantLessonsChange={setRelevantLessons}
-            selectedPlan={lessonPlan}
-            quizType={quizType}
-          />
+          <InputSection store={store} initialChatId={urlChatId ?? undefined} />
         </div>
 
         <div className="h-8" />
 
         {/* Action Panel */}
         <div className="flex items-center justify-center gap-4">
-          <button
-            onClick={handleRunPipeline}
-            disabled={streaming.isRunning || !lessonPlan}
-            className="rounded-lg bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
-          >
-            {streaming.isRunning ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin">⚙️</span> Running Pipeline...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">▶ Run Pipeline</span>
-            )}
-          </button>
-          {(streaming.report || streaming.isRunning) && (
+          {loadedReport ? (
             <button
-              onClick={streaming.reset}
-              className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
+              onClick={() => setLoadedReport(null)}
+              className="rounded-lg bg-gray-200 px-8 py-3 text-lg font-semibold hover:bg-gray-300"
             >
-              {streaming.isRunning ? "Cancel" : "Clear Results"}
+              Clear Loaded Report
             </button>
+          ) : (
+            <>
+              <button
+                onClick={() => void runPipeline()}
+                disabled={isRunning || !lessonPlan}
+                className="rounded-lg bg-green-600 px-8 py-3 text-lg font-semibold text-white shadow-md transition-all hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
+              >
+                {isRunning ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-spin">⚙️</span> Running Pipeline...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    ▶ Run Pipeline
+                  </span>
+                )}
+              </button>
+              {(streamingReport || isRunning) && (
+                <button
+                  onClick={resetPipeline}
+                  className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
+                >
+                  {isRunning ? "Cancel" : "Clear Results"}
+                </button>
+              )}
+            </>
           )}
         </div>
 
         {/* Streaming Progress - detailed pipeline status */}
-        {streaming.isRunning && streaming.report && (
-          <StreamingProgressPanel report={streaming.report} />
+        {isRunning && streamingReport && (
+          <StreamingProgressPanel report={streamingReport} />
         )}
 
-        {streaming.error && (
+        {error && (
           <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-            Error: {streaming.error.message}
+            Error: {error.message}
           </div>
         )}
 
         {/* Show view with streaming data during pipeline run, or final report */}
-        {streaming.report && (
+        {activeReport && (
           <QuizRagDebugView
             viewMode={viewMode}
-            report={streaming.report}
-            isStreaming={streaming.isRunning}
+            report={activeReport}
+            isStreaming={!loadedReport && isRunning}
           />
         )}
       </div>

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
 
-const log = aiLogger("admin");
+const log = aiLogger("quiz");
 
 // Example lesson plans for the dropdown
 function createBasedOnExample(lessonId: string) {
