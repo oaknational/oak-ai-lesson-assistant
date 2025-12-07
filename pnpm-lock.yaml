@@ -366,9 +366,6 @@ importers:
       tsx:
         specifier: ^4.16.0
         version: 4.16.0
-      unique-names-generator:
-        specifier: ^4.7.1
-        version: 4.7.1
       untruncate-json:
         specifier: ^0.0.1
         version: 0.0.1
@@ -708,6 +705,9 @@ importers:
       langchain:
         specifier: ^0.0.184
         version: 0.0.184(@google-cloud/storage@7.7.0)(@upstash/redis@1.22.0)(google-auth-library@9.7.0)(lodash@4.17.21)
+      murmurhash:
+        specifier: ^2.0.1
+        version: 2.0.1
       obscenity:
         specifier: ^0.1.4
         version: 0.1.4
@@ -726,6 +726,9 @@ importers:
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.17.9)(typescript@5.9.2)
+      unique-names-generator:
+        specifier: ^4.7.1
+        version: 4.7.1
       untruncate-json:
         specifier: ^0.0.1
         version: 0.0.1
@@ -20955,6 +20958,10 @@ packages:
     transitivePeerDependencies:
       - '@types/node'
     dev: true
+
+  /murmurhash@2.0.1:
+    resolution: {integrity: sha512-5vQEh3y+DG/lMPM0mCGPDnyV8chYg/g7rl6v3Gd8WMF9S429ox3Xk8qrk174kWhG767KQMqqxLD1WnGd77hiew==}
+    dev: false
 
   /mute-stream@0.0.7:
     resolution: {integrity: sha512-r65nCZhrbXXb6dXOACihYApHw2Q6pV0M3V0PSxd74N0+D8nzAdEAITq2oAjA1jVnKI+tGvEBUpqiMh0+rW6zDQ==}

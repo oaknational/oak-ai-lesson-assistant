@@ -1,6 +1,7 @@
 import type OpenAI from "openai";
 
-import type { SectionAgentRegistry } from "../../types";
+import type { LatestQuiz } from "../../../../protocol/schema";
+import type { SectionAgent, SectionAgentRegistry } from "../../types";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
 import { cycleAgent } from "./cycleAgent";
@@ -18,8 +19,13 @@ import { titleAgent } from "./titleAgent";
 
 export const createSectionAgentRegistry = ({
   openai,
+  customAgentHandlers,
 }: {
   openai: OpenAI;
+  customAgentHandlers: {
+    "starterQuiz--maths": SectionAgent<LatestQuiz>["handler"];
+    "exitQuiz--maths": SectionAgent<LatestQuiz>["handler"];
+  };
 }): SectionAgentRegistry => ({
   "keyStage--default": keyStageAgent({
     id: "keyStage--default",
@@ -88,13 +94,11 @@ export const createSectionAgentRegistry = ({
     contentFromDocument: (document) =>
       "starterQuiz" in document ? document.starterQuiz : undefined,
   }),
-  "starterQuiz--maths": starterQuizAgent({
+  "starterQuiz--maths": {
     id: "starterQuiz--maths",
     description: "Generates starter quiz questions for maths",
-    openai,
-    contentFromDocument: (document) =>
-      "starterQuiz" in document ? document.starterQuiz : undefined,
-  }),
+    handler: customAgentHandlers["starterQuiz--maths"],
+  },
   "cycle--default": cycleAgent({
     id: "cycle--default",
     description: "Generates learning cycle content",
@@ -108,13 +112,11 @@ export const createSectionAgentRegistry = ({
     contentFromDocument: (document) =>
       "exitQuiz" in document ? document.exitQuiz : undefined,
   }),
-  "exitQuiz--maths": exitQuizAgent({
+  "exitQuiz--maths": {
     id: "exitQuiz--maths",
     description: "Generates exit quiz questions for maths",
-    openai,
-    contentFromDocument: (document) =>
-      "exitQuiz" in document ? document.exitQuiz : undefined,
-  }),
+    handler: customAgentHandlers["exitQuiz--maths"],
+  },
   "additionalMaterials--default": additionalMaterialsAgent({
     id: "additionalMaterials--default",
     description: "Provides additional materials for the lesson",

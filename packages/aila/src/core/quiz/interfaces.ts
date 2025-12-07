@@ -1,3 +1,4 @@
+import type { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -7,23 +8,25 @@ import type {
   QuizPath,
 } from "../../protocol/schema";
 import type {
+  ImageMetadata,
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
-import type { HasuraQuiz } from "../../protocol/schemas/quiz/rawQuiz";
-import type {
-  BaseType,
-  MaxRatingFunctionApplier,
-  RatingFunction,
-} from "./ChoiceModels";
-import type { RatingResponse } from "./rerankers/RerankerStructuredOutputSchema";
+import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
+
+export type SearchResponseBody<T = unknown> = SearchResponse<T>;
+
+// Rating response from rerankers
+export type RatingResponse = {
+  rating: number;
+  justification: string;
+};
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -41,47 +44,44 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizGeneratorService {
-  generateMathsExitQuizPatch(
+export interface AilaQuizCandidateGenerator {
+  generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
-  generateMathsStarterQuizPatch(
+  ): Promise<QuizQuestionPool[]>;
+  generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<QuizQuestionWithRawJson[][]>;
+  ): Promise<QuizQuestionPool[]>;
 }
 
 export interface AilaQuizReranker {
   evaluateQuizArray(
-    quizzes: QuizQuestionWithRawJson[][],
+    questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<RatingResponse[]>;
 }
 
 export interface FullQuizService {
-  quizSelector: QuizSelector<BaseType>;
+  quizSelector: QuizSelector;
   quizReranker: AilaQuizReranker;
-  quizGenerators: AilaQuizGeneratorService[];
-  createBestQuiz(
-    quizType: quizPatchType,
+  quizGenerators: AilaQuizCandidateGenerator[];
+  buildQuiz(
+    quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<LatestQuiz>;
 }
 
-// Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
-export interface QuizSelector<T extends BaseType> {
-  ratingFunction: RatingFunction<T>;
-  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
-  selectBestQuiz(
-    quizzes: QuizQuestionWithRawJson[][],
-    ratingsSchemas: T[],
-  ): QuizQuestionWithRawJson[];
+export interface QuizSelector {
+  selectQuestions(
+    questionPools: QuizQuestionPool[],
+    ratings: RatingResponse[],
+    lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+  ): Promise<RagQuizQuestion[]>;
 }
-
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
@@ -102,8 +102,17 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-export interface QuizQuestionWithRawJson extends QuizV1Question {
-  rawQuiz: NonNullable<HasuraQuiz>;
+/**
+ * Quiz question used throughout the quiz RAG pipeline.
+ * Retrieved from Elasticsearch, contains the question in Latest format
+ * (supporting all question types: multiple-choice, short-answer, match, order),
+ * source data, and associated image metadata.
+ */
+export interface RagQuizQuestion {
+  question: LatestQuizQuestion;
+  sourceUid: string;
+  source: HasuraQuizQuestion;
+  imageMetadata: ImageMetadata[];
 }
 
 export interface CustomHit {
@@ -112,7 +121,26 @@ export interface CustomHit {
 
 export interface SimplifiedResult {
   text: string;
-  custom_id: string; // This will be populated with questionUid from the source
+  questionUid: string;
+}
+
+export interface QuizQuestionPool {
+  questions: RagQuizQuestion[];
+  source:
+    | {
+        type: "basedOn";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "ailaRag";
+        lessonPlanId: string;
+        lessonTitle: string;
+      }
+    | {
+        type: "mlSemanticSearch";
+        semanticQuery: string;
+      };
 }
 
 export interface Document {
@@ -169,7 +197,5 @@ export interface AilaQuizRerankerFactory {
 }
 
 export interface QuizSelectorFactory {
-  createQuizSelector<T extends BaseType>(
-    selectorType: QuizSelectorType,
-  ): QuizSelector<T>;
+  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

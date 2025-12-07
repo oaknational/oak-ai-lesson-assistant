@@ -456,10 +456,7 @@ export const FAQPageContent = () => {
               of the website using speech recognition software; listen to most
               of the website using a screen reader (including the most recent
               versions of JAWS, NVDA, and VoiceOver). View our{" "}
-              <OakLink
-                href="https://www.thenational.academy/legal/accessibility-statement"
-                target="_blank"
-              >
+              <OakLink href="/legal/accessibility-statement">
                 full accessibility statement
               </OakLink>
               .

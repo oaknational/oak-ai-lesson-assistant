@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan } from "../../../protocol/schema";
-import { QuizV1Schema } from "../../../protocol/schema";
+import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 
@@ -19,10 +19,13 @@ const shouldSkipTests = process.env.TEST_QUIZZES === "false";
   });
 
   it("should generate a valid quiz", async () => {
-    const quiz =
-      await quizGenerator.generateMathsStarterQuizPatch(mockLessonPlan);
-    log.info(JSON.stringify(quiz));
+    const pools =
+      await quizGenerator.generateMathsStarterQuizCandidates(mockLessonPlan);
+    log.info(JSON.stringify(pools));
     log.info("QUIZ ABOVE");
-    expect(QuizV1Schema.safeParse(quiz[0]).success).toBe(true);
+    expect(pools[0]!.questions[0]).toBeDefined();
+    expect(
+      QuizV3QuestionSchema.safeParse(pools[0]!.questions[0]!.question).success,
+    ).toBe(true);
   });
 });

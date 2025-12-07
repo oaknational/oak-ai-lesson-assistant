@@ -70,9 +70,8 @@ export const legalMenuItems: MenuItem[] = [
   },
   {
     title: "Accessibility statement",
-    href: "https://www.thenational.academy/legal/accessibility-statement",
+    href: "/legal/accessibility-statement",
     id: "accessibility-statement",
-    target: "_blank",
   },
   {
     title: "Safeguarding statement",

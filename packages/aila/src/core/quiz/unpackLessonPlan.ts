@@ -6,44 +6,47 @@ export function unpackLessonPlanForPrompt(
   const sections: string[] = [];
 
   // Basic information
-  if (lessonPlan.title) sections.push(`Title: ${lessonPlan.title}`);
-  if (lessonPlan.subject) sections.push(`Subject: ${lessonPlan.subject}`);
-  if (lessonPlan.keyStage) sections.push(`Key Stage: ${lessonPlan.keyStage}`);
-  if (lessonPlan.topic) sections.push(`Topic: ${lessonPlan.topic}`);
+  const basicInfo = [
+    lessonPlan.title && `Title: ${lessonPlan.title}`,
+    lessonPlan.subject && `Subject: ${lessonPlan.subject}`,
+    lessonPlan.keyStage && `Key Stage: ${lessonPlan.keyStage}`,
+    lessonPlan.topic && `Topic: ${lessonPlan.topic}`,
+    lessonPlan.learningOutcome &&
+      `Learning Outcome: ${lessonPlan.learningOutcome}`,
+  ].filter(Boolean);
+  if (basicInfo.length > 0) sections.push(basicInfo.join("\n"));
 
-  // Learning outcomes and objectives
-  if (lessonPlan.learningOutcome)
-    sections.push(`Learning Outcome: ${lessonPlan.learningOutcome}`);
-
+  // Learning cycles
   if (
     Array.isArray(lessonPlan.learningCycles) &&
     lessonPlan.learningCycles.length > 0
   ) {
-    sections.push("Learning Cycles:");
-    lessonPlan.learningCycles.forEach((cycle, index) => {
-      sections.push(`${index + 1}. ${cycle}`);
-    });
+    const items = lessonPlan.learningCycles.map(
+      (cycle, i) => `${i + 1}. ${cycle}`,
+    );
+    sections.push(`Learning Cycles:\n${items.join("\n")}`);
   }
 
-  // Knowledge and understanding
+  // Prior knowledge
   if (
     Array.isArray(lessonPlan.priorKnowledge) &&
     lessonPlan.priorKnowledge.length > 0
   ) {
-    sections.push("Prior Knowledge:");
-    lessonPlan.priorKnowledge.forEach((knowledge, index) => {
-      sections.push(`${index + 1}. ${knowledge}`);
-    });
+    const items = lessonPlan.priorKnowledge.map(
+      (knowledge, i) => `${i + 1}. ${knowledge}`,
+    );
+    sections.push(`Prior Knowledge:\n${items.join("\n")}`);
   }
 
+  // Key learning points
   if (
     Array.isArray(lessonPlan.keyLearningPoints) &&
     lessonPlan.keyLearningPoints.length > 0
   ) {
-    sections.push("Key Learning Points:");
-    lessonPlan.keyLearningPoints.forEach((point, index) => {
-      sections.push(`${index + 1}. ${point}`);
-    });
+    const items = lessonPlan.keyLearningPoints.map(
+      (point, i) => `${i + 1}. ${point}`,
+    );
+    sections.push(`Key Learning Points:\n${items.join("\n")}`);
   }
 
   // Misconceptions
@@ -51,24 +54,26 @@ export function unpackLessonPlanForPrompt(
     Array.isArray(lessonPlan.misconceptions) &&
     lessonPlan.misconceptions.length > 0
   ) {
-    sections.push("Misconceptions:");
-    lessonPlan.misconceptions.forEach((misconception, index) => {
-      sections.push(`${index + 1}. ${misconception.misconception}`);
+    const items = lessonPlan.misconceptions.map((misconception, i) => {
+      const lines = [`${i + 1}. ${misconception.misconception}`];
       if (misconception.description) {
-        sections.push(`   Description: ${misconception.description}`);
+        lines.push(`   Description: ${misconception.description}`);
       }
+      return lines.join("\n");
     });
+    sections.push(`Misconceptions:\n${items.join("\n")}`);
   }
 
   // Keywords
   if (Array.isArray(lessonPlan.keywords) && lessonPlan.keywords.length > 0) {
-    sections.push("Keywords:");
-    lessonPlan.keywords.forEach((keyword, index) => {
-      sections.push(`${index + 1}. ${keyword.keyword}`);
+    const items = lessonPlan.keywords.map((keyword, i) => {
+      const lines = [`${i + 1}. ${keyword.keyword}`];
       if (keyword.definition) {
-        sections.push(`   Definition: ${keyword.definition}`);
+        lines.push(`   Definition: ${keyword.definition}`);
       }
+      return lines.join("\n");
     });
+    sections.push(`Keywords:\n${items.join("\n")}`);
   }
 
   // Additional materials

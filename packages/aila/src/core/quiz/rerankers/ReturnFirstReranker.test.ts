@@ -1,7 +1,9 @@
 import { aiLogger } from "@oakai/logger";
 
-import { cachedQuiz } from "../fixtures/CachedImageQuiz";
-import type { QuizQuestionWithRawJson } from "../interfaces";
+import {
+  cachedQuiz,
+  createMockQuestionPool,
+} from "../fixtures/quizQuestion.fixture";
 import { ReturnFirstReranker } from "./ReturnFirstReranker";
 
 const log = aiLogger("aila:quiz");
@@ -15,7 +17,10 @@ describe("ReturnFirstReranker", () => {
 
   describe("evaluateQuizArray", () => {
     it("should return array of ratings with first item rated 1 and others 0", async () => {
-      const mockQuizzes: QuizQuestionWithRawJson[][] = [cachedQuiz, cachedQuiz];
+      const mockQuestionPools = [
+        createMockQuestionPool(cachedQuiz),
+        createMockQuestionPool(cachedQuiz),
+      ];
 
       const mockLessonPlan = {
         title: "Test Lesson",
@@ -23,7 +28,7 @@ describe("ReturnFirstReranker", () => {
       };
 
       const result = await reranker.evaluateQuizArray(
-        mockQuizzes,
+        mockQuestionPools,
         mockLessonPlan,
         "/exitQuiz",
       );
@@ -49,7 +54,10 @@ describe("ReturnFirstReranker", () => {
     });
 
     it("should populate schema fields correctly", async () => {
-      const mockQuizzes: QuizQuestionWithRawJson[][] = [cachedQuiz, cachedQuiz];
+      const mockQuestionPools = [
+        createMockQuestionPool(cachedQuiz),
+        createMockQuestionPool(cachedQuiz),
+      ];
 
       const mockLessonPlan = {
         title: "Test Lesson",
@@ -57,7 +65,7 @@ describe("ReturnFirstReranker", () => {
       };
 
       const result = await reranker.evaluateQuizArray(
-        mockQuizzes,
+        mockQuestionPools,
         mockLessonPlan,
         "/exitQuiz",
       );

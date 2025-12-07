@@ -123,7 +123,7 @@ export const agents: Record<AgentName, AgentDefinition> = {
     prompt: "Specify the topic for this lesson.",
     schemaForLLM: TopicSchema,
     schemaStrict: TopicSchema,
-    extractRagData: (lp) => lp.topic,
+    extractRagData: (lp) => lp.topic ?? null,
   },
   learningOutcome: {
     type: "prompt",
