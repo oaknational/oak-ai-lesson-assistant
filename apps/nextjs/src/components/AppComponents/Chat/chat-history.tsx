@@ -9,11 +9,11 @@ import {
   OakInformativeModal,
   OakInformativeModalFooter,
   OakLink,
-  OakSpan,
 } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
+import OakIconLogo from "@/components/OakIconLogo";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../DialogContext";
@@ -52,20 +52,19 @@ export function ChatHistory() {
         </OakInformativeModalFooter>
       }
     >
+      {/*NOTE: Oak icon added after replacing OakModal with OakInformativeModal to match previous design*/}
       <OakBox
         $position="absolute"
-        $top="spacing-24"
-        $right="spacing-12"
+        $top="spacing-16"
+        $left="spacing-16"
         $borderRadius="border-radius-circle"
-        $height="spacing-72"
       >
         <OakLink element="button" onClick={() => setOpenSidebar(false)}>
-          <OakSpan $opacity="transparent" $font="body-3">
-            Close
-          </OakSpan>
+          <OakIconLogo width={32} height={40} />
         </OakLink>
       </OakBox>
-      <div className="flex h-full flex-col">
+      {/*NOTE: mt-10 added to match previous design after replacing OakModal with OakInformativeModal*/}
+      <div className="mt-10 flex h-full flex-col">
         <div className="my-10 flex flex-col px-7">
           <ChatButton
             href={getAilaUrl("start")}

@@ -18,7 +18,12 @@ export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
     return null;
   }
   return (
-    <OakFlex $justifyContent="flex-start" $gap="spacing-8" $alignItems="center">
+    <OakFlex
+      $justifyContent="flex-start"
+      $gap="spacing-8"
+      $alignItems="center"
+      $pa={"spacing-8"}
+    >
       <BinIcon />
       <button
         onClick={() => {
