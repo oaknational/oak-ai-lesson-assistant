@@ -214,7 +214,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $alignItems={"center"}
           $gap="spacing-56"
           $pv={["spacing-0", "spacing-80"]}
-          $background={"lavender30"}
+          $background={"bg-decorative3-very-subdued"}
           fullWidthBgColor={"lavender30"}
         >
           <OakFlex
@@ -275,7 +275,8 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props) => oakColorTokens[props.fullWidthBgColor]};
+    background-color: ${(props: { fullWidthBgColor: OakColorToken }) =>
+      oakColorTokens[props.fullWidthBgColor]};
   }
   /* img {
     max-width: 300px;
