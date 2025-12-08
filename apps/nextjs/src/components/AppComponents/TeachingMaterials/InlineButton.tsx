@@ -23,7 +23,7 @@ const InlineButton = forwardRef<HTMLButtonElement, InlineButtonProps>(
         onClick={onClick}
         ref={ref}
       >
-        <OakP $color="blue" $font="body-2">
+        <OakP $color="text-link-active" $font="body-2">
           {children}
         </OakP>
       </OakFlex>
