@@ -27,7 +27,11 @@ const ModalFooterButtons = ({
         element="button"
         tabIndex={1}
       >
-        <OakSpan $font="body-2-bold" $color="text-primary" $textDecoration="none">
+        <OakSpan
+          $font="body-2-bold"
+          $color="text-primary"
+          $textDecoration="none"
+        >
           Cancel
         </OakSpan>
       </OakLinkNoUnderline>
