@@ -31,8 +31,8 @@ function SafetyViolationItem({
 
   return (
     <>
-      <OakFlex $alignItems="center" $background="bg-decorative4-main" $pa="inner-padding-m">
-        <OakP $font="body-2" $mr="space-between-m">
+      <OakFlex $alignItems="center" $background="bg-decorative4-main" $pa="spacing-16">
+        <OakP $font="body-2" $mr="spacing-24">
           <OakP $font="heading-7">
             This moderation triggered a safety violation.
           </OakP>{" "}

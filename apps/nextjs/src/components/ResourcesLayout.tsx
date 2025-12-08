@@ -39,46 +39,43 @@ const TeachingMaterialsLayout = ({
         $alignItems="center"
         $justifyContent="center"
         $minHeight="100vh"
-        $pt="inner-padding-xl7"
-        $pb="inner-padding-xl"
+        $pt="spacing-72"
+        $pb="spacing-24"
         $flexDirection="column"
         $background={"bg-decorative3-very-subdued"}
-        $ph={["inner-padding-xl", "inner-padding-xl4"]}
+        $ph={["spacing-24", "spacing-48"]}
       >
         <OakMaxWidth
-          $mt={[
-            isDemoUser ? "space-between-xxl" : "space-between-m",
-            "space-between-m",
-          ]}
+          $mt={[isDemoUser ? "spacing-72" : "spacing-24", "spacing-24"]}
           $position={"relative"}
           $background="bg-primary"
           $borderRadius="border-radius-m"
-          $mh="space-between-m"
+          $mh="spacing-24"
           $width="100%"
-          $mb="space-between-xl"
-          $pb="inner-padding-xl"
-          $maxWidth={"all-spacing-23"}
+          $mb="spacing-56"
+          $pb="spacing-24"
+          $maxWidth={"spacing-960"}
         >
           <OakFlex
             $flexDirection="column"
-            $ph={["inner-padding-xl", "inner-padding-xl8"]}
-            $pv={["inner-padding-xl", "inner-padding-xl4"]}
+            $ph={["spacing-24", "spacing-80"]}
+            $pv={["spacing-24", "spacing-48"]}
             $width={"100%"}
           >
             <OakFlex
               $bb="border-solid-s"
               $borderColor="border-neutral-lighter"
-              $pb="inner-padding-l"
-              $mb="space-between-m"
+              $pb="spacing-20"
+              $mb="spacing-24"
               $flexDirection="column"
             >
               <OakBox
                 $background="bg-decorative2-subdued"
-                $ph="inner-padding-m"
-                $pv="inner-padding-xs"
+                $ph="spacing-16"
+                $pv="spacing-8"
                 $borderRadius="border-radius-circle"
                 $width="fit-content"
-                $mb={"space-between-m"}
+                $mb={"spacing-24"}
               >
                 <OakP $font="body-2">
                   {step === 4 ? docTypeName : `Step ${step} of 4`}
@@ -87,11 +84,7 @@ const TeachingMaterialsLayout = ({
               <OakHeading as="h1" tag="h1" $font="heading-5">
                 {title}
               </OakHeading>
-              <OakP
-                $mv="space-between-ssx"
-                $font="body-2"
-                $color="text-primary"
-              >
+              <OakP $mv="spacing-8" $font="body-2" $color="text-primary">
                 {subTitle}
               </OakP>
             </OakFlex>

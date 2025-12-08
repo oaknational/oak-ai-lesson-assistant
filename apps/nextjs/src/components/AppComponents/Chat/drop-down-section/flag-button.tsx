@@ -121,7 +121,7 @@ const FlagButton = ({
           <OakRadioGroup
             name={`drop-down-${flagOptions[0].enumValue}`}
             $flexDirection="column"
-            $gap="space-between-s"
+            $gap="spacing-16"
             $background="bg-primary"
           >
             {flagOptions.map((option) => (

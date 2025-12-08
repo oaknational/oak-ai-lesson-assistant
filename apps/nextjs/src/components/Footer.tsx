@@ -34,20 +34,17 @@ const Footer = () => {
   const { isSignedIn } = useAuth();
   return (
     <StyledFooter>
-      <OakMaxWidth
-        $pv="inner-padding-xl7"
-        $ph={["inner-padding-xl", "inner-padding-xs"]}
-      >
+      <OakMaxWidth $pv="spacing-72" $ph={["spacing-24", "spacing-8"]}>
         <OakFlex
           $flexDirection={["column-reverse", "row"]}
-          $pv="inner-padding-xl4"
+          $pv="spacing-48"
           $justifyContent="space-between"
           $width="100%"
         >
           <OakFlex
             $flexDirection={["column", "row"]}
             $alignItems={["center", "start"]}
-            $gap="all-spacing-11"
+            $gap="spacing-64"
           >
             <OakFlex
               $flexDirection="column"
@@ -55,13 +52,13 @@ const Footer = () => {
               $alignItems={"start"}
               $width={["100%", "unset"]}
             >
-              <OakP $font="heading-7" $mb={"space-between-s"}>
+              <OakP $font="heading-7" $mb={"spacing-16"}>
                 Menu
               </OakP>
               <OakUL>
                 {aiTools.map((tool) => {
                   return (
-                    <OakLI key={tool.id} $pv="inner-padding-ssx">
+                    <OakLI key={tool.id} $pv="spacing-4">
                       <FooterButton
                         onClick={() => {
                           if (tool.id === "lesson-planner") {
@@ -81,7 +78,7 @@ const Footer = () => {
                 })}
                 {menuItems.map((item) => {
                   return (
-                    <OakLI key={item.id} $pv="inner-padding-ssx">
+                    <OakLI key={item.id} $pv="spacing-4">
                       <FooterButton href={item.href} disabled={!item.href}>
                         {item.title}
                       </FooterButton>
@@ -96,21 +93,21 @@ const Footer = () => {
               $alignItems={"start"}
               $width={["100%", "unset"]}
             >
-              <OakP $font="heading-7" $mb={"space-between-s"}>
+              <OakP $font="heading-7" $mb={"spacing-16"}>
                 AI experiments legal
               </OakP>
               <OakUL>
                 {legalMenuItems.map((item) => {
                   if (item.id === "manage-cookies") {
                     return (
-                      <OakLI key={item.id} $pv="inner-padding-ssx">
+                      <OakLI key={item.id} $pv="spacing-4">
                         <ManageCookiesButton />
                       </OakLI>
                     );
                   }
                   if (item.target) {
                     return (
-                      <OakLI key={item.id} $pv="inner-padding-ssx">
+                      <OakLI key={item.id} $pv="spacing-4">
                         <FooterButton href={item.href} target={item.target}>
                           {item.title}
                         </FooterButton>
@@ -133,16 +130,16 @@ const Footer = () => {
             <Logo width={150} height={100} />
           </OakBox>
         </OakFlex>
-        <OakBox $pt={["inner-padding-none", "inner-padding-xl4"]} $width="100%">
+        <OakBox $pt={["spacing-0", "spacing-48"]} $width="100%">
           <OakFlex
-            $gap={["all-spacing-6", "all-spacing-12"]}
+            $gap={["spacing-24", "spacing-72"]}
             $flexDirection={["column", "row"]}
             $alignContent="center"
-            $mt={["auto", "space-between-xxl"]}
+            $mt={["auto", "spacing-72"]}
             $justifyContent={["center", "space-between"]}
             className="w-full"
           >
-            <OakFlex $flexDirection="row" $gap="all-spacing-4">
+            <OakFlex $flexDirection="row" $gap="spacing-16">
               {socialMenuItems.map((item) => {
                 return (
                   <a href={item.href} key={item.id}>
@@ -154,7 +151,7 @@ const Footer = () => {
             <OakBox $display={["flex", "none"]}>
               <Logo width={150} height={100} />
             </OakBox>
-            <OakFlex $flexDirection="column" $gap="all-spacing-1">
+            <OakFlex $flexDirection="column" $gap="spacing-4">
               <p className="text-sm font-bold">
                 © Oak National Academy Limited, No 14174888
               </p>
@@ -167,8 +164,8 @@ const Footer = () => {
       </OakMaxWidth>
       <OakBox
         $position="absolute"
-        $bottom="all-spacing-0"
-        $right="all-spacing-0"
+        $bottom="spacing-0"
+        $right="spacing-0"
         $zIndex="behind"
       >
         <Image src={loop} width={821} height={577} alt="loop" priority={true} />
@@ -223,7 +220,7 @@ const FooterButton = ({
       disabled={disabled}
     >
       <OakFlex
-        $gap="all-spacing-1"
+        $gap="spacing-4"
         $alignItems="center"
         $font="body-2"
         $color="text-primary"

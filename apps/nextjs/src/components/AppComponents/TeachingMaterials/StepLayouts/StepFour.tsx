@@ -198,24 +198,15 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
   return (
     <>
       {isMaterialLoading || (!generation && <OakP>Loading...</OakP>)}
-
-      <OakFlex $mt={"space-between-m"}>{renderGeneratedMaterial()}</OakFlex>
+      <OakFlex $mt={"spacing-24"}>{renderGeneratedMaterial()}</OakFlex>
       {moderation?.categories && moderation.categories.length > 0 && (
         <ModerationMessage />
       )}
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
           {refinementHistory.length > 0 && !isMaterialRefining && (
-            <OakFlex
-              $gap="all-spacing-2"
-              $alignItems="center"
-              $mb="space-between-m"
-            >
-              <OakP
-                $mr={"space-between-m"}
-                $font="body-2"
-                $color="icon-success"
-              >
+            <OakFlex $gap="spacing-8" $alignItems="center" $mb="spacing-24">
+              <OakP $mr={"spacing-24"} $font="body-2" $color="icon-success">
                 Done!
               </OakP>
               <OakSmallTertiaryInvertedButton
@@ -234,16 +225,16 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
             {isFooterAdaptOpen ? (
               <OakFlex
                 $flexDirection="row"
-                $gap="all-spacing-5"
+                $gap="spacing-20"
                 $width="100%"
                 $justifyContent="space-between"
                 $alignItems="center"
               >
-                <OakFlex $gap="all-spacing-2" $flexWrap="wrap">
+                <OakFlex $gap="spacing-8" $flexWrap="wrap">
                   {isMaterialRefining ? (
-                    <OakFlex $alignItems="center" $gap="all-spacing-2">
+                    <OakFlex $alignItems="center" $gap="spacing-8">
                       <OakP $font="body-2">Working on it...</OakP>
-                      <OakLoadingSpinner $width="all-spacing-6" />
+                      <OakLoadingSpinner $width="spacing-24" />
                     </OakFlex>
                   ) : (
                     <>
@@ -277,7 +268,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   $justifyContent={["space-between"]}
                   $display={["none", "flex"]}
                   $width={"100%"}
-                  $gap="all-spacing-2"
+                  $gap="spacing-8"
                 >
                   <OakSecondaryButton
                     onClick={() =>
@@ -286,7 +277,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   >
                     Create more
                   </OakSecondaryButton>
-                  <OakFlex $gap="all-spacing-2">
+                  <OakFlex $gap="spacing-8">
                     <OakSecondaryButton
                       data-testid="modify-desktop"
                       onClick={() => {
@@ -298,7 +289,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                         isDownloading
                       }
                     >
-                      <OakFlex $alignItems="center" $gap="all-spacing-1">
+                      <OakFlex $alignItems="center" $gap="spacing-4">
                         <OakP $font="heading-7">Modify</OakP>
                         <AiIcon />
                       </OakFlex>
@@ -319,7 +310,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   $justifyContent={["space-between"]}
                   $display={["flex", "none"]}
                   $width={"100%"}
-                  $gap="all-spacing-2"
+                  $gap="spacing-8"
                   $flexDirection={["row", "row"]}
                 >
                   <MobileNoLetterSpacingButton
@@ -329,7 +320,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                   >
                     Create more
                   </MobileNoLetterSpacingButton>
-                  <OakFlex $gap={"space-between-ssx"} $flexDirection={"row"}>
+                  <OakFlex $gap={"spacing-8"} $flexDirection={"row"}>
                     <MobileNoLetterSpacingButton
                       data-testid="modify-mobile"
                       onClick={() => {
@@ -350,11 +341,11 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       }
                     >
                       {isDownloading ? (
-                        <OakLoadingSpinner $width="all-spacing-6" />
+                        <OakLoadingSpinner $width="spacing-24" />
                       ) : (
                         <OakIcon
                           iconName="download"
-                          iconWidth="all-spacing-7"
+                          iconWidth="spacing-32"
                           $colorFilter={"white"}
                           data-testid="download-icon-button"
                         />

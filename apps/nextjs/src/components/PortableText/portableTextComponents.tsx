@@ -17,42 +17,22 @@ const StyledUL = styled(OakUL)`
 export const portableTextComponents: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
-      <OakHeading
-        tag="h1"
-        $mb="space-between-s"
-        $font="heading-4"
-        $mt="space-between-m"
-      >
+      <OakHeading tag="h1" $mb="spacing-16" $font="heading-4" $mt="spacing-24">
         {children}
       </OakHeading>
     ),
     h2: ({ children }) => (
-      <OakHeading
-        tag="h2"
-        $mb="space-between-s"
-        $font="heading-6"
-        $mt="space-between-m"
-      >
+      <OakHeading tag="h2" $mb="spacing-16" $font="heading-6" $mt="spacing-24">
         {children}
       </OakHeading>
     ),
     h3: ({ children }) => (
-      <OakHeading
-        tag="h3"
-        $mb="space-between-s"
-        $font="heading-6"
-        $mt="space-between-m"
-      >
+      <OakHeading tag="h3" $mb="spacing-16" $font="heading-6" $mt="spacing-24">
         {children}
       </OakHeading>
     ),
     h4: ({ children }) => (
-      <OakHeading
-        tag="h4"
-        $mb="space-between-s"
-        $font="heading-6"
-        $mt="space-between-m"
-      >
+      <OakHeading tag="h4" $mb="spacing-16" $font="heading-6" $mt="spacing-24">
         {children}
       </OakHeading>
     ),

@@ -40,38 +40,38 @@ export function AilaStart() {
       $minHeight={["100%", "100vh", "100vh"]}
     >
       <OakMaxWidth
-        $mt={["space-between-xxxl"]}
-        $maxWidth="all-spacing-23"
+        $mt={["spacing-80"]}
+        $maxWidth="spacing-960"
         $background="bg-decorative3-very-subdued"
         $justifyContent={"space-between"}
       >
         <OakGrid
           $height={"100%"}
-          $cg={["space-between-none", "space-between-m", "space-between-l"]}
-          $rg={["space-between-l", "space-between-none", "space-between-none"]}
+          $cg={["spacing-0", "spacing-24", "spacing-48"]}
+          $rg={["spacing-48", "spacing-0", "spacing-0"]}
           $mh="auto"
-          $mt={["space-between-xxxl"]}
-          $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
+          $mt={["spacing-80"]}
+          $ph={["spacing-12", "spacing-12", "spacing-0"]}
         >
           <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
             <OakBox
               $background="bg-primary"
-              $pa="inner-padding-xl2"
+              $pa="spacing-32"
               $borderRadius="border-radius-s"
               $position={"relative"}
             >
               <OakFlex $flexDirection="column">
                 {/* Heading and description */}
-                <OakHeading $mb="space-between-s" $font="heading-5" tag="h2">
+                <OakHeading $mb="spacing-16" $font="heading-5" tag="h2">
                   Create a lesson with AI
                 </OakHeading>
-                <OakP $mb="space-between-s" $font="body-2">
+                <OakP $mb="spacing-16" $font="body-2">
                   Aila will guide you step-by-step to create and download a
                   tailor-made lesson, including:
                 </OakP>
 
                 <EmptyScreenAccordion />
-                <OakBox $mt="space-between-l">
+                <OakBox $mt="spacing-48">
                   <OakPrimaryButton
                     element={Link}
                     href={getAilaUrl("lesson")}
@@ -87,23 +87,23 @@ export function AilaStart() {
           <OakGridArea $colSpan={[12, 6, 5]}>
             <OakBox
               $background="bg-primary"
-              $pa="inner-padding-xl2"
+              $pa="spacing-32"
               $borderRadius="border-radius-s"
             >
               <OakFlex $flexDirection="column">
                 {/* Heading, description, and list */}
-                <OakHeading $mb="space-between-xs" $font="heading-5" tag="h2">
+                <OakHeading $mb="spacing-12" $font="heading-5" tag="h2">
                   Create teaching materials with AI
                 </OakHeading>
-                <OakP $mb="space-between-xs" $font="body-2">
+                <OakP $mb="spacing-12" $font="body-2">
                   Enhance lessons with a range of teaching materials, including:
                 </OakP>
                 <StyledUL>
-                  <OakLI $mv="space-between-xs">Glossaries</OakLI>
-                  <OakLI $mv="space-between-xs">Comprehension tasks</OakLI>
-                  <OakLI $mt="space-between-xs">Quizzes</OakLI>
+                  <OakLI $mv="spacing-12">Glossaries</OakLI>
+                  <OakLI $mv="spacing-12">Comprehension tasks</OakLI>
+                  <OakLI $mt="spacing-12">Quizzes</OakLI>
                 </StyledUL>
-                <OakBox $mt="space-between-m">
+                <OakBox $mt="spacing-24">
                   <OakPrimaryButton
                     element={Link}
                     href={getAilaUrl("teaching-materials")}
@@ -130,10 +130,10 @@ export function AilaStart() {
           </OakGridArea>
         </OakGrid>
         <OakFlex
-          $ph={["inner-padding-s", "inner-padding-s", "inner-padding-none"]}
+          $ph={["spacing-12", "spacing-12", "spacing-0"]}
           $justifyContent={"center"}
         >
-          <OakBox $mt="space-between-l">
+          <OakBox $mt="spacing-48">
             <ChatPanelDisclaimer size="sm" />
           </OakBox>
         </OakFlex>

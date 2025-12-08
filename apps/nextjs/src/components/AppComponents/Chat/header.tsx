@@ -52,16 +52,16 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
       <OakFlex
         $background="bg-primary"
         $bb="border-solid-m"
-        $pa={"inner-padding-l"}
+        $pa={"spacing-20"}
         $alignItems="center"
         $justifyContent="space-between"
-        $gap={"all-spacing-3"}
+        $gap={"spacing-12"}
       >
-        <OakFlex $gap={"all-spacing-3"} $alignItems={"center"}>
+        <OakFlex $gap={"spacing-12"} $alignItems={"center"}>
           <OakFlex
             $alignItems={"center"}
             $justifyContent={"center"}
-            $gap={"all-spacing-3"}
+            $gap={"spacing-12"}
           >
             <OakLink href="/" aria-label="go to home page">
               <OakIconLogo />
@@ -76,7 +76,7 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
         <OakFlex
           $alignItems="center"
           $justifyContent="flex-end"
-          $gap="all-spacing-6"
+          $gap="spacing-24"
         >
           <OakBox $display={["none", "flex"]}>
             <OakLink
@@ -86,10 +86,7 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
               style={{ textDecoration: "none" }}
             >
               <OakFlex $alignItems={"center"} $alignContent={"center"}>
-                <OakIcon
-                  $mr={"space-between-sssx"}
-                  iconName={"question-mark"}
-                />
+                <OakIcon $mr={"spacing-4"} iconName={"question-mark"} />
                 <OakSpan $font="body-2" $color={"text-primary"}>
                   Help
                 </OakSpan>

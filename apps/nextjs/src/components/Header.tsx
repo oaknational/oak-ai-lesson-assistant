@@ -30,9 +30,9 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
   return (
     <OakBox
       $position="absolute"
-      $top="all-spacing-0"
-      $left="all-spacing-0"
-      $right="all-spacing-0"
+      $top="spacing-0"
+      $left="spacing-0"
+      $right="spacing-0"
       $zIndex="fixed-header"
       $bb={"border-solid-m"}
     >
@@ -50,16 +50,16 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
       )}
       <OakFlex
         as="header"
-        $height="all-spacing-12"
+        $height="spacing-72"
         $width="100%"
         $background="bg-primary"
-        $ph="inner-padding-m"
+        $ph="spacing-16"
         $justifyContent="space-between"
       >
         <OakFlex
           $flexDirection="row"
           $alignItems={"center"}
-          $gap={["all-spacing-5", "all-spacing-7"]}
+          $gap={["spacing-20", "spacing-32"]}
         >
           <Link href="/" aria-label="go to home page">
             <OakBox $display={["none", "block"]}>
@@ -73,10 +73,7 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
             <OakP $font={["body-2", "heading-6"]}>AI experiments</OakP>
           </OakBox>
         </OakFlex>
-        <OakFlex
-          $alignItems={"center"}
-          $gap={["all-spacing-4", "all-spacing-8"]}
-        >
+        <OakFlex $alignItems={"center"} $gap={["spacing-16", "spacing-40"]}>
           <OakBox $display={["none", "block"]}>
             <Link href="/faqs">
               <OakP $font="body-2">FAQs</OakP>

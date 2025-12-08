@@ -49,35 +49,35 @@ export const HelpContent = () => {
         <OakGridArea $colSpan={[0, 0, 3]}>
           <OakBox $display={["none", "none", "block"]}>
             <OakBox $position={"fixed"}>
-              <OakBox $pb="inner-padding-xl">
+              <OakBox $pb="spacing-24">
                 <OakHeading tag="h1" $font="heading-3">
                   Help
                 </OakHeading>
               </OakBox>
               <OakUL>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(startingRef)}>
                     Starting your first lesson
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(structureRef)}>
                     Structure of an Oak lesson
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink
                     onClick={() => scrollToRefWithOffset(learningCycles)}
                   >
                     Learning cycles
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(downloadsRef)}>
                     Downloads
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink
                     onClick={() =>
                       scrollToRefWithOffset(additionalMaterialsRef)
@@ -86,24 +86,24 @@ export const HelpContent = () => {
                     Examples of additional materials
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(creatingRef)}>
                     Co-creating your lesson
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(reviewingRef)}>
                     Reviewing and editing
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink
                     onClick={() => scrollToRefWithOffset(downloadingRef)}
                   >
                     Downloading and sharing
                   </OakLink>
                 </OakLI>
-                <OakLI $pv="inner-padding-xs">
+                <OakLI $pv="spacing-8">
                   <OakLink onClick={() => scrollToRefWithOffset(aiRef)}>
                     AI and accuracy
                   </OakLink>
@@ -116,7 +116,7 @@ export const HelpContent = () => {
           <OakFlex
             $flexDirection={"column"}
             $position={"relative"}
-            $gap={"space-between-m2"}
+            $gap={"spacing-32"}
           >
             <OakBox $display={["block", "none", "none"]}>
               <OakLink
@@ -127,11 +127,11 @@ export const HelpContent = () => {
               </OakLink>
             </OakBox>
 
-            <OakBox $mb={"space-between-xs"}>
+            <OakBox $mb={"spacing-12"}>
               <GetInTouchBox />
             </OakBox>
             <OakBox ref={startingRef}>
-              <OakHeading $mb={"space-between-ssx"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-8"} $font="heading-5" tag="h2">
                 Starting your first lesson
               </OakHeading>
               <OakP>
@@ -143,10 +143,10 @@ export const HelpContent = () => {
               </OakP>
             </OakBox>
             <OakBox ref={structureRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Structure of an Oak lesson
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Lessons are created using Oak&apos;s curriculum principles and
                 include the following sections:
               </OakP>
@@ -165,10 +165,10 @@ export const HelpContent = () => {
               </OakUL>
             </OakBox>
             <OakBox ref={learningCycles}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Learning cycles
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Each learning cycle includes 4 key sections:
               </OakP>
               <OakUL className="mb-6 list-disc pl-12">
@@ -179,10 +179,10 @@ export const HelpContent = () => {
               </OakUL>
             </OakBox>
             <OakBox ref={downloadsRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Downloads
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Once the lesson has been created (and all sections are complete)
                 you will be able to download the following documents:
               </OakP>
@@ -194,26 +194,26 @@ export const HelpContent = () => {
                 <OakLI>Exit quiz (PDF/Docx file)</OakLI>
                 <OakLI>Additional materials (PDF/Docx file)</OakLI>
               </OakUL>
-              <OakP $mt={"space-between-xs"}>
+              <OakP $mt={"spacing-12"}>
                 If you have a Google account, you will also be able to edit
                 these documents directly.
               </OakP>
             </OakBox>
             <OakBox ref={additionalMaterialsRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Examples of additional materials
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Case study context sheet, an essay title with success criteria
                 for pupils to complete for homework, suggestions for alternative
                 art or equipment you can use for your lesson.
               </OakP>
             </OakBox>
             <OakBox ref={creatingRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Co-creating your lesson
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Aila, Oak&apos;s AI lesson assistant will guide you through the
                 process of co-creating each section of your lesson on the
                 left-hand side of the screen. The lesson output will be
@@ -221,10 +221,10 @@ export const HelpContent = () => {
               </OakP>
             </OakBox>
             <OakBox ref={reviewingRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Reviewing and editing
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Aila will pause at key points during the lesson creation and
                 will ask you to review the content generated. You can ask Aila
                 to adapt each section, for example:
@@ -244,10 +244,10 @@ export const HelpContent = () => {
               </OakUL>
             </OakBox>
             <OakBox ref={downloadingRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 Downloading and sharing
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Once you’ve completed all the sections in the lesson, you’ll be
                 able to download the full set of lesson resources. This includes
                 the complete lesson plan (covering all sections), editable
@@ -257,10 +257,10 @@ export const HelpContent = () => {
               </OakP>
             </OakBox>
             <OakBox ref={aiRef}>
-              <OakHeading $mb={"space-between-xs"} $font="heading-5" tag="h2">
+              <OakHeading $mb={"spacing-12"} $font="heading-5" tag="h2">
                 AI and accuracy
               </OakHeading>
-              <OakP $mb={"space-between-xs"}>
+              <OakP $mb={"spacing-12"}>
                 Retrieval augmented generation is used to integrate Oak content
                 into your lessons, improving the accuracy of the content
                 produced. AI is not 100% accurate and mistakes can still be
