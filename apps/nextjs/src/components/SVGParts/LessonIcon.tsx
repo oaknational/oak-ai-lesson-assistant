@@ -1,9 +1,9 @@
-import { OakBox, type OakColorToken } from "@oaknational/oak-components";
+import { OakBox, type OakUiRoleToken } from "@oaknational/oak-components";
 
 const LessonIcon = ({
   backgroundColor,
 }: {
-  backgroundColor?: OakColorToken;
+  backgroundColor?: OakUiRoleToken;
 }) => {
   return (
     <OakBox
