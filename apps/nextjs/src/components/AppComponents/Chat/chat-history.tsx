@@ -8,7 +8,6 @@ import {
   OakIcon,
   OakInformativeModal,
   OakInformativeModalFooter,
-  OakLink,
 } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
 
@@ -59,9 +58,7 @@ export function ChatHistory() {
         $left="spacing-16"
         $borderRadius="border-radius-circle"
       >
-        <OakLink element="button" onClick={() => setOpenSidebar(false)}>
-          <OakIconLogo width={32} height={40} />
-        </OakLink>
+        <OakIconLogo width={32} height={40} />
       </OakBox>
       {/*NOTE: mt-10 added to match previous design after replacing OakModal with OakInformativeModal*/}
       <div className="mt-10 flex h-full flex-col">
