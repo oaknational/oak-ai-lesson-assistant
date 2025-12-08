@@ -20,8 +20,9 @@ export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
   return (
     <OakFlex
       $justifyContent="flex-start"
-      $gap="all-spacing-2"
+      $gap="spacing-8"
       $alignItems="center"
+      $pa={"spacing-8"}
     >
       <BinIcon />
       <button

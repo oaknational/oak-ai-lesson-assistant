@@ -73,7 +73,7 @@ export const SharedDropDown = ({
             ))}
 
           {selectedValue === "Other" && (
-            <OakBox $pa="inner-padding-s">
+            <OakBox $pa="spacing-12">
               <OakTextInput
                 value={customValue}
                 onChange={(e) => {
@@ -83,13 +83,13 @@ export const SharedDropDown = ({
                 style={{ width: "100%" }}
               />
               {errorMessage && (
-                <OakP $color="red" $font="body-3" $mt="space-between-xs">
+                <OakP $color="red" $font="body-3" $mt="spacing-12">
                   {errorMessage}
                 </OakP>
               )}
               <OakFlex
-                $gap={"space-between-xs"}
-                $mt="space-between-s"
+                $gap={"spacing-12"}
+                $mt="spacing-16"
                 $justifyContent="flex-end"
               >
                 <OakSmallSecondaryButton

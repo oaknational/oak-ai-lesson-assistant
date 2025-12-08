@@ -25,7 +25,7 @@ const TeachingMaterialsRateLimit = ({
   if (!isDemoUser) {
     return (
       <>
-        <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
+        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
           <OakHeading $font={"heading-5"} tag="h1">
             Daily usage limit
           </OakHeading>
@@ -34,11 +34,7 @@ const TeachingMaterialsRateLimit = ({
             <OakLink href={RATELIMIT_FORM_URL}>contact us</OakLink> if you need
             a higher limit.
           </OakP>
-          <OakFlex
-            $width={"100%"}
-            $justifyContent={"end"}
-            $mb={"space-between-m"}
-          >
+          <OakFlex $width={"100%"} $justifyContent={"end"} $mb={"spacing-24"}>
             <OakPrimaryButton
               onClick={() => {
                 resetToDefault();
@@ -55,7 +51,7 @@ const TeachingMaterialsRateLimit = ({
 
   return (
     <>
-      <OakFlex $flexDirection={"column"} $gap={"space-between-m"}>
+      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
         <OakHeading $font={"heading-5"} tag="h1">
           Demo limit reached
         </OakHeading>
@@ -70,7 +66,7 @@ const TeachingMaterialsRateLimit = ({
           $width={"100%"}
           $justifyContent={"space-between"}
           $alignItems={"center"}
-          $mb={"space-between-m"}
+          $mb={"spacing-24"}
         >
           <OakTertiaryInvertedButton
             onClick={() => {

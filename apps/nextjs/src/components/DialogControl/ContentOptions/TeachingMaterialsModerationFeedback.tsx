@@ -39,7 +39,7 @@ const TeachingMaterialsModerationFeedback = ({
         $height="100%"
         $flexDirection="column"
         $justifyContent="space-between"
-        $gap={"space-between-m"}
+        $gap={"spacing-24"}
       >
         <OakP $font={"heading-6"}>{"Thank you"}</OakP>
         <OakP>Your feedback has been submitted.</OakP>
@@ -63,7 +63,7 @@ const TeachingMaterialsModerationFeedback = ({
       $height="100%"
       $flexDirection="column"
       $justifyContent="space-between"
-      $gap={"space-between-m"}
+      $gap={"spacing-24"}
     >
       <OakBox $display={["none", "flex"]}>
         <OakIcon iconName={"warning"} />
@@ -72,7 +72,7 @@ const TeachingMaterialsModerationFeedback = ({
       <OakP $font="body-2">{message}</OakP>
       <OakTextInput
         value={feedback}
-        $minHeight={"all-spacing-11"}
+        $minHeight={"spacing-64"}
         placeholder="Your feedback"
         onChange={(e) => setFeedback(e.target.value)}
       />

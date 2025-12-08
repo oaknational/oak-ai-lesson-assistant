@@ -17,9 +17,9 @@ export default function SharedAdminLayout({
         <Layout>
           <div className="mt-27">
             <OakMaxWidth
-              $maxWidth={["all-spacing-21", "all-spacing-24"]}
-              $pa="inner-padding-m"
-              $ph={["inner-padding-none", "inner-padding-s"]}
+              $maxWidth={["spacing-480", "spacing-1280"]}
+              $pa="spacing-16"
+              $ph={["spacing-0", "spacing-12"]}
             >
               {children}
             </OakMaxWidth>
