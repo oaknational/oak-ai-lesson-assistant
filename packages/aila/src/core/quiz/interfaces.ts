@@ -13,14 +13,13 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
+import type { Task } from "./instrumentation";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
   QuizSelectorType,
   QuizServiceSettings,
 } from "./schema";
-
-export type SearchResponseBody<T = unknown> = SearchResponse<T>;
 
 // Rating response from rerankers
 export type RatingResponse = {
@@ -45,6 +44,9 @@ export interface AilaQuizService {
 }
 
 export interface AilaQuizCandidateGenerator {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
   generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons?: AilaRagRelevantLesson[],
@@ -70,7 +72,8 @@ export interface FullQuizService {
   buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<LatestQuiz>;
 }
 

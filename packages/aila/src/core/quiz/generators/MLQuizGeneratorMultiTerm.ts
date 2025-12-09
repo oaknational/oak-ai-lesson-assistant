@@ -26,6 +26,8 @@ const POOL_SIZE = 3;
  * - Returns separate pools maintaining semantic grouping
  */
 export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
+  readonly name = "mlMultiTerm";
+
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
   protected rerankService: CohereReranker;

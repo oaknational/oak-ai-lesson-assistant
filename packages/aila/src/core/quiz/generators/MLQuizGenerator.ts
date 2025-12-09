@@ -11,26 +11,17 @@ import type {
 } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
 export class MLQuizGenerator extends BaseQuizGenerator {
-  protected searchService: ElasticsearchQuizSearchService;
-  protected retrievalService: QuizQuestionRetrievalService;
-  protected rerankService: CohereReranker;
-  protected queryGenerator: SemanticQueryGenerator;
+  readonly name = "mlSingleTerm";
 
-  constructor() {
-    super();
-
-    this.searchService = new ElasticsearchQuizSearchService();
-    this.retrievalService = new QuizQuestionRetrievalService();
-    this.rerankService = new CohereReranker();
-    this.queryGenerator = new SemanticQueryGenerator();
-  }
+  protected searchService = new ElasticsearchQuizSearchService();
+  protected rerankService = new CohereReranker();
+  protected queryGenerator = new SemanticQueryGenerator();
 
   /**
    * Validates the lesson plan
