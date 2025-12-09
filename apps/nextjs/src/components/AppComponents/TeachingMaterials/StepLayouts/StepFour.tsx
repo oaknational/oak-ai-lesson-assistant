@@ -241,7 +241,9 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       {refinementOptions.map(
                         (refinement: RefinementOption, index) => (
                           <InlineButton
-                            ref={(el) => (refinementRefs.current[index] = el)}
+                            ref={(el) => {
+                              refinementRefs.current[index] = el;
+                            }}
                             key={refinement.id}
                             onClick={() =>
                               void handleRefineMaterial(refinement)
