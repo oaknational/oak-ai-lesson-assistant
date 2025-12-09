@@ -6,7 +6,7 @@ import type {
 } from "@clerk/backend/internal";
 import { getAuth } from "@clerk/nextjs/server";
 import type { inferAsyncReturnType } from "@trpc/server";
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import type { RateLimitInfo } from "./types";
 
@@ -39,7 +39,6 @@ type GetAuth = (req: NextRequest) => Promise<APIKeyAuthObject>;
 
 type CreateNextAppRouterContextOptions = {
   req: NextRequest;
-  res: NextResponse;
 };
 
 export const createContextWithAuth = async (
@@ -53,7 +52,6 @@ export const createContextWithAuth = async (
   return {
     ...contextInner,
     req: opts.req,
-    res: opts.res,
     rateLimit: undefined as RateLimitInfo | undefined,
   };
 };
