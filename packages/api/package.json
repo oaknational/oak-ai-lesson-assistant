@@ -23,17 +23,17 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "5.7.2",
+    "@clerk/nextjs": "6.36.1",
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/teaching-materials": "*",
-    "@trpc/server": "10.45.2",
+    "@trpc/server": "11.7.2",
     "@vercel/kv": "^0.2.2",
     "cloudinary": "^1.41.1",
-    "next": "14.2.33",
+    "next": "16.0.8",
     "remeda": "^1.29.0",
     "superjson": "^1.9.1",
     "zod": "3.23.8"
