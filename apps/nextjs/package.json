@@ -38,7 +38,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "5.7.2",
+    "@clerk/nextjs": "6.36.1",
     "@clerk/testing": "^1.12.8",
     "@cloudinary/react": "^1.11.2",
     "@cloudinary/url-gen": "^1.14.0",
@@ -80,6 +80,7 @@
     "@types/object-hash": "^3.0.6",
     "@types/ramda": "^0.30.2",
     "@uidotdev/usehooks": "^2.4.1",
+    "@vercel/functions": "^1.4.0",
     "ai": "^4.0.20",
     "american-british-english-translator": "^0.2.1",
     "archiver": "^7.0.1",
@@ -103,7 +104,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-transform-stub": "^2.0.0",
     "languagedetect": "^2.0.0",
-    "next": "14.2.35",
+    "next": "15.5.9",
     "object-hash": "^3.0.0",
     "openai": "^4.96.0",
     "p-limit": "^7.2.0",

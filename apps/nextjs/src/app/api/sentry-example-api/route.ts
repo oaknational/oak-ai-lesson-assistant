@@ -3,7 +3,7 @@ import { withSentry } from "@/lib/sentry/withSentry";
 export const dynamic = "force-dynamic";
 
 // A faulty API route to test Sentry's error monitoring
-function getHandler() {
+function getHandler(): Response {
   throw new Error("Sentry Example API Route Error");
 }
 

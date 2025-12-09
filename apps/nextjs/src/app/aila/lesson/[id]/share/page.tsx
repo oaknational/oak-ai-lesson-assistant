@@ -13,14 +13,13 @@ import { getSharedChatById } from "@/app/actions";
 import ShareChat from ".";
 
 interface SharePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function generateMetadata({
-  params,
-}: SharePageProps): Promise<Metadata> {
+export async function generateMetadata(props: SharePageProps): Promise<Metadata> {
+  const params = await props.params;
   const chat = await getSharedChatById(params.id);
   return {
     title: chat?.title?.slice(0, 50) ?? "Aila",
@@ -38,12 +37,14 @@ function userCanShare(user: User) {
   return process.env.NEXT_PUBLIC_DEMO_SHARING_ENABLED === "true";
 }
 
-export default async function SharePage({ params }: Readonly<SharePageProps>) {
+export default async function SharePage(props: Readonly<SharePageProps>) {
+  const params = await props.params;
   const chat = await getSharedChatById(params.id);
   if (!chat?.lessonPlan) {
     return notFound();
   }
-  const user = await clerkClient.users.getUser(chat.userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(chat.userId);
 
   if (!userCanShare(user)) {
     return notFound();

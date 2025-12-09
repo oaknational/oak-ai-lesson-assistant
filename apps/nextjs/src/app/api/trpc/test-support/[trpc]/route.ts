@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
@@ -19,13 +19,13 @@ const testSupportRouter = testSupportEnabled
   ? testSupportRouterInternal
   : router({});
 
-const handler = (req: NextRequest, res: NextResponse) =>
+const handler = (req: NextRequest) =>
   fetchRequestHandler({
     endpoint: "/api/trpc/test-support",
     req,
     router: testSupportRouter,
     createContext: () => {
-      return createContext({ req, res });
+      return createContext({ req });
     },
     onError: (e) => {
       if (process.env.NODE_ENV === "development") {

@@ -6,15 +6,16 @@ import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
 import Layout from "@/components/AppComponents/Layout";
 
 interface IndexPageProps {
-  searchParams: {
+  searchParams: Promise<{
     keyStage?: string;
     subject?: string;
     unitTitle?: string;
     searchExpression?: string;
-  };
+  }>;
 }
-export default function IndexPage({ searchParams }: IndexPageProps) {
-  const clerkAuthentication = auth();
+export default async function IndexPage(props: IndexPageProps) {
+  const searchParams = await props.searchParams;
+  const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");

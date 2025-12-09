@@ -22,12 +22,11 @@ async function getData(slug: string) {
 }
 
 export type QuizPreviewPageProps = Readonly<{
-  params: { readonly slug: string };
+  params: Promise<{ readonly slug: string }>;
 }>;
 
-export default async function QuizPreviewPage({
-  params,
-}: QuizPreviewPageProps) {
+export default async function QuizPreviewPage(props: QuizPreviewPageProps) {
+  const params = await props.params;
   log.info("params", params);
 
   const planSections = await getData(params.slug);

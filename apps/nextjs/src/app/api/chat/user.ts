@@ -61,14 +61,15 @@ export async function reportRateLimitError(
 }
 
 export async function fetchAndCheckUser(chatId: string): Promise<string> {
-  const userId = auth().userId;
+  const { userId } = await auth();
 
   return startSpan("fetch-and-check-user", { chatId }, async (span) => {
     if (!userId) {
       throw new AilaAuthenticationError("No user id");
     }
 
-    const clerkUser = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(userId);
     if (clerkUser.banned) {
       throw new UserBannedError(userId);
     }

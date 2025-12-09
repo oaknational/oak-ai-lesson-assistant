@@ -118,7 +118,7 @@ async function conditionallyProtectRoute(
   auth: ClerkMiddlewareAuth,
   req: NextRequest,
 ) {
-  const authObject = auth();
+  const authObject = await auth();
   const { userId, redirectToSignIn, sessionClaims } = authObject;
   const log = logger(req);
 
