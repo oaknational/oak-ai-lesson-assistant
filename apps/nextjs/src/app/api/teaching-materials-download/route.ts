@@ -6,18 +6,13 @@ import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/tea
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
-import type { NextApiResponse } from "next";
 
 import { nodePassThroughToReadableStream } from "../aila-download/downloadHelpers";
 import { getDriveDocsZipStream } from "./helpers";
 
 const log = aiLogger("teaching-materials");
 
-export async function POST(req: Request, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    res.status(405).end("Method Not Allowed");
-    return;
-  }
+export async function POST(req: Request) {
   const client = await clerkClient();
 
   try {
