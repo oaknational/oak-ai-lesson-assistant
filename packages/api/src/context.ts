@@ -6,7 +6,6 @@ import type {
 } from "@clerk/backend/internal";
 import { getAuth } from "@clerk/nextjs/server";
 import type { inferAsyncReturnType } from "@trpc/server";
-import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import type { NextRequest, NextResponse } from "next/server";
 
 import type { RateLimitInfo } from "./types";
@@ -38,10 +37,10 @@ export const createContextInner = async ({
 
 type GetAuth = (req: NextRequest) => Promise<APIKeyAuthObject>;
 
-type CreateNextAppRouterContextOptions = NodeHTTPCreateContextFnOptions<
-  NextRequest,
-  NextResponse
->;
+type CreateNextAppRouterContextOptions = {
+  req: NextRequest;
+  res: NextResponse;
+};
 
 export const createContextWithAuth = async (
   opts: CreateNextAppRouterContextOptions,

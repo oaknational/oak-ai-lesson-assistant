@@ -84,7 +84,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Download all resources"
                   subTitle="Lesson plan, starter and exit quiz, slides and worksheet"
                   downloadAvailable={!!exportAllAssets.readyToExport}
-                  downloadLoading={exportAllAssets.status === "loading"}
+                  downloadLoading={exportAllAssets.status === "pending"}
                   data={exportAllAssets.data}
                   data-testid="chat-download-all-resources"
                   lesson={lessonPlan}
@@ -96,7 +96,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Lesson plan"
                   subTitle="Overview of the complete lesson"
                   downloadAvailable={!!lessonPlanExport.readyToExport}
-                  downloadLoading={lessonPlanExport.status === "loading"}
+                  downloadLoading={lessonPlanExport.status === "pending"}
                   data={lessonPlanExport.data}
                   exportsType="lessonPlanDoc"
                   data-testid="chat-download-lesson-plan"
@@ -108,7 +108,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Starter quiz"
                   subTitle="Questions and answers to assess prior knowledge"
                   downloadAvailable={!!starterQuizExport.readyToExport}
-                  downloadLoading={starterQuizExport.status === "loading"}
+                  downloadLoading={starterQuizExport.status === "pending"}
                   data={starterQuizExport.data}
                   exportsType="starterQuiz"
                   lesson={lessonPlan}
@@ -120,7 +120,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Slide deck"
                   subTitle="Learning outcome, keywords and learning cycles"
                   downloadAvailable={lessonSlidesExport.readyToExport}
-                  downloadLoading={lessonSlidesExport.status === "loading"}
+                  downloadLoading={lessonSlidesExport.status === "pending"}
                   data={lessonSlidesExport.data}
                   exportsType="lessonSlides"
                   lesson={lessonPlan}
@@ -131,7 +131,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Worksheet"
                   subTitle="Practice tasks"
                   downloadAvailable={!!worksheetExport.readyToExport}
-                  downloadLoading={worksheetExport.status === "loading"}
+                  downloadLoading={worksheetExport.status === "pending"}
                   data={worksheetExport.data}
                   lesson={lessonPlan}
                   exportsType="worksheet"
@@ -142,7 +142,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                   title="Exit quiz"
                   subTitle="Questions and answers to assess understanding"
                   downloadAvailable={!!exitQuizExport.readyToExport}
-                  downloadLoading={exitQuizExport.status === "loading"}
+                  downloadLoading={exitQuizExport.status === "pending"}
                   data={exitQuizExport.data}
                   exportsType="exitQuiz"
                   lesson={lessonPlan}
@@ -158,7 +158,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
                         !!additionalMaterialsExport.readyToExport
                       }
                       downloadLoading={
-                        additionalMaterialsExport.status === "loading"
+                        additionalMaterialsExport.status === "pending"
                       }
                       data={additionalMaterialsExport.data}
                       exportsType="additionalMaterials"

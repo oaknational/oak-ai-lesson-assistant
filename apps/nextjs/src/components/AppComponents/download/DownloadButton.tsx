@@ -48,7 +48,7 @@ export const DownloadButton = ({
 
   const { icon, ext, analyticsMaterialType } = getExportsConfig(exportsType);
 
-  const { isSuccess, isError, mutateAsync, isLoading } =
+  const { isSuccess, isError, mutateAsync, isPending } =
     trpc.exports.sendUserExportLink.useMutation();
 
   if (link) {
@@ -135,7 +135,7 @@ export const DownloadButton = ({
           <SendEmailIcon
             isSuccess={isSuccess}
             isError={isError}
-            isLoading={isLoading}
+            isLoading={isPending}
           />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">
