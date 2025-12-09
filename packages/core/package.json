@@ -55,7 +55,7 @@
     "cloudinary": "^1.41.1",
     "dd-trace": "^5.21.0",
     "google-auth-library": "^9.7.0",
-    "inngest": "^3.16.1",
+    "inngest": "^3.27.0",
     "json-stringify-safe": "^5.0.1",
     "langchain": "^0.0.184",
     "murmurhash": "^2.0.1",
