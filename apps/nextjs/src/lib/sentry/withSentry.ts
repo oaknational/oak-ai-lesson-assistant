@@ -15,7 +15,7 @@ export function withSentry(
   handler: (req: NextRequest, res: NextResponse) => Promise<Response> | void,
 ) {
   return async (req: NextRequest, res: NextResponse) => {
-    sentrySetUser(auth());
+    sentrySetUser(await auth());
     try {
       return await handler(req, res);
     } catch (error) {

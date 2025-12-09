@@ -86,7 +86,8 @@ interface RootLayoutProps {
 export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
-  const nonce = headers().get("x-nonce");
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce");
 
   if (!nonce) {
     // Our middleware path matching excludes static paths like /_next/static/...
@@ -95,7 +96,7 @@ export default async function RootLayout({
     return redirect("/not-found");
   }
 
-  const bootstrappedFeatures = await getBootstrappedFeatures(headers());
+  const bootstrappedFeatures = await getBootstrappedFeatures(headersList);
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>

@@ -18,13 +18,13 @@ export async function POST(req: Request, res: NextApiResponse) {
     res.status(405).end("Method Not Allowed");
     return;
   }
-  const client = clerkClient();
+  const client = await clerkClient();
 
   try {
     const body = await req.json();
     const { documentType, resource, lessonTitle } = body;
     const passedDocType = teachingMaterialTypeEnum.parse(documentType);
-    const { userId }: { userId: string | null } = auth();
+    const { userId }: { userId: string | null } = await auth();
 
     if (!userId) {
       const error = new Error("Download attempt without userId");

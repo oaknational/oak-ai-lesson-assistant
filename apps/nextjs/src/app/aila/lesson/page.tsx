@@ -6,15 +6,15 @@ import { ChatStart } from "@/components/AppComponents/Chat/chat-start";
 import Layout from "@/components/AppComponents/Layout";
 
 interface IndexPageProps {
-  searchParams: {
+  searchParams: Promise<{
     keyStage?: string;
     subject?: string;
     unitTitle?: string;
     searchExpression?: string;
-  };
+  }>;
 }
-export default function IndexPage({ searchParams }: IndexPageProps) {
-  const clerkAuthentication = auth();
+export default async function IndexPage({ searchParams }: IndexPageProps) {
+  const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
@@ -24,7 +24,7 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
     subject = undefined,
     unitTitle = undefined,
     searchExpression = undefined,
-  } = searchParams;
+  } = await searchParams;
   return (
     <>
       <SignedIn>
