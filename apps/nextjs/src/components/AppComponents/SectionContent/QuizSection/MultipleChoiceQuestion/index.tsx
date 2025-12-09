@@ -55,7 +55,6 @@ export const MultipleChoiceQuestion = ({
           components={components}
         />
       </OakFlex>
-
       {isImageOnlyAnswers ? (
         <ImageOnlyAnswerLayout answers={answers} />
       ) : (

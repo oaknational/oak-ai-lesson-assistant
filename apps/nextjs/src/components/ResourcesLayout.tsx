@@ -42,13 +42,13 @@ const TeachingMaterialsLayout = ({
         $pt="spacing-72"
         $pb="spacing-24"
         $flexDirection="column"
-        $background={"lavender30"}
+        $background={"bg-decorative3-very-subdued"}
         $ph={["spacing-24", "spacing-48"]}
       >
         <OakMaxWidth
           $mt={[isDemoUser ? "spacing-72" : "spacing-24", "spacing-24"]}
           $position={"relative"}
-          $background="white"
+          $background="bg-primary"
           $borderRadius="border-radius-m"
           $mh="spacing-24"
           $width="100%"
@@ -64,7 +64,7 @@ const TeachingMaterialsLayout = ({
           >
             <OakFlex
               $bb="border-solid-s"
-              $borderColor="grey40"
+              $borderColor="border-neutral-lighter"
               $pb="spacing-20"
               $mb="spacing-24"
               $flexDirection="column"

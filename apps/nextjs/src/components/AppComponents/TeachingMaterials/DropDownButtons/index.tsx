@@ -50,7 +50,7 @@ export const DropDownWrapper = ({
       $overflowY="scroll"
       $borderRadius="border-radius-m"
       $ba="border-solid-m"
-      $background="white"
+      $background="bg-primary"
     >
       {children}
     </OakBox>

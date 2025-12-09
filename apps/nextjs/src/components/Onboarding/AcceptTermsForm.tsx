@@ -64,7 +64,7 @@ export const AcceptTermsForm = () => {
       <OakBox
         $mh="auto"
         $borderRadius="border-radius-m"
-        $background="white"
+        $background="bg-primary"
         $pa="spacing-32"
         $maxWidth={"spacing-640"}
       >

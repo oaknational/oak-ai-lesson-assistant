@@ -6,7 +6,7 @@ const SectionsCompleteDownloadNotice = () => {
   return (
     <OakBox
       $pa="spacing-16"
-      $background="mint50"
+      $background="bg-decorative1-subdued"
       $borderColor="border-decorative1-stronger"
       $borderStyle="solid"
       $borderRadius="border-radius-m"

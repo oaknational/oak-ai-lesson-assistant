@@ -111,7 +111,7 @@ function IconInfoCardLink({
         />
       </OakBox>
       <OakFlex $flexDirection="column" $gap="spacing-4" $width="100%">
-        <OakHeading $font="heading-6" tag="h4" $color="black">
+        <OakHeading $font="heading-6" tag="h4" $color="text-primary">
           {title}
         </OakHeading>
 
@@ -214,7 +214,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $alignItems={"center"}
           $gap="spacing-56"
           $pv={["spacing-0", "spacing-80"]}
-          $background={"lavender30"}
+          $background={"bg-decorative3-very-subdued"}
           fullWidthBgColor={"lavender30"}
         >
           <OakFlex
@@ -275,7 +275,8 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props) => oakColorTokens[props.fullWidthBgColor]};
+    background-color: ${(props: { fullWidthBgColor: OakColorToken }) =>
+      oakColorTokens[props.fullWidthBgColor]};
   }
   /* img {
     max-width: 300px;
@@ -309,7 +310,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
           <OakBoxCustomMaxWidth
             $display={["flex", "none"]}
-            $borderColor="black"
+            $borderColor="border-primary"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
             customMaxWidth={600}
@@ -330,7 +331,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
         <OakFlexCustomMaxWidthWithHalfWidth
           $display={["none", "flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -361,7 +362,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         </OakHeading>
         <OakBoxCustomMaxWidth
           $display={["flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -435,7 +436,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
             <OakBoxCustomMaxWidth
               $display={["flex"]}
-              $borderColor="black"
+              $borderColor="border-primary"
               $borderStyle={"solid"}
               $ba={"border-solid-xl"}
               customMaxWidth={600}

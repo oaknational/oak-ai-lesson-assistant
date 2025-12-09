@@ -34,7 +34,7 @@ export function AilaStart() {
 
   return (
     <OakFlex
-      $background="lavender30"
+      $background="bg-decorative3-very-subdued"
       $flexDirection="column"
       $alignItems="center"
       $minHeight={["100%", "100vh", "100vh"]}
@@ -42,7 +42,7 @@ export function AilaStart() {
       <OakMaxWidth
         $mt={["spacing-80"]}
         $maxWidth="spacing-960"
-        $background="lavender30"
+        $background="bg-decorative3-very-subdued"
         $justifyContent={"space-between"}
       >
         <OakGrid
@@ -55,7 +55,7 @@ export function AilaStart() {
         >
           <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
             <OakBox
-              $background="white"
+              $background="bg-primary"
               $pa="spacing-32"
               $borderRadius="border-radius-s"
               $position={"relative"}
@@ -86,7 +86,7 @@ export function AilaStart() {
           </OakGridArea>
           <OakGridArea $colSpan={[12, 6, 5]}>
             <OakBox
-              $background="white"
+              $background="bg-primary"
               $pa="spacing-32"
               $borderRadius="border-radius-s"
             >

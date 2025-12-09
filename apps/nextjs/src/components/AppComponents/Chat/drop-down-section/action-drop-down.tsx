@@ -79,7 +79,7 @@ export const ActionDropDown = ({
         name={`drop-down-${options[0].enumValue}`}
         $flexDirection="column"
         $gap="spacing-16"
-        $background="white"
+        $background="bg-primary"
       >
         {options.map(
           (

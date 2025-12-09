@@ -25,7 +25,7 @@ export function DemoBanner({
     <OakFlex
       $alignItems={"center"}
       $bb={"border-solid-m"}
-      $background={"lemon"}
+      $background={"bg-decorative5-main"}
       $pv={["spacing-4", "spacing-8"]}
       $ph={"spacing-24"}
       data-testid={testId}
@@ -38,7 +38,7 @@ export function DemoBanner({
         <OakLink
           iconName="chevron-right"
           isTrailingIcon
-          color="black"
+          color="text-primary"
           href={contactHref}
         >
           contact us for full access

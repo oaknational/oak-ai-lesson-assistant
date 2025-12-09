@@ -50,7 +50,7 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
         />
       )}
       <OakFlex
-        $background="white"
+        $background="bg-primary"
         $bb="border-solid-m"
         $pa={"spacing-20"}
         $alignItems="center"
@@ -80,14 +80,14 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
         >
           <OakBox $display={["none", "flex"]}>
             <OakLink
-              color="black"
+              color="text-primary"
               href={ailaId ? `/aila/help/?ailaId=${ailaId}` : "/aila/help"}
               target="_blank"
               style={{ textDecoration: "none" }}
             >
               <OakFlex $alignItems={"center"} $alignContent={"center"}>
                 <OakIcon $mr={"spacing-4"} iconName={"question-mark"} />
-                <OakSpan $font="body-2" $color={"black"}>
+                <OakSpan $font="body-2" $color={"text-primary"}>
                   Help
                 </OakSpan>
               </OakFlex>

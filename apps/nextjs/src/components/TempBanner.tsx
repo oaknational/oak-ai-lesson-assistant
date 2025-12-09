@@ -16,7 +16,7 @@ const TempBanner = () => {
   return (
     <OakBox role="banner" $bt="border-solid-m" $bb="border-solid-m">
       <OakFlex
-        $background={"lemon"}
+        $background={"bg-decorative5-main"}
         $justifyContent={["center"]}
         $alignItems={"center"}
         $pv={"spacing-12"}

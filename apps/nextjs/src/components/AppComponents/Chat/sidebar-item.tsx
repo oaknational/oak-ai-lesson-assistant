@@ -36,7 +36,7 @@ export function SidebarItem({ chat }: SidebarItemProps) {
     <OakFlex
       $justifyContent="space-between"
       $alignItems="center"
-      $background={isHovered ? `grey30` : `white`}
+      $background={isHovered ? `bg-neutral-stronger` : `bg-primary`}
       $transition="standard-ease"
       $pa="spacing-4"
       $borderRadius="border-radius-s"

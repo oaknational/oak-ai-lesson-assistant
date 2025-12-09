@@ -223,7 +223,7 @@ const FooterButton = ({
         $gap="spacing-4"
         $alignItems="center"
         $font="body-2"
-        $color="black"
+        $color="text-primary"
         $textDecoration="none"
       >
         <span>{children}</span>

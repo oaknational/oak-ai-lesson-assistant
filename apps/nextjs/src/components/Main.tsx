@@ -1,12 +1,12 @@
 import {
   OakBox,
-  type OakColorToken,
   OakMaxWidth,
+  type OakUiRoleToken,
 } from "@oaknational/oak-components";
 
 type MainProps = {
   children: React.ReactNode;
-  backgroundColor?: OakColorToken;
+  backgroundColor?: OakUiRoleToken;
   defaultMaxWidth?: boolean;
 };
 

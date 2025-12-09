@@ -31,7 +31,11 @@ export function ClearHistory({ isEnabled }: Readonly<ClearHistoryProps>) {
           setDialogWindow("clear-history");
         }}
       >
-        <OakSpan $font="body-3-bold" $color="black" $textDecoration="none">
+        <OakSpan
+          $font="body-3-bold"
+          $color="text-primary"
+          $textDecoration="none"
+        >
           Delete all lessons
         </OakSpan>
       </button>
