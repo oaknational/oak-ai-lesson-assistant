@@ -1,3 +1,11 @@
+## [1.56.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.1...v1.56.2) (2025-12-09)
+
+
+### Bug Fixes
+
+* **AI-1846:** use MurmurHash3 for friendly ID generation to prevent collisions ([#859](https://github.com/oaknational/oak-ai-lesson-assistant/issues/859)) ([e80cc42](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e80cc42d43f13f596e5fc2c0e72554b40d56c5e3))
+* limit rag search to return 5 unique lessons max ([#863](https://github.com/oaknational/oak-ai-lesson-assistant/issues/863)) ([7198145](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7198145cdd4270e0848059fc361c7a86b6b1b41f))
+
 ## [1.56.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.0...v1.56.1) (2025-11-27)
 
 
