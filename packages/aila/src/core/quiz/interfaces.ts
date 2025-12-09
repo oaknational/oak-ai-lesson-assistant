@@ -8,16 +8,11 @@ import type {
   QuizPath,
 } from "../../protocol/schema";
 import type {
+  ImageMetadata,
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
-import type {
-  BaseType,
-  MaxRatingFunctionApplier,
-  RatingFunction,
-} from "./ChoiceModels";
 import type {
   QuizRecommenderType,
   QuizRerankerType,
@@ -69,27 +64,24 @@ export interface AilaQuizReranker {
 }
 
 export interface FullQuizService {
-  quizSelector: QuizSelector<BaseType>;
+  quizSelector: QuizSelector;
   quizReranker: AilaQuizReranker;
   quizGenerators: AilaQuizCandidateGenerator[];
-  createBestQuiz(
-    quizType: quizPatchType,
+  buildQuiz(
+    quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons?: AilaRagRelevantLesson[],
   ): Promise<LatestQuiz>;
 }
 
-// Separating these out to allow for different types of selectors for different types of rerankers. Abstracting away allows for the LLM to potentially change the answer depending on input.
-export interface QuizSelector<T extends BaseType> {
-  ratingFunction: RatingFunction<T>;
-  maxRatingFunctionApplier: MaxRatingFunctionApplier<T>;
-  selectBestQuiz(
+export interface QuizSelector {
+  selectQuestions(
     questionPools: QuizQuestionPool[],
-    ratingsSchemas: T[],
-  ): QuizQuestionWithSourceData[];
+    ratings: RatingResponse[],
+    lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+  ): Promise<RagQuizQuestion[]>;
 }
-
-export type quizPatchType = "/starterQuiz" | "/exitQuiz";
 
 export interface CustomSource {
   text: string;
@@ -110,11 +102,17 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-// TODO: At the moment the indexed "text" field is QuizV1Question which is limited to multiple choice
-//       We should either update the index to use QuizV3, or we should parse the raw HasuraQuizQuestion data into QuizV3
-export interface QuizQuestionWithSourceData extends QuizV1Question {
+/**
+ * Quiz question used throughout the quiz RAG pipeline.
+ * Retrieved from Elasticsearch, contains the question in Latest format
+ * (supporting all question types: multiple-choice, short-answer, match, order),
+ * source data, and associated image metadata.
+ */
+export interface RagQuizQuestion {
+  question: LatestQuizQuestion;
   sourceUid: string;
   source: HasuraQuizQuestion;
+  imageMetadata: ImageMetadata[];
 }
 
 export interface CustomHit {
@@ -127,7 +125,7 @@ export interface SimplifiedResult {
 }
 
 export interface QuizQuestionPool {
-  questions: QuizQuestionWithSourceData[];
+  questions: RagQuizQuestion[];
   source:
     | {
         type: "basedOn";
@@ -199,7 +197,5 @@ export interface AilaQuizRerankerFactory {
 }
 
 export interface QuizSelectorFactory {
-  createQuizSelector<T extends BaseType>(
-    selectorType: QuizSelectorType,
-  ): QuizSelector<T>;
+  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

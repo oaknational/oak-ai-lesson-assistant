@@ -7,6 +7,8 @@ import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
 import { parseResult } from "./parseResult";
 import { preparseResult } from "./preparseResult";
 
+const UNIQUE_LESSON_PLANS_LIMIT = 5;
+
 /**
  * We currently store key stages in Aila as key-stage-1, key-stage-2, etc.
  * But in the vector DB they are stored as ks1, ks2, etc. So we need to
@@ -59,6 +61,7 @@ export async function vectorSearch({
     subjectSlugs,
     limit,
   });
+  log.info(`Prisma returned ${queryResponse.length} lesson plan part results`);
 
   const parseErrors: { ragLessonPlanId?: string; error: string }[] = [];
   const preParsedResults = await Promise.all(queryResponse.map(preparseResult));
@@ -109,5 +112,5 @@ export async function vectorSearch({
 
   log.info(`Unique lesson plans: ${uniqueLessonPlans.length}`);
 
-  return uniqueLessonPlans;
+  return uniqueLessonPlans.slice(0, UNIQUE_LESSON_PLANS_LIMIT);
 }

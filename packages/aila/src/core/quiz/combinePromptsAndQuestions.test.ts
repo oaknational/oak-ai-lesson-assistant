@@ -1,9 +1,7 @@
-import type {
-  HasuraQuiz,
-  HasuraQuizQuestion,
-} from "../../protocol/schemas/quiz/rawQuiz";
+import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import { QuizInspectionSystemPrompt } from "./QuestionAssesmentPrompt";
 import { CircleTheoremLesson } from "./fixtures/CircleTheoremsExampleOutput";
+import type { RagQuizQuestion } from "./interfaces";
 import { combinePromptsAndQuestions } from "./services/OpenAIRanker";
 
 const parsedRawQuiz = [
@@ -48,28 +46,30 @@ const parsedRawQuiz = [
 describe("combinePromptsAndQuestions", () => {
   it("Should convert a lesson plan and quiz into valid OpenAI message format", () => {
     const lessonPlan = CircleTheoremLesson;
-    const questions = [
+    const questions: RagQuizQuestion[] = [
       {
-        question:
-          "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png)",
-        answers: ["\u00a366"],
-        distractors: ["\u00a316", "\u00a360", "\u00a363"],
-        feedback: "",
-        hint: "",
-        html: [""],
+        question: {
+          questionType: "short-answer",
+          question:
+            "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png)",
+          answers: ["\u00a366"],
+          hint: "",
+        },
         sourceUid: "QUES-BPWF2-29205",
         source: parsedRawQuiz[0]!,
+        imageMetadata: [],
       },
       {
-        question:
-          "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png)",
-        answers: ["\u00a366"],
-        distractors: ["\u00a316", "\u00a360", "\u00a363"],
-        feedback: "",
-        hint: "",
-        html: [""],
+        question: {
+          questionType: "short-answer",
+          question:
+            "For 6 days in a row I spend \u00a311 on my lunch. How much did I spent in total? ![image](http://oaknationalacademy-res.cloudinary.com/image/upload/v1707171916/km6zbhuzhbirgqpnzgfx.png)",
+          answers: ["\u00a366"],
+          hint: "",
+        },
         sourceUid: "QUES-BPWF2-29205",
         source: parsedRawQuiz[0]!,
+        imageMetadata: [],
       },
     ];
     const _openAIMessage = combinePromptsAndQuestions(

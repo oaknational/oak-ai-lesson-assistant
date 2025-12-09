@@ -1,29 +1,62 @@
+/**
+ * Quiz Generation Pipeline Orchestrator
+ *
+ * Coordinates a three-stage pipeline for generating high-quality quiz questions:
+ *
+ * 1. **Generation Stage**: Multiple generators run in parallel, each producing
+ *    candidate question pools from different sources:
+ *    - AILA RAG system (lesson content)
+ *    - ML semantic search (single or multi-term with Cohere reranking)
+ *    - BasedOn lessons (user-specified source lessons - high signal)
+ *
+ * 2. **Reranking Stage**: Evaluates and ranks candidate question pools
+ *    - AI evaluator: Older approach that uses AI to score each pool's quality
+ *    - Return-first: Rates first pool=1, others=0 (simple fallback)
+ *    - No-op: Returns empty ratings (used with LLM composer selector)
+ *
+ * 3. **Selection Stage**: Final questions are selected from the candidate pools
+ *    - Simple selector: Picks top-ranked questions
+ *    - LLM Quiz Composer (NEW): Uses AI to mix the best questions from each
+ *      generator pool, rather than picking a single best generator
+ *
+ * Each stage is pluggable, allowing different strategies to be composed via
+ * the factory pattern (see buildFullQuizService.ts).
+ */
 import { aiLogger } from "@oakai/logger";
 
 import type {
   AilaRagRelevantLesson,
   LatestQuiz,
   PartialLessonPlan,
+  QuizPath,
 } from "../../../protocol/schema";
-import type { BaseType } from "../ChoiceModels";
-import { coerceQuizQuestionWithJsonArray } from "../CoerceQuizQuestionWithJson";
+import { buildQuizFromQuestions } from "../buildQuizObject";
 import type {
   AilaQuizCandidateGenerator,
   AilaQuizReranker,
   FullQuizService,
   QuizSelector,
-  quizPatchType,
 } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
-export abstract class BaseFullQuizService implements FullQuizService {
-  public abstract quizSelector: QuizSelector<BaseType>;
-  public abstract quizReranker: AilaQuizReranker;
-  public abstract quizGenerators: AilaQuizCandidateGenerator[];
-  // TODO: MG - does having ailaRagRelevantLessons as a default parameter work? It feels a bit hacky.
-  public async createBestQuiz(
-    quizType: quizPatchType,
+export class BaseFullQuizService implements FullQuizService {
+  public quizSelector: QuizSelector;
+  public quizReranker: AilaQuizReranker;
+  public quizGenerators: AilaQuizCandidateGenerator[];
+
+  constructor(
+    generators: AilaQuizCandidateGenerator[],
+    selector: QuizSelector,
+    reranker: AilaQuizReranker,
+  ) {
+    this.quizGenerators = generators;
+    this.quizSelector = selector;
+    this.quizReranker = reranker;
+  }
+
+  public async buildQuiz(
+    quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[] = [],
   ): Promise<LatestQuiz> {
@@ -62,10 +95,12 @@ export abstract class BaseFullQuizService implements FullQuizService {
       };
     }
 
-    const bestQuiz = this.quizSelector.selectBestQuiz(
+    const selectedQuestions = await this.quizSelector.selectQuestions(
       questionPools,
       quizRankings,
+      lessonPlan,
+      quizType,
     );
-    return coerceQuizQuestionWithJsonArray(bestQuiz);
+    return buildQuizFromQuestions(selectedQuestions);
   }
 }
