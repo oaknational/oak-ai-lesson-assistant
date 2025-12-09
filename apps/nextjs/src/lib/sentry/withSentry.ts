@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { sentryCleanup } from "./sentryCleanup";
 import { sentrySetUser } from "./sentrySetUser";
@@ -12,12 +12,12 @@ import { sentrySetUser } from "./sentrySetUser";
  * cleaning up after.
  */
 export function withSentry(
-  handler: (req: NextRequest, res: NextResponse) => Promise<Response> | void,
+  handler: (req: NextRequest) => Promise<Response> | Response,
 ) {
-  return async (req: NextRequest, res: NextResponse) => {
-    sentrySetUser(auth());
+  return async (req: NextRequest) => {
+    sentrySetUser(await auth());
     try {
-      return await handler(req, res);
+      return await handler(req);
     } catch (error) {
       Sentry.captureException(error);
       return new Response("Internal Server Error", {

@@ -1,5 +1,7 @@
 "use client";
 
+import { use } from "react";
+
 import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
@@ -11,16 +13,16 @@ import { trpc } from "@/utils/trpc";
 import { AdminChatView } from "./view";
 
 interface AdminChatProps {
-  params: {
+  params: Promise<{
     chatId: string;
-  };
+  }>;
 }
 
 const log = aiLogger("admin");
 
 export default function AdminChat({ params }: Readonly<AdminChatProps>) {
   const user = useUser();
-  const { chatId } = params;
+  const { chatId } = use(params);
   const { data: chat, isLoading: isChatLoading } = trpc.admin.getChat.useQuery({
     id: chatId,
   });
@@ -28,7 +30,7 @@ export default function AdminChat({ params }: Readonly<AdminChatProps>) {
     trpc.admin.getModerations.useQuery({ id: chatId });
 
   if (user.isLoaded && !user.isSignedIn) {
-    redirect(`/sign-in?next=/admin/aila/${params.chatId}`);
+    redirect(`/sign-in?next=/admin/aila/${chatId}`);
   }
 
   if (isChatLoading || isModerationsLoading) {

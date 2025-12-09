@@ -13,8 +13,9 @@ export const authRouter = router({
     .input(z.object({ userHasSeenThisVersion: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx.auth;
+      const client = await clerkClient();
 
-      const user = await clerkClient.users.getUser(userId);
+      const user = await client.users.getUser(userId);
       const hasSeenWhatsNew = user.privateMetadata.hasSeenWhatsNew as
         | undefined
         | string[];
@@ -22,7 +23,7 @@ export const authRouter = router({
       const newArray = hasSeenWhatsNew
         ? [...(hasSeenWhatsNew as []), input.userHasSeenThisVersion]
         : [input.userHasSeenThisVersion];
-      await clerkClient.users.updateUserMetadata(userId, {
+      await client.users.updateUserMetadata(userId, {
         privateMetadata: {
           hasSeenWhatsNew: [...newArray],
         },
@@ -32,8 +33,9 @@ export const authRouter = router({
   userHasSeenLatestWhatsNewVersion: protectedProcedure.query(
     async ({ ctx }) => {
       const { userId } = ctx.auth;
+      const client = await clerkClient();
 
-      const user = await clerkClient.users.getUser(userId);
+      const user = await client.users.getUser(userId);
       const { hasSeenWhatsNew } = user.privateMetadata;
 
       return { hasSeenWhatsNew };
@@ -49,7 +51,8 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { userId } = ctx.auth;
       if (typeof userId === "string") {
-        await clerkClient.users.updateUserMetadata(userId, {
+        const client = await clerkClient();
+        await client.users.updateUserMetadata(userId, {
           publicMetadata: {
             labs: {
               isOnboarded: !!input.termsOfUse,
@@ -61,7 +64,7 @@ export const authRouter = router({
           },
         });
 
-        const updatedUser = await clerkClient.users.getUser(userId);
+        const updatedUser = await client.users.getUser(userId);
 
         const email = updatedUser.emailAddresses[0]?.emailAddress;
         if (!email) {
@@ -86,7 +89,8 @@ export const authRouter = router({
 
   setDemoStatus: protectedProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx.auth;
-    const user = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
 
     if (demoUsers.isDemoStatusSet(user)) {
       return { isDemoUser: user.publicMetadata.labs };
@@ -97,7 +101,7 @@ export const authRouter = router({
       ctx.req.headers.get("cf-ipcountry"),
     );
 
-    await clerkClient.users.updateUserMetadata(userId, {
+    await client.users.updateUserMetadata(userId, {
       publicMetadata: {
         labs: {
           isDemoUser,
