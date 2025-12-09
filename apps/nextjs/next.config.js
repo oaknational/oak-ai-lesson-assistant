@@ -42,7 +42,14 @@ const getConfig = async (phase) => {
 
   /** @type {import('next').NextConfig} */
   const config = {
-    serverExternalPackages: [`require-in-the-middle`, `@resvg/resvg-js`],
+    serverExternalPackages: [
+      `require-in-the-middle`,
+      `@resvg/resvg-js`,
+      // Pino uses dynamic requires that Turbopack can't statically analyze
+      // See: https://github.com/vercel/next.js/issues/86099
+      `pino`,
+      `thread-stream`,
+    ],
     turbopack: {
       resolveAlias: {
         "next/navigation": {
