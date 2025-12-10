@@ -86,7 +86,7 @@
     "base64url": "^3.0.1",
     "better-react-mathjax": "2.0.4-beta1",
     "class-variance-authority": "^0.7.0",
-    "cloudinary": "^1.41.1",
+    "cloudinary": "^2.7.0",
     "cohere-ai": "^7.19.0",
     "dd-trace": "^5.21.0",
     "deep-equal": "^2.2.3",
