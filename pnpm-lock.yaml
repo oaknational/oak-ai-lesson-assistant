@@ -142,8 +142,8 @@ importers:
         specifier: '*'
         version: link:../../packages/teaching-materials
       '@oaknational/oak-components':
-        specifier: ^1.166.0
-        version: 1.167.0(next-cloudinary@6.17.5)(next@16.0.8)(react-dom@19.2.1)(react@19.2.1)(styled-components@6.1.19)
+        specifier: github:oaknational/oak-components#fix/defaultProps-to-attrs-dist
+        version: github.com/oaknational/oak-components/88085cf9a6843a8b5713ef45e05af78ac6c1fe30(next-cloudinary@6.17.5)(next@16.0.8)(react-dom@19.2.1)(react@19.2.1)(styled-components@6.1.19)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.23.8)
@@ -6721,22 +6721,6 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
-
-  /@oaknational/oak-components@1.167.0(next-cloudinary@6.17.5)(next@16.0.8)(react-dom@19.2.1)(react@19.2.1)(styled-components@6.1.19):
-    resolution: {integrity: sha512-oWwwX/D8m8gJBlRAU1766W0ngi5BsJpvcqiypD9NnmhV2cNZQSZ+ymzh+0Su7FIdNY/qa1B9MyOZPnYhn1vMlQ==}
-    peerDependencies:
-      next: '>=14.2.12'
-      next-cloudinary: '>=6.16.0'
-      react: '>=18.2.0'
-      react-dom: '>=18.2.0'
-      styled-components: '>=5.3.11'
-    dependencies:
-      next: 16.0.8(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
-      next-cloudinary: 6.17.5(next@16.0.8)(react@19.2.1)
-      react: 19.2.1
-      react-dom: 19.2.1(react@19.2.1)
-      styled-components: 6.1.19(react-dom@19.2.1)(react@19.2.1)
-    dev: false
 
   /@oaknational/oak-consent-client@2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.23.8):
     resolution: {integrity: sha512-77AyUZoDQNgUFzUx2Vz8WaoCCmwwfBAfLm1o7FH1vXtvCXuh8szNjeM8uU0CVTVAwvRzy5BFyfKV4RTp8vVFqw==}
@@ -29375,4 +29359,25 @@ packages:
 
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
+    dev: false
+
+  github.com/oaknational/oak-components/88085cf9a6843a8b5713ef45e05af78ac6c1fe30(next-cloudinary@6.17.5)(next@16.0.8)(react-dom@19.2.1)(react@19.2.1)(styled-components@6.1.19):
+    resolution: {tarball: https://codeload.github.com/oaknational/oak-components/tar.gz/88085cf9a6843a8b5713ef45e05af78ac6c1fe30}
+    id: github.com/oaknational/oak-components/88085cf9a6843a8b5713ef45e05af78ac6c1fe30
+    name: '@oaknational/oak-components'
+    version: 1.167.0
+    prepare: true
+    requiresBuild: true
+    peerDependencies:
+      next: '>=14.2.12'
+      next-cloudinary: '>=6.16.0'
+      react: '>=18.2.0'
+      react-dom: '>=18.2.0'
+      styled-components: '>=5.3.11'
+    dependencies:
+      next: 16.0.8(@babel/core@7.26.0)(@opentelemetry/api@1.8.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
+      next-cloudinary: 6.17.5(next@16.0.8)(react@19.2.1)
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+      styled-components: 6.1.19(react-dom@19.2.1)(react@19.2.1)
     dev: false

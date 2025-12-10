@@ -57,7 +57,7 @@
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
     "@oakai/teaching-materials": "*",
-    "@oaknational/oak-components": "^1.166.0",
+    "@oaknational/oak-components": "github:oaknational/oak-components#fix/defaultProps-to-attrs-dist",
     "@oaknational/oak-consent-client": "^2.1.0",
     "@oaknational/oak-curriculum-schema": "^1.59.1",
     "@portabletext/react": "^3.1.0",
