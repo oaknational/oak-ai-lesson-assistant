@@ -138,10 +138,10 @@ function SearchTermAccordion({
 
   const displayedESHits = showAllES
     ? term.elasticsearchHits
-    : term.elasticsearchHits.slice(0, 10);
+    : term.elasticsearchHits.slice(0, 6);
   const displayedCohereResults = showAllCohere
     ? term.cohereResults
-    : term.cohereResults.slice(0, 10);
+    : term.cohereResults.slice(0, 6);
 
   return (
     <div className="rounded-lg border bg-white">
