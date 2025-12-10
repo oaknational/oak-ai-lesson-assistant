@@ -407,6 +407,20 @@ function SubSection({
   );
 }
 
+// Status icon helper for sections
+function SectionStatusIcon({
+  loading,
+  hasStats,
+}: Readonly<{ loading: boolean; hasStats: boolean }>) {
+  if (loading) {
+    return <span className="animate-spin">⚙️</span>;
+  }
+  if (hasStats) {
+    return <span className="text-green-600">✓</span>;
+  }
+  return <span className="text-gray-400">⏳</span>;
+}
+
 // Collapsible Section Component
 function Section({
   title,
@@ -435,13 +449,7 @@ function Section({
         className="flex w-full items-center justify-between px-8 py-4 text-left"
       >
         <div className="flex items-center gap-3">
-          {loading ? (
-            <span className="animate-spin">⚙️</span>
-          ) : stats ? (
-            <span className="text-green-600">✓</span>
-          ) : (
-            <span className="text-gray-400">⏳</span>
-          )}
+          <SectionStatusIcon loading={loading} hasStats={!!stats} />
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
         <div className="flex items-center gap-6">
@@ -493,13 +501,7 @@ function GeneratorAccordion({
         className="flex w-full items-center justify-between px-5 py-4 text-left"
       >
         <div className="flex items-center gap-3">
-          {loading ? (
-            <span className="animate-spin">⚙️</span>
-          ) : stats ? (
-            <span className="text-green-600">✓</span>
-          ) : (
-            <span className="text-gray-400">⏳</span>
-          )}
+          <SectionStatusIcon loading={loading} hasStats={!!stats} />
           <span className="text-lg font-semibold">{title}</span>
         </div>
         <div className="flex items-center gap-4">
@@ -532,10 +534,20 @@ function GeneratorAccordion({
 
 // Generator Section for basedOnRag and ailaRag
 function GeneratorSection({ result }: Readonly<{ result: GeneratorData }>) {
+  const getPoolKey = (pool: QuizQuestionPool): string => {
+    switch (pool.source.type) {
+      case "basedOn":
+      case "ailaRag":
+        return pool.source.lessonTitle;
+      case "mlSemanticSearch":
+        return pool.source.semanticQuery;
+    }
+  };
+
   return (
     <div className="space-y-2">
       {result.pools.map((pool, idx) => (
-        <div key={idx} className="rounded-lg border bg-white p-4">
+        <div key={getPoolKey(pool)} className="rounded-lg border bg-white p-4">
           <p className="mb-2 text-sm font-medium">
             Pool {idx + 1}:{" "}
             {pool.source.type === "basedOn" && pool.source.lessonTitle}
@@ -596,14 +608,14 @@ function ImageDescriptionsView({
         <tbody>
           {displayedDescriptions.map((entry, i) => (
             <tr
-              key={i}
+              key={entry.url}
               className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50"} align-top`}
             >
               <td className="px-4 py-3">
                 <div className="flex flex-col gap-2">
                   <img
                     src={entry.url}
-                    alt="Quiz image"
+                    alt={`Quiz question diagram`}
                     className="h-32 w-auto rounded border object-contain"
                   />
                   <span className="max-w-[200px] truncate font-mono text-xs text-gray-400">
@@ -778,7 +790,10 @@ function ComposerSection({
             );
             const pool = questionToPool.get(selection.questionUid);
             return (
-              <div key={i} className="rounded border bg-gray-50 p-3">
+              <div
+                key={selection.questionUid}
+                className="rounded border bg-gray-50 p-3"
+              >
                 <div className="mb-1 flex items-start justify-between">
                   <span className="font-mono text-xs text-gray-500">
                     {i + 1}. {selection.questionUid}

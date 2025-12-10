@@ -119,7 +119,7 @@ export function MLPipelineDetails({
   return (
     <div className="space-y-6">
       {searchTerms.map((term, idx) => (
-        <SearchTermAccordion key={idx} term={term} index={idx} />
+        <SearchTermAccordion key={term.query || idx} term={term} index={idx} />
       ))}
     </div>
   );

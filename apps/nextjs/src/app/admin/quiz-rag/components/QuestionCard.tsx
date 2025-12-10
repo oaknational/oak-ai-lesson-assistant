@@ -41,12 +41,12 @@ function RenderTextWithImages({ text }: Readonly<{ text: string }>) {
 
   return (
     <>
-      {parts.map((part, i) =>
+      {parts.map((part) =>
         typeof part === "string" ? (
-          <span key={i}>{part}</span>
+          <span key={part}>{part}</span>
         ) : (
           <img
-            key={i}
+            key={part.url}
             src={part.url}
             alt={part.alt || "Question image"}
             className="my-2 inline-block max-h-32 rounded border"
@@ -108,8 +108,8 @@ export function QuestionCard({
             </p>
             <MathJaxWrap>
               <ul className="ml-6 list-disc space-y-1 text-sm">
-                {q.answers.map((a, i) => (
-                  <li key={i}>
+                {q.answers.map((a) => (
+                  <li key={a}>
                     <RenderTextWithImages text={a} />
                   </li>
                 ))}
@@ -122,8 +122,8 @@ export function QuestionCard({
             </p>
             <MathJaxWrap>
               <ul className="ml-6 list-disc space-y-1 text-sm text-gray-600">
-                {q.distractors.map((d, i) => (
-                  <li key={i}>
+                {q.distractors.map((d) => (
+                  <li key={d}>
                     <RenderTextWithImages text={d} />
                   </li>
                 ))}
@@ -140,8 +140,8 @@ export function QuestionCard({
           </p>
           <MathJaxWrap>
             <ul className="ml-6 list-disc space-y-1 text-sm">
-              {q.answers.map((a, i) => (
-                <li key={i}>
+              {q.answers.map((a) => (
+                <li key={a}>
                   <RenderTextWithImages text={a} />
                 </li>
               ))}
@@ -155,8 +155,8 @@ export function QuestionCard({
           <p className="mb-1 text-sm font-medium text-gray-700">Pairs:</p>
           <MathJaxWrap>
             <ul className="ml-6 space-y-1 text-sm">
-              {q.pairs.map((p, i) => (
-                <li key={i}>
+              {q.pairs.map((p) => (
+                <li key={`${p.left}-${p.right}`}>
                   <RenderTextWithImages text={p.left} /> →{" "}
                   <RenderTextWithImages text={p.right} />
                 </li>
@@ -173,8 +173,8 @@ export function QuestionCard({
           </p>
           <MathJaxWrap>
             <ol className="ml-6 list-decimal space-y-1 text-sm">
-              {q.items.map((item, i) => (
-                <li key={i}>
+              {q.items.map((item) => (
+                <li key={item}>
                   <RenderTextWithImages text={item} />
                 </li>
               ))}

@@ -133,8 +133,8 @@ export function InputSection({
                     : "Key Learning Points:"}
                 </p>
                 <ul className="list-inside list-disc space-y-0.5 text-sm text-gray-600">
-                  {learningPoints.map((point, i) => (
-                    <li key={i}>{point}</li>
+                  {learningPoints.map((point) => (
+                    <li key={point}>{point}</li>
                   ))}
                 </ul>
               </div>
