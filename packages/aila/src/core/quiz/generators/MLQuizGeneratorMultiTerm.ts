@@ -68,9 +68,9 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
       const hits = await this.searchService.searchWithHybrid(
         "oak-vector-2025-04-16",
         query,
+        t,
         SEARCH_SIZE,
         0.5,
-        t,
       );
       return hits;
     });
@@ -81,8 +81,8 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
       return this.rerankService.rerankDocuments(
         query,
         simplifiedResults,
-        topN,
         t,
+        topN,
       );
     });
 

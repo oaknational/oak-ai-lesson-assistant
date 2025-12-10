@@ -83,9 +83,9 @@ export class MLQuizGenerator extends BaseQuizGenerator {
       this.searchService.searchWithHybrid(
         "oak-vector-2025-04-16",
         concatenatedQueries,
+        t,
         100,
         0.5, // 50/50 weight between BM25 and vector search
-        t,
       ),
     );
 
@@ -165,7 +165,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   ): Promise<string[]> {
     const simplifiedResults = this.searchService.transformHits(hits);
     const rerankedResults = await task.child("cohere", (t) =>
-      this.rerankService.rerankDocuments(query, simplifiedResults, topN, t),
+      this.rerankService.rerankDocuments(query, simplifiedResults, t, topN),
     );
     return rerankedResults.map((result) => result.questionUid);
   }

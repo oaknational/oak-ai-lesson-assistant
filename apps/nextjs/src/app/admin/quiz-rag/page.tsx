@@ -327,10 +327,10 @@ type NodeStatus = ReportNode["status"];
 function StageStatusIcon({
   status,
   small = false,
-}: {
+}: Readonly<{
   status: NodeStatus;
   small?: boolean;
-}) {
+}>) {
   const size = small ? "text-xs" : "text-sm";
 
   switch (status) {

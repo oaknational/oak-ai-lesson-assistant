@@ -10,7 +10,7 @@ interface QuestionCardProps {
 }
 
 // Parse text and render inline images from markdown syntax
-function RenderTextWithImages({ text }: { text: string }) {
+function RenderTextWithImages({ text }: Readonly<{ text: string }>) {
   // Match markdown image syntax: ![alt](url)
   const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
   const parts: (string | { type: "image"; url: string; alt: string })[] = [];
@@ -57,7 +57,10 @@ function RenderTextWithImages({ text }: { text: string }) {
   );
 }
 
-export function QuestionCard({ question, compact = false }: QuestionCardProps) {
+export function QuestionCard({
+  question,
+  compact = false,
+}: Readonly<QuestionCardProps>) {
   const q = question.question;
 
   if (compact) {

@@ -53,8 +53,8 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
   const queryKeys = Object.keys(reportNode.children)
     .filter((key) => key.startsWith("query-"))
     .sort((a, b) => {
-      const numA = parseInt(a.split("-")[1] ?? "0");
-      const numB = parseInt(b.split("-")[1] ?? "0");
+      const numA = Number.parseInt(a.split("-")[1] ?? "0", 10);
+      const numB = Number.parseInt(b.split("-")[1] ?? "0", 10);
       return numA - numB;
     });
 
@@ -105,7 +105,7 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
 export function MLPipelineDetails({
   result,
   reportNode,
-}: MLPipelineDetailsProps) {
+}: Readonly<MLPipelineDetailsProps>) {
   const searchTerms = extractQueryTerms(reportNode);
 
   if (searchTerms.length === 0) {
@@ -128,10 +128,10 @@ export function MLPipelineDetails({
 function SearchTermAccordion({
   term,
   index,
-}: {
+}: Readonly<{
   term: QueryTermData;
   index: number;
-}) {
+}>) {
   const [isOpen, setIsOpen] = useState(false);
   const [showAllES, setShowAllES] = useState(false);
   const [showAllCohere, setShowAllCohere] = useState(false);

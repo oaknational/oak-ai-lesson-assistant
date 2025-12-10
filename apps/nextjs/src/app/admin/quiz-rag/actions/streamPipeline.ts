@@ -19,13 +19,43 @@ interface StreamPipelineCallbacks {
   onError: (error: Error) => void;
 }
 
+function processSSEEvent(
+  event: SSEEvent,
+  callbacks: StreamPipelineCallbacks,
+): void {
+  const { onReportUpdate, onError } = callbacks;
+
+  if (event.type === "report" || event.type === "complete") {
+    onReportUpdate(event.data as ReportNode, event.type === "complete");
+  } else if (event.type === "error") {
+    const errorData = event.data as { message: string };
+    onError(new Error(errorData.message));
+  }
+}
+
+function processSSELine(
+  line: string,
+  callbacks: StreamPipelineCallbacks,
+): void {
+  if (!line.startsWith("data: ")) {
+    return;
+  }
+
+  try {
+    const event = JSON.parse(line.slice(6)) as SSEEvent;
+    log.info(`Stream event: ${event.type}`);
+    processSSEEvent(event, callbacks);
+  } catch (e) {
+    log.error("Failed to parse SSE event:", e);
+  }
+}
+
 export async function streamPipeline(
   params: StreamPipelineParams,
   callbacks: StreamPipelineCallbacks,
   signal: AbortSignal,
 ): Promise<void> {
   const { lessonPlan, quizType, relevantLessons } = params;
-  const { onReportUpdate, onError } = callbacks;
 
   const cleanedPlan = {
     ...lessonPlan,
@@ -65,21 +95,7 @@ export async function streamPipeline(
     buffer = lines.pop() ?? "";
 
     for (const line of lines) {
-      if (line.startsWith("data: ")) {
-        try {
-          const event = JSON.parse(line.slice(6)) as SSEEvent;
-          log.info(`Stream event: ${event.type}`);
-
-          if (event.type === "report" || event.type === "complete") {
-            onReportUpdate(event.data as ReportNode, event.type === "complete");
-          } else if (event.type === "error") {
-            const errorData = event.data as { message: string };
-            onError(new Error(errorData.message));
-          }
-        } catch (e) {
-          log.error("Failed to parse SSE event:", e);
-        }
-      }
+      processSSELine(line, callbacks);
     }
   }
 }

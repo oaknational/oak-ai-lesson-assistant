@@ -17,9 +17,9 @@ export default function QuizRagLayout({
         <Layout>
           <div className="mt-27">
             <OakMaxWidth
-              $maxWidth={["all-spacing-23"]}
-              $pa="inner-padding-m"
-              $ph={["inner-padding-none", "inner-padding-s"]}
+              $maxWidth={["spacing-960"]}
+              $pa="spacing-16"
+              $ph={["spacing-0", "spacing-12"]}
             >
               {children}
             </OakMaxWidth>

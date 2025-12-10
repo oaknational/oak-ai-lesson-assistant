@@ -71,9 +71,9 @@ export class ElasticsearchQuizSearchService {
   public async searchWithHybrid(
     index: string,
     query: string,
+    task: Task,
     size: number = 100,
     hybridWeight: number = 0.5,
-    task: Task,
   ): Promise<SearchHitsMetadata<CustomSource>> {
     try {
       log.info(`Performing hybrid search on index: ${index}, query: ${query}`);
@@ -142,7 +142,7 @@ export class ElasticsearchQuizSearchService {
         hitsWithScores: response.hits.hits
           .map((hit) => {
             const source = hit._source;
-            if (!source || !source.questionUid || !source.text) {
+            if (!source?.questionUid || !source.text) {
               return null;
             }
             return {

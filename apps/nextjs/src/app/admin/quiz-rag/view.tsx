@@ -38,7 +38,7 @@ export function QuizRagDebugView({
   viewMode,
   report,
   isStreaming = false,
-}: QuizRagDebugViewProps) {
+}: Readonly<QuizRagDebugViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;
   // Helper to check stage status from report tree
@@ -331,10 +331,10 @@ export function QuizRagDebugView({
 export function LearnBlock({
   children,
   variant = "inline",
-}: {
+}: Readonly<{
   children: React.ReactNode;
   variant?: "hero" | "section" | "inline";
-}) {
+}>) {
   const mode = useViewMode();
   if (mode !== "learn") return null;
 
@@ -351,7 +351,9 @@ export function LearnBlock({
 const learnParagraphClass = "max-w-3xl text-base leading-relaxed text-gray-600";
 
 // Paragraph component that only renders in Learn mode
-export function LearnParagraph({ children }: { children: React.ReactNode }) {
+export function LearnParagraph({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const mode = useViewMode();
   if (mode !== "learn") return null;
   return <p className={learnParagraphClass}>{children}</p>;
@@ -374,13 +376,13 @@ function SubSection({
   defaultOpen = false,
   stats,
   actions,
-}: {
+}: Readonly<{
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
   stats?: string;
   actions?: React.ReactNode;
-}) {
+}>) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -413,14 +415,14 @@ function Section({
   color = "gray",
   stats,
   loading = false,
-}: {
+}: Readonly<{
   title: string;
   children: React.ReactNode;
   defaultOpen?: boolean;
   color?: StageColor;
   stats?: string;
   loading?: boolean;
-}) {
+}>) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const colors = stageColors[color];
 
@@ -462,7 +464,7 @@ function GeneratorAccordion({
   disabled = false,
   disabledReason,
   loading = false,
-}: {
+}: Readonly<{
   title: string;
   stats?: { pools: number; questions: number; timing: number };
   children: React.ReactNode;
@@ -470,7 +472,7 @@ function GeneratorAccordion({
   disabled?: boolean;
   disabledReason?: string;
   loading?: boolean;
-}) {
+}>) {
   const [isOpen, setIsOpen] = useState(defaultOpen && !disabled);
 
   if (disabled) {
@@ -529,7 +531,7 @@ function GeneratorAccordion({
 }
 
 // Generator Section for basedOnRag and ailaRag
-function GeneratorSection({ result }: { result: GeneratorData }) {
+function GeneratorSection({ result }: Readonly<{ result: GeneratorData }>) {
   return (
     <div className="space-y-2">
       {result.pools.map((pool, idx) => (
@@ -553,7 +555,9 @@ function GeneratorSection({ result }: { result: GeneratorData }) {
 }
 
 // Image Descriptions View
-function ImageDescriptionsView({ result }: { result: ImageDescriptionsData }) {
+function ImageDescriptionsView({
+  result,
+}: Readonly<{ result: ImageDescriptionsData }>) {
   const [showAll, setShowAll] = useState(false);
 
   if (result.totalImages === 0) {
@@ -648,10 +652,10 @@ function formatPoolSource(pool: QuizQuestionPool): string {
 function ComposerPromptPreview({
   prompt,
   isLlmRunning,
-}: {
+}: Readonly<{
   prompt: string;
   isLlmRunning: boolean;
-}) {
+}>) {
   const copyPrompt = () => {
     void navigator.clipboard.writeText(prompt);
   };
@@ -698,7 +702,7 @@ function ComposerSection({
   response,
   selectedQuestions,
   pools,
-}: {
+}: Readonly<{
   prompt: string;
   response: {
     overallStrategy: string;
@@ -706,7 +710,7 @@ function ComposerSection({
   };
   selectedQuestions: RagQuizQuestion[];
   pools: QuizQuestionPool[];
-}) {
+}>) {
   const copyPrompt = () => {
     void navigator.clipboard.writeText(prompt);
   };
@@ -806,10 +810,10 @@ function ComposerSection({
 function FinalQuizDisplay({
   quiz,
   report,
-}: {
+}: Readonly<{
   quiz: LatestQuiz;
   report: ReportNode | null;
-}) {
+}>) {
   const mode = useViewMode();
   const [showJson, setShowJson] = useState(mode === "eval");
 

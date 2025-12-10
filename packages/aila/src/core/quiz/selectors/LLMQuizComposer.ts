@@ -23,6 +23,8 @@ const log = aiLogger("aila:quiz");
 const OPENAI_MODEL = "o4-mini";
 const IS_REASONING_MODEL = true;
 
+const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
+
 /**
  * LLM-based Quiz Composer that actively selects questions from candidate pools
  *
@@ -70,22 +72,16 @@ export class LLMQuizComposer implements QuizSelector {
     log.info(`Image descriptions: ${descriptions.size} total processed`);
 
     // Build prompt (separate task so streaming can show prompt while waiting for LLM)
-    const { prompt, candidateCount } = await task.child(
-      "composerPrompt",
-      async (t) => {
-        const builtPrompt = buildCompositionPrompt(
-          poolsWithDescriptions,
-          lessonPlan,
-          quizType,
-        );
-        const count = questionPools.reduce(
-          (sum, p) => sum + p.questions.length,
-          0,
-        );
-        t.addData({ prompt: builtPrompt, candidateCount: count });
-        return { prompt: builtPrompt, candidateCount: count };
-      },
-    );
+    const prompt = await task.child("composerPrompt", (t) => {
+      const builtPrompt = buildCompositionPrompt(
+        poolsWithDescriptions,
+        lessonPlan,
+        quizType,
+      );
+      const count = sum(questionPools.map((p) => p.questions.length));
+      t.addData({ prompt: builtPrompt, candidateCount: count });
+      return Promise.resolve(builtPrompt);
+    });
 
     // Call LLM
     const selectedQuestions = await task.child("composerLlm", async (t) => {
@@ -109,10 +105,7 @@ export class LLMQuizComposer implements QuizSelector {
     questionPools: QuizQuestionPool[],
     quizType: QuizPath,
   ): void {
-    const totalQuestions = questionPools.reduce(
-      (sum, pool) => sum + pool.questions.length,
-      0,
-    );
+    const totalQuestions = sum(questionPools.map((p) => p.questions.length));
     log.info(
       `LLM Composer: composing ${quizType} from ${questionPools.length} pools`,
     );

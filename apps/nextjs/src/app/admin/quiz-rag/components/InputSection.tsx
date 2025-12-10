@@ -17,7 +17,10 @@ interface InputSectionProps {
   initialChatId?: string;
 }
 
-export function InputSection({ store, initialChatId }: InputSectionProps) {
+export function InputSection({
+  store,
+  initialChatId,
+}: Readonly<InputSectionProps>) {
   // Store state
   const selectedPlan = useQuizRagDebugStore(store, (s) => s.lessonPlan);
   const quizType = useQuizRagDebugStore(store, (s) => s.quizType);
@@ -48,15 +51,20 @@ export function InputSection({ store, initialChatId }: InputSectionProps) {
 
   // Auto-trigger lookup when initialChatId is provided
   useEffect(() => {
-    if (initialChatId && !hasTriggeredInitialLookup.current) {
+    async function loadInitialChat() {
+      if (!initialChatId || hasTriggeredInitialLookup.current) {
+        return;
+      }
       hasTriggeredInitialLookup.current = true;
-      void chatLookup.refetch().then((result) => {
-        if (result.data) {
-          setLessonPlan(result.data.lessonPlan);
-          setRelevantLessons(result.data.relevantLessons);
-        }
-      });
+      const result = await chatLookup.refetch();
+      if (result.data) {
+        setLessonPlan(result.data.lessonPlan);
+        setRelevantLessons(result.data.relevantLessons);
+      }
     }
+    loadInitialChat().catch(() => {
+      // Error handled by chatLookup.error
+    });
   }, [initialChatId, chatLookup, setLessonPlan, setRelevantLessons]);
 
   const handleChatIdSubmit = async () => {

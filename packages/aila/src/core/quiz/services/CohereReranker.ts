@@ -38,8 +38,8 @@ export class CohereReranker {
   public async rerankDocuments(
     query: string,
     docs: SimplifiedResult[],
-    topN: number = 10,
     task: Task,
+    topN: number = 10,
   ): Promise<RerankResult[]> {
     if (docs.length === 0) {
       log.error("No documents to rerank");

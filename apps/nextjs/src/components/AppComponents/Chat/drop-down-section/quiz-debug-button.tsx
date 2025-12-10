@@ -11,7 +11,7 @@ interface QuizDebugButtonProps {
   quizType: "/starterQuiz" | "/exitQuiz";
 }
 
-export function QuizDebugButton({ quizType }: QuizDebugButtonProps) {
+export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
   const { user, isLoaded } = useUser();
   const chatId = useLessonPlanStore((state) => state.id);
 
