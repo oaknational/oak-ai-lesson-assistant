@@ -23,7 +23,8 @@ const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
     });
   }
 
-  const user = await clerkClient.users.getUser(ctx.auth.userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(ctx.auth.userId);
 
   if (
     !user.emailAddresses.some((email) =>

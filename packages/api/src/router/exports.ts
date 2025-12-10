@@ -465,7 +465,8 @@ export const exportsRouter = router({
     .output(z.boolean())
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const user = await client.users.getUser(ctx.auth.userId);
         const userEmail = user?.emailAddresses[0]?.emailAddress;
         const userFirstName = user?.firstName;
         const {
@@ -523,7 +524,8 @@ export const exportsRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       try {
-        const user = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const user = await client.users.getUser(ctx.auth.userId);
         const userEmail = user?.emailAddresses[0]?.emailAddress;
         const userFirstName = user?.firstName;
         const { title, link, lessonTitle } = input;

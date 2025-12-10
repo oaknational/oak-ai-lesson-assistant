@@ -5,12 +5,13 @@ import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
 
-export default function TeachingMaterialsPage({
-  searchParams,
-}: {
-  readonly searchParams: { [key: string]: string | undefined };
-}) {
-  const clerkAuthentication = auth();
+export default async function TeachingMaterialsPage(
+  props: {
+    readonly searchParams: Promise<{ [key: string]: string | undefined }>;
+  }
+) {
+  const searchParams = await props.searchParams;
+  const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");

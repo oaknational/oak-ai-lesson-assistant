@@ -6,7 +6,8 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 
 export async function checkMutationPermissions(userId: string) {
-  const clerkUser = await clerkClient.users.getUser(userId);
+  const client = await clerkClient();
+  const clerkUser = await client.users.getUser(userId);
   if (clerkUser.banned) {
     throw new Error("User is banned");
   }

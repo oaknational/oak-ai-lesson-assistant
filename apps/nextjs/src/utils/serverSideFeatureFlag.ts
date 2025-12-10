@@ -9,7 +9,7 @@ const log = aiLogger("feature-flags");
 export async function serverSideFeatureFlag(
   featureFlagId: string,
 ): Promise<boolean> {
-  const clerkAuthentication = auth();
+  const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     return false;
@@ -31,7 +31,8 @@ export async function serverSideFeatureFlag(
 
     if (!isIdentified) {
       // Only fetch user data if not identified
-      const user = await clerkClient.users.getUser(userId);
+      const client = await clerkClient();
+      const user = await client.users.getUser(userId);
       const userEmail = user.emailAddresses?.[0]?.emailAddress;
 
       await posthogAiBetaServerClient.identifyImmediate({
