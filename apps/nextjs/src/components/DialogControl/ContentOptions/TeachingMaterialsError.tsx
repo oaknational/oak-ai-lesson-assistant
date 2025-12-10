@@ -29,7 +29,7 @@ const TeachingMaterialsError = ({
       $height="100%"
       $flexDirection="column"
       $justifyContent="center"
-      $gap={"space-between-m2"}
+      $gap={"spacing-32"}
     >
       <OakP $textAlign={"center"} $font="body-2">
         {`An error occurred while generating your ${docTypeDisplayName ?? "teaching material"}.`}
@@ -44,7 +44,7 @@ const TeachingMaterialsError = ({
         $flexDirection={"column"}
         $justifyContent={"center"}
         $alignItems={"center"}
-        $mb={"space-between-m"}
+        $mb={"spacing-24"}
       >
         <OakPrimaryButton
           iconName="chevron-right"

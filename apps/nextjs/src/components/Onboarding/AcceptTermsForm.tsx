@@ -64,14 +64,14 @@ export const AcceptTermsForm = () => {
       <OakBox
         $mh="auto"
         $borderRadius="border-radius-m"
-        $background="white"
-        $pa="inner-padding-xl2"
-        $maxWidth={"all-spacing-22"}
+        $background="bg-primary"
+        $pa="spacing-32"
+        $maxWidth={"spacing-640"}
       >
         <OakHeading $font="heading-6" tag="h1">
           This product is experimental and uses AI
         </OakHeading>
-        <OakBox $mt="space-between-s">
+        <OakBox $mt="spacing-16">
           <OakP>
             We have worked to ensure that our tools are as high quality and as
             safe as possible but we cannot guarantee accuracy. Please use with
@@ -79,7 +79,7 @@ export const AcceptTermsForm = () => {
           </OakP>
         </OakBox>
 
-        <OakBox $pt="inner-padding-m" $mv="space-between-s">
+        <OakBox $pt="spacing-16" $mv="spacing-16">
           <CheckBox
             label="Accept"
             setValue={setPrivacyAcceptedLocal}
@@ -102,7 +102,7 @@ export const AcceptTermsForm = () => {
         </OakBox>
 
         {termsAcceptedLocal ? (
-          <OakFlex $flexDirection="column" $gap="all-spacing-7">
+          <OakFlex $flexDirection="column" $gap="spacing-32">
             <p>
               Terms accepted. If the page does not reload please refresh and
               navigate to home.
@@ -112,10 +112,10 @@ export const AcceptTermsForm = () => {
           <OakFlex
             $flexDirection="row"
             $justifyContent="between"
-            $gap="all-spacing-4"
+            $gap="spacing-16"
             $width="100%"
             $alignItems="center"
-            $mt="space-between-l"
+            $mt="spacing-48"
           >
             <Button
               variant="text-link"

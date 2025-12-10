@@ -24,10 +24,9 @@ export const DropDownSectionContent = ({
   return (
     <OakFlex $flexDirection="column">
       <SectionContent sectionKey={sectionKey} value={value} />
-
       <OakFlex
-        $gap="all-spacing-3"
-        $mt="space-between-s"
+        $gap="spacing-12"
+        $mt="spacing-16"
         $position="relative"
         $display={["none", "flex"]}
       >

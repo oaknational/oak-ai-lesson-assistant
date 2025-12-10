@@ -14,7 +14,7 @@ base-uri 'self'
 frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none' http://localhost:*
-report-uri https://sentry.io/report&sentry_environment=test&sentry_release=1.0.0"
+report-uri /report/?token=&sample_rate=1&v=1"
 `;
 
 exports[`CSP Policies Snapshot should match preview environment snapshot 1`] = `
@@ -31,7 +31,7 @@ base-uri 'self'
 frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://vercel.live/ https://vercel.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
-report-uri https://sentry.io/report&sentry_environment=test&sentry_release=1.0.0
+report-uri /report/?token=&sample_rate=1&v=1
 upgrade-insecure-requests"
 `;
 
@@ -49,7 +49,7 @@ base-uri 'self'
 frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
-report-uri https://sentry.io/report&sentry_environment=test&sentry_release=1.0.0
+report-uri /report/?token=&sample_rate=1&v=1
 upgrade-insecure-requests"
 `;
 
@@ -67,6 +67,6 @@ base-uri 'self'
 frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
-report-uri https://sentry.io/report&sentry_environment=test&sentry_release=1.0.0
+report-uri /report/?token=&sample_rate=1&v=1
 upgrade-insecure-requests"
 `;

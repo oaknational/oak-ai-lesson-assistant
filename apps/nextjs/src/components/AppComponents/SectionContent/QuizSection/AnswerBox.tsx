@@ -14,9 +14,9 @@ type AnswerBoxProps = {
 const AnswerBoxBase = ({ children }: AnswerBoxProps) => {
   return (
     <OakFlex
-      $mr="space-between-xs"
-      $width="all-spacing-7"
-      $height="all-spacing-7"
+      $mr="spacing-12"
+      $width="spacing-32"
+      $height="spacing-32"
       $ba="border-solid-m"
       $borderColor="border-primary"
       $borderRadius="border-radius-s"

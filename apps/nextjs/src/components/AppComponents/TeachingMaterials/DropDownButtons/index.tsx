@@ -41,16 +41,16 @@ export const DropDownWrapper = ({
   <OakBox>
     <OakBox
       $position="absolute"
-      $left="all-spacing-0"
-      $top="all-spacing-4"
+      $left="spacing-0"
+      $top="spacing-16"
       $zIndex="modal-dialog"
-      $mt="space-between-l"
-      $height={["all-spacing-19", "all-spacing-20"]}
-      $minWidth={["all-spacing-17", "all-spacing-20"]}
+      $mt="spacing-48"
+      $height={["spacing-240", "spacing-360"]}
+      $minWidth={["spacing-160", "spacing-360"]}
       $overflowY="scroll"
       $borderRadius="border-radius-m"
       $ba="border-solid-m"
-      $background="white"
+      $background="bg-primary"
     >
       {children}
     </OakBox>

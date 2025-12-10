@@ -46,9 +46,9 @@ const environment = parseEnvironment(process.env.NEXT_PUBLIC_ENVIRONMENT);
 const cspConfig: CspConfig = {
   strictCsp: process.env.STRICT_CSP === "true",
   environment,
-  sentryEnv: process.env.NEXT_PUBLIC_SENTRY_ENV ?? "",
-  sentryRelease: process.env.NEXT_PUBLIC_APP_VERSION ?? "",
-  sentryReportUri: process.env.SENTRY_REPORT_URI ?? "",
+
+  posthogApiKey: process.env.NEXT_PUBLIC_POSTHOG_API_KEY ?? "",
+  posthogHost: process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "",
   cspReportSampleRate: process.env.NEXT_PUBLIC_CSP_REPORT_SAMPLE_RATE ?? "1",
   vercelEnv: parseVercelEnv(process.env.VERCEL_ENV),
   enabledPolicies: {
