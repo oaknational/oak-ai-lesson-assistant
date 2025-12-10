@@ -1,4 +1,5 @@
 import { createSectionAgent } from "../createSectionAgent";
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { subjectInstructions } from "./subject.instructions";
 import { SubjectSchema } from "./subject.schema";
 import { subjectsByKeyStage } from "./subjectsByKeyStage";
@@ -6,6 +7,7 @@ import { subjectsByKeyStage } from "./subjectsByKeyStage";
 export const subjectAgent = createSectionAgent({
   responseSchema: SubjectSchema,
   instructions: subjectInstructions,
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
   extraInputFromCtx: (ctx) => {
     return [
       {
