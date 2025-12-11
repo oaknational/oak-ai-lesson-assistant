@@ -15,7 +15,7 @@ export const AccessibilityStatementContent = ({
   pageData,
 }: AccessibilityStatementContentProps) => {
   return (
-    <OakBox $ph="inner-padding-xl">
+    <OakBox $ph="spacing-24">
       <PortableText value={pageData.body} components={portableTextComponents} />
     </OakBox>
   );

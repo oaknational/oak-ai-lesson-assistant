@@ -13,17 +13,17 @@ const InlineButton = forwardRef<HTMLButtonElement, InlineButtonProps>(
       <OakFlex
         as="button"
         $ba="border-solid-s"
-        $borderColor="grey50"
+        $borderColor="border-neutral"
         $borderRadius="border-radius-m"
-        $ph="inner-padding-xs"
-        $pv="inner-padding-ssx"
+        $ph="spacing-8"
+        $pv="spacing-4"
         $display="inline-flex"
         $alignSelf="flex-start"
         $width="fit-content"
         onClick={onClick}
         ref={ref}
       >
-        <OakP $color="blue" $font="body-2">
+        <OakP $color="text-link-active" $font="body-2">
           {children}
         </OakP>
       </OakFlex>

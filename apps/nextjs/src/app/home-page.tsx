@@ -48,10 +48,10 @@ export const metadata: Metadata = {
 function SubjectIcon({
   iconName,
   background,
-  iconWidth = "all-spacing-12",
-  iconHeight = "all-spacing-12",
-  containerWidth = "all-spacing-15",
-  containerHeight = "all-spacing-15",
+  iconWidth = "spacing-72",
+  iconHeight = "spacing-72",
+  containerWidth = "spacing-100",
+  containerHeight = "spacing-100",
 }: {
   iconName: OakIconName;
   background: OakUiRoleToken;
@@ -95,24 +95,23 @@ function IconInfoCardLink({
     <OakFlex
       $width={"100%"}
       $alignItems="center"
-      $gap={["all-spacing-3", "all-spacing-6"]}
+      $gap={["spacing-12", "spacing-24"]}
     >
       <OakBox $display={["none", "flex"]}>
         <SubjectIcon iconName={iconName} background={background} />
       </OakBox>
       <OakBox $display={["flex", "none"]}>
         <SubjectIcon
-          iconHeight="all-spacing-10"
-          iconWidth="all-spacing-10"
-          containerWidth="all-spacing-12"
-          containerHeight="all-spacing-12"
+          iconHeight="spacing-56"
+          iconWidth="spacing-56"
+          containerWidth="spacing-72"
+          containerHeight="spacing-72"
           iconName={iconName}
           background={background}
         />
       </OakBox>
-
-      <OakFlex $flexDirection="column" $gap="space-between-sssx" $width="100%">
-        <OakHeading $font="heading-6" tag="h4" $color="black">
+      <OakFlex $flexDirection="column" $gap="spacing-4" $width="100%">
+        <OakHeading $font="heading-6" tag="h4" $color="text-primary">
           {title}
         </OakHeading>
 
@@ -123,8 +122,8 @@ function IconInfoCardLink({
           isTrailingIcon
           $wordWrap={"break-word"}
           $whiteSpace={"normal"}
-          $pl={"inner-padding-none"}
-          $mh={"space-between-none"}
+          $pl={"spacing-0"}
+          $mh={"spacing-0"}
           href={href}
           target="_blank"
         >
@@ -193,36 +192,35 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $position={["static", "static", "sticky"]}
           $colSpan={[0, 0, 5]}
           $height="fit-content"
-          $top={["all-spacing-0", "all-spacing-0", "space-between-l"]}
+          $top={["spacing-0", "spacing-0", "spacing-48"]}
           $alignSelf={"start"}
-          $pv={["inner-padding-xl6"]}
+          $pv={["spacing-64"]}
           $display={["none", "none", "flex"]}
         >
           <HomePageNav />
         </OakGridArea>
         <OakGridArea
-          $gap={"all-spacing-14"}
-          $pv={["inner-padding-xl6"]}
+          $gap={"spacing-92"}
+          $pv={["spacing-64"]}
           $colSpan={[12, 0, 7]}
         >
           <HomePageAboutAila pageData={pageData} user={user} track={track} />
         </OakGridArea>
       </OakGrid>
-
       {pageData?.giveFeedbackLink?.external && (
         <OakFlexWithBackground
           $flexDirection={["column", "row"]}
           $justifyContent={["center", "space-between"]}
           $alignItems={"center"}
-          $gap="all-spacing-10"
-          $pv={["inner-padding-none", "inner-padding-xl8"]}
-          $background={"lavender30"}
+          $gap="spacing-56"
+          $pv={["spacing-0", "spacing-80"]}
+          $background={"bg-decorative3-very-subdued"}
           fullWidthBgColor={"lavender30"}
         >
           <OakFlex
-            $pv={["inner-padding-xl8"]}
+            $pv={["spacing-80"]}
             $flexDirection="column"
-            $gap="all-spacing-6"
+            $gap="spacing-24"
           >
             <OakHeading id="give-feedback" $font="heading-4" tag="h2">
               Give feedback
@@ -249,9 +247,9 @@ export function HomePageContent({ pageData }: HomePageProps) {
           </OakFlex>
           <OakFlex
             $display={["none", "flex"]}
-            $maxWidth={"all-spacing-22"}
+            $maxWidth={"spacing-640"}
             $flexGrow={1}
-            $pa={"inner-padding-xl"}
+            $pa={"spacing-24"}
           >
             <Image
               src={oakSupporting}
@@ -277,7 +275,8 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props) => oakColorTokens[props.fullWidthBgColor]};
+    background-color: ${(props: { fullWidthBgColor: OakColorToken }) =>
+      oakColorTokens[props.fullWidthBgColor]};
   }
   /* img {
     max-width: 300px;
@@ -294,11 +293,11 @@ function HomePageHero({ pageData }: HomePageProps) {
         $flexDirection={["column", "row"]}
         $justifyContent={"space-between"}
         $alignItems={["center"]}
-        $gap={"all-spacing-5"}
+        $gap={"spacing-20"}
       >
         <OakFlexCustomMaxWidthWithHalfWidth
           $flexDirection={"column"}
-          $gap={"all-spacing-5"}
+          $gap={"spacing-20"}
           customMaxWidth={550}
           $width={"100%"}
         >
@@ -311,7 +310,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
           <OakBoxCustomMaxWidth
             $display={["flex", "none"]}
-            $borderColor="black"
+            $borderColor="border-primary"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
             customMaxWidth={600}
@@ -332,7 +331,7 @@ function HomePageHero({ pageData }: HomePageProps) {
 
         <OakFlexCustomMaxWidthWithHalfWidth
           $display={["none", "flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -357,13 +356,13 @@ type HomePageAboutAilaProps = {
 function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
   return (
     <OakBox>
-      <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
+      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
         <OakHeading id="what-to-expect" $font="heading-5" tag="h3">
           What to expect
         </OakHeading>
         <OakBoxCustomMaxWidth
           $display={["flex"]}
-          $borderColor="black"
+          $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
           customMaxWidth={600}
@@ -383,9 +382,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         <OakP $font={"body-2-bold"}>Lessons created with Aila include:</OakP>
 
         <StyledUL>
-          <OakLI $mb={"space-between-ssx"}>1 lesson plan</OakLI>
-          <OakLI $mb={"space-between-ssx"}>1 slide deck</OakLI>
-          <OakLI $mb={"space-between-ssx"}>2 quizzes</OakLI>
+          <OakLI $mb={"spacing-8"}>1 lesson plan</OakLI>
+          <OakLI $mb={"spacing-8"}>1 slide deck</OakLI>
+          <OakLI $mb={"spacing-8"}>2 quizzes</OakLI>
           <OakLI>1 worksheet</OakLI>
         </StyledUL>
 
@@ -400,7 +399,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
 
         <OakHeading
           id="sample-lessons"
-          $mt={"space-between-m2"}
+          $mt={"spacing-32"}
           $font="heading-5"
           tag="h3"
         >
@@ -411,7 +410,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           what&apos;s possible. We don&apos;t currently include images in our AI
           lessons, but you can add your own once downloaded.
         </OakP>
-        <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
+        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
           {pageData?.sampleLessons?.map((lesson, index) => (
             <IconInfoCardLink
               key={`${index}-${lesson.title}`}
@@ -427,17 +426,17 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         </OakFlex>
         <OakHeading
           id="creating-a-lesson"
-          $mt={"space-between-m2"}
+          $mt={"spacing-32"}
           $font="heading-5"
           tag="h3"
         >
           Creating a lesson
         </OakHeading>
-        <OakFlex $flexDirection={"column"} $gap={"all-spacing-6"}>
+        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
           {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
             <OakBoxCustomMaxWidth
               $display={["flex"]}
-              $borderColor="black"
+              $borderColor="border-primary"
               $borderStyle={"solid"}
               $ba={"border-solid-xl"}
               customMaxWidth={600}
@@ -491,13 +490,13 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           </OakSecondaryButton>
         </OakFlex>
         <OakFlex
-          $mb={"space-between-m"}
+          $mb={"spacing-24"}
           $flexDirection={"column"}
-          $gap={"all-spacing-6"}
+          $gap={"spacing-24"}
         >
           <OakHeading
             id="creating-teaching-materials"
-            $mt={"space-between-m2"}
+            $mt={"spacing-32"}
             $font="heading-5"
             tag="h3"
           >
@@ -519,9 +518,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           </OakSecondaryButton>
         </OakFlex>
         <OakFlex
-          $mb={"space-between-m"}
+          $mb={"spacing-24"}
           $flexDirection={"column"}
-          $gap={"all-spacing-5"}
+          $gap={"spacing-20"}
         >
           <OakHeading id="what-makes-aila-different" $font="heading-5" tag="h3">
             What makes Aila different
@@ -543,9 +542,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           </OakSecondaryButton>
         </OakFlex>
         <OakFlex
-          $mb={"space-between-m"}
+          $mb={"spacing-24"}
           $flexDirection={"column"}
-          $gap={"all-spacing-9"}
+          $gap={"spacing-48"}
         >
           <OakQuote
             quote="Using AI to support my planning and teaching wasn't something I'd really considered until I came across Aila. To say I was blown away would be an understatement!"
@@ -560,9 +559,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           />
         </OakFlex>
         <OakFlex
-          $mb={"space-between-m"}
+          $mb={"spacing-24"}
           $flexDirection={"column"}
-          $gap={"all-spacing-5"}
+          $gap={"spacing-20"}
         >
           <OakHeading id="how-our-ai-works" $font="heading-5" tag="h3">
             How our AI works
@@ -595,7 +594,7 @@ const HomePageNav = () => {
   ];
 
   return (
-    <OakFlex $display="flex" $flexDirection="column" $gap="space-between-m">
+    <OakFlex $display="flex" $flexDirection="column" $gap="spacing-24">
       {menuItems.map((item) => (
         <OakTertiaryButton
           key={item.href}

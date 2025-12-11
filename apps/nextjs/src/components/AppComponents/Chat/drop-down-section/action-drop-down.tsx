@@ -78,8 +78,8 @@ export const ActionDropDown = ({
       <OakRadioGroup
         name={`drop-down-${options[0].enumValue}`}
         $flexDirection="column"
-        $gap="space-between-s"
-        $background="white"
+        $gap="spacing-16"
+        $background="bg-primary"
       >
         {options.map(
           (
