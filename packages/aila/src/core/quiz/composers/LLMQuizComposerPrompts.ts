@@ -164,9 +164,9 @@ function poolToMarkdown(pool: QuizQuestionPool): string {
 }
 
 function poolHeaderMarkdown(pool: QuizQuestionPool): string {
-  if (pool.source.type === "basedOn") {
+  if (pool.source.type === "basedOnLesson") {
     return `### User-Selected Source Lesson: ${pool.source.lessonTitle}`;
-  } else if (pool.source.type === "mlSemanticSearch") {
+  } else if (pool.source.type === "semanticSearch") {
     return `### Semantically Matched Questions (query: "${pool.source.semanticQuery}")`;
   } else {
     return `### Reference Quiz: ${pool.source.lessonTitle}`;

@@ -7,7 +7,7 @@ import pLimit from "p-limit";
 import { z } from "zod";
 
 import type { Task } from "../instrumentation";
-import type { QuizQuestionPool } from "../interfaces";
+import type { QuestionEnricher, QuizQuestionPool } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
@@ -53,12 +53,13 @@ export interface ImageDescriptionMap {
 }
 
 /**
- * Service for managing image descriptions with KV caching
+ * Enriches quiz question pools with image descriptions.
  *
  * Extracts images from quiz questions, generates pedagogical descriptions
  * using vision LLM, and caches them in Redis for 90 days.
  */
-export class ImageDescriptionService {
+export class ImageDescriptionEnricher implements QuestionEnricher {
+  public readonly name = "imageDescriptions";
   /**
    * Extract all unique image URLs from question pools
    * Uses string serialization to avoid type-specific traversal
@@ -284,13 +285,27 @@ export class ImageDescriptionService {
   }
 
   /**
+   * Implements QuestionEnricher interface.
+   */
+  public async enrich(
+    questionPools: QuizQuestionPool[],
+    task: Task,
+  ): Promise<QuizQuestionPool[]> {
+    const result = await this.getImageDescriptions(questionPools, task);
+    return ImageDescriptionEnricher.applyDescriptionsToQuestions(
+      questionPools,
+      result.descriptions,
+    );
+  }
+
+  /**
    * Replace markdown images with text descriptions in a string
    *
    * @param text - Text containing markdown images
    * @param descriptions - Map of URL to description
    * @returns Text with images replaced by descriptions
    */
-  public static replaceImagesWithDescriptions(
+  static replaceImagesWithDescriptions(
     text: string,
     descriptions: Map<string, string>,
   ): string {
@@ -310,7 +325,7 @@ export class ImageDescriptionService {
    * @param descriptions - Map of URL to description
    * @returns New question pools with images replaced by descriptions
    */
-  public static applyDescriptionsToQuestions(
+  static applyDescriptionsToQuestions(
     questionPools: QuizQuestionPool[],
     descriptions: Map<string, string>,
   ): QuizQuestionPool[] {

@@ -6,12 +6,10 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
 import type {
+  QuizComposer,
   QuizQuestionPool,
-  QuizSelector,
   RagQuizQuestion,
-  RatingResponse,
 } from "../interfaces";
-import { ImageDescriptionService } from "../services/ImageDescriptionService";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
@@ -26,18 +24,20 @@ const IS_REASONING_MODEL = true;
 const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
 
 /**
- * LLM-based Quiz Composer that actively selects questions from candidate pools
- *
- * Implements QuizSelector but ignores the ratings parameter - instead uses
- * LLM reasoning to intelligently select 6 questions from multiple candidate pools, ensuring:
+ * LLM-based Quiz Composer that intelligently selects questions from candidate pools.
+ * Uses LLM reasoning to select 6 questions ensuring:
  * - Coverage of all prior knowledge points or key learning points
  * - Pedagogical diversity (cognitive levels, question types)
  * - Alignment with lesson plan objectives
+ *
+ * Note: Question pools should be pre-enriched (e.g., with image descriptions)
+ * before being passed to the composer.
  */
-export class LLMQuizComposer implements QuizSelector {
-  public async selectQuestions(
+export class LLMComposer implements QuizComposer {
+  public readonly name = "llmComposer";
+
+  public async compose(
     questionPools: QuizQuestionPool[],
-    _ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
@@ -49,32 +49,10 @@ export class LLMQuizComposer implements QuizSelector {
       return [];
     }
 
-    // Process images: extract URLs, get/generate descriptions, replace in text
-    const imageService = new ImageDescriptionService();
-    const { descriptions, poolsWithDescriptions } = await task.child(
-      "imageDescriptions",
-      async (t) => {
-        const result = await imageService.getImageDescriptions(
-          questionPools,
-          t,
-        );
-        return {
-          descriptions: result.descriptions,
-          poolsWithDescriptions:
-            ImageDescriptionService.applyDescriptionsToQuestions(
-              questionPools,
-              result.descriptions,
-            ),
-        };
-      },
-    );
-
-    log.info(`Image descriptions: ${descriptions.size} total processed`);
-
     // Build prompt (separate task so streaming can show prompt while waiting for LLM)
     const prompt = await task.child("composerPrompt", (t) => {
       const builtPrompt = buildCompositionPrompt(
-        poolsWithDescriptions,
+        questionPools,
         lessonPlan,
         quizType,
       );

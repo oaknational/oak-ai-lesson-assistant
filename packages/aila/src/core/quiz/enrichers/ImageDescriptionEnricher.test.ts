@@ -3,10 +3,10 @@ import { kv } from "@vercel/kv";
 import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
 import { createMockTask } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
-import { ImageDescriptionService } from "./ImageDescriptionService";
+import { ImageDescriptionEnricher } from "./ImageDescriptionEnricher";
 
 // Subclass to expose protected methods for testing
-class TestableImageDescriptionService extends ImageDescriptionService {
+class TestableImageDescriptionEnricher extends ImageDescriptionEnricher {
   public extractImageUrls(questionPools: QuizQuestionPool[]): string[] {
     return super.extractImageUrls(questionPools);
   }
@@ -67,18 +67,18 @@ function createMockQuestionPool(
       },
     ],
     source: {
-      type: "ailaRag",
+      type: "similarLessons",
       lessonPlanId: "test",
       lessonTitle: "Test",
     },
   };
 }
 
-describe("ImageDescriptionService", () => {
-  let service: TestableImageDescriptionService;
+describe("ImageDescriptionEnricher", () => {
+  let enricher: TestableImageDescriptionEnricher;
 
   beforeEach(() => {
-    service = new TestableImageDescriptionService();
+    enricher = new TestableImageDescriptionEnricher();
     jest.clearAllMocks();
   });
 
@@ -89,7 +89,7 @@ describe("ImageDescriptionService", () => {
           "Here is ![alt](http://example.com/image.png) an image",
         ),
       ];
-      const urls = service.extractImageUrls(questionPools);
+      const urls = enricher.extractImageUrls(questionPools);
       expect(urls).toEqual(["http://example.com/image.png"]);
     });
 
@@ -97,7 +97,7 @@ describe("ImageDescriptionService", () => {
       const questionPools = [
         createMockQuestionPool("![img1](url.png) and ![img2](url.png)"),
       ];
-      const urls = service.extractImageUrls(questionPools);
+      const urls = enricher.extractImageUrls(questionPools);
       expect(urls).toEqual(["url.png"]);
     });
 
@@ -109,7 +109,7 @@ describe("ImageDescriptionService", () => {
           ["Distractor ![d](d.png)"],
         ),
       ];
-      const urls = service.extractImageUrls(questionPools);
+      const urls = enricher.extractImageUrls(questionPools);
       expect(urls).toHaveLength(3);
       expect(urls).toContain("q.png");
       expect(urls).toContain("a.png");
@@ -122,7 +122,7 @@ describe("ImageDescriptionService", () => {
       const descriptions = new Map([["img.png", "a right triangle"]]);
 
       const text = "Calculate the area of ![triangle](img.png)";
-      const result = ImageDescriptionService.replaceImagesWithDescriptions(
+      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
         text,
         descriptions,
       );
@@ -135,7 +135,7 @@ describe("ImageDescriptionService", () => {
       const descriptions = new Map<string, string>();
 
       const text = "Calculate the area of ![triangle](img.png)";
-      const result = ImageDescriptionService.replaceImagesWithDescriptions(
+      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
         text,
         descriptions,
       );
@@ -150,7 +150,7 @@ describe("ImageDescriptionService", () => {
       ]);
 
       const text = "Compare ![a](img1.png) and ![b](img2.png)";
-      const result = ImageDescriptionService.replaceImagesWithDescriptions(
+      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
         text,
         descriptions,
       );
@@ -174,7 +174,7 @@ describe("ImageDescriptionService", () => {
         ),
       ];
 
-      const result = ImageDescriptionService.applyDescriptionsToQuestions(
+      const result = ImageDescriptionEnricher.applyDescriptionsToQuestions(
         questionPools,
         descriptions,
       );
@@ -194,7 +194,7 @@ describe("ImageDescriptionService", () => {
       const questionPools = [createMockQuestionPool("Plain text question")];
       const task = createMockTask();
 
-      const result = await service.getImageDescriptions(questionPools, task);
+      const result = await enricher.getImageDescriptions(questionPools, task);
 
       expect(result.descriptions.size).toBe(0);
       expect(result.cacheHits).toBe(0);
@@ -210,7 +210,7 @@ describe("ImageDescriptionService", () => {
 
       mockKv.mget.mockResolvedValue(["cached description"]);
 
-      const result = await service.getImageDescriptions(questionPools, task);
+      const result = await enricher.getImageDescriptions(questionPools, task);
 
       expect(result.descriptions.size).toBe(1);
       expect(result.descriptions.get("url.png")).toBe("cached description");

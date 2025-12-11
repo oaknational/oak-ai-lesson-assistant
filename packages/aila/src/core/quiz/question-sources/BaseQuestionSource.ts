@@ -8,7 +8,7 @@ import type {
 } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
 import type {
-  AilaQuizCandidateGenerator,
+  QuestionSource,
   QuizQuestionPool,
   RagQuizQuestion,
 } from "../interfaces";
@@ -18,22 +18,22 @@ import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalS
 const log = aiLogger("aila:quiz");
 
 /**
- * Base abstract class for quiz generators.
- * Generators return structured candidate pools instead of pre-assembled quizzes.
+ * Base abstract class for question sources.
+ * Sources return structured candidate pools of questions from various origins.
  */
-export abstract class BaseQuizGenerator implements AilaQuizCandidateGenerator {
+export abstract class BaseQuestionSource implements QuestionSource {
   abstract readonly name: string;
 
   private quizLookup = new ElasticLessonQuizLookup();
   protected retrievalService = new QuizQuestionRetrievalService();
 
-  abstract generateMathsExitQuizCandidates(
+  abstract getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons: AilaRagRelevantLesson[],
     task: Task,
   ): Promise<QuizQuestionPool[]>;
 
-  abstract generateMathsStarterQuizCandidates(
+  abstract getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     relevantLessons: AilaRagRelevantLesson[],
     task: Task,

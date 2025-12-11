@@ -82,7 +82,7 @@ const mockLessonPlan: PartialLessonPlan = {
 const mockQuestionPools: QuizQuestionPool[] = [
   {
     source: {
-      type: "mlSemanticSearch",
+      type: "semanticSearch",
       semanticQuery: "adding fractions with different denominators",
     },
     questions: [
@@ -92,7 +92,7 @@ const mockQuestionPools: QuizQuestionPool[] = [
   },
   {
     source: {
-      type: "basedOn",
+      type: "basedOnLesson",
       lessonPlanId: "lesson-123",
       lessonTitle: "Introduction to Fractions",
     },

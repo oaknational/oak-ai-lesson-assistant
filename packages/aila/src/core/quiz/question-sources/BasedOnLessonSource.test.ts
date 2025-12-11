@@ -4,24 +4,24 @@ import type { PartialLessonPlan } from "../../../protocol/schema";
 import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { createMockTask } from "../instrumentation";
-import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
+import { BasedOnLessonSource } from "./BasedOnLessonSource";
 
 const log = aiLogger("aila");
 
 const shouldSkipTests = process.env.TEST_QUIZZES === "false";
 
-(shouldSkipTests ? describe.skip : describe)("BasedOnRagQuizGenerator", () => {
-  let quizGenerator: BasedOnRagQuizGenerator;
+(shouldSkipTests ? describe.skip : describe)("BasedOnLessonSource", () => {
+  let source: BasedOnLessonSource;
   let mockLessonPlan: PartialLessonPlan;
 
   beforeEach(() => {
-    quizGenerator = new BasedOnRagQuizGenerator();
+    source = new BasedOnLessonSource();
     mockLessonPlan = CircleTheoremLesson;
   });
 
-  it("should generate a valid quiz", async () => {
+  it("should get valid quiz candidates", async () => {
     const task = createMockTask();
-    const pools = await quizGenerator.generateMathsStarterQuizCandidates(
+    const pools = await source.getStarterQuizCandidates(
       mockLessonPlan,
       [],
       task,

@@ -3,33 +3,31 @@ import { aiLogger } from "@oakai/logger";
 import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
 import { createMockTask } from "../instrumentation";
-import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
+import { SimilarLessonsSource } from "./SimilarLessonsSource";
 
 const log = aiLogger("aila:quiz");
 
-describe("AilaRagQuizGenerator", () => {
-  let quizGenerator: AilaRagQuizGenerator;
+describe("SimilarLessonsSource", () => {
+  let source: SimilarLessonsSource;
 
   beforeEach(() => {
-    quizGenerator = new AilaRagQuizGenerator();
+    source = new SimilarLessonsSource();
   });
 
-  it("should map quiz from AILA RAG relevant lessons", async () => {
-    const mockRelevantLessons = [
+  it("should get pools from similar lessons", async () => {
+    const mockSimilarLessons = [
       { lessonPlanId: "0anVg2hmAKl2YwsPjUXL0", title: "test-title-2" },
       { lessonPlanId: "08_VNQ-oPRwaXs7hOSHtL", title: "test-title-3" },
       { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
     ];
 
-    const result = await quizGenerator.poolsFromAilaRagRelevantLessons(
-      mockRelevantLessons,
+    const result = await source.poolsFromSimilarLessons(
+      mockSimilarLessons,
       "/starterQuiz",
     );
-    // console.log(JSON.stringify(result, null, 2));
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
-    // expect(result.length).toBe(mockRelevantLessons.length); this is not currently true due to mismatches with lesson plans and quiz question IDS.
     for (const pool of result) {
       for (const quiz of pool.questions) {
         expect(QuizV3QuestionSchema.safeParse(quiz.question).success).toBe(
@@ -38,27 +36,25 @@ describe("AilaRagQuizGenerator", () => {
       }
     }
   });
-  it("should generate a quiz from a given lesson plan and aila rag relevant lessons", async () => {
-    const mockRelevantLessons = [
+
+  it("should get starter quiz candidates from similar lessons", async () => {
+    const mockSimilarLessons = [
       { lessonPlanId: "0anVg2hmAKl2YwsPjUXL0", title: "test-title-2" },
       { lessonPlanId: "08_VNQ-oPRwaXs7hOSHtL", title: "test-title-3" },
       { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
     ];
     const task = createMockTask();
-    const result = await quizGenerator.generateMathsStarterQuizCandidates(
+    const result = await source.getStarterQuizCandidates(
       CircleTheoremLesson,
-      mockRelevantLessons,
+      mockSimilarLessons,
       task,
     );
     expect(result).toBeDefined();
-    // console.log(JSON.stringify(result, null, 2));
-    expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
-    // expect(result.length).toBe(1);
     expect(result[0]!.questions[0]!.question).toBeDefined();
     expect(result[0]!.questions[0]!.question.question).toBeDefined();
     expect(result[0]!.questions[0]!.sourceUid).toBeDefined();
-    log.info("Quiz generated with rag: ", result[0]!.questions[0]);
+    log.info("Quiz generated from similar lessons: ", result[0]!.questions[0]);
   });
 });

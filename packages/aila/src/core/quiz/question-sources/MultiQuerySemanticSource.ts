@@ -1,5 +1,3 @@
-// ML-based Quiz Generator - Multi-Term approach
-// Independent semantic search per learning goal
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
@@ -8,7 +6,7 @@ import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
+import { BaseQuestionSource } from "./BaseQuestionSource";
 
 const log = aiLogger("aila:quiz");
 
@@ -19,14 +17,14 @@ const SEARCH_SIZE = 50;
 const POOL_SIZE = 3;
 
 /**
- * Multi-term ML Quiz Generator with improved search strategy:
- * - Generates one search term per prior knowledge/key learning point
- * - Runs independent searches in parallel (not concatenated)
- * - Uses Cohere's topN parameter for efficient reranking
+ * Semantic search source that generates multiple queries from the lesson plan.
+ * - Generates search queries based on prior knowledge or key learning points
+ * - Runs independent searches in parallel
+ * - Uses Cohere reranking for relevance
  * - Returns separate pools maintaining semantic grouping
  */
-export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
-  readonly name = "mlMultiTerm";
+export class MultiQuerySemanticSource extends BaseQuestionSource {
+  readonly name = "multiQuerySemantic";
 
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
@@ -62,7 +60,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     topN: number,
     task: Task,
   ): Promise<RagQuizQuestion[]> {
-    log.info(`MLQuizGeneratorMultiTerm: Searching for: "${query}"`);
+    log.info(`MultiQuerySemanticSource: Searching for: "${query}"`);
 
     const results = await task.child("elasticsearch", async (t) => {
       const hits = await this.searchService.searchWithHybrid(
@@ -89,7 +87,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     const questionUids = rerankedResults.map((result) => result.questionUid);
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
+      `MultiQuerySemanticSource: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
     );
 
     const questions =
@@ -116,16 +114,16 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
 
     if (semanticQueries.queries.length === 0) {
       log.warn(
-        "MLQuizGeneratorMultiTerm: No queries generated, returning empty results",
+        "MultiQuerySemanticSource: No queries generated, returning empty results",
       );
       return [];
     }
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Running ${semanticQueries.queries.length} independent searches in parallel for ${quizType}`,
+      `MultiQuerySemanticSource: Running ${semanticQueries.queries.length} independent searches in parallel for ${quizType}`,
     );
     log.info(
-      `MLQuizGeneratorMultiTerm: Targeting ${POOL_SIZE} candidates per query`,
+      `MultiQuerySemanticSource: Targeting ${POOL_SIZE} candidates per query`,
     );
 
     const pools = await Promise.all(
@@ -140,7 +138,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
           return {
             questions,
             source: {
-              type: "mlSemanticSearch" as const,
+              type: "semanticSearch" as const,
               semanticQuery: query,
             },
           } satisfies QuizQuestionPool;
@@ -154,15 +152,15 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Collected ${totalQuestions} total candidates across ${pools.length} pools`,
+      `MultiQuerySemanticSource: Collected ${totalQuestions} total candidates across ${pools.length} pools`,
     );
 
     return pools;
   }
 
-  public async generateMathsStarterQuizCandidates(
+  public async getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _relevantLessons: [],
+    _similarLessons: [],
     task: Task,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
@@ -172,15 +170,15 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Generated ${pools.length} starter quiz pools`,
+      `MultiQuerySemanticSource: Generated ${pools.length} starter quiz pools`,
     );
 
     return pools;
   }
 
-  public async generateMathsExitQuizCandidates(
+  public async getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _relevantLessons: [],
+    _similarLessons: [],
     task: Task,
   ): Promise<QuizQuestionPool[]> {
     const pools = await this.retrieveQuestionsForAllQueries(
@@ -190,7 +188,7 @@ export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
     );
 
     log.info(
-      `MLQuizGeneratorMultiTerm: Generated ${pools.length} exit quiz pools`,
+      `MultiQuerySemanticSource: Generated ${pools.length} exit quiz pools`,
     );
 
     return pools;

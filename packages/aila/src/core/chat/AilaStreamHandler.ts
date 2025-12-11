@@ -226,7 +226,7 @@ export class AilaStreamHandler {
         mathsStarterQuiz: async ({ document }) => {
           const tracker = createQuizTracker();
           const quiz = await tracker.run((task) =>
-            this._chat.fullQuizService.buildQuiz(
+            this._chat.quizService.buildQuiz(
               "/starterQuiz",
               document,
               this._chat.relevantLessons ?? [],
@@ -239,7 +239,7 @@ export class AilaStreamHandler {
         mathsExitQuiz: async ({ document }) => {
           const tracker = createQuizTracker();
           const quiz = await tracker.run((task) =>
-            this._chat.fullQuizService.buildQuiz(
+            this._chat.quizService.buildQuiz(
               "/exitQuiz",
               document,
               this._chat.relevantLessons ?? [],
@@ -379,7 +379,7 @@ export class AilaStreamHandler {
               try {
                 const tracker = createQuizTracker();
                 const quiz = await tracker.run((task) =>
-                  this._chat.fullQuizService.buildQuiz(
+                  this._chat.quizService.buildQuiz(
                     "/starterQuiz",
                     ctx.currentTurn.document,
                     this._chat.relevantLessons ?? [],
@@ -402,7 +402,7 @@ export class AilaStreamHandler {
               try {
                 const tracker = createQuizTracker();
                 const quiz = await tracker.run((task) =>
-                  this._chat.fullQuizService.buildQuiz(
+                  this._chat.quizService.buildQuiz(
                     "/exitQuiz",
                     ctx.currentTurn.document,
                     this._chat.relevantLessons ?? [],

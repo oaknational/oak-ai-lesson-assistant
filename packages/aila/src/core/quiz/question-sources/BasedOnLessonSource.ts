@@ -7,20 +7,24 @@ import type {
 } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
+import { BaseQuestionSource } from "./BaseQuestionSource";
 
 const log = aiLogger("aila:quiz");
 
-// RAG-based Quiz Generator
-export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
-  readonly name = "basedOnRag";
+/**
+ * Retrieves quiz questions from the specific Oak lesson that the user
+ * selected as the "based on" source for their lesson plan.
+ * This is a high-signal source when available.
+ */
+export class BasedOnLessonSource extends BaseQuestionSource {
+  readonly name = "basedOnLesson";
 
-  private async generateQuizCandidates(
+  private async getCandidates(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionPool[]> {
     log.info(
-      `Generating maths ${quizType} for lesson plan id:`,
+      `Getting ${quizType} from basedOn lesson:`,
       lessonPlan.basedOn?.id,
     );
     if (!lessonPlan.basedOn?.id) {
@@ -35,7 +39,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       {
         questions,
         source: {
-          type: "basedOn",
+          type: "basedOnLesson",
           lessonPlanId: lessonPlan.basedOn.id,
           lessonTitle: lessonPlan.basedOn.title || "Based on lesson",
         },
@@ -43,19 +47,19 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
     ];
   }
 
-  async generateMathsStarterQuizCandidates(
+  async getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.generateQuizCandidates(lessonPlan, "/starterQuiz");
+    return this.getCandidates(lessonPlan, "/starterQuiz");
   }
 
-  async generateMathsExitQuizCandidates(
+  async getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.generateQuizCandidates(lessonPlan, "/exitQuiz");
+    return this.getCandidates(lessonPlan, "/exitQuiz");
   }
 }
