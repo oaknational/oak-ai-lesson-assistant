@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type { QuizPath } from "@oakai/aila/src/protocol/schema";
@@ -55,6 +55,19 @@ export default function QuizPlaygroundPage() {
 
   const activeReport = loadedReport ?? streamingReport;
 
+  // Ref for scrolling to input section
+  const inputSectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll so input section is at top when report becomes active
+  useEffect(() => {
+    if (activeReport && inputSectionRef.current) {
+      inputSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [!!activeReport]);
+
   if (user.isLoaded && !user.isSignedIn) {
     redirect("/sign-in?next=/admin/quiz-playground");
   }
@@ -70,23 +83,16 @@ export default function QuizPlaygroundPage() {
               into each stage.
             </p>
           </div>
-          <label className="flex cursor-pointer items-center gap-3">
-            <span className="text-sm text-gray-600">Show explanations</span>
-            <div
-              onClick={() =>
-                setViewMode(viewMode === "learn" ? "eval" : "learn")
-              }
-              className={`relative h-6 w-11 rounded-full transition-colors ${
-                viewMode === "learn" ? "bg-green-500" : "bg-gray-300"
-              }`}
-            >
-              <div
-                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  viewMode === "learn" ? "translate-x-5" : "translate-x-0.5"
-                }`}
-              />
-            </div>
-          </label>
+          <button
+            onClick={() => setViewMode(viewMode === "learn" ? "eval" : "learn")}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+              viewMode === "learn"
+                ? "bg-blue-100 text-blue-800"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            {viewMode === "learn" ? "✓ " : ""}Show explanations
+          </button>
         </div>
 
         {/* Pipeline Overview (Learn mode only) */}
@@ -140,12 +146,46 @@ export default function QuizPlaygroundPage() {
                 </p>
               </div>
             </div>
+
+            <div className="h-24" />
+
+            {/* How to Use This Tool */}
+            <div className="border-blue-200 bg-blue-50 rounded-lg border p-6">
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">
+                How to use this tool
+              </h3>
+              <div className="space-y-3 text-sm text-gray-700">
+                <p>
+                  <strong>1. Start with the output.</strong> Run the pipeline
+                  and check the Final Quiz section first. Does the quiz match
+                  the learning objectives? Are the questions appropriate?
+                </p>
+                <p>
+                  <strong>2. Work backwards to investigate issues.</strong> If
+                  something looks wrong:
+                </p>
+                <ul className="ml-4 list-inside list-disc space-y-1 text-gray-600">
+                  <li>
+                    Wrong question selected? → Check the Composer&apos;s
+                    reasoning
+                  </li>
+                  <li>
+                    Image misunderstood? → Check Enrichers to see what the
+                    vision model saw
+                  </li>
+                  <li>
+                    Poor candidates? → Check Sources to see what questions were
+                    available
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         )}
 
         <div className="h-8" />
 
-        <div>
+        <div ref={inputSectionRef}>
           <h2 className="mb-4 text-2xl font-bold text-gray-900">
             Generate a Quiz
           </h2>

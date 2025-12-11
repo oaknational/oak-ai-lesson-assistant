@@ -248,6 +248,17 @@ export function InputSection({
         {inputMethod === "example" && (
           <div>
             <p className="mb-4 text-sm text-gray-500">Choose an example:</p>
+            {examples.isLoading && (
+              <p className="text-sm text-gray-400">Loading examples...</p>
+            )}
+            {examples.error && (
+              <p className="text-sm text-red-600">
+                Failed to load examples: {examples.error.message}
+              </p>
+            )}
+            {examples.data && examples.data.length === 0 && (
+              <p className="text-sm text-gray-400">No examples available</p>
+            )}
             <div className="flex flex-col gap-4">
               {examples.data?.map((ex) => (
                 <button
