@@ -88,118 +88,123 @@ export function QuizPlaygroundView({
             for the next stages.
           </p>
         </LearnBlock>
-        <div className="space-y-6">
-          <LearnBlock variant="section">
-            <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-              <strong>BasedOnLesson</strong> retrieves questions from the
-              specific Oak lesson the user chose to base their lesson on. This
-              is high-signal input—the composer prioritizes these questions when
-              available.
-            </p>
-          </LearnBlock>
-          <SourceAccordion
-            title="BasedOnLesson"
-            disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
-            disabledReason="no basedOn"
-            loading={isStageLoading(["basedOnLesson"])}
-            stats={
-              basedOnLesson
-                ? {
-                    pools: basedOnLesson.pools.length,
-                    questions: basedOnLesson.pools.reduce(
-                      (sum, p) => sum + p.questions.length,
-                      0,
-                    ),
-                    timing: basedOnLessonNode?.durationMs ?? 0,
-                  }
-                : undefined
-            }
-          >
-            {basedOnLesson && <SourceSection result={basedOnLesson} />}
-          </SourceAccordion>
-
-          <LearnBlock variant="section">
-            <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-              <strong>SimilarLessons</strong> uses lessons that were identified
-              as relevant during the chat conversation. These are lessons that
-              Aila found while helping create the lesson plan.
-            </p>
-          </LearnBlock>
-          <SourceAccordion
-            title="SimilarLessons"
-            disabled={!similarLessons && isStageComplete(["similarLessons"])}
-            disabledReason="no relevant lessons"
-            loading={isStageLoading(["similarLessons"])}
-            stats={
-              similarLessons
-                ? {
-                    pools: similarLessons.pools.length,
-                    questions: similarLessons.pools.reduce(
-                      (sum, p) => sum + p.questions.length,
-                      0,
-                    ),
-                    timing: similarLessonsNode?.durationMs ?? 0,
-                  }
-                : undefined
-            }
-          >
-            {similarLessons && <SourceSection result={similarLessons} />}
-          </SourceAccordion>
-
-          <LearnBlock variant="section">
-            <div className="max-w-3xl text-base leading-relaxed text-gray-600">
-              <p className="mb-3">
-                <strong>MultiQuerySemantic</strong> is the most sophisticated
-                source.
+        <div className="space-y-12">
+          <div>
+            <LearnBlock variant="section">
+              <p className="max-w-3xl text-base leading-relaxed text-gray-600">
+                <strong>BasedOnLesson</strong> retrieves questions from the
+                specific Oak lesson the user chose to base their lesson on. This
+                is high-signal input—the composer prioritizes these questions
+                when available.
               </p>
-              <ol className="list-inside list-decimal space-y-2">
-                <li>
-                  <strong>Query generation:</strong> An LLM generates 6 semantic
-                  search queries targeting prior knowledge (starter) or learning
-                  outcomes (exit).
-                </li>
-                <li>
-                  <strong>Hybrid search:</strong> Each query runs against
-                  Elasticsearch using BM25 + vector similarity.
-                </li>
-                <li>
-                  <strong>Reranking:</strong> Cohere reranks results by
-                  relevance to the query.
-                </li>
-                <li>
-                  <strong>Selection:</strong> The top 3 questions per query
-                  become candidates.
-                </li>
-              </ol>
-            </div>
-          </LearnBlock>
-          <SourceAccordion
-            title="MultiQuerySemantic"
-            disabled={
-              !multiQuerySemantic && isStageComplete(["multiQuerySemantic"])
-            }
-            loading={isStageLoading(["multiQuerySemantic"])}
-            stats={
-              multiQuerySemantic
-                ? {
-                    pools: multiQuerySemantic.pools.length,
-                    questions: multiQuerySemantic.pools.reduce(
-                      (sum, p) => sum + p.questions.length,
-                      0,
-                    ),
-                    timing: multiQuerySemanticNode?.durationMs ?? 0,
-                  }
-                : undefined
-            }
-            defaultOpen
-          >
-            {multiQuerySemantic && multiQuerySemanticNode && (
-              <MLPipelineDetails
-                result={multiQuerySemantic}
-                reportNode={multiQuerySemanticNode}
-              />
-            )}
-          </SourceAccordion>
+            </LearnBlock>
+            <SourceAccordion
+              title="BasedOnLesson"
+              disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
+              disabledReason="no basedOn"
+              loading={isStageLoading(["basedOnLesson"])}
+              stats={
+                basedOnLesson
+                  ? {
+                      pools: basedOnLesson.pools.length,
+                      questions: basedOnLesson.pools.reduce(
+                        (sum, p) => sum + p.questions.length,
+                        0,
+                      ),
+                      timing: basedOnLessonNode?.durationMs ?? 0,
+                    }
+                  : undefined
+              }
+            >
+              {basedOnLesson && <SourceSection result={basedOnLesson} />}
+            </SourceAccordion>
+          </div>
+
+          <div>
+            <LearnBlock variant="section">
+              <p className="max-w-3xl text-base leading-relaxed text-gray-600">
+                <strong>SimilarLessons</strong> uses lessons that were
+                identified as relevant during the chat conversation. These are
+                lessons that Aila found while helping create the lesson plan.
+              </p>
+            </LearnBlock>
+            <SourceAccordion
+              title="SimilarLessons"
+              disabled={!similarLessons && isStageComplete(["similarLessons"])}
+              disabledReason="no relevant lessons"
+              loading={isStageLoading(["similarLessons"])}
+              stats={
+                similarLessons
+                  ? {
+                      pools: similarLessons.pools.length,
+                      questions: similarLessons.pools.reduce(
+                        (sum, p) => sum + p.questions.length,
+                        0,
+                      ),
+                      timing: similarLessonsNode?.durationMs ?? 0,
+                    }
+                  : undefined
+              }
+            >
+              {similarLessons && <SourceSection result={similarLessons} />}
+            </SourceAccordion>
+          </div>
+
+          <div>
+            <LearnBlock variant="section">
+              <div className="max-w-3xl text-base leading-relaxed text-gray-600">
+                <p className="mb-3">
+                  <strong>MultiQuerySemantic</strong> is the most sophisticated
+                  source.
+                </p>
+                <ol className="list-inside list-decimal space-y-2">
+                  <li>
+                    <strong>Query generation:</strong> An LLM generates 6
+                    semantic search queries targeting prior knowledge (starter)
+                    or learning outcomes (exit).
+                  </li>
+                  <li>
+                    <strong>Hybrid search:</strong> Each query runs against
+                    Elasticsearch using BM25 + vector similarity.
+                  </li>
+                  <li>
+                    <strong>Reranking:</strong> Cohere reranks results by
+                    relevance to the query.
+                  </li>
+                  <li>
+                    <strong>Selection:</strong> The top 3 questions per query
+                    become candidates.
+                  </li>
+                </ol>
+              </div>
+            </LearnBlock>
+            <SourceAccordion
+              title="MultiQuerySemantic"
+              disabled={
+                !multiQuerySemantic && isStageComplete(["multiQuerySemantic"])
+              }
+              loading={isStageLoading(["multiQuerySemantic"])}
+              stats={
+                multiQuerySemantic
+                  ? {
+                      pools: multiQuerySemantic.pools.length,
+                      questions: multiQuerySemantic.pools.reduce(
+                        (sum, p) => sum + p.questions.length,
+                        0,
+                      ),
+                      timing: multiQuerySemanticNode?.durationMs ?? 0,
+                    }
+                  : undefined
+              }
+            >
+              {multiQuerySemantic && multiQuerySemanticNode && (
+                <MLPipelineDetails
+                  result={multiQuerySemantic}
+                  reportNode={multiQuerySemanticNode}
+                />
+              )}
+            </SourceAccordion>
+          </div>
         </div>
 
         {/* Stage 2: Enrichers (Image Descriptions) */}
