@@ -14,7 +14,7 @@ const log = aiLogger("quiz");
 
 export type ViewMode = "learn" | "eval";
 
-interface QuizRagDebugState {
+interface QuizPlaygroundState {
   // Input state
   lessonPlan: PartialLessonPlan | null;
   quizType: QuizPath;
@@ -30,7 +30,7 @@ interface QuizRagDebugState {
   streamingReport: ReportNode | null;
 }
 
-interface QuizRagDebugActions {
+interface QuizPlaygroundActions {
   setLessonPlan: (plan: PartialLessonPlan | null) => void;
   setQuizType: (type: QuizPath) => void;
   setRelevantLessons: (lessons: AilaRagRelevantLesson[]) => void;
@@ -42,14 +42,14 @@ interface QuizRagDebugActions {
   resetPipeline: () => void;
 }
 
-export type QuizRagDebugStore = QuizRagDebugState & QuizRagDebugActions;
+export type QuizPlaygroundStore = QuizPlaygroundState & QuizPlaygroundActions;
 
-export function createQuizRagDebugStore(
+export function createQuizPlaygroundStore(
   initialQuizType: QuizPath = "/starterQuiz",
 ) {
   let abortController: AbortController | null = null;
 
-  return createStore<QuizRagDebugStore>((set, get) => ({
+  return createStore<QuizPlaygroundStore>((set, get) => ({
     // Initial state
     lessonPlan: null,
     quizType: initialQuizType,
@@ -130,12 +130,14 @@ export function createQuizRagDebugStore(
 }
 
 // Type for the store instance
-export type QuizRagDebugStoreApi = ReturnType<typeof createQuizRagDebugStore>;
+export type QuizPlaygroundStoreApi = ReturnType<
+  typeof createQuizPlaygroundStore
+>;
 
 // Hook for using the store with a selector
-export function useQuizRagDebugStore<T>(
-  store: QuizRagDebugStoreApi,
-  selector: (state: QuizRagDebugStore) => T,
+export function useQuizPlaygroundStore<T>(
+  store: QuizPlaygroundStoreApi,
+  selector: (state: QuizPlaygroundStore) => T,
 ): T {
   return useStore(store, selector);
 }

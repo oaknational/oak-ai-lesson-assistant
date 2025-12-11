@@ -66,9 +66,6 @@ export function QuizPlaygroundView({
     "imageDescriptions",
   );
   const composerNode = getChild(report ?? undefined, "llmComposer");
-  // Composer has nested children for prompt and LLM response
-  const composerPromptNode = getChild(composerNode, "composerPrompt");
-  const composerLlmNode = getChild(composerNode, "composerLlm");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
   const basedOnLesson = extractGeneratorData(basedOnLessonNode);
@@ -91,123 +88,118 @@ export function QuizPlaygroundView({
             for the next stages.
           </p>
         </LearnBlock>
-        <div className="space-y-12">
-          <div>
-            <LearnBlock variant="section">
-              <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-                <strong>BasedOnLesson</strong> retrieves questions from the
-                specific Oak lesson the user chose to base their lesson on. This
-                is high-signal input—the composer prioritizes these questions
-                when available.
-              </p>
-            </LearnBlock>
-            <SourceAccordion
-              title="BasedOnLesson"
-              disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
-              disabledReason="no basedOn"
-              loading={isStageLoading(["basedOnLesson"])}
-              stats={
-                basedOnLesson
-                  ? {
-                      pools: basedOnLesson.pools.length,
-                      questions: basedOnLesson.pools.reduce(
-                        (sum, p) => sum + p.questions.length,
-                        0,
-                      ),
-                      timing: basedOnLessonNode?.durationMs ?? 0,
-                    }
-                  : undefined
-              }
-            >
-              {basedOnLesson && <SourceSection result={basedOnLesson} />}
-            </SourceAccordion>
-          </div>
+        <div className="space-y-6">
+          <LearnBlock variant="section">
+            <p className="max-w-3xl text-base leading-relaxed text-gray-600">
+              <strong>BasedOnLesson</strong> retrieves questions from the
+              specific Oak lesson the user chose to base their lesson on. This
+              is high-signal input—the composer prioritizes these questions when
+              available.
+            </p>
+          </LearnBlock>
+          <SourceAccordion
+            title="BasedOnLesson"
+            disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
+            disabledReason="no basedOn"
+            loading={isStageLoading(["basedOnLesson"])}
+            stats={
+              basedOnLesson
+                ? {
+                    pools: basedOnLesson.pools.length,
+                    questions: basedOnLesson.pools.reduce(
+                      (sum, p) => sum + p.questions.length,
+                      0,
+                    ),
+                    timing: basedOnLessonNode?.durationMs ?? 0,
+                  }
+                : undefined
+            }
+          >
+            {basedOnLesson && <SourceSection result={basedOnLesson} />}
+          </SourceAccordion>
 
-          <div>
-            <LearnBlock variant="section">
-              <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-                <strong>SimilarLessons</strong> uses lessons that were
-                identified as relevant during the chat conversation. These are
-                lessons that Aila found while helping create the lesson plan.
-              </p>
-            </LearnBlock>
-            <SourceAccordion
-              title="SimilarLessons"
-              disabled={!similarLessons && isStageComplete(["similarLessons"])}
-              disabledReason="no relevant lessons"
-              loading={isStageLoading(["similarLessons"])}
-              stats={
-                similarLessons
-                  ? {
-                      pools: similarLessons.pools.length,
-                      questions: similarLessons.pools.reduce(
-                        (sum, p) => sum + p.questions.length,
-                        0,
-                      ),
-                      timing: similarLessonsNode?.durationMs ?? 0,
-                    }
-                  : undefined
-              }
-            >
-              {similarLessons && <SourceSection result={similarLessons} />}
-            </SourceAccordion>
-          </div>
+          <LearnBlock variant="section">
+            <p className="max-w-3xl text-base leading-relaxed text-gray-600">
+              <strong>SimilarLessons</strong> uses lessons that were identified
+              as relevant during the chat conversation. These are lessons that
+              Aila found while helping create the lesson plan.
+            </p>
+          </LearnBlock>
+          <SourceAccordion
+            title="SimilarLessons"
+            disabled={!similarLessons && isStageComplete(["similarLessons"])}
+            disabledReason="no relevant lessons"
+            loading={isStageLoading(["similarLessons"])}
+            stats={
+              similarLessons
+                ? {
+                    pools: similarLessons.pools.length,
+                    questions: similarLessons.pools.reduce(
+                      (sum, p) => sum + p.questions.length,
+                      0,
+                    ),
+                    timing: similarLessonsNode?.durationMs ?? 0,
+                  }
+                : undefined
+            }
+          >
+            {similarLessons && <SourceSection result={similarLessons} />}
+          </SourceAccordion>
 
-          <div>
-            <LearnBlock variant="section">
-              <div className="max-w-3xl text-base leading-relaxed text-gray-600">
-                <p className="mb-3">
-                  <strong>MultiQuerySemantic</strong> is the most sophisticated
-                  source.
-                </p>
-                <ol className="list-inside list-decimal space-y-2">
-                  <li>
-                    <strong>Query generation:</strong> An LLM generates 6
-                    semantic search queries targeting prior knowledge (starter)
-                    or learning outcomes (exit).
-                  </li>
-                  <li>
-                    <strong>Hybrid search:</strong> Each query runs against
-                    Elasticsearch using BM25 + vector similarity.
-                  </li>
-                  <li>
-                    <strong>Reranking:</strong> Cohere reranks results by
-                    relevance to the query.
-                  </li>
-                  <li>
-                    <strong>Selection:</strong> The top 3 questions per query
-                    become candidates.
-                  </li>
-                </ol>
-              </div>
-            </LearnBlock>
-            <SourceAccordion
-              title="MultiQuerySemantic"
-              disabled={
-                !multiQuerySemantic && isStageComplete(["multiQuerySemantic"])
-              }
-              loading={isStageLoading(["multiQuerySemantic"])}
-              stats={
-                multiQuerySemantic
-                  ? {
-                      pools: multiQuerySemantic.pools.length,
-                      questions: multiQuerySemantic.pools.reduce(
-                        (sum, p) => sum + p.questions.length,
-                        0,
-                      ),
-                      timing: multiQuerySemanticNode?.durationMs ?? 0,
-                    }
-                  : undefined
-              }
-            >
-              {multiQuerySemantic && multiQuerySemanticNode && (
-                <MLPipelineDetails
-                  result={multiQuerySemantic}
-                  reportNode={multiQuerySemanticNode}
-                />
-              )}
-            </SourceAccordion>
-          </div>
+          <LearnBlock variant="section">
+            <div className="max-w-3xl text-base leading-relaxed text-gray-600">
+              <p className="mb-3">
+                <strong>MultiQuerySemantic</strong> is the most sophisticated
+                source.
+              </p>
+              <ol className="list-inside list-decimal space-y-2">
+                <li>
+                  <strong>Query generation:</strong> An LLM generates 6 semantic
+                  search queries targeting prior knowledge (starter) or learning
+                  outcomes (exit).
+                </li>
+                <li>
+                  <strong>Hybrid search:</strong> Each query runs against
+                  Elasticsearch using BM25 + vector similarity.
+                </li>
+                <li>
+                  <strong>Reranking:</strong> Cohere reranks results by
+                  relevance to the query.
+                </li>
+                <li>
+                  <strong>Selection:</strong> The top 3 questions per query
+                  become candidates.
+                </li>
+              </ol>
+            </div>
+          </LearnBlock>
+          <SourceAccordion
+            title="MultiQuerySemantic"
+            disabled={
+              !multiQuerySemantic && isStageComplete(["multiQuerySemantic"])
+            }
+            loading={isStageLoading(["multiQuerySemantic"])}
+            stats={
+              multiQuerySemantic
+                ? {
+                    pools: multiQuerySemantic.pools.length,
+                    questions: multiQuerySemantic.pools.reduce(
+                      (sum, p) => sum + p.questions.length,
+                      0,
+                    ),
+                    timing: multiQuerySemanticNode?.durationMs ?? 0,
+                  }
+                : undefined
+            }
+            defaultOpen
+          >
+            {multiQuerySemantic && multiQuerySemanticNode && (
+              <MLPipelineDetails
+                result={multiQuerySemantic}
+                reportNode={multiQuerySemanticNode}
+              />
+            )}
+          </SourceAccordion>
         </div>
 
         {/* Stage 2: Enrichers (Image Descriptions) */}
@@ -267,7 +259,7 @@ export function QuizPlaygroundView({
                   ].reduce((sum, pool) => sum + pool.questions.length, 0);
                   const selectedCount =
                     (
-                      composerLlmNode?.data.selectedQuestions as
+                      composerNode.data.selectedQuestions as
                         | RagQuizQuestion[]
                         | undefined
                     )?.length ?? 0;
@@ -276,12 +268,11 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          {composerLlmNode?.status === "complete" &&
-          composerLlmNode.data.response ? (
+          {composerNode?.status === "complete" ? (
             <ComposerSection
-              prompt={(composerPromptNode?.data.prompt as string) ?? ""}
+              prompt={(composerNode?.data.prompt as string) ?? ""}
               response={
-                composerLlmNode.data.response as {
+                composerNode.data.response as {
                   overallStrategy: string;
                   selectedQuestions: {
                     questionUid: string;
@@ -290,8 +281,7 @@ export function QuizPlaygroundView({
                 }
               }
               selectedQuestions={
-                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??
-                []
+                (composerNode.data.selectedQuestions as RagQuizQuestion[]) ?? []
               }
               pools={[
                 ...(basedOnLesson?.pools ?? []),
@@ -299,10 +289,10 @@ export function QuizPlaygroundView({
                 ...(multiQuerySemantic?.pools ?? []),
               ]}
             />
-          ) : composerPromptNode?.data?.prompt ? (
+          ) : composerNode?.data?.prompt ? (
             <ComposerPromptPreview
-              prompt={composerPromptNode.data.prompt as string}
-              isLlmRunning={composerLlmNode?.status === "running"}
+              prompt={composerNode.data.prompt as string}
+              isLlmRunning={composerNode?.status === "running"}
             />
           ) : (
             <p className="text-gray-400">Waiting for LLM composition...</p>
@@ -463,7 +453,11 @@ function Section({
       >
         <div className="flex items-center gap-3">
           <SectionStatusIcon loading={loading} hasStats={!!stats} />
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2
+            className={`text-lg font-semibold ${loading ? "animate-pulse" : ""}`}
+          >
+            {title}
+          </h2>
         </div>
         <div className="flex items-center gap-6">
           {stats && <span className="text-sm text-gray-600">{stats}</span>}
@@ -652,7 +646,7 @@ function ImageDescriptionsView({
       {result.descriptions.length > 5 && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
         >
           {showAll ? "Show less" : `Show all ${result.descriptions.length}`}
         </button>
@@ -693,7 +687,7 @@ function ComposerPromptPreview({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -756,7 +750,7 @@ function ComposerSection({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -861,24 +855,22 @@ function FinalQuizDisplay({
         </MathJaxWrap>
       </div>
 
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-4">
         <button
           onClick={copyQuizJson}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           Copy Quiz JSON
         </button>
-        <span className="text-gray-300">|</span>
         <button
           onClick={copyFullReport}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           Copy Full Report
         </button>
-        <span className="text-gray-300">|</span>
         <button
           onClick={() => setShowJson(!showJson)}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           {showJson ? "Hide" : "Show"} JSON
         </button>

@@ -110,7 +110,7 @@ const EXAMPLE_LESSON_PLANS = [
   },
 ];
 
-export const quizRagDebugRouter = router({
+export const quizPlaygroundRouter = router({
   /**
    * Get lesson plan data from an existing chat session
    */
@@ -142,7 +142,7 @@ export const quizRagDebugRouter = router({
         {
           id: chatRecord.id,
           userId: chatRecord.userId,
-          caller: "quizRagDebug.getLessonPlanByChatId",
+          caller: "quizPlayground.getLessonPlanByChatId",
         },
       );
 

@@ -7,13 +7,13 @@ import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { trpc } from "@/utils/trpc";
 
-import type { QuizRagDebugStoreApi } from "../store";
-import { useQuizRagDebugStore } from "../store";
+import type { QuizPlaygroundStoreApi } from "../store";
+import { useQuizPlaygroundStore } from "../store";
 
 type InputMethod = "chatId" | "example" | "viewReport";
 
 interface InputSectionProps {
-  store: QuizRagDebugStoreApi;
+  store: QuizPlaygroundStoreApi;
   initialChatId?: string;
 }
 
@@ -22,15 +22,18 @@ export function InputSection({
   initialChatId,
 }: Readonly<InputSectionProps>) {
   // Store state
-  const selectedPlan = useQuizRagDebugStore(store, (s) => s.lessonPlan);
-  const quizType = useQuizRagDebugStore(store, (s) => s.quizType);
-  const setLessonPlan = useQuizRagDebugStore(store, (s) => s.setLessonPlan);
-  const setQuizType = useQuizRagDebugStore(store, (s) => s.setQuizType);
-  const setRelevantLessons = useQuizRagDebugStore(
+  const selectedPlan = useQuizPlaygroundStore(store, (s) => s.lessonPlan);
+  const quizType = useQuizPlaygroundStore(store, (s) => s.quizType);
+  const setLessonPlan = useQuizPlaygroundStore(store, (s) => s.setLessonPlan);
+  const setQuizType = useQuizPlaygroundStore(store, (s) => s.setQuizType);
+  const setRelevantLessons = useQuizPlaygroundStore(
     store,
     (s) => s.setRelevantLessons,
   );
-  const setLoadedReport = useQuizRagDebugStore(store, (s) => s.setLoadedReport);
+  const setLoadedReport = useQuizPlaygroundStore(
+    store,
+    (s) => s.setLoadedReport,
+  );
 
   // Local UI state
   const [inputMethod, setInputMethod] = useState<InputMethod>(
@@ -43,8 +46,8 @@ export function InputSection({
   const [isEditing, setIsEditing] = useState(false);
   const hasTriggeredInitialLookup = useRef(false);
 
-  const examples = trpc.quizRagDebug.getExampleLessonPlans.useQuery();
-  const chatLookup = trpc.quizRagDebug.getLessonPlanByChatId.useQuery(
+  const examples = trpc.quizPlayground.getExampleLessonPlans.useQuery();
+  const chatLookup = trpc.quizPlayground.getLessonPlanByChatId.useQuery(
     { chatId },
     { enabled: false },
   );
