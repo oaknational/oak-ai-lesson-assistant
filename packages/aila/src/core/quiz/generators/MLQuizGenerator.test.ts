@@ -3,6 +3,7 @@ import type { OpenAI } from "openai";
 
 import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import { createMockTask } from "../instrumentation";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 
 describe("MLQuizGenerator", () => {
@@ -12,10 +13,12 @@ describe("MLQuizGenerator", () => {
   jest.setTimeout(30000);
 
   it("should generate a starter quiz", async () => {
-    const result =
-      await mlQuizGenerator.generateMathsStarterQuizCandidates(
-        CircleTheoremLesson,
-      );
+    const task = createMockTask();
+    const result = await mlQuizGenerator.generateMathsStarterQuizCandidates(
+      CircleTheoremLesson,
+      [],
+      task,
+    );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
 
@@ -29,10 +32,12 @@ describe("MLQuizGenerator", () => {
   });
 
   it("should generate an exit quiz", async () => {
-    const result =
-      await mlQuizGenerator.generateMathsExitQuizCandidates(
-        CircleTheoremLesson,
-      );
+    const task = createMockTask();
+    const result = await mlQuizGenerator.generateMathsExitQuizCandidates(
+      CircleTheoremLesson,
+      [],
+      task,
+    );
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
     expect(Array.isArray(result)).toBe(true);
@@ -87,9 +92,11 @@ describe("MLQuizGenerator", () => {
     jest.setTimeout(60000); // 60 seconds
 
     // This test makes real API calls to OpenAI and Elasticsearch
+    const task = createMockTask();
     const result = await mlQuizGenerator.generateMathsQuizML(
       CircleTheoremLesson,
       "/starterQuiz",
+      task,
     );
 
     // Check that we got a valid array of quiz questions

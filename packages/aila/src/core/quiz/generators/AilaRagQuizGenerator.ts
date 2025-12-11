@@ -5,6 +5,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
 import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
@@ -46,8 +47,9 @@ export class AilaRagQuizGenerator extends BaseQuizGenerator {
   }
 
   async generateMathsStarterQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
@@ -56,8 +58,9 @@ export class AilaRagQuizGenerator extends BaseQuizGenerator {
   }
 
   async generateMathsExitQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,

@@ -2,7 +2,6 @@ import dedent from "dedent";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { quizEffectivenessPrompt } from "../QuestionAssesmentPrompt";
 import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
@@ -34,7 +33,9 @@ export const CompositionResponseSchema = z.object({
   overallStrategy: z
     .string()
     .describe(
-      "Brief explanation of how the selected questions work together as a cohesive quiz",
+      "Explain your selection strategy: which sources you prioritised, " +
+        "why you did or didn't use questions from the user-selected source lesson (if provided), " +
+        "and how the selected questions work together as a cohesive quiz",
     ),
   selectedQuestions: z
     .array(
@@ -65,8 +66,10 @@ export function buildCompositionPrompt(
     "---",
     buildLessonPlanSummary(lessonPlan),
     "---",
-    buildCandidatePoolsHeader(),
-    ...questionPools.map((pool, idx) => poolToMarkdown(pool, idx)),
+    buildSourceTypesExplanation(),
+    "---",
+    buildCandidateQuestionsHeader(),
+    ...questionPools.map((pool) => poolToMarkdown(pool)),
   ];
 
   return sections.join("\n\n");
@@ -130,16 +133,29 @@ function buildLessonPlanSummary(lessonPlan: PartialLessonPlan): string {
 ${unpackLessonPlanForPrompt(lessonPlan)}`;
 }
 
-function buildCandidatePoolsHeader(): string {
+function buildSourceTypesExplanation(): string {
   return dedent`
-    CANDIDATE QUESTIONS:
+    UNDERSTANDING THE QUESTION SOURCES:
 
-    Below are candidate questions from Oak's existing lesson data. Select 6 questions that work together as a cohesive, pedagogically sound quiz.
+    You will receive questions from up to three source types. Understanding these helps you make better selections:
+
+    **User-Selected Source Lesson**
+    If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+
+    **Reference Quizzes from Similar Lessons**
+    Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+
+    **Semantically Matched Questions**
+    Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
   `;
 }
 
-function poolToMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
-  const header = poolHeaderMarkdown(pool, poolIndex);
+function buildCandidateQuestionsHeader(): string {
+  return "CANDIDATE QUESTIONS:";
+}
+
+function poolToMarkdown(pool: QuizQuestionPool): string {
+  const header = poolHeaderMarkdown(pool);
   const questions = pool.questions
     .map((q) => questionToMarkdown(q))
     .join("\n\n");
@@ -147,22 +163,13 @@ function poolToMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
   return `${header}\n\n${questions}`;
 }
 
-function poolHeaderMarkdown(pool: QuizQuestionPool, poolIndex: number): string {
-  if (pool.source.type === "mlSemanticSearch") {
-    return dedent`
-      ## Pool ${poolIndex + 1}: ML Semantic Search
-      Search query: "${pool.source.semanticQuery}"
-    `;
-  } else if (pool.source.type === "basedOn") {
-    return dedent`
-      ## Pool ${poolIndex + 1}: User-selected source lesson
-      Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})
-    `;
+function poolHeaderMarkdown(pool: QuizQuestionPool): string {
+  if (pool.source.type === "basedOn") {
+    return `### User-Selected Source Lesson: ${pool.source.lessonTitle}`;
+  } else if (pool.source.type === "mlSemanticSearch") {
+    return `### Semantically Matched Questions (query: "${pool.source.semanticQuery}")`;
   } else {
-    return dedent`
-      ## Pool ${poolIndex + 1}: RAG lesson on a similar topic
-      Source: ${pool.source.lessonTitle} (${pool.source.lessonPlanId})
-    `;
+    return `### Reference Quiz: ${pool.source.lessonTitle}`;
   }
 }
 

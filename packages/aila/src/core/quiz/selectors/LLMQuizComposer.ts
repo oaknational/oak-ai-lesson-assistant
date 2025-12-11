@@ -4,6 +4,7 @@ import { aiLogger } from "@oakai/logger";
 import { zodResponseFormat } from "openai/helpers/zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type {
   QuizQuestionPool,
   QuizSelector,
@@ -22,6 +23,8 @@ const log = aiLogger("aila:quiz");
 const OPENAI_MODEL = "o4-mini";
 const IS_REASONING_MODEL = true;
 
+const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
+
 /**
  * LLM-based Quiz Composer that actively selects questions from candidate pools
  *
@@ -34,9 +37,10 @@ const IS_REASONING_MODEL = true;
 export class LLMQuizComposer implements QuizSelector {
   public async selectQuestions(
     questionPools: QuizQuestionPool[],
-    ratings: RatingResponse[], // Ignored - composer makes its own decisions
+    _ratings: RatingResponse[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    task: Task,
   ): Promise<RagQuizQuestion[]> {
     this.logCompositionStart(questionPools, quizType);
 
@@ -47,30 +51,50 @@ export class LLMQuizComposer implements QuizSelector {
 
     // Process images: extract URLs, get/generate descriptions, replace in text
     const imageService = new ImageDescriptionService();
-    const { descriptions, cacheHits, cacheMisses, generatedCount } =
-      await imageService.getImageDescriptions(questionPools);
-
-    log.info(
-      `Image descriptions: ${descriptions.size} total (${cacheHits} cached, ${generatedCount} generated)`,
+    const { descriptions, poolsWithDescriptions } = await task.child(
+      "imageDescriptions",
+      async (t) => {
+        const result = await imageService.getImageDescriptions(
+          questionPools,
+          t,
+        );
+        return {
+          descriptions: result.descriptions,
+          poolsWithDescriptions:
+            ImageDescriptionService.applyDescriptionsToQuestions(
+              questionPools,
+              result.descriptions,
+            ),
+        };
+      },
     );
 
-    // Replace images with descriptions for LLM composition
-    const poolsWithDescriptions =
-      ImageDescriptionService.applyDescriptionsToQuestions(
-        questionPools,
-        descriptions,
+    log.info(`Image descriptions: ${descriptions.size} total processed`);
+
+    // Build prompt (separate task so streaming can show prompt while waiting for LLM)
+    const prompt = await task.child("composerPrompt", (t) => {
+      const builtPrompt = buildCompositionPrompt(
+        poolsWithDescriptions,
+        lessonPlan,
+        quizType,
       );
+      const count = sum(questionPools.map((p) => p.questions.length));
+      t.addData({ prompt: builtPrompt, candidateCount: count });
+      return Promise.resolve(builtPrompt);
+    });
 
-    const prompt = buildCompositionPrompt(
-      poolsWithDescriptions,
-      lessonPlan,
-      quizType,
-    );
-    const response = await this.callOpenAI(prompt);
-    const selectedQuestions = this.mapResponseToQuestions(
-      response,
-      questionPools,
-    );
+    // Call LLM
+    const selectedQuestions = await task.child("composerLlm", async (t) => {
+      const llmStart = Date.now();
+      const response = await this.callOpenAI(prompt);
+      const timingMs = Date.now() - llmStart;
+
+      const questions = this.mapResponseToQuestions(response, questionPools);
+
+      t.addData({ response, selectedQuestions: questions, timingMs });
+
+      return questions;
+    });
 
     log.info(`LLM Composer: selected ${selectedQuestions.length} questions`);
 
@@ -81,10 +105,7 @@ export class LLMQuizComposer implements QuizSelector {
     questionPools: QuizQuestionPool[],
     quizType: QuizPath,
   ): void {
-    const totalQuestions = questionPools.reduce(
-      (sum, pool) => sum + pool.questions.length,
-      0,
-    );
+    const totalQuestions = sum(questionPools.map((p) => p.questions.length));
     log.info(
       `LLM Composer: composing ${quizType} from ${questionPools.length} pools`,
     );
@@ -98,8 +119,8 @@ export class LLMQuizComposer implements QuizSelector {
       const response = await openai.beta.chat.completions.parse({
         model: OPENAI_MODEL,
         ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 4000 }
-          : { max_tokens: 4000 }),
+          ? { max_completion_tokens: 16000 }
+          : { max_tokens: 8000 }),
         messages: [
           {
             role: "user",

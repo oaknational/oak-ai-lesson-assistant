@@ -2,6 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
 import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
+import { createMockTask } from "../instrumentation";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -44,9 +45,11 @@ describe("AilaRagQuizGenerator", () => {
       { lessonPlanId: "0bz8ZgPlNRRPb5AT5hhqO", title: "test-title-4" },
       { lessonPlanId: "0ChBXkONXh8IOVS00iTlm", title: "test-title-5" },
     ];
+    const task = createMockTask();
     const result = await quizGenerator.generateMathsStarterQuizCandidates(
       CircleTheoremLesson,
       mockRelevantLessons,
+      task,
     );
     expect(result).toBeDefined();
     // console.log(JSON.stringify(result, null, 2));
