@@ -14,6 +14,7 @@ interface QuizDebugButtonProps {
 export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
   const { user, isLoaded } = useUser();
   const chatId = useLessonPlanStore((state) => state.id);
+  const subject = useLessonPlanStore((state) => state.lessonPlan.subject);
 
   const isAdmin =
     isLoaded &&
@@ -22,9 +23,12 @@ export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
     );
 
   if (!isAdmin) return null;
+  if (subject !== "maths") return null;
 
   const label =
-    quizType === "/starterQuiz" ? "Debug Starter Quiz" : "Debug Exit Quiz";
+    quizType === "/starterQuiz"
+      ? "Generate Starter Quiz"
+      : "Generate Exit Quiz";
 
   return (
     <Link href={`/admin/quiz-rag?chatId=${chatId}&quizType=${quizType}`}>

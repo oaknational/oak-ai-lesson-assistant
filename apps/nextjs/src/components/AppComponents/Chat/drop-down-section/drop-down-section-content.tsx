@@ -51,9 +51,7 @@ export const DropDownSectionContent = ({
         />
 
         {(sectionKey === "starterQuiz" || sectionKey === "exitQuiz") && (
-          <QuizDebugButton
-            quizType={`/${sectionKey}` as "/starterQuiz" | "/exitQuiz"}
-          />
+          <QuizDebugButton quizType={`/${sectionKey}`} />
         )}
       </OakFlex>
     </OakFlex>
