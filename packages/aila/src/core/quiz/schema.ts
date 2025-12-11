@@ -1,32 +1,24 @@
-import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 import { z } from "zod";
 
-// Generator Types
-export const QuizGeneratorTypeSchema = z.enum([
-  "rag",
-  "ml",
-  "ml-multi-term",
-  "basedOnRag",
+// Question Source Types
+export const QuestionSourceTypeSchema = z.enum([
+  "similarLessons",
+  "basedOnLesson",
+  "multiQuerySemantic",
 ]);
-export type QuizGeneratorType = z.infer<typeof QuizGeneratorTypeSchema>;
+export type QuestionSourceType = z.infer<typeof QuestionSourceTypeSchema>;
 
-// Reranker Types
-export const QuizRerankerTypeSchema = z.enum([
-  "ai-evaluator",
-  "return-first",
-  "no-op",
-]);
-export type QuizRerankerType = z.infer<typeof QuizRerankerTypeSchema>;
+// Composer Types
+export const QuizComposerTypeSchema = z.enum(["llm"]);
+export type QuizComposerType = z.infer<typeof QuizComposerTypeSchema>;
+
+// Enricher Types
+export const QuestionEnricherTypeSchema = z.enum(["imageDescriptions"]);
+export type QuestionEnricherType = z.infer<typeof QuestionEnricherTypeSchema>;
 
 // Strategy Types
 export const RetrievalStrategySchema = z.enum(["bm25", "blended"]);
 export type RetrievalStrategy = z.infer<typeof RetrievalStrategySchema>;
-
-export const RerankerStrategySchema = z.enum(["openai", "elastic", "blended"]);
-export type RerankerStrategy = z.infer<typeof RerankerStrategySchema>;
-
-export const QuizSelectorTypeSchema = z.enum(["simple", "llm-quiz-composer"]);
-export type QuizSelectorType = z.infer<typeof QuizSelectorTypeSchema>;
 
 export const QuizPatchTypeSchema = z.enum(["/starterQuiz", "/exitQuiz"]);
 export type QuizPatchType = z.infer<typeof QuizPatchTypeSchema>;
@@ -38,7 +30,7 @@ export const QuizServiceSettingsSchema = z.enum(["simple", "demo", "basedOn"]);
 export type QuizServiceSettings = z.infer<typeof QuizServiceSettingsSchema>;
 
 export type QuizBuilderSettings = {
-  quizSelector: QuizSelectorType;
-  quizReranker: QuizRerankerType;
-  quizGenerators: QuizGeneratorType[];
+  sources: QuestionSourceType[];
+  enrichers: QuestionEnricherType[];
+  composer: QuizComposerType;
 };

@@ -31,10 +31,10 @@ export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
       : "Generate Exit Quiz";
 
   return (
-    <Link href={`/admin/quiz-rag?chatId=${chatId}&quizType=${quizType}`}>
+    <Link href={`/admin/quiz-playground?chatId=${chatId}&quizType=${quizType}`}>
       <ActionButton
         onClick={() => {}}
-        tooltip="Open Quiz RAG Debug Tool with this lesson plan"
+        tooltip="Open Quiz Generation Playground with this lesson plan"
       >
         {label}
       </ActionButton>

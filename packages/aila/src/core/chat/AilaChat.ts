@@ -28,8 +28,8 @@ import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { buildFullQuizService } from "../quiz/fullservices/buildFullQuizService";
-import type { FullQuizService } from "../quiz/interfaces";
+import { buildQuizService } from "../quiz/fullservices/buildQuizService";
+import type { QuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -52,7 +52,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  public readonly fullQuizService: FullQuizService;
+  public readonly quizService: QuizService;
 
   constructor({
     id,
@@ -83,10 +83,10 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
-    this.fullQuizService = buildFullQuizService({
-      quizGenerators: aila.options.quizGenerators,
-      quizReranker: "no-op",
-      quizSelector: "llm-quiz-composer",
+    this.quizService = buildQuizService({
+      sources: aila.options.quizSources,
+      enrichers: ["imageDescriptions"],
+      composer: "llm",
     });
   }
 
