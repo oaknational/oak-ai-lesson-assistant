@@ -62,7 +62,7 @@ export async function streamPipeline(
     topic: lessonPlan.topic ?? undefined,
   };
 
-  const response = await fetch("/api/debug/quiz-rag-stream", {
+  const response = await fetch("/api/debug/quiz-playground-stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

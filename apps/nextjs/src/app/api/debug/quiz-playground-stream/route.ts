@@ -1,4 +1,4 @@
-import { buildFullQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildFullQuizService";
+import { buildQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildQuizService";
 import { createQuizTracker } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   AilaRagRelevantLesson,
@@ -15,7 +15,7 @@ import {
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-import type { SSEEvent } from "@/app/admin/quiz-rag/types";
+import type { SSEEvent } from "@/app/admin/quiz-playground/types";
 
 const log = aiLogger("admin");
 
@@ -109,10 +109,10 @@ export async function POST(request: Request) {
         },
       });
 
-      const service = buildFullQuizService({
-        quizGenerators: ["basedOnRag", "rag", "ml-multi-term"],
-        quizReranker: "no-op",
-        quizSelector: "llm-quiz-composer",
+      const service = buildQuizService({
+        sources: ["basedOnLesson", "similarLessons", "multiQuerySemantic"],
+        enrichers: ["imageDescriptions"],
+        composer: "llm",
       });
 
       try {

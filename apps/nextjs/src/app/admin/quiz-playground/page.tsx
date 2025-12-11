@@ -11,12 +11,12 @@ import { redirect, useSearchParams } from "next/navigation";
 import { OakMathJaxContext } from "@/components/MathJax";
 
 import { InputSection } from "./components/InputSection";
-import { createQuizRagDebugStore, useQuizRagDebugStore } from "./store";
-import { QuizRagDebugView } from "./view";
+import { createQuizPlaygroundStore, useQuizPlaygroundStore } from "./store";
+import { QuizPlaygroundView } from "./view";
 
 export type { ViewMode } from "./store";
 
-export default function QuizRagDebugPage() {
+export default function QuizPlaygroundPage() {
   const user = useUser();
   const searchParams = useSearchParams();
   const urlChatId = searchParams.get("chatId");
@@ -29,28 +29,34 @@ export default function QuizRagDebugPage() {
 
   // Create store instance for this page
   const store = useMemo(
-    () => createQuizRagDebugStore(initialQuizType),
+    () => createQuizPlaygroundStore(initialQuizType),
     [initialQuizType],
   );
 
   // Select state from store
-  const lessonPlan = useQuizRagDebugStore(store, (s) => s.lessonPlan);
-  const viewMode = useQuizRagDebugStore(store, (s) => s.viewMode);
-  const loadedReport = useQuizRagDebugStore(store, (s) => s.loadedReport);
-  const isRunning = useQuizRagDebugStore(store, (s) => s.isRunning);
-  const error = useQuizRagDebugStore(store, (s) => s.error);
-  const streamingReport = useQuizRagDebugStore(store, (s) => s.streamingReport);
+  const lessonPlan = useQuizPlaygroundStore(store, (s) => s.lessonPlan);
+  const viewMode = useQuizPlaygroundStore(store, (s) => s.viewMode);
+  const loadedReport = useQuizPlaygroundStore(store, (s) => s.loadedReport);
+  const isRunning = useQuizPlaygroundStore(store, (s) => s.isRunning);
+  const error = useQuizPlaygroundStore(store, (s) => s.error);
+  const streamingReport = useQuizPlaygroundStore(
+    store,
+    (s) => s.streamingReport,
+  );
 
   // Select actions from store
-  const setViewMode = useQuizRagDebugStore(store, (s) => s.setViewMode);
-  const setLoadedReport = useQuizRagDebugStore(store, (s) => s.setLoadedReport);
-  const runPipeline = useQuizRagDebugStore(store, (s) => s.runPipeline);
-  const resetPipeline = useQuizRagDebugStore(store, (s) => s.resetPipeline);
+  const setViewMode = useQuizPlaygroundStore(store, (s) => s.setViewMode);
+  const setLoadedReport = useQuizPlaygroundStore(
+    store,
+    (s) => s.setLoadedReport,
+  );
+  const runPipeline = useQuizPlaygroundStore(store, (s) => s.runPipeline);
+  const resetPipeline = useQuizPlaygroundStore(store, (s) => s.resetPipeline);
 
   const activeReport = loadedReport ?? streamingReport;
 
   if (user.isLoaded && !user.isSignedIn) {
-    redirect("/sign-in?next=/admin/quiz-rag");
+    redirect("/sign-in?next=/admin/quiz-playground");
   }
 
   return (
@@ -58,34 +64,29 @@ export default function QuizRagDebugPage() {
       <div className="space-y-8">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Quiz RAG Debug Tool</h1>
+            <h1 className="text-3xl font-bold">Quiz Generation Playground</h1>
             <p className="mt-2 text-gray-600">
-              Run and inspect the Quiz RAG pipeline with full visibility into
-              each stage.
+              Run and inspect the quiz generation pipeline with full visibility
+              into each stage.
             </p>
           </div>
-          <div className="inline-flex rounded-2xl bg-gray-200 p-2">
-            <button
-              onClick={() => setViewMode("learn")}
-              className={`rounded-xl px-8 py-4 text-lg font-bold transition-all ${
-                viewMode === "learn"
-                  ? "bg-white text-gray-900 shadow-lg"
-                  : "text-gray-500 hover:text-gray-700"
+          <label className="flex cursor-pointer items-center gap-3">
+            <span className="text-sm text-gray-600">Show explanations</span>
+            <div
+              onClick={() =>
+                setViewMode(viewMode === "learn" ? "eval" : "learn")
+              }
+              className={`relative h-6 w-11 rounded-full transition-colors ${
+                viewMode === "learn" ? "bg-green-500" : "bg-gray-300"
               }`}
             >
-              📚 Learn Mode
-            </button>
-            <button
-              onClick={() => setViewMode("eval")}
-              className={`rounded-xl px-8 py-4 text-lg font-bold transition-all ${
-                viewMode === "eval"
-                  ? "bg-white text-gray-900 shadow-lg"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              🔬 Eval Mode
-            </button>
-          </div>
+              <div
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                  viewMode === "learn" ? "translate-x-5" : "translate-x-0.5"
+                }`}
+              />
+            </div>
+          </label>
         </div>
 
         {/* Pipeline Overview (Learn mode only) */}
@@ -95,26 +96,26 @@ export default function QuizRagDebugPage() {
               Pipeline Overview
             </h2>
             <p className="mb-6 max-w-3xl text-base leading-relaxed text-gray-600">
-              The Quiz RAG pipeline generates quiz questions by retrieving
-              relevant questions from Oak&apos;s question bank and selecting the
-              best matches for the lesson plan.
+              The quiz generation pipeline retrieves relevant questions from
+              Oak&apos;s question bank and selects the best matches for the
+              lesson plan.
             </p>
 
             {/* Visual Pipeline Diagram - Vertical */}
             <div className="mx-auto max-w-2xl">
               <div className="flex items-center gap-12">
                 <div className="w-32 shrink-0 rounded-lg bg-mint px-3 py-5 text-center font-medium">
-                  Generators
+                  Sources
                 </div>
                 <p className="text-sm text-gray-500">
                   Retrieve candidate questions from multiple sources (BasedOn,
-                  AilaRag, ML Multi-Term)
+                  Similar Lessons, Semantic Search)
                 </p>
               </div>
               <div className="w-32 text-center text-gray-400">↓</div>
               <div className="flex items-center gap-12">
                 <div className="w-32 shrink-0 rounded-lg bg-lemon px-3 py-5 text-center font-medium">
-                  Images
+                  Enrichers
                 </div>
                 <p className="text-sm text-gray-500">
                   Generate text descriptions of images using GPT-4o vision
@@ -204,7 +205,7 @@ export default function QuizRagDebugPage() {
 
         {/* Show view with streaming data during pipeline run, or final report */}
         {activeReport && (
-          <QuizRagDebugView
+          <QuizPlaygroundView
             viewMode={viewMode}
             report={activeReport}
             isStreaming={!loadedReport && isRunning}
@@ -226,38 +227,32 @@ function StreamingProgressPanel({ report }: { report: ReportNode }) {
 
   const stageConfig: StageConfig[] = [
     {
-      path: ["basedOnRag"],
-      label: "BasedOnRag",
+      path: ["basedOnLesson"],
+      label: "BasedOn",
       color: "mint",
       description: "Questions from basedOn lesson",
     },
     {
-      path: ["ailaRag"],
-      label: "AilaRag",
+      path: ["similarLessons"],
+      label: "Similar",
       color: "mint",
-      description: "Questions from relevant lessons",
+      description: "Questions from similar lessons",
     },
     {
-      path: ["mlMultiTerm"],
-      label: "ML Multi-Term",
+      path: ["multiQuerySemantic"],
+      label: "Semantic",
       color: "mint",
       description: "Semantic search + Cohere rerank",
     },
     {
-      path: ["selector", "imageDescriptions"],
+      path: ["imageDescriptions"],
       label: "Images",
       color: "lemon",
       description: "GPT-4o image descriptions",
     },
     {
-      path: ["selector", "composerPrompt"],
-      label: "Prompt",
-      color: "lavender",
-      description: "Build composition prompt",
-    },
-    {
-      path: ["selector", "composerLlm"],
-      label: "LLM",
+      path: ["llmComposer"],
+      label: "Composer",
       color: "lavender",
       description: "o4-mini quiz composition",
     },

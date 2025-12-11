@@ -28,17 +28,17 @@ import { formatSeconds } from "./utils";
 export const ViewModeContext = createContext<ViewMode>("learn");
 export const useViewMode = () => useContext(ViewModeContext);
 
-interface QuizRagDebugViewProps {
+interface QuizPlaygroundViewProps {
   viewMode: ViewMode;
   report: ReportNode | null;
   isStreaming?: boolean;
 }
 
-export function QuizRagDebugView({
+export function QuizPlaygroundView({
   viewMode,
   report,
   isStreaming = false,
-}: Readonly<QuizRagDebugViewProps>) {
+}: Readonly<QuizPlaygroundViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;
   // Helper to check stage status from report tree
@@ -55,97 +55,102 @@ export function QuizRagDebugView({
     getNodeStatus(path) === "complete";
 
   // Extract data from report tree
-  const basedOnRagNode = getChild(report ?? undefined, "basedOnRag");
-  const ailaRagNode = getChild(report ?? undefined, "ailaRag");
-  const mlMultiTermNode = getChild(report ?? undefined, "mlMultiTerm");
-  const selectorNode = getChild(report ?? undefined, "selector");
-  const imageDescriptionsNode = getChild(selectorNode, "imageDescriptions");
-  const composerPromptNode = getChild(selectorNode, "composerPrompt");
-  const composerLlmNode = getChild(selectorNode, "composerLlm");
+  const basedOnLessonNode = getChild(report ?? undefined, "basedOnLesson");
+  const similarLessonsNode = getChild(report ?? undefined, "similarLessons");
+  const multiQuerySemanticNode = getChild(
+    report ?? undefined,
+    "multiQuerySemantic",
+  );
+  const imageDescriptionsNode = getChild(
+    report ?? undefined,
+    "imageDescriptions",
+  );
+  const composerNode = getChild(report ?? undefined, "llmComposer");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
-  const basedOnRag = extractGeneratorData(basedOnRagNode);
-  const ailaRag = extractGeneratorData(ailaRagNode);
-  const mlMultiTerm = extractGeneratorData(mlMultiTermNode);
+  const basedOnLesson = extractGeneratorData(basedOnLessonNode);
+  const similarLessons = extractGeneratorData(similarLessonsNode);
+  const multiQuerySemantic = extractGeneratorData(multiQuerySemanticNode);
   const imageDescriptions = extractImageDescriptionsData(imageDescriptionsNode);
 
   return (
     <ViewModeContext.Provider value={viewMode}>
       <div>
-        {/* Stage 1: Generators */}
+        {/* Stage 1: Sources */}
         <div className="h-12" />
         <LearnBlock variant="section">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Stage 1: Generators
+            Stage 1: Sources
           </h2>
           <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-            Generators retrieve candidate questions from different sources. Each
-            generator produces &quot;pools&quot; of questions that feed into the
-            next stages of the pipeline.
+            Sources retrieve candidate questions from different origins. All
+            three run in parallel, each producing &quot;pools&quot; of questions
+            for the next stages.
           </p>
         </LearnBlock>
         <div className="space-y-6">
           <LearnBlock variant="section">
             <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-              <strong>BasedOnRag</strong> retrieves questions from the specific
-              Oak lesson that this lesson plan is based on. Only available when
-              the user selected a &quot;based on&quot; lesson.
+              <strong>BasedOnLesson</strong> retrieves questions from the
+              specific Oak lesson the user chose to base their lesson on. This
+              is high-signal input—the composer prioritizes these questions when
+              available.
             </p>
           </LearnBlock>
-          <GeneratorAccordion
-            title="BasedOnRag"
-            disabled={!basedOnRag && isStageComplete(["basedOnRag"])}
+          <SourceAccordion
+            title="BasedOnLesson"
+            disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
             disabledReason="no basedOn"
-            loading={isStageLoading(["basedOnRag"])}
+            loading={isStageLoading(["basedOnLesson"])}
             stats={
-              basedOnRag
+              basedOnLesson
                 ? {
-                    pools: basedOnRag.pools.length,
-                    questions: basedOnRag.pools.reduce(
+                    pools: basedOnLesson.pools.length,
+                    questions: basedOnLesson.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: basedOnRagNode?.durationMs ?? 0,
+                    timing: basedOnLessonNode?.durationMs ?? 0,
                   }
                 : undefined
             }
           >
-            {basedOnRag && <GeneratorSection result={basedOnRag} />}
-          </GeneratorAccordion>
+            {basedOnLesson && <SourceSection result={basedOnLesson} />}
+          </SourceAccordion>
 
           <LearnBlock variant="section">
             <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-              <strong>AilaRag</strong> uses lessons that were identified as
-              relevant during the chat conversation. These are lessons that Aila
-              found while helping create the lesson plan.
+              <strong>SimilarLessons</strong> uses lessons that were identified
+              as relevant during the chat conversation. These are lessons that
+              Aila found while helping create the lesson plan.
             </p>
           </LearnBlock>
-          <GeneratorAccordion
-            title="AilaRag"
-            disabled={!ailaRag && isStageComplete(["rag"])}
+          <SourceAccordion
+            title="SimilarLessons"
+            disabled={!similarLessons && isStageComplete(["similarLessons"])}
             disabledReason="no relevant lessons"
-            loading={isStageLoading(["rag"])}
+            loading={isStageLoading(["similarLessons"])}
             stats={
-              ailaRag
+              similarLessons
                 ? {
-                    pools: ailaRag.pools.length,
-                    questions: ailaRag.pools.reduce(
+                    pools: similarLessons.pools.length,
+                    questions: similarLessons.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: ailaRagNode?.durationMs ?? 0,
+                    timing: similarLessonsNode?.durationMs ?? 0,
                   }
                 : undefined
             }
           >
-            {ailaRag && <GeneratorSection result={ailaRag} />}
-          </GeneratorAccordion>
+            {similarLessons && <SourceSection result={similarLessons} />}
+          </SourceAccordion>
 
           <LearnBlock variant="section">
             <div className="max-w-3xl text-base leading-relaxed text-gray-600">
               <p className="mb-3">
-                <strong>ML Multi-Term</strong> is the most sophisticated
-                generator.
+                <strong>MultiQuerySemantic</strong> is the most sophisticated
+                source.
               </p>
               <ol className="list-inside list-decimal space-y-2">
                 <li>
@@ -168,38 +173,40 @@ export function QuizRagDebugView({
               </ol>
             </div>
           </LearnBlock>
-          <GeneratorAccordion
-            title="ML Multi-Term"
-            disabled={!mlMultiTerm && isStageComplete(["mlMultiTerm"])}
-            loading={isStageLoading(["mlMultiTerm"])}
+          <SourceAccordion
+            title="MultiQuerySemantic"
+            disabled={
+              !multiQuerySemantic && isStageComplete(["multiQuerySemantic"])
+            }
+            loading={isStageLoading(["multiQuerySemantic"])}
             stats={
-              mlMultiTerm
+              multiQuerySemantic
                 ? {
-                    pools: mlMultiTerm.pools.length,
-                    questions: mlMultiTerm.pools.reduce(
+                    pools: multiQuerySemantic.pools.length,
+                    questions: multiQuerySemantic.pools.reduce(
                       (sum, p) => sum + p.questions.length,
                       0,
                     ),
-                    timing: mlMultiTermNode?.durationMs ?? 0,
+                    timing: multiQuerySemanticNode?.durationMs ?? 0,
                   }
                 : undefined
             }
             defaultOpen
           >
-            {mlMultiTerm && mlMultiTermNode && (
+            {multiQuerySemantic && multiQuerySemanticNode && (
               <MLPipelineDetails
-                result={mlMultiTerm}
-                reportNode={mlMultiTermNode}
+                result={multiQuerySemantic}
+                reportNode={multiQuerySemanticNode}
               />
             )}
-          </GeneratorAccordion>
+          </SourceAccordion>
         </div>
 
-        {/* Stage 2: Image Descriptions */}
+        {/* Stage 2: Enrichers (Image Descriptions) */}
         <div className="h-24" />
         <LearnBlock variant="section">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Stage 2: Image Descriptions
+            Stage 2: Enrichers
           </h2>
           <p className="max-w-3xl text-base leading-relaxed text-gray-600">
             Many quiz questions contain mathematical diagrams and images. We
@@ -211,7 +218,7 @@ export function QuizRagDebugView({
         <Section
           title="Image Descriptions"
           color="lemon"
-          loading={isStageLoading(["selector", "imageDescriptions"])}
+          loading={isStageLoading(["imageDescriptions"])}
           stats={
             imageDescriptions
               ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptionsNode?.durationMs ?? 0)}`
@@ -225,48 +232,47 @@ export function QuizRagDebugView({
           )}
         </Section>
 
-        {/* Stage 3: LLM Composer */}
+        {/* Stage 3: Composer */}
         <div className="h-24" />
         <LearnBlock variant="section">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Stage 3: LLM Composer
+            Stage 3: Composer
           </h2>
           <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-            The composer (o4-mini) receives all candidate questions (with image
-            descriptions substituted for images) and the lesson plan context. It
-            selects 6 questions that best match the lesson&apos;s learning
-            objectives, ensuring variety in question types and appropriate
-            difficulty progression.
+            The composer receives all candidates with the lesson plan and
+            selects 6 questions based on: relevance to learning objectives,
+            variety in question types, appropriate difficulty, and source
+            priority (basedOn questions are preferred when available).
           </p>
         </LearnBlock>
         <Section
           title="LLM Composer"
           color="lavender"
-          loading={isStageLoading(["selector", "composerLlm"])}
+          loading={isStageLoading(["llmComposer"])}
           stats={
-            composerLlmNode?.status === "complete"
+            composerNode?.status === "complete"
               ? (() => {
                   const totalCandidates = [
-                    ...(basedOnRag?.pools ?? []),
-                    ...(ailaRag?.pools ?? []),
-                    ...(mlMultiTerm?.pools ?? []),
+                    ...(basedOnLesson?.pools ?? []),
+                    ...(similarLessons?.pools ?? []),
+                    ...(multiQuerySemantic?.pools ?? []),
                   ].reduce((sum, pool) => sum + pool.questions.length, 0);
                   const selectedCount =
                     (
-                      composerLlmNode.data.selectedQuestions as
+                      composerNode.data.selectedQuestions as
                         | RagQuizQuestion[]
                         | undefined
                     )?.length ?? 0;
-                  return `${totalCandidates} candidates, ${selectedCount} selected, ${formatSeconds(composerLlmNode.durationMs ?? 0)}`;
+                  return `${totalCandidates} candidates, ${selectedCount} selected, ${formatSeconds(composerNode.durationMs ?? 0)}`;
                 })()
               : undefined
           }
         >
-          {composerLlmNode?.status === "complete" ? (
+          {composerNode?.status === "complete" ? (
             <ComposerSection
-              prompt={(composerPromptNode?.data.prompt as string) ?? ""}
+              prompt={(composerNode?.data.prompt as string) ?? ""}
               response={
-                composerLlmNode.data.response as {
+                composerNode.data.response as {
                   overallStrategy: string;
                   selectedQuestions: {
                     questionUid: string;
@@ -275,19 +281,18 @@ export function QuizRagDebugView({
                 }
               }
               selectedQuestions={
-                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??
-                []
+                (composerNode.data.selectedQuestions as RagQuizQuestion[]) ?? []
               }
               pools={[
-                ...(basedOnRag?.pools ?? []),
-                ...(ailaRag?.pools ?? []),
-                ...(mlMultiTerm?.pools ?? []),
+                ...(basedOnLesson?.pools ?? []),
+                ...(similarLessons?.pools ?? []),
+                ...(multiQuerySemantic?.pools ?? []),
               ]}
             />
-          ) : composerPromptNode?.data.prompt ? (
+          ) : composerNode?.data?.prompt ? (
             <ComposerPromptPreview
-              prompt={composerPromptNode.data.prompt as string}
-              isLlmRunning={composerLlmNode?.status === "running"}
+              prompt={composerNode.data.prompt as string}
+              isLlmRunning={composerNode?.status === "running"}
             />
           ) : (
             <p className="text-gray-400">Waiting for LLM composition...</p>
@@ -463,8 +468,8 @@ function Section({
   );
 }
 
-// Generator Accordion - collapsible section for each generator
-function GeneratorAccordion({
+// Source Accordion - collapsible section for each source
+function SourceAccordion({
   title,
   stats,
   children,
@@ -532,14 +537,14 @@ function GeneratorAccordion({
   );
 }
 
-// Generator Section for basedOnRag and ailaRag
-function GeneratorSection({ result }: Readonly<{ result: GeneratorData }>) {
+// Source Section for basedOnLesson and similarLessons
+function SourceSection({ result }: Readonly<{ result: GeneratorData }>) {
   const getPoolKey = (pool: QuizQuestionPool): string => {
     switch (pool.source.type) {
-      case "basedOn":
-      case "ailaRag":
+      case "basedOnLesson":
+      case "similarLessons":
         return pool.source.lessonTitle;
-      case "mlSemanticSearch":
+      case "semanticSearch":
         return pool.source.semanticQuery;
     }
   };
@@ -550,9 +555,9 @@ function GeneratorSection({ result }: Readonly<{ result: GeneratorData }>) {
         <div key={getPoolKey(pool)} className="rounded-lg border bg-white p-4">
           <p className="mb-2 text-sm font-medium">
             Pool {idx + 1}:{" "}
-            {pool.source.type === "basedOn" && pool.source.lessonTitle}
-            {pool.source.type === "ailaRag" && pool.source.lessonTitle}
-            {pool.source.type === "mlSemanticSearch" &&
+            {pool.source.type === "basedOnLesson" && pool.source.lessonTitle}
+            {pool.source.type === "similarLessons" && pool.source.lessonTitle}
+            {pool.source.type === "semanticSearch" &&
               `"${pool.source.semanticQuery}"`}
           </p>
           <div className="space-y-2">
@@ -651,12 +656,12 @@ function ImageDescriptionsView({
 // Helper to format pool source for display
 function formatPoolSource(pool: QuizQuestionPool): string {
   switch (pool.source.type) {
-    case "basedOn":
+    case "basedOnLesson":
       return `BasedOn: ${pool.source.lessonTitle}`;
-    case "ailaRag":
-      return `AilaRag: ${pool.source.lessonTitle}`;
-    case "mlSemanticSearch":
-      return `ML: "${pool.source.semanticQuery}"`;
+    case "similarLessons":
+      return `Similar: ${pool.source.lessonTitle}`;
+    case "semanticSearch":
+      return `Semantic: "${pool.source.semanticQuery}"`;
   }
 }
 
