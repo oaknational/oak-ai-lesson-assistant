@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@anatine/zod-mock": "^3.13.4",
-    "@clerk/nextjs": "5.7.2",
+    "@clerk/nextjs": "6.36.1",
     "@elastic/elasticsearch": "^8.13.1",
     "@faker-js/faker": "^9.4.0",
     "@oakai/core": "*",

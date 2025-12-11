@@ -25,7 +25,7 @@ export type PromptsPageData = Readonly<{
 
 export const PromptsContent = ({ apps }: PromptsPageData) => {
   const pathname = usePathname();
-  const itemRefs: { [key: string]: React.RefObject<HTMLLIElement> } = useMemo(
+  const itemRefs: { [key: string]: React.RefObject<HTMLLIElement | null> } = useMemo(
     () => ({}),
     [],
   );

@@ -23,7 +23,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "5.7.2",
+    "@clerk/nextjs": "6.36.1",
     "@oakai/core": "*",
     "@oakai/logger": "*",
     "@oaknational/oak-curriculum-schema": "^1.59.1",
