@@ -387,21 +387,19 @@ function SubSection({
 
   return (
     <div className="rounded-lg border bg-white">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between px-6 py-3 text-left hover:bg-gray-50"
-      >
-        <span className="font-medium">{title}</span>
-        <div className="flex items-center gap-4">
-          {stats && <span className="text-sm text-gray-500">{stats}</span>}
-          {actions && (
-            <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-              {actions}
-            </div>
-          )}
-          <span className="text-gray-400">{isOpen ? "▼" : "▶"}</span>
-        </div>
-      </button>
+      <div className="flex items-center">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex flex-1 items-center justify-between px-6 py-3 text-left hover:bg-gray-50"
+        >
+          <span className="font-medium">{title}</span>
+          <div className="flex items-center gap-4">
+            {stats && <span className="text-sm text-gray-500">{stats}</span>}
+            <span className="text-gray-400">{isOpen ? "▼" : "▶"}</span>
+          </div>
+        </button>
+        {actions && <div className="flex gap-2 pr-4">{actions}</div>}
+      </div>
       {isOpen && <div className="border-t px-4 py-3">{children}</div>}
     </div>
   );
@@ -639,7 +637,7 @@ function ImageDescriptionsView({
       {result.descriptions.length > 5 && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
         >
           {showAll ? "Show less" : `Show all ${result.descriptions.length}`}
         </button>
@@ -680,7 +678,7 @@ function ComposerPromptPreview({
         actions={
           <button
             onClick={copyPrompt}
-            className="text-blue-600 text-sm hover:underline"
+            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -743,7 +741,7 @@ function ComposerSection({
         actions={
           <button
             onClick={copyPrompt}
-            className="text-blue-600 text-sm hover:underline"
+            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -851,21 +849,21 @@ function FinalQuizDisplay({
       <div className="flex items-center justify-center gap-2">
         <button
           onClick={copyQuizJson}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
         >
           Copy Quiz JSON
         </button>
         <span className="text-gray-300">|</span>
         <button
           onClick={copyFullReport}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
         >
           Copy Full Report
         </button>
         <span className="text-gray-300">|</span>
         <button
           onClick={() => setShowJson(!showJson)}
-          className="text-blue-600 text-sm hover:underline"
+          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
         >
           {showJson ? "Hide" : "Show"} JSON
         </button>
