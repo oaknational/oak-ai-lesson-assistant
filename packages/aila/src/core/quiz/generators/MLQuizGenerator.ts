@@ -5,23 +5,37 @@ import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
+  AilaQuizCandidateGenerator,
   CustomSource,
   QuizQuestionPool,
   RagQuizQuestion,
 } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
-export class MLQuizGenerator extends BaseQuizGenerator {
+export class MLQuizGenerator implements AilaQuizCandidateGenerator {
   readonly name = "mlSingleTerm";
 
-  protected searchService = new ElasticsearchQuizSearchService();
-  protected rerankService = new CohereReranker();
-  protected queryGenerator = new SemanticQueryGenerator();
+  protected searchService: ElasticsearchQuizSearchService;
+  protected rerankService: CohereReranker;
+  protected queryGenerator: SemanticQueryGenerator;
+  protected retrievalService: RagQuizRetrievalService;
+
+  constructor(
+    searchService?: ElasticsearchQuizSearchService,
+    rerankService?: CohereReranker,
+    queryGenerator?: SemanticQueryGenerator,
+    retrievalService?: RagQuizRetrievalService,
+  ) {
+    this.searchService = searchService ?? new ElasticsearchQuizSearchService();
+    this.rerankService = rerankService ?? new CohereReranker();
+    this.queryGenerator = queryGenerator ?? new SemanticQueryGenerator();
+    this.retrievalService = retrievalService ?? new RagQuizRetrievalService();
+  }
 
   /**
    * Validates the lesson plan
