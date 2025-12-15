@@ -1,3 +1,10 @@
+## [1.57.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.57.0...v1.57.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* **security:** update Next.js to 14.2.35 for CVE-2025-55184 ([#877](https://github.com/oaknational/oak-ai-lesson-assistant/issues/877)) ([b221df2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b221df21b02cd68631c1e52d2bc21876b3c2deb7))
+
 # [1.57.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.2...v1.57.0) (2025-12-11)
 
 
