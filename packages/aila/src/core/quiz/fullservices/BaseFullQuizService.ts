@@ -98,17 +98,6 @@ export class BaseFullQuizService implements FullQuizService {
       return rankings;
     });
 
-    if (!quizRankings[0]) {
-      log.error(
-        `Quiz rankings are undefined. No quiz of quiz type: ${quizType} found for lesson plan: ${lessonPlan.title}`,
-      );
-      return {
-        version: "v3",
-        questions: [],
-        imageMetadata: [],
-      };
-    }
-
     // Select final questions
     const selectedQuestions = await task.child("selector", async (t) => {
       const questions = await this.quizSelector.selectQuestions(
