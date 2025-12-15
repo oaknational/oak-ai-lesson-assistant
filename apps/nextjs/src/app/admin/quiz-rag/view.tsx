@@ -448,7 +448,11 @@ function Section({
       >
         <div className="flex items-center gap-3">
           <SectionStatusIcon loading={loading} hasStats={!!stats} />
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2
+            className={`text-lg font-semibold ${loading ? "animate-pulse" : ""}`}
+          >
+            {title}
+          </h2>
         </div>
         <div className="flex items-center gap-6">
           {stats && <span className="text-sm text-gray-600">{stats}</span>}
@@ -637,7 +641,7 @@ function ImageDescriptionsView({
       {result.descriptions.length > 5 && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+          className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
         >
           {showAll ? "Show less" : `Show all ${result.descriptions.length}`}
         </button>
@@ -678,7 +682,7 @@ function ComposerPromptPreview({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -741,7 +745,7 @@ function ComposerSection({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -846,24 +850,22 @@ function FinalQuizDisplay({
         </MathJaxWrap>
       </div>
 
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center justify-center gap-4">
         <button
           onClick={copyQuizJson}
-          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           Copy Quiz JSON
         </button>
-        <span className="text-gray-300">|</span>
         <button
           onClick={copyFullReport}
-          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           Copy Full Report
         </button>
-        <span className="text-gray-300">|</span>
         <button
           onClick={() => setShowJson(!showJson)}
-          className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
         >
           {showJson ? "Hide" : "Show"} JSON
         </button>
