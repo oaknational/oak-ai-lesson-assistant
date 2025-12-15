@@ -66,6 +66,9 @@ export function QuizPlaygroundView({
     "imageDescriptions",
   );
   const composerNode = getChild(report ?? undefined, "llmComposer");
+  // Composer has nested children for prompt and LLM response
+  const composerPromptNode = getChild(composerNode, "composerPrompt");
+  const composerLlmNode = getChild(composerNode, "composerLlm");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
   const basedOnLesson = extractGeneratorData(basedOnLessonNode);
@@ -264,7 +267,7 @@ export function QuizPlaygroundView({
                   ].reduce((sum, pool) => sum + pool.questions.length, 0);
                   const selectedCount =
                     (
-                      composerNode.data.selectedQuestions as
+                      composerLlmNode?.data.selectedQuestions as
                         | RagQuizQuestion[]
                         | undefined
                     )?.length ?? 0;
@@ -273,11 +276,11 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          {composerNode?.status === "complete" ? (
+          {composerLlmNode?.status === "complete" && composerLlmNode.data.response ? (
             <ComposerSection
-              prompt={(composerNode?.data.prompt as string) ?? ""}
+              prompt={(composerPromptNode?.data.prompt as string) ?? ""}
               response={
-                composerNode.data.response as {
+                composerLlmNode.data.response as {
                   overallStrategy: string;
                   selectedQuestions: {
                     questionUid: string;
@@ -286,7 +289,7 @@ export function QuizPlaygroundView({
                 }
               }
               selectedQuestions={
-                (composerNode.data.selectedQuestions as RagQuizQuestion[]) ?? []
+                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ?? []
               }
               pools={[
                 ...(basedOnLesson?.pools ?? []),
@@ -294,10 +297,10 @@ export function QuizPlaygroundView({
                 ...(multiQuerySemantic?.pools ?? []),
               ]}
             />
-          ) : composerNode?.data?.prompt ? (
+          ) : composerPromptNode?.data?.prompt ? (
             <ComposerPromptPreview
-              prompt={composerNode.data.prompt as string}
-              isLlmRunning={composerNode?.status === "running"}
+              prompt={composerPromptNode.data.prompt as string}
+              isLlmRunning={composerLlmNode?.status === "running"}
             />
           ) : (
             <p className="text-gray-400">Waiting for LLM composition...</p>
@@ -458,11 +461,7 @@ function Section({
       >
         <div className="flex items-center gap-3">
           <SectionStatusIcon loading={loading} hasStats={!!stats} />
-          <h2
-            className={`text-lg font-semibold ${loading ? "animate-pulse" : ""}`}
-          >
-            {title}
-          </h2>
+          <h2 className="text-lg font-semibold">{title}</h2>
         </div>
         <div className="flex items-center gap-6">
           {stats && <span className="text-sm text-gray-600">{stats}</span>}
@@ -651,7 +650,7 @@ function ImageDescriptionsView({
       {result.descriptions.length > 5 && (
         <button
           onClick={() => setShowAll(!showAll)}
-          className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
+          className="text-blue-600 text-sm hover:underline"
         >
           {showAll ? "Show less" : `Show all ${result.descriptions.length}`}
         </button>
@@ -692,7 +691,7 @@ function ComposerPromptPreview({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -755,7 +754,7 @@ function ComposerSection({
         actions={
           <button
             onClick={copyPrompt}
-            className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
+            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
           >
             Copy
           </button>
@@ -860,22 +859,24 @@ function FinalQuizDisplay({
         </MathJaxWrap>
       </div>
 
-      <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-2">
         <button
           onClick={copyQuizJson}
-          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          className="text-blue-600 text-sm hover:underline"
         >
           Copy Quiz JSON
         </button>
+        <span className="text-gray-300">|</span>
         <button
           onClick={copyFullReport}
-          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          className="text-blue-600 text-sm hover:underline"
         >
           Copy Full Report
         </button>
+        <span className="text-gray-300">|</span>
         <button
           onClick={() => setShowJson(!showJson)}
-          className="rounded border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          className="text-blue-600 text-sm hover:underline"
         >
           {showJson ? "Hide" : "Show"} JSON
         </button>
