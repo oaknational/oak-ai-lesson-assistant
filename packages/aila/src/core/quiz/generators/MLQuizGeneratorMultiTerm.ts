@@ -3,12 +3,15 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
+import type {
+  AilaQuizCandidateGenerator,
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
+import { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
@@ -25,18 +28,24 @@ const POOL_SIZE = 3;
  * - Uses Cohere's topN parameter for efficient reranking
  * - Returns separate pools maintaining semantic grouping
  */
-export class MLQuizGeneratorMultiTerm extends BaseQuizGenerator {
+export class MLQuizGeneratorMultiTerm implements AilaQuizCandidateGenerator {
   readonly name = "mlMultiTerm";
 
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
   protected rerankService: CohereReranker;
+  protected retrievalService: RagQuizRetrievalService;
 
-  constructor() {
-    super();
-    this.queryGenerator = new SemanticQueryGenerator();
-    this.searchService = new ElasticsearchQuizSearchService();
-    this.rerankService = new CohereReranker();
+  constructor(
+    queryGenerator?: SemanticQueryGenerator,
+    searchService?: ElasticsearchQuizSearchService,
+    rerankService?: CohereReranker,
+    retrievalService?: RagQuizRetrievalService,
+  ) {
+    this.queryGenerator = queryGenerator ?? new SemanticQueryGenerator();
+    this.searchService = searchService ?? new ElasticsearchQuizSearchService();
+    this.rerankService = rerankService ?? new CohereReranker();
+    this.retrievalService = retrievalService ?? new RagQuizRetrievalService();
   }
 
   /**

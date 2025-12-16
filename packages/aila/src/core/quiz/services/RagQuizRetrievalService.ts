@@ -1,27 +1,35 @@
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 
+import type { QuizPath } from "../../../protocol/schema";
 import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
 import { hasuraQuizQuestionSchema } from "../../../protocol/schemas/quiz/rawQuiz";
 import type {
+  QuizIDSource,
   QuizQuestionTextOnlySource,
+  QuizSet,
   RagQuizQuestion,
 } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
 /**
- * Service for retrieving and parsing quiz questions from Elasticsearch
+ * Service for retrieving quiz questions in the RAG pipeline.
+ * Handles lookups by lesson slug, question IDs, or plan ID.
  */
-export class QuizQuestionRetrievalService {
+export class RagQuizRetrievalService {
   private readonly client: Client;
 
-  constructor() {
+  constructor(client?: Client) {
+    if (client) {
+      this.client = client;
+      return;
+    }
+
     if (
       !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
       !process.env.I_DOT_AI_ELASTIC_KEY
@@ -41,15 +49,116 @@ export class QuizQuestionRetrievalService {
     });
   }
 
+  // === Plan ID lookups (Prisma + ES) ===
+
+  /**
+   * Get quiz questions for a lesson plan by its ID.
+   * Looks up the lesson slug, finds question IDs, and retrieves full questions.
+   */
+  async getQuestionsForPlanId(
+    planId: string,
+    quizType: QuizPath,
+  ): Promise<RagQuizQuestion[]> {
+    const lessonPlan = await prisma.ragLessonPlan.findUnique({
+      where: { id: planId },
+      select: { oakLessonSlug: true },
+    });
+
+    if (!lessonPlan?.oakLessonSlug) {
+      log.warn("Lesson slug not found for planId:", planId);
+      throw new Error("Lesson slug not found for planId: " + planId);
+    }
+
+    const questionIds = await this.getQuizQuestionIds(
+      lessonPlan.oakLessonSlug,
+      quizType,
+    );
+    return this.retrieveQuestionsByIds(questionIds);
+  }
+
+  // === Lesson slug lookups (ES) ===
+
+  async getStarterQuizIds(lessonSlug: string): Promise<string[]> {
+    return this.getQuizQuestionIds(lessonSlug, "/starterQuiz");
+  }
+
+  async getExitQuizIds(lessonSlug: string): Promise<string[]> {
+    return this.getQuizQuestionIds(lessonSlug, "/exitQuiz");
+  }
+
+  async hasStarterQuiz(lessonSlug: string): Promise<boolean> {
+    try {
+      const quizIds = await this.getStarterQuizIds(lessonSlug);
+      return quizIds.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  async hasExitQuiz(lessonSlug: string): Promise<boolean> {
+    try {
+      const quizIds = await this.getExitQuizIds(lessonSlug);
+      return quizIds.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  private async getQuizQuestionIds(
+    lessonSlug: string,
+    quizType: QuizPath,
+  ): Promise<string[]> {
+    try {
+      const response = await this.client.search<QuizIDSource>({
+        index: "lesson-slug-lookup-2025-04-16",
+        query: {
+          bool: {
+            must: [{ term: { "metadata.lessonSlug.keyword": lessonSlug } }],
+          },
+        },
+      });
+
+      if (!response.hits.hits[0]?._source) {
+        log.error(`No ${quizType} found for lesson slug: ${lessonSlug}.`);
+        return [];
+      }
+
+      const source = response.hits.hits[0]._source;
+      log.info(`Source: ${JSON.stringify(source)}`);
+
+      const quizData: QuizSet =
+        typeof source.text === "string" ? JSON.parse(source.text) : source.text;
+
+      const quizIds =
+        quizType === "/starterQuiz" ? quizData.starterQuiz : quizData.exitQuiz;
+
+      if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
+        log.error(
+          `Got invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
+        );
+        throw new Error(
+          `Invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
+        );
+      }
+
+      return quizIds;
+    } catch (error) {
+      log.error(
+        `Error fetching ${quizType} for lesson slug ${lessonSlug}:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  // === Question ID lookups (ES) ===
+
   /**
    * Retrieves quiz questions by their UIDs from Elasticsearch.
    * Converts to V3 format immediately (supporting all question types).
    * Preserves the order of the input questionUids array.
-   *
-   * Note: Currently the ES index stores V1 (multiple-choice only) in the text field,
-   * so we parse from raw_json instead. Future improvement: index V3 format directly.
    */
-  public async retrieveQuestionsByIds(
+  async retrieveQuestionsByIds(
     questionUids: string[],
   ): Promise<RagQuizQuestion[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
@@ -101,11 +210,8 @@ export class QuizQuestionRetrievalService {
     }
 
     try {
-      // Parse HasuraQuizQuestion from raw_json field
       const sourceData = JSON.parse(rawQuizString);
       const source = hasuraQuizQuestionSchema.parse(sourceData);
-
-      // Convert to V3 (supports all question types: multiple-choice, short-answer, match, order)
       const quizV3 = convertHasuraQuizToV3([source]);
 
       if (!quizV3.questions[0]) {
