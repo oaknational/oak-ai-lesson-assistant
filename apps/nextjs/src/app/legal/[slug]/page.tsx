@@ -6,11 +6,9 @@ const LEGAL_REDIRECTS: Record<string, string> = {
   terms: "https://www.thenational.academy/legal/terms-and-conditions",
 };
 
-export default async function LegalRedirectPage(
-  props: {
-    params: Promise<{ slug: string }>;
-  }
-) {
+export default async function LegalRedirectPage(props: {
+  params: Promise<{ slug: string }>;
+}) {
   const params = await props.params;
   const redirectUrl = LEGAL_REDIRECTS[params.slug];
 

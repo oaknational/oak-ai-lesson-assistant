@@ -12,7 +12,9 @@ export interface DownloadPageProps {
   }>;
 }
 
-export async function generateMetadata(props: Readonly<DownloadPageProps>): Promise<Metadata> {
+export async function generateMetadata(
+  props: Readonly<DownloadPageProps>,
+): Promise<Metadata> {
   const params = await props.params;
   const { userId }: { userId: string | null } = await auth();
   if (!userId) {

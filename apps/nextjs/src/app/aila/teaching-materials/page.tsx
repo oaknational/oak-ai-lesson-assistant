@@ -5,11 +5,9 @@ import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
 
-export default async function TeachingMaterialsPage(
-  props: {
-    readonly searchParams: Promise<{ [key: string]: string | undefined }>;
-  }
-) {
+export default async function TeachingMaterialsPage(props: {
+  readonly searchParams: Promise<{ [key: string]: string | undefined }>;
+}) {
   const searchParams = await props.searchParams;
   const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;

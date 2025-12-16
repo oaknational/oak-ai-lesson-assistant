@@ -18,7 +18,9 @@ interface SharePageProps {
   }>;
 }
 
-export async function generateMetadata(props: SharePageProps): Promise<Metadata> {
+export async function generateMetadata(
+  props: SharePageProps,
+): Promise<Metadata> {
   const params = await props.params;
   const chat = await getSharedChatById(params.id);
   return {
