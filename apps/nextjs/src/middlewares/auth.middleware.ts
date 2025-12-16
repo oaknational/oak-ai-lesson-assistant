@@ -1,7 +1,11 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import {
+  clerkClient,
+  clerkMiddleware,
+  createRouteMatcher,
+} from "@clerk/nextjs/server";
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -83,6 +87,10 @@ const isOnboardingRoute = createRouteMatcher([
 
 const isHomepage = createRouteMatcher(["/"]);
 
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+
+const isOakEmail = (email: string) => email.endsWith("@thenational.academy");
+
 const shouldInterceptRouteForOnboarding = (req: NextRequest) => {
   if (isOnboardingRoute(req)) {
     return false;
@@ -106,7 +114,7 @@ const logger = (request: NextRequest) => (message: string) => {
   log.info(`${request.url} ${message}`);
 };
 
-function conditionallyProtectRoute(
+async function conditionallyProtectRoute(
   auth: ClerkMiddlewareAuth,
   req: NextRequest,
 ) {
@@ -149,6 +157,26 @@ function conditionallyProtectRoute(
   if (!userId) {
     log("Protected route: REDIRECT");
     return redirectToSignIn({ returnBackUrl: req.url });
+  }
+
+  /**
+   * Admin UI pages require Oak email (@thenational.academy).
+   * This prevents users seeing pages that won't work for them - the API
+   * routes enforce the same restriction. For finer-grained control,
+   * consider using Clerk user metadata instead.
+   */
+  if (isAdminRoute(req)) {
+    const user = await clerkClient.users.getUser(userId);
+    const hasOakEmail = user.emailAddresses.some((e) =>
+      isOakEmail(e.emailAddress),
+    );
+
+    if (!hasOakEmail) {
+      log("Admin route without Oak email: DENY");
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+    log("Admin route with Oak email: ALLOW");
+    return;
   }
 
   log("Protected route: ALLOW");

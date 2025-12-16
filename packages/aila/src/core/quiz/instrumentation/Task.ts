@@ -16,7 +16,8 @@ export class Task {
   ) {}
 
   /**
-   * Add data to this task (merges with existing). Triggers a report emit for real-time streaming.
+   * Add data to this task. Merges with existing data.
+   * Triggers a report emit for real-time streaming.
    */
   addData(data: Record<string, unknown>): void {
     this.report.mergeAtPath(this.path, data);

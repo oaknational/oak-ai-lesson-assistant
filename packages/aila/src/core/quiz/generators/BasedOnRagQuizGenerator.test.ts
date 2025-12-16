@@ -1,3 +1,4 @@
+import { createMockTask } from "../instrumentation/testing";
 import type { RagQuizQuestion } from "../interfaces";
 import type { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
@@ -62,10 +63,14 @@ describe("BasedOnRagQuizGenerator", () => {
         mockQuestion2,
       ]);
 
-      const result = await quizGenerator.generateMathsStarterQuizCandidates({
-        title: "My Lesson",
-        basedOn: { id: "source-lesson-id", title: "Source Lesson Title" },
-      });
+      const result = await quizGenerator.generateMathsStarterQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: { id: "source-lesson-id", title: "Source Lesson Title" },
+        },
+        [],
+        createMockTask(),
+      );
 
       expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(
         "source-lesson-id",
@@ -84,9 +89,11 @@ describe("BasedOnRagQuizGenerator", () => {
     });
 
     it("should return empty array when lessonPlan has no basedOn", async () => {
-      const result = await quizGenerator.generateMathsStarterQuizCandidates({
-        title: "My Lesson",
-      });
+      const result = await quizGenerator.generateMathsStarterQuizCandidates(
+        { title: "My Lesson" },
+        [],
+        createMockTask(),
+      );
 
       expect(mockRetrievalService.getQuestionsForPlanId).not.toHaveBeenCalled();
       expect(result).toEqual([]);
@@ -97,13 +104,17 @@ describe("BasedOnRagQuizGenerator", () => {
         createMockQuestion("Q1"),
       ]);
 
-      const result = await quizGenerator.generateMathsStarterQuizCandidates({
-        title: "My Lesson",
-        basedOn: {
-          id: "source-lesson-id",
-          title: undefined as unknown as string,
+      const result = await quizGenerator.generateMathsStarterQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: {
+            id: "source-lesson-id",
+            title: undefined as unknown as string,
+          },
         },
-      });
+        [],
+        createMockTask(),
+      );
 
       expect(result[0]!.source).toEqual({
         type: "basedOn",
@@ -120,10 +131,14 @@ describe("BasedOnRagQuizGenerator", () => {
         mockQuestion,
       ]);
 
-      const result = await quizGenerator.generateMathsExitQuizCandidates({
-        title: "My Lesson",
-        basedOn: { id: "source-lesson-id", title: "Source Lesson" },
-      });
+      const result = await quizGenerator.generateMathsExitQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: { id: "source-lesson-id", title: "Source Lesson" },
+        },
+        [],
+        createMockTask(),
+      );
 
       expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(
         "source-lesson-id",
