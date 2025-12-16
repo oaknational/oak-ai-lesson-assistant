@@ -28,7 +28,7 @@
     "@oakai/logger": "*",
     "@oaknational/oak-curriculum-schema": "^1.59.1",
     "@sentry/nextjs": "^8.49.0",
-    "ai": "^4.1.00",
+    "ai": "^5.0.52",
     "dotenv-cli": "^6.0.0",
     "openai": "^4.96.0",
     "serialize-error": "^12.0.0",
