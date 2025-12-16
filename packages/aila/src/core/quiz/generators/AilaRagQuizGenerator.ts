@@ -5,14 +5,26 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import type { QuizQuestionPool } from "../interfaces";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
+import type { Task } from "../instrumentation";
+import type {
+  AilaQuizCandidateGenerator,
+  QuizQuestionPool,
+} from "../interfaces";
+import { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
-// This generates a quiz based on the *Underlying AILA RAG service* relevant lessons.
-export class AilaRagQuizGenerator extends BaseQuizGenerator {
+/**
+ * Generates quiz candidates based on AILA RAG relevant lessons.
+ */
+export class AilaRagQuizGenerator implements AilaQuizCandidateGenerator {
   readonly name = "ailaRag";
+
+  private retrievalService: RagQuizRetrievalService;
+
+  constructor(retrievalService?: RagQuizRetrievalService) {
+    this.retrievalService = retrievalService ?? new RagQuizRetrievalService();
+  }
 
   async poolsFromAilaRagRelevantLessons(
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
@@ -22,9 +34,10 @@ export class AilaRagQuizGenerator extends BaseQuizGenerator {
       "Getting quizzes for relevant lessons:",
       ailaRagRelevantLessons.map((lesson) => "\n- " + lesson.title),
     );
+
     // TODO: MG - This is a load of DB queries and may make it spiky.
     const poolPromises = ailaRagRelevantLessons.map(async (relevantLesson) => {
-      const questions = await this.questionArrayFromPlanId(
+      const questions = await this.retrievalService.getQuestionsForPlanId(
         relevantLesson.lessonPlanId,
         quizType,
       );
@@ -46,8 +59,9 @@ export class AilaRagQuizGenerator extends BaseQuizGenerator {
   }
 
   async generateMathsStarterQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,
@@ -56,8 +70,9 @@ export class AilaRagQuizGenerator extends BaseQuizGenerator {
   }
 
   async generateMathsExitQuizCandidates(
-    lessonPlan: PartialLessonPlan,
+    _lessonPlan: PartialLessonPlan,
     ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return await this.poolsFromAilaRagRelevantLessons(
       ailaRagRelevantLessons,

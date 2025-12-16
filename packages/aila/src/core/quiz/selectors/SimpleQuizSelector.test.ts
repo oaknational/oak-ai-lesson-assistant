@@ -1,4 +1,5 @@
 import { cachedQuizRatings } from "../fixtures/cachedQuizRatings";
+import { createMockTask } from "../instrumentation";
 import type { QuizQuestionPool, RatingResponse } from "../interfaces";
 import { SimpleQuizSelector } from "./SimpleQuizSelector";
 
@@ -20,11 +21,13 @@ describe("SimpleQuizSelector", () => {
       },
     ];
 
+    const task = createMockTask();
     const selectedQuestions = await selector.selectQuestions(
       questionPools,
       ratings,
       { title: "Test" }, // lessonPlan not used by simple selector
       "/starterQuiz",
+      task,
     );
 
     // SimpleQuizSelector should select the pool with the highest rating (index 0 from cached ratings)

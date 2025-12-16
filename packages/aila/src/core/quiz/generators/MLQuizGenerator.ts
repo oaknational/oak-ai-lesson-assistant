@@ -1,27 +1,46 @@
-// ML-based Quiz Generator
+// ML-based Quiz Generator (single-term, older approach)
 import { aiLogger } from "@oakai/logger";
 
 import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
 
-import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
+  AilaRagRelevantLesson,
+  PartialLessonPlan,
+  QuizPath,
+} from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
+import type {
+  AilaQuizCandidateGenerator,
   CustomSource,
   QuizQuestionPool,
   RagQuizQuestion,
 } from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
 
 const log = aiLogger("aila:quiz");
 
-export class MLQuizGenerator extends BaseQuizGenerator {
+export class MLQuizGenerator implements AilaQuizCandidateGenerator {
   readonly name = "mlSingleTerm";
 
-  protected searchService = new ElasticsearchQuizSearchService();
-  protected rerankService = new CohereReranker();
-  protected queryGenerator = new SemanticQueryGenerator();
+  protected searchService: ElasticsearchQuizSearchService;
+  protected rerankService: CohereReranker;
+  protected queryGenerator: SemanticQueryGenerator;
+  protected retrievalService: RagQuizRetrievalService;
+
+  constructor(
+    searchService?: ElasticsearchQuizSearchService,
+    rerankService?: CohereReranker,
+    queryGenerator?: SemanticQueryGenerator,
+    retrievalService?: RagQuizRetrievalService,
+  ) {
+    this.searchService = searchService ?? new ElasticsearchQuizSearchService();
+    this.rerankService = rerankService ?? new CohereReranker();
+    this.queryGenerator = queryGenerator ?? new SemanticQueryGenerator();
+    this.retrievalService = retrievalService ?? new RagQuizRetrievalService();
+  }
 
   /**
    * Validates the lesson plan
@@ -64,6 +83,7 @@ export class MLQuizGenerator extends BaseQuizGenerator {
   public async generateMathsQuizML(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    task: Task,
   ): Promise<RagQuizQuestion[]> {
     // Using hybrid search combining BM25 and vector similarity
     const semanticQueries = await this.generateSemanticSearchQueries(
@@ -73,17 +93,21 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
     const concatenatedQueries: string = semanticQueries.queries.join(" ");
 
-    const results = await this.searchService.searchWithHybrid(
-      "oak-vector-2025-04-16",
-      concatenatedQueries,
-      100,
-      0.5, // 50/50 weight between BM25 and vector search
+    const results = await task.child("elasticsearch", (t) =>
+      this.searchService.searchWithHybrid(
+        "oak-vector-2025-04-16",
+        concatenatedQueries,
+        t,
+        100,
+        0.5, // 50/50 weight between BM25 and vector search
+      ),
     );
 
     const questionUids = await this.rerankAndExtractQuestionUids(
       results.hits,
       concatenatedQueries,
       10,
+      task,
     );
     const quizQuestions =
       await this.retrievalService.retrieveQuestionsByIds(questionUids);
@@ -105,10 +129,13 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
   public async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
+    _relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]> {
     const questions = await this.generateMathsQuizML(
       lessonPlan,
       "/starterQuiz",
+      task,
     );
     return [
       {
@@ -123,8 +150,14 @@ export class MLQuizGenerator extends BaseQuizGenerator {
 
   public async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
+    _relevantLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]> {
-    const questions = await this.generateMathsQuizML(lessonPlan, "/exitQuiz");
+    const questions = await this.generateMathsQuizML(
+      lessonPlan,
+      "/exitQuiz",
+      task,
+    );
     return [
       {
         questions,
@@ -142,12 +175,11 @@ export class MLQuizGenerator extends BaseQuizGenerator {
     hits: SearchHit<CustomSource>[],
     query: string,
     topN: number,
+    task: Task,
   ): Promise<string[]> {
     const simplifiedResults = this.searchService.transformHits(hits);
-    const rerankedResults = await this.rerankService.rerankDocuments(
-      query,
-      simplifiedResults,
-      topN,
+    const rerankedResults = await task.child("cohere", (t) =>
+      this.rerankService.rerankDocuments(query, simplifiedResults, t, topN),
     );
     return rerankedResults.map((result) => result.questionUid);
   }

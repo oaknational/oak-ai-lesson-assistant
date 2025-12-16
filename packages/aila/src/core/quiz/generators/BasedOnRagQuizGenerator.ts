@@ -4,16 +4,27 @@ import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
   QuizPath,
-  QuizV1,
 } from "../../../protocol/schema";
-import type { QuizQuestionPool } from "../interfaces";
-import { BaseQuizGenerator } from "./BaseQuizGenerator";
+import type { Task } from "../instrumentation";
+import type {
+  AilaQuizCandidateGenerator,
+  QuizQuestionPool,
+} from "../interfaces";
+import { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
-// RAG-based Quiz Generator
-export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
+/**
+ * Generates quiz candidates based on the lesson's "basedOn" source lesson.
+ */
+export class BasedOnRagQuizGenerator implements AilaQuizCandidateGenerator {
   readonly name = "basedOnRag";
+
+  private retrievalService: RagQuizRetrievalService;
+
+  constructor(retrievalService?: RagQuizRetrievalService) {
+    this.retrievalService = retrievalService ?? new RagQuizRetrievalService();
+  }
 
   private async generateQuizCandidates(
     lessonPlan: PartialLessonPlan,
@@ -27,7 +38,7 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
       log.info("Lesson plan basedOn is undefined. Returning empty array.");
       return [];
     }
-    const questions = await this.questionArrayFromPlanId(
+    const questions = await this.retrievalService.getQuestionsForPlanId(
       lessonPlan.basedOn.id,
       quizType,
     );
@@ -45,14 +56,16 @@ export class BasedOnRagQuizGenerator extends BaseQuizGenerator {
 
   async generateMathsStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return this.generateQuizCandidates(lessonPlan, "/starterQuiz");
   }
 
   async generateMathsExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    _ailaRagRelevantLessons?: AilaRagRelevantLesson[],
+    _ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    _task: Task,
   ): Promise<QuizQuestionPool[]> {
     return this.generateQuizCandidates(lessonPlan, "/exitQuiz");
   }

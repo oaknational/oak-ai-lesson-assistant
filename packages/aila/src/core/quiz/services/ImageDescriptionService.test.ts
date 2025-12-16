@@ -1,6 +1,7 @@
 import { kv } from "@vercel/kv";
 
 import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
+import { createMockTask } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
 import { ImageDescriptionService } from "./ImageDescriptionService";
 
@@ -191,8 +192,9 @@ describe("ImageDescriptionService", () => {
   describe("getImageDescriptions", () => {
     it("should return empty map when no images", async () => {
       const questionPools = [createMockQuestionPool("Plain text question")];
+      const task = createMockTask();
 
-      const result = await service.getImageDescriptions(questionPools);
+      const result = await service.getImageDescriptions(questionPools, task);
 
       expect(result.descriptions.size).toBe(0);
       expect(result.cacheHits).toBe(0);
@@ -204,10 +206,11 @@ describe("ImageDescriptionService", () => {
       const questionPools = [
         createMockQuestionPool("Question with ![img](url.png)"),
       ];
+      const task = createMockTask();
 
       mockKv.mget.mockResolvedValue(["cached description"]);
 
-      const result = await service.getImageDescriptions(questionPools);
+      const result = await service.getImageDescriptions(questionPools, task);
 
       expect(result.descriptions.size).toBe(1);
       expect(result.descriptions.get("url.png")).toBe("cached description");
