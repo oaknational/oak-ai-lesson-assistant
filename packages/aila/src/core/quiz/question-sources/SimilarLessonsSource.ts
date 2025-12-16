@@ -6,8 +6,8 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
-import type { QuizQuestionPool } from "../interfaces";
-import { BaseQuestionSource } from "./BaseQuestionSource";
+import type { QuestionSource, QuizQuestionPool } from "../interfaces";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
@@ -15,8 +15,15 @@ const log = aiLogger("aila:quiz");
  * Retrieves quiz questions from similar Oak lessons,
  * identified by matching title, subject, and key stage.
  */
-export class SimilarLessonsSource extends BaseQuestionSource {
+export class SimilarLessonsSource implements QuestionSource {
   readonly name = "similarLessons";
+
+  private retrievalService: QuizQuestionRetrievalService;
+
+  constructor(retrievalService?: QuizQuestionRetrievalService) {
+    this.retrievalService =
+      retrievalService ?? new QuizQuestionRetrievalService();
+  }
 
   async poolsFromSimilarLessons(
     similarLessons: AilaRagRelevantLesson[],
@@ -27,7 +34,7 @@ export class SimilarLessonsSource extends BaseQuestionSource {
       similarLessons.map((lesson) => "\n- " + lesson.title),
     );
     const poolPromises = similarLessons.map(async (lesson) => {
-      const questions = await this.questionArrayFromPlanId(
+      const questions = await this.retrievalService.getQuestionsForPlanId(
         lesson.lessonPlanId,
         quizType,
       );

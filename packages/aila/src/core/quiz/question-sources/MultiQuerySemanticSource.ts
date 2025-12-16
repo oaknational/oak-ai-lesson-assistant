@@ -2,11 +2,15 @@ import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
-import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
+import type {
+  QuestionSource,
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "../interfaces";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
-import { BaseQuestionSource } from "./BaseQuestionSource";
 
 const log = aiLogger("aila:quiz");
 
@@ -23,18 +27,20 @@ const POOL_SIZE = 3;
  * - Uses Cohere reranking for relevance
  * - Returns separate pools maintaining semantic grouping
  */
-export class MultiQuerySemanticSource extends BaseQuestionSource {
+export class MultiQuerySemanticSource implements QuestionSource {
   readonly name = "multiQuerySemantic";
 
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: ElasticsearchQuizSearchService;
   protected rerankService: CohereReranker;
+  protected retrievalService: QuizQuestionRetrievalService;
 
-  constructor() {
-    super();
+  constructor(retrievalService?: QuizQuestionRetrievalService) {
     this.queryGenerator = new SemanticQueryGenerator();
     this.searchService = new ElasticsearchQuizSearchService();
     this.rerankService = new CohereReranker();
+    this.retrievalService =
+      retrievalService ?? new QuizQuestionRetrievalService();
   }
 
   /**

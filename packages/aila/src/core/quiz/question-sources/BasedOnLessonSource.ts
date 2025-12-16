@@ -6,8 +6,8 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import type { Task } from "../instrumentation";
-import type { QuizQuestionPool } from "../interfaces";
-import { BaseQuestionSource } from "./BaseQuestionSource";
+import type { QuestionSource, QuizQuestionPool } from "../interfaces";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
@@ -16,8 +16,15 @@ const log = aiLogger("aila:quiz");
  * selected as the "based on" source for their lesson plan.
  * This is a high-signal source when available.
  */
-export class BasedOnLessonSource extends BaseQuestionSource {
+export class BasedOnLessonSource implements QuestionSource {
   readonly name = "basedOnLesson";
+
+  private retrievalService: QuizQuestionRetrievalService;
+
+  constructor(retrievalService?: QuizQuestionRetrievalService) {
+    this.retrievalService =
+      retrievalService ?? new QuizQuestionRetrievalService();
+  }
 
   private async getCandidates(
     lessonPlan: PartialLessonPlan,
@@ -31,7 +38,7 @@ export class BasedOnLessonSource extends BaseQuestionSource {
       log.info("Lesson plan basedOn is undefined. Returning empty array.");
       return [];
     }
-    const questions = await this.questionArrayFromPlanId(
+    const questions = await this.retrievalService.getQuestionsForPlanId(
       lessonPlan.basedOn.id,
       quizType,
     );

@@ -1,36 +1,159 @@
-import { aiLogger } from "@oakai/logger";
-
-import type { PartialLessonPlan } from "../../../protocol/schema";
-import { QuizV3QuestionSchema } from "../../../protocol/schemas/quiz/quizV3";
-import { CircleTheoremLesson } from "../fixtures/CircleTheoremsExampleOutput";
-import { createMockTask } from "../instrumentation";
+import { createMockTask } from "../instrumentation/testing";
+import type { RagQuizQuestion } from "../interfaces";
+import type { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { BasedOnLessonSource } from "./BasedOnLessonSource";
 
-const log = aiLogger("aila");
+const createMockQuestion = (uid: string): RagQuizQuestion => ({
+  question: {
+    questionType: "multiple-choice",
+    question: `Test question ${uid}`,
+    answers: ["Correct answer"],
+    distractors: ["Wrong answer"],
+    hint: null,
+  },
+  sourceUid: uid,
+  source: {
+    questionId: 1,
+    questionUid: uid,
+    questionStem: [{ type: "text", text: `Test question ${uid}` }],
+    answers: {
+      "multiple-choice": [
+        {
+          answer: [{ type: "text", text: "Correct answer" }],
+          answer_is_correct: true,
+        },
+        {
+          answer: [{ type: "text", text: "Wrong answer" }],
+          answer_is_correct: false,
+        },
+      ],
+    },
+    questionType: "multiple-choice",
+    hint: "",
+    feedback: "",
+    active: true,
+  },
+  imageMetadata: [],
+});
 
-const shouldSkipTests = process.env.TEST_QUIZZES === "false";
-
-(shouldSkipTests ? describe.skip : describe)("BasedOnLessonSource", () => {
+describe("BasedOnLessonSource", () => {
   let source: BasedOnLessonSource;
-  let mockLessonPlan: PartialLessonPlan;
+  let mockRetrievalService: jest.Mocked<QuizQuestionRetrievalService>;
 
   beforeEach(() => {
-    source = new BasedOnLessonSource();
-    mockLessonPlan = CircleTheoremLesson;
+    mockRetrievalService = {
+      getQuestionsForPlanId: jest.fn(),
+      getStarterQuizIds: jest.fn(),
+      getExitQuizIds: jest.fn(),
+      hasStarterQuiz: jest.fn(),
+      hasExitQuiz: jest.fn(),
+      retrieveQuestionsByIds: jest.fn(),
+    } as unknown as jest.Mocked<QuizQuestionRetrievalService>;
+
+    source = new BasedOnLessonSource(mockRetrievalService);
   });
 
-  it("should get valid quiz candidates", async () => {
-    const task = createMockTask();
-    const pools = await source.getStarterQuizCandidates(
-      mockLessonPlan,
-      [],
-      task,
-    );
-    log.info(JSON.stringify(pools));
-    log.info("QUIZ ABOVE");
-    expect(pools[0]!.questions[0]).toBeDefined();
-    expect(
-      QuizV3QuestionSchema.safeParse(pools[0]!.questions[0]!.question).success,
-    ).toBe(true);
+  describe("getStarterQuizCandidates", () => {
+    it("should return pool with questions from basedOn lesson", async () => {
+      const mockQuestion1 = createMockQuestion("Q1");
+      const mockQuestion2 = createMockQuestion("Q2");
+
+      mockRetrievalService.getQuestionsForPlanId.mockResolvedValue([
+        mockQuestion1,
+        mockQuestion2,
+      ]);
+
+      const result = await source.getStarterQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: { id: "source-lesson-id", title: "Source Lesson Title" },
+        },
+        [],
+        createMockTask(),
+      );
+
+      expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(
+        "source-lesson-id",
+        "/starterQuiz",
+      );
+      expect(result).toEqual([
+        {
+          questions: [mockQuestion1, mockQuestion2],
+          source: {
+            type: "basedOnLesson",
+            lessonPlanId: "source-lesson-id",
+            lessonTitle: "Source Lesson Title",
+          },
+        },
+      ]);
+    });
+
+    it("should return empty array when lessonPlan has no basedOn", async () => {
+      const result = await source.getStarterQuizCandidates(
+        { title: "My Lesson" },
+        [],
+        createMockTask(),
+      );
+
+      expect(mockRetrievalService.getQuestionsForPlanId).not.toHaveBeenCalled();
+      expect(result).toEqual([]);
+    });
+
+    it("should use fallback title when basedOn.title is undefined", async () => {
+      mockRetrievalService.getQuestionsForPlanId.mockResolvedValue([
+        createMockQuestion("Q1"),
+      ]);
+
+      const result = await source.getStarterQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: {
+            id: "source-lesson-id",
+            title: undefined as unknown as string,
+          },
+        },
+        [],
+        createMockTask(),
+      );
+
+      expect(result[0]!.source).toEqual({
+        type: "basedOnLesson",
+        lessonPlanId: "source-lesson-id",
+        lessonTitle: "Based on lesson",
+      });
+    });
+  });
+
+  describe("getExitQuizCandidates", () => {
+    it("should request exitQuiz questions from basedOn lesson", async () => {
+      const mockQuestion = createMockQuestion("Q1");
+      mockRetrievalService.getQuestionsForPlanId.mockResolvedValue([
+        mockQuestion,
+      ]);
+
+      const result = await source.getExitQuizCandidates(
+        {
+          title: "My Lesson",
+          basedOn: { id: "source-lesson-id", title: "Source Lesson" },
+        },
+        [],
+        createMockTask(),
+      );
+
+      expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(
+        "source-lesson-id",
+        "/exitQuiz",
+      );
+      expect(result).toEqual([
+        {
+          questions: [mockQuestion],
+          source: {
+            type: "basedOnLesson",
+            lessonPlanId: "source-lesson-id",
+            lessonTitle: "Source Lesson",
+          },
+        },
+      ]);
+    });
   });
 });

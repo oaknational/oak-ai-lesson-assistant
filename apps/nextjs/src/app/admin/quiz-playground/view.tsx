@@ -276,7 +276,8 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          {composerLlmNode?.status === "complete" && composerLlmNode.data.response ? (
+          {composerLlmNode?.status === "complete" &&
+          composerLlmNode.data.response ? (
             <ComposerSection
               prompt={(composerPromptNode?.data.prompt as string) ?? ""}
               response={
@@ -289,7 +290,8 @@ export function QuizPlaygroundView({
                 }
               }
               selectedQuestions={
-                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ?? []
+                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??
+                []
               }
               pools={[
                 ...(basedOnLesson?.pools ?? []),
