@@ -76,7 +76,7 @@
     "@trpc/client": "10.45.2",
     "@trpc/next": "10.45.2",
     "@trpc/react-query": "10.45.2",
-    "@trpc/server": "10.45.2",
+    "@trpc/server": "10.45.3",
     "@types/object-hash": "^3.0.6",
     "@types/ramda": "^0.30.2",
     "@uidotdev/usehooks": "^2.4.1",
