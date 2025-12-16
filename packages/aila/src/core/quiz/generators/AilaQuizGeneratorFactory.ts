@@ -1,5 +1,5 @@
+import type { AilaQuizCandidateGenerator } from "../interfaces";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
-import type { BaseQuizGenerator } from "./BaseQuizGenerator";
 import { BasedOnRagQuizGenerator } from "./BasedOnRagQuizGenerator";
 import { MLQuizGenerator } from "./MLQuizGenerator";
 import { MLQuizGeneratorMultiTerm } from "./MLQuizGeneratorMultiTerm";
@@ -9,7 +9,7 @@ import { MLQuizGeneratorMultiTerm } from "./MLQuizGeneratorMultiTerm";
 export class AilaQuizFactory {
   static createQuizGenerator(
     type: "rag" | "ml" | "mlMultiTerm" | "basedOnRag",
-  ): BaseQuizGenerator {
+  ): AilaQuizCandidateGenerator {
     switch (type) {
       case "rag":
         return new AilaRagQuizGenerator();
