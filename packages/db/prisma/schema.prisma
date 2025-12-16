@@ -11,7 +11,7 @@ datasource db {
   url        = env("PRISMA_ACCELERATE_DATABASE_URL")
   directUrl  = env("DIRECT_DATABASE_URL")
   extensions = [vector, pg_trgm]
-  schemas    = ["public", "ingest", "rag", "additional_materials"]
+  schemas    = ["public", "ingest", "rag"]
 }
 
 generator zod {
@@ -1158,28 +1158,3 @@ model RagLessonPlanPart {
   @@schema("rag")
 }
 
-model AdditionalMaterialInteraction {
-  id     String @id @default(uuid())
-  userId String @map("user_id")
-
-  derivedFromId String?                         @map("derived_from_id")
-  derivedFrom   AdditionalMaterialInteraction?  @relation("DerivedFrom", fields: [derivedFromId], references: [id])
-  derivatives   AdditionalMaterialInteraction[] @relation("DerivedFrom")
-
-  adaptsOutputId String?                         @map("adapts_output_id")
-  adaptsOutput   AdditionalMaterialInteraction?  @relation("AdaptedOutput", fields: [adaptsOutputId], references: [id])
-  adaptedBy      AdditionalMaterialInteraction[] @relation("AdaptedOutput")
-
-  config               Json    @db.JsonB
-  inputText            String? @map("input_text")
-  inputThreatDetection Json?   @map("input_threat_detection") @db.JsonB
-
-  output           Json? @db.JsonB
-  outputModeration Json? @map("output_moderation") @db.JsonB
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("AdditionalMaterialInteractions")
-  @@schema("public")
-}
