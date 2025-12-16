@@ -59,14 +59,15 @@ export default function QuizPlaygroundPage() {
   const inputSectionRef = useRef<HTMLDivElement>(null);
 
   // Scroll so input section is at top when report becomes active
+  const hasActiveReport = !!activeReport;
   useEffect(() => {
-    if (activeReport && inputSectionRef.current) {
+    if (hasActiveReport && inputSectionRef.current) {
       inputSectionRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
     }
-  }, [!!activeReport]);
+  }, [hasActiveReport]);
 
   if (user.isLoaded && !user.isSignedIn) {
     redirect("/sign-in?next=/admin/quiz-playground");
@@ -220,7 +221,7 @@ export default function QuizPlaygroundPage() {
                   </span>
                 )}
               </button>
-              {(streamingReport || isRunning) && (
+              {(streamingReport ?? isRunning) && (
                 <button
                   onClick={resetPipeline}
                   className="rounded-lg bg-gray-200 px-4 py-3 hover:bg-gray-300"
