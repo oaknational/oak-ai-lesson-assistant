@@ -2,12 +2,11 @@ import type { PrismaClientWithAccelerate, Snippet } from "@oakai/db";
 import { Prisma, SnippetStatus, SnippetVariant } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import { LLMChain, RetrievalQAChain } from "langchain/chains";
+import { RetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
-  PromptTemplate,
   SystemMessagePromptTemplate,
 } from "langchain/prompts";
 import { StringOutputParser } from "langchain/schema/output_parser";
@@ -25,8 +24,6 @@ import { embedWithCache } from "../utils/embeddings";
 
 const log = aiLogger("snippets");
 
-export type DisplayFormat = "plain" | "markdown";
-
 export type SnippetWithLesson = Snippet & {
   lesson: {
     id: string;
@@ -37,11 +34,6 @@ export type SnippetWithLesson = Snippet & {
   };
 };
 
-const displayFormatInstructions = {
-  plain: "",
-  markdown:
-    "Format your response as a valid Markdown document, ensuring that titles and body content all use valid markdown notation.",
-};
 interface FilterOptions {
   key_stage_id?: object;
   subject_id?: object;
@@ -270,82 +262,6 @@ If you don't know the answer, just respond with "None", don't try to make up an 
       query,
     });
     return res;
-  }
-
-  async prompt({
-    prompt,
-    snippetIds,
-    displayFormat,
-    temperature = 0.8,
-    maxTokens = 8000,
-  }: {
-    prompt: string;
-    snippetIds: string[];
-    displayFormat: DisplayFormat;
-    temperature?: number;
-    maxTokens?: number;
-  }) {
-    const snippets = await this.prisma.snippet.findMany({
-      where: {
-        id: {
-          in: snippetIds,
-        },
-      },
-    });
-
-    const snippetText = snippets.map((s) => s.content).join("\n\n");
-
-    const model = createOpenAILangchainClient({
-      app: "snippets",
-      fields: {
-        modelName: "gpt-3.5-turbo-16k",
-        temperature,
-        maxTokens,
-      },
-    });
-
-    const displayFormatPrompt = displayFormatInstructions[displayFormat];
-    const template = PromptTemplate.fromTemplate(
-      `Context:
-
-You are provided with a set of snippets of lesson transcripts from a UK online school where a teacher has delivered a lesson to pupils and the recording of the teacher speaking has been transcribed.
-
-Based on the provided prompt, answer it based on the content of the transcript snippets provided. These snippets are often incomplete sentences. In your response ensure that you do not follow the formatting of the transcript snippets. Format your response in full English sentences.
-
-Where possible do not based your response on other sources other than what is present within the snippets of transcripts.
-
-Prompt:
-
-{prompt}
-
-Transcript Snippets:
-
-Use the contents of the following pieces of transcripts to formulate your response. These snippets often start with incomplete sentences. Do not follow the format of the snippets in your answer, and respond to the prompt as you normally would, ensuring that your response is grammatically correct and structured in full, correct English sentences, unless the Prompt specifies another format.
-
----Snippets begin----
-{snippetText}
-----Snippets end---
-
-Output Format:
-
-Ensure that your response is formatted in full English sentences with a structure that would make sense to the reader. Do not start or end your response with partial sentences.
-
-Respond to the prompt as if it is the main prompt you are being given rather than making any reference to it.
-{displayFormatPrompt}
-`,
-    );
-    const chain = new LLMChain({
-      llm: model,
-      prompt: template,
-    });
-    const res = await chain.call({ prompt, snippetText, displayFormatPrompt });
-    log.info("Prompt result", {
-      res,
-      prompt,
-      snippetText,
-      displayFormatPrompt,
-    });
-    return (res?.text as string) ?? "Sorry there was an error";
   }
 
   async generateForQuestion(questionId: string) {
