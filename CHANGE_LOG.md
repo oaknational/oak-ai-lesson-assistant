@@ -1,3 +1,24 @@
+## [1.57.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.57.0...v1.57.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* **security:** update Next.js to 14.2.35 for CVE-2025-55184 ([#877](https://github.com/oaknational/oak-ai-lesson-assistant/issues/877)) ([b221df2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b221df21b02cd68631c1e52d2bc21876b3c2deb7))
+
+# [1.57.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.2...v1.57.0) (2025-12-11)
+
+
+### Features
+
+* csp switch to posthog reporting - AI-1780 ([#836](https://github.com/oaknational/oak-ai-lesson-assistant/issues/836)) ([58d9db2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/58d9db26e620f7fbac757605a33cced974d17ba8))
+* **quiz:** add instrumentation for Sentry spans in quiz pipeline ([#868](https://github.com/oaknational/oak-ai-lesson-assistant/issues/868)) ([bd11108](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bd11108af6b2ef2dfe3d16e503d98ee3d49f9cbf))
+* run prettier ([a66a2c0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a66a2c0ffe1ca01e263ccf9fe298a6de51e95422))
+* update InlineButton color to match Figma ([1089294](https://github.com/oaknational/oak-ai-lesson-assistant/commit/10892942ceac34fc4efbc3db43d7ef6d692e9c23))
+* update oak-components to use UI tokens ([ce71c79](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ce71c7989e6d8e3883ba175e3c8e8dd3b4ccb284))
+* update OakColorToken to OakUiRoleToken occurrences ([58ef93d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/58ef93da07f5d83f9991c228c090ae41e4711701))
+* update pnpm-lock.yaml ([f8432e9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f8432e94206fac6186583ac14ca0be670f8b8ef1))
+* update tokens in home page ([1e03a5e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1e03a5ebeb8162ac63f51ae96a2759ee15092345))
+
 ## [1.56.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.56.1...v1.56.2) (2025-12-09)
 
 
