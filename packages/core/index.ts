@@ -25,7 +25,6 @@ import { notifyUserBan } from "./src/functions/slack/notifyUserBan";
 import { embedAllSnippets } from "./src/functions/snippet/embedAll";
 import { generateSnippetsForAllQuestions } from "./src/functions/snippet/generateForAllQuestions";
 import { generateSnippetEmbeddings } from "./src/functions/snippet/generateSnippetEmbeddings";
-import { recalculateStatistics } from "./src/functions/statistics/recalculateStatistics";
 import { embedSubjectLessonQuizzes } from "./src/functions/subject/embedSubjectLessonQuizzes";
 import { embedSubjectLessonTranscripts } from "./src/functions/subject/embedSubjectLessonTranscripts";
 import { generatePlansForSubjectLessons } from "./src/functions/subject/generatePlansForSubjectLessons";
@@ -47,7 +46,6 @@ export const functions = [
   generateLessonQuizEmbeddings,
   embedSubjectLessonTranscripts,
   embedSubjectLessonQuizzes,
-  recalculateStatistics,
   embedLessonSummary,
   embedAllLessonSummaries,
   embedAllSnippets,

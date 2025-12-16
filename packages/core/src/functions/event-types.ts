@@ -28,7 +28,6 @@ import { notifyUserBanSchema } from "./slack/notifyUserBan.schema";
 import { embedAllSnippetsSchema } from "./snippet/embedAll.schema";
 import { generateSnippetsForAllQuestionsSchema } from "./snippet/generateQuestionSnippets.schema";
 import { embedSnippetSchema } from "./snippet/generateSnippetEmbeddings.schema";
-import { recalculateStatisticsSchema } from "./statistics/recalculateStatistics.schema";
 import { embedSubjectLessonQuizzesSchema } from "./subject/embedSubjectLessonQuizzes.schema";
 import { embedSubjectLessonTranscriptsSchema } from "./subject/embedSubjectLessonTranscripts.schema";
 import { generateLessonPlansForSubjectLessonsSchema } from "./subject/generatePlansForSubjectLessons.schema";
@@ -53,7 +52,6 @@ const schemas = {
   "app/lesson.quiz.embed": generateLessonQuizEmbeddingsSchema,
   "app/subject.transcripts.embed": embedSubjectLessonTranscriptsSchema,
   "app/subject.quizzes.embed": embedSubjectLessonQuizzesSchema,
-  "app/stats.recalculate": recalculateStatisticsSchema,
   "app/lessonSummary.embed": embedLessonSummarySchema,
   "app/lessonSummary.embedAll": embedAllLessonSummariesSchema,
   "app/lessonPlan.embed": embedLessonPlanSchema,
