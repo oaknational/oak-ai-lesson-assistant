@@ -57,12 +57,24 @@ Key Learning Points:
 
 ---
 
+UNDERSTANDING THE QUESTION SOURCES:
+
+You will receive questions from up to three source types. Understanding these helps you make better selections:
+
+**User-Selected Source Lesson**
+If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+
+**Reference Quizzes from Similar Lessons**
+Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+
+**Semantically Matched Questions**
+Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+---
+
 CANDIDATE QUESTIONS:
 
-Below are candidate questions from Oak's existing lesson data. Select 6 questions that work together as a cohesive, pedagogically sound quiz.
-
-## Pool 1: ML Semantic Search
-Search query: "adding fractions with different denominators"
+### Semantically Matched Questions (query: "adding fractions with different denominators")
 
 ### Question UID:q1
 Type: Multiple Choice
@@ -85,8 +97,7 @@ Acceptable answer(s):
 1. Acceptable answer 1
 2. Acceptable answer 2
 
-## Pool 2: User-selected source lesson
-Source: Introduction to Fractions (lesson-123)
+### User-Selected Source Lesson: Introduction to Fractions
 
 ### Question UID:q3
 Type: Match
@@ -165,12 +176,24 @@ Key Learning Points:
 
 ---
 
+UNDERSTANDING THE QUESTION SOURCES:
+
+You will receive questions from up to three source types. Understanding these helps you make better selections:
+
+**User-Selected Source Lesson**
+If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+
+**Reference Quizzes from Similar Lessons**
+Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+
+**Semantically Matched Questions**
+Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+---
+
 CANDIDATE QUESTIONS:
 
-Below are candidate questions from Oak's existing lesson data. Select 6 questions that work together as a cohesive, pedagogically sound quiz.
-
-## Pool 1: ML Semantic Search
-Search query: "adding fractions with different denominators"
+### Semantically Matched Questions (query: "adding fractions with different denominators")
 
 ### Question UID:q1
 Type: Multiple Choice
@@ -193,8 +216,7 @@ Acceptable answer(s):
 1. Acceptable answer 1
 2. Acceptable answer 2
 
-## Pool 2: User-selected source lesson
-Source: Introduction to Fractions (lesson-123)
+### User-Selected Source Lesson: Introduction to Fractions
 
 ### Question UID:q3
 Type: Match

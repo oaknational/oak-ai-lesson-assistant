@@ -1,3 +1,4 @@
+import { createMockTask } from "../instrumentation/testing";
 import type { RagQuizQuestion } from "../interfaces";
 import type { RagQuizRetrievalService } from "../services/RagQuizRetrievalService";
 import { AilaRagQuizGenerator } from "./AilaRagQuizGenerator";
@@ -128,6 +129,7 @@ describe("AilaRagQuizGenerator", () => {
           { lessonPlanId: "plan-1", title: "Lesson 1" },
           { lessonPlanId: "plan-2", title: "Lesson 2" },
         ],
+        createMockTask(),
       );
 
       expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(
@@ -148,6 +150,7 @@ describe("AilaRagQuizGenerator", () => {
       await quizGenerator.generateMathsExitQuizCandidates(
         { title: "Test Lesson" },
         [{ lessonPlanId: "plan-1", title: "Lesson 1" }],
+        createMockTask(),
       );
 
       expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledWith(

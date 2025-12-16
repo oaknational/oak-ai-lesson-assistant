@@ -3,6 +3,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import type { Task } from "../instrumentation";
 import type {
   AilaQuizCandidateGenerator,
   QuizQuestionPool,
