@@ -11,7 +11,7 @@ import { lessonRouter } from "./lesson";
 import { lessonSummaryRouter } from "./lesson-summary";
 import { moderationsRouter } from "./moderations";
 import { newFeatureFlag } from "./newFeatureFlag";
-import { quizRagDebugRouter } from "./quizRagDebug";
+import { quizPlaygroundRouter } from "./quizPlayground";
 import { snippetRouter } from "./snippet";
 import { subjectAndKeyStagesRouter } from "./subjectsAndKeyStage";
 import { teachingMaterialsRouter } from "./teachingMaterialsRouter";
@@ -32,7 +32,7 @@ export const oakAppRouter = router({
   admin: adminRouter,
   teachingMaterials: teachingMaterialsRouter,
   analytics: analyticsRouter,
-  quizRagDebug: quizRagDebugRouter,
+  quizPlayground: quizPlaygroundRouter,
 });
 
 // export type definition of API
