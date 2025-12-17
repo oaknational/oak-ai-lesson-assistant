@@ -138,6 +138,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../../packages/prettier-config
+      '@oakai/rag':
+        specifier: '*'
+        version: link:../../packages/rag
       '@oakai/teaching-materials':
         specifier: '*'
         version: link:../../packages/teaching-materials

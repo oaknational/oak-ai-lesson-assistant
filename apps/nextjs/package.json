@@ -56,6 +56,7 @@
     "@oakai/exports": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
+    "@oakai/rag": "*",
     "@oakai/teaching-materials": "*",
     "@oaknational/oak-components": "^1.174.1",
     "@oaknational/oak-consent-client": "^2.1.0",
