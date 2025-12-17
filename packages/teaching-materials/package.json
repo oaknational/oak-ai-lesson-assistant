@@ -27,7 +27,7 @@
     "@oakai/core": "*",
     "@oakai/logger": "*",
     "@oaknational/oak-curriculum-schema": "^1.59.1",
-    "@sentry/nextjs": "^8.49.0",
+    "@sentry/nextjs": "^10.29.0",
     "ai": "^4.1.00",
     "dotenv-cli": "^6.0.0",
     "openai": "^4.96.0",

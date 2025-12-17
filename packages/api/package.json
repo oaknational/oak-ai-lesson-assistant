@@ -33,7 +33,7 @@
     "@trpc/server": "11.7.2",
     "@vercel/kv": "^0.2.2",
     "cloudinary": "^1.41.1",
-    "next": "16.0.8",
+    "next": "16.0.10",
     "remeda": "^1.29.0",
     "superjson": "^1.9.1",
     "zod": "3.23.8"
