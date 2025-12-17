@@ -50,6 +50,12 @@ function createMockQuestionPool(
   question: string,
   answers: string[] = [],
   distractors: string[] = [],
+  imageMetadata: Array<{
+    imageUrl: string;
+    attribution: string | null;
+    width: number;
+    height: number;
+  }> = [],
 ): QuizQuestionPool {
   return {
     questions: [
@@ -63,7 +69,7 @@ function createMockQuestionPool(
         },
         sourceUid: "test-uid",
         source: createMockHasuraQuestion(),
-        imageMetadata: [],
+        imageMetadata,
       },
     ],
     source: {
@@ -117,30 +123,52 @@ describe("ImageDescriptionEnricher", () => {
     });
   });
 
-  describe("replaceImagesWithDescriptions", () => {
-    it("should replace images with descriptions", () => {
-      const descriptions = new Map([["img.png", "a right triangle"]]);
+  describe("applyDescriptionsToImageMetadata", () => {
+    it("should add aiDescription to imageMetadata entries", () => {
+      const descriptions = new Map([["url.png", "a right triangle"]]);
 
-      const text = "Calculate the area of ![triangle](img.png)";
-      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
-        text,
+      const questionPools = [
+        createMockQuestionPool(
+          "Q ![img](url.png)",
+          ["Answer"],
+          ["Distractor"],
+          [{ imageUrl: "url.png", attribution: null, width: 100, height: 100 }],
+        ),
+      ];
+
+      const result = ImageDescriptionEnricher.applyDescriptionsToImageMetadata(
+        questionPools,
         descriptions,
       );
 
-      expect(result).toContain("[IMAGE: a right triangle]");
-      expect(result).not.toContain("![triangle](img.png)");
+      const meta = result[0]?.questions[0]?.imageMetadata[0];
+      expect(meta?.aiDescription).toBe("a right triangle");
     });
 
-    it("should leave images unchanged if no description", () => {
-      const descriptions = new Map<string, string>();
+    it("should not modify question text", () => {
+      const descriptions = new Map([["url.png", "test image"]]);
 
-      const text = "Calculate the area of ![triangle](img.png)";
-      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
-        text,
+      const questionPools = [
+        createMockQuestionPool(
+          "Q ![img](url.png)",
+          ["A ![img](url.png)"],
+          ["D ![img](url.png)"],
+          [{ imageUrl: "url.png", attribution: null, width: 100, height: 100 }],
+        ),
+      ];
+
+      const result = ImageDescriptionEnricher.applyDescriptionsToImageMetadata(
+        questionPools,
         descriptions,
       );
 
-      expect(result).toContain("![triangle](img.png)");
+      const q = result[0]?.questions[0]?.question;
+      expect(q?.questionType).toBe("multiple-choice");
+      if (q?.questionType === "multiple-choice") {
+        expect(q.question).toContain("![img](url.png)");
+        expect(q.answers[0]).toContain("![img](url.png)");
+        expect(q.distractors[0]).toContain("![img](url.png)");
+      }
     });
 
     it("should handle multiple images", () => {
@@ -149,43 +177,57 @@ describe("ImageDescriptionEnricher", () => {
         ["img2.png", "second image"],
       ]);
 
-      const text = "Compare ![a](img1.png) and ![b](img2.png)";
-      const result = ImageDescriptionEnricher.replaceImagesWithDescriptions(
-        text,
-        descriptions,
-      );
-
-      expect(result).toContain("[IMAGE: first image]");
-      expect(result).toContain("[IMAGE: second image]");
-      expect(result).not.toContain("![a](img1.png)");
-      expect(result).not.toContain("![b](img2.png)");
-    });
-  });
-
-  describe("applyDescriptionsToQuestions", () => {
-    it("should process all fields of questions in pools", () => {
-      const descriptions = new Map([["url.png", "test image"]]);
-
       const questionPools = [
         createMockQuestionPool(
-          "Q ![img](url.png)",
-          ["A ![img](url.png)"],
-          ["D ![img](url.png)"],
+          "Compare ![a](img1.png) and ![b](img2.png)",
+          [],
+          [],
+          [
+            {
+              imageUrl: "img1.png",
+              attribution: null,
+              width: 100,
+              height: 100,
+            },
+            {
+              imageUrl: "img2.png",
+              attribution: null,
+              width: 100,
+              height: 100,
+            },
+          ],
         ),
       ];
 
-      const result = ImageDescriptionEnricher.applyDescriptionsToQuestions(
+      const result = ImageDescriptionEnricher.applyDescriptionsToImageMetadata(
         questionPools,
         descriptions,
       );
 
-      const q = result[0]?.questions[0]?.question;
-      expect(q?.questionType).toBe("multiple-choice");
-      if (q?.questionType === "multiple-choice") {
-        expect(q.question).toContain("[IMAGE: test image]");
-        expect(q.answers[0]).toContain("[IMAGE: test image]");
-        expect(q.distractors[0]).toContain("[IMAGE: test image]");
-      }
+      const metadata = result[0]?.questions[0]?.imageMetadata;
+      expect(metadata?.[0]?.aiDescription).toBe("first image");
+      expect(metadata?.[1]?.aiDescription).toBe("second image");
+    });
+
+    it("should leave imageMetadata unchanged if no description found", () => {
+      const descriptions = new Map<string, string>();
+
+      const questionPools = [
+        createMockQuestionPool(
+          "Q ![img](url.png)",
+          [],
+          [],
+          [{ imageUrl: "url.png", attribution: null, width: 100, height: 100 }],
+        ),
+      ];
+
+      const result = ImageDescriptionEnricher.applyDescriptionsToImageMetadata(
+        questionPools,
+        descriptions,
+      );
+
+      const meta = result[0]?.questions[0]?.imageMetadata[0];
+      expect(meta?.aiDescription).toBeUndefined();
     });
   });
 
