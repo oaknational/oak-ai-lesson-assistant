@@ -8,7 +8,7 @@ import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 
 import { clerkClient } from "@clerk/nextjs/server";
-import type { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { Logger as InngestLogger } from "inngest";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
 import { inngest } from "../inngest";
