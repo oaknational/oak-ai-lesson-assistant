@@ -29,6 +29,7 @@
     "@oakai/db": "*",
     "@oakai/exports": "*",
     "@oakai/logger": "*",
+    "@oakai/rag": "*",
     "@oakai/teaching-materials": "*",
     "@trpc/server": "10.45.2",
     "@vercel/kv": "^0.2.2",
