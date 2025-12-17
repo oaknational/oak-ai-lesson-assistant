@@ -20,7 +20,7 @@ importers:
         version: 6.0.1
       '@ai-sdk/openai':
         specifier: ^0.0.72
-        version: 0.0.72(zod@3.23.8)
+        version: 0.0.72(zod@3.25.76)
       '@cspell/dict-en-gb':
         specifier: ^5.0.14
         version: 5.0.14
@@ -146,10 +146,10 @@ importers:
         version: 1.174.1(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
-        version: 2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.23.8)
+        version: 2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.25.76)
       '@oaknational/oak-curriculum-schema':
         specifier: ^1.59.1
-        version: 1.61.0(zod@3.23.8)
+        version: 1.61.0(zod@3.25.76)
       '@portabletext/react':
         specifier: ^3.1.0
         version: 3.1.0(react@19.2.1)
@@ -212,7 +212,7 @@ importers:
         version: 1.4.0
       ai:
         specifier: ^4.0.20
-        version: 4.0.20(react@19.2.1)(zod@3.23.8)
+        version: 4.0.20(react@19.2.1)(zod@3.25.76)
       american-british-english-translator:
         specifier: ^0.2.1
         version: 0.2.1
@@ -287,7 +287,7 @@ importers:
         version: 3.0.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(zod@3.23.8)
+        version: 4.96.0(zod@3.25.76)
       p-limit:
         specifier: ^7.2.0
         version: 7.2.0
@@ -373,11 +373,11 @@ importers:
         specifier: ^2.9.1
         version: 2.9.1(react-dom@19.2.1)(react@19.2.1)
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
       zod-to-json-schema:
         specifier: ^3.23.0
-        version: 3.23.0(zod@3.23.8)
+        version: 3.23.0(zod@3.25.76)
       zustand:
         specifier: ^5.0.3
         version: 5.0.3(@types/react@19.2.7)(react@19.2.1)
@@ -477,7 +477,7 @@ importers:
     dependencies:
       '@anatine/zod-mock':
         specifier: ^3.13.4
-        version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.23.8)
+        version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.25.76)
       '@clerk/nextjs':
         specifier: 6.36.1
         version: 6.36.1(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)
@@ -510,7 +510,7 @@ importers:
         version: 0.2.2
       ai:
         specifier: ^4.0.20
-        version: 4.0.20(react@19.2.1)(zod@3.23.8)
+        version: 4.0.20(react@19.2.1)(zod@3.25.76)
       american-british-english-translator:
         specifier: ^0.2.1
         version: 0.2.1
@@ -531,7 +531,7 @@ importers:
         version: 3.8.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(zod@3.23.8)
+        version: 4.96.0(zod@3.25.76)
       p-limit:
         specifier: ^7.2.0
         version: 7.2.0
@@ -545,11 +545,11 @@ importers:
         specifier: ^1.3.1
         version: 1.3.1
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
       zod-to-json-schema:
         specifier: ^3.23.0
-        version: 3.23.0(zod@3.23.8)
+        version: 3.23.0(zod@3.25.76)
     devDependencies:
       '@oakai/eslint-config':
         specifier: '*'
@@ -630,8 +630,8 @@ importers:
         specifier: ^1.9.1
         version: 1.12.0
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@oakai/eslint-config':
         specifier: '*'
@@ -695,7 +695,7 @@ importers:
         version: 9.7.0
       inngest:
         specifier: ^3.27.0
-        version: 3.48.0(@opentelemetry/core@2.2.0)(express@5.1.0)(next@16.0.10)(typescript@5.9.2)(zod@3.23.8)
+        version: 3.48.0(@opentelemetry/core@2.2.0)(express@5.1.0)(next@16.0.10)(typescript@5.9.2)(zod@3.25.76)
       json-stringify-safe:
         specifier: ^5.0.1
         version: 5.0.1
@@ -710,7 +710,7 @@ importers:
         version: 0.1.4
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(zod@3.23.8)
+        version: 4.96.0(zod@3.25.76)
       tiny-invariant:
         specifier: ^1.3.1
         version: 1.3.1
@@ -733,11 +733,11 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
       zod-to-json-schema:
         specifier: ^3.23.0
-        version: 3.23.0(zod@3.23.8)
+        version: 3.23.0(zod@3.25.76)
     devDependencies:
       '@oakai/prettier-config':
         specifier: '*'
@@ -783,7 +783,7 @@ importers:
         version: 6.1.0(graphql@16.12.0)
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(zod@3.23.8)
+        version: 4.96.0(zod@3.25.76)
       p-queue:
         specifier: ^7.4.1
         version: 7.4.1
@@ -814,7 +814,7 @@ importers:
         version: 5.9.2
       zod-prisma:
         specifier: ^0.5.4
-        version: 0.5.4(prisma@6.3.1)(zod@3.23.8)
+        version: 0.5.4(prisma@6.3.1)(zod@3.25.76)
 
   packages/eslint-config:
     devDependencies:
@@ -982,8 +982,8 @@ importers:
         specifier: ^17.7.2
         version: 17.7.2
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@oakai/eslint-config':
         specifier: '*'
@@ -1042,7 +1042,7 @@ importers:
     dependencies:
       '@anatine/zod-mock':
         specifier: ^3.13.4
-        version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.23.8)
+        version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.25.76)
       '@faker-js/faker':
         specifier: ^9.4.0
         version: 9.4.0
@@ -1059,8 +1059,8 @@ importers:
         specifier: '*'
         version: link:../prettier-config
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@types/jest':
         specifier: ^30.0.0
@@ -1085,28 +1085,28 @@ importers:
         version: link:../logger
       '@oaknational/oak-curriculum-schema':
         specifier: ^1.59.1
-        version: 1.61.0(zod@3.23.8)
+        version: 1.61.0(zod@3.25.76)
       '@sentry/nextjs':
         specifier: ^10.29.0
         version: 10.31.0(@opentelemetry/context-async-hooks@2.2.0)(@opentelemetry/core@2.2.0)(@opentelemetry/sdk-trace-base@2.2.0)(next@16.0.10)(react@19.2.1)(webpack@5.102.1)
       ai:
         specifier: ^4.1.00
-        version: 4.1.59(react@19.2.1)(zod@3.23.8)
+        version: 4.1.59(react@19.2.1)(zod@3.25.76)
       dotenv-cli:
         specifier: ^6.0.0
         version: 6.0.0
       openai:
         specifier: ^4.96.0
-        version: 4.96.0(zod@3.23.8)
+        version: 4.96.0(zod@3.25.76)
       serialize-error:
         specifier: ^12.0.0
         version: 12.0.0
       zod:
-        specifier: 3.23.8
-        version: 3.23.8
+        specifier: 3.25.76
+        version: 3.25.76
       zod-to-json-schema:
         specifier: ^3.23.0
-        version: 3.23.0(zod@3.23.8)
+        version: 3.23.0(zod@3.25.76)
     devDependencies:
       '@oakai/eslint-config':
         specifier: '*'
@@ -1180,18 +1180,18 @@ packages:
   /@adobe/css-tools@4.4.0:
     resolution: {integrity: sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==}
 
-  /@ai-sdk/openai@0.0.72(zod@3.23.8):
+  /@ai-sdk/openai@0.0.72(zod@3.25.76):
     resolution: {integrity: sha512-IKsgxIt6KJGkEHyMp975xW5VPmetwhI8g9H6dDmwvemBB41IRQa78YMNttiJqPcgmrZX2QfErOICv1gQvZ1gZg==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
     dependencies:
       '@ai-sdk/provider': 0.0.26
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.23.8)
-      zod: 3.23.8
+      '@ai-sdk/provider-utils': 1.0.22(zod@3.25.76)
+      zod: 3.25.76
     dev: true
 
-  /@ai-sdk/provider-utils@1.0.22(zod@3.23.8):
+  /@ai-sdk/provider-utils@1.0.22(zod@3.25.76):
     resolution: {integrity: sha512-YHK2rpj++wnLVc9vPGzGFP3Pjeld2MwhKinetA0zKXOoHAT/Jit5O8kZsxcSlJPu9wvcGT1UGZEjZrtO7PfFOQ==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1204,10 +1204,10 @@ packages:
       eventsource-parser: 1.1.2
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: true
 
-  /@ai-sdk/provider-utils@2.0.4(zod@3.23.8):
+  /@ai-sdk/provider-utils@2.0.4(zod@3.25.76):
     resolution: {integrity: sha512-GMhcQCZbwM6RoZCri0MWeEWXRt/T+uCxsmHEsTwNvEH3GDjNzchfX25C8ftry2MeEOOn6KfqCLSKomcgK6RoOg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1220,10 +1220,10 @@ packages:
       eventsource-parser: 3.0.2
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
-  /@ai-sdk/provider-utils@2.1.12(zod@3.23.8):
+  /@ai-sdk/provider-utils@2.1.12(zod@3.25.76):
     resolution: {integrity: sha512-NLm2Ypkv419jR5TNOvZ057ciSYFKzSDEIIwE8cRyeR1Y5RbuX+auZveqGg6GWsDzvUnn6Xra7BJmr0422v60UA==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1236,7 +1236,7 @@ packages:
       eventsource-parser: 3.0.2
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
   /@ai-sdk/provider@0.0.26:
@@ -1260,7 +1260,7 @@ packages:
       json-schema: 0.4.0
     dev: false
 
-  /@ai-sdk/react@1.0.6(react@19.2.1)(zod@3.23.8):
+  /@ai-sdk/react@1.0.6(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-8Hkserq0Ge6AEi7N4hlv2FkfglAGbkoAXEZ8YSp255c3PbnZz6+/5fppw+aROmZMOfNwallSRuy1i/iPa2rBpQ==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1272,15 +1272,15 @@ packages:
       zod:
         optional: true
     dependencies:
-      '@ai-sdk/provider-utils': 2.0.4(zod@3.23.8)
-      '@ai-sdk/ui-utils': 1.0.5(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.0.4(zod@3.25.76)
+      '@ai-sdk/ui-utils': 1.0.5(zod@3.25.76)
       react: 19.2.1
       swr: 2.3.4(react@19.2.1)
       throttleit: 2.1.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
-  /@ai-sdk/react@1.1.22(react@19.2.1)(zod@3.23.8):
+  /@ai-sdk/react@1.1.22(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-+ZlmJBu9NH59wvAtuh+xXEJ2MEfisBpVbYwN347+VlJJ3LfHVH9Rp1d58jVwBsfJvDUMn5UMuHZIXIdQhJIBTg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1292,15 +1292,15 @@ packages:
       zod:
         optional: true
     dependencies:
-      '@ai-sdk/provider-utils': 2.1.12(zod@3.23.8)
-      '@ai-sdk/ui-utils': 1.1.18(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.1.12(zod@3.25.76)
+      '@ai-sdk/ui-utils': 1.1.18(zod@3.25.76)
       react: 19.2.1
       swr: 2.3.4(react@19.2.1)
       throttleit: 2.1.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
-  /@ai-sdk/ui-utils@1.0.5(zod@3.23.8):
+  /@ai-sdk/ui-utils@1.0.5(zod@3.25.76):
     resolution: {integrity: sha512-DGJSbDf+vJyWmFNexSPUsS1AAy7gtsmFmoSyNbNbJjwl9hRIf2dknfA1V0ahx6pg3NNklNYFm53L8Nphjovfvg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1310,12 +1310,12 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.2
-      '@ai-sdk/provider-utils': 2.0.4(zod@3.23.8)
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.0.4(zod@3.25.76)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     dev: false
 
-  /@ai-sdk/ui-utils@1.1.18(zod@3.23.8):
+  /@ai-sdk/ui-utils@1.1.18(zod@3.25.76):
     resolution: {integrity: sha512-PCDXKKKHqA8Oqm5LsXl3Byxmit0r0Gg3nMPI3bdEriDIExoQikULX2T6/IS5u1qNeoC3UK5F2acpCyl5Q+aIuQ==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -1325,9 +1325,9 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.10
-      '@ai-sdk/provider-utils': 2.1.12(zod@3.23.8)
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.1.12(zod@3.25.76)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     dev: false
 
   /@alloc/quick-lru@5.2.0:
@@ -1345,7 +1345,7 @@ packages:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  /@anatine/zod-mock@3.13.4(@faker-js/faker@9.4.0)(zod@3.23.8):
+  /@anatine/zod-mock@3.13.4(@faker-js/faker@9.4.0)(zod@3.25.76):
     resolution: {integrity: sha512-yO/KeuyYsEDCTcQ+7CiRuY3dnafMHIZUMok6Ci7aERRCTQ+/XmsiPk/RnMx5wlLmWBTmX9kw+PavbMsjM+sAJA==}
     peerDependencies:
       '@faker-js/faker': ^7.0.0 || ^8.0.0
@@ -1353,7 +1353,7 @@ packages:
     dependencies:
       '@faker-js/faker': 9.4.0
       randexp: 0.5.3
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
   /@anthropic-ai/sdk@0.27.3:
@@ -3480,7 +3480,7 @@ packages:
       '@playwright/test': 1.56.1
       deepmerge: 4.3.1
       dotenv: 16.4.7
-      openai: 4.96.0(zod@3.23.8)
+      openai: 4.96.0(zod@3.25.76)
       ws: 8.18.0
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
@@ -3671,7 +3671,7 @@ packages:
       '@cloudinary-util/types': 1.5.10
       '@cloudinary-util/util': 3.3.2
       '@cloudinary/url-gen': 1.15.0
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
   /@cloudinary-util/util@3.3.2:
@@ -5887,7 +5887,7 @@ packages:
       langsmith: 0.0.48
       lodash: 4.17.21
       uuid: 9.0.1
-      zod: 3.23.8
+      zod: 3.25.76
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5905,8 +5905,8 @@ packages:
       p-queue: 6.6.2
       p-retry: 4.6.2
       uuid: 9.0.1
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     dev: false
 
   /@langchain/openai@0.0.14:
@@ -5915,9 +5915,9 @@ packages:
     dependencies:
       '@langchain/core': 0.1.30
       js-tiktoken: 1.0.7
-      openai: 4.96.0(zod@3.23.8)
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      openai: 4.96.0(zod@3.25.76)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     transitivePeerDependencies:
       - encoding
       - ws
@@ -5989,8 +5989,8 @@ packages:
       express-rate-limit: 7.5.0(express@5.1.0)
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6367,7 +6367,7 @@ packages:
       styled-components: 5.3.11(@babel/core@7.26.0)(react-dom@19.2.1)(react-is@18.3.1)(react@19.2.1)
     dev: false
 
-  /@oaknational/oak-consent-client@2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.23.8):
+  /@oaknational/oak-consent-client@2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-77AyUZoDQNgUFzUx2Vz8WaoCCmwwfBAfLm1o7FH1vXtvCXuh8szNjeM8uU0CVTVAwvRzy5BFyfKV4RTp8vVFqw==}
     peerDependencies:
       react: 18.x
@@ -6378,15 +6378,15 @@ packages:
       nanoid: 5.0.7
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
-  /@oaknational/oak-curriculum-schema@1.61.0(zod@3.23.8):
+  /@oaknational/oak-curriculum-schema@1.61.0(zod@3.25.76):
     resolution: {integrity: sha512-pmwpN/z63+eXxuv8hOe2NZ04H8LRbEBc+ScLZysutctFUNQR1+Vdi4P7QNLuMDA1jETaHHurIgvFQ287HdsMGQ==}
     peerDependencies:
       zod: ^3.22.4
     dependencies:
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
   /@octokit/auth-token@4.0.0:
@@ -12975,7 +12975,7 @@ packages:
       indent-string: 5.0.0
     dev: true
 
-  /ai@4.0.20(react@19.2.1)(zod@3.23.8):
+  /ai@4.0.20(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-dYevYKtREcjSVopBDFWVNca7WJEI1p9Vr9eo7V7fZHzi2vXGDyEa2WYatjFbpR6z6gpVAxKHsof8EoN+B1IAsA==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -12988,17 +12988,17 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.2
-      '@ai-sdk/provider-utils': 2.0.4(zod@3.23.8)
-      '@ai-sdk/react': 1.0.6(react@19.2.1)(zod@3.23.8)
-      '@ai-sdk/ui-utils': 1.0.5(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.0.4(zod@3.25.76)
+      '@ai-sdk/react': 1.0.6(react@19.2.1)(zod@3.25.76)
+      '@ai-sdk/ui-utils': 1.0.5(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
       jsondiffpatch: 0.6.0
       react: 19.2.1
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     dev: false
 
-  /ai@4.1.59(react@19.2.1)(zod@3.23.8):
+  /ai@4.1.59(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-8lpm3YS/f9yWsHcEDeJqVZd7Ds5t22dbWecSQ3+TyHCutpUSAEykN+B0NZFjOoR7xXWxrmNPl1v8GBKmKNAePg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -13011,14 +13011,14 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.10
-      '@ai-sdk/provider-utils': 2.1.12(zod@3.23.8)
-      '@ai-sdk/react': 1.1.22(react@19.2.1)(zod@3.23.8)
-      '@ai-sdk/ui-utils': 1.1.18(zod@3.23.8)
+      '@ai-sdk/provider-utils': 2.1.12(zod@3.25.76)
+      '@ai-sdk/react': 1.1.22(react@19.2.1)(zod@3.25.76)
+      '@ai-sdk/ui-utils': 1.1.18(zod@3.25.76)
       '@opentelemetry/api': 1.9.0
       eventsource-parser: 3.0.2
       jsondiffpatch: 0.6.0
       react: 19.2.1
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
 
   /ajv-formats@2.1.1(ajv@8.17.1):
@@ -15243,7 +15243,7 @@ packages:
       fast-glob: 3.3.3
       glob: 11.0.2
       google-auth-library: 9.15.1
-      openai: 4.96.0(zod@3.23.8)
+      openai: 4.96.0(zod@3.25.76)
       p-queue: 8.1.0
       playwright: 1.50.1
       playwright-core: 1.50.1
@@ -16715,8 +16715,8 @@ packages:
       '@babel/parser': 7.28.5
       eslint: 9.36.0
       hermes-parser: 0.25.1
-      zod: 4.2.1
-      zod-validation-error: 4.0.2(zod@4.2.1)
+      zod: 3.25.76
+      zod-validation-error: 4.0.2(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -18903,7 +18903,7 @@ packages:
       - supports-color
     dev: true
 
-  /inngest@3.48.0(@opentelemetry/core@2.2.0)(express@5.1.0)(next@16.0.10)(typescript@5.9.2)(zod@3.23.8):
+  /inngest@3.48.0(@opentelemetry/core@2.2.0)(express@5.1.0)(next@16.0.10)(typescript@5.9.2)(zod@3.25.76):
     resolution: {integrity: sha512-HYHneU9phJswIt/3o7FDAiGnbbm0g/JyfYGkL020frvNpEaZp6q8/BNR1dEHhuZglByK7CMaXaM35VkocogAbQ==}
     engines: {node: '>=20'}
     peerDependencies:
@@ -18967,7 +18967,7 @@ packages:
       temporal-polyfill: 0.2.5
       typescript: 5.9.2
       ulid: 2.4.0
-      zod: 3.23.8
+      zod: 3.25.76
     transitivePeerDependencies:
       - '@opentelemetry/core'
       - encoding
@@ -21244,14 +21244,14 @@ packages:
       langsmith: 0.0.48
       lodash: 4.17.21
       ml-distance: 4.0.1
-      openai: 4.96.0(zod@3.23.8)
+      openai: 4.96.0(zod@3.25.76)
       openapi-types: 12.1.3
       p-queue: 6.6.2
       p-retry: 4.6.2
       uuid: 9.0.1
       yaml: 2.4.1
-      zod: 3.23.8
-      zod-to-json-schema: 3.24.1(zod@3.23.8)
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.1(zod@3.25.76)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -23053,7 +23053,7 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openai@4.96.0(zod@3.23.8):
+  /openai@4.96.0(zod@3.25.76):
     resolution: {integrity: sha512-dKoW56i02Prv2XQolJ9Rl9Svqubqkzg3QpwEOBuSVZLk05Shelu7s+ErRTwFc1Bs3JZ2qBqBfVpXQiJhwOGG8A==}
     hasBin: true
     peerDependencies:
@@ -23072,7 +23072,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
-      zod: 3.23.8
+      zod: 3.25.76
     transitivePeerDependencies:
       - encoding
 
@@ -24983,7 +24983,7 @@ packages:
       tiktoken: 1.0.20
       tree-sitter-wasms: 0.1.12
       web-tree-sitter: 0.24.7
-      zod: 3.24.2
+      zod: 3.25.76
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -28495,7 +28495,7 @@ packages:
       readable-stream: 4.4.2
     dev: false
 
-  /zod-prisma@0.5.4(prisma@6.3.1)(zod@3.23.8):
+  /zod-prisma@0.5.4(prisma@6.3.1)(zod@3.25.76):
     resolution: {integrity: sha512-5Ca4Qd1a1jy1T/NqCEpbr0c+EsbjJfJ/7euEHob3zDvtUK2rTuD1Rc/vfzH8q8PtaR2TZbysD88NHmrLwpv3Xg==}
     engines: {node: '>=14'}
     hasBin: true
@@ -28511,23 +28511,16 @@ packages:
       parenthesis: 3.1.8
       prisma: 6.3.1(typescript@5.9.2)
       ts-morph: 13.0.3
-      zod: 3.23.8
+      zod: 3.25.76
     dev: true
 
-  /zod-to-json-schema@3.23.0(zod@3.23.8):
+  /zod-to-json-schema@3.23.0(zod@3.25.76):
     resolution: {integrity: sha512-az0uJ243PxsRIa2x1WmNE/pnuA05gUq/JB8Lwe1EDCCL/Fz9MgjYQ0fPlyc2Tcv6aF2ZA7WM5TWaRZVEFaAIag==}
     peerDependencies:
       zod: ^3.23.3
     dependencies:
-      zod: 3.23.8
+      zod: 3.25.76
     dev: false
-
-  /zod-to-json-schema@3.24.1(zod@3.23.8):
-    resolution: {integrity: sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==}
-    peerDependencies:
-      zod: ^3.24.1
-    dependencies:
-      zod: 3.23.8
 
   /zod-to-json-schema@3.24.1(zod@3.24.2):
     resolution: {integrity: sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==}
@@ -28537,25 +28530,28 @@ packages:
       zod: 3.24.2
     dev: true
 
-  /zod-validation-error@4.0.2(zod@4.2.1):
+  /zod-to-json-schema@3.24.1(zod@3.25.76):
+    resolution: {integrity: sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==}
+    peerDependencies:
+      zod: ^3.24.1
+    dependencies:
+      zod: 3.25.76
+
+  /zod-validation-error@4.0.2(zod@3.25.76):
     resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
     dependencies:
-      zod: 4.2.1
+      zod: 3.25.76
     dev: true
-
-  /zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
   /zod@3.24.2:
     resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
     dev: true
 
-  /zod@4.2.1:
-    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
-    dev: true
+  /zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
   /zustand@5.0.3(@types/react@19.2.7)(react@19.2.1):
     resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}

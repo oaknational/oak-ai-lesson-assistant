@@ -68,7 +68,7 @@
     "unique-names-generator": "^4.7.1",
     "untruncate-json": "^0.0.1",
     "webvtt-parser": "^2.2.0",
-    "zod": "3.23.8",
+    "zod": "3.25.76",
     "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
