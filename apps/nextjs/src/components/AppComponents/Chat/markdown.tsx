@@ -13,8 +13,7 @@ const MemoizedReactMarkdown: FC<Options> = memo(
   ReactMarkdown,
   (prevProps, nextProps) =>
     prevProps.children === nextProps.children &&
-    prevProps.components === nextProps.components &&
-    prevProps.className === nextProps.className,
+    prevProps.components === nextProps.components,
 );
 
 export type ReactMarkdownWithStylesProps = Readonly<{
@@ -113,12 +112,13 @@ export const MemoizedReactMarkdownWithStyles = ({
       : defaultComponents;
   }, [className, customComponents]);
   return (
-    <MemoizedReactMarkdown
-      className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-      remarkPlugins={[remarkGfm]}
-      components={components}
-    >
-      {markdown}
-    </MemoizedReactMarkdown>
+    <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+      <MemoizedReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={components}
+      >
+        {markdown}
+      </MemoizedReactMarkdown>
+    </div>
   );
 };
