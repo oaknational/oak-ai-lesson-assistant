@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   DEFAULT_MODEL,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-  DEFAULT_QUIZ_GENERATORS,
+  DEFAULT_QUIZ_SOURCES,
   DEFAULT_TEMPERATURE,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
@@ -164,7 +164,7 @@ export class Aila implements AilaServices {
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-      quizGenerators: options?.quizGenerators ?? DEFAULT_QUIZ_GENERATORS,
+      quizSources: options?.quizSources ?? DEFAULT_QUIZ_SOURCES,
       usePersistence: options?.usePersistence ?? true,
       useAnalytics: options?.useAnalytics ?? true,
       useModeration: options?.useModeration ?? true,

@@ -1,4 +1,3 @@
-import type { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -14,18 +13,7 @@ import type {
 } from "../../protocol/schemas/quiz";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type { Task } from "./instrumentation";
-import type {
-  QuizRecommenderType,
-  QuizRerankerType,
-  QuizSelectorType,
-  QuizServiceSettings,
-} from "./schema";
-
-// Rating response from rerankers
-export type RatingResponse = {
-  rating: number;
-  justification: string;
-};
+import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -43,47 +31,69 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizCandidateGenerator {
+/**
+ * A source that retrieves candidate quiz questions from some origin
+ * (e.g., similar lessons, semantic search, basedOn lesson)
+ */
+export interface QuestionSource {
   /** Name used for instrumentation/tracing */
   readonly name: string;
 
-  generateMathsExitQuizCandidates(
+  getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    similarLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
-  generateMathsStarterQuizCandidates(
+
+  getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    similarLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
 }
 
-export interface AilaQuizReranker {
-  evaluateQuizArray(
+/**
+ * Composes final quiz questions from candidate pools
+ */
+export interface QuizComposer {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
+  compose(
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<RatingResponse[]>;
+    task: Task,
+  ): Promise<RagQuizQuestion[]>;
 }
 
-export interface FullQuizService {
-  quizSelector: QuizSelector;
-  quizReranker: AilaQuizReranker;
-  quizGenerators: AilaQuizCandidateGenerator[];
+/**
+ * Enriches question pools with additional data (e.g., image descriptions).
+ * Returns new enriched pools without modifying the originals.
+ */
+export interface QuestionEnricher {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
+  enrich(
+    questionPools: QuizQuestionPool[],
+    task: Task,
+  ): Promise<QuizQuestionPool[]>;
+}
+
+/**
+ * Complete quiz generation service that orchestrates sources, enrichers, and composer
+ */
+export interface QuizService {
+  composer: QuizComposer;
+  sources: QuestionSource[];
+  enrichers: QuestionEnricher[];
   buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons: AilaRagRelevantLesson[],
+    similarLessons: AilaRagRelevantLesson[],
     task: Task,
   ): Promise<LatestQuiz>;
-}
-
-export interface QuizSelector {
-  selectQuestions(
-    questionPools: QuizQuestionPool[],
-    ratings: RatingResponse[],
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-  ): Promise<RagQuizQuestion[]>;
 }
 
 export interface CustomSource {
@@ -131,17 +141,17 @@ export interface QuizQuestionPool {
   questions: RagQuizQuestion[];
   source:
     | {
-        type: "basedOn";
+        type: "basedOnLesson";
         lessonPlanId: string;
         lessonTitle: string;
       }
     | {
-        type: "ailaRag";
+        type: "similarLessons";
         lessonPlanId: string;
         lessonTitle: string;
       }
     | {
-        type: "mlSemanticSearch";
+        type: "semanticSearch";
         semanticQuery: string;
       };
 }
@@ -178,27 +188,12 @@ export interface LessonSlugQuizMapping {
   [lessonSlug: string]: QuizSet;
 }
 
-export interface LessonSlugQuizLookup {
-  getStarterQuiz(lessonSlug: string): Promise<string[]>;
-  getExitQuiz(lessonSlug: string): Promise<string[]>;
-  hasStarterQuiz(lessonSlug: string): Promise<boolean>;
-  hasExitQuiz(lessonSlug: string): Promise<boolean>;
-}
-
 // FACTORIES BELOW
-export interface FullServiceFactory {
-  create(settings: QuizServiceSettings): FullQuizService;
+export interface QuizServiceFactory {
+  create(settings: QuizServiceSettings): QuizService;
 }
 
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: PartialLessonPlan): QuizRecommenderType;
   createQuizRecommender(lessonPlan: PartialLessonPlan): AilaQuizService;
-}
-
-export interface AilaQuizRerankerFactory {
-  createAilaQuizReranker(quizType: QuizRerankerType): AilaQuizReranker;
-}
-
-export interface QuizSelectorFactory {
-  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

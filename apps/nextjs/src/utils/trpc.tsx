@@ -47,9 +47,8 @@ const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
     const { op } = ctx;
     const routerName = op.path.split(".")[0];
 
-    const link = routerName === "chat" ? servers["chat"] : servers["main"];
-
-    return link(ctx);
+    if (routerName === "chat") return servers["chat"](ctx);
+    return servers["main"](ctx);
   };
 };
 
