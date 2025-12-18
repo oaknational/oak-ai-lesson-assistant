@@ -15,6 +15,15 @@ import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type { Task } from "./instrumentation";
 import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
+/**
+ * Extended ImageMetadata for use within the quiz RAG pipeline.
+ * Adds AI-generated description for LLM context during composition.
+ * The aiDescription is dropped when outputting to LatestQuiz.
+ */
+export interface EnrichedImageMetadata extends ImageMetadata {
+  aiDescription?: string;
+}
+
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
 export interface DocumentReranker {
@@ -120,12 +129,14 @@ export interface QuizQuestionTextOnlySource {
  * Retrieved from Elasticsearch, contains the question in Latest format
  * (supporting all question types: multiple-choice, short-answer, match, order),
  * source data, and associated image metadata.
+ *
+ * Uses EnrichedImageMetadata which may include aiDescription for LLM context.
  */
 export interface RagQuizQuestion {
   question: LatestQuizQuestion;
   sourceUid: string;
   source: HasuraQuizQuestion;
-  imageMetadata: ImageMetadata[];
+  imageMetadata: EnrichedImageMetadata[];
 }
 
 export interface CustomHit {
