@@ -1,5 +1,7 @@
 "use client";
 
+import { use } from "react";
+
 import { aiLogger } from "@oakai/logger";
 
 import LoadingWheel from "@/components/LoadingWheel";
@@ -8,15 +10,15 @@ import { trpc } from "@/utils/trpc";
 import { AdminUserView } from "./view";
 
 interface AdminUserProps {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 }
 
 const log = aiLogger("admin");
 
 export default function AdminUser({ params }: Readonly<AdminUserProps>) {
-  const { userId } = params;
+  const { userId } = use(params);
   const {
     data: safetyViolations,
     isLoading: isSafetyViolationsLoading,

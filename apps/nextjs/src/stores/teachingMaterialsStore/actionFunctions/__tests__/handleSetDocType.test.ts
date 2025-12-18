@@ -2,7 +2,15 @@ import * as Sentry from "@sentry/nextjs";
 
 import { handleSetDocType } from "../handleSetDocType";
 
+jest.mock("@sentry/nextjs", () => ({
+  captureException: jest.fn(),
+}));
+
 describe("handleSetDocType", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("sets docType when not null", () => {
     const set = jest.fn();
     const get = jest.fn();
@@ -22,7 +30,7 @@ describe("handleSetDocType", () => {
   it("reports to Sentry and logs error if docType is invalid", () => {
     const set = jest.fn();
     const get = jest.fn();
-    const sentrySpy = jest.spyOn(Sentry, "captureException");
+    const sentrySpy = Sentry.captureException as jest.Mock;
     const invalidDocType = "not-a-real-type";
     const handler = handleSetDocType(set, get);
     handler(invalidDocType);
@@ -31,6 +39,5 @@ describe("handleSetDocType", () => {
       expect.any(Error),
       expect.objectContaining({ extra: { docType: invalidDocType } }),
     );
-    sentrySpy.mockRestore();
   });
 });

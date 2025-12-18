@@ -53,7 +53,7 @@ async function getHandler(req: Request): Promise<Response> {
   const fileId = searchParams.get("fileId");
   const ext = searchParams.get("ext");
   const lessonTitle = searchParams.get("lessonTitle") ?? "";
-  const { userId }: { userId: string | null } = auth();
+  const { userId }: { userId: string | null } = await auth();
 
   Sentry.addBreadcrumb({
     category: "download",
@@ -68,7 +68,7 @@ async function getHandler(req: Request): Promise<Response> {
 
   if (!userId) {
     const error = new Error("Download attempt without userId");
-    const authObject = auth();
+    const authObject = await auth();
     Sentry.captureException(error, {
       level: "warning",
       extra: { authObject },

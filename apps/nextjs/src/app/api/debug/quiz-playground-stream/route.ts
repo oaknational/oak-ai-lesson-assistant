@@ -24,7 +24,8 @@ const debugEnabled =
   process.env.VERCEL_ENV === "preview";
 
 async function isAdmin(userId: string): Promise<boolean> {
-  const user = await clerkClient.users.getUser(userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
   return user.emailAddresses.some((email) =>
     email.emailAddress.endsWith("@thenational.academy"),
   );
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

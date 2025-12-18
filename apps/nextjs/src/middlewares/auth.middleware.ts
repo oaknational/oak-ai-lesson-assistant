@@ -118,7 +118,7 @@ async function conditionallyProtectRoute(
   auth: ClerkMiddlewareAuth,
   req: NextRequest,
 ) {
-  const authObject = auth();
+  const authObject = await auth();
   const { userId, redirectToSignIn, sessionClaims } = authObject;
   const log = logger(req);
 
@@ -166,7 +166,8 @@ async function conditionallyProtectRoute(
    * consider using Clerk user metadata instead.
    */
   if (isAdminRoute(req)) {
-    const user = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
     const hasOakEmail = user.emailAddresses.some((e) =>
       isOakEmail(e.emailAddress),
     );

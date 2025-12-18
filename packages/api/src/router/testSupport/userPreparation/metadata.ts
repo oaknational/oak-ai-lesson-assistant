@@ -70,7 +70,8 @@ export const setClerkMetadata = async (
         currentMetadata.publicMetadata,
       ),
     );
-    await clerkClient.users.updateUserMetadata(userId, {
+    const client = await clerkClient();
+    await client.users.updateUserMetadata(userId, {
       publicMetadata: deleteExtraKeys(
         proposedMetadata.publicMetadata,
         currentMetadata.publicMetadata,

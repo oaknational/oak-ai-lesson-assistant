@@ -34,7 +34,7 @@ function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
 }
 
 export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
-  const { userId, sessionClaims } = auth();
+  const { userId, sessionClaims } = await auth();
 
   const distinctId = userId ?? getDistinctIdFromCookie(headers) ?? "0";
 

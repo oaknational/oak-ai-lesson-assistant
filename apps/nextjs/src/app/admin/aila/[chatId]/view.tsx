@@ -47,9 +47,9 @@ function SafetyViolationItem({
           onClick={() =>
             void removeSafetyViolation.mutateAsync({ recordId: recordId })
           }
-          isLoading={removeSafetyViolation.isLoading}
+          isLoading={removeSafetyViolation.isPending}
           disabled={
-            removeSafetyViolation.isLoading || removeSafetyViolation.isSuccess
+            removeSafetyViolation.isPending || removeSafetyViolation.isSuccess
           }
         >
           {removeSafetyViolation.isSuccess ? "Reversed" : "Reverse violation"}
@@ -89,7 +89,7 @@ function ModerationListItem({
               onClick={() =>
                 void invalidateModeration.mutateAsync({ moderationId: id })
               }
-              isLoading={invalidateModeration.isLoading}
+              isLoading={invalidateModeration.isPending}
               disabled={!!invalidated}
             >
               {invalidated ? "Invalidated" : "Invalidate"}
