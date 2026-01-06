@@ -25,6 +25,13 @@ const lexend = Lexend({
   variable: "--font-lexend",
 });
 
+/**
+ * Set the font CSS variable at :root level for portaled content (tooltips, modals).
+ */
+const GlobalFontStyle = () => (
+  <style>{`:root { --font-lexend: ${lexend.style.fontFamily}; }`}</style>
+);
+
 declare module "@storybook/nextjs" {
   interface Parameters {
     msw?: MswParameters["msw"];
@@ -73,7 +80,8 @@ export const decorators: Decorator[] = [
   ClerkDecorator,
   ChromaticValidationDecorator,
   (Story) => (
-    <div className={lexend.variable}>
+    <>
+      <GlobalFontStyle />
       <TRPCReactProvider>
         <AnalyticsProvider>
           <DialogProvider>
@@ -85,7 +93,7 @@ export const decorators: Decorator[] = [
           </DialogProvider>
         </AnalyticsProvider>
       </TRPCReactProvider>
-    </div>
+    </>
   ),
 ];
 
