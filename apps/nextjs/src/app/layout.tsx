@@ -3,12 +3,6 @@ import { Toaster } from "react-hot-toast";
 import { Monitoring } from "react-scan/dist/core/monitor/params/next";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import "@fontsource/lexend";
-import "@fontsource/lexend/500.css";
-import "@fontsource/lexend/600.css";
-import "@fontsource/lexend/700.css";
-import "@fontsource/lexend/800.css";
-import "@fontsource/lexend/900.css";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import * as Sentry from "@sentry/nextjs";
