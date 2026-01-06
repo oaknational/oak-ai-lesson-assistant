@@ -2,8 +2,29 @@ import dedent from "dedent";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
+import type {
+  EnrichedImageMetadata,
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
+
+/**
+ * Replace markdown images with text descriptions for LLM context.
+ * Uses aiDescription from imageMetadata when available.
+ */
+function replaceImagesWithDescriptions(
+  text: string,
+  imageMetadata: EnrichedImageMetadata[],
+): string {
+  return text.replaceAll(
+    /!\[([^\]]*)\]\(([^)]{1,2000})\)/g,
+    (match, _alt, url: string) => {
+      const meta = imageMetadata.find((m) => m.imageUrl === url);
+      return meta?.aiDescription ? `[IMAGE: ${meta.aiDescription}]` : match;
+    },
+  );
+}
 
 function buildQuestionSelectionCriteria(quizType: QuizPath): string {
   const relevanceDescription =
@@ -175,18 +196,22 @@ function poolHeaderMarkdown(pool: QuizQuestionPool): string {
 
 function questionToMarkdown(question: RagQuizQuestion): string {
   const q = question.question;
+  const format = (text: string) =>
+    replaceImagesWithDescriptions(text, question.imageMetadata);
 
   switch (q.questionType) {
     case "multiple-choice": {
-      const answers = q.answers.map((a, i) => `${i + 1}. ${a}`).join("\n");
+      const answers = q.answers
+        .map((a, i) => `${i + 1}. ${format(a)}`)
+        .join("\n");
       const distractors = q.distractors
-        .map((d, i) => `${i + 1}. ${d}`)
+        .map((d, i) => `${i + 1}. ${format(d)}`)
         .join("\n");
 
       return dedent`
         ### Question UID:${question.sourceUid}
         Type: Multiple Choice
-        ${q.question}
+        ${format(q.question)}
 
         Correct answer(s):
         ${answers}
@@ -197,12 +222,14 @@ function questionToMarkdown(question: RagQuizQuestion): string {
     }
 
     case "short-answer": {
-      const answers = q.answers.map((a, i) => `${i + 1}. ${a}`).join("\n");
+      const answers = q.answers
+        .map((a, i) => `${i + 1}. ${format(a)}`)
+        .join("\n");
 
       return dedent`
         ### Question UID:${question.sourceUid}
         Type: Short Answer
-        ${q.question}
+        ${format(q.question)}
 
         Acceptable answer(s):
         ${answers}
@@ -211,13 +238,13 @@ function questionToMarkdown(question: RagQuizQuestion): string {
 
     case "match": {
       const pairs = q.pairs
-        .map((p, i) => `${i + 1}. ${p.left} → ${p.right}`)
+        .map((p, i) => `${i + 1}. ${format(p.left)} → ${format(p.right)}`)
         .join("\n");
 
       return dedent`
         ### Question UID:${question.sourceUid}
         Type: Match
-        ${q.question}
+        ${format(q.question)}
 
         Correct pairs:
         ${pairs}
@@ -225,12 +252,14 @@ function questionToMarkdown(question: RagQuizQuestion): string {
     }
 
     case "order": {
-      const items = q.items.map((item, i) => `${i + 1}. ${item}`).join("\n");
+      const items = q.items
+        .map((item, i) => `${i + 1}. ${format(item)}`)
+        .join("\n");
 
       return dedent`
         ### Question UID:${question.sourceUid}
         Type: Order
-        ${q.question}
+        ${format(q.question)}
 
         Correct order:
         ${items}

@@ -104,6 +104,123 @@ const mockQuestionPools: QuizQuestionPool[] = [
 ];
 
 describe("buildCompositionPrompt", () => {
+  describe("image description replacement", () => {
+    it("should replace markdown images with descriptions in prompt", () => {
+      const questionWithImage: RagQuizQuestion = {
+        question: {
+          questionType: "multiple-choice",
+          question:
+            "Calculate the area of ![triangle](http://example.com/img.png)",
+          hint: null,
+          answers: ["6 cm²"],
+          distractors: ["12 cm²", "3 cm²"],
+        },
+        sourceUid: "q-img",
+        source: {} as RagQuizQuestion["source"],
+        imageMetadata: [
+          {
+            imageUrl: "http://example.com/img.png",
+            attribution: null,
+            width: 100,
+            height: 100,
+            aiDescription: "a right triangle with base 3cm and height 4cm",
+          },
+        ],
+      };
+
+      const pools: QuizQuestionPool[] = [
+        {
+          source: { type: "semanticSearch", semanticQuery: "area" },
+          questions: [questionWithImage],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).toContain(
+        "[IMAGE: a right triangle with base 3cm and height 4cm]",
+      );
+      expect(prompt).not.toContain("![triangle](http://example.com/img.png)");
+    });
+
+    it("should leave images unchanged when no aiDescription", () => {
+      const questionWithImage: RagQuizQuestion = {
+        question: {
+          questionType: "multiple-choice",
+          question:
+            "Calculate the area of ![triangle](http://example.com/img.png)",
+          hint: null,
+          answers: ["6 cm²"],
+          distractors: ["12 cm²"],
+        },
+        sourceUid: "q-img",
+        source: {} as RagQuizQuestion["source"],
+        imageMetadata: [
+          {
+            imageUrl: "http://example.com/img.png",
+            attribution: null,
+            width: 100,
+            height: 100,
+          },
+        ],
+      };
+
+      const pools: QuizQuestionPool[] = [
+        {
+          source: { type: "semanticSearch", semanticQuery: "area" },
+          questions: [questionWithImage],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).toContain("![triangle](http://example.com/img.png)");
+      expect(prompt).not.toContain("[IMAGE:");
+    });
+
+    it("should replace images in answers and distractors", () => {
+      const questionWithImages: RagQuizQuestion = {
+        question: {
+          questionType: "multiple-choice",
+          question: "Which shape has the largest area?",
+          hint: null,
+          answers: ["![correct](http://example.com/correct.png)"],
+          distractors: ["![wrong](http://example.com/wrong.png)"],
+        },
+        sourceUid: "q-img",
+        source: {} as RagQuizQuestion["source"],
+        imageMetadata: [
+          {
+            imageUrl: "http://example.com/correct.png",
+            attribution: null,
+            width: 100,
+            height: 100,
+            aiDescription: "a square with side 5cm",
+          },
+          {
+            imageUrl: "http://example.com/wrong.png",
+            attribution: null,
+            width: 100,
+            height: 100,
+            aiDescription: "a rectangle 2cm by 3cm",
+          },
+        ],
+      };
+
+      const pools: QuizQuestionPool[] = [
+        {
+          source: { type: "semanticSearch", semanticQuery: "area" },
+          questions: [questionWithImages],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).toContain("[IMAGE: a square with side 5cm]");
+      expect(prompt).toContain("[IMAGE: a rectangle 2cm by 3cm]");
+    });
+  });
+
   describe("starter vs exit quiz differentiation", () => {
     it("starter quiz focuses on prior knowledge", () => {
       const prompt = buildCompositionPrompt(

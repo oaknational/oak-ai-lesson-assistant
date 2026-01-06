@@ -286,72 +286,41 @@ export class ImageDescriptionEnricher implements QuestionEnricher {
 
   /**
    * Implements QuestionEnricher interface.
+   * Adds aiDescription to imageMetadata entries without modifying question text.
    */
   public async enrich(
     questionPools: QuizQuestionPool[],
     task: Task,
   ): Promise<QuizQuestionPool[]> {
     const result = await this.getImageDescriptions(questionPools, task);
-    return ImageDescriptionEnricher.applyDescriptionsToQuestions(
+    return ImageDescriptionEnricher.applyDescriptionsToImageMetadata(
       questionPools,
       result.descriptions,
     );
   }
 
   /**
-   * Replace markdown images with text descriptions in a string
-   *
-   * @param text - Text containing markdown images
-   * @param descriptions - Map of URL to description
-   * @returns Text with images replaced by descriptions
-   */
-  static replaceImagesWithDescriptions(
-    text: string,
-    descriptions: Map<string, string>,
-  ): string {
-    return text.replaceAll(
-      /!\[([^\]]*)\]\(([^)]{1,2000})\)/g,
-      (match, _alt, url: string) => {
-        const description = descriptions.get(url);
-        return description ? `[IMAGE: ${description}]` : match;
-      },
-    );
-  }
-
-  /**
-   * Apply image description replacement to all questions in pools
+   * Add aiDescription to imageMetadata entries for each question.
+   * Does NOT modify question text - descriptions are stored as metadata only.
    *
    * @param questionPools - Question pools to process
    * @param descriptions - Map of URL to description
-   * @returns New question pools with images replaced by descriptions
+   * @returns New question pools with aiDescription added to imageMetadata
    */
-  static applyDescriptionsToQuestions(
+  static applyDescriptionsToImageMetadata(
     questionPools: QuizQuestionPool[],
     descriptions: Map<string, string>,
   ): QuizQuestionPool[] {
     const cloned = structuredClone(questionPools);
 
-    const replace = (text: string) =>
-      this.replaceImagesWithDescriptions(text, descriptions);
-
     cloned.forEach((pool) => {
       pool.questions.forEach((rq) => {
-        const q = rq.question;
-        q.question = replace(q.question);
-
-        if (q.questionType === "multiple-choice") {
-          q.answers = q.answers.map(replace);
-          q.distractors = q.distractors.map(replace);
-        } else if (q.questionType === "short-answer") {
-          q.answers = q.answers.map(replace);
-        } else if (q.questionType === "match") {
-          q.pairs.forEach((p) => {
-            p.left = replace(p.left);
-            p.right = replace(p.right);
-          });
-        } else if (q.questionType === "order") {
-          q.items = q.items.map(replace);
-        }
+        rq.imageMetadata.forEach((meta) => {
+          const description = descriptions.get(meta.imageUrl);
+          if (description) {
+            meta.aiDescription = description;
+          }
+        });
       });
     });
 

@@ -63,7 +63,7 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   text-align: left;
   font-family: unset;
   outline: none;
-  font-family: --var(google-font), Lexend, sans-serif;
+  font-family: var(--font-lexend), Lexend, sans-serif;
 
   background: #222222;
 
