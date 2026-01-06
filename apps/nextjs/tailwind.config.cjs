@@ -122,7 +122,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-lexend)", "Lexend", ...defaultTheme.fontFamily.sans],
+        sans: ["Lexend", ...defaultTheme.fontFamily.sans],
         // sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
       },

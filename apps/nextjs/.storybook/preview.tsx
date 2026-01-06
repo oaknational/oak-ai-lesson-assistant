@@ -1,5 +1,11 @@
 import React from "react";
 
+import "@fontsource/lexend";
+import "@fontsource/lexend/500.css";
+import "@fontsource/lexend/600.css";
+import "@fontsource/lexend/700.css";
+import "@fontsource/lexend/800.css";
+import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Decorator, Preview } from "@storybook/nextjs";
 import {

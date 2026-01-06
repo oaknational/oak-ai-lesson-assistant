@@ -102,6 +102,9 @@ importers:
       '@datadog/datadog-api-client':
         specifier: ^1.27.0
         version: 1.27.0
+      '@fontsource/lexend':
+        specifier: ^5.0.12
+        version: 5.0.12
       '@headlessui/react':
         specifier: ^1.7.17
         version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -4667,6 +4670,10 @@ packages:
 
   /@floating-ui/utils@0.2.10:
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+    dev: false
+
+  /@fontsource/lexend@5.0.12:
+    resolution: {integrity: sha512-UYeg7ob8WAr+ZIlkACIGvCcGx9yhcWPTKU8JtX7QLYtkrO628L8qRIjHmM2g8l4wmM2QHwWQMhmh01qSnB2aYw==}
     dev: false
 
   /@google-cloud/paginator@5.0.0:
