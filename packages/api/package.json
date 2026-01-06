@@ -31,7 +31,7 @@
     "@oakai/logger": "*",
     "@oakai/rag": "*",
     "@oakai/teaching-materials": "*",
-    "@trpc/server": "10.45.2",
+    "@trpc/server": "10.45.3",
     "@vercel/kv": "^0.2.2",
     "cloudinary": "^1.41.1",
     "next": "14.2.35",
