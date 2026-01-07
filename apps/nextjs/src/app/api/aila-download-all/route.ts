@@ -60,7 +60,7 @@ async function getHandler(req: Request): Promise<Response> {
   if (!lessonTitle) {
     return new Response("Invalid or missing lessonTitle", { status: 400 });
   }
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     const error = new Error("Download attempt without userId");

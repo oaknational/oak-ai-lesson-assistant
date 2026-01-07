@@ -93,7 +93,7 @@ const useSectionScrolling = ({
 };
 
 const useDetectScrollOverride = (
-  documentContainerRef: React.RefObject<HTMLDivElement>,
+  documentContainerRef: React.RefObject<HTMLDivElement | null>,
 ) => {
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,

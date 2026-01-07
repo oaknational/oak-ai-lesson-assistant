@@ -7,21 +7,22 @@ import { getChatById } from "@/app/actions";
 import { DownloadView } from "./DownloadView";
 
 export interface DownloadPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: Readonly<DownloadPageProps>): Promise<Metadata> {
-  const { userId }: { userId: string | null } = auth();
+  const { userId }: { userId: string | null } = await auth();
   if (!userId) {
     return {
       title: "Aila",
     };
   }
-  const chat = await getChatById(params.id);
+  const { id } = await params;
+  const chat = await getChatById(id);
 
   return {
     title: chat?.title.slice(0, 50) ?? "Aila",
@@ -31,8 +32,8 @@ export async function generateMetadata({
 export default async function DownloadPage({
   params,
 }: Readonly<DownloadPageProps>) {
-  const { userId }: { userId: string | null } = auth();
-  const { id } = params;
+  const { userId }: { userId: string | null } = await auth();
+  const { id } = await params;
 
   if (!userId) {
     redirect(`/sign-in?next=/aila/${id}`);

@@ -3,12 +3,13 @@ import { TRPCClientError } from "@trpc/client";
 
 import { handleStoreError } from "./errorHandling";
 
+jest.mock("@sentry/nextjs", () => ({
+  captureException: jest.fn(() => "mocked-id"),
+}));
+
 describe("handleStoreError", () => {
   const set = jest.fn();
-
-  const sentrySpy = jest
-    .spyOn(Sentry, "captureException")
-    .mockImplementation(() => "mocked-id");
+  const sentrySpy = Sentry.captureException as jest.Mock;
 
   afterEach(() => {
     jest.clearAllMocks();

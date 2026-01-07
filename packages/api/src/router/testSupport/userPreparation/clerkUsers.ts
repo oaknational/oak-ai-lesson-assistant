@@ -6,7 +6,8 @@ import { isClerkAPIResponseError } from "@clerk/shared";
 const log = aiLogger("testing");
 
 export const deleteOldTestUser = async () => {
-  const result = await clerkClient.users.getUserList({
+  const client = await clerkClient();
+  const result = await client.users.getUserList({
     limit: 500,
   });
 
@@ -33,7 +34,7 @@ export const deleteOldTestUser = async () => {
 
   if (userToDelete) {
     try {
-      await clerkClient.users.deleteUser(userToDelete.id);
+      await client.users.deleteUser(userToDelete.id);
       log.info(
         "Deleted old test user",
         userToDelete.primaryEmailAddress?.emailAddress,

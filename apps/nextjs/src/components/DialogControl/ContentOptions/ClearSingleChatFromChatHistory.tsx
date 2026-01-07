@@ -17,7 +17,7 @@ const ClearSingleChatFromChatHistory = ({
   closeDialog: () => void;
 }>) => {
   const { dialogProps, setDialogProps, setOpenSidebar } = useDialog();
-  const { mutate, isLoading } =
+  const { mutate, isPending: isMutationPending } =
     trpc.chat.appSessions.deleteChatById.useMutation({
       onSuccess() {
         closeDialog();
@@ -41,11 +41,11 @@ const ClearSingleChatFromChatHistory = ({
     mutate({ id: id });
   }
 
-  const [isPending, startTransition] = useTransition();
+  const [isTransitionPending, startTransition] = useTransition();
   const handleDeleteChat = () => {
     return (
       <OakPrimaryButton
-        disabled={isPending}
+        disabled={isTransitionPending}
         onClick={(event) => {
           event.preventDefault();
           startTransition(() => {
@@ -53,7 +53,7 @@ const ClearSingleChatFromChatHistory = ({
           });
         }}
       >
-        {isPending && (
+        {isTransitionPending && (
           <OakFlex $justifyContent="center" $alignItems="center">
             <LoadingWheel />
           </OakFlex>
@@ -65,7 +65,7 @@ const ClearSingleChatFromChatHistory = ({
   return (
     <OakFlex $flexDirection="column" $gap="spacing-24" $justifyContent="center">
       <OakP $textAlign="center">This will permanently delete this lesson.</OakP>
-      {isLoading ? (
+      {isMutationPending ? (
         <OakFlex $justifyContent="center" $alignItems="center">
           <LoadingWheel />
         </OakFlex>
