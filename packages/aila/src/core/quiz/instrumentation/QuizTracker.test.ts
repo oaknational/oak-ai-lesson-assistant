@@ -162,17 +162,27 @@ describe("QuizTracker", () => {
   });
 
   describe("timing", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
     it("records duration on completed tasks", async () => {
       const tracker = createQuizTracker();
 
-      await tracker.run(async (task) => {
+      const promise = tracker.run(async (task) => {
         await task.child("timed", async () => {
-          await new Promise((r) => setTimeout(r, 10));
+          await jest.advanceTimersByTimeAsync(10);
         });
       });
 
+      await promise;
+
       const report = tracker.getReport();
-      expect(report.children.timed?.durationMs).toBeGreaterThanOrEqual(10);
+      expect(report.children.timed?.durationMs).toBe(10);
     });
   });
 });
