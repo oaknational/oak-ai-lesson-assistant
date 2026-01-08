@@ -19,10 +19,6 @@ import type { SSEEvent } from "@/app/admin/quiz-playground/types";
 
 const log = aiLogger("admin");
 
-const debugEnabled =
-  process.env.NODE_ENV === "development" ||
-  process.env.VERCEL_ENV === "preview";
-
 async function isAdmin(userId: string): Promise<boolean> {
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
@@ -32,13 +28,6 @@ async function isAdmin(userId: string): Promise<boolean> {
 }
 
 export async function POST(request: Request) {
-  if (!debugEnabled) {
-    return NextResponse.json(
-      { error: "Debug endpoint not available" },
-      { status: 404 },
-    );
-  }
-
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
