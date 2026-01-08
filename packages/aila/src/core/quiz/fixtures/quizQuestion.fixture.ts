@@ -530,7 +530,7 @@ export function createMockQuestionPool(
   return {
     questions,
     source: {
-      type: "basedOn",
+      type: "basedOnLesson",
       lessonPlanId: id,
       lessonTitle: title,
     },
