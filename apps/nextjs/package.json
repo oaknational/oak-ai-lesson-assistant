@@ -164,7 +164,7 @@
     "msw-storybook-addon": "^2.0.6",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.1.1",
-    "storybook": "^10.0.8",
+    "storybook": "^10.1.10",
     "tailwindcss": "^3.3.7",
     "ts-jest": "^29.2.5",
     "typescript": "5.9.2",
