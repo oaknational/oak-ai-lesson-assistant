@@ -7,8 +7,8 @@ import type {
 } from "@elastic/elasticsearch/lib/api/types";
 import OpenAI from "openai";
 
-import type { Task } from "../instrumentation";
 import type { CustomSource, SimplifiedResult } from "../interfaces";
+import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 

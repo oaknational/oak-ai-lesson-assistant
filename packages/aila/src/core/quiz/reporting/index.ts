@@ -1,4 +1,4 @@
-export { Report, type ReportNode } from "./Report";
+export { Report, type ReportNode, type FinalReport } from "./Report";
 export { Task } from "./Task";
 export {
   createQuizTracker,
@@ -6,6 +6,8 @@ export {
   type QuizTrackerOptions,
 } from "./QuizTracker";
 export { createMockTask } from "./testing";
+export { ReportStorage } from "./ReportStorage";
+export { type StoredQuizReport } from "./storageTypes";
 
 // Schemas and extractors for typed access to ReportNode data
 export {

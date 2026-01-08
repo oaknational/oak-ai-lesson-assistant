@@ -80,6 +80,8 @@ export const QuizV3Schema = z.object({
   imageMetadata: z
     .array(ImageMetadataSchema)
     .describe(QUIZ_V3_DESCRIPTIONS.imageMetadata),
+  /** Links to the generation report in KV storage (key: quiz:generation-report:{reportId}) */
+  reportId: z.string().optional(),
 });
 
 export const QuizV3SchemaWithoutLength = QuizV3Schema;
