@@ -5,7 +5,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { nanoid } from "nanoid";
 
-import { type FinalReport, Report } from "./Report";
+import { Report, type RootReportNode } from "./Report";
 import { Task } from "./Task";
 
 export interface QuizTrackerOptions {
@@ -13,7 +13,7 @@ export interface QuizTrackerOptions {
    * Callback invoked on every report update.
    * Used for streaming updates to the debug UI.
    */
-  onUpdate?: (snapshot: FinalReport) => void;
+  onUpdate?: (snapshot: RootReportNode) => void;
 }
 
 export interface QuizTracker {
@@ -25,9 +25,9 @@ export interface QuizTracker {
   run<T>(fn: (task: Task, reportId: string) => Promise<T>): Promise<T>;
 
   /**
-   * Get the final report ready for storage.
+   * Get the report snapshot.
    */
-  getReport(): FinalReport;
+  getReport(): RootReportNode;
 }
 
 /**
@@ -70,7 +70,7 @@ export function createQuizTracker(
       );
     },
 
-    getReport(): FinalReport {
+    getReport(): RootReportNode {
       return report.getSnapshot();
     },
   };

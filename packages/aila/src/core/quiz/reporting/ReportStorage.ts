@@ -2,8 +2,24 @@ import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
 
-import type { FinalReport } from "./Report";
-import type { StoredQuizReport } from "./storageTypes";
+import type { RootReportNode } from "./Report";
+
+/**
+ * A quiz generation report stored in KV.
+ *
+ * Extends RootReportNode with storage metadata. The report captures the full
+ * execution tree of the quiz generation pipeline along with its reportId.
+ *
+ * Context (quizType, lessonTitle, etc.) is stored in the report's root data
+ * via task.addData() at the start of the pipeline run.
+ *
+ * NOTE: No formal zod schema validation yet - this structure may evolve.
+ * Consider adding schema validation if/when we need to migrate stored reports.
+ */
+export type StoredQuizReport = RootReportNode & {
+  /** Report format version for future migrations */
+  reportVersion: "v1";
+};
 
 const log = aiLogger("aila:quiz:reporting");
 
@@ -23,7 +39,7 @@ export const ReportStorage = {
    *
    * @param report - The completed report from QuizTracker.getReport()
    */
-  async store(report: FinalReport): Promise<void> {
+  async store(report: RootReportNode): Promise<void> {
     const { reportId } = report;
 
     const storedReport: StoredQuizReport = {

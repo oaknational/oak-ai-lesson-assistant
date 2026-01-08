@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import { redirect, useSearchParams } from "next/navigation";
 
 import { OakMathJaxContext } from "@/components/MathJax";
+import { trpc } from "@/utils/trpc";
 
 import { InputSection } from "./components/InputSection";
 import { createQuizPlaygroundStore, useQuizPlaygroundStore } from "./store";
@@ -21,6 +22,7 @@ export default function QuizPlaygroundPage() {
   const searchParams = useSearchParams();
   const urlChatId = searchParams.get("chatId");
   const urlQuizType = searchParams.get("quizType") as QuizPath | null;
+  const urlReportId = searchParams.get("reportId");
 
   const initialQuizType =
     urlQuizType === "/starterQuiz" || urlQuizType === "/exitQuiz"
@@ -54,6 +56,19 @@ export default function QuizPlaygroundPage() {
   const resetPipeline = useQuizPlaygroundStore(store, (s) => s.resetPipeline);
 
   const activeReport = loadedReport ?? streamingReport;
+
+  // Load report from URL param if present
+  const reportQuery = trpc.quizPlayground.getReportById.useQuery(
+    { reportId: urlReportId ?? "" },
+    { enabled: !!urlReportId },
+  );
+
+  // Set loaded report when fetched
+  useEffect(() => {
+    if (reportQuery.data && !loadedReport) {
+      setLoadedReport(reportQuery.data);
+    }
+  }, [reportQuery.data, loadedReport, setLoadedReport]);
 
   // Ref for scrolling to input section
   const inputSectionRef = useRef<HTMLDivElement>(null);
@@ -241,6 +256,25 @@ export default function QuizPlaygroundPage() {
         {error && (
           <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
             Error: {error.message}
+          </div>
+        )}
+
+        {reportQuery.isLoading && (
+          <div className="py-8 text-center text-gray-500">
+            <span className="mr-2 inline-block animate-spin">⚙️</span>
+            Loading report...
+          </div>
+        )}
+
+        {reportQuery.error && (
+          <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+            Error loading report: {reportQuery.error.message}
+          </div>
+        )}
+
+        {urlReportId && reportQuery.isSuccess && !reportQuery.data && (
+          <div className="rounded border border-yellow-400 bg-yellow-100 px-4 py-3 text-yellow-700">
+            Report not found: {urlReportId}
           </div>
         )}
 

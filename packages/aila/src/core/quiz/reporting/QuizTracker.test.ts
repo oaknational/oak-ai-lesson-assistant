@@ -2,7 +2,7 @@ import type { Span } from "@sentry/nextjs";
 import * as Sentry from "@sentry/nextjs";
 
 import { createQuizTracker } from "./QuizTracker";
-import type { FinalReport, ReportNode } from "./Report";
+import type { ReportNode, RootReportNode } from "./Report";
 
 const mockSpan = (name: string) => ({ name }) as unknown as Span;
 
@@ -115,7 +115,7 @@ describe("QuizTracker", () => {
 
   describe("onUpdate hook", () => {
     it("is called on child start", async () => {
-      const updates: FinalReport[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
@@ -131,7 +131,7 @@ describe("QuizTracker", () => {
     });
 
     it("is called on child complete", async () => {
-      const updates: FinalReport[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
@@ -147,7 +147,7 @@ describe("QuizTracker", () => {
     });
 
     it("is called on addData", async () => {
-      const updates: FinalReport[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });

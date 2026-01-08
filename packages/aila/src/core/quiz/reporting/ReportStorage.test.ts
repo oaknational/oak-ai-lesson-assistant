@@ -1,8 +1,7 @@
 import { kv } from "@vercel/kv";
 
-import type { FinalReport } from "./Report";
-import { ReportStorage } from "./ReportStorage";
-import type { StoredQuizReport } from "./storageTypes";
+import type { RootReportNode } from "./Report";
+import { ReportStorage, type StoredQuizReport } from "./ReportStorage";
 
 jest.mock("@vercel/kv", () => ({
   kv: {
@@ -13,7 +12,7 @@ jest.mock("@vercel/kv", () => ({
 
 const mockKv = jest.mocked(kv);
 
-const sampleReport: FinalReport = {
+const sampleReport: RootReportNode = {
   reportId: "test-report-id",
   status: "complete",
   startedAt: 1704067200000,

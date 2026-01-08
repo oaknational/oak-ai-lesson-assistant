@@ -17,18 +17,18 @@ export interface ReportNode {
 }
 
 /**
- * Root report node with reportId. Ready for storage.
+ * The root node of a report tree, which includes the reportId.
  */
-export interface FinalReport extends ReportNode {
+export interface RootReportNode extends ReportNode {
   reportId: string;
 }
 
 export class Report {
-  private root: FinalReport;
+  private root: RootReportNode;
 
   constructor(
     reportId: string,
-    private onUpdate?: (snapshot: FinalReport) => void,
+    private onUpdate?: (snapshot: RootReportNode) => void,
   ) {
     this.root = {
       reportId,
@@ -129,9 +129,9 @@ export class Report {
   }
 
   /**
-   * Get the complete report ready for storage.
+   * Get a snapshot of the current report tree.
    */
-  getSnapshot(): FinalReport {
+  getSnapshot(): RootReportNode {
     return structuredClone(this.root);
   }
 }
