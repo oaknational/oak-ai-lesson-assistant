@@ -26,7 +26,7 @@
     "@clerk/nextjs": "6.36.1",
     "@oakai/core": "*",
     "@oakai/logger": "*",
-    "@oaknational/oak-curriculum-schema": "^1.59.1",
+    "@oaknational/oak-curriculum-schema": "1.61.0",
     "@sentry/nextjs": "^10.29.0",
     "ai": "^4.1.00",
     "dotenv-cli": "^6.0.0",
