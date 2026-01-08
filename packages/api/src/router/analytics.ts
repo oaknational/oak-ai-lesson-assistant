@@ -10,7 +10,8 @@ export const analyticsRouter = router({
   getHubspotContact: protectedProcedure.query(async ({ ctx }) => {
     try {
       const { userId } = ctx.auth;
-      const user = await clerkClient.users.getUser(userId);
+      const client = await clerkClient();
+      const user = await client.users.getUser(userId);
 
       const email = user.emailAddresses[0]?.emailAddress;
       if (!email) {

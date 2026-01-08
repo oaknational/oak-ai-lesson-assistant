@@ -2,7 +2,7 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 
-import type { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { Logger as InngestLogger } from "inngest";
 import { PromptTemplate } from "langchain/prompts";
 
 // When we add structured parsing we can find a better type than this

@@ -12,7 +12,6 @@ import { lessonSummaryRouter } from "./lesson-summary";
 import { moderationsRouter } from "./moderations";
 import { newFeatureFlag } from "./newFeatureFlag";
 import { quizPlaygroundRouter } from "./quizPlayground";
-import { snippetRouter } from "./snippet";
 import { subjectAndKeyStagesRouter } from "./subjectsAndKeyStage";
 import { teachingMaterialsRouter } from "./teachingMaterialsRouter";
 
@@ -23,7 +22,6 @@ export const oakAppRouter = router({
   subjectsAndKeyStages: subjectAndKeyStagesRouter,
   lessonSummary: lessonSummaryRouter,
   judgement: judgementRouter,
-  snippet: snippetRouter,
   cloudinaryRouter: cloudinaryRouter,
   exports: exportsRouter,
   newFeatureFlag: newFeatureFlag,

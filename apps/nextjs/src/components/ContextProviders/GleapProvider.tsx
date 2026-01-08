@@ -62,7 +62,7 @@ export const GleapProvider = ({ children }: PropsWithChildren) => {
         dangerouslySetInnerHTML={{
           __html: `
 .bb-feedback-button .bb-feedback-button-classic {
-  font-family: Lexend, ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-lexend), Lexend, ui-sans-serif, sans-serif;
   font-weight: 600;
   color: #222222;
 }

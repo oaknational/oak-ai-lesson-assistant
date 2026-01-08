@@ -34,10 +34,12 @@ const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
     main: httpBatchLink({
       url: `${getBaseUrl()}/api/trpc/main`,
       headers,
+      transformer,
     })(runtime),
     chat: httpBatchLink({
       url: `${getBaseUrl()}/api/trpc/chat`,
       headers,
+      transformer,
     })(runtime),
   };
 
@@ -58,7 +60,6 @@ export function TRPCReactProvider(
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (op) =>

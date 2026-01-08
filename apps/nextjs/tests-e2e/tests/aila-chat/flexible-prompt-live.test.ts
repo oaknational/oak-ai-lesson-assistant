@@ -32,9 +32,6 @@ test(
       await textbox.fill(message);
       await expect(textbox).toContainText(message);
 
-      // TODO: the demo status doesn't seem to have been loaded yet so a demo modal is shown
-      await page.waitForTimeout(500);
-
       await sendMessage.click();
     });
 

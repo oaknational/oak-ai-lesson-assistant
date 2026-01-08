@@ -13,15 +13,16 @@ import { getSharedChatById } from "@/app/actions";
 import ShareChat from ".";
 
 interface SharePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: SharePageProps): Promise<Metadata> {
-  const chat = await getSharedChatById(params.id);
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
   return {
     title: chat?.title?.slice(0, 50) ?? "Aila",
   };
@@ -39,11 +40,13 @@ function userCanShare(user: User) {
 }
 
 export default async function SharePage({ params }: Readonly<SharePageProps>) {
-  const chat = await getSharedChatById(params.id);
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
   if (!chat?.lessonPlan) {
     return notFound();
   }
-  const user = await clerkClient.users.getUser(chat.userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(chat.userId);
 
   if (!userCanShare(user)) {
     return notFound();
@@ -52,7 +55,7 @@ export default async function SharePage({ params }: Readonly<SharePageProps>) {
   const { firstName, lastName } = user;
   const creatorsName = firstName && lastName && `${firstName + " " + lastName}`;
 
-  const moderations = await getSessionModerations(params.id);
+  const moderations = await getSessionModerations(id);
 
   if (moderations.some(isToxic)) {
     return notFound();

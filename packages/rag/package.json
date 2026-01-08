@@ -21,7 +21,7 @@
     "@oakai/db": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
-    "zod": "3.23.8"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

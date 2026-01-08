@@ -38,21 +38,22 @@ const findOrCreateUser = async (
   email: string,
   personaName: keyof typeof personas,
 ) => {
+  const client = await clerkClient();
   const existingUser = (
-    await clerkClient.users.getUserList({
+    await client.users.getUserList({
       emailAddress: [email],
     })
   ).data[0];
 
   if (existingUser) {
     if (existingUser.banned) {
-      await clerkClient.users.unbanUser(existingUser.id);
+      await client.users.unbanUser(existingUser.id);
     }
     return existingUser;
   }
 
   log.info("Creating test user", { email });
-  const newUser = await clerkClient.users.createUser({
+  const newUser = await client.users.createUser({
     emailAddress: [email],
     firstName: branch,
     lastName: personaName,

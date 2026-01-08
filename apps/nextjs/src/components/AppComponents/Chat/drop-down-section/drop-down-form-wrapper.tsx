@@ -36,7 +36,7 @@ export const DropDownFormWrapper = <
   title: string;
   buttonText: string;
   isOpen: boolean;
-  dropdownRef: React.RefObject<HTMLDivElement>;
+  dropdownRef: React.RefObject<HTMLDivElement | null>;
 }>) => {
   const isStreaming = useChatStore(
     (state) => state.ailaStreamingStatus !== "Idle",

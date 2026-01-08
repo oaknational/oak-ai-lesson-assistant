@@ -5,20 +5,21 @@ import TeachingMaterialsView, {
   type TeachingMaterialsPageProps,
 } from "./teachingMaterialsView";
 
-export default function TeachingMaterialsPage({
+export default async function TeachingMaterialsPage({
   searchParams,
 }: {
-  readonly searchParams: { [key: string]: string | undefined };
+  readonly searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const clerkAuthentication = auth();
+  const clerkAuthentication = await auth();
+  const resolvedSearchParams = await searchParams;
   const { userId }: { userId: string | null } = clerkAuthentication;
   if (!userId) {
     redirect("/sign-in?next=/aila");
   }
 
-  const lessonSlug = searchParams?.lessonSlug;
-  const programmeSlug = searchParams?.programmeSlug;
-  const docType = searchParams?.docType;
+  const lessonSlug = resolvedSearchParams?.lessonSlug;
+  const programmeSlug = resolvedSearchParams?.programmeSlug;
+  const docType = resolvedSearchParams?.docType;
 
   let pageProps: TeachingMaterialsPageProps = {
     source: "aila",

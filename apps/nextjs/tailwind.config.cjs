@@ -122,8 +122,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Lexend", ...defaultTheme.fontFamily.sans],
-        // sans: ["var(--font-geist-sans)"],
+        sans: ["var(--font-lexend)", "Lexend", ...defaultTheme.fontFamily.sans],
         mono: ["var(--font-geist-mono)"],
       },
       borderRadius: {

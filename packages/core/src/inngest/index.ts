@@ -1,31 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { aiLogger, structuredLogger } from "@oakai/logger";
 
 import { EventSchemas, Inngest } from "inngest";
-import getConfig from "next/config";
 
 import types from "../functions/event-types";
 import { eventLogger } from "../middleware/eventLogger";
 
 const log = aiLogger("core");
 
-let serverRuntimeConfig;
-try {
-  const { serverRuntimeConfig: nextServerRuntimeConfig } = getConfig();
-  serverRuntimeConfig = nextServerRuntimeConfig;
-} catch (e) {
-  if (process.env.NODE_ENV !== "test") {
-    log.error("No Next environment", e);
-  }
-}
-
-const CONTEXT = serverRuntimeConfig?.DEPLOY_CONTEXT as string | undefined;
-const BRANCH = serverRuntimeConfig?.BRANCH as string | undefined;
+const CONTEXT = process.env.VERCEL_ENV;
+const BRANCH = process.env.VERCEL_GIT_COMMIT_REF;
 
 function getInngestEnv() {
   if (CONTEXT === "production") {
     return "production";
-  } else if (CONTEXT === "deploy-preview" && BRANCH) {
+  } else if (CONTEXT === "preview" && BRANCH) {
     // Naively slugify, removing any non-alphanumeric
     return BRANCH.replace(/\W/g, "-");
   } else {

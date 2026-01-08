@@ -16,7 +16,6 @@ import { clerkSignInHelper, cspSafeWaitForFunction } from "./clerkHelpers";
 const logger = aiLogger("testing");
 
 const trpc = createTRPCProxyClient<TestSupportRouter>({
-  transformer,
   links: [
     loggerLink({ enabled: () => process.env.NODE_ENV === "development" }),
     httpBatchLink({
@@ -24,6 +23,7 @@ const trpc = createTRPCProxyClient<TestSupportRouter>({
       headers: {
         "x-vercel-protection-bypass": VERCEL_AUTOMATION_BYPASS_SECRET,
       },
+      transformer,
     }),
   ],
 });
