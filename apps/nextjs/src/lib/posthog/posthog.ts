@@ -33,10 +33,19 @@ export const posthogToAnalyticsService = (
           if (process.env.NEXT_PUBLIC_POSTHOG_DEBUG === "true") {
             posthog.debug();
           }
-          if (consentClient.getConsent(ServicePolicyMap.POSTHOG) === "denied") {
+
+          const consent = consentClient.getConsent(ServicePolicyMap.POSTHOG);
+          // We use posthog for essential functionality like feature flags and surveys
+          // We init on mount, but opt out of capturing if permission isn't granted
+          if (consent !== "granted") {
             posthog.opt_out_capturing();
+          }
+          // If we change the posthog persistence model while consent is pending,
+          // posthog might lose state for users who have given consent
+          if (consent === "denied") {
             posthog.set_config({ persistence: "memory" });
           }
+
           resolve(client.get_distinct_id());
         },
         autocapture: true,
