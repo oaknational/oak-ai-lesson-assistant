@@ -565,17 +565,6 @@ model Downloads {
   @@schema("public")
 }
 
-model UsersAllowedToViewNewFeatures {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  emailAddress String @map("email_address")
-
-  @@map("users_allowed_to_view_new_features")
-  @@schema("public")
-}
-
 model LessonExportDownload {
   id             String   @id @default(cuid())
   ext            String   @map("ext")
