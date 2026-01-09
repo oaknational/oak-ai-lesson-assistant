@@ -4,11 +4,10 @@ import { redirect } from "next/navigation";
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 export default async function LessonAdaptPage() {
-  const clerkAuthentication = auth();
+  const clerkAuthentication = await auth();
   const { userId }: { userId: string | null } = clerkAuthentication;
-
   if (!userId) {
-    redirect("/");
+    redirect("/sign-in?next=/aila");
   }
 
   const isEnabled = await serverSideFeatureFlag("lesson_adapt_enabled");
