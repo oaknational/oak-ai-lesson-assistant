@@ -17,3 +17,6 @@ export class AilaModerationError extends Error {
     this.name = "ModerationError";
   }
 }
+
+export { OakModerationServiceModerator } from "./OakModerationServiceModerator";
+export type { OakModerationServiceModeratorConfig } from "./OakModerationServiceModerator";
