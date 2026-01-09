@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/reporting";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { trpc } from "@/utils/trpc";

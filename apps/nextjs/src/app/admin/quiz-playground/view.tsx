@@ -2,6 +2,10 @@
 
 import { createContext, useContext, useState } from "react";
 
+import type {
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "@oakai/aila/src/core/quiz/interfaces";
 import {
   type GeneratorData,
   type ImageDescriptionsData,
@@ -9,11 +13,7 @@ import {
   extractGeneratorData,
   extractImageDescriptionsData,
   getChild,
-} from "@oakai/aila/src/core/quiz/instrumentation";
-import type {
-  QuizQuestionPool,
-  RagQuizQuestion,
-} from "@oakai/aila/src/core/quiz/interfaces";
+} from "@oakai/aila/src/core/quiz/reporting";
 import type { LatestQuiz } from "@oakai/aila/src/protocol/schema";
 
 import { QuizSection } from "@/components/AppComponents/SectionContent/QuizSection";

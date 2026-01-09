@@ -13,8 +13,12 @@ interface QuizDebugButtonProps {
 
 export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
   const { user, isLoaded } = useUser();
-  const chatId = useLessonPlanStore((state) => state.id);
   const subject = useLessonPlanStore((state) => state.lessonPlan.subject);
+  const quiz = useLessonPlanStore((state) =>
+    quizType === "/starterQuiz"
+      ? state.lessonPlan.starterQuiz
+      : state.lessonPlan.exitQuiz,
+  );
 
   const isAdmin =
     isLoaded &&
@@ -25,18 +29,16 @@ export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
   if (!isAdmin) return null;
   if (subject !== "maths") return null;
 
-  const label =
-    quizType === "/starterQuiz"
-      ? "Generate Starter Quiz"
-      : "Generate Exit Quiz";
+  const reportId = quiz?.reportId;
+  if (!reportId) return null;
 
   return (
-    <Link href={`/admin/quiz-playground?chatId=${chatId}&quizType=${quizType}`}>
+    <Link href={`/admin/quiz-playground?reportId=${reportId}`}>
       <ActionButton
         onClick={() => {}}
-        tooltip="Open Quiz Generation Playground with this lesson plan"
+        tooltip="View the generation report for this quiz"
       >
-        {label}
+        Open in Playground
       </ActionButton>
     </Link>
   );

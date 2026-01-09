@@ -1,8 +1,8 @@
 import { kv } from "@vercel/kv";
 
 import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
-import { createMockTask } from "../instrumentation";
 import type { QuizQuestionPool } from "../interfaces";
+import { createMockTask } from "../reporting";
 import { ImageDescriptionEnricher } from "./ImageDescriptionEnricher";
 
 // Subclass to expose protected methods for testing

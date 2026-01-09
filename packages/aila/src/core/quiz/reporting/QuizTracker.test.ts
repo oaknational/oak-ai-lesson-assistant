@@ -2,7 +2,7 @@ import type { Span } from "@sentry/nextjs";
 import * as Sentry from "@sentry/nextjs";
 
 import { createQuizTracker } from "./QuizTracker";
-import type { ReportNode } from "./Report";
+import type { ReportNode, RootReportNode } from "./Report";
 
 const mockSpan = (name: string) => ({ name }) as unknown as Span;
 
@@ -38,7 +38,7 @@ describe("QuizTracker", () => {
 
   describe("report tree structure", () => {
     it("builds nested children correctly", async () => {
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
 
       await tracker.run(async (task) => {
         await task.child("generator", async (task) => {
@@ -53,7 +53,7 @@ describe("QuizTracker", () => {
     });
 
     it("handles parallel children", async () => {
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
 
       await tracker.run(async (task) => {
         await Promise.all([
@@ -67,7 +67,7 @@ describe("QuizTracker", () => {
     });
 
     it("marks error status on failure", async () => {
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
 
       await expect(
         tracker.run(async (task) => {
@@ -85,7 +85,7 @@ describe("QuizTracker", () => {
 
   describe("sentry spans", () => {
     it("creates root span with quiz.pipeline", async () => {
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
       await tracker.run(async () => {});
 
       expect(Sentry.startSpan).toHaveBeenCalledWith(
@@ -101,7 +101,7 @@ describe("QuizTracker", () => {
         return fn(mockSpan(opts.name));
       });
 
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
       await tracker.run(async (task) => {
         await task.child("myTask", async () => {});
       });
@@ -115,7 +115,7 @@ describe("QuizTracker", () => {
 
   describe("onUpdate hook", () => {
     it("is called on child start", async () => {
-      const updates: ReportNode[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
@@ -131,7 +131,7 @@ describe("QuizTracker", () => {
     });
 
     it("is called on child complete", async () => {
-      const updates: ReportNode[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
@@ -147,7 +147,7 @@ describe("QuizTracker", () => {
     });
 
     it("is called on addData", async () => {
-      const updates: ReportNode[] = [];
+      const updates: RootReportNode[] = [];
       const tracker = createQuizTracker({
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
@@ -171,7 +171,7 @@ describe("QuizTracker", () => {
     });
 
     it("records duration on completed tasks", async () => {
-      const tracker = createQuizTracker();
+      const tracker = createQuizTracker({});
 
       const promise = tracker.run(async (task) => {
         await task.child("timed", async () => {
@@ -183,6 +183,44 @@ describe("QuizTracker", () => {
 
       const report = tracker.getReport();
       expect(report.children.timed?.durationMs).toBe(10);
+    });
+  });
+
+  describe("reportId", () => {
+    it("passes reportId to the callback", async () => {
+      const tracker = createQuizTracker({});
+      let receivedId: string | undefined;
+
+      await tracker.run(async (task, reportId) => {
+        receivedId = reportId;
+      });
+
+      expect(receivedId).toBeDefined();
+      expect(typeof receivedId).toBe("string");
+      expect(receivedId!.length).toBe(16);
+    });
+
+    it("includes reportId in the report", async () => {
+      const tracker = createQuizTracker({});
+
+      await tracker.run(async () => {});
+
+      const report = tracker.getReport();
+      expect(report.reportId).toBeDefined();
+      expect(typeof report.reportId).toBe("string");
+      expect(report.reportId.length).toBe(16);
+    });
+
+    it("callback and report have matching reportId", async () => {
+      const tracker = createQuizTracker({});
+      let callbackId: string | undefined;
+
+      await tracker.run(async (task, reportId) => {
+        callbackId = reportId;
+      });
+
+      const report = tracker.getReport();
+      expect(callbackId).toBe(report.reportId);
     });
   });
 });

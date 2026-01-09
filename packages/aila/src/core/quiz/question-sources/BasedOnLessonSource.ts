@@ -5,8 +5,8 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import type { Task } from "../instrumentation";
 import type { QuestionSource, QuizQuestionPool } from "../interfaces";
+import type { Task } from "../reporting";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");

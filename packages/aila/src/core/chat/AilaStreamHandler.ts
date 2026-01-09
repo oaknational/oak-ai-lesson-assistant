@@ -33,7 +33,7 @@ import {
 import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
-import { createQuizTracker } from "../quiz/instrumentation";
+import { ReportStorage, createQuizTracker } from "../quiz/reporting";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
 
@@ -225,27 +225,35 @@ export class AilaStreamHandler {
       customAgents: {
         mathsStarterQuiz: async ({ document }) => {
           const tracker = createQuizTracker();
-          const quiz = await tracker.run((task) =>
-            this._chat.quizService.buildQuiz(
+          const quiz = await tracker.run(async (task, reportId) => {
+            const result = await this._chat.quizService.buildQuiz(
               "/starterQuiz",
               document,
               this._chat.relevantLessons ?? [],
               task,
-            ),
-          );
+              reportId,
+            );
+            task.addData({ quiz: result });
+            return result;
+          });
+          await ReportStorage.store(tracker.getReport());
 
           return quiz;
         },
         mathsExitQuiz: async ({ document }) => {
           const tracker = createQuizTracker();
-          const quiz = await tracker.run((task) =>
-            this._chat.quizService.buildQuiz(
+          const quiz = await tracker.run(async (task, reportId) => {
+            const result = await this._chat.quizService.buildQuiz(
               "/exitQuiz",
               document,
               this._chat.relevantLessons ?? [],
               task,
-            ),
-          );
+              reportId,
+            );
+            task.addData({ quiz: result });
+            return result;
+          });
+          await ReportStorage.store(tracker.getReport());
 
           return quiz;
         },
@@ -378,14 +386,18 @@ export class AilaStreamHandler {
             "starterQuiz--maths": async (ctx) => {
               try {
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run((task) =>
-                  this._chat.quizService.buildQuiz(
+                const quiz = await tracker.run(async (task, reportId) => {
+                  const result = await this._chat.quizService.buildQuiz(
                     "/starterQuiz",
                     ctx.currentTurn.document,
                     this._chat.relevantLessons ?? [],
                     task,
-                  ),
-                );
+                    reportId,
+                  );
+                  task.addData({ quiz: result });
+                  return result;
+                });
+                await ReportStorage.store(tracker.getReport());
 
                 return { error: null, data: quiz };
               } catch (error) {
@@ -401,14 +413,18 @@ export class AilaStreamHandler {
             "exitQuiz--maths": async (ctx) => {
               try {
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run((task) =>
-                  this._chat.quizService.buildQuiz(
+                const quiz = await tracker.run(async (task, reportId) => {
+                  const result = await this._chat.quizService.buildQuiz(
                     "/exitQuiz",
                     ctx.currentTurn.document,
                     this._chat.relevantLessons ?? [],
                     task,
-                  ),
-                );
+                    reportId,
+                  );
+                  task.addData({ quiz: result });
+                  return result;
+                });
+                await ReportStorage.store(tracker.getReport());
 
                 return { error: null, data: quiz };
               } catch (error) {

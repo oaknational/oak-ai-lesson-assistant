@@ -3,6 +3,9 @@
  * Every mutation (start, end, setData) triggers an emit to stream updates to the debug UI.
  */
 
+/**
+ * A node in the report tree (used for children).
+ */
 export interface ReportNode {
   status: "pending" | "running" | "complete" | "error";
   startedAt?: number;
@@ -13,21 +16,34 @@ export interface ReportNode {
   children: Record<string, ReportNode>;
 }
 
-export class Report {
-  private root: ReportNode = {
-    status: "running",
-    startedAt: Date.now(),
-    data: {},
-    children: {},
-  };
+/**
+ * The root node of a report tree, which includes the reportId.
+ */
+export interface RootReportNode extends ReportNode {
+  reportId: string;
+}
 
-  constructor(private onUpdate?: (snapshot: ReportNode) => void) {}
+export class Report {
+  private root: RootReportNode;
+
+  constructor(
+    reportId: string,
+    private onUpdate?: (snapshot: RootReportNode) => void,
+  ) {
+    this.root = {
+      reportId,
+      status: "running",
+      startedAt: Date.now(),
+      data: {},
+      children: {},
+    };
+  }
 
   /**
    * Navigate to a node by path. Throws if node doesn't exist.
    */
   private getNode(path: string[]): ReportNode {
-    let current = this.root;
+    let current: ReportNode = this.root;
     for (const segment of path) {
       const child = current.children[segment];
       if (!child) {
@@ -113,9 +129,9 @@ export class Report {
   }
 
   /**
-   * Get a snapshot of the current report state.
+   * Get a snapshot of the current report tree.
    */
-  getSnapshot(): ReportNode {
+  getSnapshot(): RootReportNode {
     return structuredClone(this.root);
   }
 }

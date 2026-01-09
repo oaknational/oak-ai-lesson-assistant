@@ -1,5 +1,8 @@
 import { buildQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildQuizService";
-import { createQuizTracker } from "@oakai/aila/src/core/quiz/instrumentation";
+import {
+  ReportStorage,
+  createQuizTracker,
+} from "@oakai/aila/src/core/quiz/reporting";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -117,7 +120,7 @@ export async function POST(request: Request) {
       });
 
       try {
-        await tracker.run(async (task) => {
+        await tracker.run(async (task, reportId) => {
           task.addData({
             inputs: { lessonPlan, quizType, relevantLessons },
           });
@@ -126,12 +129,17 @@ export async function POST(request: Request) {
             lessonPlan,
             relevantLessons,
             task,
+            reportId,
           );
           task.addData({ quiz });
         });
 
         const report = tracker.getReport();
-        log.info(`Pipeline complete in ${report.durationMs}ms`);
+        log.info(`Pipeline complete in ${report.durationMs}ms`, {
+          reportId: report.reportId,
+        });
+
+        await ReportStorage.store(report);
 
         sendEvent({
           type: "complete",
