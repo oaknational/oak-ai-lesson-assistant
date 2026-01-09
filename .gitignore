@@ -68,3 +68,5 @@ yarn-error.log*
 .claude/prompts
 *.local.md
 *.log
+
+.serena
