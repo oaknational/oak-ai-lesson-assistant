@@ -1,8 +1,14 @@
+import { aiLogger } from "@oakai/logger";
+
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
+import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
 
+const log = aiLogger("adaptations");
 /**
  * Lesson Adapt Router
  *
@@ -85,10 +91,43 @@ export const lessonAdaptRouter = router({
         lessonId: z.string(),
       }),
     )
-    .query(async () => {
-      // TODO: Implement in follow-up PR
-      // Fetch lesson with slides, docs, KLPs, etc.
-      throw new Error("Not implemented yet");
+    .query(async ({ input }) => {
+      try {
+        // NOTE: Database structure for lesson adaptations not yet set up
+        // When implemented, this should query a table to get the lessonSlug from lessonId
+        // TODO: Replace with actual database query: const lessonRecord = await ctx.prisma.lessonAdaptation.findUnique(...)
+
+        // Temporary: Treat lessonId as lessonSlug for now
+        const lessonSlug = input.lessonId;
+        const programmeSlug = null; // Canonical lesson for now
+
+        const { authKey, authType, graphqlEndpoint } =
+          validateCurriculumApiEnv();
+
+        // Fetch lesson data from OWA
+        const { lessonData } = await fetchOwaLessonAndTcp({
+          lessonSlug,
+          programmeSlug,
+          authKey,
+          authType,
+          graphqlEndpoint: String(graphqlEndpoint),
+        });
+
+        return {
+          lessonData,
+        };
+      } catch (error) {
+        log.error("Failed to fetch lesson content", {
+          lessonId: input.lessonId,
+          error,
+        });
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch lesson content",
+          cause: error,
+        });
+      }
     }),
 
   /**
