@@ -125,10 +125,10 @@ const useQuestionsForJudgement = ({
   };
 
   const isLoading =
-    selectedQuestion.isLoading ||
+    selectedQuestion.isPending ||
     questionsFromTrpc.isRefetching ||
-    questionsFromTrpc.isLoading ||
-    flagOrSkipQuestion.isLoading;
+    questionsFromTrpc.isPending ||
+    flagOrSkipQuestion.isPending;
 
   return {
     data,

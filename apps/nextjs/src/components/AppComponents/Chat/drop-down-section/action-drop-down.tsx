@@ -38,7 +38,7 @@ export type DropDownProps = Readonly<{
   ) => Promise<void>;
   buttonText: string;
   userSuggestionTitle: string;
-  dropdownRef: RefObject<HTMLDivElement>;
+  dropdownRef: RefObject<HTMLDivElement | null>;
   id: string;
 }>;
 

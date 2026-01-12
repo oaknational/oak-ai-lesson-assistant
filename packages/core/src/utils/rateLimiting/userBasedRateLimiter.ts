@@ -49,7 +49,8 @@ export const userBasedRateLimiter = ({
       );
     }
 
-    const user = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
 
     const tokenLimit = limit(userHasOakEmail(user), user.privateMetadata);
     log.info(`Using limit ${tokenLimit} for user ${userId}`);

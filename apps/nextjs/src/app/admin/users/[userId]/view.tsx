@@ -58,7 +58,7 @@ function SafetyViolationsListItem({
                   moderationId: recordId,
                 })
               }
-              isLoading={invalidateModeration.isLoading}
+              isLoading={invalidateModeration.isPending}
             >
               Invalidate moderation
             </OakPrimaryButton>
@@ -67,7 +67,7 @@ function SafetyViolationsListItem({
               iconName="cross"
               className="ml-auto"
               onClick={() => void removeSafetyViolation.mutateAsync({ id })}
-              isLoading={removeSafetyViolation.isLoading}
+              isLoading={removeSafetyViolation.isPending}
             >
               Delete safety violation
             </OakPrimaryButton>

@@ -17,6 +17,7 @@ export const populateDemoStatuses = inngest.createFunction(
   async ({ event, step }) => {
     const args = populateDemoStatusesSchema.data.parse(event.data);
     const DRY_RUN = args.dryRun;
+    const client = await clerkClient();
 
     if (DRY_RUN) {
       log.info("Running in dry run mode");
@@ -26,7 +27,7 @@ export const populateDemoStatuses = inngest.createFunction(
       log.info("Updating user", id);
 
       if (!DRY_RUN) {
-        await clerkClient.users.updateUserMetadata(id, {
+        await client.users.updateUserMetadata(id, {
           publicMetadata: {
             isDemoUser: false,
           },
@@ -38,7 +39,7 @@ export const populateDemoStatuses = inngest.createFunction(
 
     while (true) {
       const result = await step.run("Process page", async () => {
-        const { data } = await clerkClient.users.getUserList({
+        const { data } = await client.users.getUserList({
           limit: 100,
           offset,
           orderBy: "created_at",
