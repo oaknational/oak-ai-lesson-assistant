@@ -36,10 +36,7 @@ import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import type { Config } from "./config";
 import { handleChatException } from "./errorHandling";
-import {
-  getFixtureLLMService,
-  getFixtureModerationOpenAiClient,
-} from "./fixtures";
+import { getFixtureLLMService } from "./fixtures";
 import { fetchAndCheckUser } from "./user";
 
 const log = aiLogger("chat");
@@ -100,10 +97,6 @@ async function setupChatHandler(req: NextRequest) {
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);
-      const moderationAiClient = getFixtureModerationOpenAiClient(
-        req.headers,
-        chatId,
-      );
 
       const threatDetectors = [
         new HeliconeThreatDetector(),
@@ -115,7 +108,6 @@ async function setupChatHandler(req: NextRequest) {
         messages,
         options,
         llmService,
-        moderationAiClient,
         threatDetectors,
       };
     },
@@ -285,7 +277,6 @@ type CreateAilaInstanceArguments = {
   messages: Message[];
   lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
-  moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
   threatDetectors: AilaThreatDetector[];
 };
 
@@ -297,7 +288,6 @@ async function createAilaInstance({
   messages,
   lessonPlan,
   llmService,
-  moderationAiClient,
   threatDetectors,
 }: CreateAilaInstanceArguments): Promise<Aila> {
   return await startSpan(
@@ -313,7 +303,6 @@ async function createAilaInstance({
         },
         services: {
           chatLlmService: llmService,
-          moderationAiClient,
           ragService: (aila: AilaServices) => new AilaRag({ aila }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
@@ -343,7 +332,6 @@ export async function handleChatPostRequest(
       messages: frontendMessages,
       options,
       llmService,
-      moderationAiClient,
       threatDetectors,
     } = await setupChatHandler(req);
     span.setAttributes({ chat_id: chatId });
@@ -367,7 +355,6 @@ export async function handleChatPostRequest(
         messages,
         lessonPlan: dbLessonPlan,
         llmService,
-        moderationAiClient,
         threatDetectors,
       });
       invariant(aila, "Aila instance is required");

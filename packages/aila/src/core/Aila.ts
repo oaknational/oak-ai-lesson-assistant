@@ -95,11 +95,7 @@ export class Aila implements AilaServices {
       this._options,
       options.services?.analyticsAdapters?.(this),
     );
-    this._moderation = AilaFeatureFactory.createModeration(
-      this,
-      this._options,
-      options.services?.moderationAiClient,
-    );
+    this._moderation = AilaFeatureFactory.createModeration(this, this._options);
     this._snapshotStore = AilaFeatureFactory.createSnapshotStore(this);
     this._persistence = AilaFeatureFactory.createPersistence(
       this,

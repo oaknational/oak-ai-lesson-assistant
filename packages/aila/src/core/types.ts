@@ -3,7 +3,6 @@ import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
 import type { AilaModerator } from "../features/moderation/moderators";
-import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import type { AilaPersistence } from "../features/persistence";
 import type { AilaRagFeature } from "../features/rag";
 import type { AilaThreatDetector } from "../features/threatDetection";
@@ -82,7 +81,6 @@ export type AilaInitializationOptions = {
   services?: {
     chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
-    moderationAiClient?: OpenAILike;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];

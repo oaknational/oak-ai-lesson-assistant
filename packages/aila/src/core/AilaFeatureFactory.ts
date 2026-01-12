@@ -3,8 +3,7 @@ import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
-import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
-import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
+import { OakModerationServiceModerator } from "../features/moderation/moderators/OakModerationServiceModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaSnapshotStore } from "../features/snapshotStore";
 import { AilaThreatDetection } from "../features/threatDetection";
@@ -37,13 +36,23 @@ export class AilaFeatureFactory {
   static createModeration(
     aila: AilaServices,
     options: AilaOptions,
-    openAiClient?: OpenAILike,
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
-      const moderator = new OpenAiModerator({
-        userId: aila.userId,
+      const baseUrl = process.env.MODERATION_API_URL;
+      const apiKey = process.env.MODERATION_API_KEY;
+
+      if (!baseUrl || !apiKey) {
+        throw new Error(
+          "Oak Moderation Service credentials not configured. " +
+            "Please set MODERATION_API_URL and MODERATION_API_KEY environment variables.",
+        );
+      }
+
+      const moderator = new OakModerationServiceModerator({
+        baseUrl,
+        apiKey,
         chatId: aila.chatId,
-        openAiClient,
+        userId: aila.userId,
       });
       return new AilaModeration({ aila, moderator });
     }
