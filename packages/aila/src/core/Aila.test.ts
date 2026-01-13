@@ -207,7 +207,7 @@ describe("Aila", () => {
     it("should throw AilaAuthenticationError when userId is not set and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
-        options: { usePersistence: true, useAnalytics: false },
+        options: { usePersistence: true, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -222,7 +222,7 @@ describe("Aila", () => {
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
-        options: { usePersistence: true, useAnalytics: false },
+        options: { usePersistence: true, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -235,7 +235,7 @@ describe("Aila", () => {
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
-        options: { usePersistence: false, useAnalytics: false },
+        options: { usePersistence: false, useAnalytics: false, useModeration: false },
         plugins: [],
       });
       expect(() => {
@@ -247,7 +247,7 @@ describe("Aila", () => {
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
-        options: { usePersistence: true, useAnalytics: false },
+        options: { usePersistence: true, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -260,7 +260,7 @@ describe("Aila", () => {
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
-        options: { usePersistence: false, useAnalytics: false },
+        options: { usePersistence: false, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -273,7 +273,7 @@ describe("Aila", () => {
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: "" },
-        options: { usePersistence: true, useAnalytics: false },
+        options: { usePersistence: true, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -286,7 +286,7 @@ describe("Aila", () => {
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
         chat: { id: "123", userId: undefined },
-        options: { usePersistence: false, useAnalytics: false },
+        options: { usePersistence: false, useAnalytics: false, useModeration: false },
         plugins: [],
       });
 
@@ -353,6 +353,11 @@ describe("Aila", () => {
         chat: {
           id: "chat_1",
           userId: undefined,
+        },
+        options: {
+          useModeration: false,
+          usePersistence: false,
+          useAnalytics: false,
         },
       });
       ailaInstance.handleShutdown = shutdownMock;

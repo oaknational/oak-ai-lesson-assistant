@@ -38,11 +38,10 @@ const setUpModeration = ({
     document,
     chat,
     options: {
-      useModeration: true,
+      useModeration: false, // We create AilaModeration manually below with the mock moderator
       usePersistence: false,
       useAnalytics: false,
     },
-    moderator,
     prisma: prismaMock,
     plugins,
   });
