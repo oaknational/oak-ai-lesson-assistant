@@ -39,7 +39,7 @@ export default function LessonAdaptPage() {
           <button
             onClick={handleFetch}
             disabled={!lessonId.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 rounded px-4 py-2 text-white disabled:bg-gray-400"
+            className="bg-blue-600 hover:bg-blue-700 rounded px-4 py-2"
           >
             {isLoading ? "Loading..." : "Fetch Lesson"}
           </button>
@@ -54,26 +54,41 @@ export default function LessonAdaptPage() {
       )}
 
       {data && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div className="rounded border border-green-200 bg-green-50 p-4">
             <p className="font-semibold text-green-800">
               Lesson fetched successfully!
             </p>
+            <p className="mt-1 text-sm text-green-700">
+              Slide deck duplicated and ready for adaptation
+            </p>
           </div>
 
-          {/* <div className="p-4 bg-white border rounded">
-            <h2 className="text-xl font-semibold mb-2">Lesson Data</h2>
-            <div className="space-y-2">
-              <p>
-                <strong>Title:</strong>{" "}
-                {data.lessonData.data?.content?.[0]?.title ?? "N/A"}
-              </p>
-              <p>
-                <strong>Slug:</strong>{" "}
-                {data.lessonData.data?.content?.[0]?.lesson_slug ?? "N/A"}
-              </p>
+          {/* Embedded Google Slides */}
+          <div className="rounded border bg-white p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Lesson Slides</h2>
+              <a
+                href={data.presentationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 text-sm hover:underline"
+              >
+                Open in Google Slides ↗
+              </a>
             </div>
-          </div> */}
+            <div className="aspect-video w-full overflow-hidden rounded border">
+              <iframe
+                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&loop=false&delayms=3000`}
+                className="h-full w-full"
+                allowFullScreen
+                title="Lesson Slides"
+              />
+            </div>
+            <p className="mt-2 text-xs text-gray-500">
+              Presentation ID: {data.presentationId}
+            </p>
+          </div>
 
           <details className="rounded border bg-gray-50 p-4">
             <summary className="cursor-pointer font-semibold">

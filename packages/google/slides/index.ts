@@ -1,5 +1,12 @@
 /**
- * Google Slides API exports.
- * TODO: Export client and operations when implemented.
+ * Google Slides API exports
  */
-export {};
+export {
+  duplicateSlideDeck,
+  duplicateSlideDeckToDefaultFolder,
+} from "./operations";
+export type {
+  DuplicateSlideDeckOptions,
+  DuplicateSlideDeckResult,
+  SlidesClient,
+} from "./types";

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
+import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
 import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
 
 const log = aiLogger("adaptations");
@@ -84,11 +85,19 @@ export const lessonAdaptRouter = router({
 
   /**
    * Fetch lesson content with all resources
+   * Also creates a copy of the slide deck for adaptation
    */
   getLessonContent: protectedProcedure
     .input(
       z.object({
         lessonId: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        lessonData: z.any(),
+        presentationId: z.string(),
+        presentationUrl: z.string().url(),
       }),
     )
     .query(async ({ input }) => {
@@ -113,8 +122,14 @@ export const lessonAdaptRouter = router({
           graphqlEndpoint: String(graphqlEndpoint),
         });
 
+        // Duplicate the slide deck to the configured folder
+        const { presentationId, presentationUrl } =
+          await duplicateLessonSlideDeck(lessonData, lessonSlug);
+
         return {
           lessonData,
+          presentationId,
+          presentationUrl,
         };
       } catch (error) {
         log.error("Failed to fetch lesson content", {
