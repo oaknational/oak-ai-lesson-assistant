@@ -1,68 +1,84 @@
+import createClient from "openapi-fetch";
+
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import {
-  OakModerationServiceClient,
-  OakModerationServiceError,
-  type OakModerationServiceClientConfig,
-} from "@oakai/core/src/services/moderation";
+import type { paths } from "@oakai/core/src/generated/moderation-api";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaModerationError, AilaModerator } from ".";
 
 const log = aiLogger("aila:moderation");
 
-export interface OakModerationServiceModeratorConfig
-  extends OakModerationServiceClientConfig {
-  userId?: string;
+export interface OakModerationServiceModeratorConfig {
+  baseUrl: string;
+  apiKey: string;
   chatId: string;
+  userId?: string;
+  timeoutMs?: number;
 }
 
 /**
- * Moderator implementation that uses the Oak AI Moderation Service.
- * This calls the external moderation API and maps the response to the
- * internal ModerationResult format.
+ * Moderator implementation that calls the Oak AI Moderation Service.
+ * Uses openapi-fetch with generated types from the OpenAPI spec.
  */
 export class OakModerationServiceModerator extends AilaModerator {
-  private readonly client: OakModerationServiceClient;
+  private readonly client: ReturnType<typeof createClient<paths>>;
+  private readonly timeoutMs: number;
 
   constructor(config: OakModerationServiceModeratorConfig) {
     super({ userId: config.userId, chatId: config.chatId });
-    this.client = new OakModerationServiceClient({
+    this.client = createClient<paths>({
       baseUrl: config.baseUrl,
-      apiKey: config.apiKey,
-      timeoutMs: config.timeoutMs,
+      headers: {
+        Authorization: `Bearer ${config.apiKey}`,
+      },
     });
+    this.timeoutMs = config.timeoutMs ?? 30000;
   }
 
   async moderate(input: string): Promise<ModerationResult> {
+    log.info("Calling Oak Moderation Service", {
+      contentLength: input.length,
+    });
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+
     try {
-      log.info("Moderating content via Oak Moderation Service");
-      const response = await this.client.moderate(input);
-
-      // The response type from openapi-fetch matches the ModerationResult structure
-      const result: ModerationResult = {
-        justification: response.message,
-        scores: response.scores,
-        categories: response.categories,
-      };
-
-      log.info("Moderation complete", {
-        categoriesCount: result.categories.length,
-        hasScores: !!result.scores,
+      const { data, error, response } = await this.client.POST("/v0/moderate", {
+        body: { content: input },
+        signal: controller.signal,
       });
 
-      return result;
-    } catch (error) {
-      log.error("Oak Moderation Service error", error);
-
-      if (error instanceof OakModerationServiceError) {
+      if (error) {
+        log.error("Oak Moderation Service error", {
+          status: response.status,
+          error,
+        });
         throw new AilaModerationError(
-          `Oak Moderation Service failed (${error.statusCode}): ${error.message}`,
+          `Oak Moderation Service returned ${response.status}: ${error.error}`,
         );
       }
 
+      log.info("Oak Moderation Service response received", {
+        categoriesCount: data.categories.length,
+        scores: data.scores,
+      });
+
+      return {
+        justification: data.message,
+        scores: data.scores,
+        categories: data.categories,
+      };
+    } catch (err) {
+      if (err instanceof AilaModerationError) {
+        throw err;
+      }
+      log.error("Oak Moderation Service error", err);
       throw new AilaModerationError(
-        `Oak Moderation Service failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Oak Moderation Service failed: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
+    } finally {
+      clearTimeout(timeout);
     }
   }
 }
