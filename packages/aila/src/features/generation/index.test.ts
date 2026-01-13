@@ -10,6 +10,13 @@ const ailaArgs: AilaInitializationOptions = {
     id: "chat_1",
     userId: "user_1",
   },
+  options: {
+    useModeration: false,
+    usePersistence: false,
+    useAnalytics: false,
+    useThreatDetection: false,
+    useErrorReporting: false,
+  },
 };
 
 describe("calculateTokenUsage", () => {
