@@ -127,14 +127,18 @@ export async function moveFileToFolder(
   }
 }
 
-export async function setFilePermissions(
-  fileId: string,
-  type: string = "anyone",
-  role: string = "reader",
-): Promise<void> {
+export async function setFilePermissions({
+  fileId,
+  type = "anyone",
+  role = "reader",
+}: {
+  fileId: string;
+  type: string;
+  role: string;
+}): Promise<void> {
+  const drive = await createDriveClient();
   try {
-    const drive = await createDriveClient();
-    drive.permissions.create({
+    await drive.permissions.create({
       supportsAllDrives: true,
       fileId: fileId,
       requestBody: {
