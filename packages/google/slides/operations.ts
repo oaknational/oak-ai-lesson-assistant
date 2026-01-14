@@ -42,11 +42,7 @@ export async function duplicateSlideDeck(
       name: options.name,
       destinationFolderId: options.destinationFolderId,
     });
-    await setFilePermissions({
-      fileId: result.fileId,
-      role: "reader",
-      type: "anyone",
-    });
+
     return {
       presentationId: result.fileId,
       presentationUrl: result.webViewLink,
