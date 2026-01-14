@@ -1,3 +1,10 @@
+# [1.59.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.58.1...v1.59.0) (2026-01-14)
+
+
+### Features
+
+* enable quiz playground in production ([#899](https://github.com/oaknational/oak-ai-lesson-assistant/issues/899)) ([ecefdb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ecefdb9a6e1d6271402700f228beb1c6d8aa5e45))
+
 ## [1.58.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.58.0...v1.58.1) (2026-01-12)
 
 
