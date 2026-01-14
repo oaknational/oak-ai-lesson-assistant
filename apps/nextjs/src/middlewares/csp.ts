@@ -141,6 +141,8 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       "*.thenational.academy",
       "https://challenges.cloudflare.com",
       "https://*.mux.com",
+      "https://docs.google.com",
+      "https://drive.google.com",
     ],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
