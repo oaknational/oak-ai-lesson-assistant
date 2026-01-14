@@ -39,18 +39,16 @@ export class AilaFeatureFactory {
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
       const baseUrl = process.env.MODERATION_API_URL;
-      const apiKey = process.env.MODERATION_API_KEY;
 
-      if (!baseUrl || !apiKey) {
+      if (!baseUrl) {
         throw new Error(
-          "Oak Moderation Service credentials not configured. " +
-            "Please set MODERATION_API_URL and MODERATION_API_KEY environment variables.",
+          "Oak Moderation Service not configured. " +
+            "Please set MODERATION_API_URL environment variable.",
         );
       }
 
       const moderator = new OakModerationServiceModerator({
         baseUrl,
-        apiKey,
         chatId: aila.chatId,
         userId: aila.userId,
       });

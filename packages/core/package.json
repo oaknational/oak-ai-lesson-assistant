@@ -10,6 +10,8 @@
     "admin": "open http://localhost:8288",
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
+    "codegen:moderation": "tsx ./src/scripts/generateModerationTypes.ts",
+    "codegen:moderation:dev": "dotenv -e ../../.env -- pnpm codegen:moderation",
     "debug": "open https://localhost:2525/api/inngest",
     "dev": "pnpm exec inngest-cli dev -u http://localhost:2525/api/inngest",
     "doppler:run:dev": "doppler run -c dev --silent",
@@ -77,6 +79,7 @@
     "inngest-cli": "^0.29.0",
     "jest": "^30.0.0",
     "openapi-typescript": "^7.10.1",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "tsx": "^4.19.2"
   }
 }
