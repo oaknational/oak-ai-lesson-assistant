@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { trpc } from "@/utils/trpc";
 
-export default function LessonAdaptPage() {
+const LessonAdaptPage = () => {
   const [lessonId, setLessonId] = useState("");
   const [fetchedLessonId, setFetchedLessonId] = useState<string | null>(null);
 
@@ -102,4 +102,6 @@ export default function LessonAdaptPage() {
       )}
     </div>
   );
-}
+};
+
+export default LessonAdaptPage;
