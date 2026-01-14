@@ -126,3 +126,24 @@ export async function moveFileToFolder(
     throw new Error(`Failed to move file to folder: ${errorMessage}`);
   }
 }
+
+export async function setFilePermissions(
+  fileId: string,
+  type: string = "anyone",
+  role: string = "reader",
+): Promise<void> {
+  try {
+    const drive = await createDriveClient();
+    drive.permissions.create({
+      supportsAllDrives: true,
+      fileId: fileId,
+      requestBody: {
+        type: type,
+        role: role,
+      },
+      sendNotificationEmail: false,
+    });
+  } catch (error) {
+    throw new Error(`Failed to set permissions: ${JSON.stringify(error)}`);
+  }
+}

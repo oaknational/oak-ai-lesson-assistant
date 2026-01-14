@@ -1,4 +1,4 @@
-import { copyFile, extractFileIdFromUrl } from "../drive/operations";
+import { copyFile, setFilePermissions } from "../drive/operations";
 import { validateGoogleServiceAccountEnv } from "../shared/auth";
 import type {
   DuplicateSlideDeckOptions,
@@ -42,6 +42,7 @@ export async function duplicateSlideDeck(
       name: options.name,
       destinationFolderId: options.destinationFolderId,
     });
+    await setFilePermissions(result.fileId, "anyone", "reader");
 
     return {
       presentationId: result.fileId,
