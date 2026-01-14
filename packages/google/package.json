@@ -15,10 +15,10 @@
     "@googleapis/drive": "^8.7.0",
     "@googleapis/slides": "^1.0.5",
     "google-auth-library": "^9.7.0",
-    "zod": "^3.25.76"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
-    "typescript": "^5.9.2"
+    "typescript": "5.9.2"
   }
 }
