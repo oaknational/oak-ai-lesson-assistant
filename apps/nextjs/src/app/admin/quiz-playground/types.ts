@@ -2,7 +2,7 @@
  * Shared types for Quiz RAG Debug feature.
  * Consolidates types used across multiple files.
  */
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/reporting";
 
 /**
  * SSE event from the streaming endpoint.

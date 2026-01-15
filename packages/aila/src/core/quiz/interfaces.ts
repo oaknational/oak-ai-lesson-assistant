@@ -12,7 +12,7 @@ import type {
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
-import type { Task } from "./instrumentation";
+import type { Task } from "./reporting";
 import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
 /**
@@ -102,6 +102,7 @@ export interface QuizService {
     lessonPlan: PartialLessonPlan,
     similarLessons: AilaRagRelevantLesson[],
     task: Task,
+    reportId: string,
   ): Promise<LatestQuiz>;
 }
 
