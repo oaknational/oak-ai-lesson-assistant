@@ -33,7 +33,7 @@ export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
   if (!reportId) return null;
 
   return (
-    <Link href={`/admin/quiz-playground?reportId=${reportId}`}>
+    <Link href={`/admin/quiz-playground?reportId=${reportId}`} target="_blank">
       <ActionButton
         onClick={() => {}}
         tooltip="View the generation report for this quiz"
