@@ -1,3 +1,35 @@
+# [1.59.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.58.1...v1.59.0) (2026-01-14)
+
+
+### Features
+
+* enable quiz playground in production ([#899](https://github.com/oaknational/oak-ai-lesson-assistant/issues/899)) ([ecefdb9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ecefdb9a6e1d6271402700f228beb1c6d8aa5e45))
+
+## [1.58.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.58.0...v1.58.1) (2026-01-12)
+
+
+### Bug Fixes
+
+* broken lock file ([403b475](https://github.com/oaknational/oak-ai-lesson-assistant/commit/403b475f07cad66ae92e9250c38f2821fbd36f44))
+* lock to 1.61.0 ([1cef5d6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1cef5d6ee3b370ada72fbf5db1d5c356ddc61c2c))
+* preserve original question text in quiz RAG pipeline ([#888](https://github.com/oaknational/oak-ai-lesson-assistant/issues/888)) ([21db56b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/21db56b5fdd13ebfc2b393f4d93c45ba2c58aa38))
+* remove fontsource, use google Lexend so we can have light weights ([#890](https://github.com/oaknational/oak-ai-lesson-assistant/issues/890)) ([6b5f68e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6b5f68e5ff650d0f9d3336cca917f3d20f0fbd53))
+* use fake timers in QuizTracker timing test ([#893](https://github.com/oaknational/oak-ai-lesson-assistant/issues/893)) ([6d6a3d7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6d6a3d701d03dc3da33d4fb5c6fd95ab7de3153b))
+
+# [1.58.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.57.1...v1.58.0) (2026-01-08)
+
+
+### Bug Fixes
+
+* preserve original question text in quiz RAG pipeline ([#888](https://github.com/oaknational/oak-ai-lesson-assistant/issues/888)) ([66236e3](https://github.com/oaknational/oak-ai-lesson-assistant/commit/66236e34a3a13e0a569fe86c3c8629f3d368c8f7))
+* **quiz:** mock external services in quiz unit tests ([#879](https://github.com/oaknational/oak-ai-lesson-assistant/issues/879)) ([3e640c2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e640c22f1c5352da9b945bce0e845a1b25f760b))
+
+
+### Features
+
+* **quiz-rag:** add internal debug page for Quiz RAG pipeline ([#862](https://github.com/oaknational/oak-ai-lesson-assistant/issues/862)) ([0a9c236](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0a9c2363a753fab2db3e511fb4f981102b25000c))
+* **quiz:** enable LLM quiz composer by default ([#858](https://github.com/oaknational/oak-ai-lesson-assistant/issues/858)) ([5fdc4bf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5fdc4bf2810551fc2e15985e45980f3b92191ce4))
+
 ## [1.57.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.57.0...v1.57.1) (2025-12-15)
 
 

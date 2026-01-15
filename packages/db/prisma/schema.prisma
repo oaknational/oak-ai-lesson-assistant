@@ -58,8 +58,6 @@ model Prompt {
   inputSchema  Json     @map("input_schema") // A JSON-schema to apply to prompt inputs
   outputSchema Json     @map("output_schema") // A JSON-schema to apply to completions
 
-  AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
-
   @@map("prompts")
   @@schema("public")
 }
@@ -96,10 +94,9 @@ model KeyStage {
   KeyStageSubjects      KeyStageSubject[]
   Lessons               Lesson[]
   Snippet               Snippet[]
-  LessonSummary         LessonSummary[]
-  QuestionsForJudgement QuestionsForJudgement[]
-  LessonPlanParts       LessonPlanPart[]
-  LessonPlan            LessonPlan[]
+  LessonSummary   LessonSummary[]
+  LessonPlanParts LessonPlanPart[]
+  LessonPlan      LessonPlan[]
 
   @@map("key_stages")
   @@schema("public")
@@ -190,10 +187,9 @@ model Subject {
   KeyStageSubjects      KeyStageSubject[]
   Lessons               Lesson[]
   Snippet               Snippet[]
-  LessonSummary         LessonSummary[]
-  QuestionsForJudgement QuestionsForJudgement[]
-  LessonPlanParts       LessonPlanPart[]
-  LessonPlans           LessonPlan[]
+  LessonSummary   LessonSummary[]
+  LessonPlanParts LessonPlanPart[]
+  LessonPlans     LessonPlan[]
 
   @@map("subjects")
   @@schema("public")
@@ -513,9 +509,6 @@ model QuizQuestion {
   answers  QuizAnswer[]
   snippets Snippet[]
 
-  QuestionsForJudgement             QuestionsForJudgement[]
-  AnswersAndDistractorsForJudgement AnswersAndDistractorsForJudgement[]
-
   @@map("questions")
   @@schema("public")
 }
@@ -540,94 +533,6 @@ model QuizAnswer {
   @@schema("public")
 }
 
-model QuestionsForJudgement {
-  id                   String                 @id @default(cuid())
-  createdAt            DateTime               @default(now()) @map("created_at")
-  updatedAt            DateTime               @updatedAt @map("updated_at")
-  quizQuestionId       String?                @map("quiz_question_id")
-  quizQuestion         QuizQuestion?          @relation(fields: [quizQuestionId], references: [id], onDelete: Cascade)
-  subjectId            String                 @map("subject_id")
-  subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  keyStageId           String                 @map("key_stage_id")
-  keyStage             KeyStage               @relation(fields: [keyStageId], references: [id], onDelete: Cascade)
-  ComparativeJudgement ComparativeJudgement[]
-
-  @@map("questions_for_judgement")
-  @@schema("public")
-}
-
-model AnswersAndDistractorsForJudgement {
-  id                  String        @id @default(cuid())
-  createdAt           DateTime      @default(now()) @map("created_at")
-  updatedAt           DateTime      @updatedAt @map("updated_at")
-  quizQuestionId      String?       @map("quiz_question_id")
-  quizQuestion        QuizQuestion? @relation(fields: [quizQuestionId], references: [id], onDelete: Cascade)
-  answerAndDistractor Json          @map("answer_and_distractor")
-  isOakQuestion       Boolean?      @map("is_oak_question")
-  promptId            String?       @map("prompt_id")
-  prompt              Prompt?       @relation(fields: [promptId], references: [id], onDelete: Cascade)
-
-  comparativeJudgementA ComparativeJudgement[] @relation("OptionA")
-  comparativeJudgementB ComparativeJudgement[] @relation("OptionB")
-
-  ComparativeJudgementResult ComparativeJudgementResult[]
-  ComparativeJudgementFlag   ComparativeJudgementFlag[]
-
-  @@map("answers_and_distractors_for_judgement")
-  @@schema("public")
-}
-
-model ComparativeJudgement {
-  id                          String                            @id @default(cuid())
-  createdAt                   DateTime                          @default(now()) @map("created_at")
-  updatedAt                   DateTime                          @updatedAt @map("updated_at")
-  questionForJudgementId      String                            @map("question_for_judgement_id")
-  questionForJudgement        QuestionsForJudgement             @relation(fields: [questionForJudgementId], references: [id], onDelete: Cascade)
-  optionAId                   String                            @map("option_a_id")
-  optionA                     AnswersAndDistractorsForJudgement @relation("OptionA", fields: [optionAId], references: [id], onDelete: Cascade)
-  optionBId                   String                            @map("option_b_id")
-  optionB                     AnswersAndDistractorsForJudgement @relation("OptionB", fields: [optionBId], references: [id], onDelete: Cascade)
-  ComparativeJudgementResults ComparativeJudgementResult[]
-  ComparativeJudgementFlag    ComparativeJudgementFlag[]
-
-  @@map("comparative_judgements")
-  @@schema("public")
-}
-
-model ComparativeJudgementResult {
-  id                      String                             @id @default(cuid())
-  createdAt               DateTime                           @default(now()) @map("created_at")
-  updatedAt               DateTime                           @updatedAt @map("updated_at")
-  judgementId             String                             @map("judgement_id")
-  judgement               ComparativeJudgement               @relation(fields: [judgementId], references: [id], onDelete: Cascade)
-  winnerId                String?                            @map("winner_id")
-  winner                  AnswersAndDistractorsForJudgement? @relation(fields: [winnerId], references: [id], onDelete: Cascade)
-  userId                  String                             @map("user_id")
-  flaggedOrSkipped        FlaggedOrSkipped?                  @map("flagged_or_skipped")
-  reasonForChoosingWinner String?                            @map("decision_reason")
-
-  @@map("comparative_judgement_results")
-  @@schema("public")
-}
-
-model ComparativeJudgementFlag {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  flaggedJudgementId String               @map("flagged_judgement_id")
-  flaggedJudgement   ComparativeJudgement @relation(fields: [flaggedJudgementId], references: [id], onDelete: Cascade)
-
-  flaggedAnswerAndDistractorId String                            @map("flagged_answer_and_distractor_id")
-  flaggedAnswerAndDistractor   AnswersAndDistractorsForJudgement @relation(fields: [flaggedAnswerAndDistractorId], references: [id], onDelete: Cascade)
-
-  feedbackMessage String @map("feedback_message")
-  feedbackReasons Json
-
-  @@map("comparative_judgement_flags")
-  @@schema("public")
-}
-
 model Downloads {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now()) @map("created_at")
@@ -638,17 +543,6 @@ model Downloads {
   lesson Lesson @relation(fields: [lessonSlug], references: [slug], onDelete: Cascade)
 
   @@map("downloads")
-  @@schema("public")
-}
-
-model UsersAllowedToViewNewFeatures {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  emailAddress String @map("email_address")
-
-  @@map("users_allowed_to_view_new_features")
   @@schema("public")
 }
 
@@ -858,13 +752,6 @@ enum LessonSnapshotTrigger {
   ASSISTANT_MESSAGE
   EXPORT_BY_USER
   MODERATION
-
-  @@schema("public")
-}
-
-enum FlaggedOrSkipped {
-  FLAGGED
-  SKIPPED
 
   @@schema("public")
 }
