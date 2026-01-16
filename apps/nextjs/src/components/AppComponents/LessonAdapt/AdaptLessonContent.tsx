@@ -6,6 +6,7 @@ import { OakBox, OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
 
 import { LessonDetailsTab } from "./LessonDetailsTab";
 import { SlidesTab } from "./SlidesTab";
+import { ThumbnailsTab } from "./ThumbnailsTab";
 
 interface LessonData {
   keyStage: string;
@@ -24,18 +25,32 @@ interface LessonData {
   }>;
 }
 
+interface Thumbnail {
+  objectId: string;
+  slideIndex: number;
+  thumbnailUrl: string;
+  width: number;
+  height: number;
+}
+
 interface AdaptLessonContentProps {
   presentationId?: string;
   presentationUrl?: string;
   lessonData?: LessonData;
+  thumbnails?: Thumbnail[];
+  thumbnailsLoading?: boolean;
+  thumbnailsError?: { message: string } | null;
 }
 
-const tabs = ["Lesson details", "Slides"];
+const tabs = ["Lesson details", "Slides", "Thumbnails"];
 
 export function AdaptLessonContent({
   presentationId,
   presentationUrl,
   lessonData,
+  thumbnails,
+  thumbnailsLoading = false,
+  thumbnailsError = null,
 }: AdaptLessonContentProps) {
   const [activeTab, setActiveTab] = useState<string>("Lesson details");
 
@@ -85,6 +100,13 @@ export function AdaptLessonContent({
             <SlidesTab
               presentationId={presentationId}
               presentationUrl={presentationUrl}
+            />
+          )}
+          {activeTab === "Thumbnails" && (
+            <ThumbnailsTab
+              thumbnails={thumbnails}
+              isLoading={thumbnailsLoading}
+              error={thumbnailsError}
             />
           )}
         </OakBox>

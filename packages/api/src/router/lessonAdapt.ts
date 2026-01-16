@@ -1,4 +1,4 @@
-import { getPresentation } from "@oakai/gsuite";
+import { getPresentation, getSlideThumbnails } from "@oakai/gsuite";
 import { extractPresentationContent } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
@@ -158,6 +158,48 @@ export const lessonAdaptRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to fetch lesson content",
+          cause: error,
+        });
+      }
+    }),
+
+  /**
+   * Fetch slide thumbnails for a presentation
+   * Uses batching with rate limiting to avoid Google API limits
+   */
+  getSlideThumbnails: protectedProcedure
+    .input(
+      z.object({
+        presentationId: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        thumbnails: z.array(
+          z.object({
+            objectId: z.string(),
+            slideIndex: z.number(),
+            thumbnailUrl: z.string(),
+            width: z.number(),
+            height: z.number(),
+          }),
+        ),
+      }),
+    )
+    .query(async ({ input }) => {
+      try {
+        const thumbnails = await getSlideThumbnails(input.presentationId);
+
+        return { thumbnails };
+      } catch (error) {
+        log.error("Failed to fetch slide thumbnails", {
+          presentationId: input.presentationId,
+          error,
+        });
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch slide thumbnails",
           cause: error,
         });
       }

@@ -20,6 +20,19 @@ const LessonAdaptPage = () => {
     },
   );
 
+  // Fetch thumbnails in the background once we have the presentationId
+  const {
+    data: thumbnailsData,
+    isLoading: thumbnailsLoading,
+    error: thumbnailsError,
+  } = trpc.lessonAdapt.getSlideThumbnails.useQuery(
+    { presentationId: data?.presentationId ?? "" },
+    {
+      enabled: !!data?.presentationId,
+      refetchOnWindowFocus: false,
+    },
+  );
+
   const handleFetch = () => {
     if (lessonId.trim()) {
       console.log("Fetching lesson with ID:", lessonId);
@@ -80,6 +93,9 @@ const LessonAdaptPage = () => {
             presentationId={data.presentationId}
             presentationUrl={data.presentationUrl}
             lessonData={data.lessonData}
+            thumbnails={thumbnailsData?.thumbnails}
+            thumbnailsLoading={thumbnailsLoading}
+            thumbnailsError={thumbnailsError}
           />
         </div>
       )}
