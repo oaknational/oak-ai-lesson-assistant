@@ -1,3 +1,5 @@
+import { getPresentation } from "@oakai/google";
+import { extractPresentationContent } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
@@ -98,6 +100,9 @@ export const lessonAdaptRouter = router({
         lessonData: z.any(),
         presentationId: z.string(),
         presentationUrl: z.string().url(),
+        slideContent: z.any(), // PresentationContent type
+        /** Raw Google Slides API response (for debugging) */
+        rawSlideData: z.any(),
       }),
     )
     .query(async ({ input }) => {
@@ -126,10 +131,15 @@ export const lessonAdaptRouter = router({
         const { presentationId, presentationUrl } =
           await duplicateLessonSlideDeck(lessonData, lessonSlug);
 
+        // Extract slide content in LLM-friendly format
+        const presentation = await getPresentation(presentationId);
+        const slideContent = extractPresentationContent(presentation);
+
         return {
           lessonData,
           presentationId,
           presentationUrl,
+          slideContent,
         };
       } catch (error) {
         log.error("Failed to fetch lesson content", {

@@ -10,7 +10,10 @@ const LessonAdaptPage = () => {
 
   const { data, isLoading, error } = trpc.lessonAdapt.getLessonContent.useQuery(
     { lessonId: fetchedLessonId ?? "" },
-    { enabled: !!fetchedLessonId },
+    {
+      enabled: !!fetchedLessonId,
+      refetchOnWindowFocus: false,
+    },
   );
 
   const handleFetch = () => {
@@ -79,7 +82,7 @@ const LessonAdaptPage = () => {
             </div>
             <div className="aspect-video w-full overflow-hidden rounded border">
               <iframe
-                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&loop=false&delayms=3000`}
+                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&amp;loop=false&amp`}
                 className="h-full w-full"
                 allowFullScreen
                 title="Lesson Slides"
@@ -89,6 +92,17 @@ const LessonAdaptPage = () => {
               Presentation ID: {data.presentationId}
             </p>
           </div>
+
+          <details className="bg-blue-50 rounded border p-4">
+            <summary className="cursor-pointer font-semibold">
+              Extracted Slide Content - LLM Format (Click to expand)
+            </summary>
+            <div className="mt-2">
+              <pre className="max-h-96 overflow-auto rounded bg-white p-2 text-xs">
+                {JSON.stringify(data.slideContent, null, 2)}
+              </pre>
+            </div>
+          </details>
 
           <details className="rounded border bg-gray-50 p-4">
             <summary className="cursor-pointer font-semibold">

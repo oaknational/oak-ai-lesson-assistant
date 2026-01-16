@@ -609,6 +609,9 @@ importers:
       '@oakai/google':
         specifier: '*'
         version: link:../google
+      '@oakai/lesson-adapters':
+        specifier: '*'
+        version: link:../lesson-adapters
       '@oakai/logger':
         specifier: '*'
         version: link:../logger
@@ -952,6 +955,9 @@ importers:
       '@googleapis/slides':
         specifier: ^1.0.5
         version: 1.0.5
+      dotenv-cli:
+        specifier: ^6.0.0
+        version: 6.0.0
       google-auth-library:
         specifier: ^9.7.0
         version: 9.7.0
@@ -962,6 +968,15 @@ importers:
       '@oakai/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      jest:
+        specifier: ^30.0.0
+        version: 30.0.0(@types/node@20.17.9)(ts-node@10.9.2)
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.0.0)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -1041,6 +1056,9 @@ importers:
       '@oakai/db':
         specifier: '*'
         version: link:../db
+      '@oakai/google':
+        specifier: '*'
+        version: link:../google
       '@oakai/logger':
         specifier: '*'
         version: link:../logger
@@ -1060,6 +1078,15 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      jest:
+        specifier: ^30.0.0
+        version: 30.0.0(@types/node@20.17.9)(ts-node@10.9.2)
+      ts-jest:
+        specifier: ^29.2.5
+        version: 29.2.5(@babel/core@7.28.5)(jest@30.0.0)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -3552,7 +3579,7 @@ packages:
   /@bundled-es-modules/statuses@1.0.1:
     resolution: {integrity: sha512-yn7BklA5acgcBr+7w064fGV+SGIFySjCKpqjcWgBAIfrAkY+4GQTJJHQMeT3V/sgz23VTEVV8TtOmkvJAhFVfg==}
     dependencies:
-      statuses: 2.0.1
+      statuses: 2.0.2
     dev: true
 
   /@bundled-es-modules/tough-cookie@0.1.6:
@@ -10257,7 +10284,7 @@ packages:
       read-pkg: 9.0.1
       registry-auth-token: 5.0.2
       semantic-release: 24.2.9(typescript@5.9.2)
-      semver: 7.7.2
+      semver: 7.7.3
       tempy: 3.1.0
     dev: true
 
@@ -12301,7 +12328,7 @@ packages:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 1.3.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -12341,7 +12368,7 @@ packages:
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
     transitivePeerDependencies:
@@ -12360,7 +12387,7 @@ packages:
       '@typescript-eslint/visitor-keys': 8.50.0
       debug: 4.4.3(supports-color@5.5.0)
       minimatch: 9.0.5
-      semver: 7.7.2
+      semver: 7.7.3
       tinyglobby: 0.2.15
       ts-api-utils: 2.1.0(typescript@5.9.2)
       typescript: 5.9.2
@@ -14803,7 +14830,7 @@ packages:
       conventional-commits-filter: 5.0.0
       handlebars: 4.7.8
       meow: 13.2.0
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /conventional-commits-filter@5.0.0:
@@ -15166,7 +15193,7 @@ packages:
       postcss-modules-scope: 3.2.0(postcss@8.5.6)
       postcss-modules-values: 4.0.0(postcss@8.5.6)
       postcss-value-parser: 4.2.0
-      semver: 7.7.2
+      semver: 7.7.3
       webpack: 5.102.1
     dev: true
 
@@ -17536,7 +17563,7 @@ packages:
       minimatch: 3.1.2
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.7.2
+      semver: 7.7.3
       tapable: 2.3.0
       typescript: 5.9.2
       webpack: 5.102.1
@@ -19662,7 +19689,7 @@ packages:
       '@babel/parser': 7.28.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.7.2
+      semver: 7.7.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20454,7 +20481,7 @@ packages:
       jest-message-util: 30.0.0
       jest-util: 30.0.0
       pretty-format: 30.0.0
-      semver: 7.7.2
+      semver: 7.7.3
       synckit: 0.11.11
     transitivePeerDependencies:
       - supports-color
@@ -20483,7 +20510,7 @@ packages:
       jest-message-util: 30.2.0
       jest-util: 30.2.0
       pretty-format: 30.2.0
-      semver: 7.7.2
+      semver: 7.7.3
       synckit: 0.11.11
     transitivePeerDependencies:
       - supports-color
@@ -20873,7 +20900,7 @@ packages:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /jsx-ast-utils@3.3.5:
@@ -21635,7 +21662,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /make-error@1.3.6:
@@ -22766,7 +22793,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       is-core-module: 2.16.1
-      semver: 7.7.2
+      semver: 7.7.3
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -23364,7 +23391,7 @@ packages:
       ky: 1.7.5
       registry-auth-token: 5.0.2
       registry-url: 6.0.1
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /package-json@8.1.1:
@@ -23374,7 +23401,7 @@ packages:
       got: 12.6.1
       registry-auth-token: 5.0.2
       registry-url: 6.0.1
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /pako@1.0.11:
@@ -25453,14 +25480,14 @@ packages:
   /sembear@0.7.0:
     resolution: {integrity: sha512-XyLTEich2D02FODCkfdto3mB9DetWPLuTzr4tvoofe9SvyM27h4nQSbV3+iVcYQz94AFyKtqBv5pcZbj3k2hdA==}
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /semver-diff@4.0.0:
     resolution: {integrity: sha512-0Ju4+6A8iOnpL/Thra7dZsSlOHYAHIeMxfhWQRI1/VLcT3WDBZKKtQt/QkBOsiIN9ZpuvHE6cGZ0x4glCMmfiA==}
     engines: {node: '>=12'}
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /semver-diff@5.0.0:
@@ -25468,7 +25495,7 @@ packages:
     engines: {node: '>=12'}
     deprecated: Deprecated as the semver package now supports this built-in.
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
     dev: true
 
   /semver-regex@4.0.5:
@@ -25503,7 +25530,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     requiresBuild: true
-    optional: true
 
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
@@ -25862,7 +25888,7 @@ packages:
       get-stdin: 9.0.0
       git-hooks-list: 3.1.0
       is-plain-obj: 4.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       sort-object-keys: 1.1.3
       tinyglobby: 0.2.12
     dev: true
@@ -25876,7 +25902,7 @@ packages:
       get-stdin: 9.0.0
       git-hooks-list: 3.1.0
       is-plain-obj: 4.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       sort-object-keys: 1.1.3
       tinyglobby: 0.2.12
     dev: true
@@ -27741,7 +27767,7 @@ packages:
       is-yarn-global: 0.4.1
       latest-version: 7.0.0
       pupa: 3.1.0
-      semver: 7.7.2
+      semver: 7.7.3
       semver-diff: 4.0.0
       xdg-basedir: 5.1.0
     dev: true
