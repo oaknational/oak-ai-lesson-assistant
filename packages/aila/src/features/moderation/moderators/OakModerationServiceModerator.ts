@@ -1,9 +1,9 @@
+import type { paths } from "@oakai/core/src/generated/moderation-api";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { aiLogger } from "@oakai/logger";
+
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
-
-import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { paths } from "@oakai/core/src/generated/moderation-api";
-import { aiLogger } from "@oakai/logger";
 
 import { AilaModerationError, AilaModerator } from ".";
 
