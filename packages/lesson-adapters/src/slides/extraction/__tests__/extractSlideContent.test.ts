@@ -1,4 +1,4 @@
-import type { GoogleSlidesPage } from "@oakai/google";
+import type { GoogleSlidesPage } from "@oakai/gsuite";
 
 import { extractSlideContent } from "../extractSlideContent";
 

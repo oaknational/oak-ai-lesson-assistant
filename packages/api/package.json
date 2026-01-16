@@ -28,7 +28,7 @@
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",
-    "@oakai/google": "*",
+    "@oakai/gsuite": "*",
     "@oakai/lesson-adapters": "*",
     "@oakai/logger": "*",
     "@oakai/teaching-materials": "*",

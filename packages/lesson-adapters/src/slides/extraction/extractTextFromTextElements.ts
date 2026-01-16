@@ -1,4 +1,5 @@
-import type { GoogleSlidesTextElement } from "@oakai/google";
+import type { GoogleSlidesTextElement } from "@oakai/gsuite";
+
 import { isTruthy } from "remeda";
 
 /**

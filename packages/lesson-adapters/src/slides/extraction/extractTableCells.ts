@@ -1,4 +1,4 @@
-import type { GoogleSlidesTable } from "@oakai/google";
+import type { GoogleSlidesTable } from "@oakai/gsuite";
 
 import { extractTextFromTextElements } from "./extractTextFromTextElements";
 import { generateCellId } from "./generateCellId";

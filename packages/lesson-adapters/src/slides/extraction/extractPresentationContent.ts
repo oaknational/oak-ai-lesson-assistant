@@ -1,4 +1,4 @@
-import type { GoogleSlidesPresentation } from "@oakai/google";
+import type { GoogleSlidesPresentation } from "@oakai/gsuite";
 
 import { extractSlideContent } from "./extractSlideContent";
 import type { PresentationContent, SlideContent } from "./types";
@@ -17,7 +17,7 @@ import type { PresentationContent, SlideContent } from "./types";
  *
  * @example
  * ```typescript
- * import { getPresentation } from '@oakai/google';
+ * import { getPresentation } from '@oakai/gsuite';
  *
  * const raw = await getPresentation('abc123xyz');
  * const content = extractPresentationContent(raw);

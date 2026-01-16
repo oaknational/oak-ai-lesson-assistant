@@ -1,5 +1,5 @@
 {
-  "name": "@oakai/google",
+  "name": "@oakai/gsuite",
   "version": "1.0.0",
   "description": "Google API integrations for Oak AI",
   "license": "MIT",

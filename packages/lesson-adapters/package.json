@@ -21,7 +21,7 @@
   "dependencies": {
     "@oakai/core": "*",
     "@oakai/db": "*",
-    "@oakai/google": "*",
+    "@oakai/gsuite": "*",
     "@oakai/logger": "*",
     "ai": "^4.0.20",
     "openai": "^4.96.0",

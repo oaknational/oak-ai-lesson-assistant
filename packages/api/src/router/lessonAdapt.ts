@@ -1,4 +1,4 @@
-import { getPresentation } from "@oakai/google";
+import { getPresentation } from "@oakai/gsuite";
 import { extractPresentationContent } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 

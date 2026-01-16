@@ -1,4 +1,4 @@
-import { duplicateSlideDeckToDefaultFolder } from "@oakai/google";
+import { duplicateSlideDeckToDefaultFolder } from "@oakai/gsuite";
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";

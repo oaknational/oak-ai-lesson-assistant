@@ -1,4 +1,4 @@
-import type { GoogleSlidesPage } from "@oakai/google";
+import type { GoogleSlidesPage } from "@oakai/gsuite";
 
 import { classifyNonTextElement } from "./classifyNonTextElement";
 import { extractSlideTitle } from "./extractSlideTitle";
