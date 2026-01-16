@@ -509,6 +509,9 @@ importers:
       '@vercel/kv':
         specifier: ^0.2.2
         version: 0.2.2
+      '@vercel/oidc':
+        specifier: ^3.1.0
+        version: 3.1.0
       ai:
         specifier: ^4.0.20
         version: 4.0.20(react@19.2.1)(zod@3.25.76)
@@ -533,6 +536,9 @@ importers:
       openai:
         specifier: ^4.96.0
         version: 4.96.0(zod@3.25.76)
+      openapi-fetch:
+        specifier: ^0.15.0
+        version: 0.15.0
       p-limit:
         specifier: ^7.2.0
         version: 7.2.0
@@ -12651,6 +12657,11 @@ packages:
       - encoding
     dev: false
 
+  /@vercel/oidc@3.1.0:
+    resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
+    engines: {node: '>= 20'}
+    dev: false
+
   /@vitest/expect@3.2.4:
     resolution: {integrity: sha512-Io0yyORnB6sikFlt8QW5K7slY4OjqNX9jmJQ02QDda8lyM6B5oNgVWoSoKPac8/kgnCUzuHQKrSLtu/uOqqrig==}
     dependencies:
@@ -23066,8 +23077,18 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /openapi-fetch@0.15.0:
+    resolution: {integrity: sha512-OjQUdi61WO4HYhr9+byCPMj0+bgste/LtSBEcV6FzDdONTs7x0fWn8/ndoYwzqCsKWIxEZwo4FN/TG1c1rI8IQ==}
+    dependencies:
+      openapi-typescript-helpers: 0.0.15
+    dev: false
+
   /openapi-types@12.1.3:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
+    dev: false
+
+  /openapi-typescript-helpers@0.0.15:
+    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
     dev: false
 
   /opentracing@0.14.7:

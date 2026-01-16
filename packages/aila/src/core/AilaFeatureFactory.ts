@@ -1,8 +1,11 @@
 // AilaFeatureFactory.ts
+import { aiLogger } from "@oakai/logger";
+
 import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
+import { OakModerationServiceModerator } from "../features/moderation/moderators/OakModerationServiceModerator";
 import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
@@ -18,6 +21,8 @@ import type {
 } from "../features/types";
 import type { AilaServices } from "./AilaServices";
 import type { AilaOptions } from "./types";
+
+const log = aiLogger("aila");
 
 export class AilaFeatureFactory {
   static createAnalytics(
@@ -40,12 +45,34 @@ export class AilaFeatureFactory {
     openAiClient?: OpenAILike,
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
+      // Production moderator (always created)
       const moderator = new OpenAiModerator({
         userId: aila.userId,
         chatId: aila.chatId,
         openAiClient,
       });
-      return new AilaModeration({ aila, moderator });
+
+      // Shadow moderator (optional, based on env vars)
+      const shadowEnabled =
+        process.env.OAK_MODERATION_SHADOW_ENABLED === "true";
+      const shadowBaseUrl = process.env.MODERATION_API_URL;
+
+      let shadowModerator: OakModerationServiceModerator | undefined;
+
+      if (shadowEnabled && shadowBaseUrl) {
+        log.info("Shadow moderation enabled");
+        shadowModerator = new OakModerationServiceModerator({
+          baseUrl: shadowBaseUrl,
+          chatId: aila.chatId,
+          userId: aila.userId,
+        });
+      } else if (shadowEnabled && !shadowBaseUrl) {
+        log.warn(
+          "OAK_MODERATION_SHADOW_ENABLED is true but MODERATION_API_URL is not set. Shadow moderation disabled.",
+        );
+      }
+
+      return new AilaModeration({ aila, moderator, shadowModerator });
     }
     return undefined;
   }
