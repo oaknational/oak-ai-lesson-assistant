@@ -7,6 +7,10 @@ import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import {
+  extractedLessonDataSchema,
+  extractLessonDataForAdaptPage,
+} from "./owaLesson/extractLessonData";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
 import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
 import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
@@ -97,12 +101,13 @@ export const lessonAdaptRouter = router({
     )
     .output(
       z.object({
-        lessonData: z.any(),
+        lessonData: extractedLessonDataSchema,
         presentationId: z.string(),
         presentationUrl: z.string().url(),
         slideContent: z.any(), // PresentationContent type
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
+        rawLessonData: z.any(), // LessonOverviewResponse type
       }),
     )
     .query(async ({ input }) => {
@@ -133,11 +138,16 @@ export const lessonAdaptRouter = router({
         const presentation = await getPresentation(presentationId);
         const slideContent = extractPresentationContent(presentation);
 
+        // Extract and transform lesson data for the frontend
+        const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
+
         return {
-          lessonData,
+          lessonData: extractedLessonData,
           presentationId,
           presentationUrl,
           slideContent,
+          rawSlideData: presentation,
+          rawLessonData: lessonData,
         };
       } catch (error) {
         log.error("Failed to fetch lesson content", {
