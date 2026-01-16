@@ -108,8 +108,6 @@ export const lessonAdaptRouter = router({
     .query(async ({ input }) => {
       try {
         // NOTE: Database structure for lesson adaptations not yet set up
-        // When implemented, this should query a table to get the lessonSlug from lessonId
-        // TODO: Replace with actual database query: const lessonRecord = await ctx.prisma.lessonAdaptation.findUnique(...)
 
         // Temporary: Treat lessonId as lessonSlug for now
         const lessonSlug = input.lessonId;
