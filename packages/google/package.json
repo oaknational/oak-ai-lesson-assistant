@@ -8,6 +8,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "clean": "rm -rf .turbo node_modules",
+    "test": "jest --config jest.config.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -15,10 +16,14 @@
     "@googleapis/drive": "^8.7.0",
     "@googleapis/slides": "^1.0.5",
     "google-auth-library": "^9.7.0",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "dotenv-cli": "^6.0.0"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.2.5"
   }
 }

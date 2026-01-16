@@ -10,7 +10,7 @@ export {
   SLIDES_SCOPES,
   DRIVE_AND_SLIDES_SCOPES,
   type GoogleServiceAccountEnv,
-} from "./shared";
+} from "./src/shared";
 
 // Drive operations
 export {
@@ -21,13 +21,26 @@ export {
   type CopyFileOptions,
   type CopyFileResult,
   type DriveClient,
-} from "./drive";
+} from "./src/drive";
 
 // Slides operations
 export {
+  // Client
+  createSlidesClient,
+  // Operations
   duplicateSlideDeck,
   duplicateSlideDeckToDefaultFolder,
+  getPresentation,
+
+  // Types
+  type SlidesClient,
+  type GoogleSlidesPresentation,
+  type GoogleSlidesPage,
+  type GoogleSlidesPageElement,
+  type GoogleSlidesTextElement,
+  type GoogleSlidesTable,
+  type GoogleSlidesShape,
+  type GoogleSlidesPlaceholder,
   type DuplicateSlideDeckOptions,
   type DuplicateSlideDeckResult,
-  type SlidesClient,
-} from "./slides";
+} from "./src/slides";
