@@ -25,19 +25,13 @@ export function SlidesTab({ presentationId, presentationUrl }: SlidesTabProps) {
             href={presentationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            $font="body-3"
           >
             Open in Google Slides ↗
           </OakLink>
         )}
       </OakFlex>
 
-      <OakBox
-        $width="100%"
-        $borderRadius="border-radius-m"
-        $ba="border-neutral"
-        className="aspect-video overflow-hidden"
-      >
+      <OakBox $width="100%" $borderRadius="border-radius-m">
         <iframe
           src={`https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false`}
           className="h-full w-full"
