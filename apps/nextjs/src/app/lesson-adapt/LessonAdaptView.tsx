@@ -10,7 +10,7 @@ const LessonAdaptPage = () => {
 
   const { data, isLoading, error } = trpc.lessonAdapt.getLessonContent.useQuery(
     { lessonId: fetchedLessonId ?? "" },
-    { enabled: !!fetchedLessonId },
+    { enabled: !!fetchedLessonId, refetchOnWindowFocus: false },
   );
 
   const handleFetch = () => {
