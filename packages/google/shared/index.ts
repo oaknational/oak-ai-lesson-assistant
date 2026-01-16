@@ -1,5 +1,11 @@
 /**
  * Shared Google API utilities.
- * TODO: Export auth, errors, and rate limiter.
  */
-export {};
+export {
+  createGoogleAuthClient,
+  validateGoogleServiceAccountEnv,
+  DRIVE_SCOPES,
+  SLIDES_SCOPES,
+  DRIVE_AND_SLIDES_SCOPES,
+  type GoogleServiceAccountEnv,
+} from "./auth";

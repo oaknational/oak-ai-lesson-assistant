@@ -606,6 +606,9 @@ importers:
       '@oakai/exports':
         specifier: '*'
         version: link:../exports
+      '@oakai/google':
+        specifier: '*'
+        version: link:../google
       '@oakai/logger':
         specifier: '*'
         version: link:../logger
@@ -940,6 +943,28 @@ importers:
       ts-jest:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
+
+  packages/google:
+    dependencies:
+      '@googleapis/drive':
+        specifier: ^8.7.0
+        version: 8.7.0
+      '@googleapis/slides':
+        specifier: ^1.0.5
+        version: 1.0.5
+      google-auth-library:
+        specifier: ^9.7.0
+        version: 9.7.0
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@oakai/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
 
   packages/ingest:
     dependencies:
@@ -26948,7 +26973,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.7.2
+      semver: 7.7.1
       typescript: 5.9.2
       yargs-parser: 21.1.1
     dev: true

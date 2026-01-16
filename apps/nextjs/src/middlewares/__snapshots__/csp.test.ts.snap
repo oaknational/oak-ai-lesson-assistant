@@ -11,7 +11,7 @@ img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com http
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
-frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://www.avo.app/ https://stream.mux.com
+frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://docs.google.com https://drive.google.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none' http://localhost:*
 report-uri /report/?token=&sample_rate=1&v=1"
@@ -28,7 +28,7 @@ img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com http
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com https://vercel.live/ https://assets.vercel.com
 object-src 'none'
 base-uri 'self'
-frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://vercel.live/ https://vercel.com https://www.avo.app/ https://stream.mux.com
+frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://docs.google.com https://drive.google.com https://vercel.live/ https://vercel.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
 report-uri /report/?token=&sample_rate=1&v=1
@@ -46,7 +46,7 @@ img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com http
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
-frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://stream.mux.com
+frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://docs.google.com https://drive.google.com https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
 report-uri /report/?token=&sample_rate=1&v=1
@@ -64,7 +64,7 @@ img-src 'self' blob: data: https://img.clerk.com https://res.cloudinary.com http
 font-src 'self' gstatic-fonts.thenational.academy fonts.gstatic.com
 object-src 'none'
 base-uri 'self'
-frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://www.avo.app/ https://stream.mux.com
+frame-src 'self' *.thenational.academy https://challenges.cloudflare.com https://*.mux.com https://docs.google.com https://drive.google.com https://www.avo.app/ https://stream.mux.com
 form-action 'self'
 frame-ancestors 'none'
 report-uri /report/?token=&sample_rate=1&v=1
