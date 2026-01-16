@@ -28,53 +28,14 @@ interface LessonDetailsTabProps {
   data?: LessonDetailsData;
 }
 
-// Fixture data
-const FIXTURE_DATA: LessonDetailsData = {
-  learningOutcome:
-    "I can describe the location of Liverpool and justify, using evidence, why it is an important city both nationally and globally.",
-  learningCycles: [
-    "Describing Liverpool's location from maps",
-    "National importance of Liverpool",
-    "Global importance of Liverpool",
-  ],
-  keyLearningPoints: [
-    "Liverpool is a coastal city in the north-west of the UK.",
-    "Evidence of Liverpool's importance can be categorised into historical, socio-economic, demographic and economic.",
-    "Liverpool is nationally important for its diversity, city economy, role in the Industrial Revolution and population.",
-    "Liverpool is globally important for trade, sporting and cultural events and its link to the slave trade and migration.",
-  ],
-  keywords: [
-    {
-      keyword: "Location",
-      definition:
-        "where a place is in relation to other features, for example, physical landforms and transport links",
-    },
-    {
-      keyword: "National",
-      definition: "relating to a country",
-    },
-    {
-      keyword: "Global",
-      definition: "relating to the whole world",
-    },
-  ],
-  misconceptions: [
-    {
-      misconception: "Liverpool is in the south of England",
-      description:
-        "Liverpool is actually in the north-west of England, not the south.",
-    },
-    {
-      misconception: "Liverpool is only important because of The Beatles",
-      description:
-        "While The Beatles are significant, Liverpool has historical importance for trade, the Industrial Revolution, and its diverse population.",
-    },
-  ],
-};
-
-export function LessonDetailsTab({
-  data = FIXTURE_DATA,
-}: LessonDetailsTabProps) {
+export function LessonDetailsTab({ data }: LessonDetailsTabProps) {
+  if (!data) {
+    return (
+      <OakP $font="body-3" $color="text-subdued">
+        No lesson details available.
+      </OakP>
+    );
+  }
   return (
     <OakFlex $flexDirection="column" $gap="spacing-48" $mt="spacing-24">
       {/* Learning outcome */}
