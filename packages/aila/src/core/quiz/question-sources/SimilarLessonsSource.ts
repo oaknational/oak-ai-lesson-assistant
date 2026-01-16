@@ -5,11 +5,18 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "../../../protocol/schema";
-import type { Task } from "../instrumentation";
 import type { QuestionSource, QuizQuestionPool } from "../interfaces";
+import type { Task } from "../reporting";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");
+
+/**
+ * Maximum number of similar lessons to use for quiz question candidates.
+ * Each lesson typically has 6 questions, so 3 lessons = ~18 candidates.
+ * We limit this to avoid flooding the composer with lower-relevance candidates.
+ */
+const MAX_SIMILAR_LESSONS = 3;
 
 /**
  * Retrieves quiz questions from similar Oak lessons,
@@ -19,21 +26,27 @@ export class SimilarLessonsSource implements QuestionSource {
   readonly name = "similarLessons";
 
   private retrievalService: QuizQuestionRetrievalService;
+  private maxLessons: number;
 
-  constructor(retrievalService?: QuizQuestionRetrievalService) {
+  constructor(
+    retrievalService?: QuizQuestionRetrievalService,
+    maxLessons: number = MAX_SIMILAR_LESSONS,
+  ) {
     this.retrievalService =
       retrievalService ?? new QuizQuestionRetrievalService();
+    this.maxLessons = maxLessons;
   }
 
   async poolsFromSimilarLessons(
     similarLessons: AilaRagRelevantLesson[],
     quizType: QuizPath,
   ): Promise<QuizQuestionPool[]> {
+    const lessonsToUse = similarLessons.slice(0, this.maxLessons);
     log.info(
-      "Getting quizzes from similar lessons:",
-      similarLessons.map((lesson) => "\n- " + lesson.title),
+      `Using ${lessonsToUse.length}/${similarLessons.length} similar lessons for quiz candidates:`,
+      lessonsToUse.map((lesson) => "\n- " + lesson.title),
     );
-    const poolPromises = similarLessons.map(async (lesson) => {
+    const poolPromises = lessonsToUse.map(async (lesson) => {
       const questions = await this.retrievalService.getQuestionsForPlanId(
         lesson.lessonPlanId,
         quizType,

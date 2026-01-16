@@ -10,6 +10,6 @@ import { Task } from "./Task";
  * Doesn't emit to Sentry, just records data in a Report.
  */
 export function createMockTask(): Task {
-  const report = new Report();
+  const report = new Report("test-generation-id");
   return new Task(report, []);
 }

@@ -1,5 +1,8 @@
 import { buildQuizService } from "@oakai/aila/src/core/quiz/fullservices/buildQuizService";
-import { createQuizTracker } from "@oakai/aila/src/core/quiz/instrumentation";
+import {
+  ReportStorage,
+  createQuizTracker,
+} from "@oakai/aila/src/core/quiz/reporting";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -19,10 +22,6 @@ import type { SSEEvent } from "@/app/admin/quiz-playground/types";
 
 const log = aiLogger("admin");
 
-const debugEnabled =
-  process.env.NODE_ENV === "development" ||
-  process.env.VERCEL_ENV === "preview";
-
 async function isAdmin(userId: string): Promise<boolean> {
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
@@ -32,13 +31,6 @@ async function isAdmin(userId: string): Promise<boolean> {
 }
 
 export async function POST(request: Request) {
-  if (!debugEnabled) {
-    return NextResponse.json(
-      { error: "Debug endpoint not available" },
-      { status: 404 },
-    );
-  }
-
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -117,7 +109,7 @@ export async function POST(request: Request) {
       });
 
       try {
-        await tracker.run(async (task) => {
+        await tracker.run(async (task, reportId) => {
           task.addData({
             inputs: { lessonPlan, quizType, relevantLessons },
           });
@@ -126,12 +118,17 @@ export async function POST(request: Request) {
             lessonPlan,
             relevantLessons,
             task,
+            reportId,
           );
           task.addData({ quiz });
         });
 
         const report = tracker.getReport();
-        log.info(`Pipeline complete in ${report.durationMs}ms`);
+        log.info(`Pipeline complete in ${report.durationMs}ms`, {
+          reportId: report.reportId,
+        });
+
+        await ReportStorage.store(report);
 
         sendEvent({
           type: "complete",

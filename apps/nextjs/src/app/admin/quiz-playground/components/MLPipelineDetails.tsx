@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
 import type {
   QuizQuestionPool,
   RagQuizQuestion,
 } from "@oakai/aila/src/core/quiz/interfaces";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/reporting";
 
 import { formatSeconds } from "../utils";
 import { LearnBlock } from "../view";
