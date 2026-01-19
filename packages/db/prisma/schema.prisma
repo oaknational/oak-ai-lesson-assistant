@@ -35,7 +35,6 @@ model App {
 
   prompts     Prompt[]
   appSessions AppSession[]
-  statistics  Statistics[]
 
   @@map("apps")
   @@schema("public")
@@ -58,8 +57,6 @@ model Prompt {
   template     String // The prompt body
   inputSchema  Json     @map("input_schema") // A JSON-schema to apply to prompt inputs
   outputSchema Json     @map("output_schema") // A JSON-schema to apply to completions
-
-  statistics Statistics[]
 
   @@map("prompts")
   @@schema("public")
@@ -533,22 +530,6 @@ model QuizAnswer {
 
   @@unique([lessonId, questionId, answer])
   @@map("answers")
-  @@schema("public")
-}
-
-model Statistics {
-  id          String   @id @default(uuid())
-  name        String
-  value       Int
-  lastUpdated DateTime @map("last_updated")
-
-  apps     App[]
-  appId    String?  @map("app_id")
-  prompts  Prompt[]
-  promptId String?  @map("prompt_id")
-
-  @@unique([name, appId, promptId])
-  @@map("statistics")
   @@schema("public")
 }
 

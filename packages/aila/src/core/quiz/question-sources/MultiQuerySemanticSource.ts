@@ -1,12 +1,12 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { Task } from "../instrumentation";
 import type {
   QuestionSource,
   QuizQuestionPool,
   RagQuizQuestion,
 } from "../interfaces";
+import type { Task } from "../reporting";
 import { CohereReranker } from "../services/CohereReranker";
 import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";

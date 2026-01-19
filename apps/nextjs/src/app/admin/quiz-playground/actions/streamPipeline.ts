@@ -1,4 +1,4 @@
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/reporting";
 import { aiLogger } from "@oakai/logger";
 
 import type { SSEEvent } from "../types";

@@ -1,3 +1,4 @@
+import { ReportStorage } from "@oakai/aila/src/core/quiz/reporting";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { aiLogger } from "@oakai/logger";
 
@@ -173,4 +174,24 @@ export const quizPlaygroundRouter = router({
 
     return [...EXAMPLE_LESSON_PLANS, createBasedOnExample(basedOnLesson.id)];
   }),
+
+  /**
+   * Get a stored quiz generation report by its ID
+   */
+  getReportById: adminProcedure
+    .input(z.object({ reportId: z.string() }))
+    .query(async ({ input }) => {
+      const { reportId } = input;
+
+      log.info(`Fetching quiz report: ${reportId}`);
+
+      const report = await ReportStorage.get(reportId);
+
+      if (!report) {
+        log.warn(`Report not found: ${reportId}`);
+        return null;
+      }
+
+      return report;
+    }),
 });

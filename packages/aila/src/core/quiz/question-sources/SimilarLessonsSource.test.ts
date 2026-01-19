@@ -1,5 +1,5 @@
-import { createMockTask } from "../instrumentation/testing";
 import type { RagQuizQuestion } from "../interfaces";
+import { createMockTask } from "../reporting/testing";
 import type { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SimilarLessonsSource } from "./SimilarLessonsSource";
 

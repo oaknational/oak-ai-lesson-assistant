@@ -4,12 +4,12 @@ import { aiLogger } from "@oakai/logger";
 import { zodResponseFormat } from "openai/helpers/zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type { Task } from "../instrumentation";
 import type {
   QuizComposer,
   QuizQuestionPool,
   RagQuizQuestion,
 } from "../interfaces";
+import type { Task } from "../reporting";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
