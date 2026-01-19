@@ -62,6 +62,15 @@ export interface QuestionSource {
 }
 
 /**
+ * Result from the quiz composer
+ */
+export interface ComposerResult {
+  questions: RagQuizQuestion[];
+  /** If the composer bailed, the reason why */
+  bailReason?: string;
+}
+
+/**
  * Composes final quiz questions from candidate pools
  */
 export interface QuizComposer {
@@ -73,7 +82,7 @@ export interface QuizComposer {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
-  ): Promise<RagQuizQuestion[]>;
+  ): Promise<ComposerResult>;
 }
 
 /**

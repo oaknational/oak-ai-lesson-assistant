@@ -327,12 +327,7 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          <FinalQuizContent
-            bailed={composerBailed}
-            bailReason={composerBailReason}
-            quiz={quiz}
-            report={report}
-          />
+          <FinalQuizContent quiz={quiz} report={report} />
         </Section>
       </div>
     </ViewModeContext.Provider>
@@ -718,23 +713,19 @@ function ComposerContent({
 
 // Final Quiz Content - handles quiz display states
 function FinalQuizContent({
-  bailed,
-  bailReason,
   quiz,
   report,
 }: Readonly<{
-  bailed: boolean;
-  bailReason: string;
   quiz: LatestQuiz | undefined;
   report: ReportNode | null;
 }>) {
-  if (bailed) {
+  if (quiz?.bailReason) {
     return (
       <div className="rounded-lg border-2 border-yellow-400 bg-yellow-50 p-6">
         <h3 className="mb-2 text-lg font-semibold text-yellow-800">
           No Quiz Generated
         </h3>
-        <p className="text-yellow-700">{bailReason}</p>
+        <p className="text-yellow-700">{quiz.bailReason}</p>
       </div>
     );
   }

@@ -7,15 +7,18 @@ import type { RagQuizQuestion } from "./interfaces";
  *
  * @param ragQuestions - The selected questions from the quiz pipeline
  * @param reportId - ID linking to the generation report in KV storage
+ * @param bailReason - If the composer bailed, the reason why (optional)
  */
 export function buildQuizFromQuestions(
   ragQuestions: RagQuizQuestion[],
   reportId: string,
+  bailReason?: string,
 ): LatestQuiz {
   return {
     version: "v3",
     questions: ragQuestions.map((rq) => rq.question),
     imageMetadata: ragQuestions.flatMap((rq) => rq.imageMetadata),
     reportId,
+    ...(bailReason && { bailReason }),
   };
 }

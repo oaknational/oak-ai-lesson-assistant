@@ -5,6 +5,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
+  ComposerResult,
   QuizComposer,
   QuizQuestionPool,
   RagQuizQuestion,
@@ -42,12 +43,11 @@ export class LLMComposer implements QuizComposer {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
-  ): Promise<RagQuizQuestion[]> {
+  ): Promise<ComposerResult> {
     this.logCompositionStart(questionPools, quizType);
 
     if (questionPools.length === 0) {
-      log.warn("No question pools provided to composer");
-      return [];
+      throw new Error("No question pools provided to composer");
     }
 
     // Build prompt (separate task so streaming can show prompt while waiting for LLM)
@@ -63,7 +63,7 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Call LLM
-    const selectedQuestions = await task.child("composerLlm", async (t) => {
+    const result = await task.child("composerLlm", async (t) => {
       const llmStart = Date.now();
       const response = await this.callOpenAI(prompt);
       const timingMs = Date.now() - llmStart;
@@ -71,10 +71,10 @@ export class LLMComposer implements QuizComposer {
       t.addData({ response, timingMs });
 
       if (response.status === "bail" || !response.success) {
-        const reason = response.bail?.reason ?? "Unknown reason";
-        log.warn(`LLM Composer bailed: ${reason}`);
-        t.addData({ bailed: true, bailReason: reason });
-        return [];
+        const bailReason = response.bail?.reason ?? "Unknown reason";
+        log.warn(`LLM Composer bailed: ${bailReason}`);
+        t.addData({ bailed: true, bailReason });
+        return { questions: [], bailReason } as ComposerResult;
       }
 
       const questions = this.mapResponseToQuestions(
@@ -83,12 +83,12 @@ export class LLMComposer implements QuizComposer {
       );
       t.addData({ selectedQuestions: questions });
 
-      return questions;
+      return { questions } as ComposerResult;
     });
 
-    log.info(`LLM Composer: selected ${selectedQuestions.length} questions`);
+    log.info(`LLM Composer: selected ${result.questions.length} questions`);
 
-    return selectedQuestions;
+    return result;
   }
 
   private logCompositionStart(

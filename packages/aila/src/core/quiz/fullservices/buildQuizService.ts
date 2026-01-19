@@ -108,18 +108,25 @@ async function buildQuiz(
   }
 
   // Compose final questions from enriched pools
-  const selectedQuestions = await task.child(composer.name, async (t) => {
-    const questions = await composer.compose(
+  const composerResult = await task.child(composer.name, async (t) => {
+    const result = await composer.compose(
       questionPools,
       lessonPlan,
       quizType,
       t,
     );
-    t.addData({ selectedCount: questions.length });
-    return questions;
+    t.addData({
+      selectedCount: result.questions.length,
+      bailReason: result.bailReason,
+    });
+    return result;
   });
 
-  return buildQuizFromQuestions(selectedQuestions, reportId);
+  return buildQuizFromQuestions(
+    composerResult.questions,
+    reportId,
+    composerResult.bailReason,
+  );
 }
 
 export function buildQuizService(settings: QuizBuilderSettings): QuizService {
