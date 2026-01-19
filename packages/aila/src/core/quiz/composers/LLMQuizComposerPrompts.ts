@@ -49,8 +49,8 @@ function buildQuestionSelectionCriteria(quizType: QuizPath): string {
   `;
 }
 
-// Schema for the LLM's composition response
-export const CompositionResponseSchema = z.object({
+// Nested structure for success data
+const SuccessDataSchema = z.object({
   overallStrategy: z
     .string()
     .describe(
@@ -67,11 +67,39 @@ export const CompositionResponseSchema = z.object({
           .describe("Brief explanation for selecting this question"),
       }),
     )
-    .length(6)
-    .describe("Exactly 6 questions to include in the final quiz"),
+    .min(3)
+    .max(6)
+    .describe(
+      "Aim for 6 questions, but fewer (minimum 3) is acceptable if insufficient suitable candidates are available",
+    ),
+});
+
+// Nested structure for bail data
+const BailDataSchema = z.object({
+  reason: z
+    .string()
+    .describe(
+      "Explain why you cannot compose a suitable quiz from the available candidates",
+    ),
+});
+
+// Combined schema using nested structure (OpenAI doesn't support discriminated unions)
+// Note: OpenAI requires fields to be required with nullable(), not optional()
+export const CompositionResponseSchema = z.object({
+  status: z
+    .enum(["success", "bail"])
+    .describe("Whether composition succeeded or bailed"),
+  success: SuccessDataSchema.nullable().describe(
+    "Present when status is 'success', null otherwise",
+  ),
+  bail: BailDataSchema.nullable().describe(
+    "Present when status is 'bail', null otherwise",
+  ),
 });
 
 export type CompositionResponse = z.infer<typeof CompositionResponseSchema>;
+export type SuccessData = z.infer<typeof SuccessDataSchema>;
+export type BailData = z.infer<typeof BailDataSchema>;
 
 export function buildCompositionPrompt(
   questionPools: QuizQuestionPool[],
@@ -84,6 +112,8 @@ export function buildCompositionPrompt(
     buildQuizTypeInstructions(lessonPlan, quizType),
     "---",
     buildQuestionSelectionCriteria(quizType),
+    "---",
+    buildOutputInstructions(),
     "---",
     buildLessonPlanSummary(lessonPlan),
     "---",
@@ -98,6 +128,18 @@ export function buildCompositionPrompt(
 
 function buildSystemContext(): string {
   return "You are a mathematics education specialist selecting quiz questions for Oak National Academy lesson plans.";
+}
+
+function buildOutputInstructions(): string {
+  return dedent`
+    OUTPUT OPTIONS:
+
+    **Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+
+    **Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+
+    It is better to bail than to return a quiz with irrelevant questions.
+  `;
 }
 
 function buildQuizTypeInstructions(

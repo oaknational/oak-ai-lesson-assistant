@@ -13,6 +13,7 @@ import type { Task } from "../reporting";
 import {
   type CompositionResponse,
   CompositionResponseSchema,
+  type SuccessData,
   buildCompositionPrompt,
 } from "./LLMQuizComposerPrompts";
 
@@ -67,9 +68,20 @@ export class LLMComposer implements QuizComposer {
       const response = await this.callOpenAI(prompt);
       const timingMs = Date.now() - llmStart;
 
-      const questions = this.mapResponseToQuestions(response, questionPools);
+      t.addData({ response, timingMs });
 
-      t.addData({ response, selectedQuestions: questions, timingMs });
+      if (response.status === "bail" || !response.success) {
+        const reason = response.bail?.reason ?? "Unknown reason";
+        log.warn(`LLM Composer bailed: ${reason}`);
+        t.addData({ bailed: true, bailReason: reason });
+        return [];
+      }
+
+      const questions = this.mapResponseToQuestions(
+        response.success,
+        questionPools,
+      );
+      t.addData({ selectedQuestions: questions });
 
       return questions;
     });
@@ -124,10 +136,10 @@ export class LLMComposer implements QuizComposer {
   }
 
   private mapResponseToQuestions(
-    response: CompositionResponse,
+    successData: SuccessData,
     questionPools: QuizQuestionPool[],
   ): RagQuizQuestion[] {
-    log.info(`Overall strategy: ${response.overallStrategy}`);
+    log.info(`Overall strategy: ${successData.overallStrategy}`);
 
     // Build lookup map of UID -> question from all pools
     const questionsByUid = new Map<string, RagQuizQuestion>();
@@ -138,7 +150,7 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Map selections to questions, filtering out any not found
-    const selectedQuestions = response.selectedQuestions
+    const selectedQuestions = successData.selectedQuestions
       .map((selection) => {
         const question = questionsByUid.get(selection.questionUid);
 
@@ -151,12 +163,6 @@ export class LLMComposer implements QuizComposer {
         return question;
       })
       .filter((q): q is RagQuizQuestion => q !== null);
-
-    if (selectedQuestions.length < 6) {
-      log.warn(
-        `Only found ${selectedQuestions.length} of 6 requested questions`,
-      );
-    }
 
     return selectedQuestions;
   }

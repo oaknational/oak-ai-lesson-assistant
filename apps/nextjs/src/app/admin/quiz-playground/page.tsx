@@ -149,7 +149,7 @@ export default function QuizPlaygroundPage() {
                   Composer
                 </div>
                 <p className="text-sm text-gray-500">
-                  Select the 6 best questions based on learning objectives
+                  Select the best questions based on learning objectives
                 </p>
               </div>
               <div className="w-32 text-center text-gray-400">↓</div>

@@ -28,6 +28,19 @@ import { formatSeconds } from "./utils";
 export const ViewModeContext = createContext<ViewMode>("learn");
 export const useViewMode = () => useContext(ViewModeContext);
 
+// Types for composer LLM response data
+interface ComposerSuccessData {
+  overallStrategy: string;
+  selectedQuestions: { questionUid: string; reasoning: string }[];
+}
+
+interface ComposerLlmData {
+  response?: { success?: ComposerSuccessData | null } | null;
+  bailed?: boolean;
+  bailReason?: string;
+  selectedQuestions?: RagQuizQuestion[];
+}
+
 interface QuizPlaygroundViewProps {
   viewMode: ViewMode;
   report: ReportNode | null;
@@ -75,6 +88,21 @@ export function QuizPlaygroundView({
   const similarLessons = extractGeneratorData(similarLessonsNode);
   const multiQuerySemantic = extractGeneratorData(multiQuerySemanticNode);
   const imageDescriptions = extractImageDescriptionsData(imageDescriptionsNode);
+
+  // Aggregate all question pools from sources
+  const allPools = [
+    ...(basedOnLesson?.pools ?? []),
+    ...(similarLessons?.pools ?? []),
+    ...(multiQuerySemantic?.pools ?? []),
+  ];
+
+  // Extract composer data with proper typing
+  const composerLlmData = composerLlmNode?.data as ComposerLlmData | undefined;
+  const composerPrompt = (composerPromptNode?.data?.prompt as string) ?? "";
+  const composerBailed = !!composerLlmData?.bailed;
+  const composerBailReason = composerLlmData?.bailReason ?? "";
+  const composerResponse = composerLlmData?.response?.success ?? null;
+  const selectedQuestions = composerLlmData?.selectedQuestions ?? [];
 
   return (
     <ViewModeContext.Provider value={viewMode}>
@@ -256,57 +284,25 @@ export function QuizPlaygroundView({
         <Section
           title="LLM Composer"
           color="lavender"
+          defaultOpen={composerBailed}
           loading={isStageLoading(["llmComposer"])}
           stats={
             composerNode?.status === "complete"
-              ? (() => {
-                  const totalCandidates = [
-                    ...(basedOnLesson?.pools ?? []),
-                    ...(similarLessons?.pools ?? []),
-                    ...(multiQuerySemantic?.pools ?? []),
-                  ].reduce((sum, pool) => sum + pool.questions.length, 0);
-                  const selectedCount =
-                    (
-                      composerLlmNode?.data.selectedQuestions as
-                        | RagQuizQuestion[]
-                        | undefined
-                    )?.length ?? 0;
-                  return `${totalCandidates} candidates, ${selectedCount} selected, ${formatSeconds(composerNode.durationMs ?? 0)}`;
-                })()
+              ? `${allPools.reduce((sum, p) => sum + p.questions.length, 0)} candidates, ${selectedQuestions.length} selected, ${formatSeconds(composerNode.durationMs ?? 0)}`
               : undefined
           }
         >
-          {composerLlmNode?.status === "complete" &&
-          composerLlmNode.data.response ? (
-            <ComposerSection
-              prompt={(composerPromptNode?.data.prompt as string) ?? ""}
-              response={
-                composerLlmNode.data.response as {
-                  overallStrategy: string;
-                  selectedQuestions: {
-                    questionUid: string;
-                    reasoning: string;
-                  }[];
-                }
-              }
-              selectedQuestions={
-                (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??
-                []
-              }
-              pools={[
-                ...(basedOnLesson?.pools ?? []),
-                ...(similarLessons?.pools ?? []),
-                ...(multiQuerySemantic?.pools ?? []),
-              ]}
-            />
-          ) : composerPromptNode?.data?.prompt ? (
-            <ComposerPromptPreview
-              prompt={composerPromptNode.data.prompt as string}
-              isLlmRunning={composerLlmNode?.status === "running"}
-            />
-          ) : (
-            <p className="text-gray-400">Waiting for LLM composition...</p>
-          )}
+          <ComposerContent
+            isComplete={composerLlmNode?.status === "complete"}
+            isRunning={composerLlmNode?.status === "running"}
+            hasResponse={!!composerLlmData?.response}
+            bailed={composerBailed}
+            bailReason={composerBailReason}
+            prompt={composerPrompt}
+            response={composerResponse}
+            selectedQuestions={selectedQuestions}
+            pools={allPools}
+          />
         </Section>
 
         {/* Final Quiz */}
@@ -331,11 +327,12 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          {quiz ? (
-            <FinalQuizDisplay quiz={quiz} report={report} />
-          ) : (
-            <p className="text-gray-400">Waiting for quiz generation...</p>
-          )}
+          <FinalQuizContent
+            bailed={composerBailed}
+            bailReason={composerBailReason}
+            quiz={quiz}
+            report={report}
+          />
         </Section>
       </div>
     </ViewModeContext.Provider>
@@ -673,6 +670,82 @@ function formatPoolSource(pool: QuizQuestionPool): string {
   }
 }
 
+// Composer Content - handles all composer states without nested ternaries
+function ComposerContent({
+  isComplete,
+  isRunning,
+  hasResponse,
+  bailed,
+  bailReason,
+  prompt,
+  response,
+  selectedQuestions,
+  pools,
+}: Readonly<{
+  isComplete?: boolean;
+  isRunning?: boolean;
+  hasResponse: boolean;
+  bailed: boolean;
+  bailReason: string;
+  prompt: string;
+  response: ComposerSuccessData | null;
+  selectedQuestions: RagQuizQuestion[];
+  pools: QuizQuestionPool[];
+}>) {
+  // Complete with response - show either bail or success
+  if (isComplete && hasResponse) {
+    if (bailed) {
+      return <ComposerBailSection prompt={prompt} reason={bailReason} />;
+    }
+    return (
+      <ComposerSection
+        prompt={prompt}
+        response={response ?? { overallStrategy: "", selectedQuestions: [] }}
+        selectedQuestions={selectedQuestions}
+        pools={pools}
+      />
+    );
+  }
+
+  // Has prompt but waiting for LLM
+  if (prompt) {
+    return <ComposerPromptPreview prompt={prompt} isLlmRunning={!!isRunning} />;
+  }
+
+  // Initial waiting state
+  return <p className="text-gray-400">Waiting for LLM composition...</p>;
+}
+
+// Final Quiz Content - handles quiz display states
+function FinalQuizContent({
+  bailed,
+  bailReason,
+  quiz,
+  report,
+}: Readonly<{
+  bailed: boolean;
+  bailReason: string;
+  quiz: LatestQuiz | undefined;
+  report: ReportNode | null;
+}>) {
+  if (bailed) {
+    return (
+      <div className="rounded-lg border-2 border-yellow-400 bg-yellow-50 p-6">
+        <h3 className="mb-2 text-lg font-semibold text-yellow-800">
+          No Quiz Generated
+        </h3>
+        <p className="text-yellow-700">{bailReason}</p>
+      </div>
+    );
+  }
+
+  if (quiz) {
+    return <FinalQuizDisplay quiz={quiz} report={report} />;
+  }
+
+  return <p className="text-gray-400">Waiting for quiz generation...</p>;
+}
+
 // Composer Prompt Preview - shown while LLM is generating
 function ComposerPromptPreview({
   prompt,
@@ -717,6 +790,45 @@ function ComposerPromptPreview({
           Generating quiz selections...
         </div>
       )}
+    </div>
+  );
+}
+
+// Composer Bail Section - shown when composer cannot find suitable questions
+function ComposerBailSection({
+  prompt,
+  reason,
+}: Readonly<{
+  prompt: string;
+  reason: string;
+}>) {
+  const copyPrompt = () => {
+    void navigator.clipboard.writeText(prompt);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="rounded-lg border-2 border-yellow-400 bg-yellow-50 p-6">
+        <h3 className="mb-2 font-semibold text-yellow-800">Composer Bailed</h3>
+        <p className="text-yellow-700">{reason}</p>
+      </div>
+
+      <SubSection
+        title="Composition Prompt"
+        stats={`${prompt.length.toLocaleString()} chars`}
+        actions={
+          <button
+            onClick={copyPrompt}
+            className="rounded bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700 hover:bg-gray-200"
+          >
+            Copy
+          </button>
+        }
+      >
+        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+          {prompt}
+        </pre>
+      </SubSection>
     </div>
   );
 }
