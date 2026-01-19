@@ -1,3 +1,12 @@
+# [1.60.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.59.0...v1.60.0) (2026-01-19)
+
+
+### Features
+
+* adapt lesson boilerplate AI-1878 ([#901](https://github.com/oaknational/oak-ai-lesson-assistant/issues/901)) ([7b299ff](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7b299ff9a7e19aa06ae988d380b649cbd07cdc2b))
+* fetch and display OWA data for adapt page AI-1908 ([#903](https://github.com/oaknational/oak-ai-lesson-assistant/issues/903)) ([5d05ac2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5d05ac2c94c30116f153ed37bd90e765fc4f86d7))
+* quiz generation report storage and historical viewing ([#898](https://github.com/oaknational/oak-ai-lesson-assistant/issues/898)) ([eaadde9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/eaadde970fd4922f558c4f235f0c62b8e937c42a))
+
 # [1.59.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.58.1...v1.59.0) (2026-01-14)
 
 
