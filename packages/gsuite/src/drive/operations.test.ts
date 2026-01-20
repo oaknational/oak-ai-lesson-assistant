@@ -1,4 +1,4 @@
-import extractFileIdFromUrl from "./extractIdFromUrl";
+import { extractFileIdFromUrl } from ".";
 
 describe("extractFileIdFromUrl", () => {
   test("extracts file ID from presentation docs URL", () => {
