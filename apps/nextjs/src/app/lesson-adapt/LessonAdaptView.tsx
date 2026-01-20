@@ -82,7 +82,7 @@ const LessonAdaptPage = () => {
             </div>
             <div className="aspect-video w-full overflow-hidden rounded border">
               <iframe
-                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&amp;loop=false&amp`}
+                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&loop=false`}
                 className="h-full w-full"
                 allowFullScreen
                 title="Lesson Slides"
