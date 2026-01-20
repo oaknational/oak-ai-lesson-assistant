@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
 
-import { AilaModerationError, AilaModerator } from ".";
+import { AilaModerationError, AilaModerator } from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
 
