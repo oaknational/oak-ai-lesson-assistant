@@ -1,4 +1,4 @@
-import type { ReportNode } from "@oakai/aila/src/core/quiz/instrumentation";
+import type { ReportNode } from "@oakai/aila/src/core/quiz/reporting";
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,

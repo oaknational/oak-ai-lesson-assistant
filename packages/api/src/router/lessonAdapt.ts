@@ -8,8 +8,8 @@ import { z } from "zod";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import {
-  extractedLessonDataSchema,
   extractLessonDataForAdaptPage,
+  extractedLessonDataSchema,
 } from "./owaLesson/extractLessonData";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
 import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
@@ -107,7 +107,6 @@ export const lessonAdaptRouter = router({
         slideContent: z.any(), // PresentationContent type
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
-        rawLessonData: z.any(), // LessonOverviewResponse type
       }),
     )
     .query(async ({ input }) => {

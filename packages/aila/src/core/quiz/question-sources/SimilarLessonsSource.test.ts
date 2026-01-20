@@ -1,5 +1,5 @@
-import { createMockTask } from "../instrumentation/testing";
 import type { RagQuizQuestion } from "../interfaces";
+import { createMockTask } from "../reporting/testing";
 import type { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SimilarLessonsSource } from "./SimilarLessonsSource";
 
@@ -112,6 +112,43 @@ describe("SimilarLessonsSource", () => {
 
       expect(result).toEqual([]);
       expect(mockRetrievalService.getQuestionsForPlanId).not.toHaveBeenCalled();
+    });
+
+    it("should limit to maxLessons (default 3)", async () => {
+      const mockQuestion = createMockQuestion("Q1");
+      mockRetrievalService.getQuestionsForPlanId.mockResolvedValue([
+        mockQuestion,
+      ]);
+
+      const lessons = Array.from({ length: 6 }, (_, i) => ({
+        lessonPlanId: `plan-${i}`,
+        title: `Lesson ${i}`,
+      }));
+
+      await source.poolsFromSimilarLessons(lessons, "/starterQuiz");
+
+      expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledTimes(
+        3,
+      );
+    });
+
+    it("should respect custom maxLessons", async () => {
+      const customSource = new SimilarLessonsSource(mockRetrievalService, 2);
+      const mockQuestion = createMockQuestion("Q1");
+      mockRetrievalService.getQuestionsForPlanId.mockResolvedValue([
+        mockQuestion,
+      ]);
+
+      const lessons = Array.from({ length: 6 }, (_, i) => ({
+        lessonPlanId: `plan-${i}`,
+        title: `Lesson ${i}`,
+      }));
+
+      await customSource.poolsFromSimilarLessons(lessons, "/starterQuiz");
+
+      expect(mockRetrievalService.getQuestionsForPlanId).toHaveBeenCalledTimes(
+        2,
+      );
     });
   });
 
