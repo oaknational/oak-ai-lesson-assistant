@@ -8,8 +8,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit",
-    "test": "jest --config jest.config.mjs"
+    "test": "jest --config jest.config.mjs",
+    "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
   "eslintConfig": {
@@ -30,9 +30,9 @@
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
-    "typescript": "5.9.2",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "typescript": "5.9.2"
   }
 }
