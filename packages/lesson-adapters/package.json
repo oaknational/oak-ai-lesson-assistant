@@ -8,6 +8,7 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "jest --config jest.config.mjs",
     "type-check": "tsc --noEmit"
   },
   "prettier": "@oakai/prettier-config",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@oakai/core": "*",
     "@oakai/db": "*",
+    "@oakai/gsuite": "*",
     "@oakai/logger": "*",
     "ai": "^4.0.20",
     "openai": "^4.96.0",
@@ -28,6 +30,9 @@
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.2.5",
     "typescript": "5.9.2"
   }
 }

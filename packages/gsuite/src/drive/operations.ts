@@ -2,33 +2,6 @@ import { createDriveClient } from "./client";
 import type { CopyFileOptions, CopyFileResult } from "./types";
 
 /**
- * Extracts the file ID from a Google Drive URL
- * @param url - Google Drive URL
- * @returns File ID
- */
-export function extractFileIdFromUrl(url: string): string {
-  // Match various Google Drive URL formats:
-  // https://docs.google.com/presentation/d/{id}/edit
-  // https://drive.google.com/file/d/{id}/view
-  // https://drive.google.com/open?id={id}
-  const patterns = [
-    /\/d\/([a-zA-Z0-9_-]+)/,
-    /\/file\/d\/([a-zA-Z0-9_-]+)/,
-    /[?&]id=([a-zA-Z0-9_-]+)/,
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match?.[1]) {
-      return match[1];
-    }
-  }
-
-  // If no pattern matches, throw an error
-  throw new Error(`Invalid Google Drive URL format: ${url}`);
-}
-
-/**
  * Copies a Google Drive file (including Slides presentations) to a new file
  * @param options - Copy options including source URL, name, and optional destination folder
  * @returns Information about the copied file
@@ -150,4 +123,31 @@ export async function setFilePermissions({
   } catch (error) {
     throw new Error(`Failed to set permissions: ${JSON.stringify(error)}`);
   }
+}
+
+/**
+ * Extracts the file ID from a Google Drive URL
+ * @param url - Google Drive URL
+ * @returns File ID
+ */
+export function extractFileIdFromUrl(url: string): string {
+  // Match various Google Drive URL formats:
+  // https://docs.google.com/presentation/d/{id}/edit
+  // https://drive.google.com/file/d/{id}/view
+  // https://drive.google.com/open?id={id}
+  const patterns = [
+    /\/d\/([a-zA-Z0-9_-]+)/,
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,
+    /[?&]id=([a-zA-Z0-9_-]+)/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match?.[1]) {
+      return match[1];
+    }
+  }
+
+  // If no pattern matches, throw an error
+  throw new Error(`Invalid Google Drive URL format: ${url}`);
 }
