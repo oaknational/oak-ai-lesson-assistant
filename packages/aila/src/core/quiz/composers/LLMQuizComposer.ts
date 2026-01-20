@@ -36,7 +36,7 @@ const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
  * before being passed to the composer.
  */
 export class LLMComposer implements QuizComposer {
-  public readonly name = "llmComposer";
+  public readonly name = "composer";
 
   public async compose(
     questionPools: QuizQuestionPool[],
@@ -51,7 +51,7 @@ export class LLMComposer implements QuizComposer {
     }
 
     // Build prompt (separate task so streaming can show prompt while waiting for LLM)
-    const prompt = await task.child("composerPrompt", (t) => {
+    const prompt = await task.child("buildPrompt", (t) => {
       const builtPrompt = buildCompositionPrompt(
         questionPools,
         lessonPlan,
@@ -63,18 +63,15 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Call LLM
-    const result = await task.child("composerLlm", async (t) => {
-      const llmStart = Date.now();
+    const result = await task.child("llmCall", async (t) => {
       const response = await this.callOpenAI(prompt);
-      const timingMs = Date.now() - llmStart;
 
-      t.addData({ response, timingMs });
+      t.addData({ response });
 
       if (response.status === "bail" || !response.success) {
         const bailReason = response.bail?.reason ?? "Unknown reason";
         log.warn(`LLM Composer bailed: ${bailReason}`);
-        t.addData({ bailed: true, bailReason });
-        return { questions: [], bailReason } as ComposerResult;
+        return { status: "bail", questions: [], bailReason } as ComposerResult;
       }
 
       const questions = this.mapResponseToQuestions(
@@ -83,7 +80,7 @@ export class LLMComposer implements QuizComposer {
       );
       t.addData({ selectedQuestions: questions });
 
-      return { questions } as ComposerResult;
+      return { status: "success", questions } as ComposerResult;
     });
 
     log.info(`LLM Composer: selected ${result.questions.length} questions`);

@@ -62,13 +62,11 @@ export interface QuestionSource {
 }
 
 /**
- * Result from the quiz composer
+ * Result from the quiz composer - discriminated union for type safety
  */
-export interface ComposerResult {
-  questions: RagQuizQuestion[];
-  /** If the composer bailed, the reason why */
-  bailReason?: string;
-}
+export type ComposerResult =
+  | { status: "success"; questions: RagQuizQuestion[] }
+  | { status: "bail"; questions: []; bailReason: string };
 
 /**
  * Composes final quiz questions from candidate pools

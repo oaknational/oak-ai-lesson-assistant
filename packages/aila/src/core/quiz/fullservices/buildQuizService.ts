@@ -116,8 +116,9 @@ async function buildQuiz(
       t,
     );
     t.addData({
+      status: result.status,
       selectedCount: result.questions.length,
-      bailReason: result.bailReason,
+      ...(result.status === "bail" && { bailReason: result.bailReason }),
     });
     return result;
   });
@@ -125,7 +126,7 @@ async function buildQuiz(
   return buildQuizFromQuestions(
     composerResult.questions,
     reportId,
-    composerResult.bailReason,
+    composerResult.status === "bail" ? composerResult.bailReason : undefined,
   );
 }
 

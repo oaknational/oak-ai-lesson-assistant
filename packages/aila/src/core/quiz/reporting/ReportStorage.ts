@@ -18,7 +18,7 @@ import type { RootReportNode } from "./Report";
  */
 export type StoredQuizReport = RootReportNode & {
   /** Report format version for future migrations */
-  reportVersion: "v1";
+  reportVersion: "v1" | "v2";
 };
 
 const log = aiLogger("aila:quiz:reporting");
@@ -44,7 +44,7 @@ export const ReportStorage = {
 
     const storedReport: StoredQuizReport = {
       ...report,
-      reportVersion: "v1",
+      reportVersion: "v2",
     };
 
     const key = `${KV_KEY_PREFIX}${reportId}`;

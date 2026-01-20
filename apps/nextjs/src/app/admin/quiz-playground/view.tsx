@@ -28,17 +28,23 @@ import { formatSeconds } from "./utils";
 export const ViewModeContext = createContext<ViewMode>("learn");
 export const useViewMode = () => useContext(ViewModeContext);
 
-// Types for composer LLM response data
+// Types for LLM call task data
 interface ComposerSuccessData {
   overallStrategy: string;
   selectedQuestions: { questionUid: string; reasoning: string }[];
 }
 
-interface ComposerLlmData {
-  response?: { success?: ComposerSuccessData | null } | null;
-  bailed?: boolean;
-  bailReason?: string;
+interface LlmCallData {
+  response?: {
+    success?: ComposerSuccessData | null;
+    bail?: { reason: string } | null;
+  } | null;
   selectedQuestions?: RagQuizQuestion[];
+}
+
+interface ComposerData {
+  status?: "success" | "bail";
+  bailReason?: string;
 }
 
 interface QuizPlaygroundViewProps {
@@ -78,10 +84,10 @@ export function QuizPlaygroundView({
     report ?? undefined,
     "imageDescriptions",
   );
-  const composerNode = getChild(report ?? undefined, "llmComposer");
-  // Composer has nested children for prompt and LLM response
-  const composerPromptNode = getChild(composerNode, "composerPrompt");
-  const composerLlmNode = getChild(composerNode, "composerLlm");
+  const composerNode = getChild(report ?? undefined, "composer");
+  // Composer has nested children for prompt and LLM call
+  const buildPromptNode = getChild(composerNode, "buildPrompt");
+  const llmCallNode = getChild(composerNode, "llmCall");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
   const basedOnLesson = extractGeneratorData(basedOnLessonNode);
@@ -96,13 +102,18 @@ export function QuizPlaygroundView({
     ...(multiQuerySemantic?.pools ?? []),
   ];
 
-  // Extract composer data with proper typing
-  const composerLlmData = composerLlmNode?.data as ComposerLlmData | undefined;
-  const composerPrompt = (composerPromptNode?.data?.prompt as string) ?? "";
-  const composerBailed = !!composerLlmData?.bailed;
-  const composerBailReason = composerLlmData?.bailReason ?? "";
-  const composerResponse = composerLlmData?.response?.success ?? null;
-  const selectedQuestions = composerLlmData?.selectedQuestions ?? [];
+  // Composer wrapper data
+  const composerData = composerNode?.data as ComposerData | undefined;
+  const composerBailReason = composerData?.bailReason ?? "";
+  const composerBailed = composerData?.status === "bail";
+
+  // Prompt data
+  const composerPrompt =
+    (buildPromptNode?.data as { prompt?: string })?.prompt ?? "";
+
+  // LLM call data
+  const llmCallData = llmCallNode?.data as LlmCallData | undefined;
+  const selectedQuestions = llmCallData?.selectedQuestions ?? [];
 
   return (
     <ViewModeContext.Provider value={viewMode}>
@@ -285,7 +296,7 @@ export function QuizPlaygroundView({
           title="LLM Composer"
           color="lavender"
           defaultOpen={composerBailed}
-          loading={isStageLoading(["llmComposer"])}
+          loading={isStageLoading(["composer"])}
           stats={
             composerNode?.status === "complete"
               ? `${allPools.reduce((sum, p) => sum + p.questions.length, 0)} candidates, ${selectedQuestions.length} selected, ${formatSeconds(composerNode.durationMs ?? 0)}`
@@ -293,13 +304,11 @@ export function QuizPlaygroundView({
           }
         >
           <ComposerContent
-            isComplete={composerLlmNode?.status === "complete"}
-            isRunning={composerLlmNode?.status === "running"}
-            hasResponse={!!composerLlmData?.response}
-            bailed={composerBailed}
+            nodeStatus={llmCallNode?.status}
+            composerStatus={composerData?.status}
             bailReason={composerBailReason}
             prompt={composerPrompt}
-            response={composerResponse}
+            response={llmCallData?.response}
             selectedQuestions={selectedQuestions}
             pools={allPools}
           />
@@ -667,26 +676,27 @@ function formatPoolSource(pool: QuizQuestionPool): string {
 
 // Composer Content - handles all composer states without nested ternaries
 function ComposerContent({
-  isComplete,
-  isRunning,
-  hasResponse,
-  bailed,
+  nodeStatus,
+  composerStatus,
   bailReason,
   prompt,
   response,
   selectedQuestions,
   pools,
 }: Readonly<{
-  isComplete?: boolean;
-  isRunning?: boolean;
-  hasResponse: boolean;
-  bailed: boolean;
+  nodeStatus?: string;
+  composerStatus?: "success" | "bail";
   bailReason: string;
   prompt: string;
-  response: ComposerSuccessData | null;
+  response: LlmCallData["response"];
   selectedQuestions: RagQuizQuestion[];
   pools: QuizQuestionPool[];
 }>) {
+  const isComplete = nodeStatus === "complete";
+  const isRunning = nodeStatus === "running";
+  const hasResponse = !!response;
+  const bailed = composerStatus === "bail";
+
   // Complete with response - show either bail or success
   if (isComplete && hasResponse) {
     if (bailed) {
@@ -695,7 +705,9 @@ function ComposerContent({
     return (
       <ComposerSection
         prompt={prompt}
-        response={response ?? { overallStrategy: "", selectedQuestions: [] }}
+        response={
+          response?.success ?? { overallStrategy: "", selectedQuestions: [] }
+        }
         selectedQuestions={selectedQuestions}
         pools={pools}
       />
@@ -704,7 +716,7 @@ function ComposerContent({
 
   // Has prompt but waiting for LLM
   if (prompt) {
-    return <ComposerPromptPreview prompt={prompt} isLlmRunning={!!isRunning} />;
+    return <ComposerPromptPreview prompt={prompt} isLlmRunning={isRunning} />;
   }
 
   // Initial waiting state

@@ -44,7 +44,7 @@ describe("ReportStorage", () => {
         "quiz:generation-report:test-report-id",
         expect.objectContaining({
           reportId: "test-report-id",
-          reportVersion: "v1",
+          reportVersion: "v2",
           status: "complete",
         }),
       );
@@ -75,7 +75,7 @@ describe("ReportStorage", () => {
     it("retrieves a report by reportId", async () => {
       const storedReport: StoredQuizReport = {
         ...sampleReport,
-        reportVersion: "v1",
+        reportVersion: "v2",
       };
       mockKv.get.mockResolvedValueOnce(storedReport);
 
