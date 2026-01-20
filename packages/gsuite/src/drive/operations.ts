@@ -1,4 +1,4 @@
-import { extractFileIdFromUrl } from "../shared/extractIdFromUrl";
+import extractFileIdFromUrl from "../shared/extractIdFromUrl";
 import { createDriveClient } from "./client";
 import type { CopyFileOptions, CopyFileResult } from "./types";
 
