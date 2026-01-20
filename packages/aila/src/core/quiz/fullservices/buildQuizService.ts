@@ -26,7 +26,6 @@ import type {
 import { buildQuizFromQuestions } from "../buildQuizObject";
 import { LLMComposer } from "../composers/LLMQuizComposer";
 import { ImageDescriptionEnricher } from "../enrichers/ImageDescriptionEnricher";
-import type { Task } from "../instrumentation";
 import type {
   QuestionEnricher,
   QuestionSource,
@@ -36,6 +35,7 @@ import type {
 import { BasedOnLessonSource } from "../question-sources/BasedOnLessonSource";
 import { MultiQuerySemanticSource } from "../question-sources/MultiQuerySemanticSource";
 import { SimilarLessonsSource } from "../question-sources/SimilarLessonsSource";
+import type { Task } from "../reporting";
 import type {
   QuestionEnricherType,
   QuestionSourceType,
@@ -78,6 +78,7 @@ async function buildQuiz(
   lessonPlan: PartialLessonPlan,
   similarLessons: AilaRagRelevantLesson[],
   task: Task,
+  reportId: string,
 ) {
   // Run all sources in parallel
   const poolPromises = sources.map((source) =>
@@ -118,7 +119,7 @@ async function buildQuiz(
     return questions;
   });
 
-  return buildQuizFromQuestions(selectedQuestions);
+  return buildQuizFromQuestions(selectedQuestions, reportId);
 }
 
 export function buildQuizService(settings: QuizBuilderSettings): QuizService {
@@ -136,7 +137,7 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
     sources,
     enrichers,
     composer,
-    buildQuiz: (quizType, lessonPlan, similarLessons, task) =>
+    buildQuiz: (quizType, lessonPlan, similarLessons, task, reportId) =>
       buildQuiz(
         sources,
         enrichers,
@@ -145,6 +146,7 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
         lessonPlan,
         similarLessons,
         task,
+        reportId,
       ),
   };
 }

@@ -6,8 +6,8 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import pLimit from "p-limit";
 import { z } from "zod";
 
-import type { Task } from "../instrumentation";
 import type { QuestionEnricher, QuizQuestionPool } from "../interfaces";
+import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 
