@@ -19,6 +19,7 @@ interface QuizPlaygroundState {
   lessonPlan: PartialLessonPlan | null;
   quizType: QuizPath;
   relevantLessons: AilaRagRelevantLesson[];
+  userInstructions: string;
 
   // UI state
   viewMode: ViewMode;
@@ -34,6 +35,7 @@ interface QuizPlaygroundActions {
   setLessonPlan: (plan: PartialLessonPlan | null) => void;
   setQuizType: (type: QuizPath) => void;
   setRelevantLessons: (lessons: AilaRagRelevantLesson[]) => void;
+  setUserInstructions: (instructions: string) => void;
   setViewMode: (mode: ViewMode) => void;
   setLoadedReport: (report: ReportNode | null) => void;
   clearInput: () => void;
@@ -54,6 +56,7 @@ export function createQuizPlaygroundStore(
     lessonPlan: null,
     quizType: initialQuizType,
     relevantLessons: [],
+    userInstructions: "",
     viewMode: "learn",
     loadedReport: null,
     isRunning: false,
@@ -70,12 +73,15 @@ export function createQuizPlaygroundStore(
       abortController?.abort();
     },
     setRelevantLessons: (lessons) => set({ relevantLessons: lessons }),
+    setUserInstructions: (instructions) =>
+      set({ userInstructions: instructions }),
     setViewMode: (mode) => set({ viewMode: mode }),
     setLoadedReport: (report) => set({ loadedReport: report }),
     clearInput: () => {
       set({
         lessonPlan: null,
         relevantLessons: [],
+        userInstructions: "",
         loadedReport: null,
         streamingReport: null,
         error: null,
@@ -85,7 +91,7 @@ export function createQuizPlaygroundStore(
 
     // Pipeline actions
     runPipeline: async () => {
-      const { lessonPlan, quizType, relevantLessons } = get();
+      const { lessonPlan, quizType, relevantLessons, userInstructions } = get();
       if (!lessonPlan) return;
 
       set({ isRunning: true, error: null, streamingReport: null });
@@ -93,7 +99,7 @@ export function createQuizPlaygroundStore(
 
       try {
         await streamPipeline(
-          { lessonPlan, quizType, relevantLessons },
+          { lessonPlan, quizType, relevantLessons, userInstructions },
           {
             onReportUpdate: (report, isComplete) => {
               set({

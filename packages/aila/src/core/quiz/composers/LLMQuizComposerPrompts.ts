@@ -73,10 +73,36 @@ export const CompositionResponseSchema = z.object({
 
 export type CompositionResponse = z.infer<typeof CompositionResponseSchema>;
 
+function buildUserInstructionsSection(
+  instructions: string | null | undefined,
+): string {
+  if (!instructions) return "";
+
+  return dedent`
+    ---
+
+    USER INSTRUCTIONS:
+
+    The user has provided specific guidance for this quiz:
+
+    <user-instructions>
+    ${instructions}
+    </user-instructions>
+
+    Consider these preferences when selecting questions. They may relate to:
+    - Question types (e.g., "focus on questions with images")
+    - Difficulty level (e.g., "make it harder")
+    - Content preferences (e.g., "avoid decimals")
+
+    Balance these against the core selection criteria.
+  `;
+}
+
 export function buildCompositionPrompt(
   questionPools: QuizQuestionPool[],
   lessonPlan: PartialLessonPlan,
   quizType: QuizPath,
+  userInstructions?: string | null,
 ): string {
   const sections = [
     buildSystemContext(),
@@ -84,6 +110,7 @@ export function buildCompositionPrompt(
     buildQuizTypeInstructions(lessonPlan, quizType),
     "---",
     buildQuestionSelectionCriteria(quizType),
+    buildUserInstructionsSection(userInstructions),
     "---",
     buildLessonPlanSummary(lessonPlan),
     "---",
@@ -93,7 +120,7 @@ export function buildCompositionPrompt(
     ...questionPools.map((pool) => poolToMarkdown(pool)),
   ];
 
-  return sections.join("\n\n");
+  return sections.filter(Boolean).join("\n\n");
 }
 
 function buildSystemContext(): string {
