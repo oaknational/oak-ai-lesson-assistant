@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import { useState } from "react";
+
 import {
   OakBox,
   OakFlex,
@@ -22,11 +25,26 @@ interface ThumbnailsTabProps {
   error: { message: string } | null;
 }
 
+const THUMBNAIL_SIZES =
+  "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw";
+
 export function ThumbnailsTab({
   thumbnails,
   isLoading,
   error,
 }: ThumbnailsTabProps) {
+  const [failedThumbnails, setFailedThumbnails] = useState<Record<string, boolean>>({});
+  const resolvedThumbnails = thumbnails ?? [];
+  const thumbnailsCount = thumbnails?.length ?? 0;
+  const hasThumbnails = thumbnailsCount > 0;
+  const showEmptyState = Array.isArray(thumbnails) && thumbnails.length === 0;
+
+  const handleThumbnailError = (objectId: string) => {
+    setFailedThumbnails((prev) =>
+      prev[objectId] ? prev : { ...prev, [objectId]: true },
+    );
+  };
+
   return (
     <OakFlex $flexDirection="column" $gap="spacing-16" $mt="spacing-24">
       <OakHeading tag="h2" $font="heading-5">
@@ -57,21 +75,32 @@ export function ThumbnailsTab({
         </OakBox>
       )}
 
-      {thumbnails && thumbnails.length > 0 && (
+      {hasThumbnails && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {thumbnails.map((thumbnail) => (
+          {resolvedThumbnails.map((thumbnail) => (
             <OakBox
               key={thumbnail.objectId}
               $borderRadius="border-radius-m"
               className="overflow-hidden border border-gray-200"
             >
               <OakFlex $flexDirection="column">
-                <img
-                  src={thumbnail.thumbnailUrl}
-                  alt={`Slide ${thumbnail.slideIndex + 1}`}
-                  className="aspect-video w-full object-contain"
-                  loading="lazy"
-                />
+                {failedThumbnails[thumbnail.objectId] ? (
+                  <div className="flex aspect-video w-full items-center justify-center bg-gray-50 text-sm text-gray-500">
+                    Thumbnail unavailable
+                  </div>
+                ) : (
+                  <div className="relative aspect-video w-full bg-white">
+                    <Image
+                      src={thumbnail.thumbnailUrl}
+                      alt={`Slide ${thumbnail.slideIndex + 1}`}
+                      fill
+                      sizes={THUMBNAIL_SIZES}
+                      className="object-contain"
+                      loading="lazy"
+                      onError={() => handleThumbnailError(thumbnail.objectId)}
+                    />
+                  </div>
+                )}
                 <OakBox $pa="spacing-8" $background="bg-neutral">
                   <OakP
                     $font="body-4"
@@ -87,7 +116,7 @@ export function ThumbnailsTab({
         </div>
       )}
 
-      {thumbnails && thumbnails.length === 0 && (
+      {showEmptyState && (
         <OakP $font="body-3" $color="text-subdued">
           No slides found in this presentation.
         </OakP>

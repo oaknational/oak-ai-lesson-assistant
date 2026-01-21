@@ -102,8 +102,13 @@ export function AdaptLessonContent({
       </OakBox>
 
       {/* Content section */}
-      <OakBox $background="white" $pa="spacing-24" $pb="spacing-24">
-        <OakBox $maxWidth="100%">
+      <OakBox
+        $height={"100%"}
+        $background="white"
+        $pa="spacing-24"
+        $pb="spacing-24"
+      >
+        <OakBox $height="100%" $maxWidth="100%">
           {activeTab === "Lesson details" && (
             <LessonDetailsTab data={lessonData} />
           )}
