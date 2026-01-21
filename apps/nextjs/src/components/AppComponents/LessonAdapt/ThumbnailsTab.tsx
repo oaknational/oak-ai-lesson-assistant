@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 import {
@@ -10,6 +9,7 @@ import {
   OakLoadingSpinner,
   OakP,
 } from "@oaknational/oak-components";
+import Image from "next/image";
 
 interface Thumbnail {
   objectId: string;
@@ -33,7 +33,9 @@ export function ThumbnailsTab({
   isLoading,
   error,
 }: ThumbnailsTabProps) {
-  const [failedThumbnails, setFailedThumbnails] = useState<Record<string, boolean>>({});
+  const [failedThumbnails, setFailedThumbnails] = useState<
+    Record<string, boolean>
+  >({});
   const resolvedThumbnails = thumbnails ?? [];
   const thumbnailsCount = thumbnails?.length ?? 0;
   const hasThumbnails = thumbnailsCount > 0;
