@@ -70,6 +70,9 @@ Oak expert-authored quizzes from lessons on similar topics. These demonstrate go
 **Semantically Matched Questions**
 Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
 
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
+
 ---
 
 CANDIDATE QUESTIONS:
@@ -188,6 +191,9 @@ Oak expert-authored quizzes from lessons on similar topics. These demonstrate go
 
 **Semantically Matched Questions**
 Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
 
 ---
 
