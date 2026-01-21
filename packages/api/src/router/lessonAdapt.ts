@@ -107,6 +107,7 @@ export const lessonAdaptRouter = router({
         slideContent: z.any(), // PresentationContent type
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
+        rawLessonData: z.any(),
       }),
     )
     .query(async ({ input }) => {
