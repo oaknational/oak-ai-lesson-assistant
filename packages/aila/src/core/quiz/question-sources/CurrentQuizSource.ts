@@ -9,7 +9,6 @@ import type {
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../../protocol/schemas/quiz";
-import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
 import type {
   EnrichedImageMetadata,
   QuestionSource,
@@ -79,74 +78,9 @@ export class CurrentQuizSource implements QuestionSource {
     return {
       question,
       sourceUid: uid,
-      source: this.createSyntheticHasuraSource(question, uid),
+      // No source - these questions come from the lesson plan, not Hasura
       imageMetadata: questionImageMetadata,
     };
-  }
-
-  /**
-   * Create a synthetic HasuraQuizQuestion source object.
-   * Since the question comes from the lesson plan (not Elasticsearch),
-   * we construct a minimal source object for compatibility.
-   */
-  private createSyntheticHasuraSource(
-    question: LatestQuizQuestion,
-    uid: string,
-  ): HasuraQuizQuestion {
-    return {
-      questionId: 0,
-      questionUid: uid,
-      questionType: question.questionType,
-      questionStem: [{ type: "text", text: question.question }],
-      answers: this.convertAnswersToHasuraFormat(question),
-      feedback: "",
-      hint: question.hint ?? "",
-      active: true,
-    };
-  }
-
-  private convertAnswersToHasuraFormat(
-    question: LatestQuizQuestion,
-  ): HasuraQuizQuestion["answers"] {
-    switch (question.questionType) {
-      case "multiple-choice":
-        return {
-          "multiple-choice": [
-            ...question.answers.map((answer) => ({
-              answer: [{ type: "text" as const, text: answer }],
-              answer_is_correct: true,
-            })),
-            ...question.distractors.map((distractor) => ({
-              answer: [{ type: "text" as const, text: distractor }],
-              answer_is_correct: false,
-            })),
-          ],
-        };
-
-      case "short-answer":
-        return {
-          "short-answer": question.answers.map((answer) => ({
-            answer: [{ type: "text" as const, text: answer }],
-            answer_is_correct: true,
-          })),
-        };
-
-      case "match":
-        return {
-          match: question.pairs.map((pair) => ({
-            match_option: [{ type: "text" as const, text: pair.left }],
-            correct_choice: [{ type: "text" as const, text: pair.right }],
-          })),
-        };
-
-      case "order":
-        return {
-          order: question.items.map((item, idx) => ({
-            answer: [{ type: "text" as const, text: item }],
-            correct_order: idx + 1,
-          })),
-        };
-    }
   }
 
   /**
