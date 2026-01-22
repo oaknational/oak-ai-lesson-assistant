@@ -286,4 +286,77 @@ describe("buildCompositionPrompt", () => {
       expect(prompt).toMatchSnapshot();
     });
   });
+
+  describe("currentQuiz source type", () => {
+    const currentQuizPool: QuizQuestionPool = {
+      source: {
+        type: "currentQuiz",
+        quizType: "/exitQuiz",
+      },
+      questions: [
+        mockMultipleChoice("CURRENT-Q1", "Existing question 1"),
+        mockMultipleChoice("CURRENT-Q2", "Existing question 2"),
+      ],
+    };
+
+    it("should include currentQuiz explanation when present", () => {
+      const pools: QuizQuestionPool[] = [
+        currentQuizPool,
+        {
+          source: { type: "semanticSearch", semanticQuery: "test" },
+          questions: [mockMultipleChoice("q1", "Test question")],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).toContain("**Current Quiz (Being Modified)**");
+      expect(prompt).toContain("CURRENT-Q1 through CURRENT-Q6");
+      expect(prompt).toContain("they mean CURRENT-Q4");
+    });
+
+    it("should NOT include currentQuiz explanation when absent", () => {
+      const pools: QuizQuestionPool[] = [
+        {
+          source: { type: "semanticSearch", semanticQuery: "test" },
+          questions: [mockMultipleChoice("q1", "Test question")],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).not.toContain("Current Quiz");
+      expect(prompt).not.toContain("CURRENT-Q");
+    });
+
+    it("should use correct pool header for currentQuiz", () => {
+      const pools: QuizQuestionPool[] = [currentQuizPool];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).toContain("### Current Quiz (To Be Modified)");
+    });
+
+    it("should NOT include currentQuiz explanation when pool is empty", () => {
+      const emptyCurrentQuizPool: QuizQuestionPool = {
+        source: {
+          type: "currentQuiz",
+          quizType: "/exitQuiz",
+        },
+        questions: [],
+      };
+
+      const pools: QuizQuestionPool[] = [
+        emptyCurrentQuizPool,
+        {
+          source: { type: "semanticSearch", semanticQuery: "test" },
+          questions: [mockMultipleChoice("q1", "Test question")],
+        },
+      ];
+
+      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+
+      expect(prompt).not.toContain("**Current Quiz (Being Modified)**");
+    });
+  });
 });

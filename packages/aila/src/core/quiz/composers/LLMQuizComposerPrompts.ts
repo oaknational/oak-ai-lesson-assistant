@@ -35,6 +35,8 @@ function buildQuestionSelectionCriteria(quizType: QuizPath): string {
   return dedent`
     SELECTION CRITERIA:
 
+    Select questions from the candidate questions below. You must use the exact UIDs provided - do not create new questions or make up UIDs.
+
     An effective quiz has:
 
     1. **Relevance**: ${relevanceDescription}
@@ -61,10 +63,16 @@ export const CompositionResponseSchema = z.object({
   selectedQuestions: z
     .array(
       z.object({
-        questionUid: z.string().describe("The UID of the selected question"),
+        questionUid: z
+          .string()
+          .describe(
+            "The exact UID of the selected question from the candidate list",
+          ),
         reasoning: z
           .string()
-          .describe("Brief explanation for selecting this question"),
+          .describe(
+            "Brief explanation for selecting this question. For questions from the current quiz, note any changes (kept, reordered, etc.) per user instruction",
+          ),
       }),
     )
     .length(6)
@@ -104,6 +112,8 @@ export function buildCompositionPrompt(
   quizType: QuizPath,
   userInstructions?: string | null,
 ): string {
+  const sourceExplanation = buildSourceTypesExplanation(questionPools);
+
   const sections = [
     buildSystemContext(),
     "---",
@@ -114,7 +124,7 @@ export function buildCompositionPrompt(
     "---",
     buildLessonPlanSummary(lessonPlan),
     "---",
-    buildSourceTypesExplanation(),
+    sourceExplanation,
     "---",
     buildCandidateQuestionsHeader(),
     ...questionPools.map((pool) => poolToMarkdown(pool)),
@@ -181,20 +191,57 @@ function buildLessonPlanSummary(lessonPlan: PartialLessonPlan): string {
 ${unpackLessonPlanForPrompt(lessonPlan)}`;
 }
 
-function buildSourceTypesExplanation(): string {
+/**
+ * Build source type explanations dynamically based on what pools are present.
+ * Only includes explanations for source types that have non-empty pools.
+ */
+function buildSourceTypesExplanation(pools: QuizQuestionPool[]): string {
+  const hasSourceType = (type: string) =>
+    pools.some((p) => p.source.type === type && p.questions.length > 0);
+
+  const explanations: string[] = [];
+
+  if (hasSourceType("currentQuiz")) {
+    explanations.push(dedent`
+      **Current Quiz (Being Modified)**
+      This contains the user's existing quiz. Questions are labelled CURRENT-Q1 through CURRENT-Q6 to indicate position. When the user refers to "question 4", they mean CURRENT-Q4.
+
+      You may:
+      - Keep questions by selecting their UIDs
+      - Replace specific questions with alternatives from other sources
+      - Reorder by selecting in different sequence
+    `);
+  }
+
+  if (hasSourceType("basedOnLesson")) {
+    explanations.push(dedent`
+      **User-Selected Source Lesson**
+      The user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+    `);
+  }
+
+  if (hasSourceType("similarLessons")) {
+    explanations.push(dedent`
+      **Reference Quizzes from Similar Lessons**
+      Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+    `);
+  }
+
+  if (hasSourceType("semanticSearch")) {
+    explanations.push(dedent`
+      **Semantically Matched Questions**
+      Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+    `);
+  }
+
+  if (explanations.length === 0) {
+    return "";
+  }
+
   return dedent`
     UNDERSTANDING THE QUESTION SOURCES:
 
-    You will receive questions from up to three source types. Understanding these helps you make better selections:
-
-    **User-Selected Source Lesson**
-    If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
-
-    **Reference Quizzes from Similar Lessons**
-    Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
-
-    **Semantically Matched Questions**
-    Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+    ${explanations.join("\n\n")}
   `;
 }
 
@@ -212,7 +259,9 @@ function poolToMarkdown(pool: QuizQuestionPool): string {
 }
 
 function poolHeaderMarkdown(pool: QuizQuestionPool): string {
-  if (pool.source.type === "basedOnLesson") {
+  if (pool.source.type === "currentQuiz") {
+    return `### Current Quiz (To Be Modified)`;
+  } else if (pool.source.type === "basedOnLesson") {
     return `### User-Selected Source Lesson: ${pool.source.lessonTitle}`;
   } else if (pool.source.type === "semanticSearch") {
     return `### Semantically Matched Questions (query: "${pool.source.semanticQuery}")`;

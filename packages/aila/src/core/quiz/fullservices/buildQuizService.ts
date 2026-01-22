@@ -33,6 +33,7 @@ import type {
   QuizService,
 } from "../interfaces";
 import { BasedOnLessonSource } from "../question-sources/BasedOnLessonSource";
+import { CurrentQuizSource } from "../question-sources/CurrentQuizSource";
 import { MultiQuerySemanticSource } from "../question-sources/MultiQuerySemanticSource";
 import { SimilarLessonsSource } from "../question-sources/SimilarLessonsSource";
 import type { Task } from "../reporting";
@@ -53,6 +54,8 @@ function createSource(type: QuestionSourceType): QuestionSource {
       return new BasedOnLessonSource();
     case "multiQuerySemantic":
       return new MultiQuerySemanticSource();
+    case "currentQuiz":
+      return new CurrentQuizSource();
   }
 }
 

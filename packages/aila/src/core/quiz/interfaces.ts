@@ -167,6 +167,10 @@ export interface QuizQuestionPool {
     | {
         type: "semanticSearch";
         semanticQuery: string;
+      }
+    | {
+        type: "currentQuiz";
+        quizType: QuizPath;
       };
 }
 
