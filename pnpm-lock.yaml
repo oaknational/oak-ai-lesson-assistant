@@ -20,8 +20,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       '@ai-sdk/openai':
-        specifier: ^0.0.72
-        version: 0.0.72(zod@3.25.76)
+        specifier: ^3.0.13
+        version: 3.0.13(zod@3.25.76)
       '@cspell/dict-en-gb':
         specifier: ^5.0.14
         version: 5.0.14
@@ -212,8 +212,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       ai:
-        specifier: ^4.0.20
-        version: 4.0.20(react@19.2.1)(zod@3.25.76)
+        specifier: ^6.0.43
+        version: 6.0.43(zod@3.25.76)
       american-british-english-translator:
         specifier: ^0.2.1
         version: 0.2.1
@@ -947,28 +947,6 @@ importers:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
 
-  packages/google:
-    dependencies:
-      '@googleapis/drive':
-        specifier: ^8.7.0
-        version: 8.7.0
-      '@googleapis/slides':
-        specifier: ^1.0.5
-        version: 1.0.5
-      google-auth-library:
-        specifier: ^9.7.0
-        version: 9.7.0
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
-    devDependencies:
-      '@oakai/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
-
   packages/gsuite:
     dependencies:
       '@googleapis/drive':
@@ -1286,30 +1264,26 @@ packages:
   /@adobe/css-tools@4.4.0:
     resolution: {integrity: sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==}
 
-  /@ai-sdk/openai@0.0.72(zod@3.25.76):
-    resolution: {integrity: sha512-IKsgxIt6KJGkEHyMp975xW5VPmetwhI8g9H6dDmwvemBB41IRQa78YMNttiJqPcgmrZX2QfErOICv1gQvZ1gZg==}
+  /@ai-sdk/gateway@3.0.17(zod@3.25.76):
+    resolution: {integrity: sha512-mCz50GlBPyBV96Wcll1Mpaz56MVFuHL+bwRWGkIsCJwKAKIfdgUZecFzS3gckpHGaqP5+BYnmyJocIMzUhTQ2A==}
     engines: {node: '>=18'}
     peerDependencies:
-      zod: ^3.0.0
+      zod: ^3.25.76 || ^4.1.8
     dependencies:
-      '@ai-sdk/provider': 0.0.26
-      '@ai-sdk/provider-utils': 1.0.22(zod@3.25.76)
+      '@ai-sdk/provider': 3.0.4
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
+      '@vercel/oidc': 3.1.0
       zod: 3.25.76
-    dev: true
+    dev: false
 
-  /@ai-sdk/provider-utils@1.0.22(zod@3.25.76):
-    resolution: {integrity: sha512-YHK2rpj++wnLVc9vPGzGFP3Pjeld2MwhKinetA0zKXOoHAT/Jit5O8kZsxcSlJPu9wvcGT1UGZEjZrtO7PfFOQ==}
+  /@ai-sdk/openai@3.0.13(zod@3.25.76):
+    resolution: {integrity: sha512-H+iqcmtND5dLsKpuMKjGdSRbU0OQwDdpJZbVBueASmCxsEL52FEWDjwTStDpSyZuvv68Xbs6tej8xcbQXFRCaw==}
     engines: {node: '>=18'}
     peerDependencies:
-      zod: ^3.0.0
-    peerDependenciesMeta:
-      zod:
-        optional: true
+      zod: ^3.25.76 || ^4.1.8
     dependencies:
-      '@ai-sdk/provider': 0.0.26
-      eventsource-parser: 1.1.2
-      nanoid: 3.3.11
-      secure-json-parse: 2.7.0
+      '@ai-sdk/provider': 3.0.4
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
       zod: 3.25.76
     dev: true
 
@@ -1323,7 +1297,7 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.2
-      eventsource-parser: 3.0.2
+      eventsource-parser: 3.0.6
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
       zod: 3.25.76
@@ -1339,18 +1313,22 @@ packages:
         optional: true
     dependencies:
       '@ai-sdk/provider': 1.0.10
-      eventsource-parser: 3.0.2
+      eventsource-parser: 3.0.6
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
       zod: 3.25.76
     dev: false
 
-  /@ai-sdk/provider@0.0.26:
-    resolution: {integrity: sha512-dQkfBDs2lTYpKM8389oopPdQgIU007GQyCbuPPrV+K6MtSII3HBfE0stUIMXUb44L+LK1t6GXPP7wjSzjO6uKg==}
+  /@ai-sdk/provider-utils@4.0.8(zod@3.25.76):
+    resolution: {integrity: sha512-ns9gN7MmpI8vTRandzgz+KK/zNMLzhrriiKECMt4euLtQFSBgNfydtagPOX4j4pS1/3KvHF6RivhT3gNQgBZsg==}
     engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
     dependencies:
-      json-schema: 0.4.0
-    dev: true
+      '@ai-sdk/provider': 3.0.4
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.0.6
+      zod: 3.25.76
 
   /@ai-sdk/provider@1.0.10:
     resolution: {integrity: sha512-pco8Zl9U0xwXI+nCLc0woMtxbvjU8hRmGTseAUiPHFLYAAL8trRPCukg69IDeinOvIeo1SmXxAIdWWPZOLb4Cg==}
@@ -1365,6 +1343,12 @@ packages:
     dependencies:
       json-schema: 0.4.0
     dev: false
+
+  /@ai-sdk/provider@3.0.4:
+    resolution: {integrity: sha512-5KXyBOSEX+l67elrEa+wqo/LSsSTtrPj9Uoh3zMbe/ceQX4ucHI3b9nUEfNkGF3Ry1svv90widAt+aiKdIJasQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      json-schema: 0.4.0
 
   /@ai-sdk/react@1.0.6(react@19.2.1)(zod@3.25.76):
     resolution: {integrity: sha512-8Hkserq0Ge6AEi7N4hlv2FkfglAGbkoAXEZ8YSp255c3PbnZz6+/5fppw+aROmZMOfNwallSRuy1i/iPa2rBpQ==}
@@ -3697,7 +3681,7 @@ packages:
       '@clerk/clerk-react': 5.59.0(react-dom@19.2.1)(react@19.2.1)
       '@clerk/shared': 3.40.0(react-dom@19.2.1)(react@19.2.1)
       '@clerk/types': 4.101.7(react-dom@19.2.1)(react@19.2.1)
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
       server-only: 0.0.1
@@ -10500,7 +10484,7 @@ packages:
       '@sentry/react': 10.31.0(react@19.2.1)
       '@sentry/vercel-edge': 10.31.0
       '@sentry/webpack-plugin': 4.6.1(webpack@5.102.1)
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
       resolve: 1.22.8
       rollup: 4.53.5
       stacktrace-parser: 0.1.10
@@ -11137,7 +11121,6 @@ packages:
 
   /@standard-schema/spec@1.1.0:
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
-    dev: false
 
   /@storybook/addon-docs@10.0.8(@types/react@19.2.7)(storybook@10.0.8)(webpack@5.102.1):
     resolution: {integrity: sha512-PYuaGXGycsamK/7OrFoE4syHGy22mdqqArl67cfosRwmRxZEI9ManQK0jTjNQM9ZX14NpThMOSWNGoWLckkxog==}
@@ -12713,6 +12696,11 @@ packages:
       - encoding
     dev: false
 
+  /@vercel/oidc@3.1.0:
+    resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
+    engines: {node: '>= 20'}
+    dev: false
+
   /@vitest/expect@3.2.4:
     resolution: {integrity: sha512-Io0yyORnB6sikFlt8QW5K7slY4OjqNX9jmJQ02QDda8lyM6B5oNgVWoSoKPac8/kgnCUzuHQKrSLtu/uOqqrig==}
     dependencies:
@@ -13044,6 +13032,19 @@ packages:
       eventsource-parser: 3.0.2
       jsondiffpatch: 0.6.0
       react: 19.2.1
+      zod: 3.25.76
+    dev: false
+
+  /ai@6.0.43(zod@3.25.76):
+    resolution: {integrity: sha512-CCYfTjU/b3hbP1+nTKHkZgVy7mB+80o8dlga3UWw2xMc6syfenaJoLJ1YbqMfFI4K5PS1zBLeZIfqjUFjsEzBw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+    dependencies:
+      '@ai-sdk/gateway': 3.0.17(zod@3.25.76)
+      '@ai-sdk/provider': 3.0.4
+      '@ai-sdk/provider-utils': 4.0.8(zod@3.25.76)
+      '@opentelemetry/api': 1.9.0
       zod: 3.25.76
     dev: false
 
@@ -17000,16 +17001,16 @@ packages:
     resolution: {integrity: sha512-6GJGePDMxin/6VH1Dex7RqnZRguweO1BVKhXpBYwKcQbVLOZPLfeDr9vYSb9ra88kjs0NpT8FaEDz5rExedDkg==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      eventsource-parser: 3.0.2
-    dev: true
-
-  /eventsource-parser@1.1.2:
-    resolution: {integrity: sha512-v0eOBUbiaFojBu2s2NPBfYUoRR9GjcDNvCXVaqEf5vVfpIAh9f8RCo4vXTP8c63QRKCFwoLpMpTdPwwhEKVgzA==}
-    engines: {node: '>=14.18'}
+      eventsource-parser: 3.0.6
     dev: true
 
   /eventsource-parser@3.0.2:
     resolution: {integrity: sha512-6RxOBZ/cYgd8usLwsEl+EC09Au/9BcmCKYF2/xbml6DNczf7nv0MQb+7BA2F+li6//I+28VNlQR37XfQtcAJuA==}
+    engines: {node: '>=18.0.0'}
+    dev: false
+
+  /eventsource-parser@3.0.6:
+    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
     engines: {node: '>=18.0.0'}
 
   /eventsource@2.0.2:
@@ -17021,7 +17022,7 @@ packages:
     resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
     engines: {node: '>=18.0.0'}
     dependencies:
-      eventsource-parser: 3.0.2
+      eventsource-parser: 3.0.6
     dev: true
 
   /evp_bytestokey@1.0.3:

@@ -80,7 +80,7 @@
     "@types/ramda": "^0.30.2",
     "@uidotdev/usehooks": "^2.4.1",
     "@vercel/functions": "^1.4.0",
-    "ai": "^4.0.20",
+    "ai": "^6.0.43",
     "american-british-english-translator": "^0.2.1",
     "archiver": "^7.0.1",
     "axios": "^1.8.3",

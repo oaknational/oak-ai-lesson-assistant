@@ -51,7 +51,7 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.1",
-    "@ai-sdk/openai": "^0.0.72",
+    "@ai-sdk/openai": "^3.0.13",
     "@cspell/dict-en-gb": "^5.0.14",
     "@manypkg/cli": "^0.25.1",
     "@next/env": "14.2.18",
