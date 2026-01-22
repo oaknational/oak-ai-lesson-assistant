@@ -24,11 +24,19 @@ export function InputSection({
   // Store state
   const selectedPlan = useQuizPlaygroundStore(store, (s) => s.lessonPlan);
   const quizType = useQuizPlaygroundStore(store, (s) => s.quizType);
+  const userInstructions = useQuizPlaygroundStore(
+    store,
+    (s) => s.userInstructions,
+  );
   const setLessonPlan = useQuizPlaygroundStore(store, (s) => s.setLessonPlan);
   const setQuizType = useQuizPlaygroundStore(store, (s) => s.setQuizType);
   const setRelevantLessons = useQuizPlaygroundStore(
     store,
     (s) => s.setRelevantLessons,
+  );
+  const setUserInstructions = useQuizPlaygroundStore(
+    store,
+    (s) => s.setUserInstructions,
   );
   const setLoadedReport = useQuizPlaygroundStore(
     store,
@@ -150,6 +158,14 @@ export function InputSection({
                 </p>
               </div>
             )}
+            {userInstructions && (
+              <div className="border-blue-200 bg-blue-50 mt-3 rounded border px-3 py-2">
+                <p className="text-blue-800 text-xs font-medium">
+                  User Instructions:
+                </p>
+                <p className="text-blue-900 text-sm">{userInstructions}</p>
+              </div>
+            )}
           </div>
           <button
             onClick={() => setIsEditing(true)}
@@ -167,29 +183,47 @@ export function InputSection({
       <div className="space-y-6">
         {/* Quiz type selection - first */}
         {inputMethod !== "viewReport" && (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500">Quiz type:</span>
-            <div className="flex gap-1 rounded-md bg-gray-100 p-0.5">
-              <button
-                onClick={() => setQuizType("/starterQuiz")}
-                className={`rounded px-3 py-1.5 text-sm transition-all ${
-                  quizType === "/starterQuiz"
-                    ? "bg-white font-medium text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500">Quiz type:</span>
+              <div className="flex gap-1 rounded-md bg-gray-100 p-0.5">
+                <button
+                  onClick={() => setQuizType("/starterQuiz")}
+                  className={`rounded px-3 py-1.5 text-sm transition-all ${
+                    quizType === "/starterQuiz"
+                      ? "bg-white font-medium text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  Starter
+                </button>
+                <button
+                  onClick={() => setQuizType("/exitQuiz")}
+                  className={`rounded px-3 py-1.5 text-sm transition-all ${
+                    quizType === "/exitQuiz"
+                      ? "bg-white font-medium text-gray-900 shadow-sm"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  Exit
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="userInstructions"
+                className="mb-1 block text-sm text-gray-500"
               >
-                Starter
-              </button>
-              <button
-                onClick={() => setQuizType("/exitQuiz")}
-                className={`rounded px-3 py-1.5 text-sm transition-all ${
-                  quizType === "/exitQuiz"
-                    ? "bg-white font-medium text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                Exit
-              </button>
+                User instructions (optional):
+              </label>
+              <input
+                id="userInstructions"
+                type="text"
+                value={userInstructions}
+                onChange={(e) => setUserInstructions(e.target.value)}
+                placeholder='e.g., "focus on questions with images" or "make it harder"'
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
+              />
             </div>
           </div>
         )}

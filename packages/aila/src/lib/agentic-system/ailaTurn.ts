@@ -22,6 +22,7 @@ export async function ailaTurn({
       errors: [],
       stepsExecuted: [],
       relevantLessonsFetched: false,
+      currentStep: null,
     },
     callbacks,
   };

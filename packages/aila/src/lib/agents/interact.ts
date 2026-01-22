@@ -77,6 +77,7 @@ export type InteractCallback = <Update extends InteractUpdate>(
 
 type CustomAgentAsyncFn<T> = (args: {
   document: PartialLessonPlan;
+  userInstructions: string | null;
 }) => Promise<T>;
 
 export async function interact({
@@ -132,6 +133,7 @@ export async function interact({
     const ragData =
       (await customAgents.fetchRagData({
         document,
+        userInstructions: null,
       })) ?? [];
 
     // @todo handle case when no relevant lessons are found
@@ -153,6 +155,7 @@ export async function interact({
   const ragData = lessonHasDetails
     ? await customAgents.fetchRagData({
         document,
+        userInstructions: null,
       })
     : [];
 
@@ -292,6 +295,7 @@ export async function interact({
 
               const quiz = await customAgents.mathsStarterQuiz({
                 document,
+                userInstructions: context || null,
               });
 
               document = handleSectionGenerated({
@@ -311,6 +315,7 @@ export async function interact({
 
               const quiz = await customAgents.mathsExitQuiz({
                 document,
+                userInstructions: context || null,
               });
 
               document = handleSectionGenerated({
