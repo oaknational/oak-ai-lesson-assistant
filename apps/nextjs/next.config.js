@@ -70,6 +70,10 @@ const getConfig = async (phase) => {
           protocol: "https",
           hostname: "oaknationalacademy-res.cloudinary.com",
         },
+        {
+          protocol: "https",
+          hostname: "*.googleusercontent.com",
+        },
       ],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],

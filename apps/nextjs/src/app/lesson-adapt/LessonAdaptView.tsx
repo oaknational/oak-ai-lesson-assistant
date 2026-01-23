@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 
+import {
+  AdaptChatSidebar,
+  AdaptLessonContent,
+} from "@/components/AppComponents/LessonAdapt";
 import { trpc } from "@/utils/trpc";
 
 const LessonAdaptPage = () => {
@@ -16,6 +20,19 @@ const LessonAdaptPage = () => {
     },
   );
 
+  // Fetch thumbnails in the background once we have the presentationId
+  const {
+    data: thumbnailsData,
+    isLoading: thumbnailsLoading,
+    error: thumbnailsError,
+  } = trpc.lessonAdapt.getSlideThumbnails.useQuery(
+    { presentationId: data?.presentationId ?? "" },
+    {
+      enabled: !!data?.presentationId,
+      refetchOnWindowFocus: false,
+    },
+  );
+
   const handleFetch = () => {
     if (lessonId.trim()) {
       console.log("Fetching lesson with ID:", lessonId);
@@ -24,95 +41,91 @@ const LessonAdaptPage = () => {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="mb-4 text-2xl font-bold">Lesson Adapt</h1>
+    <div className="flex h-screen flex-col">
+      {/* Top input section - always visible */}
+      <div className="border-b border-gray-300 bg-white p-6">
+        <h1 className="mb-4 text-2xl font-bold">Lesson Adapt</h1>
 
-      <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">
-          Lesson ID (Lesson Slug):
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={lessonId}
-            onChange={(e) => setLessonId(e.target.value)}
-            placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
-            className="flex-1 rounded border p-2"
-          />
-          <button
-            onClick={handleFetch}
-            disabled={!lessonId.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 rounded px-4 py-2"
-          >
-            {isLoading ? "Loading..." : "Fetch Lesson"}
-          </button>
+        <div className="mb-2">
+          <label className="mb-2 block text-sm font-medium">
+            Lesson ID (Lesson Slug):
+          </label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={lessonId}
+              onChange={(e) => setLessonId(e.target.value)}
+              placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
+              className="flex-1 rounded border p-2"
+            />
+            <button
+              onClick={handleFetch}
+              disabled={!lessonId.trim() || isLoading}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-grey-400 rounded px-4 py-2"
+            >
+              {isLoading ? "Loading..." : "Fetch Lesson"}
+            </button>
+          </div>
         </div>
+
+        {error && (
+          <div className="mt-4 rounded border border-red-200 bg-red-50 p-4">
+            <p className="font-semibold text-red-800">Error:</p>
+            <p className="text-red-600">{error.message}</p>
+          </div>
+        )}
+
+        {data && (
+          <div className="mt-4 rounded border border-green-200 bg-green-50 p-3">
+            <p className="text-sm font-semibold text-green-800">
+              ✓ Lesson fetched successfully! Slide deck duplicated and ready for
+              adaptation
+            </p>
+          </div>
+        )}
       </div>
 
-      {error && (
-        <div className="mb-4 rounded border border-red-200 bg-red-50 p-4">
-          <p className="font-semibold text-red-800">Error:</p>
-          <p className="text-red-600">{error.message}</p>
+      {/* Main content area with chat and lesson content */}
+      {data && (
+        <div className="flex flex-1 overflow-hidden">
+          <AdaptChatSidebar onMessageSend={(msg) => console.log(msg)} />
+          <AdaptLessonContent
+            presentationId={data.presentationId}
+            presentationUrl={data.presentationUrl}
+            lessonData={data.lessonData}
+            thumbnails={thumbnailsData?.thumbnails}
+            thumbnailsLoading={thumbnailsLoading}
+            thumbnailsError={thumbnailsError}
+          />
         </div>
       )}
 
+      {/* Debug info - collapsible */}
       {data && (
-        <div className="space-y-6">
-          <div className="rounded border border-green-200 bg-green-50 p-4">
-            <p className="font-semibold text-green-800">
-              Lesson fetched successfully!
-            </p>
-            <p className="mt-1 text-sm text-green-700">
-              Slide deck duplicated and ready for adaptation
-            </p>
-          </div>
-
-          {/* Embedded Google Slides */}
-          <div className="rounded border bg-white p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Lesson Slides</h2>
-              <a
-                href={data.presentationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 text-sm hover:underline"
-              >
-                Open in Google Slides ↗
-              </a>
-            </div>
-            <div className="aspect-video w-full overflow-hidden rounded border">
-              <iframe
-                src={`https://docs.google.com/presentation/d/${data.presentationId}/embed?start=false&loop=false`}
-                className="h-full w-full"
-                allowFullScreen
-                title="Lesson Slides"
-              />
-            </div>
-            <p className="mt-2 text-xs text-gray-500">
-              Presentation ID: {data.presentationId}
-            </p>
-          </div>
-
-          <details className="bg-blue-50 rounded border p-4">
-            <summary className="cursor-pointer font-semibold">
-              Extracted Slide Content - LLM Format (Click to expand)
-            </summary>
-            <div className="mt-2">
-              <pre className="max-h-96 overflow-auto rounded bg-white p-2 text-xs">
+        <details className="border-t border-gray-300 bg-gray-50 p-4">
+          <summary className="cursor-pointer text-sm font-semibold">
+            Debug Info (Click to expand)
+          </summary>
+          <div className="mt-2 space-y-2">
+            <details className="rounded border bg-white p-2">
+              <summary className="cursor-pointer text-xs font-semibold">
+                Extracted Slide Content - LLM Format
+              </summary>
+              <pre className="mt-2 max-h-48 overflow-auto text-xs">
                 {JSON.stringify(data.slideContent, null, 2)}
               </pre>
-            </div>
-          </details>
+            </details>
 
-          <details className="rounded border bg-gray-50 p-4">
-            <summary className="cursor-pointer font-semibold">
-              Raw Lesson Data (Click to expand)
-            </summary>
-            <pre className="mt-2 overflow-auto text-xs">
-              {JSON.stringify(data.lessonData, null, 2)}
-            </pre>
-          </details>
-        </div>
+            <details className="rounded border bg-white p-2">
+              <summary className="cursor-pointer text-xs font-semibold">
+                Raw Lesson Data
+              </summary>
+              <pre className="mt-2 max-h-48 overflow-auto text-xs">
+                {JSON.stringify(data.rawLessonData, null, 2)}
+              </pre>
+            </details>
+          </div>
+        </details>
       )}
     </div>
   );
