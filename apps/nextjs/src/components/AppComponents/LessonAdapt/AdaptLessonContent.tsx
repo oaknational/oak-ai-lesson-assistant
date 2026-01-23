@@ -34,12 +34,12 @@ interface Thumbnail {
 }
 
 interface AdaptLessonContentProps {
-  presentationId?: string;
-  presentationUrl?: string;
-  lessonData?: LessonData;
-  thumbnails?: Thumbnail[];
+  presentationId: string;
+  presentationUrl: string;
+  lessonData: LessonData;
+  thumbnails: Thumbnail[] | undefined;
+  thumbnailsError: { message: string } | null;
   thumbnailsLoading?: boolean;
-  thumbnailsError?: { message: string } | null;
 }
 
 const tabs = ["Lesson details", "Slides", "Thumbnails"];
