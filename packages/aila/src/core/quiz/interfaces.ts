@@ -73,6 +73,7 @@ export interface QuizComposer {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
+    userInstructions?: string | null,
   ): Promise<RagQuizQuestion[]>;
 }
 
@@ -103,6 +104,7 @@ export interface QuizService {
     similarLessons: AilaRagRelevantLesson[],
     task: Task,
     reportId: string,
+    userInstructions?: string | null,
   ): Promise<LatestQuiz>;
 }
 

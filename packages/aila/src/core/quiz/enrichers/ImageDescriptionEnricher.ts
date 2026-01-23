@@ -11,7 +11,7 @@ import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 
-const CACHE_PREFIX = "quiz:image-description:";
+const CACHE_PREFIX = "quiz:image-description:v2:";
 const CACHE_TTL_SECONDS = 60 * 60 * 24 * 90; // 90 days
 const VISION_MODEL = "gpt-4o-mini";
 const MAX_CONCURRENT_REQUESTS = 10; // Max concurrent vision API calls
@@ -22,22 +22,33 @@ Generate a concise description focusing on:
 - Mathematical elements (numbers, variables, equations, shapes)
 - Key relationships (e.g., "angle ABC is marked as 45°")
 - What mathematical concept is illustrated
-- Labels and annotations that are directly shown on the image
+- Labels and annotations that are EXPLICITLY written on the image
+
+CRITICAL: It is better to omit details than to guess incorrectly. These descriptions help select quiz questions - an incorrect description is worse than a vague one.
 
 DO NOT describe colours, layout, or design.
-DO NOT measure elements like bar chart columns, even if a scale is present
-DO focus on mathematical content.
+DO NOT interpret positions, alignments, or readings from scales - you can see that scales/rulers exist but cannot reliably determine where objects align with them. This includes:
+- Clock hand positions or times
+- Measurements from rulers (e.g., length of an object placed next to a ruler)
+- Bar chart or graph values read from axes
+- Angles unless the degree value is explicitly labeled
+DO focus on mathematical concepts.
 
 Keep to 1-2 sentences maximum.
 
 Good examples:
 - "A right triangle with sides labeled 3cm, 4cm, and hypotenuse x"
-- "A bar chart for categories walk, car, and bus"
+- "A bar chart showing categories: walk, car, and bus"
 - "A circle with angle AOB marked as 76°"
+- "An analogue clock face with Roman numerals I to XII"
+- "A leaf placed next to a ruler marked in centimetres"
 
 Bad examples:
-- "A bar chart with walk at 12, car at 10"
-- "A colourful diagram with shapes on white background"`;
+- "A bar chart with walk at 12, car at 10" (reading values from axis)
+- "A clock showing 3:30" (interpreting hand positions)
+- "The leaf measures 13cm" (interpreting alignment with ruler)
+- "The leaf is between 12 and 14cm" (hedging still reveals guessing)
+- "A colourful diagram on white background" (describing design)`;
 
 const ImageDescriptionSchema = z.object({
   description: z

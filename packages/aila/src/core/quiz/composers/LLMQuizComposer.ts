@@ -41,6 +41,7 @@ export class LLMComposer implements QuizComposer {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
+    userInstructions?: string | null,
   ): Promise<RagQuizQuestion[]> {
     this.logCompositionStart(questionPools, quizType);
 
@@ -55,9 +56,14 @@ export class LLMComposer implements QuizComposer {
         questionPools,
         lessonPlan,
         quizType,
+        userInstructions,
       );
       const count = sum(questionPools.map((p) => p.questions.length));
-      t.addData({ prompt: builtPrompt, candidateCount: count });
+      t.addData({
+        prompt: builtPrompt,
+        candidateCount: count,
+        userInstructions,
+      });
       return Promise.resolve(builtPrompt);
     });
 
