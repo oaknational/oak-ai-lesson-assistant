@@ -65,7 +65,7 @@ export type ChatState = {
   };
 };
 
-export type ParsedMessage = Omit<AiMessage, "parts"> & {
+export type ParsedMessage = AiMessage & {
   parts: MessagePart[];
   hasError: boolean;
   isEditing: boolean;

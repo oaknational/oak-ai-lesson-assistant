@@ -212,8 +212,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       ai:
-        specifier: ^4.0.20
-        version: 4.1.59(react@19.2.1)(zod@3.25.76)
+        specifier: 4.0.20
+        version: 4.0.20(react@19.2.1)(zod@3.25.76)
       american-british-english-translator:
         specifier: ^0.2.1
         version: 0.2.1
@@ -510,7 +510,7 @@ importers:
         specifier: ^0.2.2
         version: 0.2.2
       ai:
-        specifier: ^4.0.20
+        specifier: 4.0.20
         version: 4.0.20(react@19.2.1)(zod@3.25.76)
       american-british-english-translator:
         specifier: ^0.2.1
