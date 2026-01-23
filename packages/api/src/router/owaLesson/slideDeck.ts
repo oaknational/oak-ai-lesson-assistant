@@ -18,7 +18,10 @@ const log = aiLogger("adaptations");
 export async function duplicateLessonSlideDeck(
   lessonData: LessonOverviewResponse,
   lessonSlug: string,
-): Promise<{ presentationId: string; presentationUrl: string }> {
+): Promise<{
+  duplicatedPresentationId: string;
+  duplicatedPresentationUrl: string;
+}> {
   const lessonContent = lessonData.data?.content?.[0];
 
   // Extract and validate slide deck URL from lesson data
@@ -49,8 +52,8 @@ export async function duplicateLessonSlideDeck(
     });
 
     return {
-      presentationId: duplicateResult.presentationId,
-      presentationUrl: duplicateResult.presentationUrl,
+      duplicatedPresentationId: duplicateResult.presentationId,
+      duplicatedPresentationUrl: duplicateResult.presentationUrl,
     };
   } catch (error) {
     log.error("Failed to duplicate slide deck", {

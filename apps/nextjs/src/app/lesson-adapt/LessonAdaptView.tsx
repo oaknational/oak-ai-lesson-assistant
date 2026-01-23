@@ -13,7 +13,7 @@ const LessonAdaptPage = () => {
   const [fetchedLessonId, setFetchedLessonId] = useState<string | null>(null);
 
   const { data, isLoading, error } = trpc.lessonAdapt.getLessonContent.useQuery(
-    { lessonId: fetchedLessonId ?? "" },
+    { lessonSlug: fetchedLessonId ?? "" },
     {
       enabled: !!fetchedLessonId,
       refetchOnWindowFocus: false,
@@ -26,9 +26,9 @@ const LessonAdaptPage = () => {
     isLoading: thumbnailsLoading,
     error: thumbnailsError,
   } = trpc.lessonAdapt.getSlideThumbnails.useQuery(
-    { presentationId: data?.presentationId ?? "" },
+    { presentationId: data?.duplicatedPresentationId ?? "" },
     {
-      enabled: !!data?.presentationId,
+      enabled: !!data?.duplicatedPresentationId,
       refetchOnWindowFocus: false,
     },
   );
@@ -48,7 +48,7 @@ const LessonAdaptPage = () => {
 
         <div className="mb-2">
           <label className="mb-2 block text-sm font-medium">
-            Lesson ID (Lesson Slug):
+            Lesson ID (Lesson Slug): the-modern-world-of-work
           </label>
           <div className="flex gap-2">
             <input
@@ -88,10 +88,10 @@ const LessonAdaptPage = () => {
       {/* Main content area with chat and lesson content */}
       {data && (
         <div className="flex flex-1 overflow-hidden">
-          <AdaptChatSidebar onMessageSend={(msg) => console.log(msg)} />
+          <AdaptChatSidebar sessionId={data.sessionId} />
           <AdaptLessonContent
-            presentationId={data.presentationId}
-            presentationUrl={data.presentationUrl}
+            presentationId={data.duplicatedPresentationId}
+            presentationUrl={data.duplicatedPresentationUrl}
             lessonData={data.lessonData}
             thumbnails={thumbnailsData?.thumbnails}
             thumbnailsLoading={thumbnailsLoading}

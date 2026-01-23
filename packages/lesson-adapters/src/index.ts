@@ -24,3 +24,5 @@ export {
   type SlideTableCell,
   type SlideTextElement,
 } from "./slides";
+
+export { classifyLessonAdaptIntent } from "./agents";

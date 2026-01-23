@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import {
   OakBox,
   OakFlex,
   OakP,
-  OakSecondaryButton,
   OakSmallPrimaryButton,
   OakTextInput,
 } from "@oaknational/oak-components";
+
+import { trpc } from "@/utils/trpc";
 
 interface Message {
   id: string;
@@ -19,7 +20,7 @@ interface Message {
 }
 
 interface AdaptChatSidebarProps {
-  onMessageSend?: (message: string) => void;
+  sessionId: string;
 }
 
 const suggestions = [
@@ -29,54 +30,25 @@ const suggestions = [
   "Increase the reading age",
 ];
 
-export function AdaptChatSidebar({ onMessageSend }: AdaptChatSidebarProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const mutation = trpc.lessonAdapt.generatePlan.useMutation();
 
   const handleSend = (messageText?: string) => {
     const textToSend = messageText || inputValue.trim();
     if (!textToSend) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: textToSend,
-      isUser: true,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    mutation.mutateAsync({
+      sessionId,
+      userMessage: textToSend,
+    });
     setInputValue("");
-    onMessageSend?.(textToSend);
 
     // Simulate AI typing
     setIsTyping(true);
-    setTimeout(
-      () => {
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          text: "I understand you'd like to adapt this lesson. I can help you with changes like adjusting the reading level, removing or adding learning cycles, changing the city focus, or modifying specific content sections. What would you like to change?",
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, aiResponse]);
-        setIsTyping(false);
-      },
-      1000 + Math.random() * 1000,
-    );
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    handleSend(suggestion);
   };
 
   return (
@@ -123,8 +95,8 @@ export function AdaptChatSidebar({ onMessageSend }: AdaptChatSidebarProps) {
             this lesson?
           </OakP>
         </OakBox>
-
-        {messages.length === 0 && (
+        {mutation.data && <>{JSON.stringify(mutation.data)}</>}
+        {/* {messages && messages.length === 0 && (
           <OakFlex $flexDirection="column" $gap="spacing-16">
             <OakP $font="heading-7">Try asking:</OakP>
 
@@ -137,10 +109,9 @@ export function AdaptChatSidebar({ onMessageSend }: AdaptChatSidebarProps) {
               </OakSecondaryButton>
             ))}
           </OakFlex>
-        )}
-
+        )} */}
         {/* Message history */}
-        {messages.map((message) => (
+        {/* {messages.map((message) => (
           <OakBox
             key={message.id}
             $background={message.isUser ? "black" : "bg-neutral"}
@@ -155,8 +126,7 @@ export function AdaptChatSidebar({ onMessageSend }: AdaptChatSidebarProps) {
               {message.text}
             </OakP>
           </OakBox>
-        ))}
-
+        ))} */}
         {/* Typing indicator */}
         {isTyping && (
           <OakBox
@@ -181,7 +151,6 @@ export function AdaptChatSidebar({ onMessageSend }: AdaptChatSidebarProps) {
             </OakFlex>
           </OakBox>
         )}
-
         <div ref={messagesEndRef} />
       </OakFlex>
 
