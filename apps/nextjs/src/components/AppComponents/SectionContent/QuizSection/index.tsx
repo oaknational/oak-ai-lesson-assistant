@@ -13,9 +13,10 @@ export type QuizSectionProps = {
   // When we have agentic generation, we will know that sections are valid when streamed
   // Until then, it's a loose type
   quizSection: LessonPlanSectionWhileStreaming;
+  quizType?: "starterQuiz" | "exitQuiz";
 };
 
-export const QuizSection = ({ quizSection }: QuizSectionProps) => {
+export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
   const quiz = useMemo(() => {
     const result = LatestQuizSchema.safeParse(quizSection);
     return result.success ? result.data : null;
@@ -38,6 +39,8 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                quizType={quizType}
+                questionIndex={index}
               />
             );
           case "short-answer":
@@ -46,6 +49,8 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                quizType={quizType}
+                questionIndex={index}
               />
             );
           case "order":
@@ -54,6 +59,8 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                quizType={quizType}
+                questionIndex={index}
               />
             );
           case "match":
@@ -62,6 +69,8 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
                 key={index}
                 question={question}
                 questionNumber={questionNumber}
+                quizType={quizType}
+                questionIndex={index}
               />
             );
           default:

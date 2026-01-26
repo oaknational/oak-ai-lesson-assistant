@@ -6,6 +6,7 @@ import type {
 import { OakFlex } from "@oaknational/oak-components";
 
 import { SectionContent } from "../../SectionContent";
+import { quizModifyOptions } from "./action-button.types";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
 import ModifyButton from "./modify-button";
@@ -41,6 +42,11 @@ export const DropDownSectionContent = ({
             sectionTitle={sectionTitle(sectionKey)}
             sectionPath={sectionKey}
             sectionValue={value}
+            options={
+              sectionKey === "starterQuiz" || sectionKey === "exitQuiz"
+                ? quizModifyOptions
+                : undefined
+            }
           />
         )}
 

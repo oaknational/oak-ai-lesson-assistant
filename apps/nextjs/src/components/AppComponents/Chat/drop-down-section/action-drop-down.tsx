@@ -16,6 +16,8 @@ import * as Sentry from "@sentry/nextjs";
 import type {
   AdditionalMaterialOptions,
   ModifyOptions,
+  QuestionModifyOptions,
+  QuizModifyOptions,
 } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 import { DropDownFormWrapper } from "./drop-down-form-wrapper";
@@ -23,9 +25,15 @@ import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
 
+type AllOptions =
+  | ModifyOptions
+  | AdditionalMaterialOptions
+  | QuizModifyOptions
+  | QuestionModifyOptions;
+
 export type DropDownProps = Readonly<{
   sectionTitle: string;
-  options: ModifyOptions | AdditionalMaterialOptions;
+  options: AllOptions;
   selectedRadio: FeedbackOption<AilaUserModificationAction> | null;
   setSelectedRadio: Dispatch<
     SetStateAction<FeedbackOption<$Enums.AilaUserModificationAction> | null>
@@ -81,27 +89,23 @@ export const ActionDropDown = ({
         $gap="spacing-16"
         $background="bg-primary"
       >
-        {options.map(
-          (
-            option: ModifyOptions[number] | AdditionalMaterialOptions[number],
-          ) => {
-            return (
-              <SmallRadioButton
-                id={`${id}-modify-options-${option.enumValue}`}
-                key={`${id}-modify-options-${option.enumValue}`}
-                data-testid={"modify-radio-button"}
-                value={option.enumValue}
-                label={handleLabelText({
-                  text: option.label,
-                  section: sectionTitle,
-                })}
-                onClick={() => {
-                  setSelectedRadio(option);
-                }}
-              />
-            );
-          },
-        )}
+        {options.map((option: AllOptions[number]) => {
+          return (
+            <SmallRadioButton
+              id={`${id}-modify-options-${option.enumValue}`}
+              key={`${id}-modify-options-${option.enumValue}`}
+              data-testid={"modify-radio-button"}
+              value={option.enumValue}
+              label={handleLabelText({
+                text: option.label,
+                section: sectionTitle,
+              })}
+              onClick={() => {
+                setSelectedRadio(option);
+              }}
+            />
+          );
+        })}
 
         {selectedRadio?.label === "Other" && (
           <>

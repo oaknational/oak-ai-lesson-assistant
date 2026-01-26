@@ -9,26 +9,32 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "./AnswerBox";
+import { QuestionWrapper } from "./QuestionWrapper";
 import { useTextWithBlanks } from "./textWithBlanks";
+
+const INSTRUCTION = "Write the correct number in each box.";
 
 type OrderQuestionProps = {
   question: Extract<LatestQuizQuestion, { questionType: "order" }>;
   questionNumber: number;
+  quizType?: "starterQuiz" | "exitQuiz";
+  questionIndex?: number;
 };
 
 export const OrderQuestion = ({
   question,
   questionNumber,
+  quizType,
+  questionIndex,
 }: OrderQuestionProps) => {
   const shuffledItems = useMemo(
     () => shuffleOrderItems(question.items),
     [question.items],
   );
 
-  // Add instruction to question
   const questionWithInstruction = addInstruction(
     question.question,
-    "Write the correct number in each box.",
+    INSTRUCTION,
   );
 
   const { processedText, components } = useTextWithBlanks({
@@ -36,20 +42,15 @@ export const OrderQuestion = ({
   });
 
   return (
-    <OakBox
-      $mb="spacing-48"
-      role="group"
-      aria-label={`Question ${questionNumber}: Ordering`}
+    <QuestionWrapper
+      questionNumber={questionNumber}
+      questionType="Ordering"
+      quizType={quizType}
+      questionIndex={questionIndex}
+      question={question}
+      questionText={processedText}
+      markdownComponents={components}
     >
-      <OakFlex $mb="spacing-16">
-        <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
-        <MemoizedReactMarkdownWithStyles
-          markdown={processedText}
-          className="[&>p]:mb-0"
-          components={components}
-        />
-      </OakFlex>
-
       <OakBox role="list" aria-label="Items to order">
         {shuffledItems.map((item, index) => (
           <OakFlex
@@ -69,6 +70,6 @@ export const OrderQuestion = ({
           </OakFlex>
         ))}
       </OakBox>
-    </OakBox>
+    </QuestionWrapper>
   );
 };

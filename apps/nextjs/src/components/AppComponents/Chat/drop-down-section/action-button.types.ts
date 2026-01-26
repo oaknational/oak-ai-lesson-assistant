@@ -49,3 +49,35 @@ export const modifyOptions = [
 ] as const;
 
 export type ModifyOptions = typeof modifyOptions;
+
+export const quizModifyOptions = [
+  {
+    label: "Make it easier",
+    enumValue: "MAKE_IT_EASIER",
+    chatMessage: "easier",
+  },
+  {
+    label: "Make it harder",
+    enumValue: "MAKE_IT_HARDER",
+    chatMessage: "harder",
+  },
+  { label: "Other", enumValue: "OTHER" },
+] as const;
+
+export type QuizModifyOptions = typeof quizModifyOptions;
+
+export const questionModifyOptions = [
+  {
+    label: "Make easier",
+    enumValue: "MAKE_IT_EASIER",
+    chatMessage: "easier",
+  },
+  {
+    label: "Make harder",
+    enumValue: "MAKE_IT_HARDER",
+    chatMessage: "harder",
+  },
+  { label: "Other", enumValue: "OTHER" },
+] as const;
+
+export type QuestionModifyOptions = typeof questionModifyOptions;
