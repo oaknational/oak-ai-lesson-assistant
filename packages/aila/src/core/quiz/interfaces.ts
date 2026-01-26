@@ -80,6 +80,7 @@ export interface QuizComposer {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
     task: Task,
+    userInstructions?: string | null,
   ): Promise<ComposerResult>;
 }
 
@@ -110,6 +111,7 @@ export interface QuizService {
     similarLessons: AilaRagRelevantLesson[],
     task: Task,
     reportId: string,
+    userInstructions?: string | null,
   ): Promise<LatestQuiz>;
 }
 
@@ -143,7 +145,8 @@ export interface QuizQuestionTextOnlySource {
 export interface RagQuizQuestion {
   question: LatestQuizQuestion;
   sourceUid: string;
-  source: HasuraQuizQuestion;
+  /** Raw Hasura record for provenance. Undefined for questions from currentQuiz. */
+  source?: HasuraQuizQuestion;
   imageMetadata: EnrichedImageMetadata[];
 }
 
@@ -172,6 +175,10 @@ export interface QuizQuestionPool {
     | {
         type: "semanticSearch";
         semanticQuery: string;
+      }
+    | {
+        type: "currentQuiz";
+        quizType: QuizPath;
       };
 }
 

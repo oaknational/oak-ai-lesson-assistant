@@ -16,6 +16,7 @@ export async function executePlanSteps(
 
   for (const step of plannerDecision.plan) {
     const prevDoc = { ...context.currentTurn.document };
+    context.currentTurn.currentStep = step;
     context.currentTurn.stepsExecuted.push(step);
 
     if (step.action === "delete") {

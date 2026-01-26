@@ -38,14 +38,14 @@ export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
 
     return (
       <OakBox
-        $pa="inner-padding-m"
+        $pa="spacing-16"
         $background="bg-decorative1-subdued"
         $borderColor="border-decorative1-stronger"
         $borderStyle="solid"
         $borderRadius="border-radius-m"
         $ba="border-solid-m"
       >
-        <OakFlex $gap="all-spacing-3" $alignItems="flex-start">
+        <OakFlex $gap="spacing-12" $alignItems="flex-start">
           <OakIcon $colorFilter="black" iconName="info" alt="" />
           <OakP $font="body-3">
             Oak doesn&apos;t have enough relevant questions based on {quizBasis}{" "}

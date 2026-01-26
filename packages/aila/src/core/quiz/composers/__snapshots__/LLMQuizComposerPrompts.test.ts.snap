@@ -23,6 +23,8 @@ Key learning points to assess:
 
 SELECTION CRITERIA:
 
+Select questions from the candidate questions below. You must use the exact UIDs provided - do not create new questions or make up UIDs.
+
 An effective quiz has:
 
 1. **Relevance**: Questions target the key learning points and learning outcome, requiring students to demonstrate understanding of the core concepts.
@@ -69,16 +71,14 @@ Key Learning Points:
 
 UNDERSTANDING THE QUESTION SOURCES:
 
-You will receive questions from up to three source types. Understanding these helps you make better selections:
-
 **User-Selected Source Lesson**
-If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
-
-**Reference Quizzes from Similar Lessons**
-Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+The user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
 
 **Semantically Matched Questions**
 Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
 
 ---
 
@@ -152,6 +152,8 @@ Prior knowledge to assess:
 
 SELECTION CRITERIA:
 
+Select questions from the candidate questions below. You must use the exact UIDs provided - do not create new questions or make up UIDs.
+
 An effective quiz has:
 
 1. **Relevance**: Questions address the specific prior knowledge outlined in the lesson plan and probe the depth of understanding of prerequisite concepts.
@@ -198,16 +200,14 @@ Key Learning Points:
 
 UNDERSTANDING THE QUESTION SOURCES:
 
-You will receive questions from up to three source types. Understanding these helps you make better selections:
-
 **User-Selected Source Lesson**
-If present, the user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
-
-**Reference Quizzes from Similar Lessons**
-Oak expert-authored quizzes from lessons on similar topics. These demonstrate good quiz structure: topic coverage, difficulty progression, and question variety. The ordering within each quiz is intentional. Use these as examples of quality and select individual questions that fit.
+The user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
 
 **Semantically Matched Questions**
 Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
 
 ---
 
