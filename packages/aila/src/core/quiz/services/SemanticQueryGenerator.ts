@@ -5,13 +5,25 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 const log = aiLogger("aila:quiz");
 
 const SemanticSearchSchema = z.object({
-  queries: z.array(z.string()).describe("A list of semantic search queries"),
+  queries: z
+    .array(z.string())
+    .max(6)
+    .describe("A list of semantic search queries"),
 });
+
+function buildLessonContext(lessonPlan: PartialLessonPlan): string {
+  const lines: string[] = [];
+  if (lessonPlan.title) lines.push(`Title: ${lessonPlan.title}`);
+  if (lessonPlan.subject) lines.push(`Subject: ${lessonPlan.subject}`);
+  if (lessonPlan.keyStage) lines.push(`Key Stage: ${lessonPlan.keyStage}`);
+  if (lessonPlan.learningOutcome)
+    lines.push(`Learning Outcome: ${lessonPlan.learningOutcome}`);
+  return lines.join("\n");
+}
 
 export class SemanticQueryGenerator {
   private readonly openai: OpenAI;
@@ -25,38 +37,23 @@ export class SemanticQueryGenerator {
   public async generateSemanticSearchQueries(
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-    maxQueries: number = 3,
   ): Promise<z.infer<typeof SemanticSearchSchema>> {
-    const unpackedContent = unpackLessonPlanForPrompt(lessonPlan);
+    const isStarter = quizType === "/starterQuiz";
+    const items = isStarter
+      ? (lessonPlan.priorKnowledge ?? [])
+      : (lessonPlan.keyLearningPoints ?? []);
 
-    const prompt = `Based on the following lesson plan content, generate semantic search queries to find relevant questions from a UK mathematics quiz question database.
-
-IMPORTANT: You are searching a database of quiz questions, so queries should be semantic concepts and topics, NOT meta-descriptions like "quiz questions about X" or "assessing knowledge of Y".
-
-The search queries should:
-- Be concise semantic concepts and topics (e.g., "circle radius diameter circumference" not "quiz questions on circles")
-- Focus on key mathematical concepts and learning outcomes
-- Use educational terminology appropriate for the subject and key stage
-- Be specific enough to find relevant questions but broad enough to capture variations
-- Include different question types (knowledge, understanding, application)
-- Consider prerequisite knowledge and common misconceptions
-
-Lesson plan content:
-${unpackedContent}
-
-You should generate queries for a ${quizType} quiz. ${this.quizSpecificInstruction(quizType, lessonPlan)}
-
-Generate a list of 1-${maxQueries} semantic search queries`;
+    const prompt = this.buildPrompt(lessonPlan, quizType, items);
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: "gpt-4.1-mini",
         messages: [{ role: "user", content: prompt }],
         response_format: zodResponseFormat(
           SemanticSearchSchema,
           "SemanticSearchQueries",
         ),
-        max_completion_tokens: 1000,
+        max_completion_tokens: 500,
       });
 
       const parsedContent = response.choices[0]?.message?.parsed;
@@ -76,27 +73,32 @@ Generate a list of 1-${maxQueries} semantic search queries`;
     }
   }
 
-  private quizSpecificInstruction(
-    quizType: QuizPath,
+  private buildPrompt(
     lessonPlan: PartialLessonPlan,
+    quizType: QuizPath,
+    items: string[],
   ): string {
-    if (quizType === "/starterQuiz") {
-      const priorKnowledge = lessonPlan.priorKnowledge || [];
-      const priorKnowledgeList =
-        priorKnowledge.length > 0
-          ? `\n\nPrior knowledge items to focus on:\n${priorKnowledge.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
-          : "";
+    const isStarter = quizType === "/starterQuiz";
+    const lessonContext = buildLessonContext(lessonPlan);
+    const itemsList = items.map((item, i) => `${i + 1}. ${item}`).join("\n");
 
-      return `The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.${priorKnowledgeList}`;
-    } else if (quizType === "/exitQuiz") {
-      const keyLearningPoints = lessonPlan.keyLearningPoints || [];
-      const learningPointsList =
-        keyLearningPoints.length > 0
-          ? `\n\nKey learning points to focus on:\n${keyLearningPoints.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
-          : "";
+    const quizDescription = isStarter
+      ? "a starter quiz assessing prior knowledge before the lesson"
+      : "an exit quiz assessing learning after the lesson";
 
-      return `The purpose of the exit quiz is to assess the learning outcomes of the students, identify misconceptions, and consolidate the learning. Please consider alignment with the "key learning points" and "learning outcome" sections of the lesson plan.${learningPointsList}`;
-    }
-    throw new Error(`Unsupported quiz type: ${quizType as string}`);
+    return `Generate at least ${items.length} hybrid semantic search queries to find questions for ${quizDescription}.
+
+Lesson context:
+${lessonContext}
+
+Convert these ${isStarter ? "prior knowledge statements" : "learning points"} into search queries.
+
+Guidelines:
+- Output concise concepts (e.g., "identify circle radius diameter chord" not "quiz questions about circles")
+- Include an action verb (identify, calculate, recall) - it helps match question types
+- Synonymous verbs like "identify and name" or "recall and remember" can be collapsed to one
+- Split into multiple queries when concepts are genuinely distinct (e.g., "triangles" vs "quadrilaterals")
+
+${itemsList}`;
   }
 }

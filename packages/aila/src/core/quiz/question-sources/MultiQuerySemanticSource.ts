@@ -45,7 +45,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
 
   /**
    * Generates semantic search queries from lesson plan content using OpenAI
-   * Generates 3-6 queries focused on specific learning points
    */
   public async generateSemanticSearchQueries(
     lessonPlan: PartialLessonPlan,
@@ -54,7 +53,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
     return this.queryGenerator.generateSemanticSearchQueries(
       lessonPlan,
       quizType,
-      6, // Multi-term generates up to 6 queries
     );
   }
 
