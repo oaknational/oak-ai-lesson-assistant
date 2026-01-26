@@ -223,7 +223,7 @@ export class AilaStreamHandler {
         }) as { role: "user" | "assistant"; content: string }[],
       onUpdate: streamHandler, // This is the new part
       customAgents: {
-        mathsStarterQuiz: async ({ document }) => {
+        mathsStarterQuiz: async ({ document, userInstructions }) => {
           const tracker = createQuizTracker();
           const quiz = await tracker.run(async (task, reportId) => {
             const result = await this._chat.quizService.buildQuiz(
@@ -232,15 +232,16 @@ export class AilaStreamHandler {
               this._chat.relevantLessons ?? [],
               task,
               reportId,
+              userInstructions,
             );
-            task.addData({ quiz: result });
+            task.addData({ quiz: result, userInstructions });
             return result;
           });
           await ReportStorage.store(tracker.getReport());
 
           return quiz;
         },
-        mathsExitQuiz: async ({ document }) => {
+        mathsExitQuiz: async ({ document, userInstructions }) => {
           const tracker = createQuizTracker();
           const quiz = await tracker.run(async (task, reportId) => {
             const result = await this._chat.quizService.buildQuiz(
@@ -249,8 +250,9 @@ export class AilaStreamHandler {
               this._chat.relevantLessons ?? [],
               task,
               reportId,
+              userInstructions,
             );
-            task.addData({ quiz: result });
+            task.addData({ quiz: result, userInstructions });
             return result;
           });
           await ReportStorage.store(tracker.getReport());
@@ -385,6 +387,8 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
+                const userInstructions =
+                  ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
                 const quiz = await tracker.run(async (task, reportId) => {
                   const result = await this._chat.quizService.buildQuiz(
@@ -393,8 +397,9 @@ export class AilaStreamHandler {
                     this._chat.relevantLessons ?? [],
                     task,
                     reportId,
+                    userInstructions,
                   );
-                  task.addData({ quiz: result });
+                  task.addData({ quiz: result, userInstructions });
                   return result;
                 });
                 await ReportStorage.store(tracker.getReport());
@@ -412,6 +417,8 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
+                const userInstructions =
+                  ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
                 const quiz = await tracker.run(async (task, reportId) => {
                   const result = await this._chat.quizService.buildQuiz(
@@ -420,8 +427,9 @@ export class AilaStreamHandler {
                     this._chat.relevantLessons ?? [],
                     task,
                     reportId,
+                    userInstructions,
                   );
-                  task.addData({ quiz: result });
+                  task.addData({ quiz: result, userInstructions });
                   return result;
                 });
                 await ReportStorage.store(tracker.getReport());
