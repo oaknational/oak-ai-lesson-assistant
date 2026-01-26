@@ -19,7 +19,7 @@ import {
 const log = aiLogger("aila:quiz");
 
 const OPENAI_MODEL = "o4-mini";
-const IS_REASONING_MODEL = true;
+const REASONING_EFFORT = "low" as const;
 
 const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
 
@@ -102,9 +102,8 @@ export class LLMComposer implements QuizComposer {
     try {
       const response = await openai.beta.chat.completions.parse({
         model: OPENAI_MODEL,
-        ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 16000 }
-          : { max_tokens: 8000 }),
+        max_completion_tokens: 16000,
+        reasoning_effort: REASONING_EFFORT,
         messages: [
           {
             role: "user",
