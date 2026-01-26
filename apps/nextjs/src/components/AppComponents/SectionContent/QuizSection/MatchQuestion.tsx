@@ -9,27 +9,32 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "./AnswerBox";
+import { QuestionWrapper } from "./QuestionWrapper";
 import { useTextWithBlanks } from "./textWithBlanks";
+
+const INSTRUCTION = "Write the matching letter in each box.";
 
 type MatchQuestionProps = {
   question: Extract<LatestQuizQuestion, { questionType: "match" }>;
   questionNumber: number;
+  quizType?: "starterQuiz" | "exitQuiz";
+  questionIndex?: number;
 };
 
 export const MatchQuestion = ({
   question,
   questionNumber,
+  quizType,
+  questionIndex,
 }: MatchQuestionProps) => {
-  // Extract right side items and shuffle them
   const shuffledRight = useMemo(() => {
     const rightItems = question.pairs.map((pair) => pair.right);
     return shuffleMatchItems(rightItems);
   }, [question.pairs]);
 
-  // Add instruction to question
   const questionWithInstruction = addInstruction(
     question.question,
-    "Write the matching letter in each box.",
+    INSTRUCTION,
   );
 
   const { processedText, components } = useTextWithBlanks({
@@ -37,19 +42,15 @@ export const MatchQuestion = ({
   });
 
   return (
-    <OakBox
-      $mb="spacing-48"
-      role="group"
-      aria-label={`Question ${questionNumber}: Matching`}
+    <QuestionWrapper
+      questionNumber={questionNumber}
+      questionType="Matching"
+      quizType={quizType}
+      questionIndex={questionIndex}
+      question={question}
+      questionText={processedText}
+      markdownComponents={components}
     >
-      <OakFlex $mb="spacing-16">
-        <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
-        <MemoizedReactMarkdownWithStyles
-          markdown={processedText}
-          className="[&>p]:mb-0"
-          components={components}
-        />
-      </OakFlex>
       <OakFlex
         $gap={["spacing-16", "spacing-48"]}
         $flexDirection={["column", "row"]}
@@ -104,6 +105,6 @@ export const MatchQuestion = ({
           ))}
         </OakBox>
       </OakFlex>
-    </OakBox>
+    </QuestionWrapper>
   );
 };

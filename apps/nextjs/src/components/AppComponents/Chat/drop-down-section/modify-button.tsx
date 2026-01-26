@@ -5,6 +5,7 @@ import type { AilaUserModificationAction } from "@prisma/client";
 import { ComponentType } from "@/lib/avo/Avo";
 
 import ActionButtonWrapper from "./action-button-wrapper";
+import type { ModifyOptions, QuizModifyOptions } from "./action-button.types";
 import { modifyOptions } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
@@ -12,12 +13,14 @@ export type ModifyButtonProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: LessonPlanSectionWhileStreaming;
+  options?: ModifyOptions | QuizModifyOptions;
 }>;
 
 const ModifyButton = ({
   sectionTitle,
   sectionPath,
   sectionValue,
+  options = modifyOptions,
 }: ModifyButtonProps) => {
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
@@ -32,7 +35,7 @@ const ModifyButton = ({
       sectionTitle={`Ask Aila to modify ${sectionTitle.toLowerCase()}:`}
       sectionPath={sectionPath}
       sectionValue={sectionValue}
-      options={modifyOptions}
+      options={options}
       actionButtonLabel="Modify"
       tooltip="Aila can help improve this section"
       userSuggestionTitle="How do you want to modify?"
