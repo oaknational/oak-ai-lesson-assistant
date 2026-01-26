@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { LatestQuizSchema } from "@oakai/aila/src/protocol/schema";
 
+import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
+
 import { ImageAttribution } from "./ImageAttribution";
 import { MatchQuestion } from "./MatchQuestion";
 import { MultipleChoiceQuestion } from "./MultipleChoiceQuestion";
@@ -13,9 +15,10 @@ export type QuizSectionProps = {
   // When we have agentic generation, we will know that sections are valid when streamed
   // Until then, it's a loose type
   quizSection: LessonPlanSectionWhileStreaming;
+  quizType?: "starterQuiz" | "exitQuiz";
 };
 
-export const QuizSection = ({ quizSection }: QuizSectionProps) => {
+export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
   const quiz = useMemo(() => {
     const result = LatestQuizSchema.safeParse(quizSection);
     return result.success ? result.data : null;
@@ -24,6 +27,34 @@ export const QuizSection = ({ quizSection }: QuizSectionProps) => {
   if (!quiz) {
     // Shouldn't happen, but just to be safe
     return "Invalid quiz";
+  }
+
+  if (quiz.bailReason) {
+    const quizBasisMap = {
+      starterQuiz: "the prior knowledge for this lesson",
+      exitQuiz: "the key learning points",
+    };
+    const quizBasis = quizType ? quizBasisMap[quizType] : "this lesson";
+
+    return (
+      <OakBox
+        $pa="inner-padding-m"
+        $background="bg-decorative1-subdued"
+        $borderColor="border-decorative1-stronger"
+        $borderStyle="solid"
+        $borderRadius="border-radius-m"
+        $ba="border-solid-m"
+      >
+        <OakFlex $gap="all-spacing-3" $alignItems="flex-start">
+          <OakIcon $colorFilter="black" iconName="info" alt="" />
+          <OakP $font="body-3">
+            Oak doesn&apos;t have enough relevant questions based on {quizBasis}{" "}
+            to generate a high-quality quiz. You can ask me to generate a quiz
+            on a different topic.
+          </OakP>
+        </OakFlex>
+      </OakBox>
+    );
   }
 
   return (
