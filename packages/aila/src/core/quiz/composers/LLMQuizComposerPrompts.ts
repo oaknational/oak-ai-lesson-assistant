@@ -238,10 +238,17 @@ function buildSourceTypesExplanation(pools: QuizQuestionPool[]): string {
     return "";
   }
 
+  const imagesNote = dedent`
+    **Note on Images**
+    Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
+  `;
+
   return dedent`
     UNDERSTANDING THE QUESTION SOURCES:
 
     ${explanations.join("\n\n")}
+
+    ${imagesNote}
   `;
 }
 

@@ -175,7 +175,6 @@ describe("buildCompositionPrompt", () => {
       const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
 
       expect(prompt).toContain("![triangle](http://example.com/img.png)");
-      expect(prompt).not.toContain("[IMAGE:");
     });
 
     it("should replace images in answers and distractors", () => {
