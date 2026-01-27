@@ -93,7 +93,7 @@ async function runTest() {
     const composerLlm = findNode(report.children, "composerLlm");
     if (composerLlm?.data) {
       console.log("\n=== COMPOSER LLM DETAILS ===");
-      console.log(`Timing: ${composerLlm.data.timingMs}ms`);
+      console.log(`Timing: ${String(composerLlm.data.timingMs)}ms`);
       if (composerLlm.data.usage) {
         const usage = composerLlm.data.usage as {
           promptTokens: number;
