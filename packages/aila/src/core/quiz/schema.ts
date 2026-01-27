@@ -5,6 +5,7 @@ export const QuestionSourceTypeSchema = z.enum([
   "similarLessons",
   "basedOnLesson",
   "multiQuerySemantic",
+  "currentQuiz",
 ]);
 export type QuestionSourceType = z.infer<typeof QuestionSourceTypeSchema>;
 

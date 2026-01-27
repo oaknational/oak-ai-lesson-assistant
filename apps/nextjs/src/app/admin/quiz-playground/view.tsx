@@ -55,6 +55,7 @@ export function QuizPlaygroundView({
     getNodeStatus(path) === "complete";
 
   // Extract data from report tree
+  const currentQuizNode = getChild(report ?? undefined, "currentQuiz");
   const basedOnLessonNode = getChild(report ?? undefined, "basedOnLesson");
   const similarLessonsNode = getChild(report ?? undefined, "similarLessons");
   const multiQuerySemanticNode = getChild(
@@ -71,6 +72,7 @@ export function QuizPlaygroundView({
   const composerLlmNode = getChild(composerNode, "composerLlm");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
+  const currentQuiz = extractGeneratorData(currentQuizNode);
   const basedOnLesson = extractGeneratorData(basedOnLessonNode);
   const similarLessons = extractGeneratorData(similarLessonsNode);
   const multiQuerySemantic = extractGeneratorData(multiQuerySemanticNode);
@@ -95,6 +97,38 @@ export function QuizPlaygroundView({
           <div>
             <LearnBlock variant="section">
               <p className="max-w-3xl text-base leading-relaxed text-gray-600">
+                <strong>CurrentQuiz</strong> extracts the user&apos;s existing
+                quiz so they can modify it.
+              </p>
+            </LearnBlock>
+            <SourceAccordion
+              title="CurrentQuiz"
+              disabled={
+                (!currentQuiz || currentQuiz.pools.length === 0) &&
+                isStageComplete(["currentQuiz"])
+              }
+              disabledReason="no existing quiz"
+              loading={isStageLoading(["currentQuiz"])}
+              stats={
+                currentQuiz && currentQuiz.pools.length > 0
+                  ? {
+                      pools: currentQuiz.pools.length,
+                      questions: currentQuiz.pools.reduce(
+                        (sum, p) => sum + p.questions.length,
+                        0,
+                      ),
+                      timing: currentQuizNode?.durationMs ?? 0,
+                    }
+                  : undefined
+              }
+            >
+              {currentQuiz && <SourceSection result={currentQuiz} />}
+            </SourceAccordion>
+          </div>
+
+          <div>
+            <LearnBlock variant="section">
+              <p className="max-w-3xl text-base leading-relaxed text-gray-600">
                 <strong>BasedOnLesson</strong> retrieves questions from the
                 specific Oak lesson the user chose to base their lesson on. This
                 is high-signal input—the composer prioritizes these questions
@@ -103,11 +137,14 @@ export function QuizPlaygroundView({
             </LearnBlock>
             <SourceAccordion
               title="BasedOnLesson"
-              disabled={!basedOnLesson && isStageComplete(["basedOnLesson"])}
+              disabled={
+                (!basedOnLesson || basedOnLesson.pools.length === 0) &&
+                isStageComplete(["basedOnLesson"])
+              }
               disabledReason="no basedOn"
               loading={isStageLoading(["basedOnLesson"])}
               stats={
-                basedOnLesson
+                basedOnLesson && basedOnLesson.pools.length > 0
                   ? {
                       pools: basedOnLesson.pools.length,
                       questions: basedOnLesson.pools.reduce(
@@ -133,11 +170,14 @@ export function QuizPlaygroundView({
             </LearnBlock>
             <SourceAccordion
               title="SimilarLessons"
-              disabled={!similarLessons && isStageComplete(["similarLessons"])}
+              disabled={
+                (!similarLessons || similarLessons.pools.length === 0) &&
+                isStageComplete(["similarLessons"])
+              }
               disabledReason="no relevant lessons"
               loading={isStageLoading(["similarLessons"])}
               stats={
-                similarLessons
+                similarLessons && similarLessons.pools.length > 0
                   ? {
                       pools: similarLessons.pools.length,
                       questions: similarLessons.pools.reduce(
@@ -188,7 +228,7 @@ export function QuizPlaygroundView({
               }
               loading={isStageLoading(["multiQuerySemantic"])}
               stats={
-                multiQuerySemantic
+                multiQuerySemantic && multiQuerySemantic.pools.length > 0
                   ? {
                       pools: multiQuerySemantic.pools.length,
                       questions: multiQuerySemantic.pools.reduce(
@@ -261,6 +301,7 @@ export function QuizPlaygroundView({
             composerNode?.status === "complete"
               ? (() => {
                   const totalCandidates = [
+                    ...(currentQuiz?.pools ?? []),
                     ...(basedOnLesson?.pools ?? []),
                     ...(similarLessons?.pools ?? []),
                     ...(multiQuerySemantic?.pools ?? []),
@@ -294,6 +335,7 @@ export function QuizPlaygroundView({
                 []
               }
               pools={[
+                ...(currentQuiz?.pools ?? []),
                 ...(basedOnLesson?.pools ?? []),
                 ...(similarLessons?.pools ?? []),
                 ...(multiQuerySemantic?.pools ?? []),
@@ -549,6 +591,8 @@ function SourceAccordion({
 function SourceSection({ result }: Readonly<{ result: GeneratorData }>) {
   const getPoolKey = (pool: QuizQuestionPool): string => {
     switch (pool.source.type) {
+      case "currentQuiz":
+        return `currentQuiz-${pool.source.quizType}`;
       case "basedOnLesson":
       case "similarLessons":
         return pool.source.lessonTitle;
@@ -563,6 +607,8 @@ function SourceSection({ result }: Readonly<{ result: GeneratorData }>) {
         <div key={getPoolKey(pool)} className="rounded-lg border bg-white p-4">
           <p className="mb-2 text-sm font-medium">
             Pool {idx + 1}:{" "}
+            {pool.source.type === "currentQuiz" &&
+              `Current ${pool.source.quizType === "/starterQuiz" ? "Starter" : "Exit"} Quiz`}
             {pool.source.type === "basedOnLesson" && pool.source.lessonTitle}
             {pool.source.type === "similarLessons" && pool.source.lessonTitle}
             {pool.source.type === "semanticSearch" &&
@@ -664,6 +710,8 @@ function ImageDescriptionsView({
 // Helper to format pool source for display
 function formatPoolSource(pool: QuizQuestionPool): string {
   switch (pool.source.type) {
+    case "currentQuiz":
+      return `Current: ${pool.source.quizType === "/starterQuiz" ? "Starter" : "Exit"}`;
     case "basedOnLesson":
       return `BasedOn: ${pool.source.lessonTitle}`;
     case "similarLessons":

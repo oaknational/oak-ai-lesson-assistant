@@ -12,6 +12,7 @@ interface StreamPipelineParams {
   };
   quizType: string;
   relevantLessons: unknown[];
+  userInstructions: string;
 }
 
 interface StreamPipelineCallbacks {
@@ -55,7 +56,7 @@ export async function streamPipeline(
   callbacks: StreamPipelineCallbacks,
   signal: AbortSignal,
 ): Promise<void> {
-  const { lessonPlan, quizType, relevantLessons } = params;
+  const { lessonPlan, quizType, relevantLessons, userInstructions } = params;
 
   const cleanedPlan = {
     ...lessonPlan,
@@ -69,6 +70,7 @@ export async function streamPipeline(
       lessonPlan: cleanedPlan,
       quizType,
       relevantLessons,
+      userInstructions: userInstructions || null,
     }),
     signal,
   });

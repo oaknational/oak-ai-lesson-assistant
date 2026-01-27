@@ -46,10 +46,12 @@ export async function POST(request: Request) {
     lessonPlan,
     quizType,
     relevantLessons: inputRelevantLessons = [],
+    userInstructions = null,
   } = body as {
     lessonPlan: PartialLessonPlan;
     quizType: QuizPath;
     relevantLessons?: AilaRagRelevantLesson[];
+    userInstructions?: string | null;
   };
 
   log.info(`Starting SSE streaming debug pipeline for ${quizType}`);
@@ -103,22 +105,25 @@ export async function POST(request: Request) {
       });
 
       const service = buildQuizService({
-        sources: ["basedOnLesson", "similarLessons", "multiQuerySemantic"],
+        sources: [
+          "currentQuiz",
+          "basedOnLesson",
+          "similarLessons",
+          "multiQuerySemantic",
+        ],
         enrichers: ["imageDescriptions"],
         composer: "llm",
       });
 
       try {
         await tracker.run(async (task, reportId) => {
-          task.addData({
-            inputs: { lessonPlan, quizType, relevantLessons },
-          });
           const quiz = await service.buildQuiz(
             quizType,
             lessonPlan,
             relevantLessons,
             task,
             reportId,
+            userInstructions,
           );
           task.addData({ quiz });
         });
