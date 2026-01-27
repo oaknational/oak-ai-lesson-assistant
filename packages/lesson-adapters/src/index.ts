@@ -17,7 +17,7 @@ export {
   // Types
   type NonTextElementType,
   type ParsedCellId,
-  type PresentationContent,
+  type SlideDeckContent,
   type SlideContent,
   type SlideNonTextElement,
   type SlideTable,
@@ -25,4 +25,25 @@ export {
   type SlideTextElement,
 } from "./slides";
 
+// Agents
 export { classifyLessonAdaptIntent } from "./agents";
+export {
+  coordinateAdaptation,
+  type CoordinateAdaptationResult,
+} from "./agents";
+
+// Services
+export {
+  generatePlan,
+  generatePlanInputSchema,
+  type GeneratePlanInput,
+} from "./services";
+
+// Schemas
+export {
+  adaptationPlanSchema,
+  type AdaptationPlan,
+  type SlidesAgentResponse,
+  type TextEdit,
+  type TableCellEdit,
+} from "./schemas";

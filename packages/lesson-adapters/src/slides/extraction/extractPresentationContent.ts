@@ -1,7 +1,7 @@
 import type { GoogleSlidesPresentation } from "@oakai/gsuite";
 
 import { extractSlideContent } from "./extractSlideContent";
-import type { PresentationContent, SlideContent } from "./types";
+import type { SlideDeckContent, SlideContent } from "./types";
 
 /**
  * Extracts all content from a Google Slides presentation
@@ -21,15 +21,15 @@ import type { PresentationContent, SlideContent } from "./types";
  *
  * const raw = await getPresentation('abc123xyz');
  * const content = extractPresentationContent(raw);
- * console.log(content.title);
+ * console.log(content.lessonTitle);
  * console.log('Slide count:', content.slides.length);
  * ```
  */
 export function extractPresentationContent(
   presentation: GoogleSlidesPresentation,
-): PresentationContent {
-  const presentationId = presentation.presentationId ?? "";
-  const presentationTitle = presentation.title ?? "Untitled Presentation";
+): SlideDeckContent {
+  const slideDeckId = presentation.presentationId ?? "";
+  const lessonTitle = presentation.title ?? "Untitled Presentation";
   const layouts = presentation.layouts;
 
   const slides: SlideContent[] = [];
@@ -48,8 +48,8 @@ export function extractPresentationContent(
   });
 
   return {
-    presentationId,
-    title: presentationTitle,
+    slideDeckId,
+    lessonTitle,
     slides,
   };
 }

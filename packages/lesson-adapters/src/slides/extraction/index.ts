@@ -9,7 +9,7 @@ export { parseCellId } from "./parseCellId";
 export type {
   NonTextElementType,
   ParsedCellId,
-  PresentationContent,
+  SlideDeckContent,
   SlideContent,
   SlideNonTextElement,
   SlideTable,

@@ -46,9 +46,9 @@ export interface SlideContent {
   nonTextElements: SlideNonTextElement[];
 }
 
-export interface PresentationContent {
-  presentationId: string;
-  title: string;
+export interface SlideDeckContent {
+  slideDeckId: string;
+  lessonTitle: string;
   slides: SlideContent[];
 }
 

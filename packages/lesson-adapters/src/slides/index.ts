@@ -18,7 +18,7 @@ export {
 export type {
   NonTextElementType,
   ParsedCellId,
-  PresentationContent,
+  SlideDeckContent,
   SlideContent,
   SlideNonTextElement,
   SlideTable,

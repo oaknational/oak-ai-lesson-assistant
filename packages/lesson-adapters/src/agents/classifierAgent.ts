@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
-import { Output, ToolLoopAgent, stepCountIs } from "ai";
-import z from "zod";
+import { Output, generateText } from "ai";
+import { z } from "zod";
 
 const intentSchema = z.object({
   intent: z.enum([
@@ -20,12 +20,7 @@ const intentSchema = z.object({
     .describe("Brief explanation of why this intent was identified"),
 });
 
-const classifierAgent = new ToolLoopAgent({
-  model: openai("gpt-4o-mini"),
-  output: Output.object({
-    schema: intentSchema,
-  }),
-  instructions: `You are a classifier agent that identifies user intent for lesson adaptation tasks.
+const SYSTEM_PROMPT = `You are a classifier agent that identifies user intent for lesson adaptation tasks.
 
 Your role is to analyze user requests and classify them into specific intent categories related to modifying educational lessons.
 
@@ -39,12 +34,13 @@ Guidelines:
 - Be specific in your classification
 - Provide high confidence (0.8+) only when the intent is clear
 - If multiple intents are present, choose the primary one
-- Use "other" sparingly and provide detailed reasoning`,
-  stopWhen: stepCountIs(5),
-});
+- Use "other" sparingly and provide detailed reasoning`;
 
 export async function classifyLessonAdaptIntent(userPrompt: string) {
-  const { output } = await classifierAgent.generate({
+  const { output } = await generateText({
+    model: openai("gpt-4o-mini"),
+    output: Output.object({ schema: intentSchema }),
+    system: SYSTEM_PROMPT,
     prompt: userPrompt,
   });
 
