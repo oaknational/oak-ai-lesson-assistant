@@ -3,9 +3,9 @@ import { extractPresentationContent } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
-import { adminProcedure } from "middleware/adminAuth";
 import { z } from "zod";
 
+import { adminProcedure } from "../middleware/adminAuth";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import {
