@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import type {
   AnalyticsService,
@@ -14,6 +14,7 @@ export const useAnalyticsService = <T, S extends ServiceName>({
   consentState,
   setPosthogDistinctId,
   scriptLoaded = false,
+  initOnMount = false,
 }: {
   service: AnalyticsService<T, S>;
   config: T;
@@ -24,28 +25,33 @@ export const useAnalyticsService = <T, S extends ServiceName>({
   consentState: ConsentState;
   setPosthogDistinctId?: (id: MaybeDistinctId) => void;
   scriptLoaded?: boolean;
+  initOnMount?: boolean;
 }) => {
   const [loaded, setLoaded] = useState(scriptLoaded);
-  const [hasAttemptedInit, setHasAttemptedInit] = useState(scriptLoaded);
+  const hasAttemptedInit = useRef(scriptLoaded);
 
   useEffect(() => {
     setLoaded(scriptLoaded);
   }, [scriptLoaded]);
 
-  useEffect(() => {
-    const attemptInit = async () => {
-      setHasAttemptedInit(true);
-      const distinctId = await service.init(config);
+  const attemptInit = useCallback(async () => {
+    hasAttemptedInit.current = true;
+    const distinctId = await service.init(config);
+    if (distinctId && setPosthogDistinctId) {
+      setPosthogDistinctId(distinctId);
+      setLoaded(true);
+    }
+  }, [hasAttemptedInit, config, service, setPosthogDistinctId]);
 
-      if (distinctId && setPosthogDistinctId) {
-        setPosthogDistinctId(distinctId);
-        setLoaded(true);
-      }
-    };
-    if (consentState === "granted" && !hasAttemptedInit) {
+  if (initOnMount && !hasAttemptedInit.current) {
+    void attemptInit();
+  }
+
+  useEffect(() => {
+    if (consentState === "granted" && !hasAttemptedInit.current) {
       void attemptInit();
     }
-  }, [consentState, hasAttemptedInit, config, service, setPosthogDistinctId]);
+  }, [consentState, attemptInit]);
 
   useEffect(() => {
     // do not track
