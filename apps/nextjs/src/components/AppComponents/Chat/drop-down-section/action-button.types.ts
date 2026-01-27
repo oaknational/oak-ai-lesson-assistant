@@ -52,21 +52,25 @@ export type ModifyOptions = typeof modifyOptions;
 
 export const quizModifyOptions = [
   {
-    label: "Make it easier",
-    enumValue: "MAKE_IT_EASIER",
-    chatMessage: "easier",
-  },
-  {
-    label: "Make it harder",
-    enumValue: "MAKE_IT_HARDER",
-    chatMessage: "harder",
-  },
-  {
     label: "Generate a new quiz",
     enumValue: "REGENERATE",
-    chatMessage: "generate a new quiz",
+    textPrompt: "Any instructions? (optional)",
   },
-  { label: "Other", enumValue: "OTHER" },
+  {
+    label: "Change question",
+    enumValue: "CHANGE_QUESTION",
+    textPrompt: "Which question and what should change?",
+  },
+  {
+    label: "Add question",
+    enumValue: "ADD_QUESTION",
+    textPrompt: "What kind of question should be added?",
+  },
+  {
+    label: "Remove question",
+    enumValue: "REMOVE_QUESTION",
+    textPrompt: "Which question should be removed?",
+  },
 ] as const;
 
 export type QuizModifyOptions = typeof quizModifyOptions;
