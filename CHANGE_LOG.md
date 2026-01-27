@@ -1,3 +1,17 @@
+# [1.61.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.60.0...v1.61.0) (2026-01-26)
+
+
+### Bug Fixes
+
+* react 19 compatibility for Radix UI and styled-components ([#909](https://github.com/oaknational/oak-ai-lesson-assistant/issues/909)) ([29aec3e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/29aec3e53b696bdc474b372f255ee45a0f513cc7))
+
+
+### Features
+
+* lesson adapt - extract google slide data into llm friendly format ([#905](https://github.com/oaknational/oak-ai-lesson-assistant/issues/905)) ([49629f5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/49629f5f3732afcd948ce85fccfe8f9fde2e3dad))
+* pass user instructions to quiz generation pipeline ([#912](https://github.com/oaknational/oak-ai-lesson-assistant/issues/912)) ([9ba8476](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9ba8476796e18805024c0f6d041621a7bf25818a))
+* **quiz:** improve image description prompt accuracy ([#910](https://github.com/oaknational/oak-ai-lesson-assistant/issues/910)) ([05d50e7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/05d50e768c4de09fa54abe392e023445b3450061))
+
 # [1.60.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.59.0...v1.60.0) (2026-01-19)
 
 
