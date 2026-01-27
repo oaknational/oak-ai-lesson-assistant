@@ -85,15 +85,15 @@ export const ActionDropDown = ({
         $background="bg-primary"
       >
         {options.map((option: AllOptions[number]) => {
-          const isSelected = selectedRadio?.enumValue === option.enumValue;
+          const isSelected = selectedRadio?.label === option.label;
           const showTextInput =
             isSelected && (option.label === "Other" || "textPrompt" in option);
           return (
-            <div key={`${id}-modify-options-${option.enumValue}`}>
+            <div key={`${id}-modify-options-${option.label}`}>
               <SmallRadioButton
-                id={`${id}-modify-options-${option.enumValue}`}
+                id={`${id}-modify-options-${option.label}`}
                 data-testid={"modify-radio-button"}
-                value={option.enumValue}
+                value={option.label}
                 label={handleLabelText({
                   text: option.label,
                   section: sectionTitle,
