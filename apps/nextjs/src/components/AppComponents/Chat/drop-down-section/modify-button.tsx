@@ -27,23 +27,22 @@ const ModifyButton = ({
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
   ) => {
-    if (option.label === "Other") {
-      return `For the ${section}, ${userFeedbackText}`;
+    switch (option.label) {
+      case "Other":
+        return `For the ${section}, ${userFeedbackText}`;
+      case "Generate a new quiz": {
+        const detail = userFeedbackText ? `: ${userFeedbackText}` : "";
+        return `Generate a new ${section}${detail}`;
+      }
+      case "Change question":
+        return `For the ${section}, change question: ${userFeedbackText}`;
+      case "Add question":
+        return `For the ${section}, add a question: ${userFeedbackText}`;
+      case "Remove question":
+        return `For the ${section}, remove question: ${userFeedbackText}`;
+      default:
+        return `Make the ${section} ${option.chatMessage?.toLowerCase()}`;
     }
-    if (option.enumValue === "REGENERATE") {
-      const detail = userFeedbackText ? `: ${userFeedbackText}` : "";
-      return `Generate a new ${section}${detail}`;
-    }
-    if (option.enumValue === "CHANGE_QUESTION") {
-      return `For the ${section}, change question: ${userFeedbackText}`;
-    }
-    if (option.enumValue === "ADD_QUESTION") {
-      return `For the ${section}, add a question: ${userFeedbackText}`;
-    }
-    if (option.enumValue === "REMOVE_QUESTION") {
-      return `For the ${section}, remove question: ${userFeedbackText}`;
-    }
-    return `Make the ${section} ${option.chatMessage?.toLowerCase()}`;
   };
 
   return (
