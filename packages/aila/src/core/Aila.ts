@@ -174,7 +174,6 @@ export class Aila implements AilaServices {
       useLegacyAgenticAila: options?.useLegacyAgenticAila ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
-      waitUntil: options?.waitUntil,
     };
   }
 

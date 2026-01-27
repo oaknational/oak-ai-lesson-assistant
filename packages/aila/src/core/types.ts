@@ -52,18 +52,9 @@ export type AilaOptions = AilaPublicChatOptions & {
   useLegacyAgenticAila?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
-  /**
-   * Function to extend serverless function lifetime for background work.
-   * Use Vercel's `waitUntil` or Next.js `after` to prevent background tasks
-   * from being terminated when the response is sent.
-   */
-  waitUntil?: (promise: Promise<unknown>) => void;
 };
 
-export type AilaOptionsWithDefaultFallbackValues = Required<
-  Omit<AilaOptions, "waitUntil">
-> &
-  Pick<AilaOptions, "waitUntil">;
+export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
 
 export type AilaChatInitializationOptions = {
   id: string;

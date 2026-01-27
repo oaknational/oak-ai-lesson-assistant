@@ -28,7 +28,6 @@ import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
 import * as Sentry from "@sentry/node";
-import { waitUntil } from "@vercel/functions";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -103,7 +102,6 @@ async function setupChatHandler(req: NextRequest) {
         useModeration: true,
         useAgenticAila,
         useLegacyAgenticAila,
-        waitUntil,
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);

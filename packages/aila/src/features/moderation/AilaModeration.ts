@@ -10,6 +10,7 @@ import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import { waitUntil } from "@vercel/functions";
 import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";
@@ -31,7 +32,6 @@ export class AilaModeration implements AilaModerationFeature {
   private readonly _shadowModerator?: AilaModerator;
   private readonly _aila: AilaServices;
   private readonly _shouldPersist: boolean = true;
-  private readonly _waitUntil?: (promise: Promise<unknown>) => void;
 
   constructor({
     aila,
@@ -40,7 +40,6 @@ export class AilaModeration implements AilaModerationFeature {
     shadowModerator,
     moderations,
     shouldPersist = true,
-    waitUntil,
   }: {
     aila: AilaServices;
     prisma?: PrismaClientWithAccelerate;
@@ -48,7 +47,6 @@ export class AilaModeration implements AilaModerationFeature {
     shadowModerator?: AilaModerator;
     moderations?: Moderations;
     shouldPersist?: boolean;
-    waitUntil?: (promise: Promise<unknown>) => void;
   }) {
     log.info("Initializing AilaModeration");
     this._aila = aila;
@@ -63,7 +61,6 @@ export class AilaModeration implements AilaModerationFeature {
     this._shadowModerator = shadowModerator;
     this._moderations = moderations ?? new Moderations(this._prisma);
     this._shouldPersist = shouldPersist;
-    this._waitUntil = waitUntil;
   }
 
   public async persistModerationResult(
@@ -211,9 +208,10 @@ export class AilaModeration implements AilaModerationFeature {
         });
 
       // Use waitUntil to prevent serverless function from terminating
-      // before the shadow moderation completes
-      if (this._waitUntil) {
-        this._waitUntil(shadowPromise);
+      // before the shadow moderation completes.
+      // Disable in test mode to avoid issues with Vercel's request context.
+      if (process.env.AILA_FIXTURES_ENABLED !== "true") {
+        waitUntil(shadowPromise);
       }
     }
 

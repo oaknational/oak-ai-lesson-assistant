@@ -76,7 +76,6 @@ export class AilaFeatureFactory {
         aila,
         moderator,
         shadowModerator,
-        waitUntil: options.waitUntil,
       });
     }
     return undefined;
