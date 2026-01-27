@@ -10,10 +10,6 @@ import { changesMadePromptPart } from "../sharedPromptParts/changesMade.part";
 import { errorsPromptPart } from "../sharedPromptParts/errors.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
 import { plannerAgentResponsePromptPart } from "../sharedPromptParts/plannerAgentResponse.part";
-import {
-  getQuizBailReasons,
-  quizBailReasonsPromptPart,
-} from "../sharedPromptParts/quizBailReasons.part";
 import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
 import { stepsExecutedPromptPart } from "../sharedPromptParts/stepsExecuted.part";
 import { unplannedSectionsPromptPart } from "../sharedPromptParts/unplannedSections.part";
@@ -34,8 +30,6 @@ export function createMessageToUserAgent({
   relevantLessons,
   relevantLessonsFetched,
 }: MessageToUserAgentProps): GenericPromptAgent<MessageToUserAgentOutput> {
-  const bailReasons = getQuizBailReasons(nextDoc as Record<string, unknown>);
-
   return {
     responseSchema: messageToUserAgentSchema,
     input: [
@@ -66,10 +60,6 @@ export function createMessageToUserAgent({
       stepsExecuted.length > 0 && {
         role: "developer" as const,
         content: changesMadePromptPart({ prevDoc, nextDoc }),
-      },
-      bailReasons.length > 0 && {
-        role: "developer" as const,
-        content: quizBailReasonsPromptPart(bailReasons),
       },
       {
         role: "developer" as const,
