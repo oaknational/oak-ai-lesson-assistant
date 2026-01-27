@@ -28,10 +28,26 @@ const QuestionModifyButton = ({
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
-  ) =>
-    option.label === "Other"
-      ? `For question ${questionNumber} of the ${quizTypeLabel(quizType)}, ${userFeedbackText}`
-      : `Make question ${questionNumber} of the ${quizTypeLabel(quizType)} ${option.chatMessage?.toLowerCase()}`;
+  ) => {
+    const questionRef = `question ${questionNumber} of the ${quizTypeLabel(quizType)}`;
+    if (option.label === "Other") {
+      return `For ${questionRef}, ${userFeedbackText}`;
+    }
+    if (option.enumValue === "REMOVE") {
+      return `Remove ${questionRef}`;
+    }
+    if (option.enumValue === "REPLACE") {
+      const detail = userFeedbackText ? `: ${userFeedbackText}` : "";
+      return `Replace ${questionRef} with a different question${detail}`;
+    }
+    if (option.enumValue === "MOVE_POSITION") {
+      const detail = userFeedbackText
+        ? ` to ${userFeedbackText}`
+        : " to a different position";
+      return `Move ${questionRef}${detail}`;
+    }
+    return `Make ${questionRef} ${option.chatMessage?.toLowerCase()}`;
+  };
 
   return (
     <ActionButtonWrapper

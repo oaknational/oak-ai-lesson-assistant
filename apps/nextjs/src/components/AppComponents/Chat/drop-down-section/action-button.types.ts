@@ -61,6 +61,11 @@ export const quizModifyOptions = [
     enumValue: "MAKE_IT_HARDER",
     chatMessage: "harder",
   },
+  {
+    label: "Generate a new quiz",
+    enumValue: "REGENERATE",
+    chatMessage: "generate a new quiz",
+  },
   { label: "Other", enumValue: "OTHER" },
 ] as const;
 
@@ -68,14 +73,21 @@ export type QuizModifyOptions = typeof quizModifyOptions;
 
 export const questionModifyOptions = [
   {
-    label: "Make easier",
-    enumValue: "MAKE_IT_EASIER",
-    chatMessage: "easier",
+    label: "Replace with...",
+    enumValue: "REPLACE",
+    chatMessage: "replace",
+    textPrompt: "What kind of question should replace it?",
   },
   {
-    label: "Make harder",
-    enumValue: "MAKE_IT_HARDER",
-    chatMessage: "harder",
+    label: "Remove",
+    enumValue: "REMOVE",
+    chatMessage: "remove",
+  },
+  {
+    label: "Move position",
+    enumValue: "MOVE_POSITION",
+    chatMessage: "move",
+    textPrompt: "Which position should it move to?",
   },
   { label: "Other", enumValue: "OTHER" },
 ] as const;
