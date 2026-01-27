@@ -12,6 +12,8 @@ import {
 
 import { trpc } from "@/utils/trpc";
 
+import { AdaptationPlanView } from "./AdaptationPlanView";
+
 interface Message {
   id: string;
   text: string;
@@ -95,7 +97,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
             this lesson?
           </OakP>
         </OakBox>
-        {mutation.data && <>{JSON.stringify(mutation.data)}</>}
+        {mutation.data && <AdaptationPlanView plan={mutation.data.plan} />}
         {/* {messages && messages.length === 0 && (
           <OakFlex $flexDirection="column" $gap="spacing-16">
             <OakP $font="heading-7">Try asking:</OakP>
