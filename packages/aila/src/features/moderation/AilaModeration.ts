@@ -31,6 +31,7 @@ export class AilaModeration implements AilaModerationFeature {
   private readonly _shadowModerator?: AilaModerator;
   private readonly _aila: AilaServices;
   private readonly _shouldPersist: boolean = true;
+  private readonly _waitUntil?: (promise: Promise<unknown>) => void;
 
   constructor({
     aila,
@@ -39,6 +40,7 @@ export class AilaModeration implements AilaModerationFeature {
     shadowModerator,
     moderations,
     shouldPersist = true,
+    waitUntil,
   }: {
     aila: AilaServices;
     prisma?: PrismaClientWithAccelerate;
@@ -46,6 +48,7 @@ export class AilaModeration implements AilaModerationFeature {
     shadowModerator?: AilaModerator;
     moderations?: Moderations;
     shouldPersist?: boolean;
+    waitUntil?: (promise: Promise<unknown>) => void;
   }) {
     log.info("Initializing AilaModeration");
     this._aila = aila;
@@ -60,6 +63,7 @@ export class AilaModeration implements AilaModerationFeature {
     this._shadowModerator = shadowModerator;
     this._moderations = moderations ?? new Moderations(this._prisma);
     this._shouldPersist = shouldPersist;
+    this._waitUntil = waitUntil;
   }
 
   public async persistModerationResult(
@@ -200,9 +204,17 @@ export class AilaModeration implements AilaModerationFeature {
 
     // Fire off shadow moderation call (non-blocking, errors caught)
     if (this._shadowModerator) {
-      this._shadowModerator.moderate(contentString).catch((err) => {
-        log.error("Shadow moderation failed (non-fatal)", { err });
-      });
+      const shadowPromise = this._shadowModerator
+        .moderate(contentString)
+        .catch((err) => {
+          log.error("Shadow moderation failed (non-fatal)", { err });
+        });
+
+      // Use waitUntil to prevent serverless function from terminating
+      // before the shadow moderation completes
+      if (this._waitUntil) {
+        this._waitUntil(shadowPromise);
+      }
     }
 
     // Production moderation call

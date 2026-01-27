@@ -72,7 +72,12 @@ export class AilaFeatureFactory {
         );
       }
 
-      return new AilaModeration({ aila, moderator, shadowModerator });
+      return new AilaModeration({
+        aila,
+        moderator,
+        shadowModerator,
+        waitUntil: options.waitUntil,
+      });
     }
     return undefined;
   }
