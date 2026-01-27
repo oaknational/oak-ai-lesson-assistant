@@ -10,25 +10,17 @@ import { OakBox, OakFlex } from "@oaknational/oak-components";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { AnswerBox } from "../AnswerBox";
-import { QuestionWrapper } from "../QuestionWrapper";
 import { useTextWithBlanks } from "../textWithBlanks";
 import { ImageOnlyAnswerLayout } from "./ImageOnlyAnswerLayout";
-
-const INSTRUCTION = (answerCount: number) =>
-  `Tick ${answerCount > 1 ? `${answerCount} correct answers` : "1 correct answer"}.`;
 
 type MultipleChoiceQuestionProps = {
   question: Extract<LatestQuizQuestion, { questionType: "multiple-choice" }>;
   questionNumber: number;
-  quizType?: "starterQuiz" | "exitQuiz";
-  questionIndex?: number;
 };
 
 export const MultipleChoiceQuestion = ({
   question,
   questionNumber,
-  quizType,
-  questionIndex,
 }: MultipleChoiceQuestionProps) => {
   const answers = useMemo(
     () => shuffleMultipleChoiceAnswers(question.answers, question.distractors),
@@ -37,7 +29,7 @@ export const MultipleChoiceQuestion = ({
 
   const questionWithInstruction = addInstruction(
     question.question,
-    INSTRUCTION(question.answers.length),
+    `Tick ${question.answers.length > 1 ? `${question.answers.length} correct answers` : "1 correct answer"}.`,
   );
 
   const { processedText, components } = useTextWithBlanks({
@@ -50,18 +42,23 @@ export const MultipleChoiceQuestion = ({
   );
 
   return (
-    <QuestionWrapper
-      questionNumber={questionNumber}
-      questionType="Multiple choice"
-      quizType={quizType}
-      questionIndex={questionIndex}
-      question={question}
-      questionText={processedText}
-      markdownComponents={components}
+    <OakBox
+      $mb="spacing-48"
+      role="group"
+      aria-label={`Question ${questionNumber}: Multiple choice`}
     >
+      <OakFlex $mb="spacing-16">
+        <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
+        <MemoizedReactMarkdownWithStyles
+          markdown={processedText}
+          className="[&>p]:mb-0"
+          components={components}
+        />
+      </OakFlex>
       {isImageOnlyAnswers ? (
         <ImageOnlyAnswerLayout answers={answers} />
       ) : (
+        // Text-based answers: vertical list layout
         <OakBox>
           {answers.map((answer, index) => {
             const letter = String.fromCharCode(97 + index);
@@ -89,6 +86,6 @@ export const MultipleChoiceQuestion = ({
           })}
         </OakBox>
       )}
-    </QuestionWrapper>
+    </OakBox>
   );
 };

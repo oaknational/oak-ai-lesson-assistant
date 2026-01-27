@@ -70,26 +70,3 @@ export const quizModifyOptions = [
 ] as const;
 
 export type QuizModifyOptions = typeof quizModifyOptions;
-
-export const questionModifyOptions = [
-  {
-    label: "Replace with...",
-    enumValue: "REPLACE",
-    chatMessage: "replace",
-    textPrompt: "What kind of question should replace it?",
-  },
-  {
-    label: "Remove",
-    enumValue: "REMOVE",
-    chatMessage: "remove",
-  },
-  {
-    label: "Move position",
-    enumValue: "MOVE_POSITION",
-    chatMessage: "move",
-    textPrompt: "Which position should it move to?",
-  },
-  { label: "Other", enumValue: "OTHER" },
-] as const;
-
-export type QuestionModifyOptions = typeof questionModifyOptions;
