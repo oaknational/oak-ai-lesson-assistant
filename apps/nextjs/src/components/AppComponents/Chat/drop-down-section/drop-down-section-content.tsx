@@ -5,6 +5,8 @@ import type {
 
 import { OakFlex } from "@oaknational/oak-components";
 
+import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
+
 import { SectionContent } from "../../SectionContent";
 import { quizModifyOptions } from "./action-button.types";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
@@ -22,6 +24,9 @@ export const DropDownSectionContent = ({
   sectionKey,
   value,
 }: DropDownSectionContentProps) => {
+  const isAgentic = useClientSideFeatureFlag("agentic-aila-nov-25");
+  const isQuizSection =
+    sectionKey === "starterQuiz" || sectionKey === "exitQuiz";
   return (
     <OakFlex $flexDirection="column">
       <SectionContent sectionKey={sectionKey} value={value} />
@@ -42,11 +47,7 @@ export const DropDownSectionContent = ({
             sectionTitle={sectionTitle(sectionKey)}
             sectionPath={sectionKey}
             sectionValue={value}
-            options={
-              sectionKey === "starterQuiz" || sectionKey === "exitQuiz"
-                ? quizModifyOptions
-                : undefined
-            }
+            options={isQuizSection && isAgentic ? quizModifyOptions : undefined}
           />
         )}
 
@@ -56,9 +57,7 @@ export const DropDownSectionContent = ({
           sectionValue={value}
         />
 
-        {(sectionKey === "starterQuiz" || sectionKey === "exitQuiz") && (
-          <QuizDebugButton quizType={`/${sectionKey}`} />
-        )}
+        {isQuizSection && <QuizDebugButton quizType={`/${sectionKey}`} />}
       </OakFlex>
     </OakFlex>
   );
