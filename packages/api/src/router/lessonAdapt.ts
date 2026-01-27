@@ -1,6 +1,9 @@
 import { getPresentation, getSlideThumbnails } from "@oakai/gsuite";
 import {
+  type SlideContent,
+  adaptationPlanSchema,
   classifyLessonAdaptIntent,
+  coordinateAdaptation,
   extractPresentationContent,
 } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
@@ -28,7 +31,7 @@ import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
 interface LessonAdaptSession {
   id: string;
   lessonData: ExtractedLessonData;
-  slideContent: unknown;
+  slideContent: SlideContent[];
   duplicatedPresentationId: string;
   duplicatedPresentationUrl: string;
   owaLessonSlug: string;
@@ -60,19 +63,6 @@ const LessonAdaptSessionStorage = {
   },
 };
 
-// Basic fixture with minimal data
-export const generatePlanOutputMinimal = {
-  plan: {
-    changes: [
-      {
-        id: "change-1",
-        type: "text-edit",
-        description: "Update the learning outcome to be more specific",
-      },
-    ],
-  },
-};
-
 const log = aiLogger("adaptations");
 /**
  * Lesson Adapt Router
@@ -87,16 +77,7 @@ const generatePlanInput = z.object({
 });
 
 const generatePlanOutput = z.object({
-  plan: z.object({
-    changes: z.array(
-      z.object({
-        id: z.string(),
-        type: z.string(),
-        description: z.string(),
-      }),
-    ),
-    warnings: z.array(z.string()).optional(),
-  }),
+  plan: adaptationPlanSchema,
 });
 
 const executeAdaptationsInput = z.object({
@@ -145,9 +126,14 @@ export const lessonAdaptRouter = router({
       });
 
       // 1. Classify edit type
-      const classification = await classifyLessonAdaptIntent(userMessage);
-      log.info("*** Classify step ***");
-      log.info(classification);
+      const coordinateAdaptationResult = await coordinateAdaptation({
+        userMessage,
+        slideDeck: {
+          slides: session.slideContent,
+          lessonTitle: session.lessonData.title,
+          slideDeckId: session.duplicatedPresentationId,
+        },
+      });
 
       // Session data available for next steps:
       // - session.lessonData (extracted lesson metadata)
@@ -158,16 +144,20 @@ export const lessonAdaptRouter = router({
       // 3. Spawn agents (KLP, Slides, Pedagogy Validator)
       // 4. Coordinator aggregates and returns unified plan
 
+      if (!coordinateAdaptationResult.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Adaptation planning failed: ${coordinateAdaptationResult.reason}`,
+        });
+      }
+
+      log.info("Adaptation plan generated", {
+        sessionId,
+        owaLessonSlug: session.owaLessonSlug,
+      });
+
       return {
-        plan: {
-          changes: [
-            {
-              id: "change-1",
-              type: "test classifier",
-              description: `Classifier: ${JSON.stringify(classification)}`,
-            },
-          ],
-        },
+        plan: coordinateAdaptationResult.plan,
       };
     }),
 
@@ -204,7 +194,7 @@ export const lessonAdaptRouter = router({
         lessonData: extractedLessonDataSchema,
         duplicatedPresentationId: z.string(),
         duplicatedPresentationUrl: z.string().url(),
-        slideContent: z.any(), // PresentationContent type
+        slideContent: z.any(), // SlideDeckContent type
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
         rawLessonData: z.any(),
@@ -240,7 +230,7 @@ export const lessonAdaptRouter = router({
           await duplicateLessonSlideDeck(lessonData, lessonSlug);
 
         const presentation = await getPresentation(duplicatedPresentationId);
-        const slideContent = extractPresentationContent(presentation);
+        const slideDeck = extractPresentationContent(presentation);
 
         // Extract and transform lesson data for the frontend
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
@@ -252,7 +242,7 @@ export const lessonAdaptRouter = router({
         await LessonAdaptSessionStorage.store({
           id: sessionId,
           lessonData: extractedLessonData,
-          slideContent,
+          slideContent: slideDeck.slides,
           duplicatedPresentationId,
           duplicatedPresentationUrl,
           owaLessonSlug: lessonSlug,
@@ -265,7 +255,7 @@ export const lessonAdaptRouter = router({
           lessonData: extractedLessonData,
           duplicatedPresentationId,
           duplicatedPresentationUrl,
-          slideContent,
+          slideContent: slideDeck,
           rawSlideData: presentation,
           rawLessonData: lessonData,
         };
