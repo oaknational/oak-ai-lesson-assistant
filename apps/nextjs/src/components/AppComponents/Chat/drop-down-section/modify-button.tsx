@@ -22,17 +22,28 @@ const ModifyButton = ({
   sectionValue,
   options = modifyOptions,
 }: ModifyButtonProps) => {
+  const section = sectionTitle.toLowerCase();
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
   ) => {
     if (option.label === "Other") {
-      return `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`;
+      return `For the ${section}, ${userFeedbackText}`;
     }
     if (option.enumValue === "REGENERATE") {
-      return `Generate a new ${sectionTitle.toLowerCase()}`;
+      const detail = userFeedbackText ? `: ${userFeedbackText}` : "";
+      return `Generate a new ${section}${detail}`;
     }
-    return `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
+    if (option.enumValue === "CHANGE_QUESTION") {
+      return `For the ${section}, change question: ${userFeedbackText}`;
+    }
+    if (option.enumValue === "ADD_QUESTION") {
+      return `For the ${section}, add a question: ${userFeedbackText}`;
+    }
+    if (option.enumValue === "REMOVE_QUESTION") {
+      return `For the ${section}, remove question: ${userFeedbackText}`;
+    }
+    return `Make the ${section} ${option.chatMessage?.toLowerCase()}`;
   };
 
   return (
