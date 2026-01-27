@@ -25,10 +25,15 @@ const ModifyButton = ({
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
-  ) =>
-    option.label === "Other"
-      ? `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`
-      : `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
+  ) => {
+    if (option.label === "Other") {
+      return `For the ${sectionTitle.toLowerCase()}, ${userFeedbackText}`;
+    }
+    if (option.enumValue === "REGENERATE") {
+      return `Generate a new ${sectionTitle.toLowerCase()}`;
+    }
+    return `Make the ${sectionTitle.toLowerCase()} ${option.chatMessage?.toLowerCase()}`;
+  };
 
   return (
     <ActionButtonWrapper

@@ -90,32 +90,39 @@ export const ActionDropDown = ({
         $background="bg-primary"
       >
         {options.map((option: AllOptions[number]) => {
+          const isSelected = selectedRadio?.enumValue === option.enumValue;
+          const showTextInput =
+            isSelected && (option.label === "Other" || "textPrompt" in option);
           return (
-            <SmallRadioButton
-              id={`${id}-modify-options-${option.enumValue}`}
-              key={`${id}-modify-options-${option.enumValue}`}
-              data-testid={"modify-radio-button"}
-              value={option.enumValue}
-              label={handleLabelText({
-                text: option.label,
-                section: sectionTitle,
-              })}
-              onClick={() => {
-                setSelectedRadio(option);
-              }}
-            />
+            <div key={`${id}-modify-options-${option.enumValue}`}>
+              <SmallRadioButton
+                id={`${id}-modify-options-${option.enumValue}`}
+                data-testid={"modify-radio-button"}
+                value={option.enumValue}
+                label={handleLabelText({
+                  text: option.label,
+                  section: sectionTitle,
+                })}
+                onClick={() => {
+                  setSelectedRadio(option);
+                }}
+              />
+              {showTextInput && (
+                <>
+                  <OakP $font="body-3" $mt="spacing-8">
+                    {"textPrompt" in option
+                      ? option.textPrompt
+                      : userSuggestionTitle}
+                  </OakP>
+                  <TextArea
+                    data-testid={"modify-other-text-area"}
+                    onChange={(e) => setUserFeedbackText(e.target.value)}
+                  />
+                </>
+              )}
+            </div>
           );
         })}
-
-        {selectedRadio?.label === "Other" && (
-          <>
-            <OakP $font="body-3">{userSuggestionTitle}</OakP>
-            <TextArea
-              data-testid={"modify-other-text-area"}
-              onChange={(e) => setUserFeedbackText(e.target.value)}
-            />
-          </>
-        )}
       </OakRadioGroup>
     </DropDownFormWrapper>
   );
