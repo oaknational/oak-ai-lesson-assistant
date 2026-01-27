@@ -1,32 +1,27 @@
 import type { LatestQuizQuestion } from "@oakai/aila/src/protocol/schema";
 import { addInstruction } from "@oakai/exports/src/quiz-utils/formatting";
 
-import { OakBox } from "@oaknational/oak-components";
+import { OakBox, OakFlex } from "@oaknational/oak-components";
 
-import { QuestionWrapper } from "./QuestionWrapper";
+import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
+
 import { hasBlankSpaces, useTextWithBlanks } from "./textWithBlanks";
-
-const INSTRUCTION = "Fill in the blank.";
 
 type ShortAnswerQuestionProps = {
   question: Extract<LatestQuizQuestion, { questionType: "short-answer" }>;
   questionNumber: number;
-  quizType?: "starterQuiz" | "exitQuiz";
-  questionIndex?: number;
 };
 
 export const ShortAnswerQuestion = ({
   question,
   questionNumber,
-  quizType,
-  questionIndex,
 }: ShortAnswerQuestionProps) => {
   const hasInlineAnswer = hasBlankSpaces(question.question);
   const answer = question.answers?.[0] ?? "";
 
   const questionWithInstruction = addInstruction(
     question.question,
-    INSTRUCTION,
+    "Fill in the blank.",
   );
 
   const { processedText, components } = useTextWithBlanks({
@@ -35,15 +30,20 @@ export const ShortAnswerQuestion = ({
   });
 
   return (
-    <QuestionWrapper
-      questionNumber={questionNumber}
-      questionType="Short answer"
-      quizType={quizType}
-      questionIndex={questionIndex}
-      question={question}
-      questionText={processedText}
-      markdownComponents={components}
+    <OakBox
+      $mb="spacing-48"
+      role="group"
+      aria-label={`Question ${questionNumber}: Short answer`}
     >
+      <OakFlex $mb="spacing-16">
+        <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
+        <MemoizedReactMarkdownWithStyles
+          markdown={processedText}
+          className="[&>p]:mb-0"
+          components={components}
+        />
+      </OakFlex>
+
       {!hasInlineAnswer && (
         <OakBox $mb="spacing-24" aria-label="Answer">
           <OakBox
@@ -59,6 +59,6 @@ export const ShortAnswerQuestion = ({
           </OakBox>
         </OakBox>
       )}
-    </QuestionWrapper>
+    </OakBox>
   );
 };

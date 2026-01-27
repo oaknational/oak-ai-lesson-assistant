@@ -19,7 +19,7 @@ export const SectionContent = ({ sectionKey, value }: SectionContentProps) => {
   if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
     return (
       <MathJax hideUntilTypeset="every" dynamic>
-        <QuizSection quizSection={value} quizType={sectionKey} />
+        <QuizSection quizSection={value} />
       </MathJax>
     );
   }

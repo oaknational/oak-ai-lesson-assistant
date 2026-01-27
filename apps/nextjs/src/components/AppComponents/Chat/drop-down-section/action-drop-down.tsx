@@ -16,7 +16,6 @@ import * as Sentry from "@sentry/nextjs";
 import type {
   AdditionalMaterialOptions,
   ModifyOptions,
-  QuestionModifyOptions,
   QuizModifyOptions,
 } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
@@ -25,11 +24,7 @@ import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
 
-type AllOptions =
-  | ModifyOptions
-  | AdditionalMaterialOptions
-  | QuizModifyOptions
-  | QuestionModifyOptions;
+type AllOptions = ModifyOptions | AdditionalMaterialOptions | QuizModifyOptions;
 
 export type DropDownProps = Readonly<{
   sectionTitle: string;
