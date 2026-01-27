@@ -42,6 +42,7 @@ export type LoggerKey =
   | "aila:stream"
   | "aila:testing"
   | "aila:threat"
+  | "adaptations"
   | "analytics"
   | "analytics:lesson:store"
   | "app"

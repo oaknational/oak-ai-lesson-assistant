@@ -50,7 +50,12 @@ function getQuizSources(): QuestionSourceType[] {
   if (envValue) {
     const sources = envValue.split(",").map((s) => s.trim());
     const validSources = sources.filter((s): s is QuestionSourceType =>
-      ["similarLessons", "basedOnLesson", "multiQuerySemantic"].includes(s),
+      [
+        "currentQuiz",
+        "similarLessons",
+        "basedOnLesson",
+        "multiQuerySemantic",
+      ].includes(s),
     );
     if (validSources.length > 0) {
       return validSources;

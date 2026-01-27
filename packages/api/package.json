@@ -28,6 +28,8 @@
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/exports": "*",
+    "@oakai/gsuite": "*",
+    "@oakai/lesson-adapters": "*",
     "@oakai/logger": "*",
     "@oakai/teaching-materials": "*",
     "@trpc/server": "11.8.0",

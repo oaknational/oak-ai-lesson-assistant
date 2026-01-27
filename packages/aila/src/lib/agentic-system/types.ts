@@ -174,6 +174,7 @@ export type AilaCurrentTurn = {
   stepsExecuted: PlanStep[];
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
+  currentStep: PlanStep | null;
 };
 
 export type WithError<T> =

@@ -33,6 +33,7 @@ import type {
   QuizService,
 } from "../interfaces";
 import { BasedOnLessonSource } from "../question-sources/BasedOnLessonSource";
+import { CurrentQuizSource } from "../question-sources/CurrentQuizSource";
 import { MultiQuerySemanticSource } from "../question-sources/MultiQuerySemanticSource";
 import { SimilarLessonsSource } from "../question-sources/SimilarLessonsSource";
 import type { Task } from "../reporting";
@@ -53,6 +54,8 @@ function createSource(type: QuestionSourceType): QuestionSource {
       return new BasedOnLessonSource();
     case "multiQuerySemantic":
       return new MultiQuerySemanticSource();
+    case "currentQuiz":
+      return new CurrentQuizSource();
   }
 }
 
@@ -79,7 +82,17 @@ async function buildQuiz(
   similarLessons: AilaRagRelevantLesson[],
   task: Task,
   reportId: string,
+  userInstructions?: string | null,
 ) {
+  task.addData({
+    inputs: {
+      quizType,
+      lessonPlan,
+      similarLessons,
+      userInstructions,
+    },
+  });
+
   // Run all sources in parallel
   const poolPromises = sources.map((source) =>
     task.child(source.name, async (t) => {
@@ -114,6 +127,7 @@ async function buildQuiz(
       lessonPlan,
       quizType,
       t,
+      userInstructions,
     );
     t.addData({ selectedCount: questions.length });
     return questions;
@@ -137,7 +151,14 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
     sources,
     enrichers,
     composer,
-    buildQuiz: (quizType, lessonPlan, similarLessons, task, reportId) =>
+    buildQuiz: (
+      quizType,
+      lessonPlan,
+      similarLessons,
+      task,
+      reportId,
+      userInstructions,
+    ) =>
       buildQuiz(
         sources,
         enrichers,
@@ -147,6 +168,7 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
         similarLessons,
         task,
         reportId,
+        userInstructions,
       ),
   };
 }

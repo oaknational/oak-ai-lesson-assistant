@@ -1,8 +1,17 @@
+import { getPresentation } from "@oakai/gsuite";
+import { extractPresentationContent } from "@oakai/lesson-adapters";
+import { aiLogger } from "@oakai/logger";
+
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
+import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
+import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
 
+const log = aiLogger("adaptations");
 /**
  * Lesson Adapt Router
  *
@@ -78,6 +87,7 @@ export const lessonAdaptRouter = router({
 
   /**
    * Fetch lesson content with all resources
+   * Also creates a copy of the slide deck for adaptation
    */
   getLessonContent: protectedProcedure
     .input(
@@ -85,10 +95,62 @@ export const lessonAdaptRouter = router({
         lessonId: z.string(),
       }),
     )
-    .query(async () => {
-      // TODO: Implement in follow-up PR
-      // Fetch lesson with slides, docs, KLPs, etc.
-      throw new Error("Not implemented yet");
+    .output(
+      z.object({
+        lessonData: z.any(),
+        presentationId: z.string(),
+        presentationUrl: z.string().url(),
+        slideContent: z.any(), // PresentationContent type
+        /** Raw Google Slides API response (for debugging) */
+        rawSlideData: z.any(),
+      }),
+    )
+    .query(async ({ input }) => {
+      try {
+        // NOTE: Database structure for lesson adaptations not yet set up
+
+        // Temporary: Treat lessonId as lessonSlug for now
+        const lessonSlug = input.lessonId;
+        const programmeSlug = null; // Canonical lesson for now
+
+        const { authKey, authType, graphqlEndpoint } =
+          validateCurriculumApiEnv();
+
+        // Fetch lesson data from OWA
+        const { lessonData } = await fetchOwaLessonAndTcp({
+          lessonSlug,
+          programmeSlug,
+          authKey,
+          authType,
+          graphqlEndpoint: String(graphqlEndpoint),
+        });
+
+        // Duplicate the slide deck to the configured folder
+        const { presentationId, presentationUrl } =
+          await duplicateLessonSlideDeck(lessonData, lessonSlug);
+
+        // Extract slide content in LLM-friendly format
+        const presentation = await getPresentation(presentationId);
+        const slideContent = extractPresentationContent(presentation);
+
+        return {
+          lessonData,
+          presentationId,
+          presentationUrl,
+          slideContent,
+        };
+      } catch (error) {
+        log.error("Failed to fetch lesson content", {
+          lessonId: input.lessonId,
+          error,
+        });
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch lesson content",
+          cause: error,
+        });
+      }
     }),
 
   /**
