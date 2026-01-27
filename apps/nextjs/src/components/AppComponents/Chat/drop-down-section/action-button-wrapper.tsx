@@ -75,7 +75,10 @@ const ActionButtonWrapper = ({
         sectionPath,
         sectionValue: String(sectionValue),
         action: selectedRadio.enumValue,
-        actionOtherText: userFeedbackText || null,
+        actionOtherText:
+          selectedRadio.label === "Other"
+            ? userFeedbackText || null
+            : `${selectedRadio.label}: ${userFeedbackText}`,
       };
       await mutateAsync(payload);
     }
