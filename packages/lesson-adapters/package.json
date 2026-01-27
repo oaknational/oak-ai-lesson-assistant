@@ -23,7 +23,7 @@
     "@oakai/db": "*",
     "@oakai/gsuite": "*",
     "@oakai/logger": "*",
-    "ai": "^4.0.20",
+    "ai": "npm:ai@^4.0.20",
     "openai": "^4.96.0",
     "zod": "3.25.76"
   },

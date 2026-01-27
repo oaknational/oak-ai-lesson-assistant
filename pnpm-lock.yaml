@@ -1063,7 +1063,7 @@ importers:
         specifier: '*'
         version: link:../logger
       ai:
-        specifier: ^4.0.20
+        specifier: npm:ai@^4.0.20
         version: 4.1.59(react@19.2.1)(zod@3.25.76)
       openai:
         specifier: ^4.96.0
@@ -3668,7 +3668,7 @@ packages:
       '@clerk/clerk-react': 5.59.0(react-dom@19.2.1)(react@19.2.1)
       '@clerk/shared': 3.40.0(react-dom@19.2.1)(react@19.2.1)
       '@clerk/types': 4.101.7(react-dom@19.2.1)(react@19.2.1)
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
       server-only: 0.0.1
@@ -10080,7 +10080,7 @@ packages:
       '@sentry/react': 10.31.0(react@19.2.1)
       '@sentry/vercel-edge': 10.31.0
       '@sentry/webpack-plugin': 4.6.1(webpack@5.102.1)
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
       resolve: 1.22.8
       rollup: 4.53.5
       stacktrace-parser: 0.1.10
