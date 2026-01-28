@@ -19,7 +19,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.0",
+    "@ai-sdk/openai": "npm:@ai-sdk/openai@^3.0.0",
     "@oakai/core": "*",
     "@oakai/db": "*",
     "@oakai/gsuite": "*",
