@@ -40,6 +40,14 @@ const LessonAdaptPage = () => {
     }
   };
 
+  const klpLcMapping = data?.slideContent.slides.map((slide) => {
+    return {
+      slideNumber: slide.slideNumber,
+      keyLearningPoints: slide.keyLearningPoints ?? [],
+      learningCycles: slide.learningCycles ?? [],
+    };
+  });
+
   return (
     <div className="flex h-screen flex-col">
       {/* Top input section - always visible */}
@@ -113,6 +121,14 @@ const LessonAdaptPage = () => {
               </summary>
               <pre className="mt-2 max-h-48 overflow-auto text-xs">
                 {JSON.stringify(data.slideContent, null, 2)}
+              </pre>
+            </details>
+            <details className="rounded border bg-white p-2">
+              <summary className="cursor-pointer text-xs font-semibold">
+                Key learning points and learning cycles mapping
+              </summary>
+              <pre className="mt-2 max-h-48 overflow-auto text-xs">
+                {JSON.stringify(klpLcMapping, null, 2)}
               </pre>
             </details>
 

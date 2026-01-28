@@ -16,3 +16,13 @@ export type {
   SlideTableCell,
   SlideTextElement,
 } from "./types";
+export {
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideDeckContentSchema,
+  slideContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
+} from "./schemas";

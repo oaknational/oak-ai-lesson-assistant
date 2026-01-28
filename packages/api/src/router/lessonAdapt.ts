@@ -5,6 +5,7 @@ import {
   classifyLessonAdaptIntent,
   coordinateAdaptation,
   extractPresentationContent,
+  slideDeckContentSchema,
 } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
@@ -21,7 +22,10 @@ import {
   extractedLessonDataSchema,
 } from "./owaLesson/extractLessonData";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
-import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
+import {
+  duplicateLessonSlideDeck,
+  enrichSlidesWithKlpLc,
+} from "./owaLesson/slideDeck";
 import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
 
 /**
@@ -194,7 +198,7 @@ export const lessonAdaptRouter = router({
         lessonData: extractedLessonDataSchema,
         duplicatedPresentationId: z.string(),
         duplicatedPresentationUrl: z.string().url(),
-        slideContent: z.any(), // SlideDeckContent type
+        slideContent: slideDeckContentSchema,
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
         rawLessonData: z.any(),
@@ -232,8 +236,15 @@ export const lessonAdaptRouter = router({
         const presentation = await getPresentation(duplicatedPresentationId);
         const slideDeck = extractPresentationContent(presentation);
 
-        // Extract and transform lesson data for the frontend
+        // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
+
+        // Analyze slides to identify key learning points and learning cycles covered on each slide
+        const enrichedSlides = await enrichSlidesWithKlpLc(
+          slideDeck.slides,
+          extractedLessonData.keyLearningPoints,
+          extractedLessonData.learningCycles,
+        );
 
         // Generate a unique session ID
         const sessionId = generateSessionId();
@@ -242,7 +253,7 @@ export const lessonAdaptRouter = router({
         await LessonAdaptSessionStorage.store({
           id: sessionId,
           lessonData: extractedLessonData,
-          slideContent: slideDeck.slides,
+          slideContent: enrichedSlides,
           duplicatedPresentationId,
           duplicatedPresentationUrl,
           owaLessonSlug: lessonSlug,
@@ -255,7 +266,10 @@ export const lessonAdaptRouter = router({
           lessonData: extractedLessonData,
           duplicatedPresentationId,
           duplicatedPresentationUrl,
-          slideContent: slideDeck,
+          slideContent: {
+            ...slideDeck,
+            slides: enrichedSlides,
+          },
           rawSlideData: presentation,
           rawLessonData: lessonData,
         };

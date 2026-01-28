@@ -14,6 +14,15 @@ export {
   // Utilities
   generateCellId,
   parseCellId,
+  // Schemas
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideDeckContentSchema,
+  slideContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
   // Types
   type NonTextElementType,
   type ParsedCellId,
@@ -30,6 +39,12 @@ export { classifyLessonAdaptIntent } from "./agents";
 export {
   coordinateAdaptation,
   type CoordinateAdaptationResult,
+} from "./agents";
+export {
+  analyseKlpLearningCycles,
+  type AnalyseKlpLcInput,
+  type KlpLcAgentResponse,
+  type SlideKlpLcMapping,
 } from "./agents";
 
 // Services

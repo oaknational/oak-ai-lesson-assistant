@@ -1,4 +1,8 @@
 import { duplicateSlideDeckToDefaultFolder } from "@oakai/gsuite";
+import {
+  type SlideContent,
+  analyseKlpLearningCycles,
+} from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
@@ -72,4 +76,49 @@ export async function duplicateLessonSlideDeck(
       cause: error,
     });
   }
+}
+
+/**
+ * Enriches slide content with key learning points and learning cycles mappings
+ * Uses AI agent to analyze which KLPs and learning cycles are covered on each slide
+ *
+ * @param slides - Array of slide content to analyze
+ * @param keyLearningPoints - Key learning points from the lesson
+ * @param learningCycles - Learning cycles from the lesson outline
+ * @returns Array of slides enriched with KLP and learning cycle mappings
+ */
+export async function enrichSlidesWithKlpLc(
+  slides: SlideContent[],
+  keyLearningPoints: string[],
+  learningCycles: string[],
+): Promise<SlideContent[]> {
+  log.info("Enriching slides with KLP/LC mappings", {
+    slideCount: slides.length,
+    klpCount: keyLearningPoints.length,
+    lcCount: learningCycles.length,
+  });
+
+  const klpLcAnalysis = await analyseKlpLearningCycles({
+    slides,
+    keyLearningPoints,
+    learningCycles,
+  });
+
+  // Enrich slide content with KLP and learning cycle mappings
+  const enrichedSlides: SlideContent[] = slides.map((slide) => {
+    const mapping = klpLcAnalysis.slideMappings.find(
+      (m) => m.slideNumber === slide.slideNumber,
+    );
+    return {
+      ...slide,
+      keyLearningPoints: mapping?.keyLearningPoints ?? [],
+      learningCycles: mapping?.learningCycles ?? [],
+    };
+  });
+
+  log.info("KLP/LC enrichment complete", {
+    totalMappings: klpLcAnalysis.slideMappings.length,
+  });
+
+  return enrichedSlides;
 }
