@@ -105,7 +105,12 @@ export async function POST(request: Request) {
       });
 
       const service = buildQuizService({
-        sources: ["basedOnLesson", "similarLessons", "multiQuerySemantic"],
+        sources: [
+          "currentQuiz",
+          "basedOnLesson",
+          "similarLessons",
+          "multiQuerySemantic",
+        ],
         enrichers: ["imageDescriptions"],
         composer: "llm",
       });

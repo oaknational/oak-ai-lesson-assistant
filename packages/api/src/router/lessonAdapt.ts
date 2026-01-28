@@ -2,7 +2,6 @@ import { getPresentation, getSlideThumbnails } from "@oakai/gsuite";
 import {
   type SlideContent,
   adaptationPlanSchema,
-  classifyLessonAdaptIntent,
   coordinateAdaptation,
   extractPresentationContent,
   slideDeckContentSchema,
@@ -14,6 +13,7 @@ import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 
+import { adminProcedure } from "../middleware/adminAuth";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import {
@@ -102,7 +102,7 @@ export const lessonAdaptRouter = router({
    * Planning Phase: Generate adaptation plan
    * Spawns agent swarm to analyze user request and propose changes
    */
-  generatePlan: protectedProcedure
+  generatePlan: adminProcedure
     .input(generatePlanInput)
     .output(generatePlanOutput)
     .mutation(async ({ input, ctx }) => {
@@ -169,7 +169,7 @@ export const lessonAdaptRouter = router({
    * Execution Phase: Apply approved changes
    * Executes changes via Google Slides API and Apps Script
    */
-  executeAdaptations: protectedProcedure
+  executeAdaptations: adminProcedure
     .input(executeAdaptationsInput)
     .output(executeAdaptationsOutput)
     .mutation(async () => {
@@ -186,7 +186,7 @@ export const lessonAdaptRouter = router({
    * Fetch lesson content with all resources
    * Also creates a copy of the slide deck for adaptation
    */
-  getLessonContent: protectedProcedure
+  getLessonContent: adminProcedure
     .input(
       z.object({
         lessonSlug: z.string(),
@@ -291,7 +291,7 @@ export const lessonAdaptRouter = router({
    * Fetch slide thumbnails for a presentation
    * Uses batching with rate limiting to avoid Google API limits
    */
-  getSlideThumbnails: protectedProcedure
+  getSlideThumbnails: adminProcedure
     .input(
       z.object({
         presentationId: z.string(),
