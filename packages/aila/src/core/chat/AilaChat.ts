@@ -177,10 +177,7 @@ export class AilaChat implements AilaChatService {
     } else if (error instanceof Error) {
       await this.enqueueError({ message: error.message });
     }
-    if (
-      !this._aila.options.useAgenticAila &&
-      !this._aila.options.useLegacyAgenticAila
-    ) {
+    if (!this._aila.options.useAgenticAila) {
       await this.persistGeneration("FAILED");
       log.info("Generation marked as failed");
     }
@@ -420,10 +417,7 @@ export class AilaChat implements AilaChatService {
     await this.span("persistChat", async () => {
       await this.persistChat();
     });
-    if (
-      !this.aila.options.useAgenticAila &&
-      !this.aila.options.useLegacyAgenticAila
-    ) {
+    if (!this.aila.options.useAgenticAila) {
       await this.span("persistGeneration", async () => {
         await this.persistGeneration("SUCCESS");
       });
