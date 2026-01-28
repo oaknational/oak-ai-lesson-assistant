@@ -37,8 +37,15 @@ export async function executePlanSteps(
     const result = await agent.handler(context);
 
     if (result.error) {
-      await terminateWithError(result.error, context);
+      await terminateWithError(result.error, context, step.sectionKey);
       return false;
+    }
+
+    if (result.note) {
+      context.currentTurn.notes.push({
+        message: result.note,
+        sectionKey: step.sectionKey,
+      });
     }
 
     context.currentTurn.document = {
