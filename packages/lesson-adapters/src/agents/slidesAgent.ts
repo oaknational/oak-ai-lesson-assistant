@@ -24,7 +24,7 @@ For every text edit or table cell edit, the newText field must contain the ACTUA
 - WRONG: newText: "This text has been rewritten for a lower reading age"
 
 ## Slide accounting
-Every slide must appear in either slidesToKeep or slideDeletions. Do not silently omit any slide.
+Check every slide in the input.
 
 ## Table cells
 For table cell edits, use the composite cell ID format: {tableId}_r{row}c{col}
@@ -64,7 +64,8 @@ Return a structured plan of changes.
 - Replace complex vocabulary with simpler alternatives, except for subject-specific terminology that is pedagogically important (e.g. "photosynthesis", "equation").
 - Simplify sentence structures: prefer active voice, fewer clauses.
 - Keep numerical data and proper nouns unchanged.
-- Preserve slide structure and layout.`,
+- Preserve slide structure and layout.
+- Check every included slide for potential edits.`,
 };
 
 const SUPPORTED_EDIT_TYPES = Object.keys(PROMPTS);
@@ -147,17 +148,20 @@ export async function generateSlidePlan(
       parsed.editType,
       parsed.slides,
     );
+    const prompt = `Edit type: ${parsed.editType}
+                    User message: ${parsed.userMessage}
+
+                    Slides:
+                    ${JSON.stringify(slidesForPrompt, null, 2)}`;
 
     const { output } = await generateText({
       model: openai("gpt-4o-mini"),
       output: Output.object({ schema: slidesAgentResponseSchema }),
       system,
-      prompt: `Edit type: ${parsed.editType}
-User message: ${parsed.userMessage}
-
-Slides:
-${JSON.stringify(slidesForPrompt, null, 2)}`,
+      prompt,
     });
+
+    console.log("Prompt:", prompt);
 
     console.log(
       "Generated slide plan successfully",

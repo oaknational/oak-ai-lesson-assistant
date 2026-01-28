@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import {
   OakBox,
   OakFlex,
+  OakLoadingSpinner,
   OakP,
   OakSmallPrimaryButton,
   OakTextInput,
@@ -34,23 +35,30 @@ const suggestions = [
 
 export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
   const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const mutation = trpc.lessonAdapt.generatePlan.useMutation();
+  console.log("state", mutation.status, mutation.data, mutation.error);
 
   const handleSend = (messageText?: string) => {
     const textToSend = messageText || inputValue.trim();
     if (!textToSend) return;
+    setMessages([
+      ...messages,
+      {
+        id: `${Date.now()}`,
+        text: inputValue,
+        isUser: true,
+        timestamp: new Date(),
+      },
+    ]);
 
     mutation.mutateAsync({
       sessionId,
       userMessage: textToSend,
     });
     setInputValue("");
-
-    // Simulate AI typing
-    setIsTyping(true);
   };
 
   return (
@@ -74,6 +82,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
           >
             <OakP $font="body-4">Beta</OakP>
           </OakBox>
+          {mutation.status === "pending" && <OakLoadingSpinner />}
         </OakFlex>
       </OakBox>
 
@@ -97,6 +106,22 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
             this lesson?
           </OakP>
         </OakBox>
+        {messages.map((message) => (
+          <OakBox
+            key={message.id}
+            $background={message.isUser ? "black" : "bg-neutral"}
+            $pa="spacing-12"
+            $borderRadius="border-radius-m"
+          >
+            <OakP
+              $font="body-3"
+              $color={message.isUser ? "white" : "text-primary"}
+            >
+              {message.text}
+            </OakP>
+          </OakBox>
+        ))}
+
         {mutation.data && <AdaptationPlanView plan={mutation.data.plan} />}
         {/* {messages && messages.length === 0 && (
           <OakFlex $flexDirection="column" $gap="spacing-16">
@@ -113,48 +138,10 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
           </OakFlex>
         )} */}
         {/* Message history */}
-        {/* {messages.map((message) => (
-          <OakBox
-            key={message.id}
-            $background={message.isUser ? "black" : "bg-neutral"}
-            $pa="spacing-12"
-            $borderRadius="border-radius-m"
-            className={`${message.isUser ? "ml-auto max-w-[300px]" : "max-w-[277px]"}`}
-          >
-            <OakP
-              $font="body-3"
-              $color={message.isUser ? "white" : "text-primary"}
-            >
-              {message.text}
-            </OakP>
-          </OakBox>
-        ))} */}
-        {/* Typing indicator */}
-        {isTyping && (
-          <OakBox
-            $background="bg-neutral"
-            $pa="spacing-12"
-            $borderRadius="border-radius-m"
-            className="max-w-[277px]"
-          >
-            <OakFlex $gap="spacing-4" $alignItems="center">
-              <div
-                className="bg-grey-500 size-1.5 animate-bounce rounded-full"
-                style={{ animationDelay: "0ms" }}
-              />
-              <div
-                className="bg-grey-500 size-1.5 animate-bounce rounded-full"
-                style={{ animationDelay: "150ms" }}
-              />
-              <div
-                className="bg-grey-500 size-1.5 animate-bounce rounded-full"
-                style={{ animationDelay: "300ms" }}
-              />
-            </OakFlex>
-          </OakBox>
-        )}
+
         <div ref={messagesEndRef} />
       </OakFlex>
+      {mutation.status === "pending" && <OakLoadingSpinner />}
 
       {/* Input area */}
       <OakBox
