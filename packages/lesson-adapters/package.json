@@ -25,7 +25,7 @@
     "@oakai/gsuite": "*",
     "@oakai/logger": "*",
     "ai": "npm:ai@^6.0.48",
-    "openai": "^4.96.0",
+    "openai": "npm:openai@^4.96.0",
     "zod": "3.25.76"
   },
   "devDependencies": {
