@@ -54,7 +54,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
       },
     ]);
 
-    mutation.mutateAsync({
+    void mutation.mutateAsync({
       sessionId,
       userMessage: textToSend,
     });
