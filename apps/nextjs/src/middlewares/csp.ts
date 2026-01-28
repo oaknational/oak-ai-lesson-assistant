@@ -128,7 +128,6 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       "https://oaknationalacademy-res.cloudinary.com",
       "https://*.hubspot.com",
       "https://*.hsforms.com",
-      "https://*.googleusercontent.com",
     ],
     "font-src": [
       "'self'",
