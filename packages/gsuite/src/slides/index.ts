@@ -7,6 +7,7 @@ export { createSlidesClient } from "./client";
 
 // Fetch
 export { getPresentation } from "./getPresentation";
+export { getSlideThumbnails } from "./getThumbnails";
 
 // Operations
 export {
@@ -29,3 +30,4 @@ export type {
   DuplicateSlideDeckOptions,
   DuplicateSlideDeckResult,
 } from "./types";
+export type { SlideThumbnail } from "./getThumbnails";

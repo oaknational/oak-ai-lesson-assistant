@@ -138,7 +138,8 @@ export interface QuizQuestionTextOnlySource {
 export interface RagQuizQuestion {
   question: LatestQuizQuestion;
   sourceUid: string;
-  source: HasuraQuizQuestion;
+  /** Raw Hasura record for provenance. Undefined for questions from currentQuiz. */
+  source?: HasuraQuizQuestion;
   imageMetadata: EnrichedImageMetadata[];
 }
 
@@ -167,6 +168,10 @@ export interface QuizQuestionPool {
     | {
         type: "semanticSearch";
         semanticQuery: string;
+      }
+    | {
+        type: "currentQuiz";
+        quizType: QuizPath;
       };
 }
 

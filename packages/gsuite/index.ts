@@ -31,6 +31,7 @@ export {
   duplicateSlideDeck,
   duplicateSlideDeckToDefaultFolder,
   getPresentation,
+  getSlideThumbnails,
 
   // Types
   type SlidesClient,
@@ -43,4 +44,5 @@ export {
   type GoogleSlidesPlaceholder,
   type DuplicateSlideDeckOptions,
   type DuplicateSlideDeckResult,
+  type SlideThumbnail,
 } from "./src/slides";

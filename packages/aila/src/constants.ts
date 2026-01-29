@@ -11,6 +11,7 @@ export const DEFAULT_TEMPERATURE = 0.7;
 export const DEFAULT_MODERATION_TEMPERATURE = 0.7;
 export const DEFAULT_NUMBER_OF_RECORDS_IN_RAG = 5;
 export const DEFAULT_QUIZ_SOURCES: QuestionSourceType[] = [
+  "currentQuiz",
   "similarLessons",
   "basedOnLesson",
   "multiQuerySemantic",
