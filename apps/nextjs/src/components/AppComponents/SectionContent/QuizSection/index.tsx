@@ -29,7 +29,7 @@ export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
     return "Invalid quiz";
   }
 
-  if (quiz.bailReason) {
+  if (quiz.questions.length === 0) {
     const quizBasisMap = {
       starterQuiz: "the prior knowledge for this lesson",
       exitQuiz: "the key learning points",

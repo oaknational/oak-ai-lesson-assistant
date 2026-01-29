@@ -82,8 +82,6 @@ export const QuizV3Schema = z.object({
     .describe(QUIZ_V3_DESCRIPTIONS.imageMetadata),
   /** Links to the generation report in KV storage (key: quiz:generation-report:{reportId}) */
   reportId: z.string().optional(),
-  /** If set, the quiz composer could not find suitable questions and this explains why */
-  bailReason: z.string().optional(),
 });
 
 export const QuizV3SchemaWithoutLength = QuizV3Schema;

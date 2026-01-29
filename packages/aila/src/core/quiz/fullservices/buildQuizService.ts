@@ -137,11 +137,7 @@ async function buildQuiz(
     return result;
   });
 
-  return buildQuizFromQuestions(
-    composerResult.questions,
-    reportId,
-    composerResult.status === "bail" ? composerResult.bailReason : undefined,
-  );
+  return buildQuizFromQuestions(composerResult.questions, reportId);
 }
 
 export function buildQuizService(settings: QuizBuilderSettings): QuizService {

@@ -377,7 +377,11 @@ export function QuizPlaygroundView({
               : undefined
           }
         >
-          <FinalQuizContent quiz={quiz} report={report} />
+          <FinalQuizContent
+            quiz={quiz}
+            report={report}
+            bailReason={composerBailReason}
+          />
         </Section>
       </div>
     </ViewModeContext.Provider>
@@ -774,17 +778,21 @@ function ComposerContent({
 function FinalQuizContent({
   quiz,
   report,
+  bailReason,
 }: Readonly<{
   quiz: LatestQuiz | undefined;
   report: ReportNode | null;
+  bailReason?: string;
 }>) {
-  if (quiz?.bailReason) {
+  if (quiz && quiz.questions.length === 0) {
     return (
       <div className="rounded-lg border-2 border-yellow-400 bg-yellow-50 p-6">
         <h3 className="mb-2 text-lg font-semibold text-yellow-800">
           No Quiz Generated
         </h3>
-        <p className="text-yellow-700">{quiz.bailReason}</p>
+        <p className="text-yellow-700">
+          {bailReason ?? "Could not find suitable questions for this topic."}
+        </p>
       </div>
     );
   }
