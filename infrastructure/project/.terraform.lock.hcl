@@ -1,0 +1,42 @@
+# This file is maintained automatically by "terraform init".
+# Manual edits may be lost in future updates.
+
+provider "registry.terraform.io/cloudflare/cloudflare" {
+  version     = "5.6.0"
+  constraints = "~> 5.6.0"
+  hashes = [
+    "h1:YJFq/LeaDoqxHF5Js46ZqCeYlzaG9D+V6G39h/vZAkw=",
+    "zh:0f7ad515a0ac56de9ee00f24aadc64773bc9d186c7673672f7c1fd1971e7cc73",
+    "zh:1c7288a4d654860b81ff0d5366f7e7037c144cbd3d8f34d4ba4efd444c01085d",
+    "zh:304ba493a57cf1587f9878999144ee3ff65393ae577ea0304f94cb11e81d2a64",
+    "zh:605509ada3e19777cdd2d4c4e1f99e4b43d8c9e661083f32341d75dc450390ff",
+    "zh:753d2e607cc11cf4f08b9f5b161e2050f2f17bf200f2a6ba1224893b1cdcc476",
+    "zh:b0d557ea5e9a384b844d1d50d9627e61318583004d1a1113dce64c984267a139",
+    "zh:db8f65cc2ae10f1c3cb9e64e1e89a9222fb81ac6f832e796d0369596f1e74713",
+    "zh:f8057a7c670e038ec1a0fd4a490ad352cf94ac82db35f0e525d24503ceb511d2",
+    "zh:f809ab383cca0a5f83072981c64208cbd7fa67e986a86ee02dd2c82333221e32",
+  ]
+}
+
+provider "registry.terraform.io/vercel/vercel" {
+  version     = "3.14.1"
+  constraints = "~> 3.14.1"
+  hashes = [
+    "h1:Ec3llkbekKcXPdxJRHLPUk3K0z/OYhjHJf1JLkH9b9Q=",
+    "zh:0878e45047756391f35e10863081583569505c82e7a29b3111c05794126fa8cd",
+    "zh:088a9bb13ad1b4585dd313bdedebb8104e5c928c6c5faad112289c68415947cc",
+    "zh:156857e3e1c8901d915dd9c4f63df707fc75ab9978ebe5c27902385551ae96bd",
+    "zh:30c22296a33f6a11145406a6280e32c45193cafbe8cf6458d241849543453dea",
+    "zh:372f92b9d5b486f148767fea6639c2fd9f663a9c8a137d83dd75ac665508922c",
+    "zh:388d4362c9a0f56b87918555b619e5457da6e08ff4462ff3f6540e8cff9e9e03",
+    "zh:4c30a058f9396e6c3b98b7f44fbcfebecf74d48bcb5f00946fac698a312fa6b9",
+    "zh:647a449bcc0aa8e20aa96bace35a33b0f74e56c87d4d4c542624f443ba6a4509",
+    "zh:7906580b1b3b5b1104f0884c6a18d9370db1099d3aba699a6a6403ab71551f6b",
+    "zh:7e0d7ffabd8e18728e70b5cc74438a4527608933ca8ef6956f844b95a2124df2",
+    "zh:8f94f98445033dbaa5646afed939bc3c3f4fc2e44be1e89670db2c550f4ad811",
+    "zh:9d75137885e6cce79808384f589f29eaa6600edd4890e46c7982fe275f55b2ac",
+    "zh:c7286440ce93455775a2fad38f7229b303351912f1d823a8d374684d863e4eb9",
+    "zh:c9b21733ca6b26c7ff4bbb984bffcc4442c6d20b027ebaaab413c2b5f9cae6f6",
+    "zh:f26e0763dbe6a6b2195c94b44696f2110f7f55433dc142839be16b9697fa5597",
+  ]
+}
