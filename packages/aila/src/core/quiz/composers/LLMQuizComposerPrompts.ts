@@ -56,9 +56,7 @@ export const CompositionResponseSchema = z.object({
   overallStrategy: z
     .string()
     .describe(
-      "Explain your selection strategy: which sources you prioritised, " +
-        "why you did or didn't use questions from the user-selected source lesson (if provided), " +
-        "and how the selected questions work together as a cohesive quiz",
+      "Explain which sources you prioritised and how the selected questions cover the required knowledge",
     ),
   selectedQuestions: z
     .array(
