@@ -45,11 +45,13 @@ export type AilaPersistedState = {
 type RagSearchArgs = { title: string; subject: string; keyStage: string };
 // Runtime context with agents and config
 export type AilaRuntimeContext = {
-  plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
+  plannerAgent: (
+    props: PlannerAgentProps,
+  ) => Promise<AgentResult<PlannerOutput>>;
   sectionAgents: SectionAgentRegistry;
   messageToUserAgent: (
     props: MessageToUserAgentProps,
-  ) => Promise<WithError<MessageToUserAgentOutput>>;
+  ) => Promise<AgentResult<MessageToUserAgentOutput>>;
   fetchRelevantLessons: (
     props: RagSearchArgs,
   ) => Promise<AgenticRagLessonPlanResult[]>;
@@ -108,7 +110,7 @@ export type SectionPromptAgentProps<ResponseType> = {
 export type SectionAgent<ResponseType> = {
   id: string;
   description: string;
-  handler: (ctx: AilaExecutionContext) => Promise<WithError<ResponseType>>;
+  handler: (ctx: AilaExecutionContext) => Promise<AgentResult<ResponseType>>;
 };
 
 export type SectionAgentResponseMap = {
@@ -147,7 +149,8 @@ export type MessageToUserAgentProps = {
   prevDoc: PartialLessonPlan;
   nextDoc: PartialLessonPlan;
   stepsExecuted: PlanStep[];
-  errors: { message: string }[];
+  errors: { message: string; sectionKey?: SectionKey }[];
+  notes: { message: string; sectionKey: SectionKey }[];
   plannerOutput: PlannerOutput | null;
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
@@ -156,10 +159,12 @@ export type MessageToUserAgentProps = {
 export type AilaState = {
   initialDocument: PartialLessonPlan;
   messages: ChatMessage[];
-  plannerAgent: (props: PlannerAgentProps) => Promise<WithError<PlannerOutput>>;
+  plannerAgent: (
+    props: PlannerAgentProps,
+  ) => Promise<AgentResult<PlannerOutput>>;
   messageToUserAgent: (
     props: MessageToUserAgentProps,
-  ) => Promise<WithError<MessageToUserAgentOutput>>;
+  ) => Promise<AgentResult<MessageToUserAgentOutput>>;
   sectionAgents: SectionAgentRegistry;
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   fetchRelevantLessons: (
@@ -170,15 +175,16 @@ export type AilaState = {
 export type AilaCurrentTurn = {
   document: PartialLessonPlan;
   plannerOutput: PlannerOutput | null;
-  errors: { message: string }[];
+  errors: { message: string; sectionKey?: SectionKey }[];
+  notes: { message: string; sectionKey: SectionKey }[];
   stepsExecuted: PlanStep[];
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
   currentStep: PlanStep | null;
 };
 
-export type WithError<T> =
-  | { error: null; data: T }
+export type AgentResult<T> =
+  | { error: null; data: T; note?: string }
   | { error: z.infer<typeof errorSchema> };
 
 export type AgenticRagLessonPlanResult = {

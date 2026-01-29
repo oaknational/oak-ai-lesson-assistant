@@ -9,6 +9,7 @@ import {
 import { changesMadePromptPart } from "../sharedPromptParts/changesMade.part";
 import { errorsPromptPart } from "../sharedPromptParts/errors.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
+import { notesPromptPart } from "../sharedPromptParts/notes.part";
 import { plannerAgentResponsePromptPart } from "../sharedPromptParts/plannerAgentResponse.part";
 import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
 import { stepsExecutedPromptPart } from "../sharedPromptParts/stepsExecuted.part";
@@ -26,6 +27,7 @@ export function createMessageToUserAgent({
   nextDoc,
   stepsExecuted,
   errors,
+  notes,
   plannerOutput,
   relevantLessons,
   relevantLessonsFetched,
@@ -48,6 +50,10 @@ export function createMessageToUserAgent({
       errors.length > 0 && {
         role: "developer" as const,
         content: errorsPromptPart(errors),
+      },
+      notes.length > 0 && {
+        role: "developer" as const,
+        content: notesPromptPart(notes),
       },
       plannerOutput?.decision === "exit" && {
         role: "developer" as const,

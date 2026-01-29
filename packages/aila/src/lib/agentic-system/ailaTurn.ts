@@ -20,6 +20,7 @@ export async function ailaTurn({
       relevantLessons: persistedState.relevantLessons,
       plannerOutput: null,
       errors: [],
+      notes: [],
       stepsExecuted: [],
       relevantLessonsFetched: false,
       currentStep: null,

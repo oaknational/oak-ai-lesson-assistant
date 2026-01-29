@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { DEFAULT_OPENAI_GENERATION_MODEL } from "../constants";
 import type { GenericPromptAgent } from "../schema";
-import type { WithError } from "../types";
+import type { AgentResult } from "../types";
 
 export async function executeGenericPromptAgent<ResponseType>({
   agent,
@@ -12,7 +12,7 @@ export async function executeGenericPromptAgent<ResponseType>({
 }: {
   agent: GenericPromptAgent<ResponseType>;
   openai: OpenAI;
-}): Promise<WithError<ResponseType>> {
+}): Promise<AgentResult<ResponseType>> {
   const schemaWrapped = z.object({
     value: agent.responseSchema,
   });

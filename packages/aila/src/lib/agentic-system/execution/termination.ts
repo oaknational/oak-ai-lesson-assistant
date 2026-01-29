@@ -1,3 +1,4 @@
+import type { SectionKey } from "../schema";
 import type { AilaExecutionContext } from "../types";
 import {
   displayRelevantLessons,
@@ -10,8 +11,9 @@ import {
 export async function terminateWithError(
   error: { message: string },
   context: AilaExecutionContext,
+  sectionKey?: SectionKey,
 ): Promise<void> {
-  context.currentTurn.errors.push(error);
+  context.currentTurn.errors.push({ ...error, sectionKey });
   await terminateWithResponse(context);
 }
 
@@ -41,6 +43,7 @@ export async function terminateWithResponse(
     nextDoc: context.currentTurn.document,
     stepsExecuted: context.currentTurn.stepsExecuted,
     errors: context.currentTurn.errors,
+    notes: context.currentTurn.notes,
     plannerOutput: context.currentTurn.plannerOutput,
     relevantLessons: context.persistedState.relevantLessons,
     relevantLessonsFetched: context.currentTurn.relevantLessonsFetched,

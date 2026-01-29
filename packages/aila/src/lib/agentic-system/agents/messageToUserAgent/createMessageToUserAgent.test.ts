@@ -87,6 +87,7 @@ describe("createMessageToUserAgent", () => {
     nextDoc: mockNextDoc,
     stepsExecuted: mockStepsExecuted,
     errors: [],
+    notes: [],
     plannerOutput: mockPlannerOutput,
     relevantLessons: mockRelevantLessons,
     relevantLessonsFetched: true,
