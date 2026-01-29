@@ -61,6 +61,10 @@ export interface QuestionSource {
   ): Promise<QuizQuestionPool[]>;
 }
 
+export type ComposerResult =
+  | { status: "success"; questions: RagQuizQuestion[] }
+  | { status: "bail"; questions: []; bailReason: string };
+
 /**
  * Composes final quiz questions from candidate pools
  */
@@ -74,7 +78,7 @@ export interface QuizComposer {
     quizType: QuizPath,
     task: Task,
     userInstructions?: string | null,
-  ): Promise<RagQuizQuestion[]>;
+  ): Promise<ComposerResult>;
 }
 
 /**
@@ -94,6 +98,12 @@ export interface QuestionEnricher {
 /**
  * Complete quiz generation service that orchestrates sources, enrichers, and composer
  */
+export interface QuizBuildResult {
+  quiz: LatestQuiz;
+  /** Note to communicate to user (e.g., why quiz couldn't be generated) */
+  note?: string;
+}
+
 export interface QuizService {
   composer: QuizComposer;
   sources: QuestionSource[];
@@ -105,7 +115,7 @@ export interface QuizService {
     task: Task,
     reportId: string,
     userInstructions?: string | null,
-  ): Promise<LatestQuiz>;
+  ): Promise<QuizBuildResult>;
 }
 
 export interface CustomSource {
