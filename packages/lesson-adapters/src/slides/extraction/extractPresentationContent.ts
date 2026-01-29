@@ -1,7 +1,7 @@
 import type { GoogleSlidesPresentation } from "@oakai/gsuite";
 
 import { extractSlideContent } from "./extractSlideContent";
-import type { SlideDeckContent, SlideContent } from "./types";
+import type { SlideContent, SlideDeckContent } from "./types";
 
 /**
  * Extracts all content from a Google Slides presentation

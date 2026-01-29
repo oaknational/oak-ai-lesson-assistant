@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 import {
-  coordinateAdaptation,
   type CoordinateAdaptationResult,
+  coordinateAdaptation,
 } from "../agents/coordinatorAgent";
+
 export const generatePlanInputSchema = z.object({
   userMessage: z.string().min(1),
   slideDeck: z.object({
