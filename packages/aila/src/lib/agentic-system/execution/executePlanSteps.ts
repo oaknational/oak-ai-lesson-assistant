@@ -1,6 +1,10 @@
+import { aiLogger } from "@oakai/logger";
+
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import type { AilaExecutionContext } from "../types";
 import { terminateWithError } from "./termination";
+
+const log = aiLogger("aila:agents");
 
 /**
  * Execute each step in the plan sequentially
@@ -37,11 +41,17 @@ export async function executePlanSteps(
     const result = await agent.handler(context);
 
     if (result.error) {
+      log.error(
+        `Section generation failed [${step.sectionKey}]: ${result.error.message}`,
+      );
       await terminateWithError(result.error, context, step.sectionKey);
       return false;
     }
 
     if (result.note) {
+      log.info(
+        `Section generated with note [${step.sectionKey}]: ${result.note}`,
+      );
       context.currentTurn.notes.push({
         message: result.note,
         sectionKey: step.sectionKey,
