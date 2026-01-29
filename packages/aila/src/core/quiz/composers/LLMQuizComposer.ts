@@ -13,9 +13,9 @@ import type {
 import type { Task } from "../reporting";
 import {
   type CompositionResponse,
-  CompositionResponseSchema,
   type SuccessData,
   buildCompositionPrompt,
+  buildCompositionResponseSchema,
 } from "./LLMQuizComposerPrompts";
 
 const log = aiLogger("aila:quiz");
@@ -69,8 +69,11 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Call LLM
+    const isModifying = questionPools.some(
+      (p) => p.source.type === "currentQuiz",
+    );
     const result = await task.child("llmCall", async (t) => {
-      const response = await this.callOpenAI(prompt);
+      const response = await this.callOpenAI(prompt, isModifying);
       t.addData({ response });
 
       if (response.status === "bail" || !response.success) {
@@ -104,8 +107,12 @@ export class LLMComposer implements QuizComposer {
     log.info(`LLM Composer: ${totalQuestions} total candidate questions`);
   }
 
-  private async callOpenAI(prompt: string): Promise<CompositionResponse> {
+  private async callOpenAI(
+    prompt: string,
+    isModifying: boolean,
+  ): Promise<CompositionResponse> {
     const openai = createOpenAIClient({ app: "quiz-composer" });
+    const responseSchema = buildCompositionResponseSchema(isModifying);
 
     try {
       const response = await openai.beta.chat.completions.parse({
@@ -119,10 +126,7 @@ export class LLMComposer implements QuizComposer {
             content: prompt,
           },
         ],
-        response_format: zodResponseFormat(
-          CompositionResponseSchema,
-          "QuizComposition",
-        ),
+        response_format: zodResponseFormat(responseSchema, "QuizComposition"),
       });
 
       const parsed = response.choices[0]?.message?.parsed;
@@ -165,6 +169,12 @@ export class LLMComposer implements QuizComposer {
         return question;
       })
       .filter((q): q is RagQuizQuestion => q !== null);
+
+    if (selectedQuestions.length < successData.selectedQuestions.length) {
+      log.warn(
+        `Only found ${selectedQuestions.length} of ${successData.selectedQuestions.length} selected questions (some UIDs not found)`,
+      );
+    }
 
     return selectedQuestions;
   }
