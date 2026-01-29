@@ -12,8 +12,8 @@ import type {
 import type { Task } from "../reporting";
 import {
   type CompositionResponse,
-  CompositionResponseSchema,
   buildCompositionPrompt,
+  buildCompositionResponseSchema,
 } from "./LLMQuizComposerPrompts";
 
 const log = aiLogger("aila:quiz");
@@ -68,9 +68,12 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Call LLM
+    const isModifying = questionPools.some(
+      (p) => p.source.type === "currentQuiz",
+    );
     const selectedQuestions = await task.child("composerLlm", async (t) => {
       const llmStart = Date.now();
-      const response = await this.callOpenAI(prompt);
+      const response = await this.callOpenAI(prompt, isModifying);
       const timingMs = Date.now() - llmStart;
 
       const questions = this.mapResponseToQuestions(response, questionPools);
@@ -96,8 +99,12 @@ export class LLMComposer implements QuizComposer {
     log.info(`LLM Composer: ${totalQuestions} total candidate questions`);
   }
 
-  private async callOpenAI(prompt: string): Promise<CompositionResponse> {
+  private async callOpenAI(
+    prompt: string,
+    isModifying: boolean,
+  ): Promise<CompositionResponse> {
     const openai = createOpenAIClient({ app: "quiz-composer" });
+    const responseSchema = buildCompositionResponseSchema(isModifying);
 
     try {
       const response = await openai.beta.chat.completions.parse({
@@ -111,10 +118,7 @@ export class LLMComposer implements QuizComposer {
             content: prompt,
           },
         ],
-        response_format: zodResponseFormat(
-          CompositionResponseSchema,
-          "QuizComposition",
-        ),
+        response_format: zodResponseFormat(responseSchema, "QuizComposition"),
       });
 
       const parsed = response.choices[0]?.message?.parsed;
@@ -158,9 +162,9 @@ export class LLMComposer implements QuizComposer {
       })
       .filter((q): q is RagQuizQuestion => q !== null);
 
-    if (selectedQuestions.length < 6) {
+    if (selectedQuestions.length < response.selectedQuestions.length) {
       log.warn(
-        `Only found ${selectedQuestions.length} of 6 requested questions`,
+        `Only found ${selectedQuestions.length} of ${response.selectedQuestions.length} selected questions (some UIDs not found)`,
       );
     }
 
