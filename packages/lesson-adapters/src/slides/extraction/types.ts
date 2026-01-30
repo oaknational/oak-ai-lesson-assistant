@@ -44,11 +44,15 @@ export interface SlideContent {
   textElements: SlideTextElement[];
   tables: SlideTable[];
   nonTextElements: SlideNonTextElement[];
+  /** Key learning points covered on this slide */
+  keyLearningPoints?: string[];
+  /** Learning cycles covered on this slide */
+  learningCycles?: string[];
 }
 
-export interface PresentationContent {
-  presentationId: string;
-  title: string;
+export interface SlideDeckContent {
+  slideDeckId: string;
+  lessonTitle: string;
   slides: SlideContent[];
 }
 

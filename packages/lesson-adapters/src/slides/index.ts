@@ -14,11 +14,23 @@ export {
   parseCellId,
 } from "./extraction";
 
+// Schemas
+export {
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideDeckContentSchema,
+  slideContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
+} from "./extraction";
+
 // Types
 export type {
   NonTextElementType,
   ParsedCellId,
-  PresentationContent,
+  SlideDeckContent,
   SlideContent,
   SlideNonTextElement,
   SlideTable,
