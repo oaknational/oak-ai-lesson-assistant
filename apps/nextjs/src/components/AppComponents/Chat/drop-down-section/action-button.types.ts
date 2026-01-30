@@ -49,3 +49,31 @@ export const modifyOptions = [
 ] as const;
 
 export type ModifyOptions = typeof modifyOptions;
+
+// @todo Add dedicated enum values to AilaUserModificationAction for these
+// options (REGENERATE, CHANGE_QUESTION, ADD_QUESTION, REMOVE_QUESTION)
+// once the UX is validated. Currently all use OTHER to avoid a schema migration.
+export const quizModifyOptions = [
+  {
+    label: "Generate a new quiz",
+    enumValue: "OTHER",
+    textPrompt: "Any instructions? (optional)",
+  },
+  {
+    label: "Change question",
+    enumValue: "OTHER",
+    textPrompt: "Which question and what should change?",
+  },
+  {
+    label: "Add question",
+    enumValue: "OTHER",
+    textPrompt: "What kind of question should be added?",
+  },
+  {
+    label: "Remove question",
+    enumValue: "OTHER",
+    textPrompt: "Which question should be removed?",
+  },
+] as const;
+
+export type QuizModifyOptions = typeof quizModifyOptions;

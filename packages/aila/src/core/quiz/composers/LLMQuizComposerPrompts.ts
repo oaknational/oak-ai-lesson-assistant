@@ -51,35 +51,48 @@ function buildQuestionSelectionCriteria(quizType: QuizPath): string {
   `;
 }
 
-// Schema for the LLM's composition response
-export const CompositionResponseSchema = z.object({
-  overallStrategy: z
+// Schema for selected question in composition response
+const SelectedQuestionSchema = z.object({
+  questionUid: z
+    .string()
+    .describe("The exact UID of the selected question from the candidate list"),
+  reasoning: z
     .string()
     .describe(
-      "Explain your selection strategy: which sources you prioritised, " +
-        "why you did or didn't use questions from the user-selected source lesson (if provided), " +
-        "and how the selected questions work together as a cohesive quiz",
+      "Brief explanation for selecting this question. For questions from the current quiz, note any changes (kept, reordered, etc.) per user instruction",
     ),
-  selectedQuestions: z
-    .array(
-      z.object({
-        questionUid: z
-          .string()
-          .describe(
-            "The exact UID of the selected question from the candidate list",
-          ),
-        reasoning: z
-          .string()
-          .describe(
-            "Brief explanation for selecting this question. For questions from the current quiz, note any changes (kept, reordered, etc.) per user instruction",
-          ),
-      }),
-    )
-    .length(6)
-    .describe("Exactly 6 questions to include in the final quiz"),
 });
 
-export type CompositionResponse = z.infer<typeof CompositionResponseSchema>;
+/**
+ * Build the composition response schema.
+ * Schema always allows 1-6 questions, but description guides the LLM's default:
+ * - New quiz: target 6 unless user specifies otherwise
+ * - Modifying: maintain current count unless user instructs otherwise
+ */
+export function buildCompositionResponseSchema(isModifying: boolean) {
+  const description = isModifying
+    ? "Questions to include in the modified quiz. Maintain the current question count unless user explicitly asks to add or remove questions."
+    : "Questions to include in the quiz. Target 6 questions unless user specifies a different number.";
+
+  return z.object({
+    overallStrategy: z
+      .string()
+      .describe(
+        "Explain your selection strategy: which sources you prioritised, " +
+          "why you did or didn't use questions from the user-selected source lesson (if provided), " +
+          "and how the selected questions work together as a cohesive quiz",
+      ),
+    selectedQuestions: z
+      .array(SelectedQuestionSchema)
+      .min(1)
+      .max(6)
+      .describe(description),
+  });
+}
+
+export type CompositionResponse = z.infer<
+  ReturnType<typeof buildCompositionResponseSchema>
+>;
 
 function buildUserInstructionsSection(
   instructions: string | null | undefined,

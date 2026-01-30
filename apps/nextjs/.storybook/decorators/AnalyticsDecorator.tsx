@@ -24,7 +24,10 @@ export const AnalyticsDecorator: Decorator = (Story, { parameters }) => {
           identify: fn(),
           reset: fn(),
           page: fn(),
-          posthogAiBetaClient: {},
+          posthogAiBetaClient: {
+            isFeatureEnabled: () => false,
+            onFeatureFlags: () => () => {},
+          },
           ...parameters.analyticsContext,
         } as unknown as AnalyticsContext
       }

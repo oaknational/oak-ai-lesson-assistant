@@ -16,6 +16,7 @@ import * as Sentry from "@sentry/nextjs";
 import type {
   AdditionalMaterialOptions,
   ModifyOptions,
+  QuizModifyOptions,
 } from "./action-button.types";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 import { DropDownFormWrapper } from "./drop-down-form-wrapper";
@@ -23,9 +24,11 @@ import { SmallRadioButton } from "./small-radio-button";
 
 const log = aiLogger("chat");
 
+type AllOptions = ModifyOptions | AdditionalMaterialOptions | QuizModifyOptions;
+
 export type DropDownProps = Readonly<{
   sectionTitle: string;
-  options: ModifyOptions | AdditionalMaterialOptions;
+  options: AllOptions;
   selectedRadio: FeedbackOption<AilaUserModificationAction> | null;
   setSelectedRadio: Dispatch<
     SetStateAction<FeedbackOption<$Enums.AilaUserModificationAction> | null>
@@ -81,16 +84,16 @@ export const ActionDropDown = ({
         $gap="spacing-16"
         $background="bg-primary"
       >
-        {options.map(
-          (
-            option: ModifyOptions[number] | AdditionalMaterialOptions[number],
-          ) => {
-            return (
+        {options.map((option: AllOptions[number]) => {
+          const isSelected = selectedRadio?.label === option.label;
+          const showTextInput =
+            isSelected && (option.label === "Other" || "textPrompt" in option);
+          return (
+            <div key={`${id}-modify-options-${option.label}`}>
               <SmallRadioButton
-                id={`${id}-modify-options-${option.enumValue}`}
-                key={`${id}-modify-options-${option.enumValue}`}
+                id={`${id}-modify-options-${option.label}`}
                 data-testid={"modify-radio-button"}
-                value={option.enumValue}
+                value={option.label}
                 label={handleLabelText({
                   text: option.label,
                   section: sectionTitle,
@@ -99,19 +102,22 @@ export const ActionDropDown = ({
                   setSelectedRadio(option);
                 }}
               />
-            );
-          },
-        )}
-
-        {selectedRadio?.label === "Other" && (
-          <>
-            <OakP $font="body-3">{userSuggestionTitle}</OakP>
-            <TextArea
-              data-testid={"modify-other-text-area"}
-              onChange={(e) => setUserFeedbackText(e.target.value)}
-            />
-          </>
-        )}
+              {showTextInput && (
+                <>
+                  <OakP $font="body-3" $mt="spacing-8">
+                    {"textPrompt" in option
+                      ? option.textPrompt
+                      : userSuggestionTitle}
+                  </OakP>
+                  <TextArea
+                    data-testid={"modify-other-text-area"}
+                    onChange={(e) => setUserFeedbackText(e.target.value)}
+                  />
+                </>
+              )}
+            </div>
+          );
+        })}
       </OakRadioGroup>
     </DropDownFormWrapper>
   );

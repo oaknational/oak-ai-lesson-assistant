@@ -15,6 +15,7 @@ export type FeedbackOption<T> = {
   label: string;
   enumValue: T;
   chatMessage?: string;
+  textPrompt?: string;
 };
 
 export const DropDownFormWrapper = <
