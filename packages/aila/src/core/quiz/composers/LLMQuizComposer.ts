@@ -76,7 +76,7 @@ export class LLMComposer implements QuizComposer {
       if (response.status === "bail" || !response.success) {
         const bailReason = response.bail?.reason ?? "Unknown reason";
         log.warn(`LLM Composer bailed: ${bailReason}`);
-        return { status: "bail", questions: [], bailReason } as ComposerResult;
+        return { status: "bail" as const, questions: [] as [], bailReason };
       }
 
       const questions = this.mapResponseToQuestions(
@@ -85,7 +85,7 @@ export class LLMComposer implements QuizComposer {
       );
       t.addData({ selectedQuestions: questions });
 
-      return { status: "success", questions } as ComposerResult;
+      return { status: "success" as const, questions };
     });
 
     log.info(`LLM Composer: selected ${result.questions.length} questions`);
