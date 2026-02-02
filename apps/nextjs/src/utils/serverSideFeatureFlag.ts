@@ -7,34 +7,13 @@ import { kv } from "@vercel/kv";
 const log = aiLogger("feature-flags");
 
 /**
- * Ensure PostHog has up-to-date user properties for server-side evaluation.
- * Cached for 24 hours to avoid repeated Clerk API calls.
- */
-async function ensureUserIdentified(userId: string): Promise<void> {
-  const identifiedKey = `posthog_identified:${userId}`;
-  const isIdentified = await kv.get(identifiedKey);
-
-  if (!isIdentified) {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const userEmail = user.emailAddresses?.[0]?.emailAddress;
-
-    await posthogAiBetaServerClient.identifyImmediate({
-      distinctId: userId,
-      properties: {
-        email: userEmail,
-      },
-    });
-
-    await kv.set(identifiedKey, "true", { ex: 86400 });
-  }
-}
-
-/**
  * Evaluate a feature flag server-side with full user context.
  *
  * Unlike bootstrap flags (evaluated at page load with only auth token claims),
- * this can evaluate flags with email-based targeting rules via server fallback.
+ * this fetches email from Clerk and passes it for local evaluation, enabling
+ * flags with email-based targeting rules.
+ *
+ * Results are cached for 60s to avoid repeated Clerk API calls.
  */
 export async function serverSideFeatureFlag(
   featureFlagId: string,
@@ -52,13 +31,14 @@ export async function serverSideFeatureFlag(
   }
 
   try {
-    await ensureUserIdentified(userId);
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const email = user.emailAddresses?.[0]?.emailAddress;
 
     const isFeatureFlagEnabled =
-      (await posthogAiBetaServerClient.isFeatureEnabled(
-        featureFlagId,
-        userId,
-      )) ?? false;
+      (await posthogAiBetaServerClient.isFeatureEnabled(featureFlagId, userId, {
+        personProperties: { email },
+      })) ?? false;
 
     await kv.set(cacheKey, isFeatureFlagEnabled.toString(), { ex: 60 });
 
