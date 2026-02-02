@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 "use client";
 
 import { useUser } from "@clerk/nextjs";
 import MuxPlayer from "@mux/mux-player-react";
 import type {
   OakAllSpacingToken,
-  OakColorToken,
   OakIconName,
   OakUiRoleToken,
 } from "@oaknational/oak-components";
@@ -22,7 +22,7 @@ import {
   OakSmallPrimaryInvertedButton,
   OakTertiaryButton,
   OakUL,
-  oakColorTokens,
+  parseColor,
 } from "@oaknational/oak-components";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -215,7 +215,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $gap="spacing-56"
           $pv={["spacing-0", "spacing-80"]}
           $background={"bg-decorative3-very-subdued"}
-          fullWidthBgColor={"lavender30"}
+          fullWidthBgColor={"bg-decorative3-very-subdued"}
         >
           <OakFlex
             $pv={["spacing-80"]}
@@ -264,7 +264,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
 }
 
 const OakFlexWithBackground = styled(OakFlex)<{
-  fullWidthBgColor: OakColorToken;
+  fullWidthBgColor: OakUiRoleToken;
 }>`
   position: relative;
   &::before {
@@ -275,8 +275,7 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props: { fullWidthBgColor: OakColorToken }) =>
-      oakColorTokens[props.fullWidthBgColor]};
+    background-color: ${(props) => parseColor(props.fullWidthBgColor)};    
   }
   /* img {
     max-width: 300px;
