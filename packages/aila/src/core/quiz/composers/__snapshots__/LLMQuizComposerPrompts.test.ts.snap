@@ -39,6 +39,16 @@ An effective quiz has:
 
 ---
 
+OUTPUT OPTIONS:
+
+**Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+
+**Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+
+It is better to bail than to return a quiz with irrelevant questions.
+
+---
+
 LESSON PLAN:
 
 Title: Adding Fractions
@@ -155,6 +165,16 @@ An effective quiz has:
 4. **Diagnostic value**: Answers reveal student understanding, potential misconceptions, and gaps in knowledge. Good quiz questions provide valuable information that helps identify what needs to be addressed during the lesson.
 
 5. **Answer quality**: Answer options are well-designed. Correct answers are unambiguous, and incorrect options reflect common misconceptions, helping diagnose student misunderstandings.
+
+---
+
+OUTPUT OPTIONS:
+
+**Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+
+**Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+
+It is better to bail than to return a quiz with irrelevant questions.
 
 ---
 
