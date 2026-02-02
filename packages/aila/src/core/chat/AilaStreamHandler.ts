@@ -89,7 +89,6 @@ export class AilaStreamHandler {
     controller: ReadableStreamDefaultController,
     abortController?: AbortController,
   ) {
-    log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
       if (!this._chat.aila.options.useAgenticAila) {
@@ -320,18 +319,14 @@ export class AilaStreamHandler {
     log.info("Starting to read from stream");
     try {
       while (abortController ? !abortController?.signal.aborted : true) {
-        log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {
           log.info("Stream reading complete");
           break;
         }
         if (value) {
-          log.info("Processing chunk", { valueLength: value.length });
           this._chat.appendChunk(value);
           this._controller?.enqueue(value);
-        } else {
-          log.info("Received empty chunk");
         }
       }
     } catch (e) {
