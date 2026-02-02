@@ -222,21 +222,23 @@ export class AilaStreamHandler {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run(async (task, reportId) => {
-                  const result = await this._chat.quizService.buildQuiz(
-                    "/starterQuiz",
-                    ctx.currentTurn.document,
-                    this._chat.relevantLessons ?? [],
-                    task,
-                    reportId,
-                    userInstructions,
-                  );
-                  task.addData({ quiz: result, userInstructions });
-                  return result;
-                });
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/starterQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
+                );
                 await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating starter quiz", { error });
                 return {
@@ -252,21 +254,23 @@ export class AilaStreamHandler {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run(async (task, reportId) => {
-                  const result = await this._chat.quizService.buildQuiz(
-                    "/exitQuiz",
-                    ctx.currentTurn.document,
-                    this._chat.relevantLessons ?? [],
-                    task,
-                    reportId,
-                    userInstructions,
-                  );
-                  task.addData({ quiz: result, userInstructions });
-                  return result;
-                });
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/exitQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
+                );
                 await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating exit quiz", { error });
                 return {

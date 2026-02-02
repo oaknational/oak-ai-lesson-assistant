@@ -1,3 +1,18 @@
+# [1.62.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.61.0...v1.62.0) (2026-01-29)
+
+
+### Bug Fixes
+
+* correct circular dependency issue for AilaModerator ([8092e06](https://github.com/oaknational/oak-ai-lesson-assistant/commit/8092e06b6f1a263a3f50b5c0346ff981dd9deaab))
+* turn off waitUntil in e2e tests ([fe3ef7d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/fe3ef7dd43c304356dc9b7f1a59317180be983f0))
+
+
+### Features
+
+* define env vars in turbo.json ([5aeadf5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5aeadf536295a70750aa8533dd16c01b8452e29e))
+* front end adapt page wireframe - AI-1879 ([#907](https://github.com/oaknational/oak-ai-lesson-assistant/issues/907)) ([ed440a5](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ed440a5be6ded078f3b771ada4503a219c02e31e))
+* **quiz:** add current quiz as source for modifications ([#913](https://github.com/oaknational/oak-ai-lesson-assistant/issues/913)) ([aa27ac1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/aa27ac1f1537c7f67d05a536ff498b61f8a288fb))
+
 # [1.61.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.60.0...v1.61.0) (2026-01-26)
 
 
