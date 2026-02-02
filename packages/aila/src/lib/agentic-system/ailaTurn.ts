@@ -57,6 +57,10 @@ export async function ailaTurn({
       stack: error instanceof Error ? error.stack : undefined,
     };
     context.currentTurn.errors.push(errorContext);
+    // Ensure llmMessage was opened if error occurred before planning completed
+    if (!context.currentTurn.plannerOutput) {
+      context.callbacks.onPlannerComplete({ sectionKeys: [] });
+    }
     // Handle unexpected errors
     await terminateWithGenericError(context);
   }
