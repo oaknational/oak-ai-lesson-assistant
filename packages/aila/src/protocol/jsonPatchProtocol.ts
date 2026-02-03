@@ -290,15 +290,8 @@ export const JsonPatchValueForLLMSchema = z.union([
 ]);
 
 export const JsonPatchValueOptionalSchema = z.union([
-  // These generate "add" and "replace" patches could potentially be
-  // quite dangerous. Zod will validate anything you pass as a value
-  // here, which means it will ignore the schema that is defined in the
-  // subsequent schemas.
-  // #TODO we should probably remove these and update the code that
-  // relies on these loose types
-  JsonPatchAddSchema, // Generic add for any path
-  JsonPatchReplaceSchema, // Generic replace for any path
-  JsonPatchRemoveSchema, // Generic remove for any path
+  // Specific schemas first - Zod tries schemas in order, so these get
+  // priority and will validate both path and value structure
   PatchBasedOnOptional,
   PatchString,
   PatchStringArray,
@@ -307,6 +300,15 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchQuizV2Optional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
+  // These generic "add" and "replace" patches could potentially be
+  // quite dangerous. Zod will validate anything you pass as a value
+  // here, which means it will ignore the schema that is defined in the
+  // previous schemas.
+  // #TODO we should probably remove these and update the code that
+  // relies on these loose types
+  JsonPatchAddSchema, // Generic add for any path
+  JsonPatchReplaceSchema, // Generic replace for any path
+  JsonPatchRemoveSchema, // Generic remove for any path
 ]);
 
 export const PatchDocumentSchema = z.object({
@@ -640,6 +642,7 @@ export function tryParsePatch(obj: object): PatchDocument | UnknownDocument {
     const patchDocument: PatchDocument = parsed.data;
     return patchDocument;
   } else {
+    log.info("tryParsePatch failed:", JSON.stringify(obj), parsed.error.message);
     return { type: "unknown", value: JSON.stringify(obj), error: parsed.error };
   }
 }
