@@ -227,13 +227,13 @@ export class AilaChat implements AilaChatService {
   // chats so that we can generate different types of document
   async handleSettingInitialState() {
     if (this._aila.document.hasInitialisedContentFromMessages) {
-      // #TODO sending these events in a different place to where they are set seems like a bad idea
+      // Only these fields are set by initialise() from categorisation
       const plan = this._aila.document.content;
-      const keys = Object.keys(plan) as Array<keyof typeof plan>;
+      const keys = ["title", "subject", "keyStage", "topic"] as const;
       for (const key of keys) {
         const value = plan[key];
         if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+          await this.enqueueInitialField(`/${key}`, value);
         }
       }
     }
@@ -273,13 +273,13 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  public async enqueuePatch(
-    path: string,
-    value: string | string[] | number | object,
+  public async enqueueInitialField(
+    path: "/title" | "/keyStage" | "/topic" | "/subject" | "/learningOutcome",
+    value: string,
   ) {
     // Optional "?" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
+      await this._patchEnqueuer.enqueueInitialField(path, value);
     }
   }
 
