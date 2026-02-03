@@ -300,15 +300,13 @@ export const JsonPatchValueOptionalSchema = z.union([
   PatchQuizV2Optional,
   PatchMisconceptionsOptional,
   PatchKeywordsOptional,
-  // These generic "add" and "replace" patches could potentially be
-  // quite dangerous. Zod will validate anything you pass as a value
-  // here, which means it will ignore the schema that is defined in the
-  // previous schemas.
-  // #TODO we should probably remove these and update the code that
-  // relies on these loose types
-  JsonPatchAddSchema, // Generic add for any path
-  JsonPatchReplaceSchema, // Generic replace for any path
-  JsonPatchRemoveSchema, // Generic remove for any path
+  // Generic remove needed since we don't have section-specific remove schemas
+  JsonPatchRemoveSchema,
+  // Generic add/replace are dangerous as Zod accepts any value, bypassing
+  // the specific schemas above. Currently disabled since all sections have
+  // specific schemas. Would be needed for nested/fine-grained patches in future.
+  // JsonPatchAddSchema,
+  // JsonPatchReplaceSchema,
 ]);
 
 export const PatchDocumentSchema = z.object({

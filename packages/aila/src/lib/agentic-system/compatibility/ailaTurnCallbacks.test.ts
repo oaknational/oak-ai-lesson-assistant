@@ -37,7 +37,7 @@ describe("ailaTurnCallbacks", () => {
       } as unknown as ReadableStreamDefaultController,
     });
 
-    onSectionComplete({}, { subject: "art" });
+    onSectionComplete([{ op: "add", path: "/subject", value: "art" }]);
     expect(chunks).toEqual(
       `{"type":"patch","reasoning":"Updated subject based on user request","value":{"op":"add","path":"/subject","value":"art"},"status":"complete"}`,
     );
@@ -57,8 +57,8 @@ describe("ailaTurnCallbacks", () => {
     });
 
     await onTurnComplete({
-      prevDoc: {},
-      nextDoc: { subject: "art" },
+      stepsExecuted: [],
+      document: { subject: "art" },
       ailaMessage: "We've updated the subject, title, and key learning points",
     });
     expect(chunks).toEqual(
@@ -66,7 +66,7 @@ describe("ailaTurnCallbacks", () => {
     );
   });
 
-  test("onSectionComplete with multiple sections and nested changes", () => {
+  test("onSectionComplete with multiple patches", () => {
     let chunks = "";
     const { onSectionComplete } = createAilaTurnCallbacks({
       chat: {
@@ -80,64 +80,19 @@ describe("ailaTurnCallbacks", () => {
       } as unknown as ReadableStreamDefaultController,
     });
 
-    // Test with multiple sections changing and nested objects
-    const prevDoc = {
-      subject: "science",
-      learningObjective: {
-        title: "Understanding atoms",
-        pupils: {
-          will: ["identify atoms"],
-          can: ["draw atomic structure"],
-        },
-      },
-    };
+    onSectionComplete([
+      { op: "replace", path: "/subject", value: "chemistry" },
+      { op: "add", path: "/title", value: "Introduction to Chemistry" },
+    ]);
 
-    const nextDoc = {
-      subject: "chemistry", // Changed
-      title: "Introduction to Chemistry", // Added
-      learningObjective: {
-        title: "Understanding molecules", // Changed nested
-        pupils: {
-          will: ["identify molecules", "understand bonding"], // Changed nested array
-          can: ["draw molecular structure"], // Changed nested
-          should: ["apply knowledge"], // Added nested
-        },
-      },
-      keyLearningPoints: ["Basic chemistry concepts"], // Added
-    };
-
-    onSectionComplete(prevDoc, nextDoc);
-
-    // The raw chunks should be valid JSON patches separated by commas
-    // Let's parse them as a JSON array by wrapping in brackets
     const patchesJson = `[${chunks}]`;
-    const patches = JSON.parse(patchesJson);
+    const patches = JSON.parse(patchesJson) as { value: { op: string; path: string } }[];
 
-    // Should have multiple patches for the various changes
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    expect(patches.length).toBeGreaterThan(1);
-
-    // Check that we have patches for different types of operations
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-    const operations = patches.map((patch: any) => patch.value.op);
-    expect(operations).toContain("replace"); // subject change
-    expect(operations).toContain("add"); // new fields
-
-    // Check that nested paths are handled correctly
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-    const paths = patches.map((patch: any) => patch.value.path);
-    expect(paths).toContain("/subject");
-    expect(paths).toContain("/title");
-    expect(paths).toContain("/keyLearningPoints");
-
-    // Should have nested paths for learningObjective changes
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const nestedPaths = paths.filter(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any
-      (path: any) => path.startsWith("/learningObjective"),
-    );
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    expect(nestedPaths.length).toBeGreaterThan(0);
+    expect(patches).toHaveLength(2);
+    expect(patches[0]?.value.op).toBe("replace");
+    expect(patches[0]?.value.path).toBe("/subject");
+    expect(patches[1]?.value.op).toBe("add");
+    expect(patches[1]?.value.path).toBe("/title");
   });
 
   test("all callbacks together", async () => {
@@ -156,28 +111,27 @@ describe("ailaTurnCallbacks", () => {
       });
 
     onPlannerComplete({
-      sectionKeys: ["subject", "title", "keyLearningPoints"],
+      sectionKeys: ["subject", "title"],
     });
-    onSectionComplete(
-      {},
-      {
-        subject: "art",
-        title: "Goethe's Colour Wheel",
-        keyLearningPoints: ["An introduction to Goethe's Colour Wheel"],
-      },
-    );
+    onSectionComplete([
+      { op: "add", path: "/subject", value: "art" },
+      { op: "add", path: "/title", value: "Goethe's Colour Wheel" },
+    ]);
     await onTurnComplete({
-      prevDoc: {},
-      nextDoc: {
+      stepsExecuted: [
+        { type: "section", sectionKey: "subject", action: "generate", sectionInstructions: null },
+        { type: "section", sectionKey: "title", action: "generate", sectionInstructions: null },
+      ],
+      document: {
         subject: "art",
         title: "Goethe's Colour Wheel",
-        keyLearningPoints: ["An introduction to Goethe's Colour Wheel"],
       },
-      ailaMessage: "We've updated the subject, title, and key learning points",
+      ailaMessage: "We've updated the subject and title",
     });
+
     expect(JSON.parse(chunks)).toMatchObject({
       type: "llmMessage",
-      sectionsToEdit: ["subject", "title", "keyLearningPoints"],
+      sectionsToEdit: ["subject", "title"],
       patches: [
         {
           type: "patch",
@@ -191,21 +145,11 @@ describe("ailaTurnCallbacks", () => {
           value: { op: "add", path: "/title", value: "Goethe's Colour Wheel" },
           status: "complete",
         },
-        {
-          type: "patch",
-          reasoning: "Updated keyLearningPoints based on user request",
-          value: {
-            op: "add",
-            path: "/keyLearningPoints",
-            value: ["An introduction to Goethe's Colour Wheel"],
-          },
-          status: "complete",
-        },
       ],
-      sectionsEdited: [],
+      sectionsEdited: ["subject", "title"],
       prompt: {
         type: "text",
-        value: "We've updated the subject, title, and key learning points",
+        value: "We've updated the subject and title",
       },
       status: "complete",
     });
