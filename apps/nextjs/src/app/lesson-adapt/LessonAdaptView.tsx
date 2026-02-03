@@ -6,47 +6,57 @@ import {
   AdaptChatSidebar,
   AdaptLessonContent,
 } from "@/components/AppComponents/LessonAdapt";
-import { trpc } from "@/utils/trpc";
+import { ReviewModal } from "@/components/AppComponents/LessonAdapt/ReviewModal";
+import {
+  LessonAdaptStoreProvider,
+  useLessonAdaptActions,
+  useLessonAdaptStore,
+} from "@/stores/lessonAdaptStore/LessonAdaptStoreProvider";
 
-const LessonAdaptPage = () => {
-  const [lessonId, setLessonId] = useState("");
-  const [fetchedLessonId, setFetchedLessonId] = useState<string | null>(null);
+function LessonAdaptContent() {
+  const [lessonIdInput, setLessonIdInput] = useState("");
 
-  const { data, isLoading, error } = trpc.lessonAdapt.getLessonContent.useQuery(
-    { lessonSlug: fetchedLessonId ?? "" },
-    {
-      enabled: !!fetchedLessonId,
-      refetchOnWindowFocus: false,
-    },
+  const actions = useLessonAdaptActions();
+  const status = useLessonAdaptStore((state) => state.status);
+  const error = useLessonAdaptStore((state) => state.error);
+  const lessonData = useLessonAdaptStore((state) => state.lessonData);
+  const slideContent = useLessonAdaptStore((state) => state.slideContent);
+  const sessionId = useLessonAdaptStore((state) => state.sessionId);
+  const duplicatedPresentationId = useLessonAdaptStore(
+    (state) => state.duplicatedPresentationId,
+  );
+  const duplicatedPresentationUrl = useLessonAdaptStore(
+    (state) => state.duplicatedPresentationUrl,
+  );
+  const thumbnails = useLessonAdaptStore((state) => state.thumbnails);
+  const thumbnailsLoading = useLessonAdaptStore(
+    (state) => state.thumbnailsLoading,
+  );
+  const thumbnailsError = useLessonAdaptStore((state) => state.thumbnailsError);
+  const currentPlan = useLessonAdaptStore((state) => state.currentPlan);
+  const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
+  const approvedChangeIds = useLessonAdaptStore(
+    (state) => state.approvedChangeIds,
   );
 
-  // Fetch thumbnails in the background once we have the presentationId
-  const {
-    data: thumbnailsData,
-    isLoading: thumbnailsLoading,
-    error: thumbnailsError,
-  } = trpc.lessonAdapt.getSlideThumbnails.useQuery(
-    { presentationId: data?.duplicatedPresentationId ?? "" },
-    {
-      enabled: !!data?.duplicatedPresentationId,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const isLoading = status === "loading-lesson";
+  const isReady = status === "ready" || status === "generating-plan";
 
   const handleFetch = () => {
-    if (lessonId.trim()) {
-      console.log("Fetching lesson with ID:", lessonId);
-      setFetchedLessonId(lessonId);
+    if (lessonIdInput.trim()) {
+      actions.setLessonSlug(lessonIdInput);
+      void actions.fetchLessonContent();
     }
   };
 
-  const klpLcMapping = data?.slideContent.slides.map((slide) => {
-    return {
+  // Build slide KLP mappings for the modal
+  const slideKlpMappings =
+    slideContent?.slides.map((slide) => ({
       slideNumber: slide.slideNumber,
+      slideId: slide.slideId,
       keyLearningPoints: slide.keyLearningPoints ?? [],
       learningCycles: slide.learningCycles ?? [],
-    };
-  });
+    })) ?? [];
 
   return (
     <div className="flex h-screen flex-col">
@@ -61,14 +71,14 @@ const LessonAdaptPage = () => {
           <div className="flex gap-2">
             <input
               type="text"
-              value={lessonId}
-              onChange={(e) => setLessonId(e.target.value)}
+              value={lessonIdInput}
+              onChange={(e) => setLessonIdInput(e.target.value)}
               placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
               className="flex-1 rounded border p-2"
             />
             <button
               onClick={handleFetch}
-              disabled={!lessonId.trim() || isLoading}
+              disabled={!lessonIdInput.trim() || isLoading}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-grey-400 rounded px-4 py-2"
             >
               {isLoading ? "Loading..." : "Fetch Lesson"}
@@ -83,10 +93,10 @@ const LessonAdaptPage = () => {
           </div>
         )}
 
-        {data && (
+        {isReady && lessonData && (
           <div className="mt-4 rounded border border-green-200 bg-green-50 p-3">
             <p className="text-sm font-semibold text-green-800">
-              ✓ Lesson fetched successfully! Slide deck duplicated and ready for
+              Lesson fetched successfully! Slide deck duplicated and ready for
               adaptation
             </p>
           </div>
@@ -94,14 +104,14 @@ const LessonAdaptPage = () => {
       </div>
 
       {/* Main content area with chat and lesson content */}
-      {data && (
+      {isReady && lessonData && sessionId && (
         <div className="flex flex-1 overflow-hidden">
-          <AdaptChatSidebar sessionId={data.sessionId} />
+          <AdaptChatSidebar />
           <AdaptLessonContent
-            presentationId={data.duplicatedPresentationId}
-            presentationUrl={data.duplicatedPresentationUrl}
-            lessonData={data.lessonData}
-            thumbnails={thumbnailsData?.thumbnails}
+            presentationId={duplicatedPresentationId ?? ""}
+            presentationUrl={duplicatedPresentationUrl ?? ""}
+            lessonData={lessonData}
+            thumbnails={thumbnails ?? undefined}
             thumbnailsLoading={thumbnailsLoading}
             thumbnailsError={thumbnailsError}
           />
@@ -109,7 +119,7 @@ const LessonAdaptPage = () => {
       )}
 
       {/* Debug info - collapsible */}
-      {data && (
+      {isReady && slideContent && (
         <details className="border-t border-gray-300 bg-gray-50 p-4">
           <summary className="cursor-pointer text-sm font-semibold">
             Debug Info (Click to expand)
@@ -120,7 +130,7 @@ const LessonAdaptPage = () => {
                 Extracted Slide Content - LLM Format
               </summary>
               <pre className="mt-2 max-h-48 overflow-auto text-xs">
-                {JSON.stringify(data.slideContent, null, 2)}
+                {JSON.stringify(slideContent, null, 2)}
               </pre>
             </details>
             <details className="rounded border bg-white p-2">
@@ -128,22 +138,40 @@ const LessonAdaptPage = () => {
                 Key learning points and learning cycles mapping
               </summary>
               <pre className="mt-2 max-h-48 overflow-auto text-xs">
-                {JSON.stringify(klpLcMapping, null, 2)}
-              </pre>
-            </details>
-
-            <details className="rounded border bg-white p-2">
-              <summary className="cursor-pointer text-xs font-semibold">
-                Raw Lesson Data
-              </summary>
-              <pre className="mt-2 max-h-48 overflow-auto text-xs">
-                {JSON.stringify(data.rawLessonData, null, 2)}
+                {JSON.stringify(slideKlpMappings, null, 2)}
               </pre>
             </details>
           </div>
         </details>
       )}
+
+      {/* Review Modal */}
+      {currentPlan && (
+        <ReviewModal
+          isOpen={showReviewModal}
+          onClose={() => actions.setShowReviewModal(false)}
+          plan={currentPlan}
+          presentationId={duplicatedPresentationId ?? ""}
+          presentationUrl={duplicatedPresentationUrl ?? ""}
+          thumbnails={thumbnails}
+          slideKlpMappings={slideKlpMappings}
+          approvedChangeIds={approvedChangeIds}
+          onToggleChange={actions.toggleChangeApproval}
+          onApproveAll={actions.approveAllChanges}
+          onRejectAll={actions.rejectAllChanges}
+          onExecute={actions.executeAdaptations}
+          isExecuting={status === "executing"}
+        />
+      )}
     </div>
+  );
+}
+
+const LessonAdaptPage = () => {
+  return (
+    <LessonAdaptStoreProvider>
+      <LessonAdaptContent />
+    </LessonAdaptStoreProvider>
   );
 };
 
