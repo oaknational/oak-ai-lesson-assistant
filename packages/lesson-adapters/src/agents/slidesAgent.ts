@@ -4,11 +4,11 @@ import type { SlidesAgentResponse } from "../schemas/plan";
 import type { EditScope } from "./coordinatorAgent";
 import {
   DEFAULT_BATCH_SIZE,
+  type GenerateSlidePlanInput,
   INTENT_CONFIGS,
   SUPPORTED_EDIT_TYPES,
   callSlidesAgent,
   filterSlideContent,
-  type GenerateSlidePlanInput,
   generateSlidePlanInputSchema,
   processInBatches,
   validateAgentOutput,
@@ -42,13 +42,27 @@ export async function generateSlidePlan(
       );
     }
 
-    const slidesForPrompt = filterSlideContent(parsed.slides, config.slideFields);
+    const slidesForPrompt = filterSlideContent(
+      parsed.slides,
+      config.slideFields,
+    );
     const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
-    const shouldBatch = scope === "global" && slidesForPrompt.length > batchSize;
+    const shouldBatch =
+      scope === "global" && slidesForPrompt.length > batchSize;
 
     const output = shouldBatch
-      ? await processInBatches(config, parsed.editType, parsed.userMessage, slidesForPrompt)
-      : await callSlidesAgent(config, parsed.editType, parsed.userMessage, slidesForPrompt);
+      ? await processInBatches(
+          config,
+          parsed.editType,
+          parsed.userMessage,
+          slidesForPrompt,
+        )
+      : await callSlidesAgent(
+          config,
+          parsed.editType,
+          parsed.userMessage,
+          slidesForPrompt,
+        );
 
     if (!output) {
       return undefined;

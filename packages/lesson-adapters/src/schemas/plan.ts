@@ -139,7 +139,9 @@ export interface SlidesAgentResponse {
  * This ensures downstream code always works with optional reasoning fields.
  */
 export function normalizeAgentResponse(
-  response: z.infer<typeof bulkChangesSchema> | z.infer<typeof targetedChangesSchema>,
+  response:
+    | z.infer<typeof bulkChangesSchema>
+    | z.infer<typeof targetedChangesSchema>,
 ): SlidesAgentResponse {
   // Both schema shapes are compatible with SlidesAgentResponse
   // Bulk responses have no reasoning on changes (will be undefined)
