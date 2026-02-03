@@ -8,10 +8,10 @@ import {
 
 const host = process.env.NEXT_PUBLIC_POSTHOG_HOST as string;
 const apiKey = process.env.NEXT_PUBLIC_POSTHOG_API_KEY ?? "*";
-// TODO: Migrate to "Feature Flags Secure API key" which replaces personal API keys
-// for local evaluation. See PostHog Settings → Feature Flags → Secure API Key
-const personalApiKey = process.env.POSTHOG_PERSONAL_KEY_FLAGS;
-invariant(personalApiKey, "POSTHOG_PERSONAL_KEY_FLAGS is required");
+// Feature Flags Secure API Key for local evaluation (phs_... format)
+// Generate at: PostHog Settings → Feature Flags → Secure API Key
+const featureFlagsApiKey = process.env.POSTHOG_FEATURE_FLAGS_API_KEY;
+invariant(featureFlagsApiKey, "POSTHOG_FEATURE_FLAGS_API_KEY is required");
 
 const enableLocalEvaluation = process.env.NODE_ENV !== "test";
 
@@ -27,5 +27,5 @@ export const posthogAiBetaServerClient = new PostHog(apiKey, {
   // @see https://posthog.com/docs/feature-flags/local-evaluation
   flagDefinitionCacheProvider,
   featureFlagsPollingInterval,
-  personalApiKey: enableLocalEvaluation ? personalApiKey : undefined,
+  personalApiKey: enableLocalEvaluation ? featureFlagsApiKey : undefined,
 });
