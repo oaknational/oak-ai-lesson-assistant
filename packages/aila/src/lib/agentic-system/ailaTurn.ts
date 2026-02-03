@@ -1,3 +1,10 @@
+/**
+ * #TODO: Add americanisms checking to agentic flow
+ * The streaming flow passes detected americanisms to the LLM via AilaLessonPromptBuilder.
+ * This isn't wired up here - section agents don't receive americanism warnings.
+ * See: packages/aila/src/features/americanisms/AilaAmericanisms.ts
+ */
+
 import { executePlanSteps } from "./execution/executePlanSteps";
 import { executePlanningPhase } from "./execution/executePlanningPhase";
 import { handleRelevantLessons } from "./execution/handleRelevantLessons";
@@ -16,7 +23,9 @@ export async function ailaTurn({
     persistedState,
     runtime,
     currentTurn: {
-      document: persistedState.initialDocument,
+      // Shallow copy prevents mutations to currentTurn.document from affecting
+      // persistedState.initialDocument, ensuring onTurnComplete can diff them properly
+      document: { ...persistedState.initialDocument },
       relevantLessons: persistedState.relevantLessons,
       plannerOutput: null,
       errors: [],
