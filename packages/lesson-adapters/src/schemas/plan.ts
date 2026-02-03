@@ -1,98 +1,164 @@
 import { z } from "zod";
 
-/**
- * Schema for a single text edit within a slide.
- * changeId format: "te-{slideNumber}-{index}"
- */
-export const textEditSchema = z.object({
+import { intentSchema } from "../agents/classifierAgent";
+
+// ---------------------------------------------------------------------------
+// Base schemas (no per-change reasoning) - used for bulk intents
+// ---------------------------------------------------------------------------
+
+const textEditBaseSchema = z.object({
   changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   elementId: z.string(),
   originalText: z.string(),
   newText: z.string(),
-  reasoning: z.string(),
 });
 
-/**
- * Schema for a table cell edit.
- * Uses composite cellId format: {tableId}_r{row}c{col}
- */
-export const tableCellEditSchema = z.object({
+const tableCellEditBaseSchema = z.object({
   changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   cellId: z.string(),
   originalText: z.string(),
   newText: z.string(),
-  reasoning: z.string(),
 });
 
-/**
- * Schema for deleting a text element from a slide.
- */
-export const textElementDeletionSchema = z.object({
+const textElementDeletionBaseSchema = z.object({
   changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   elementId: z.string(),
   originalText: z.string(),
-  reasoning: z.string(),
 });
 
-/**
- * Schema for deleting an entire slide.
- */
-export const slideDeletionSchema = z.object({
+const slideDeletionBaseSchema = z.object({
   changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
-  reasoning: z.string(),
 });
 
-/**
- * Schema for the slides agent structured response.
- */
-export const slidesAgentResponseSchema = z.object({
+const slidesToKeepSchema = z.object({
+  slideNumber: z.number(),
+  slideId: z.string(),
+});
+
+// ---------------------------------------------------------------------------
+// Bulk response schema (no per-change reasoning)
+// ---------------------------------------------------------------------------
+
+export const bulkChangesSchema = z.object({
   analysis: z.string(),
   changes: z.object({
-    textEdits: z.array(textEditSchema),
-    tableCellEdits: z.array(tableCellEditSchema),
-    textElementDeletions: z.array(textElementDeletionSchema),
-    slideDeletions: z.array(slideDeletionSchema),
-    slidesToKeep: z.array(
-      z.object({
-        slideNumber: z.number(),
-        slideId: z.string(),
-      }),
-    ),
+    textEdits: z.array(textEditBaseSchema),
+    tableCellEdits: z.array(tableCellEditBaseSchema),
+    textElementDeletions: z.array(textElementDeletionBaseSchema),
+    slideDeletions: z.array(slideDeletionBaseSchema),
+    slidesToKeep: z.array(slidesToKeepSchema),
   }),
   reasoning: z.string(),
 });
 
+// ---------------------------------------------------------------------------
+// Targeted response schema (with per-change reasoning)
+// ---------------------------------------------------------------------------
+
+export const targetedChangesSchema = z.object({
+  analysis: z.string(),
+  changes: z.object({
+    textEdits: z.array(textEditBaseSchema.extend({ reasoning: z.string() })),
+    tableCellEdits: z.array(
+      tableCellEditBaseSchema.extend({ reasoning: z.string() }),
+    ),
+    textElementDeletions: z.array(
+      textElementDeletionBaseSchema.extend({ reasoning: z.string() }),
+    ),
+    slideDeletions: z.array(
+      slideDeletionBaseSchema.extend({ reasoning: z.string() }),
+    ),
+    slidesToKeep: z.array(slidesToKeepSchema),
+  }),
+  reasoning: z.string(),
+});
+
+// ---------------------------------------------------------------------------
+// Normalized types (used throughout the app after LLM response)
+// Per-change reasoning is optional - present for targeted, absent for bulk
+// ---------------------------------------------------------------------------
+
+export interface TextEdit {
+  changeId: string;
+  slideNumber: number;
+  slideId: string;
+  elementId: string;
+  originalText: string;
+  newText: string;
+  reasoning?: string;
+}
+
+export interface TableCellEdit {
+  changeId: string;
+  slideNumber: number;
+  slideId: string;
+  cellId: string;
+  originalText: string;
+  newText: string;
+  reasoning?: string;
+}
+
+export interface TextElementDeletion {
+  changeId: string;
+  slideNumber: number;
+  slideId: string;
+  elementId: string;
+  originalText: string;
+  reasoning?: string;
+}
+
+export interface SlideDeletion {
+  changeId: string;
+  slideNumber: number;
+  slideId: string;
+  reasoning?: string;
+}
+
+export interface SlidesAgentResponse {
+  analysis: string;
+  changes: {
+    textEdits: TextEdit[];
+    tableCellEdits: TableCellEdit[];
+    textElementDeletions: TextElementDeletion[];
+    slideDeletions: SlideDeletion[];
+    slidesToKeep: { slideNumber: number; slideId: string }[];
+  };
+  reasoning: string;
+}
+
 /**
- * Schema for the full adaptation plan returned by the coordinator.
+ * Normalizes a bulk or targeted LLM response to the standard SlidesAgentResponse type.
+ * This ensures downstream code always works with optional reasoning fields.
  */
+export function normalizeAgentResponse(
+  response: z.infer<typeof bulkChangesSchema> | z.infer<typeof targetedChangesSchema>,
+): SlidesAgentResponse {
+  // Both schema shapes are compatible with SlidesAgentResponse
+  // Bulk responses have no reasoning on changes (will be undefined)
+  // Targeted responses have reasoning on changes (will be present)
+  return response as SlidesAgentResponse;
+}
+
+// ---------------------------------------------------------------------------
+// Adaptation plan schema (uses normalized response type)
+// ---------------------------------------------------------------------------
+
 export const adaptationPlanSchema = z.object({
-  intent: z.enum([
-    "changeReadingAge",
-    "deleteSlide",
-    "editSlideText",
-    "removeKLP",
-    "other",
-  ]),
+  intent: intentSchema.shape.intent,
   scope: z.enum(["global", "structural", "targeted"]),
   userMessage: z.string(),
   classifierConfidence: z.number(),
   classifierReasoning: z.string(),
-  slidesAgentResponse: slidesAgentResponseSchema,
+  slidesAgentResponse: z.custom<SlidesAgentResponse>(),
   totalChanges: z.number(),
 });
 
-// Inferred TypeScript types
-export type TextEdit = z.infer<typeof textEditSchema>;
-export type TableCellEdit = z.infer<typeof tableCellEditSchema>;
-export type TextElementDeletion = z.infer<typeof textElementDeletionSchema>;
-export type SlideDeletion = z.infer<typeof slideDeletionSchema>;
-export type SlidesAgentResponse = z.infer<typeof slidesAgentResponseSchema>;
 export type AdaptationPlan = z.infer<typeof adaptationPlanSchema>;

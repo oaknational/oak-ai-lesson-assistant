@@ -1,10 +1,8 @@
 // Plan schemas and types
 export {
-  textEditSchema,
-  tableCellEditSchema,
-  textElementDeletionSchema,
-  slideDeletionSchema,
-  slidesAgentResponseSchema,
+  bulkChangesSchema,
+  targetedChangesSchema,
+  normalizeAgentResponse,
   adaptationPlanSchema,
   type TextEdit,
   type TableCellEdit,
