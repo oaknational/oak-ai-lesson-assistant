@@ -41,7 +41,6 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
   const personProperties = sessionClaims?.labs?.featureFlagGroup
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
     : undefined;
-  log.info("Evaluating", distinctId, personProperties ?? "(no properties)");
 
   const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
     // Only evaluate locally - no server fallback. We only pass properties available
@@ -53,6 +52,6 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
     personProperties,
   });
 
-  log.info("Bootstrapping feature flags", features);
+  log.info("Bootstrapped flags", features);
   return features;
 }

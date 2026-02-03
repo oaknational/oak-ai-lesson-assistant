@@ -48,9 +48,10 @@ export const flagDefinitionCacheProvider: FlagDefinitionCacheProvider = {
     data: FlagDefinitionCacheData,
   ): Promise<void> {
     cachedDefinitions = data;
-    log.info("Flag definitions received", {
-      flags: data.flags?.map((f) => f.key),
-    });
+    log.info(
+      "Flag definitions received:",
+      data.flags?.map((f) => f.key).join(", "),
+    );
     await kv.set(KV_KEY, data, { ex: CACHE_TTL_SECONDS });
   },
 
