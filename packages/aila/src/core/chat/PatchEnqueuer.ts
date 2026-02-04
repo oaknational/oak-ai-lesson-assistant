@@ -34,7 +34,10 @@ export class PatchEnqueuer {
     return this.enqueuePromise;
   }
 
-  public enqueueInitialField(path: StringPatchPath, value: string): Promise<void> {
+  public enqueueInitialField(
+    path: StringPatchPath,
+    value: string,
+  ): Promise<void> {
     return this.enqueueOperation(() => {
       if (!this.controller) {
         throw new Error("Controller not set");

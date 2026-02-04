@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { JsonPatchOperation } from "./helpers/immerPatchToJsonPatch";
 import type { TextStreamer } from "./helpers/createTextStreamer";
+import type { JsonPatchOperation } from "./helpers/immerPatchToJsonPatch";
 
 const log = aiLogger("aila:agents");
 

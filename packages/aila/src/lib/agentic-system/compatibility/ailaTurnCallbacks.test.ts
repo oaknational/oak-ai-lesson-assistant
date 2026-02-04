@@ -86,7 +86,9 @@ describe("ailaTurnCallbacks", () => {
     ]);
 
     const patchesJson = `[${chunks}]`;
-    const patches = JSON.parse(patchesJson) as { value: { op: string; path: string } }[];
+    const patches = JSON.parse(patchesJson) as {
+      value: { op: string; path: string };
+    }[];
 
     expect(patches).toHaveLength(2);
     expect(patches[0]?.value.op).toBe("replace");
@@ -119,8 +121,18 @@ describe("ailaTurnCallbacks", () => {
     ]);
     await onTurnComplete({
       stepsExecuted: [
-        { type: "section", sectionKey: "subject", action: "generate", sectionInstructions: null },
-        { type: "section", sectionKey: "title", action: "generate", sectionInstructions: null },
+        {
+          type: "section",
+          sectionKey: "subject",
+          action: "generate",
+          sectionInstructions: null,
+        },
+        {
+          type: "section",
+          sectionKey: "title",
+          action: "generate",
+          sectionInstructions: null,
+        },
       ],
       document: {
         subject: "art",
