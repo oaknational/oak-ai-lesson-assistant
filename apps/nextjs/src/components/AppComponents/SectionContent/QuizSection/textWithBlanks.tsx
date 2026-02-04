@@ -64,7 +64,7 @@ export const createBlankComponents = (
             $font="body-2-bold"
             $color={answer ? "text-success" : "text-primary"}
             $borderStyle="none none solid none"
-            {...(!answer && { $pl: "inner-padding-xl5" })}
+            {...(!answer && { $pl: "spacing-56" })}
             $display="inline"
             $textAlign="center"
             aria-label={ariaLabel}

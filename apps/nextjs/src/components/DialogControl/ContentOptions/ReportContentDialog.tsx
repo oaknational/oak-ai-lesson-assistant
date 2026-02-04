@@ -88,11 +88,7 @@ const ReportContentDialog = ({
           <>
             <OakP className="text-2xl">Thank you</OakP>
             <OakP>Your feedback has been submitted.</OakP>
-            <OakFlex
-              $width="100%"
-              $justifyContent="flex-end"
-              $gap="all-spacing-3"
-            >
+            <OakFlex $width="100%" $justifyContent="flex-end" $gap="spacing-12">
               <OakPrimaryButton onClick={() => closeDialog()}>
                 Close
               </OakPrimaryButton>
@@ -100,13 +96,13 @@ const ReportContentDialog = ({
           </>
         ) : (
           <>
-            <OakFlex $width="100%" $flexDirection="column" $gap="all-spacing-4">
+            <OakFlex $width="100%" $flexDirection="column" $gap="spacing-16">
               <OakP>Please provide details below.</OakP>
             </OakFlex>
             <OakTextInput
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              $minHeight="all-spacing-18"
+              $minHeight="spacing-180"
             />
 
             <ModalFooterButtons

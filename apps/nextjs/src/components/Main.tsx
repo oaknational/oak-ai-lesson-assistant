@@ -1,12 +1,12 @@
 import {
   OakBox,
-  type OakColorToken,
   OakMaxWidth,
+  type OakUiRoleToken,
 } from "@oaknational/oak-components";
 
 type MainProps = {
   children: React.ReactNode;
-  backgroundColor?: OakColorToken;
+  backgroundColor?: OakUiRoleToken;
   defaultMaxWidth?: boolean;
 };
 
@@ -19,13 +19,13 @@ const Main = ({
     <OakBox
       as="main"
       $position={"relative"}
-      $ph="inner-padding-m"
-      $pt="inner-padding-xl7"
+      $ph="spacing-16"
+      $pt="spacing-72"
       $background={backgroundColor ?? "transparent"}
       $overflowX={["hidden", "hidden", "visible"]}
     >
       {defaultMaxWidth ? (
-        <OakMaxWidth $mt="space-between-xxl">{children}</OakMaxWidth>
+        <OakMaxWidth $mt="spacing-72">{children}</OakMaxWidth>
       ) : (
         children
       )}

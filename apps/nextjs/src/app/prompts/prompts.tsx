@@ -25,10 +25,8 @@ export type PromptsPageData = Readonly<{
 
 export const PromptsContent = ({ apps }: PromptsPageData) => {
   const pathname = usePathname();
-  const itemRefs: { [key: string]: React.RefObject<HTMLLIElement> } = useMemo(
-    () => ({}),
-    [],
-  );
+  const itemRefs: { [key: string]: React.RefObject<HTMLLIElement | null> } =
+    useMemo(() => ({}), []);
 
   const marginOffset = 40;
   useEffect(() => {
@@ -52,7 +50,7 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
     <OakMaxWidth>
       <HeroContainer>
         <OakBox>
-          <OakHeading tag="h1" $mb="space-between-s" $font="heading-2">
+          <OakHeading tag="h1" $mb="spacing-16" $font="heading-2">
             How does our AI work?
           </OakHeading>
           <OakP>
@@ -71,8 +69,8 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
           </OakP>
         </OakBox>
       </HeroContainer>
-      <OakBox $pv="inner-padding-s" $mt="space-between-xl">
-        <OakHeading $mb="space-between-s" tag="h2">
+      <OakBox $pv="spacing-12" $mt="spacing-56">
+        <OakHeading $mb="spacing-16" tag="h2">
           As an example, here is the prompt that we use for our quiz builder
           tool:
         </OakHeading>
@@ -88,8 +86,8 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
                   <OakHeading
                     tag="h3"
                     $font="body-1-bold"
-                    $mb="space-between-ssx"
-                    $mt="space-between-m"
+                    $mb="spacing-8"
+                    $mt="spacing-24"
                   >
                     <OakSpan $font="body-1">App:</OakSpan> {app.name}
                   </OakHeading>
@@ -108,7 +106,7 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
                           <OakHeading
                             tag="h3"
                             $font="heading-6"
-                            $mb="space-between-ssx"
+                            $mb="spacing-8"
                           >
                             {prompt.name}
                           </OakHeading>

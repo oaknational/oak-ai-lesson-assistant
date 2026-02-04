@@ -28,8 +28,8 @@ import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { buildFullQuizService } from "../quiz/fullservices/buildFullQuizService";
-import type { FullQuizService } from "../quiz/interfaces";
+import { buildQuizService } from "../quiz/fullservices/buildQuizService";
+import type { QuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -52,7 +52,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  public readonly fullQuizService: FullQuizService;
+  public readonly quizService: QuizService;
 
   constructor({
     id,
@@ -83,10 +83,10 @@ export class AilaChat implements AilaChatService {
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
-    this.fullQuizService = buildFullQuizService({
-      quizSelector: "simple",
-      quizReranker: "ai-evaluator",
-      quizGenerators: aila.options.quizGenerators,
+    this.quizService = buildQuizService({
+      sources: aila.options.quizSources,
+      enrichers: ["imageDescriptions"],
+      composer: "llm",
     });
   }
 
@@ -177,10 +177,7 @@ export class AilaChat implements AilaChatService {
     } else if (error instanceof Error) {
       await this.enqueueError({ message: error.message });
     }
-    if (
-      !this._aila.options.useAgenticAila &&
-      !this._aila.options.useLegacyAgenticAila
-    ) {
+    if (!this._aila.options.useAgenticAila) {
       await this.persistGeneration("FAILED");
       log.info("Generation marked as failed");
     }
@@ -227,13 +224,13 @@ export class AilaChat implements AilaChatService {
   // chats so that we can generate different types of document
   async handleSettingInitialState() {
     if (this._aila.document.hasInitialisedContentFromMessages) {
-      // #TODO sending these events in a different place to where they are set seems like a bad idea
+      // Only these fields are set by initialise() from categorisation
       const plan = this._aila.document.content;
-      const keys = Object.keys(plan) as Array<keyof typeof plan>;
+      const keys = ["title", "subject", "keyStage", "topic"] as const;
       for (const key of keys) {
         const value = plan[key];
         if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+          await this.enqueueInitialField(`/${key}`, value);
         }
       }
     }
@@ -273,13 +270,13 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  public async enqueuePatch(
-    path: string,
-    value: string | string[] | number | object,
+  public async enqueueInitialField(
+    path: "/title" | "/keyStage" | "/topic" | "/subject" | "/learningOutcome",
+    value: string,
   ) {
     // Optional "?" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
+      await this._patchEnqueuer.enqueueInitialField(path, value);
     }
   }
 
@@ -420,10 +417,7 @@ export class AilaChat implements AilaChatService {
     await this.span("persistChat", async () => {
       await this.persistChat();
     });
-    if (
-      !this.aila.options.useAgenticAila &&
-      !this.aila.options.useLegacyAgenticAila
-    ) {
+    if (!this.aila.options.useAgenticAila) {
       await this.span("persistGeneration", async () => {
         await this.persistGeneration("SUCCESS");
       });

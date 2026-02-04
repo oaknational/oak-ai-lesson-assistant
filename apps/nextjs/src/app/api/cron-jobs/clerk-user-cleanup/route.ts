@@ -44,12 +44,14 @@ async function deleteUser(user: User, isDryRun: boolean): Promise<void> {
     return;
   }
 
-  await clerkClient.users.deleteUser(user.id);
+  const client = await clerkClient();
+  await client.users.deleteUser(user.id);
   log.info(`Deleted user (ID: ${user.id})`);
 }
 
 async function cleanupUsers(isDryRun: boolean) {
-  const result = await clerkClient.users.getUserList({
+  const client = await clerkClient();
+  const result = await client.users.getUserList({
     limit: 500,
   });
 

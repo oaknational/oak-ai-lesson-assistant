@@ -36,14 +36,14 @@ export function SidebarItem({ chat }: SidebarItemProps) {
     <OakFlex
       $justifyContent="space-between"
       $alignItems="center"
-      $background={isHovered ? `grey30` : `white`}
+      $background={isHovered ? `bg-neutral-stronger` : `bg-primary`}
       $transition="standard-ease"
-      $pa="inner-padding-ssx"
+      $pa="spacing-4"
       $borderRadius="border-radius-s"
     >
       <OakFlex
         $justifyContent="flex-start"
-        $gap="all-spacing-2"
+        $gap="spacing-8"
         $alignItems="center"
       >
         {chat.isShared ? (

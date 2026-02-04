@@ -10,7 +10,7 @@ export function ModerationMessage() {
       <Message.Content>
         <OakFlex $alignItems={"center"}>
           <OakIcon $colorFilter="black" iconName="info" alt="" />
-          <OakP $ml="space-between-xs" $font={"body-3"}>
+          <OakP $ml="spacing-12" $font={"body-3"}>
             {`This lesson may need additional `}
             <OakLink
               element="button"

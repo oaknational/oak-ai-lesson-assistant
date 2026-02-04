@@ -94,7 +94,7 @@ export const DownloadAllButton = ({
 
   const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
   const { icon, ext, analyticsMaterialType } = getExportsConfig("all");
-  const { isSuccess, isError, mutateAsync, isLoading } =
+  const { isSuccess, isError, mutateAsync, isPending } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
   const { track } = useAnalytics();
   const { mutateAsync: zipStatusMutateAsync } =
@@ -186,7 +186,7 @@ export const DownloadAllButton = ({
           <SendEmailIcon
             isSuccess={isSuccess}
             isError={isError}
-            isLoading={isLoading}
+            isLoading={isPending}
           />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">

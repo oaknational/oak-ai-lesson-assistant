@@ -1,11 +1,18 @@
 import type { PartialLessonPlan } from "../../../../protocol/schema";
-import type { PlanStep, PlannerOutput } from "../../schema";
+import type { PlanStep, PlannerOutput, SectionKey } from "../../schema";
 import type {
   AgenticRagLessonPlanResult,
   ChatMessage,
   MessageToUserAgentProps,
 } from "../../types";
 import { createMessageToUserAgent } from "./createMessageToUserAgent";
+
+const createMockStep = (sectionKey: SectionKey): PlanStep => ({
+  type: "section",
+  sectionKey,
+  action: "generate",
+  sectionInstructions: null,
+});
 
 describe("createMessageToUserAgent", () => {
   const mockMessages: ChatMessage[] = [
@@ -56,39 +63,16 @@ describe("createMessageToUserAgent", () => {
   };
 
   const mockStepsExecuted: PlanStep[] = [
-    {
-      type: "section",
-      sectionKey: "learningOutcome",
-      action: "generate",
-    },
-    {
-      type: "section",
-      sectionKey: "priorKnowledge",
-      action: "generate",
-    },
-    {
-      type: "section",
-      sectionKey: "keyLearningPoints",
-      action: "generate",
-    },
+    createMockStep("learningOutcome"),
+    createMockStep("priorKnowledge"),
+    createMockStep("keyLearningPoints"),
   ];
 
   const mockPlannerOutput: PlannerOutput = {
     decision: "plan",
     parsedUserMessage:
       "User requested inclusion of practical activities and common misconceptions",
-    plan: [
-      {
-        type: "section",
-        sectionKey: "misconceptions",
-        action: "generate",
-      },
-      {
-        type: "section",
-        sectionKey: "keywords",
-        action: "generate",
-      },
-    ],
+    plan: [createMockStep("misconceptions"), createMockStep("keywords")],
   };
 
   const mockErrors = [
@@ -103,6 +87,7 @@ describe("createMessageToUserAgent", () => {
     nextDoc: mockNextDoc,
     stepsExecuted: mockStepsExecuted,
     errors: [],
+    notes: [],
     plannerOutput: mockPlannerOutput,
     relevantLessons: mockRelevantLessons,
     relevantLessonsFetched: true,
@@ -189,15 +174,11 @@ describe("createMessageToUserAgent", () => {
       ];
 
       const complexSteps: PlanStep[] = [
-        { type: "section", sectionKey: "title", action: "generate" },
-        { type: "section", sectionKey: "learningOutcome", action: "generate" },
-        { type: "section", sectionKey: "priorKnowledge", action: "generate" },
-        {
-          type: "section",
-          sectionKey: "keyLearningPoints",
-          action: "generate",
-        },
-        { type: "section", sectionKey: "misconceptions", action: "generate" },
+        createMockStep("title"),
+        createMockStep("learningOutcome"),
+        createMockStep("priorKnowledge"),
+        createMockStep("keyLearningPoints"),
+        createMockStep("misconceptions"),
       ];
 
       const propsWithComplexState: MessageToUserAgentProps = {

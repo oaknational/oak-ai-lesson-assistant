@@ -8,6 +8,7 @@ import type {
 import OpenAI from "openai";
 
 import type { CustomSource, SimplifiedResult } from "../interfaces";
+import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 
@@ -65,10 +66,12 @@ export class ElasticsearchQuizSearchService {
   /**
    * Performs hybrid search combining BM25 and vector similarity
    * @param hybridWeight - Weight for vector search (0.0-1.0), BM25 gets (1 - hybridWeight)
+   * @param task - Task for tracking debug data
    */
   public async searchWithHybrid(
     index: string,
     query: string,
+    task: Task,
     size: number = 100,
     hybridWeight: number = 0.5,
   ): Promise<SearchHitsMetadata<CustomSource>> {
@@ -130,6 +133,27 @@ export class ElasticsearchQuizSearchService {
       }
 
       log.info(`Hybrid search found ${response.hits.hits.length} hits`);
+
+      // Record debug data
+      task.addData({
+        query,
+        size,
+        hitCount: response.hits.hits.length,
+        hitsWithScores: response.hits.hits
+          .map((hit) => {
+            const source = hit._source;
+            if (!source?.questionUid || !source.text) {
+              return null;
+            }
+            return {
+              questionUid: source.questionUid,
+              text: source.text,
+              score: hit._score ?? 0,
+              lessonSlug: source.lessonSlug ?? "",
+            };
+          })
+          .filter(Boolean),
+      });
 
       return response.hits;
     } catch (error) {

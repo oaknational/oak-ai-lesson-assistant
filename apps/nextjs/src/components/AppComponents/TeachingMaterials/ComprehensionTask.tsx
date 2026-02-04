@@ -21,32 +21,29 @@ export const ComprehensionTask = ({
   }
 
   return (
-    <OakFlex $gap={"space-between-s"} $flexDirection="column" $width="100%">
-      <OakBox $mt="space-between-xs">
+    <OakFlex $gap={"spacing-16"} $flexDirection="column" $width="100%">
+      <OakBox $mt="spacing-12">
         <OakFlex $flexDirection="column">
           <OakP $font="body-2-bold">
             {generation.comprehension.instructions}
           </OakP>
         </OakFlex>
       </OakBox>
-
-      <OakBox $mt="space-between-s">
+      <OakBox $mt="spacing-16">
         {generation.comprehension.text.split("\n\n").map((paragraph, index) => (
           <OakP
             $font="body-2"
             key={`${paragraph.trim().slice(0, 8)}-${index}`}
-            $mb="space-between-xs"
+            $mb="spacing-12"
           >
             {paragraph.trim()}
           </OakP>
         ))}
       </OakBox>
-
-      <OakHeading $font={"heading-6"} tag="h3" $mt="space-between-m">
+      <OakHeading $font={"heading-6"} tag="h3" $mt="spacing-24">
         Questions
       </OakHeading>
-
-      <OakFlex $gap={"space-between-s"} $flexDirection="column">
+      <OakFlex $gap={"spacing-16"} $flexDirection="column">
         <OakOL>
           {generation.comprehension.questions.map((question, index) => (
             <OakLI
@@ -63,23 +60,21 @@ export const ComprehensionTask = ({
           ))}
         </OakOL>
       </OakFlex>
-
-      <OakHeading $font={"heading-6"} tag="h3" $mt="space-between-m">
+      <OakHeading $font={"heading-6"} tag="h3" $mt="spacing-24">
         Answers
       </OakHeading>
-
-      <OakFlex $gap={"space-between-s"} $flexDirection="column">
+      <OakFlex $gap={"spacing-16"} $flexDirection="column">
         <OakOL>
           {generation.comprehension.questions.map((question, index) => (
             <OakLI
-              $pa={"inner-padding-none"}
+              $pa={"spacing-0"}
               key={`${index}-${question.questionText}`}
               $font="body-2"
               style={{ textIndent: "0px", padding: "0px" }}
             >
               {question.questionText}
 
-              <OakP $mv="space-between-s" $font="body-2-bold">
+              <OakP $mv="spacing-16" $font="body-2-bold">
                 {question.answer}
               </OakP>
             </OakLI>

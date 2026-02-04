@@ -37,6 +37,14 @@ const sectionStepSchema = z
       "Target section key for this operation.",
     ),
     action: z.enum(["generate", "delete"]),
+    sectionInstructions: z
+      .string()
+      .nullable()
+      .describe(
+        "User-provided instructions specific to generating this section. " +
+          "Extract from conversation if user has preferences (e.g., 'focus on images', " +
+          "'make it harder', 'replace question 3'). Null if no specific instructions.",
+      ),
   })
   .describe("Section plan step.");
 

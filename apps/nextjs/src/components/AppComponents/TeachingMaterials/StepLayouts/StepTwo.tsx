@@ -90,10 +90,10 @@ const StepTwo = ({
     <>
       <OakFlex
         $flexDirection={"column"}
-        $gap={"space-between-m"}
-        $mb={["space-between-l", "space-between-m"]}
+        $gap={"spacing-24"}
+        $mb={["spacing-48", "spacing-24"]}
       >
-        <OakFlex $flexDirection={["column", "row"]} $gap={"space-between-m"}>
+        <OakFlex $flexDirection={["column", "row"]} $gap={"spacing-24"}>
           <YearGroupDropDown
             selectedYear={year}
             setSelectedYear={(year: string) => {

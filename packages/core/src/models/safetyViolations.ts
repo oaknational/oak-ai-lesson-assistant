@@ -8,7 +8,7 @@ import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 
 import { clerkClient } from "@clerk/nextjs/server";
-import type { Logger as InngestLogger } from "inngest/middleware/logger";
+import type { Logger as InngestLogger } from "inngest";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
 import { inngest } from "../inngest";
@@ -105,7 +105,8 @@ export class SafetyViolations {
   async banUser(userId: string): Promise<void> {
     this.logger.info(`Banning user ${userId}`);
     // NOTE: Clerk is the source of truth for user data, so we don't record the ban in prisma
-    await clerkClient.users.banUser(userId);
+    const client = await clerkClient();
+    await client.users.banUser(userId);
 
     await posthogAiBetaServerClient.captureImmediate({
       distinctId: userId,
@@ -178,11 +179,12 @@ export class SafetyViolations {
     if (!isUnderThreshold) {
       return;
     }
-    const user = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
 
     if (user.banned) {
       this.logger.info(`Unbanning user ${userId}`);
-      await clerkClient.users.unbanUser(userId);
+      await client.users.unbanUser(userId);
 
       await posthogAiBetaServerClient.captureImmediate({
         distinctId: userId,

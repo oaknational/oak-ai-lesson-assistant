@@ -1,15 +1,15 @@
-import type { QuizV1Question } from "../../../protocol/schema";
-import type { QuizQuestionWithSourceData } from "../interfaces";
+import type { RagQuizQuestion } from "../interfaces";
 
-export const placeholderQuiz: QuizQuestionWithSourceData[] = [
+export const placeholderQuiz: RagQuizQuestion[] = [
   {
-    question: "No questions found",
-    answers: [
-      "No questions found: The recommendation system you are trialling does not have suitable questions with the basedOn recommendation path. You are seeing this in place of an LLM generated quiz to make it clear that the recommendation system does not have suitable questions",
-    ],
-    distractors: [
-      "Why am I seeing this? If you do not believe you should be trialling this system please provide feedback using the flag button and selecting other. Please use this for any other feedback on the recommended quiz with the title **Experimental Quiz**",
-    ],
+    question: {
+      questionType: "short-answer",
+      question: "No questions found",
+      answers: [
+        "No questions found: The recommendation system you are trialling does not have suitable questions with the basedOn recommendation path. You are seeing this in place of an LLM generated quiz to make it clear that the recommendation system does not have suitable questions",
+      ],
+      hint: "Please provide feedback using the flag button if you believe you should not be seeing this message.",
+    },
     sourceUid: "QUES-PLACE-999999",
     source: {
       questionId: 999999,
@@ -39,5 +39,6 @@ export const placeholderQuiz: QuizQuestionWithSourceData[] = [
       hint: "Please provide feedback using the flag button if you believe you should not be seeing this message.",
       active: true,
     },
+    imageMetadata: [],
   },
 ];

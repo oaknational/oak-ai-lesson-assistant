@@ -31,8 +31,12 @@ function SafetyViolationItem({
 
   return (
     <>
-      <OakFlex $alignItems="center" $background="pink" $pa="inner-padding-m">
-        <OakP $font="body-2" $mr="space-between-m">
+      <OakFlex
+        $alignItems="center"
+        $background="bg-decorative4-main"
+        $pa="spacing-16"
+      >
+        <OakP $font="body-2" $mr="spacing-24">
           <OakP $font="heading-7">
             This moderation triggered a safety violation.
           </OakP>{" "}
@@ -43,9 +47,9 @@ function SafetyViolationItem({
           onClick={() =>
             void removeSafetyViolation.mutateAsync({ recordId: recordId })
           }
-          isLoading={removeSafetyViolation.isLoading}
+          isLoading={removeSafetyViolation.isPending}
           disabled={
-            removeSafetyViolation.isLoading || removeSafetyViolation.isSuccess
+            removeSafetyViolation.isPending || removeSafetyViolation.isSuccess
           }
         >
           {removeSafetyViolation.isSuccess ? "Reversed" : "Reverse violation"}
@@ -85,7 +89,7 @@ function ModerationListItem({
               onClick={() =>
                 void invalidateModeration.mutateAsync({ moderationId: id })
               }
-              isLoading={invalidateModeration.isLoading}
+              isLoading={invalidateModeration.isPending}
               disabled={!!invalidated}
             >
               {invalidated ? "Invalidated" : "Invalidate"}

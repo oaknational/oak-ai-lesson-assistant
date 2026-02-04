@@ -129,7 +129,8 @@ export const appSessionsRouter = router({
 
   remainingLimit: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
-    const clerkUser = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(userId);
 
     const isDemoUser = demoUsers.isDemoUser(clerkUser);
 

@@ -1,4 +1,3 @@
-import type { SearchResponse } from "@elastic/elasticsearch/lib/api/types";
 import type { RerankResponseResultsItem } from "cohere-ai/api/types";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
@@ -8,25 +7,22 @@ import type {
   QuizPath,
 } from "../../protocol/schema";
 import type {
+  ImageMetadata,
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import type { QuizV1Question } from "../../protocol/schemas/quiz/quizV1";
 import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
-import type {
-  QuizRecommenderType,
-  QuizRerankerType,
-  QuizSelectorType,
-  QuizServiceSettings,
-} from "./schema";
+import type { Task } from "./reporting";
+import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
-export type SearchResponseBody<T = unknown> = SearchResponse<T>;
-
-// Rating response from rerankers
-export type RatingResponse = {
-  rating: number;
-  justification: string;
-};
+/**
+ * Extended ImageMetadata for use within the quiz RAG pipeline.
+ * Adds AI-generated description for LLM context during composition.
+ * The aiDescription is dropped when outputting to LatestQuiz.
+ */
+export interface EnrichedImageMetadata extends ImageMetadata {
+  aiDescription?: string;
+}
 
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
@@ -44,43 +40,82 @@ export interface AilaQuizService {
   ): Promise<JsonPatchDocument>;
 }
 
-export interface AilaQuizCandidateGenerator {
-  generateMathsExitQuizCandidates(
+/**
+ * A source that retrieves candidate quiz questions from some origin
+ * (e.g., similar lessons, semantic search, basedOn lesson)
+ */
+export interface QuestionSource {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
+  getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    similarLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
-  generateMathsStarterQuizCandidates(
+
+  getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
-    relevantLessons?: AilaRagRelevantLesson[],
+    similarLessons: AilaRagRelevantLesson[],
+    task: Task,
   ): Promise<QuizQuestionPool[]>;
 }
 
-export interface AilaQuizReranker {
-  evaluateQuizArray(
+export type ComposerResult =
+  | { status: "success"; questions: RagQuizQuestion[] }
+  | { status: "bail"; questions: []; bailReason: string };
+
+/**
+ * Composes final quiz questions from candidate pools
+ */
+export interface QuizComposer {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
+  compose(
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
-  ): Promise<RatingResponse[]>;
+    task: Task,
+    userInstructions?: string | null,
+  ): Promise<ComposerResult>;
 }
 
-export interface FullQuizService {
-  quizSelector: QuizSelector;
-  quizReranker: AilaQuizReranker;
-  quizGenerators: AilaQuizCandidateGenerator[];
+/**
+ * Enriches question pools with additional data (e.g., image descriptions).
+ * Returns new enriched pools without modifying the originals.
+ */
+export interface QuestionEnricher {
+  /** Name used for instrumentation/tracing */
+  readonly name: string;
+
+  enrich(
+    questionPools: QuizQuestionPool[],
+    task: Task,
+  ): Promise<QuizQuestionPool[]>;
+}
+
+/**
+ * Complete quiz generation service that orchestrates sources, enrichers, and composer
+ */
+export interface QuizBuildResult {
+  quiz: LatestQuiz;
+  /** Note to communicate to user (e.g., why quiz couldn't be generated) */
+  note?: string;
+}
+
+export interface QuizService {
+  composer: QuizComposer;
+  sources: QuestionSource[];
+  enrichers: QuestionEnricher[];
   buildQuiz(
     quizType: QuizPath,
     lessonPlan: PartialLessonPlan,
-    ailaRagRelevantLessons?: AilaRagRelevantLesson[],
-  ): Promise<LatestQuiz>;
-}
-
-export interface QuizSelector {
-  selectQuestions(
-    questionPools: QuizQuestionPool[],
-    ratings: RatingResponse[],
-    lessonPlan: PartialLessonPlan,
-    quizType: QuizPath,
-  ): Promise<QuizQuestionWithSourceData[]>;
+    similarLessons: AilaRagRelevantLesson[],
+    task: Task,
+    reportId: string,
+    userInstructions?: string | null,
+  ): Promise<QuizBuildResult>;
 }
 
 export interface CustomSource {
@@ -102,11 +137,20 @@ export interface QuizQuestionTextOnlySource {
   };
 }
 
-// TODO: At the moment the indexed "text" field is QuizV1Question which is limited to multiple choice
-//       We should either update the index to use QuizV3, or we should parse the raw HasuraQuizQuestion data into QuizV3
-export interface QuizQuestionWithSourceData extends QuizV1Question {
+/**
+ * Quiz question used throughout the quiz RAG pipeline.
+ * Retrieved from Elasticsearch, contains the question in Latest format
+ * (supporting all question types: multiple-choice, short-answer, match, order),
+ * source data, and associated image metadata.
+ *
+ * Uses EnrichedImageMetadata which may include aiDescription for LLM context.
+ */
+export interface RagQuizQuestion {
+  question: LatestQuizQuestion;
   sourceUid: string;
-  source: HasuraQuizQuestion;
+  /** Raw Hasura record for provenance. Undefined for questions from currentQuiz. */
+  source?: HasuraQuizQuestion;
+  imageMetadata: EnrichedImageMetadata[];
 }
 
 export interface CustomHit {
@@ -119,21 +163,25 @@ export interface SimplifiedResult {
 }
 
 export interface QuizQuestionPool {
-  questions: QuizQuestionWithSourceData[];
+  questions: RagQuizQuestion[];
   source:
     | {
-        type: "basedOn";
+        type: "basedOnLesson";
         lessonPlanId: string;
         lessonTitle: string;
       }
     | {
-        type: "ailaRag";
+        type: "similarLessons";
         lessonPlanId: string;
         lessonTitle: string;
       }
     | {
-        type: "mlSemanticSearch";
+        type: "semanticSearch";
         semanticQuery: string;
+      }
+    | {
+        type: "currentQuiz";
+        quizType: QuizPath;
       };
 }
 
@@ -169,27 +217,12 @@ export interface LessonSlugQuizMapping {
   [lessonSlug: string]: QuizSet;
 }
 
-export interface LessonSlugQuizLookup {
-  getStarterQuiz(lessonSlug: string): Promise<string[]>;
-  getExitQuiz(lessonSlug: string): Promise<string[]>;
-  hasStarterQuiz(lessonSlug: string): Promise<boolean>;
-  hasExitQuiz(lessonSlug: string): Promise<boolean>;
-}
-
 // FACTORIES BELOW
-export interface FullServiceFactory {
-  create(settings: QuizServiceSettings): FullQuizService;
+export interface QuizServiceFactory {
+  create(settings: QuizServiceSettings): QuizService;
 }
 
 export interface AilaQuizFactory {
   quizStrategySelector(lessonPlan: PartialLessonPlan): QuizRecommenderType;
   createQuizRecommender(lessonPlan: PartialLessonPlan): AilaQuizService;
-}
-
-export interface AilaQuizRerankerFactory {
-  createAilaQuizReranker(quizType: QuizRerankerType): AilaQuizReranker;
-}
-
-export interface QuizSelectorFactory {
-  createQuizSelector(selectorType: QuizSelectorType): QuizSelector;
 }

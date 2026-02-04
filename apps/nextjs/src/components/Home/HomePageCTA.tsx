@@ -12,7 +12,7 @@ export const HomePageCTA = () => {
   const { track } = useAnalytics();
 
   return (
-    <OakBox $mt="space-between-s">
+    <OakBox $mt="spacing-16">
       <OakPrimaryButton
         element={Link}
         href={getAilaUrl("start")}

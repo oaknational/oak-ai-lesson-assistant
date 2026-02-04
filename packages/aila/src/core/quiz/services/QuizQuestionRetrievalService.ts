@@ -1,28 +1,35 @@
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { Client } from "@elastic/elasticsearch";
 import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 
-import type { QuizV1Question } from "../../../protocol/schema";
-import { QuizV1QuestionSchema } from "../../../protocol/schema";
-import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
+import type { QuizPath } from "../../../protocol/schema";
+import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import { hasuraQuizQuestionSchema } from "../../../protocol/schemas/quiz/rawQuiz";
 import type {
+  QuizIDSource,
   QuizQuestionTextOnlySource,
-  QuizQuestionWithSourceData,
+  QuizSet,
+  RagQuizQuestion,
 } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
 /**
- * Service for retrieving and parsing quiz questions from Elasticsearch
+ * Service for retrieving quiz questions in the RAG pipeline.
+ * Handles lookups by lesson slug, question IDs, or plan ID.
  */
 export class QuizQuestionRetrievalService {
   private readonly client: Client;
 
-  constructor() {
+  constructor(client?: Client) {
+    if (client) {
+      this.client = client;
+      return;
+    }
+
     if (
       !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
       !process.env.I_DOT_AI_ELASTIC_KEY
@@ -42,13 +49,118 @@ export class QuizQuestionRetrievalService {
     });
   }
 
+  // === Plan ID lookups (Prisma + ES) ===
+
   /**
-   * Retrieves quiz questions by their UIDs from Elasticsearch
-   * Preserves the order of the input questionUids array
+   * Get quiz questions for a lesson plan by its ID.
+   * Looks up the lesson slug, finds question IDs, and retrieves full questions.
    */
-  public async retrieveQuestionsByIds(
+  async getQuestionsForPlanId(
+    planId: string,
+    quizType: QuizPath,
+  ): Promise<RagQuizQuestion[]> {
+    const lessonPlan = await prisma.ragLessonPlan.findUnique({
+      where: { id: planId },
+      select: { oakLessonSlug: true },
+    });
+
+    if (!lessonPlan?.oakLessonSlug) {
+      log.warn("Lesson slug not found for planId:", planId);
+      throw new Error("Lesson slug not found for planId: " + planId);
+    }
+
+    const questionIds = await this.getQuizQuestionIds(
+      lessonPlan.oakLessonSlug,
+      quizType,
+    );
+    return this.retrieveQuestionsByIds(questionIds);
+  }
+
+  // === Lesson slug lookups (ES) ===
+
+  async getStarterQuizIds(lessonSlug: string): Promise<string[]> {
+    return this.getQuizQuestionIds(lessonSlug, "/starterQuiz");
+  }
+
+  async getExitQuizIds(lessonSlug: string): Promise<string[]> {
+    return this.getQuizQuestionIds(lessonSlug, "/exitQuiz");
+  }
+
+  async hasStarterQuiz(lessonSlug: string): Promise<boolean> {
+    try {
+      const quizIds = await this.getStarterQuizIds(lessonSlug);
+      return quizIds.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  async hasExitQuiz(lessonSlug: string): Promise<boolean> {
+    try {
+      const quizIds = await this.getExitQuizIds(lessonSlug);
+      return quizIds.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  private async getQuizQuestionIds(
+    lessonSlug: string,
+    quizType: QuizPath,
+  ): Promise<string[]> {
+    try {
+      const response = await this.client.search<QuizIDSource>({
+        index: "lesson-slug-lookup-2025-04-16",
+        query: {
+          bool: {
+            must: [{ term: { "metadata.lessonSlug.keyword": lessonSlug } }],
+          },
+        },
+      });
+
+      if (!response.hits.hits[0]?._source) {
+        log.error(`No ${quizType} found for lesson slug: ${lessonSlug}.`);
+        return [];
+      }
+
+      const source = response.hits.hits[0]._source;
+      log.info(`Source: ${JSON.stringify(source)}`);
+
+      const quizData: QuizSet =
+        typeof source.text === "string" ? JSON.parse(source.text) : source.text;
+
+      const quizIds =
+        quizType === "/starterQuiz" ? quizData.starterQuiz : quizData.exitQuiz;
+
+      if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
+        log.error(
+          `Got invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
+        );
+        throw new Error(
+          `Invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
+        );
+      }
+
+      return quizIds;
+    } catch (error) {
+      log.error(
+        `Error fetching ${quizType} for lesson slug ${lessonSlug}:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  // === Question ID lookups (ES) ===
+
+  /**
+   * Retrieves quiz questions by their UIDs from Elasticsearch.
+   * Converts to V3 format immediately (supporting all question types).
+   * Preserves the order of the input questionUids array.
+   */
+  async retrieveQuestionsByIds(
     questionUids: string[],
-  ): Promise<QuizQuestionWithSourceData[]> {
+  ): Promise<RagQuizQuestion[]> {
     const response = await this.client.search<QuizQuestionTextOnlySource>({
       index: "quiz-questions-text-only-2025-04-16",
       body: {
@@ -71,27 +183,26 @@ export class QuizQuestionRetrievalService {
       return [];
     }
 
-    const parsedQuestions: QuizQuestionWithSourceData[] = response.hits.hits
-      .map((hit) => this.parseQuizQuestionWithSourceData(hit))
-      .filter((item): item is QuizQuestionWithSourceData => item !== null);
+    const parsedQuestions: RagQuizQuestion[] = response.hits.hits
+      .map((hit) => this.parseRagQuizQuestion(hit))
+      .filter((item): item is RagQuizQuestion => item !== null);
 
     // Sort to match input order - Elasticsearch terms query doesn't preserve order
     const orderedQuestions = questionUids
       .map((uid) => parsedQuestions.find((q) => q.sourceUid === uid))
-      .filter((q): q is QuizQuestionWithSourceData => Boolean(q));
+      .filter((q): q is RagQuizQuestion => Boolean(q));
 
     return orderedQuestions;
   }
 
-  private parseQuizQuestionWithSourceData(
+  private parseRagQuizQuestion(
     hit: SearchHit<QuizQuestionTextOnlySource>,
-  ): QuizQuestionWithSourceData | null {
+  ): RagQuizQuestion | null {
     if (!hit._source) {
       log.error("Hit source is undefined");
       return null;
     }
 
-    const jsonString = hit._source.text;
     const rawQuizString = hit._source.metadata.raw_json;
 
     if (!rawQuizString) {
@@ -99,18 +210,22 @@ export class QuizQuestionRetrievalService {
     }
 
     try {
-      // Parse QuizV1 format from text field
-      const questionData = JSON.parse(jsonString);
-      const quizQuestion = QuizV1QuestionSchema.parse(questionData);
-
-      // Parse HasuraQuizQuestion format from raw_json field
       const sourceData = JSON.parse(rawQuizString);
       const source = hasuraQuizQuestionSchema.parse(sourceData);
+      const quizV3 = convertHasuraQuizToV3([source]);
+
+      if (!quizV3.questions[0]) {
+        log.error("No question returned from V3 conversion", {
+          sourceUid: source.questionUid,
+        });
+        return null;
+      }
 
       return {
-        ...quizQuestion,
+        question: quizV3.questions[0],
         sourceUid: source.questionUid,
         source,
+        imageMetadata: quizV3.imageMetadata,
       };
     } catch (error) {
       // TODO: Should we throw here instead of returning null?
@@ -118,7 +233,6 @@ export class QuizQuestionRetrievalService {
       if (error instanceof z.ZodError) {
         log.error("Validation error:", {
           errors: error.errors,
-          jsonStringPreview: jsonString.substring(0, 300),
           rawJsonPreview: rawQuizString.substring(0, 300),
         });
       } else if (error instanceof SyntaxError) {

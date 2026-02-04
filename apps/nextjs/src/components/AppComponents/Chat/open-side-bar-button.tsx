@@ -24,7 +24,7 @@ export function OpenSideBarButton({
       }}
     >
       <Icon icon="sidebar" size="md" />
-      <OakFlex $pl={"inner-padding-ssx"} $display={["none", "flex"]}>
+      <OakFlex $pl={"spacing-4"} $display={["none", "flex"]}>
         <OakSpan $font={"body-2"}>Menu</OakSpan>
       </OakFlex>
 

@@ -1,0 +1,259 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`buildCompositionPrompt full prompt snapshots exit quiz prompt 1`] = `
+"You are a mathematics education specialist selecting quiz questions for Oak National Academy lesson plans.
+
+---
+
+TASK: Compose an exit quiz for this lesson.
+
+The purpose of the exit quiz is to:
+- Assess learning outcomes
+- Identify misconceptions
+- Consolidate the learning
+
+Your quiz must align with the "key learning points" and "learning outcome" sections of the lesson plan.
+
+Key learning points to assess:
+1. To add fractions, they must have the same denominator
+2. Find the lowest common multiple for denominators
+3. Add numerators while keeping the common denominator
+
+---
+
+SELECTION CRITERIA:
+
+Select questions from the candidate questions below. You must use the exact UIDs provided - do not create new questions or make up UIDs.
+
+An effective quiz has:
+
+1. **Relevance**: Questions target the key learning points and learning outcome, requiring students to demonstrate understanding of the core concepts.
+
+2. **Cognitive range**: A mix of recall, application, and analysis questions appropriate to the lesson objectives. Questions should match the appropriate level of thinking for the lesson's objectives, challenging students to think critically rather than merely recall information.
+
+3. **Clarity**: Questions are clear, unambiguous, and focused on specific knowledge or skills rather than being overly broad.
+
+4. **Diagnostic value**: Answers reveal student understanding, potential misconceptions, and gaps in knowledge. Good quiz questions provide valuable information that helps identify what needs to be addressed during the lesson.
+
+5. **Answer quality**: Answer options are well-designed. Correct answers are unambiguous, and incorrect options reflect common misconceptions, helping diagnose student misunderstandings.
+
+---
+
+OUTPUT OPTIONS:
+
+**Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+
+**Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+
+It is better to bail than to return a quiz with irrelevant questions.
+
+---
+
+LESSON PLAN:
+
+Title: Adding Fractions
+Subject: maths
+Key Stage: key-stage-3
+Topic: Fractions
+Learning Outcome: I can add fractions with different denominators
+
+Prior Knowledge:
+1. Understanding of equivalent fractions
+2. Ability to find common denominators
+3. Basic fraction notation
+
+Key Learning Points:
+1. To add fractions, they must have the same denominator
+2. Find the lowest common multiple for denominators
+3. Add numerators while keeping the common denominator
+
+---
+
+UNDERSTANDING THE QUESTION SOURCES:
+
+**User-Selected Source Lesson**
+The user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+
+**Semantically Matched Questions**
+Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
+
+---
+
+CANDIDATE QUESTIONS:
+
+### Semantically Matched Questions (query: "adding fractions with different denominators")
+
+### Question UID:q1
+Type: Multiple Choice
+What is 1/2 + 1/4?
+
+Correct answer(s):
+1. Correct answer 1
+2. Correct answer 2
+
+Distractors:
+1. Wrong answer 1
+2. Wrong answer 2
+3. Wrong answer 3
+
+### Question UID:q2
+Type: Short Answer
+Calculate 2/3 + 1/6 and simplify your answer
+
+Acceptable answer(s):
+1. Acceptable answer 1
+2. Acceptable answer 2
+
+### User-Selected Source Lesson: Introduction to Fractions
+
+### Question UID:q3
+Type: Match
+Match each fraction to its equivalent decimal
+
+Correct pairs:
+1. Term A → Definition A
+2. Term B → Definition B
+3. Term C → Definition C
+
+### Question UID:q4
+Type: Order
+Put these steps for adding fractions in order
+
+Correct order:
+1. First step
+2. Second step
+3. Third step
+4. Fourth step"
+`;
+
+exports[`buildCompositionPrompt full prompt snapshots starter quiz prompt 1`] = `
+"You are a mathematics education specialist selecting quiz questions for Oak National Academy lesson plans.
+
+---
+
+TASK: Compose a starter quiz for this lesson.
+
+The purpose of the starter quiz is to:
+- Assess students' prior knowledge
+- Identify misconceptions
+- Reactivate prerequisite concepts
+
+Your quiz must align with the "prior knowledge" section of the lesson plan.
+
+Prior knowledge to assess:
+1. Understanding of equivalent fractions
+2. Ability to find common denominators
+3. Basic fraction notation
+
+---
+
+SELECTION CRITERIA:
+
+Select questions from the candidate questions below. You must use the exact UIDs provided - do not create new questions or make up UIDs.
+
+An effective quiz has:
+
+1. **Relevance**: Questions address the specific prior knowledge outlined in the lesson plan and probe the depth of understanding of prerequisite concepts.
+
+2. **Cognitive range**: A mix of recall, application, and analysis questions appropriate to the lesson objectives. Questions should match the appropriate level of thinking for the lesson's objectives, challenging students to think critically rather than merely recall information.
+
+3. **Clarity**: Questions are clear, unambiguous, and focused on specific knowledge or skills rather than being overly broad.
+
+4. **Diagnostic value**: Answers reveal student understanding, potential misconceptions, and gaps in knowledge. Good quiz questions provide valuable information that helps identify what needs to be addressed during the lesson.
+
+5. **Answer quality**: Answer options are well-designed. Correct answers are unambiguous, and incorrect options reflect common misconceptions, helping diagnose student misunderstandings.
+
+---
+
+OUTPUT OPTIONS:
+
+**Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+
+**Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+
+It is better to bail than to return a quiz with irrelevant questions.
+
+---
+
+LESSON PLAN:
+
+Title: Adding Fractions
+Subject: maths
+Key Stage: key-stage-3
+Topic: Fractions
+Learning Outcome: I can add fractions with different denominators
+
+Prior Knowledge:
+1. Understanding of equivalent fractions
+2. Ability to find common denominators
+3. Basic fraction notation
+
+Key Learning Points:
+1. To add fractions, they must have the same denominator
+2. Find the lowest common multiple for denominators
+3. Add numerators while keeping the common denominator
+
+---
+
+UNDERSTANDING THE QUESTION SOURCES:
+
+**User-Selected Source Lesson**
+The user explicitly chose to base their lesson on this Oak lesson. This signals strong intent—prioritise these questions heavily. This is a complete quiz designed as a coherent unit with intentional difficulty progression. If it aligns with the lesson plan, you may use it largely as-is.
+
+**Semantically Matched Questions**
+Individual questions retrieved via semantic search against lesson objectives. These are not structured quizzes—just relevant questions. No inherent ordering. Use these to cover concepts the other sources don't address.
+
+**Note on Images**
+Questions may contain \`[IMAGE: ...]\` placeholders where images appear. These descriptions are AI-generated and may be incomplete or inaccurate—do not reject questions based solely on apparent image/text inconsistencies.
+
+---
+
+CANDIDATE QUESTIONS:
+
+### Semantically Matched Questions (query: "adding fractions with different denominators")
+
+### Question UID:q1
+Type: Multiple Choice
+What is 1/2 + 1/4?
+
+Correct answer(s):
+1. Correct answer 1
+2. Correct answer 2
+
+Distractors:
+1. Wrong answer 1
+2. Wrong answer 2
+3. Wrong answer 3
+
+### Question UID:q2
+Type: Short Answer
+Calculate 2/3 + 1/6 and simplify your answer
+
+Acceptable answer(s):
+1. Acceptable answer 1
+2. Acceptable answer 2
+
+### User-Selected Source Lesson: Introduction to Fractions
+
+### Question UID:q3
+Type: Match
+Match each fraction to its equivalent decimal
+
+Correct pairs:
+1. Term A → Definition A
+2. Term B → Definition B
+3. Term C → Definition C
+
+### Question UID:q4
+Type: Order
+Put these steps for adding fractions in order
+
+Correct order:
+1. First step
+2. Second step
+3. Third step
+4. Fourth step"
+`;

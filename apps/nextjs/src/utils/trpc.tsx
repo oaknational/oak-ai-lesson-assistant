@@ -34,10 +34,12 @@ const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
     main: httpBatchLink({
       url: `${getBaseUrl()}/api/trpc/main`,
       headers,
+      transformer,
     })(runtime),
     chat: httpBatchLink({
       url: `${getBaseUrl()}/api/trpc/chat`,
       headers,
+      transformer,
     })(runtime),
   };
 
@@ -45,9 +47,8 @@ const discriminatingRouterLink: TRPCLink<CombinedRouter> = (runtime) => {
     const { op } = ctx;
     const routerName = op.path.split(".")[0];
 
-    const link = routerName === "chat" ? servers["chat"] : servers["main"];
-
-    return link(ctx);
+    if (routerName === "chat") return servers["chat"](ctx);
+    return servers["main"](ctx);
   };
 };
 
@@ -59,7 +60,6 @@ export function TRPCReactProvider(
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (op) =>

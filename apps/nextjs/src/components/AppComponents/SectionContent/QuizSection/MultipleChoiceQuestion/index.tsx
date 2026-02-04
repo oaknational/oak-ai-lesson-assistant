@@ -43,11 +43,11 @@ export const MultipleChoiceQuestion = ({
 
   return (
     <OakBox
-      $mb="space-between-l"
+      $mb="spacing-48"
       role="group"
       aria-label={`Question ${questionNumber}: Multiple choice`}
     >
-      <OakFlex $mb="space-between-s">
+      <OakFlex $mb="spacing-16">
         <OakBox className="leading-[26px]">{questionNumber}.&nbsp;</OakBox>
         <MemoizedReactMarkdownWithStyles
           markdown={processedText}
@@ -55,7 +55,6 @@ export const MultipleChoiceQuestion = ({
           components={components}
         />
       </OakFlex>
-
       {isImageOnlyAnswers ? (
         <ImageOnlyAnswerLayout answers={answers} />
       ) : (
@@ -67,7 +66,7 @@ export const MultipleChoiceQuestion = ({
               <OakFlex
                 key={index}
                 $alignItems="flex-start"
-                $mb="space-between-xs"
+                $mb="spacing-12"
                 aria-label={`Option ${letter}: ${answer.text}${
                   answer.isCorrect ? ", correct answer" : ""
                 }`}
