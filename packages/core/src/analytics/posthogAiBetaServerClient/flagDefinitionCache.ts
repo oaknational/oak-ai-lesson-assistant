@@ -37,8 +37,8 @@ export const flagDefinitionCacheProvider: FlagDefinitionCacheProvider = {
    * Return the cached flag definitions.
    * Called after shouldFetchFlagDefinitions, so we can reuse the cached value.
    */
-  async getFlagDefinitions(): Promise<FlagDefinitionCacheData | undefined> {
-    return cachedDefinitions ?? undefined;
+  getFlagDefinitions(): Promise<FlagDefinitionCacheData | undefined> {
+    return Promise.resolve(cachedDefinitions ?? undefined);
   },
 
   /**
@@ -58,8 +58,9 @@ export const flagDefinitionCacheProvider: FlagDefinitionCacheProvider = {
   /**
    * Clean up on shutdown.
    */
-  async shutdown(): Promise<void> {
+  shutdown(): Promise<void> {
     cachedDefinitions = null;
+    return Promise.resolve();
   },
 };
 
