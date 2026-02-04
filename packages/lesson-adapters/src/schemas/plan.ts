@@ -7,7 +7,6 @@ import { intentSchema } from "../agents/classifierAgent";
 // ---------------------------------------------------------------------------
 
 const textEditBaseSchema = z.object({
-  changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   elementId: z.string(),
@@ -16,7 +15,6 @@ const textEditBaseSchema = z.object({
 });
 
 const tableCellEditBaseSchema = z.object({
-  changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   cellId: z.string(),
@@ -25,7 +23,6 @@ const tableCellEditBaseSchema = z.object({
 });
 
 const textElementDeletionBaseSchema = z.object({
-  changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
   elementId: z.string(),
@@ -33,7 +30,6 @@ const textElementDeletionBaseSchema = z.object({
 });
 
 const slideDeletionBaseSchema = z.object({
-  changeId: z.string(),
   slideNumber: z.number(),
   slideId: z.string(),
 });
@@ -135,18 +131,55 @@ export interface SlidesAgentResponse {
 }
 
 /**
+ * Adds changeIds to all changes in the response.
+ * This removes the burden from the LLM and ensures consistent ID format.
+ */
+function addChangeIds(
+  response:
+    | z.infer<typeof bulkChangesSchema>
+    | z.infer<typeof targetedChangesSchema>,
+): SlidesAgentResponse {
+  return {
+    analysis: response.analysis,
+    reasoning: response.reasoning,
+    changes: {
+      textEdits: response.changes.textEdits.map((edit, idx) => ({
+        ...edit,
+        changeId: `te-${edit.slideNumber}-${idx + 1}`,
+      })),
+      tableCellEdits: response.changes.tableCellEdits.map((edit, idx) => ({
+        ...edit,
+        changeId: `tce-${edit.slideNumber}-${idx + 1}`,
+      })),
+      textElementDeletions: response.changes.textElementDeletions.map(
+        (deletion, idx) => ({
+          ...deletion,
+          changeId: `ted-${deletion.slideNumber}-${idx + 1}`,
+        }),
+      ),
+      slideDeletions: response.changes.slideDeletions.map((deletion, idx) => ({
+        ...deletion,
+        changeId: `sd-${deletion.slideNumber}-${idx + 1}`,
+      })),
+      slidesToKeep: response.changes.slidesToKeep,
+    },
+  };
+}
+
+/**
  * Normalizes a bulk or targeted LLM response to the standard SlidesAgentResponse type.
- * This ensures downstream code always works with optional reasoning fields.
+ * This ensures downstream code always works with optional reasoning fields and
+ * auto-generates changeIds (not produced by LLM due to structured output constraints).
  */
 export function normalizeAgentResponse(
   response:
     | z.infer<typeof bulkChangesSchema>
     | z.infer<typeof targetedChangesSchema>,
 ): SlidesAgentResponse {
-  // Both schema shapes are compatible with SlidesAgentResponse
+  // Transform LLM response to include changeIds
   // Bulk responses have no reasoning on changes (will be undefined)
   // Targeted responses have reasoning on changes (will be present)
-  return response as SlidesAgentResponse;
+  return addChangeIds(response);
 }
 
 // ---------------------------------------------------------------------------

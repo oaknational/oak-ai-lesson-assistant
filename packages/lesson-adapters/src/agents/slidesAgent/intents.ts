@@ -31,6 +31,15 @@ For every text edit or table cell edit, the newText field must contain the ACTUA
 - WRONG: newText: "Simplified version of the original text about photosynthesis"
 - WRONG: newText: "This text has been rewritten for a lower reading age"
 
+## CRITICAL: Preserve exact spacing and newlines
+When providing newText, you MUST preserve ALL whitespace exactly as it appears in the original:
+- Keep all newlines (\\n) in the exact same positions
+- Keep all leading and trailing spaces
+- Keep all tabs and indentation
+- CORRECT: newText: "Line 1\\nLine 2\\n" (preserves newline at end)
+- WRONG: newText: "Line 1\\nLine 2" (missing trailing newline)
+- This ensures the rewritten text has the same shape and formatting as the original when applied back to the slide.
+
 ## Slide accounting
 Check every slide in the input.
 
@@ -41,14 +50,7 @@ Each text element has an elementId shown as [elementId: xxx]. You MUST use the e
 - WRONG: elementId: "element1" (invented ID)
 
 ## Table cells
-Each table has a tableId and each cell has a composite cell ID shown as [cellId]. For table cell edits, use the composite cell ID format: {tableId}_r{row}c{col}
-
-## Change IDs
-Each change needs a unique changeId:
-- Text edits: "te-{slideNumber}-{index}"
-- Table cell edits: "tce-{slideNumber}-{index}"
-- Text element deletions: "ted-{slideNumber}-{index}"
-- Slide deletions: "sd-{slideNumber}"`;
+Each table has a tableId and each cell has a composite cell ID shown as [cellId]. For table cell edits, use the composite cell ID format: {tableId}_r{row}c{col}`;
 
 // ---------------------------------------------------------------------------
 // Intent Configuration Registry
@@ -85,7 +87,7 @@ Return a structured plan of changes.
 ${SHARED_RULES}`,
     schema: bulkChangesSchema,
     slideFields: ["textElements", "tables"],
-    batchSize: 20,
+    batchSize: 10,
   },
 
   translateLesson: {

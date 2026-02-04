@@ -43,10 +43,9 @@ export function formatSlidesForPrompt(
 
       if (textElements.length > 0) {
         parts.push(
-          `\n### Text Content:`,
+          `\n### Text Content (preserve all whitespace, including newlines and spacing):`,
           ...textElements.map(
-            (te, idx) =>
-              `${idx + 1}. [elementId: ${te.id}] ${te.content.trim()}`,
+            (te) => `Text element [${te.id}]: ${te.content}`,
           ),
         );
       }
@@ -55,13 +54,13 @@ export function formatSlidesForPrompt(
         parts.push(`\n### Tables:`);
         tables.forEach((table, tableIdx) => {
           parts.push(
-            `\nTable ${tableIdx + 1} (tableId: ${table.id}, ${table.rows}x${table.columns}):`,
+            `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
           );
-          table.cells.forEach((row, rowIdx) => {
+          table.cells.forEach((row) => {
             const rowContent = row
-              .map((cell) => `[${cell.id}] ${cell.content.trim()}`)
+              .map((cell) => `[${cell.id}]${cell.content}`)
               .join(" | ");
-            parts.push(`  Row ${rowIdx + 1}: ${rowContent}`);
+            parts.push(`  ${rowContent}`);
           });
         });
       }

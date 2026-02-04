@@ -35,11 +35,13 @@ export async function callSlidesAgent(
   const formattedSlides = formatSlidesForPrompt(slides);
   const prompt = `Edit type: ${editType}
 User message: ${userMessage}
+Processing ${slides.length} slide(s)
 
 # Slides to Analyse
 ${formattedSlides}
 
----`;
+---
+Reminder: Return your response using the schema with textEdits, tableCellEdits, textElementDeletions, and slideDeletions arrays.`;
 
   const { output, text } = await generateText({
     model: openai("gpt-4o-mini"),
