@@ -44,7 +44,11 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
   log.info("Evaluating", distinctId, personProperties ?? "(no properties)");
 
   const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
-    // Only bootstrap flags which don't depend on PII
+    // Only evaluate locally - no server fallback. We only pass properties available
+    // from session claims (e.g. featureFlagGroup), not properties like email that
+    // would require an extra Clerk API call on every page load. Flags that filter
+    // on email will return false here - use serverSideFeatureFlag() for runtime
+    // checks that need email-based targeting.
     onlyEvaluateLocally: true,
     personProperties,
   });
