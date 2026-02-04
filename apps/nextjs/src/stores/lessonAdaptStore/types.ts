@@ -76,6 +76,7 @@ export interface LessonAdaptState {
 
   // Plan
   currentPlan: AdaptationPlan | null;
+  previousPlanResponse: AdaptationPlan | null;
   approvedChangeIds: string[];
 
   // UI

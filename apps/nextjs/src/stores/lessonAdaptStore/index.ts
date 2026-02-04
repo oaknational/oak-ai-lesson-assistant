@@ -46,6 +46,7 @@ export const createLessonAdaptStore = ({
 
     // Plan
     currentPlan: null,
+    previousPlanResponse: null,
     approvedChangeIds: [],
 
     // UI
@@ -66,7 +67,9 @@ export const createLessonAdaptStore = ({
         const { approvedChangeIds } = get();
         if (approvedChangeIds.includes(changeId)) {
           set({
-            approvedChangeIds: approvedChangeIds.filter((id) => id !== changeId),
+            approvedChangeIds: approvedChangeIds.filter(
+              (id) => id !== changeId,
+            ),
           });
         } else {
           set({ approvedChangeIds: [...approvedChangeIds, changeId] });

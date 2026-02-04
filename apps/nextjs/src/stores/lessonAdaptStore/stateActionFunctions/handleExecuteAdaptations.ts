@@ -47,6 +47,8 @@ export const handleExecuteAdaptations = (
           executedChanges: result.executedChanges.length,
         });
 
+        set({ previousPlanResponse: currentPlan });
+
         // Clear the plan and close the modal after successful execution
         set({
           currentPlan: null,
