@@ -37,7 +37,7 @@ export async function serverSideFeatureFlag(
 
     const isFeatureFlagEnabled =
       (await posthogAiBetaServerClient.isFeatureEnabled(featureFlagId, userId, {
-        personProperties: { email },
+        personProperties: { ...(email && { email }) },
       })) ?? false;
 
     await kv.set(cacheKey, isFeatureFlagEnabled.toString(), { ex: 60 });
