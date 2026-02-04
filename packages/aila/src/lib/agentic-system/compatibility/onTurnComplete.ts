@@ -7,10 +7,7 @@ const log = aiLogger("aila:agents");
 
 export const createOnTurnComplete =
   (textStreamer: TextStreamer) =>
-  async (props: {
-    stepsExecuted: PlanStep[];
-    ailaMessage: string;
-  }): Promise<void> => {
+  (props: { stepsExecuted: PlanStep[]; ailaMessage: string }) => {
     const { stepsExecuted, ailaMessage } = props;
 
     const sectionsEdited = stepsExecuted.map((step) => step.sectionKey);

@@ -52,18 +52,8 @@ export async function executePlanSteps(
       log.error(
         `Section generation failed [${step.sectionKey}]: ${result.error.message}`,
       );
-      await terminateWithError(result.error, context, step.sectionKey);
+      await terminateWithError(result.error, context);
       return false;
-    }
-
-    if (result.note) {
-      log.info(
-        `Section generated with note [${step.sectionKey}]: ${result.note}`,
-      );
-      context.currentTurn.notes.push({
-        message: result.note,
-        sectionKey: step.sectionKey,
-      });
     }
 
     const sectionSchema = CompletedLessonPlanSchema.shape[step.sectionKey];

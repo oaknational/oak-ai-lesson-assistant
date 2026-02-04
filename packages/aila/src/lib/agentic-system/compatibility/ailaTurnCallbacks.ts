@@ -25,7 +25,7 @@ export function createAilaTurnCallbacks({
     onPlannerComplete,
     onSectionComplete,
     onTurnComplete: async (args) => {
-      await onTurnComplete(args);
+      onTurnComplete(args);
       await chat.enqueue({
         type: "state",
         reasoning: "final",
