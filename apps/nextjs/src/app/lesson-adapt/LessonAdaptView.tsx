@@ -34,6 +34,9 @@ function LessonAdaptContent() {
   );
   const thumbnailsError = useLessonAdaptStore((state) => state.thumbnailsError);
   const currentPlan = useLessonAdaptStore((state) => state.currentPlan);
+  const previousPlanResponse = useLessonAdaptStore(
+    (state) => state.previousPlanResponse,
+  );
   const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
   const approvedChangeIds = useLessonAdaptStore(
     (state) => state.approvedChangeIds,
@@ -140,6 +143,14 @@ function LessonAdaptContent() {
               </summary>
               <pre className="mt-2 max-h-48 overflow-auto text-xs">
                 {JSON.stringify(slideKlpMappings, null, 2)}
+              </pre>
+            </details>
+            <details className="rounded border bg-white p-2">
+              <summary className="cursor-pointer text-xs font-semibold">
+                Change plan for slides
+              </summary>
+              <pre className="mt-2 max-h-48 overflow-auto text-xs">
+                {JSON.stringify(previousPlanResponse, null, 2)}
               </pre>
             </details>
           </div>
