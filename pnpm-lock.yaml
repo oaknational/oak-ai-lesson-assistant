@@ -12,10 +12,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      '@oaknational/oak-components':
-        specifier: ^2.2.0
-        version: 2.2.0(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11)
     devDependencies:
       '@actions/core':
         specifier: ^1.11.1
@@ -6487,7 +6483,7 @@ packages:
       react-dom: '>=18.2.0'
       styled-components: '>=5.3.11'
     dependencies:
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
       next-cloudinary: 6.17.4(next@16.0.10)(react@19.2.1)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
@@ -22237,7 +22233,7 @@ packages:
       '@cloudinary-util/types': 1.5.10
       '@cloudinary-util/url-loader': 5.10.4
       '@cloudinary-util/util': 4.0.0
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
       react: 19.2.1
     dev: false
 

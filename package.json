@@ -84,8 +84,5 @@
       "body-parser@2.2.0": ">=2.2.1",
       "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5 <7.1.0"
     }
-  },
-  "dependencies": {
-    "@oaknational/oak-components": "^2.2.0"
   }
 }

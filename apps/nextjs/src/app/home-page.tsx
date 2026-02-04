@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 "use client";
 
 import { useUser } from "@clerk/nextjs";
@@ -275,7 +274,7 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props) => parseColor(props.fullWidthBgColor)};    
+    background-color: ${(props) => parseColor(props.fullWidthBgColor)};
   }
   /* img {
     max-width: 300px;
