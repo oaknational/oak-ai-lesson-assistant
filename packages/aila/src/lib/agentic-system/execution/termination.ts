@@ -74,8 +74,8 @@ export async function terminateWithCustomMessage(
   context: AilaExecutionContext,
 ): Promise<void> {
   await context.callbacks.onTurnComplete({
-    prevDoc: context.persistedState.initialDocument,
-    nextDoc: context.currentTurn.document,
+    stepsExecuted: context.currentTurn.stepsExecuted,
+    document: context.currentTurn.document,
     ailaMessage: message,
   });
 }
