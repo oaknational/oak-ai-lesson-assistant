@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { createSectionAgent } from "../createSectionAgent";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
+import { createSectionAgent } from "../createSectionAgent";
 import { additionalMaterialsInstructions } from "./additionalMaterials.instructions";
 
 export const additionalMaterialsAgent = createSectionAgent({

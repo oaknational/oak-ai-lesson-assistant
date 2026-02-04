@@ -1,5 +1,5 @@
-import { createSectionAgent } from "../createSectionAgent";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
+import { createSectionAgent } from "../createSectionAgent";
 import { starterQuizInstructions } from "./starterQuiz.instructions";
 import { StarterQuizSchema } from "./starterQuiz.schema";
 

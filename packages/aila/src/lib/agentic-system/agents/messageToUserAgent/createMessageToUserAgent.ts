@@ -1,7 +1,7 @@
 import { isTruthy } from "remeda";
 
-import type { GenericPromptAgent, SectionKey } from "../../schema";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
+import type { GenericPromptAgent, SectionKey } from "../../schema";
 import type { MessageToUserAgentProps } from "../../types";
 import {
   getVoiceDefinitions,

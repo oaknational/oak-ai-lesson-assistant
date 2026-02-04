@@ -1,6 +1,6 @@
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
-import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { keywordsInstructions } from "./keywords.instructions";
 import { KeywordsSchema } from "./keywords.schema";
 

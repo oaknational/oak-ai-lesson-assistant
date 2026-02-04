@@ -1,5 +1,5 @@
-import { z } from "zod";
 import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
+import { z } from "zod";
 
 const sectionKeysSchema = z.enum([
   "title",
@@ -104,7 +104,10 @@ export type GenericPromptAgent<ResponseType> = {
     | { role: "user"; content: string }
   )[];
   // OpenAI Responses API model params to use for this agent
-  modelParams: Omit<ResponseCreateParamsNonStreaming, "input" | "text" | "stream">;
+  modelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  >;
 };
 
 /**
