@@ -1,3 +1,4 @@
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
@@ -14,19 +15,25 @@ import { exemplarContentPromptPart } from "./sharedPromptParts/exemplarContent.p
 import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.part";
 import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 
-export function sectionToGenericPromptAgent<SectionValueType>({
-  responseSchema,
-  instructions,
-  messages,
-  exemplarContent,
-  basedOnContent,
-  currentValue,
-  contentToString,
-  ctx,
-  extraInputFromCtx,
-  defaultVoice = "AILA_TO_TEACHER",
-  voices = [],
-}: SectionPromptAgentProps<SectionValueType>): GenericPromptAgent<SectionValueType> {
+export function sectionToGenericPromptAgent<SectionValueType>(
+  {
+    responseSchema,
+    instructions,
+    messages,
+    exemplarContent,
+    basedOnContent,
+    currentValue,
+    contentToString,
+    ctx,
+    extraInputFromCtx,
+    defaultVoice = "AILA_TO_TEACHER",
+    voices = [],
+  }: SectionPromptAgentProps<SectionValueType>,
+  modelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  >,
+): GenericPromptAgent<SectionValueType> {
   voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
 
   return {
@@ -77,5 +84,6 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         content: userMessagePromptPart(messages),
       },
     ].filter(isTruthy),
+    modelParams,
   };
 }

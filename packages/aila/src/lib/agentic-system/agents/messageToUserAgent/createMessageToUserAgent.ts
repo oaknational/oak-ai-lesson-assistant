@@ -1,5 +1,6 @@
 import { isTruthy } from "remeda";
 
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
 import type { GenericPromptAgent, SectionKey } from "../../schema";
 import type { MessageToUserAgentProps } from "../../types";
 import {
@@ -92,5 +93,8 @@ export function createMessageToUserAgent({
         content: userMessagePromptPart(messages),
       },
     ].filter(isTruthy),
+    modelParams: {
+      ...DEFAULT_AGENT_MODEL_PARAMS,
+    },
   };
 }
