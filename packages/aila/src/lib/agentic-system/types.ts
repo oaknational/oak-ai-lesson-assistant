@@ -18,6 +18,7 @@ import type {
 } from "../../protocol/schema";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
+import type { JsonPatchOperation } from "./compatibility/helpers/immerPatchToJsonPatch";
 import type {
   PlanStep,
   PlannerOutput,
@@ -62,13 +63,10 @@ export type AilaRuntimeContext = {
 
 export type AilaTurnCallbacks = {
   onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
-  onSectionComplete: (
-    prevDoc: PartialLessonPlan,
-    nextDoc: PartialLessonPlan,
-  ) => void;
+  onSectionComplete: (patches: JsonPatchOperation[]) => void;
   onTurnComplete: (props: {
-    prevDoc: PartialLessonPlan;
-    nextDoc: PartialLessonPlan;
+    stepsExecuted: PlanStep[];
+    document: PartialLessonPlan;
     ailaMessage: string;
   }) => Promise<void>;
 };
