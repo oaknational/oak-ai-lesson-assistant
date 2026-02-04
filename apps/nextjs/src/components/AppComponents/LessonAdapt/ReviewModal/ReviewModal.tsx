@@ -163,7 +163,7 @@ export function ReviewModal({
                 Cancel
               </OakSecondaryButton>
               <OakPrimaryButton
-                onClick={onExecute}
+                onClick={void onExecute}
                 disabled={approvedCount === 0 || isExecuting}
               >
                 {isExecuting
