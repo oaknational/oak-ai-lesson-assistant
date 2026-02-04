@@ -56,6 +56,7 @@ function LessonAdaptContent() {
       slideId: slide.slideId,
       keyLearningPoints: slide.keyLearningPoints ?? [],
       learningCycles: slide.learningCycles ?? [],
+      coversDiversity: slide.coversDiversity ?? false,
     })) ?? [];
 
   return (

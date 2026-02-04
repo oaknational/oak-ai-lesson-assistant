@@ -1,7 +1,5 @@
-import type {
-  AdaptationPlan,
-  SlideDeckContent,
-} from "@oakai/lesson-adapters";
+import type { AdaptationPlan, SlideDeckContent } from "@oakai/lesson-adapters";
+
 import type { StoreApi } from "zustand";
 
 /**
