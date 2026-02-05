@@ -13,7 +13,7 @@ import Image from "next/image";
 import type { SlideKlpMapping, Thumbnail } from "./types";
 
 interface ThumbnailsWithKlpTabProps {
-  thumbnails: Thumbnail[] | null;
+  thumbnails: Thumbnail[] | null | undefined;
   slideKlpMappings: SlideKlpMapping[];
 }
 
@@ -97,7 +97,11 @@ export function ThumbnailsWithKlpTab({
                   </div>
                 )}
                 <OakBox $pa="spacing-8" $background="bg-neutral">
-                  <OakP $font="body-3-bold" $color="text-subdued" $textAlign="center">
+                  <OakP
+                    $font="body-3-bold"
+                    $color="text-subdued"
+                    $textAlign="center"
+                  >
                     Slide {thumbnail.slideIndex + 1}
                   </OakP>
                 </OakBox>

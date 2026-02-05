@@ -118,6 +118,7 @@ function LessonAdaptContent() {
             thumbnails={thumbnails ?? undefined}
             thumbnailsLoading={thumbnailsLoading}
             thumbnailsError={thumbnailsError}
+            slideKlpMappings={slideKlpMappings}
           />
         </div>
       )}

@@ -11,6 +11,7 @@ import {
 } from "@oaknational/oak-components";
 
 import { LessonDetailsTab } from "./LessonDetailsTab";
+import { type SlideKlpMapping, ThumbnailsWithKlpTab } from "./ReviewModal";
 import { SlidesTab } from "./SlidesTab";
 import { ThumbnailsTab } from "./ThumbnailsTab";
 
@@ -46,6 +47,7 @@ interface AdaptLessonContentProps {
   thumbnails: Thumbnail[] | undefined;
   thumbnailsError: { message: string } | null;
   thumbnailsLoading?: boolean;
+  slideKlpMappings: SlideKlpMapping[];
 }
 
 const tabs = ["Lesson details", "Slides", "Thumbnails"];
@@ -57,6 +59,7 @@ export function AdaptLessonContent({
   thumbnails,
   thumbnailsLoading = false,
   thumbnailsError = null,
+  slideKlpMappings,
 }: AdaptLessonContentProps) {
   const [activeTab, setActiveTab] = useState<string>("Lesson details");
 
@@ -125,10 +128,9 @@ export function AdaptLessonContent({
             />
           )}
           {activeTab === "Thumbnails" && (
-            <ThumbnailsTab
+            <ThumbnailsWithKlpTab
               thumbnails={thumbnails}
-              isLoading={thumbnailsLoading}
-              error={thumbnailsError}
+              slideKlpMappings={slideKlpMappings}
             />
           )}
         </OakBox>
