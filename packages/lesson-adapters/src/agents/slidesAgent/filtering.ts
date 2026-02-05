@@ -36,6 +36,11 @@ export function filterSlideContent(
         .filter((el) => el.type === "shape")
         .map((el) => ({ id: el.id, description: el.description }));
     }
+    if (fields.includes("keyLearningPoints")) {
+      filtered.keyLearningPoints = slide.keyLearningPoints;
+      // filtered.learningCycles = slide.learningCycles;
+      filtered.coversDiversity = slide.coversDiversity;
+    }
 
     return filtered;
   });

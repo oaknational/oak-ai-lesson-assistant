@@ -17,6 +17,9 @@ export interface SimplifiedSlideContent {
   }[];
   images?: { id: string; description: string }[];
   shapes?: { id: string; description: string }[];
+  keyLearningPoints?: string[];
+  learningCycles?: string[];
+  coversDiversity?: boolean;
 }
 
 /**
@@ -36,6 +39,18 @@ export function formatSlidesForPrompt(
 
       if (slide.slideTitle) {
         parts.push(`- Title: ${slide.slideTitle}`);
+      }
+
+      if (slide.keyLearningPoints && slide.keyLearningPoints.length > 0) {
+        parts.push(
+          `- Key Learning Points: ${slide.keyLearningPoints.join("; ")}`,
+        );
+      }
+      if (slide.learningCycles && slide.learningCycles.length > 0) {
+        parts.push(`- Learning Cycles: ${slide.learningCycles.join("; ")}`);
+      }
+      if (slide.coversDiversity) {
+        parts.push(`- Covers Diversity: yes`);
       }
 
       const textElements = slide.textElements ?? [];

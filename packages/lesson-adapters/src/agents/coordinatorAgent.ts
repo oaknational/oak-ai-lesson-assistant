@@ -22,6 +22,7 @@ interface IntentConfig {
 const INTENT_CONFIG: Record<string, IntentConfig> = {
   changeReadingAge: { scope: "global", agents: ["slides"] },
   translateLesson: { scope: "global", agents: ["slides"] },
+  removeNonEssentialContent: { scope: "structural", agents: ["slides"] },
   // Future examples:
   // removeKLP:        { scope: "structural", agents: ["slides", "lessonDetails", "quiz"] },
   // deleteSlide:      { scope: "targeted",   agents: ["slides"] },

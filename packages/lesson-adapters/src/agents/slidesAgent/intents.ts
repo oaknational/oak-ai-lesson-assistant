@@ -4,7 +4,12 @@ import { bulkChangesSchema, targetedChangesSchema } from "../../schemas/plan";
 // Types
 // ---------------------------------------------------------------------------
 
-export type SlideField = "textElements" | "tables" | "images" | "shapes";
+export type SlideField =
+  | "textElements"
+  | "tables"
+  | "images"
+  | "shapes"
+  | "keyLearningPoints";
 
 export interface IntentConfig {
   /** System prompt for this intent */
@@ -113,6 +118,40 @@ ${SHARED_RULES}`,
     schema: bulkChangesSchema,
     slideFields: ["textElements", "tables"],
     batchSize: 10, // Smaller batches for translation (more output tokens)
+  },
+
+  removeNonEssentialContent: {
+    prompt: `You are a slides adaptation agent for removing non-essential slides from a Google Slides lesson presentation. The presentation accompanies a lesson, which is part of a unit.
+
+## Input
+You receive:
+- editType: "removeNonEssentialContent"
+- userMessage: the teacher's original request
+- slides: an array of slide content objects with text elements, tables, and metadata including which Key Learning Points (KLPs) and Learning Cycles each slide covers
+
+## Output
+Return a structured plan of slide deletions. Every slide must appear in either slideDeletions or slidesToKeep — account for all slides.
+Do not return any textEdits, tableCellEdits, or textElementDeletions — this intent is about removing whole slides only.
+
+## What is non-essential?
+A slide is a candidate for deletion if ANY of the following apply:
+1. **No KLP coverage**: The slide is not associated with any Key Learning Point and is not a structural slide (title, teacher, objectives/outcomes).
+2. **Redundant content**: The slide covers a KLP, but that same content has already been substantially covered by an earlier slide. The earlier slide should be kept; the later repetition is the candidate for removal.
+3. **Repeated checking-for-understanding**: If a checking-for-understanding activity (e.g. a quiz question, recall prompt, or practice task) appears on one slide and the same or very similar activity is repeated on a later slide, the later repetition is a candidate for removal.
+
+## Rules
+- **KLP coverage is sacred**: Never delete a slide if it is the ONLY slide covering a particular KLP. Before marking any slide for deletion, verify that every KLP it covers is also covered by at least one other slide that you are keeping.
+- **Preserve structural slides**: Do not delete title slides, teacher-only slides, lesson objective/outcome slides, summary slides, keywords slides, or end-of-lesson slides.
+- **Preserve diversity slides**: Slides marked as "Covers Diversity: yes" should be kept, as they contribute to inclusive representation in the lesson.
+- **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
+- **Checking-for-understanding rule**: If a slide contains questions (e.g. quiz, recall, comprehension check), it is a checking-for-understanding slide. If the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
+- **First occurrence wins**: When content is repeated, always keep the first occurrence and mark the later repetition for deletion.
+- **Err on the side of caution**: If you are uncertain whether a slide is essential, keep it. Only delete slides you are confident are non-essential.
+- **Provide clear reasoning**: For each slide deletion, explain specifically why the slide is non-essential (which earlier slide already covers the content, or why the slide has no KLP relevance).
+- **Verify KLP safety**: After assembling your deletion list, do a final check: for each KLP mentioned across all slides, confirm that at least one slide covering that KLP remains in slidesToKeep.
+${SHARED_RULES}`,
+    schema: targetedChangesSchema,
+    slideFields: ["textElements", "tables", "keyLearningPoints"],
   },
 };
 
