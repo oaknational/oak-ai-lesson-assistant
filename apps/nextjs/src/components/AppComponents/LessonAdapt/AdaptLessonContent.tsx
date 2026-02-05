@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-import { OakBox, OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
+import {
+  OakBox,
+  OakFlex,
+  OakHeading,
+  OakP,
+  OakPrimaryButton,
+} from "@oaknational/oak-components";
 
 import { LessonDetailsTab } from "./LessonDetailsTab";
 import { SlidesTab } from "./SlidesTab";

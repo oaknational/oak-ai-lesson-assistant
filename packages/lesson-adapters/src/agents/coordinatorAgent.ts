@@ -12,7 +12,7 @@ import { generateSlidePlan } from "./slidesAgent";
 
 type AgentId = "slides"; // | "worksheet" | "quiz" | "lessonDetails" in future
 
-type EditScope = "global" | "structural" | "targeted";
+export type EditScope = "global" | "structural" | "targeted";
 
 interface IntentConfig {
   scope: EditScope;
@@ -21,6 +21,7 @@ interface IntentConfig {
 
 const INTENT_CONFIG: Record<string, IntentConfig> = {
   changeReadingAge: { scope: "global", agents: ["slides"] },
+  translateLesson: { scope: "global", agents: ["slides"] },
   // Future examples:
   // removeKLP:        { scope: "structural", agents: ["slides", "lessonDetails", "quiz"] },
   // deleteSlide:      { scope: "targeted",   agents: ["slides"] },
@@ -103,11 +104,14 @@ export async function coordinateAdaptation(
   let slidesResponse;
   if (config.agents.includes("slides")) {
     try {
-      slidesResponse = await generateSlidePlan({
-        editType: classification.intent,
-        userMessage,
-        slides: slideDeck.slides,
-      });
+      slidesResponse = await generateSlidePlan(
+        {
+          editType: classification.intent,
+          userMessage,
+          slides: slideDeck.slides,
+        },
+        config.scope,
+      );
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown slides agent error";

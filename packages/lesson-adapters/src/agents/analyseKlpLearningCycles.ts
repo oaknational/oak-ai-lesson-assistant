@@ -3,6 +3,7 @@ import { Output, generateText } from "ai";
 import { z } from "zod";
 
 import type { SlideContent } from "../slides/extraction/types";
+import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 
 // ---------------------------------------------------------------------------
 // Schemas
@@ -115,57 +116,10 @@ export async function analyseKlpLearningCycles(
     const parsed = analyseKlpLcInputSchema.parse(input);
 
     // Prepare simplified slide content for the LLM (text and tables only)
-    const slidesForPrompt = parsed.slides.map((slide) => ({
-      slideNumber: slide.slideNumber,
-      slideId: slide.slideId,
-      slideTitle: slide.slideTitle,
-      textElements: slide.textElements,
-      tables: slide.tables,
-    }));
+    const slidesForPrompt = simplifySlideContent(parsed.slides);
 
     // Format slides in a more readable structure for the LLM
-    const formattedSlides = slidesForPrompt
-      .map((slide) => {
-        const parts = [
-          `## Slide ${slide.slideNumber}`,
-          `- Slide ID: ${slide.slideId}`,
-        ];
-
-        if (slide.slideTitle) {
-          parts.push(`- Title: ${slide.slideTitle}`);
-        }
-
-        if (slide.textElements.length > 0) {
-          parts.push(
-            `\n### Text Content:`,
-            ...slide.textElements.map(
-              (te, idx) => `${idx + 1}. ${te.content.trim()}`,
-            ),
-          );
-        }
-
-        if (slide.tables.length > 0) {
-          parts.push(`\n### Tables:`);
-          slide.tables.forEach((table, tableIdx) => {
-            parts.push(
-              `\nTable ${tableIdx + 1} (${table.rows}x${table.columns}):`,
-            );
-            table.cells.forEach((row, rowIdx) => {
-              const rowContent = row
-                .map((cell) => cell.content.trim())
-                .join(" | ");
-              parts.push(`  Row ${rowIdx + 1}: ${rowContent}`);
-            });
-          });
-        }
-
-        if (slide.textElements.length === 0 && slide.tables.length === 0) {
-          parts.push(`- No text content`);
-        }
-
-        return parts.join("\n");
-      })
-      .join("\n\n---\n\n");
+    const formattedSlides = formatSlidesForPrompt(slidesForPrompt);
 
     const promptContent = `# Key Learning Points
 ${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}

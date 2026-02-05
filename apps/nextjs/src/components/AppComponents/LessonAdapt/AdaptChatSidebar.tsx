@@ -41,6 +41,8 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
   const mutation = trpc.lessonAdapt.generatePlan.useMutation();
   console.log("state", mutation.status, mutation.data, mutation.error);
 
+  const executePlanMutation = trpc.lessonAdapt.executeAdaptations.useMutation();
+
   const handleSend = (messageText?: string) => {
     const textToSend = messageText || inputValue.trim();
     if (!textToSend) return;
@@ -59,6 +61,10 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
       userMessage: textToSend,
     });
     setInputValue("");
+  };
+
+  const handleAcceptedChanges = () => {
+    executePlanMutation.mutate({ sessionId, planData: mutation.data!.plan });
   };
 
   return (
@@ -101,10 +107,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
           $borderRadius="border-radius-m"
           className="max-w-[277px]"
         >
-          <OakP $font="body-3">
-            Hello! I'm Aila, your AI lesson assistant. How do you want to adapt
-            this lesson?
-          </OakP>
+          <OakP $font="body-3">How do you want to adapt this lesson?</OakP>
         </OakBox>
         {messages.map((message) => (
           <OakBox
@@ -122,7 +125,13 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
           </OakBox>
         ))}
 
-        {mutation.data && <AdaptationPlanView plan={mutation.data.plan} />}
+        {mutation.data && (
+          <AdaptationPlanView
+            handleAcceptedChanges={handleAcceptedChanges}
+            plan={mutation.data.plan}
+            planStatus={executePlanMutation.status}
+          />
+        )}
         {/* {messages && messages.length === 0 && (
           <OakFlex $flexDirection="column" $gap="spacing-16">
             <OakP $font="heading-7">Try asking:</OakP>

@@ -1,6 +1,14 @@
 "use client";
 
-import { OakBox, OakFlex, OakP, OakSpan } from "@oaknational/oak-components";
+import type { AdaptationPlan } from "@oakai/lesson-adapters/src/schemas";
+
+import {
+  OakBox,
+  OakFlex,
+  OakP,
+  OakPrimaryButton,
+  OakSpan,
+} from "@oaknational/oak-components";
 
 interface TextEditItem {
   changeId: string;
@@ -8,7 +16,7 @@ interface TextEditItem {
   elementId: string;
   originalText: string;
   newText: string;
-  reasoning: string;
+  reasoning?: string;
 }
 
 interface TableCellEditItem {
@@ -17,7 +25,7 @@ interface TableCellEditItem {
   cellId: string;
   originalText: string;
   newText: string;
-  reasoning: string;
+  reasoning?: string;
 }
 
 interface TextElementDeletionItem {
@@ -25,32 +33,19 @@ interface TextElementDeletionItem {
   slideNumber: number;
   elementId: string;
   originalText: string;
-  reasoning: string;
+  reasoning?: string;
 }
 
 interface SlideDeletionItem {
   changeId: string;
   slideNumber: number;
-  reasoning: string;
+  reasoning?: string;
 }
 
 interface AdaptationPlanViewProps {
-  plan: {
-    intent: string;
-    scope: string;
-    totalChanges: number;
-    classifierConfidence: number;
-    slidesAgentResponse: {
-      analysis: string;
-      changes: {
-        textEdits: TextEditItem[];
-        tableCellEdits: TableCellEditItem[];
-        textElementDeletions: TextElementDeletionItem[];
-        slideDeletions: SlideDeletionItem[];
-      };
-      reasoning: string;
-    };
-  };
+  plan: AdaptationPlan;
+  handleAcceptedChanges: () => void;
+  planStatus: "error" | "success" | "pending" | "idle";
 }
 
 function Badge({ children }: { children: React.ReactNode }) {
@@ -76,7 +71,7 @@ function TextEditCard({ edit }: { edit: TextEditItem }) {
       <OakP $font="body-4" $color="text-subdued" $mb="spacing-4">
         Slide {edit.slideNumber}
       </OakP>
-      <OakBox $mb="spacing-8">
+      <OakBox $mb={edit.reasoning ? "spacing-8" : undefined}>
         <OakP $font="body-3">
           <OakSpan className="line-through opacity-60">
             {edit.originalText}
@@ -84,9 +79,11 @@ function TextEditCard({ edit }: { edit: TextEditItem }) {
         </OakP>
         <OakP $font="body-3-bold">{edit.newText}</OakP>
       </OakBox>
-      <OakP $font="body-4" $color="text-subdued">
-        {edit.reasoning}
-      </OakP>
+      {edit.reasoning && (
+        <OakP $font="body-4" $color="text-subdued">
+          {edit.reasoning}
+        </OakP>
+      )}
     </OakBox>
   );
 }
@@ -102,7 +99,7 @@ function TableCellEditCard({ edit }: { edit: TableCellEditItem }) {
       <OakP $font="body-4" $color="text-subdued" $mb="spacing-4">
         Slide {edit.slideNumber} — Cell {edit.cellId}
       </OakP>
-      <OakBox $mb="spacing-8">
+      <OakBox $mb={edit.reasoning ? "spacing-8" : undefined}>
         <OakP $font="body-3">
           <OakSpan className="line-through opacity-60">
             {edit.originalText}
@@ -110,9 +107,11 @@ function TableCellEditCard({ edit }: { edit: TableCellEditItem }) {
         </OakP>
         <OakP $font="body-3-bold">{edit.newText}</OakP>
       </OakBox>
-      <OakP $font="body-4" $color="text-subdued">
-        {edit.reasoning}
-      </OakP>
+      {edit.reasoning && (
+        <OakP $font="body-4" $color="text-subdued">
+          {edit.reasoning}
+        </OakP>
+      )}
     </OakBox>
   );
 }
@@ -122,7 +121,7 @@ function DeletionCard({
   reasoning,
 }: {
   label: string;
-  reasoning: string;
+  reasoning?: string;
 }) {
   return (
     <OakBox
@@ -131,12 +130,14 @@ function DeletionCard({
       $borderRadius="border-radius-s"
       $pa="spacing-12"
     >
-      <OakP $font="body-3" $mb="spacing-4">
+      <OakP $font="body-3" $mb={reasoning ? "spacing-4" : undefined}>
         {label}
       </OakP>
-      <OakP $font="body-4" $color="text-subdued">
-        {reasoning}
-      </OakP>
+      {reasoning && (
+        <OakP $font="body-4" $color="text-subdued">
+          {reasoning}
+        </OakP>
+      )}
     </OakBox>
   );
 }
@@ -163,7 +164,11 @@ function ChangeSection({
   );
 }
 
-export function AdaptationPlanView({ plan }: AdaptationPlanViewProps) {
+export function AdaptationPlanView({
+  plan,
+  handleAcceptedChanges,
+  planStatus,
+}: AdaptationPlanViewProps) {
   const { slidesAgentResponse } = plan;
   const { changes } = slidesAgentResponse;
 
@@ -240,6 +245,18 @@ export function AdaptationPlanView({ plan }: AdaptationPlanViewProps) {
           {slidesAgentResponse.reasoning}
         </OakP>
       </OakBox>
+      <OakPrimaryButton onClick={handleAcceptedChanges}>
+        Accept changes
+      </OakPrimaryButton>
+      {planStatus === "pending" && (
+        <OakP $font="body-4">Applying changes...</OakP>
+      )}
+      {planStatus === "error" && (
+        <OakP $font="body-4">An error occurred while applying changes.</OakP>
+      )}
+      {planStatus === "success" && (
+        <OakP $font="body-4">Changes applied successfully!</OakP>
+      )}
     </OakFlex>
   );
 }
