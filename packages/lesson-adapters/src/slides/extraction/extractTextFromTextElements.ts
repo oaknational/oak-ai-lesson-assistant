@@ -23,5 +23,5 @@ export function extractTextFromTextElements(
   );
 
   const text = textRunContent.filter(isTruthy).join("");
-  return text.length > 0 ? text.trim() : undefined;
+  return text.length > 0 ? text : undefined;
 }

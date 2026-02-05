@@ -32,6 +32,12 @@ export {
   duplicateSlideDeckToDefaultFolder,
   getPresentation,
   getSlideThumbnails,
+  // Mutations
+  batchUpdate,
+  replaceTextElements,
+  replaceTableCellText,
+  deletePageElements,
+  deleteSlides,
 
   // Types
   type SlidesClient,

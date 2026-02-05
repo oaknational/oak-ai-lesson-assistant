@@ -53,6 +53,7 @@
     "@oakai/db": "*",
     "@oakai/eslint-config": "*",
     "@oakai/exports": "*",
+    "@oakai/lesson-adapters": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
     "@oakai/rag": "*",

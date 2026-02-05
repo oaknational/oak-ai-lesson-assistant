@@ -62,3 +62,9 @@ export {
   type TextEdit,
   type TableCellEdit,
 } from "./schemas";
+
+// Execution
+export {
+  executeSlideChanges,
+  type ExecuteSlideChangesResult,
+} from "./execution";
