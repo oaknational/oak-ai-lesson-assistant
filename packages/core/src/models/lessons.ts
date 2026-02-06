@@ -274,7 +274,7 @@ export class Lessons {
     question: { id: number; title?: string; description?: string | null };
     lesson: Lesson;
   }) {
-    const title = question.title ? question.title : "";
+    const title = question.title ?? "";
     const questionTitleWithPunctuation = title?.match(/\p{P}$/gu)
       ? title
       : `${title}.`;

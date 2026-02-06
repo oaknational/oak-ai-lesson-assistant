@@ -316,6 +316,12 @@
     "zrem",
     "mathjax",
     "resvg",
-    "murmurhash"
+    "murmurhash",
+    "nonexistent",
+    "standalone",
+    "googleusercontent",
+    "reranks",
+    "evals",
+    "BPWF"
   ]
 }

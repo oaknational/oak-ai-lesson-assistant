@@ -15,7 +15,6 @@ import type { LessonPlanTrackingState } from "./types";
 
 export * from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("analytics:lesson:store");
 
 export const createLessonPlanTrackingStore = ({

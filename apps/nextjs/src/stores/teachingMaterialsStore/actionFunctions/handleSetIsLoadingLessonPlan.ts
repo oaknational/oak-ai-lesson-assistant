@@ -4,7 +4,7 @@ import type {
 } from "../types";
 
 export const handleSetIsLoadingLessonPlan =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (isLoading: boolean) => {
     set({ isLoadingLessonPlan: isLoading });
   };

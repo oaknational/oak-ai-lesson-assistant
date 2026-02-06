@@ -126,19 +126,19 @@ export class CurrentQuizSource implements QuestionSource {
     return parts.join(" ");
   }
 
-  async getStarterQuizCandidates(
+  getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.getCandidates(lessonPlan, "/starterQuiz");
+    return Promise.resolve(this.getCandidates(lessonPlan, "/starterQuiz"));
   }
 
-  async getExitQuizCandidates(
+  getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.getCandidates(lessonPlan, "/exitQuiz");
+    return Promise.resolve(this.getCandidates(lessonPlan, "/exitQuiz"));
   }
 }

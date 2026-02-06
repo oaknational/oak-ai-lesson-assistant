@@ -14,7 +14,7 @@ async function checkRateLimit(
   isDemoUser: boolean,
   chatId: string,
 ): Promise<void> {
-  return startSpan("check-rate-limit", { userId, chatId }, async (span) => {
+  return startSpan("check-rate-limit", { userId, chatId }, async (_span) => {
     const rateLimiter = isDemoUser
       ? rateLimits.generations.demo
       : rateLimits.generations.standard;
@@ -63,7 +63,7 @@ export async function reportRateLimitError(
 export async function fetchAndCheckUser(chatId: string): Promise<string> {
   const userId = (await auth()).userId;
 
-  return startSpan("fetch-and-check-user", { chatId }, async (span) => {
+  return startSpan("fetch-and-check-user", { chatId }, async (_span) => {
     if (!userId) {
       throw new AilaAuthenticationError("No user id");
     }

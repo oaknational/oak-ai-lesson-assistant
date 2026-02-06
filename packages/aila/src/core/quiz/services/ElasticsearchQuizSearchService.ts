@@ -56,7 +56,7 @@ export class ElasticsearchQuizSearchService {
         dimensions: 768,
       });
 
-      return response.data[0]?.embedding || [];
+      return response.data[0]?.embedding ?? [];
     } catch (error) {
       log.error("Error creating embedding:", error);
       throw error;

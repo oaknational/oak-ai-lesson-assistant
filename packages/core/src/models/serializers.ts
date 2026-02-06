@@ -15,8 +15,6 @@
  */
 import type { App, Prompt } from "@oakai/db";
 
-import { z } from "zod";
-
 import type { AppWithPrompt } from "./apps";
 
 type SerializedApp = Pick<App, "id" | "slug" | "name">;

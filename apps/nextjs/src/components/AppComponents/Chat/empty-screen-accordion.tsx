@@ -1,6 +1,5 @@
 import React from "react";
 
-import { OakBox } from "@oaknational/oak-components";
 import * as Accordion from "@radix-ui/react-accordion";
 
 import { lessonSections } from "@/ai-apps/lesson-planner/lessonSection";

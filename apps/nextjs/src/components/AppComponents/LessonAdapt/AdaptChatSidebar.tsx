@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable no-console */
 import { useRef, useState } from "react";
 
 import {
@@ -26,13 +27,6 @@ interface AdaptChatSidebarProps {
   sessionId: string;
 }
 
-const suggestions = [
-  "Focus the lesson on another city",
-  "Remove the last key learning point",
-  "Lower the reading age",
-  "Increase the reading age",
-];
-
 export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -42,6 +36,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
   console.log("state", mutation.status, mutation.data, mutation.error);
 
   const handleSend = (messageText?: string) => {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional: empty string should fall through to inputValue
     const textToSend = messageText || inputValue.trim();
     if (!textToSend) return;
     setMessages([

@@ -151,7 +151,7 @@ describe("countQuizLines", () => {
 describe("getFooterStrategy", () => {
   it('should return "both-footers" for content under threshold', () => {
     // Create content with exactly threshold lines
-    const questions: QuizQuestion[] = Array.from(
+    const _questions: QuizQuestion[] = Array.from(
       { length: LINE_COUNT_THRESHOLD },
       (_, i) => ({
         questionType: "short-answer",
