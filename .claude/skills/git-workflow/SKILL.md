@@ -75,13 +75,23 @@ pnpm test-e2e
   - Team reviews: `gh pr edit <PR-number> --add-reviewer oaknational/ai-devs`
   - Individual reviews: `gh pr edit <PR-number> --add-reviewer username`
 
-## Polling GitHub PR Checks
+## Checking PR CI Status
 
-When waiting for GitHub checks to complete, use this inline pattern:
+Use the check-prs script to monitor CI status across PRs:
 
 ```bash
-# Example: Poll a specific check with timeout
-# Usage: Set PR, CHECK_NAME, TIMEOUT (seconds), and INTERVAL (seconds)
+# Check specific PRs
+./scripts/check-prs.sh 940 941 942
+
+# Check all your open PRs
+./scripts/check-prs.sh
+```
+
+### Polling a Specific Check
+
+To wait for a specific check to complete:
+
+```bash
 PR=733; CHECK_NAME="lint"; TIMEOUT=120; INTERVAL=10; \
 end=$(($(date +%s) + TIMEOUT)); \
 echo "Polling PR #$PR for '$CHECK_NAME' (timeout: ${TIMEOUT}s)..."; \
@@ -93,10 +103,4 @@ while [ $(date +%s) -lt $end ]; do \
 done || echo "⏱️ Timeout reached"
 ```
 
-Common checks to poll:
-
-- `lint` - Code style and TypeScript checks
-- `test-e2e` - End-to-end tests
-- `test-jest` - Unit tests
-- `sonarcloud` - Code quality analysis
-- `Vercel` - Deployment status
+Common checks: `lint`, `test-e2e`, `test-jest`, `sonarcloud`, `Vercel`
