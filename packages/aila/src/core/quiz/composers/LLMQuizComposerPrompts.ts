@@ -68,7 +68,7 @@ const BailDataSchema = z.object({
   reason: z
     .string()
     .describe(
-      "Explain why you cannot compose a suitable quiz from the available candidates",
+      "Explanation of why the quiz could not be composed and suggested actions for the user",
     ),
 });
 
@@ -189,6 +189,8 @@ function buildOutputInstructions(): string {
     **Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
 
     It is better to bail than to return a quiz with irrelevant questions.
+
+    When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content. Quizzes are retrieved from Oak's existing question bank, so topics outside the curriculum may not have suitable questions available.
   `;
 }
 
