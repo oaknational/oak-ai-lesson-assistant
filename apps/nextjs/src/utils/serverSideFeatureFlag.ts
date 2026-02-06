@@ -6,11 +6,19 @@ import { kv } from "@vercel/kv";
 
 const log = aiLogger("feature-flags");
 
+/**
+ * Evaluate a feature flag server-side with full user context.
+ *
+ * Unlike bootstrap flags (evaluated at page load with only auth token claims),
+ * this fetches email from Clerk and passes it for local evaluation, enabling
+ * flags with email-based targeting rules.
+ *
+ * Results are cached for 60s to avoid repeated Clerk API calls.
+ */
 export async function serverSideFeatureFlag(
   featureFlagId: string,
 ): Promise<boolean> {
-  const clerkAuthentication = await auth();
-  const { userId }: { userId: string | null } = clerkAuthentication;
+  const { userId } = await auth();
   if (!userId) {
     return false;
   }
@@ -19,44 +27,24 @@ export async function serverSideFeatureFlag(
   const cachedResult = await kv.get(cacheKey);
 
   if (cachedResult !== null) {
-    if (cachedResult === "true") {
-      return true;
-    }
+    return cachedResult === "true";
   }
 
   try {
-    // Check if the user has been identified in Posthog
-    const identifiedKey = `posthog_identified:${userId}`;
-    const isIdentified = await kv.get(identifiedKey);
-
-    if (!isIdentified) {
-      // Only fetch user data if not identified
-      const client = await clerkClient();
-      const user = await client.users.getUser(userId);
-      const userEmail = user.emailAddresses?.[0]?.emailAddress;
-
-      await posthogAiBetaServerClient.identifyImmediate({
-        distinctId: userId,
-        properties: {
-          email: userEmail,
-        },
-      });
-
-      // Mark user as identified in our cache
-      await kv.set(identifiedKey, "true", { ex: 86400 }); // Cache for 24 hours
-    }
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const email = user.emailAddresses?.[0]?.emailAddress;
 
     const isFeatureFlagEnabled =
-      (await posthogAiBetaServerClient.isFeatureEnabled(
-        featureFlagId,
-        userId,
-      )) ?? false;
+      (await posthogAiBetaServerClient.isFeatureEnabled(featureFlagId, userId, {
+        personProperties: { ...(email && { email }) },
+      })) ?? false;
 
     await kv.set(cacheKey, isFeatureFlagEnabled.toString(), { ex: 60 });
 
     return isFeatureFlagEnabled;
   } catch (e) {
-    log.error("Error checking feature flag:", e);
+    log.error(`Error checking feature flag ${featureFlagId}:`, e);
     return false;
   }
 }

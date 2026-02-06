@@ -25,8 +25,10 @@ interface PostHogSurvey {
 }
 
 // PostHog configuration from environment
+// Note: This script requires a personal API key with survey read access.
+// The Feature Flags Secure API Key doesn't have access to surveys.
 const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-const POSTHOG_API_KEY = process.env.POSTHOG_PERSONAL_KEY_FLAGS;
+const POSTHOG_API_KEY = process.env.POSTHOG_PERSONAL_API_KEY;
 const POSTHOG_PROJECT_ID = process.env.NEXT_PUBLIC_POSTHOG_PROJECT;
 
 // Fetch surveys from PostHog API
