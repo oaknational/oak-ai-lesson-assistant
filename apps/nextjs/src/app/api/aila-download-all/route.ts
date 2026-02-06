@@ -10,7 +10,7 @@ import { PassThrough } from "stream";
 import { withSentry } from "@/lib/sentry/withSentry";
 
 import { saveDownloadEvent } from "../aila-download/downloadHelpers";
-import { sanitizeFilename } from "../sanitizeFilename";
+import { sanitizeFilename, truncateFilename } from "../sanitizeFilename";
 
 type FileIdsAndFormats = {
   fileId: string;
@@ -129,9 +129,7 @@ async function getHandler(req: Request): Promise<Response> {
 
         const { data } = res;
 
-        const filename = `${lessonTitle} - ${lessonExport.id.slice(0, 5)} - ${getReadableExportType(
-          lessonExport.exportType,
-        )}.${ext}`;
+        const filename = `${getReadableExportType(lessonExport.exportType)}.${ext}`;
 
         // @ts-expect-error @todo fix this
         archive.append(data.stream, { name: filename });
@@ -165,12 +163,12 @@ async function getHandler(req: Request): Promise<Response> {
 
   await kv.set(taskId, "complete");
 
-  const sanitizedLessonTitle = sanitizeFilename(lessonTitle);
+  const zipFilename = truncateFilename(sanitizeFilename(lessonTitle));
 
   return new Response(readableStream, {
     status: 200,
     headers: new Headers({
-      "content-disposition": `attachment; filename=aila: ${sanitizedLessonTitle} all resources.zip`,
+      "content-disposition": `attachment; filename="${zipFilename}.zip"`,
       "content-type": "application/zip",
     }),
   });
