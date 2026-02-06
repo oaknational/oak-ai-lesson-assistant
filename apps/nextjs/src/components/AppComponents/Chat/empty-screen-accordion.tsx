@@ -27,8 +27,8 @@ const EmptyScreenAccordion = () => {
       ].includes(section),
   );
 
-  const quizLessonSections = lessonSections.filter(
-    (section) => !["Title", "Key stage", "Subject"].includes(section),
+  const quizLessonSections = lessonSections.filter((section) =>
+    section.toLowerCase().includes("quiz"),
   );
 
   return (
@@ -96,25 +96,16 @@ const EmptyScreenAccordion = () => {
         </AccordionTrigger>
         <AccordionContent>
           <div className="flex flex-col gap-8 pl-20">
-            {quizLessonSections.map((section) => {
-              if (
-                section == "Title" ||
-                section == "Key stage" ||
-                section == "Subject"
-              ) {
-                return null;
-              }
-              return (
-                <div className="flex items-center gap-8" key={section}>
-                  <Icon icon="tick" size="sm" />
-                  <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
-                  </span>
-                </div>
-              );
-            })}
+            {quizLessonSections.map((section) => (
+              <div className="flex items-center gap-8" key={section}>
+                <Icon icon="tick" size="sm" />
+                <span className="text-base">
+                  {convertTitleCaseToSentenceCase(
+                    handleRewordingSections(section),
+                  )}
+                </span>
+              </div>
+            ))}
           </div>
         </AccordionContent>
       </AccordionItem>
