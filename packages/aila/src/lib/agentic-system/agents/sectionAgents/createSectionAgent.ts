@@ -4,10 +4,7 @@ import type { ResponseCreateParamsNonStreaming } from "openai/resources/response
 import type { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
-import type {
-  AgenticRagLessonPlanResult,
-  AilaExecutionContext,
-} from "../../types";
+import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";

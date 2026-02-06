@@ -37,7 +37,7 @@ interface QuizPlaygroundViewProps {
 export function QuizPlaygroundView({
   viewMode,
   report,
-  isStreaming = false,
+  isStreaming: _isStreaming = false,
 }: Readonly<QuizPlaygroundViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;

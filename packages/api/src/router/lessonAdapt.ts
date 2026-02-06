@@ -172,7 +172,7 @@ export const lessonAdaptRouter = router({
   executeAdaptations: adminProcedure
     .input(executeAdaptationsInput)
     .output(executeAdaptationsOutput)
-    .mutation(async () => {
+    .mutation(() => {
       // TODO: Implement in follow-up PR
       // 1. Filter changes by approved IDs
       // 2. Execute via Google Slides API (text, deletions)
@@ -338,7 +338,7 @@ export const lessonAdaptRouter = router({
         lessonId: z.string(),
       }),
     )
-    .query(async () => {
+    .query(() => {
       // TODO: Implement in follow-up PR
       // Query adaptation history from database
       throw new Error("Not implemented yet");

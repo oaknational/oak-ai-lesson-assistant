@@ -103,7 +103,7 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
 }
 
 export function MLPipelineDetails({
-  result,
+  result: _result,
   reportNode,
 }: Readonly<MLPipelineDetailsProps>) {
   const searchTerms = extractQueryTerms(reportNode);

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";

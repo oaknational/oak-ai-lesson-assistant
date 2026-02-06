@@ -203,7 +203,7 @@ function buildQuizTypeInstructions(
 }
 
 function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const priorKnowledge = lessonPlan.priorKnowledge || [];
+  const priorKnowledge = lessonPlan.priorKnowledge ?? [];
   const priorKnowledgeList =
     priorKnowledge.length > 0
       ? `\n\nPrior knowledge to assess:\n${priorKnowledge.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
@@ -222,7 +222,7 @@ function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
 }
 
 function buildExitQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const keyLearningPoints = lessonPlan.keyLearningPoints || [];
+  const keyLearningPoints = lessonPlan.keyLearningPoints ?? [];
   const learningPointsList =
     keyLearningPoints.length > 0
       ? `\n\nKey learning points to assess:\n${keyLearningPoints.map((item, i) => `${i + 1}. ${item}`).join("\n")}`

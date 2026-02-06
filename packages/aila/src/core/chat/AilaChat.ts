@@ -403,8 +403,9 @@ export class AilaChat implements AilaChatService {
     await this.span("reportUsageMetrics", async () => {
       await this.reportUsageMetrics();
     });
-    await this.span("applyEdits", async () => {
+    await this.span("applyEdits", () => {
       this.applyEdits();
+      return Promise.resolve();
     });
     await this.span("appendAssistantMessage", async () => {
       const assistantMessage = this.appendAssistantMessage();

@@ -68,7 +68,7 @@ export type AilaTurnCallbacks = {
     stepsExecuted: PlanStep[];
     document: PartialLessonPlan;
     ailaMessage: string;
-  }) => Promise<void>;
+  }) => void | Promise<void>;
 };
 
 export type AilaTurnArgs = {

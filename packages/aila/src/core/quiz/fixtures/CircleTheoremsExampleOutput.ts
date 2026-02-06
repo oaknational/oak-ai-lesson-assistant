@@ -264,6 +264,7 @@ export const CircleTheoremLesson = {
   },
 };
 
-const { basedOn, ...CircleTheoremLessonWithoutBasedOn } = CircleTheoremLesson;
+const { basedOn: _basedOn, ...CircleTheoremLessonWithoutBasedOn } =
+  CircleTheoremLesson;
 
 export { CircleTheoremLessonWithoutBasedOn };

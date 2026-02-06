@@ -9,7 +9,7 @@ import type {
 const log = aiLogger("teaching-materials");
 
 export const handleSetGeneration =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (generation: TeachingMaterialSchemas | null) => {
     log.info("Setting generation");
     set({ generation });

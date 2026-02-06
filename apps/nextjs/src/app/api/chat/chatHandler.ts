@@ -76,7 +76,7 @@ async function setupChatHandler(req: NextRequest) {
   return await startSpan(
     "chat-setup-chat-handler",
     {},
-    async (span: TracingSpan) => {
+    async (_span: TracingSpan) => {
       const json = await req.json();
       const {
         id: chatId,

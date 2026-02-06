@@ -1,7 +1,6 @@
 import debug from "debug";
 import invariant from "tiny-invariant";
 
-import browserLogger from "./browser";
 import type { StructuredLogger } from "./structuredLogger";
 import structuredLogger from "./structuredLogger";
 

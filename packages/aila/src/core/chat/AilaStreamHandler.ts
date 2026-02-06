@@ -97,8 +97,9 @@ export class AilaStreamHandler {
           await this._chat.setupGeneration();
         });
       } else {
-        await this.span("initialise-chunks", async () => {
+        await this.span("initialise-chunks", () => {
           this._chat.initialiseChunks();
+          return Promise.resolve();
         });
       }
 
