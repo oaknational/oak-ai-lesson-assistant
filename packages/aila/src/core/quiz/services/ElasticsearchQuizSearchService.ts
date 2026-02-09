@@ -158,10 +158,6 @@ export class ElasticsearchQuizSearchService {
       return response.hits;
     } catch (error) {
       log.error("Error performing hybrid search:", error);
-      if (error instanceof Error) {
-        log.error("Error message:", error.message);
-        log.error("Error stack:", error.stack);
-      }
       throw error;
     }
   }
