@@ -9,7 +9,7 @@ import type {
 const log = aiLogger("teaching-materials");
 
 export const handleSetPageData =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (pageData: PageData) => {
     log.info("Setting page data");
     set({ pageData });

@@ -35,7 +35,7 @@ const TeachingMaterialsStartAgain = ({
   invariant(docType, "docType must be defined");
   const docTypeDisplayName =
     materialTypesConfig[docType].displayName.toLowerCase();
-  const { resetToDefault, setStepNumber, setId, setDocType, setGeneration } =
+  const { setStepNumber, setId, setDocType, setGeneration } =
     useTeachingMaterialsActions();
   const [selectedOption, setSelectedOption] = useState<string>("");
 
