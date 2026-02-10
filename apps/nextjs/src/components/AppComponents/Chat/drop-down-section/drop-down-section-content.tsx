@@ -5,8 +5,6 @@ import type {
 
 import { OakFlex } from "@oaknational/oak-components";
 
-import { useClientSideFeatureFlag } from "@/components/ContextProviders/FeatureFlagProvider";
-
 import { SectionContent } from "../../SectionContent";
 import AddAdditionalMaterialsButton from "./add-additional-materials-button";
 import FlagButton from "./flag-button";
@@ -24,9 +22,10 @@ export const DropDownSectionContent = ({
   sectionKey,
   value,
 }: DropDownSectionContentProps) => {
-  const isAgentic = useClientSideFeatureFlag("agentic-aila-nov-25");
   const isQuizSection =
     sectionKey === "starterQuiz" || sectionKey === "exitQuiz";
+  const isRagQuiz =
+    isQuizSection && typeof value === "object" && value && "reportId" in value;
 
   const renderModifyButton = () => {
     if (sectionKey === "additionalMaterials" && value === "None") {
@@ -38,7 +37,7 @@ export const DropDownSectionContent = ({
         />
       );
     }
-    if (isQuizSection && isAgentic) {
+    if (isRagQuiz) {
       return (
         <QuizModifyButton
           sectionTitle={sectionTitle(sectionKey)}
