@@ -124,7 +124,6 @@ export class QuizQuestionRetrievalService {
       }
 
       const source = response.hits.hits[0]._source;
-      log.info(`Source: ${JSON.stringify(source)}`);
 
       const quizData: QuizSet =
         typeof source.text === "string" ? JSON.parse(source.text) : source.text;
