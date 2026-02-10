@@ -1,3 +1,23 @@
+# [1.63.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.62.0...v1.63.0) (2026-02-10)
+
+
+### Bug Fixes
+
+* **agentic:** enforce top-level patches until UI supports nested paths ([#932](https://github.com/oaknational/oak-ai-lesson-assistant/issues/932)) ([dd4f611](https://github.com/oaknational/oak-ai-lesson-assistant/commit/dd4f61143880c73b0bbf0f5adb2bd63d7b347a64))
+* **agentic:** ensure llmMessage JSON is always opened before closing ([#928](https://github.com/oaknational/oak-ai-lesson-assistant/issues/928)) ([8a8846f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/8a8846f16392fd5e5bd88db4e634ecffceb3dd9f))
+* **agentic:** improve messageToUser tone and conciseness ([#938](https://github.com/oaknational/oak-ai-lesson-assistant/issues/938)) ([e329503](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e3295033daeae7f99abb22732276d8d22c0ab9b4))
+* disable agentic aila in production ([#949](https://github.com/oaknational/oak-ai-lesson-assistant/issues/949)) ([1c97264](https://github.com/oaknational/oak-ai-lesson-assistant/commit/1c97264be44b318cf0ba00a6f441af014d91399b))
+* **quiz:** align playground view with composer task node names ([#934](https://github.com/oaknational/oak-ai-lesson-assistant/issues/934)) ([2267027](https://github.com/oaknational/oak-ai-lesson-assistant/commit/226702714320b97e4a9f370046a130af015af7ff))
+* revert agent back to gpt4o from gpt5 ([#937](https://github.com/oaknational/oak-ai-lesson-assistant/issues/937)) ([f7dfeaf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f7dfeaf681e0c3289f79624e34ca714b28ed4bc5))
+
+
+### Features
+
+* add klp analysis , coordinate agent router and slides plan agent ([#915](https://github.com/oaknational/oak-ai-lesson-assistant/issues/915)) ([b385823](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b38582363fff62a6bfefa23be8072e7ea8a76b3b))
+* **agentic:** add notes support to nov-25 orchestrator [AI-1977]  ([#922](https://github.com/oaknational/oak-ai-lesson-assistant/issues/922)) ([9e60164](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9e60164f4ac8b1edfd8813f30dfbc7edfc1c235c))
+* **quiz:** add bail mechanism with notes integration [AI-1962] ([#925](https://github.com/oaknational/oak-ai-lesson-assistant/issues/925)) ([23a22a1](https://github.com/oaknational/oak-ai-lesson-assistant/commit/23a22a1d25bb513463e63ee44ee65908f2e808a6))
+* **quiz:** quiz-specific modify options with contextual text input ([#919](https://github.com/oaknational/oak-ai-lesson-assistant/issues/919)) ([bd217ee](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bd217ee2c53a26de68a7be74f5da7a381f9b0168))
+
 # [1.62.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.61.0...v1.62.0) (2026-01-29)
 
 
