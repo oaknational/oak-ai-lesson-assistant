@@ -88,7 +88,10 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-nov-25");
+      const useAgenticAila =
+        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
+          ? false
+          : await serverSideFeatureFlag("agentic-aila-nov-25");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
