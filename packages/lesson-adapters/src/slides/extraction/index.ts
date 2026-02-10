@@ -9,10 +9,20 @@ export { parseCellId } from "./parseCellId";
 export type {
   NonTextElementType,
   ParsedCellId,
-  PresentationContent,
+  SlideDeckContent,
   SlideContent,
   SlideNonTextElement,
   SlideTable,
   SlideTableCell,
   SlideTextElement,
 } from "./types";
+export {
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideDeckContentSchema,
+  slideContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
+} from "./schemas";

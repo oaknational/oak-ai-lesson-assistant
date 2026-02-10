@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { createHash } from "crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";

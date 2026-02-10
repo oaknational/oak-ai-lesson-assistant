@@ -14,13 +14,51 @@ export {
   // Utilities
   generateCellId,
   parseCellId,
+  // Schemas
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideDeckContentSchema,
+  slideContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
   // Types
   type NonTextElementType,
   type ParsedCellId,
-  type PresentationContent,
+  type SlideDeckContent,
   type SlideContent,
   type SlideNonTextElement,
   type SlideTable,
   type SlideTableCell,
   type SlideTextElement,
 } from "./slides";
+
+// Agents
+export { classifyLessonAdaptIntent } from "./agents";
+export {
+  coordinateAdaptation,
+  type CoordinateAdaptationResult,
+} from "./agents";
+export {
+  analyseKlpLearningCycles,
+  type AnalyseKlpLcInput,
+  type KlpLcAgentResponse,
+  type SlideKlpLcMapping,
+} from "./agents";
+
+// Services
+export {
+  generatePlan,
+  generatePlanInputSchema,
+  type GeneratePlanInput,
+} from "./services";
+
+// Schemas
+export {
+  adaptationPlanSchema,
+  type AdaptationPlan,
+  type SlidesAgentResponse,
+  type TextEdit,
+  type TableCellEdit,
+} from "./schemas";

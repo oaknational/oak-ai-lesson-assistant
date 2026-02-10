@@ -83,9 +83,7 @@ export class AilaGeneration {
   }
 
   public async setupPromptId(): Promise<string> {
-    if (!this._promptId) {
-      this._promptId = await this.fetchPromptId();
-    }
+    this._promptId ??= await this.fetchPromptId();
     return this._promptId;
   }
 

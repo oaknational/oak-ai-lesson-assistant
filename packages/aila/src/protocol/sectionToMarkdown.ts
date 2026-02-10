@@ -3,10 +3,6 @@ import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversi
 import { isArray, isNumber, isObject, isString } from "remeda";
 import { z } from "zod";
 
-import { toSentenceCase } from "../../../../apps/nextjs/src/utils/toSentenceCase";
-import type { QuizV1Optional, QuizV2Optional } from "./schema";
-import { CycleOptionalSchema, QuizV1OptionalSchema } from "./schema";
-
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces
   const normalize = (str: string) => str.replace(/[*\-\s]/g, "");

@@ -1,26 +1,38 @@
 import { aiLogger } from "@oakai/logger";
 
-import { buildPatches } from "./helpers/buildPatches";
-import { type TextStreamer } from "./helpers/createTextStreamer";
+import type { TextStreamer } from "./helpers/createTextStreamer";
+import type { JsonPatchOperation } from "./helpers/immerPatchToJsonPatch";
 
 const log = aiLogger("aila:agents");
 
+/**
+ * Wrap a raw JSON Patch operation in the protocol format.
+ */
+function wrapPatch(patch: JsonPatchOperation) {
+  const sectionKey = patch.path.split("/")[1] ?? patch.path;
+  return {
+    type: "patch" as const,
+    reasoning: `Updated ${sectionKey} based on user request`,
+    value: patch,
+    status: "complete",
+  };
+}
+
 export const createOnSectionComplete =
   (textStreamer: TextStreamer, patchState: { isFirstSection: boolean }) =>
-  <T extends object>(prevDoc: T, nextDoc: T) => {
+  (patches: JsonPatchOperation[]) => {
     let isFirstPatch = patchState.isFirstSection;
-    const patches = buildPatches(prevDoc, nextDoc);
+
     for (const patch of patches) {
       if (isFirstPatch) {
         isFirstPatch = false;
       } else {
         textStreamer(",");
       }
-      const patchJson = JSON.stringify(patch);
-      textStreamer(patchJson);
+      const wrapped = wrapPatch(patch);
+      textStreamer(JSON.stringify(wrapped));
     }
 
-    log.info("onSectionComplete: ", patches);
-    // Mark that we've processed the first section
+    log.info("onSectionComplete:", patches);
     patchState.isFirstSection = false;
   };

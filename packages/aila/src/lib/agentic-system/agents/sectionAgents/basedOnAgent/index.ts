@@ -1,12 +1,14 @@
 import { isTruthy } from "remeda";
 
 import { BasedOnSchema } from "../../../../../protocol/schema";
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { createSectionAgent } from "../createSectionAgent";
 import { basedOnInstructions } from "./basedOn.instructions";
 
 export const basedOnAgent = createSectionAgent({
   responseSchema: BasedOnSchema.nullable(),
   instructions: basedOnInstructions,
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
   extraInputFromCtx: (ctx) => {
     return [
       ctx.persistedState.relevantLessons && {

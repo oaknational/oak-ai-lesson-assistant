@@ -1,3 +1,4 @@
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
 import { misconceptionsInstructions } from "./misconceptions.instructions";
@@ -10,4 +11,5 @@ export const misconceptionsAgent = createSectionAgent({
     (m) => `${m.misconception}: ${m.description}`,
   ),
   defaultVoice: "EXPERT_TEACHER",
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

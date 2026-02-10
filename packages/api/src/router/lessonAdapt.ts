@@ -1,20 +1,71 @@
 import { getPresentation, getSlideThumbnails } from "@oakai/gsuite";
-import { extractPresentationContent } from "@oakai/lesson-adapters";
+import {
+  type SlideContent,
+  adaptationPlanSchema,
+  coordinateAdaptation,
+  extractPresentationContent,
+  slideDeckContentSchema,
+} from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
+import { kv } from "@vercel/kv";
+import { nanoid } from "nanoid";
 import { z } from "zod";
 
 import { adminProcedure } from "../middleware/adminAuth";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 import {
+  type ExtractedLessonData,
   extractLessonDataForAdaptPage,
   extractedLessonDataSchema,
 } from "./owaLesson/extractLessonData";
 import { fetchOwaLessonAndTcp } from "./owaLesson/fetch";
-import { duplicateLessonSlideDeck } from "./owaLesson/slideDeck";
+import {
+  duplicateLessonSlideDeck,
+  enrichSlidesWithKlpLc,
+} from "./owaLesson/slideDeck";
 import { validateCurriculumApiEnv } from "./teachingMaterials/helpers";
+
+/**
+ * Session state stored in KV for lesson adaptations.
+ * Keyed by a generated sessionId.
+ */
+interface LessonAdaptSession {
+  id: string;
+  lessonData: ExtractedLessonData;
+  slideContent: SlideContent[];
+  duplicatedPresentationId: string;
+  duplicatedPresentationUrl: string;
+  owaLessonSlug: string;
+  userId: string;
+  createdAt: number;
+}
+
+function generateSessionId(): string {
+  return nanoid(16);
+}
+
+const KV_SESSION_PREFIX = "lesson-adapt:session:";
+const SESSION_TTL_SECONDS = 60 * 60; // 1 hour for POC
+
+/**
+ * Simple KV storage for lesson adapt sessions.
+ * Keyed by sessionId.
+ * Will be replaced by db
+ */
+const LessonAdaptSessionStorage = {
+  async store(session: LessonAdaptSession): Promise<void> {
+    const key = `${KV_SESSION_PREFIX}${session.id}`;
+    await kv.set(key, session, { ex: SESSION_TTL_SECONDS });
+  },
+
+  async get(sessionId: string): Promise<LessonAdaptSession | null> {
+    const key = `${KV_SESSION_PREFIX}${sessionId}`;
+    return kv.get<LessonAdaptSession>(key);
+  },
+};
 
 const log = aiLogger("adaptations");
 /**
@@ -25,22 +76,12 @@ const log = aiLogger("adaptations");
  */
 
 const generatePlanInput = z.object({
-  lessonId: z.string(),
-  presentationId: z.string(),
+  sessionId: z.string(),
   userMessage: z.string(),
 });
 
 const generatePlanOutput = z.object({
-  plan: z.object({
-    changes: z.array(
-      z.object({
-        id: z.string(),
-        type: z.string(),
-        description: z.string(),
-      }),
-    ),
-    warnings: z.array(z.string()).optional(),
-  }),
+  plan: adaptationPlanSchema,
 });
 
 const executeAdaptationsInput = z.object({
@@ -64,13 +105,64 @@ export const lessonAdaptRouter = router({
   generatePlan: adminProcedure
     .input(generatePlanInput)
     .output(generatePlanOutput)
-    .mutation(async () => {
-      // TODO: Implement in follow-up PR
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      const { userMessage, sessionId } = input;
+
+      // Retrieve session from KV
+      const session = await LessonAdaptSessionStorage.get(sessionId);
+      if (!session) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session not found. Please reload the lesson.",
+        });
+      }
+
+      log.info("Retrieved session from KV", {
+        sessionId,
+        owaLessonSlug: session.owaLessonSlug,
+      });
+
       // 1. Classify edit type
-      // 2. Fetch presentation and convert to LLM format
+      const coordinateAdaptationResult = await coordinateAdaptation({
+        userMessage,
+        slideDeck: {
+          slides: session.slideContent,
+          lessonTitle: session.lessonData.title,
+          slideDeckId: session.duplicatedPresentationId,
+        },
+      });
+
+      // Session data available for next steps:
+      // - session.lessonData (extracted lesson metadata)
+      // - session.slideContent (LLM-friendly slide content)
+
+      // TODO: Implement in follow-up PR
+      // 2. Use session.slideContent + session.lessonData for agent context
       // 3. Spawn agents (KLP, Slides, Pedagogy Validator)
       // 4. Coordinator aggregates and returns unified plan
-      throw new Error("Not implemented yet");
+
+      if (!coordinateAdaptationResult.success) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Adaptation planning failed: ${coordinateAdaptationResult.reason}`,
+        });
+      }
+
+      log.info("Adaptation plan generated", {
+        sessionId,
+        owaLessonSlug: session.owaLessonSlug,
+      });
+
+      return {
+        plan: coordinateAdaptationResult.plan,
+      };
     }),
 
   /**
@@ -80,7 +172,7 @@ export const lessonAdaptRouter = router({
   executeAdaptations: adminProcedure
     .input(executeAdaptationsInput)
     .output(executeAdaptationsOutput)
-    .mutation(async () => {
+    .mutation(() => {
       // TODO: Implement in follow-up PR
       // 1. Filter changes by approved IDs
       // 2. Execute via Google Slides API (text, deletions)
@@ -97,15 +189,16 @@ export const lessonAdaptRouter = router({
   getLessonContent: adminProcedure
     .input(
       z.object({
-        lessonId: z.string(),
+        lessonSlug: z.string(),
       }),
     )
     .output(
       z.object({
+        sessionId: z.string(),
         lessonData: extractedLessonDataSchema,
-        presentationId: z.string(),
-        presentationUrl: z.string().url(),
-        slideContent: z.any(), // PresentationContent type
+        duplicatedPresentationId: z.string(),
+        duplicatedPresentationUrl: z.string().url(),
+        slideContent: slideDeckContentSchema,
         /** Raw Google Slides API response (for debugging) */
         rawSlideData: z.any(),
         rawLessonData: z.any(),
@@ -121,8 +214,7 @@ export const lessonAdaptRouter = router({
         }
         // NOTE: Database structure for lesson adaptations not yet set up
 
-        // Temporary: Treat lessonId as lessonSlug for now
-        const lessonSlug = input.lessonId;
+        const { lessonSlug } = input;
         const programmeSlug = null; // Canonical lesson for now
 
         const { authKey, authType, graphqlEndpoint } =
@@ -138,27 +230,52 @@ export const lessonAdaptRouter = router({
         });
 
         // Duplicate the slide deck to the configured folder
-        const { presentationId, presentationUrl } =
+        const { duplicatedPresentationId, duplicatedPresentationUrl } =
           await duplicateLessonSlideDeck(lessonData, lessonSlug);
 
-        // Extract slide content in LLM-friendly format
-        const presentation = await getPresentation(presentationId);
-        const slideContent = extractPresentationContent(presentation);
+        const presentation = await getPresentation(duplicatedPresentationId);
+        const slideDeck = extractPresentationContent(presentation);
 
-        // Extract and transform lesson data for the frontend
+        // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
 
-        return {
+        // Analyze slides to identify key learning points and learning cycles covered on each slide
+        const enrichedSlides = await enrichSlidesWithKlpLc(
+          slideDeck.slides,
+          extractedLessonData.keyLearningPoints,
+          extractedLessonData.learningCycles,
+        );
+
+        // Generate a unique session ID
+        const sessionId = generateSessionId();
+
+        // Store session in KV for later retrieval by generatePlan
+        await LessonAdaptSessionStorage.store({
+          id: sessionId,
           lessonData: extractedLessonData,
-          presentationId,
-          presentationUrl,
-          slideContent,
+          slideContent: enrichedSlides,
+          duplicatedPresentationId,
+          duplicatedPresentationUrl,
+          owaLessonSlug: lessonSlug,
+          userId: ctx.auth.userId,
+          createdAt: Date.now(),
+        });
+
+        return {
+          sessionId,
+          lessonData: extractedLessonData,
+          duplicatedPresentationId,
+          duplicatedPresentationUrl,
+          slideContent: {
+            ...slideDeck,
+            slides: enrichedSlides,
+          },
           rawSlideData: presentation,
           rawLessonData: lessonData,
         };
       } catch (error) {
         log.error("Failed to fetch lesson content", {
-          lessonId: input.lessonId,
+          lessonSlug: input.lessonSlug,
           error,
         });
 
@@ -221,7 +338,7 @@ export const lessonAdaptRouter = router({
         lessonId: z.string(),
       }),
     )
-    .query(async () => {
+    .query(() => {
       // TODO: Implement in follow-up PR
       // Query adaptation history from database
       throw new Error("Not implemented yet");

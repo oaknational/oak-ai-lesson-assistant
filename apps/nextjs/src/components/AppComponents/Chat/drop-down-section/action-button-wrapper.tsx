@@ -19,6 +19,7 @@ import ActionButton from "./action-button";
 import type {
   AdditionalMaterialOptions,
   ModifyOptions,
+  QuizModifyOptions,
 } from "./action-button.types";
 import { ActionDropDown } from "./action-drop-down";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
@@ -27,7 +28,7 @@ export type ActionButtonWrapperProps = Readonly<{
   sectionTitle: string;
   sectionPath: string;
   sectionValue: LessonPlanSectionWhileStreaming;
-  options: ModifyOptions | AdditionalMaterialOptions;
+  options: ModifyOptions | AdditionalMaterialOptions | QuizModifyOptions;
   buttonText: string;
   actionButtonLabel: string;
   userSuggestionTitle: string;
@@ -74,7 +75,10 @@ const ActionButtonWrapper = ({
         sectionPath,
         sectionValue: String(sectionValue),
         action: selectedRadio.enumValue,
-        actionOtherText: userFeedbackText || null,
+        actionOtherText:
+          selectedRadio.label === "Other"
+            ? userFeedbackText || null
+            : `${selectedRadio.label}: ${userFeedbackText}`,
       };
       await mutateAsync(payload);
     }

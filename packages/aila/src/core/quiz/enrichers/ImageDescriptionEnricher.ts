@@ -181,7 +181,6 @@ export class ImageDescriptionEnricher implements QuestionEnricher {
     const results = await limit.map(urls, async (url) => {
       try {
         const description = await this.generateDescription(url);
-        log.info(`Generated description for ${url.substring(0, 60)}...`);
         return [url, description] as const;
       } catch (error) {
         log.warn(`Skipping ${url} due to error:`, error);
@@ -218,7 +217,6 @@ export class ImageDescriptionEnricher implements QuestionEnricher {
 
     try {
       await Promise.all(promises);
-      log.info(`Cached ${descriptions.size} new descriptions`);
     } catch (error) {
       log.error("Failed to cache descriptions:", error);
     }
