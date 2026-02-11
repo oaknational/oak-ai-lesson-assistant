@@ -94,6 +94,11 @@ const getConfig = async (phase) => {
     async redirects() {
       return [
         {
+          source: "/lesson-planner",
+          destination: "/",
+          permanent: true,
+        },
+        {
           source: "/chat/:path*",
           destination: "/aila/:path",
           permanent: true,

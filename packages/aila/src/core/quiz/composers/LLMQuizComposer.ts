@@ -145,8 +145,6 @@ export class LLMComposer implements QuizComposer {
     successData: SuccessData,
     questionPools: QuizQuestionPool[],
   ): RagQuizQuestion[] {
-    log.info(`Overall strategy: ${successData.overallStrategy}`);
-
     // Build lookup map of UID -> question from all pools
     const questionsByUid = new Map<string, RagQuizQuestion>();
     questionPools.forEach((pool) => {
@@ -165,7 +163,6 @@ export class LLMComposer implements QuizComposer {
           return null;
         }
 
-        log.info(`Selected: ${selection.questionUid} - ${selection.reasoning}`);
         return question;
       })
       .filter((q): q is RagQuizQuestion => q !== null);

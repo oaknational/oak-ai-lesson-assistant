@@ -38,9 +38,7 @@ export function SidebarItems({ chats }: Readonly<SidebarItemsProps>) {
   >((acc, chat) => {
     if (!isThisMonth(chat.updatedAt)) {
       const monthYear = format(chat.updatedAt, "MMMM yyyy");
-      if (!acc[monthYear]) {
-        acc[monthYear] = [];
-      }
+      acc[monthYear] ??= [];
       acc[monthYear]?.push(chat);
     }
     return acc;

@@ -13,7 +13,8 @@ export function extractImageUrlsFromText(
 
   return matches
     .map((match) => ({
-      url: match[2] || "",
+      url: match[2] ?? "",
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional: empty alt text should default to "image"
       altText: match[1] || "image",
     }))
     .filter((item) => item.url);

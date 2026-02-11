@@ -56,7 +56,7 @@ export class ElasticsearchQuizSearchService {
         dimensions: 768,
       });
 
-      return response.data[0]?.embedding || [];
+      return response.data[0]?.embedding ?? [];
     } catch (error) {
       log.error("Error creating embedding:", error);
       throw error;
@@ -158,10 +158,6 @@ export class ElasticsearchQuizSearchService {
       return response.hits;
     } catch (error) {
       log.error("Error performing hybrid search:", error);
-      if (error instanceof Error) {
-        log.error("Error message:", error.message);
-        log.error("Error stack:", error.stack);
-      }
       throw error;
     }
   }
