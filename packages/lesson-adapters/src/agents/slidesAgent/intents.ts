@@ -9,7 +9,8 @@ export type SlideField =
   | "tables"
   | "images"
   | "shapes"
-  | "keyLearningPoints";
+  | "keyLearningPoints"
+  | "learningCycles";
 
 // ---------------------------------------------------------------------------
 // Intent Config Types (discriminated union for type safety)

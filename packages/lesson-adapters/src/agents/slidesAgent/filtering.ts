@@ -39,8 +39,10 @@ export function filterSlideContent(
     }
     if (fields.includes("keyLearningPoints")) {
       filtered.keyLearningPoints = slide.keyLearningPoints;
-      // filtered.learningCycles = slide.learningCycles;
       filtered.coversDiversity = slide.coversDiversity;
+    }
+    if (fields.includes("learningCycles")) {
+      filtered.learningCycles = slide.learningCycles;
     }
 
     return filtered;
