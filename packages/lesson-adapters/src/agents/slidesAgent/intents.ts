@@ -11,16 +11,46 @@ export type SlideField =
   | "shapes"
   | "keyLearningPoints";
 
-export interface IntentConfig {
-  /** System prompt for this intent */
+// ---------------------------------------------------------------------------
+// Intent Config Types (discriminated union for type safety)
+// ---------------------------------------------------------------------------
+
+type BaseIntentConfig = {
+  /** System prompt for the per-batch LLM calls */
   prompt: string;
   /** Response schema (bulk = no per-change reasoning, targeted = with reasoning) */
   schema: typeof bulkChangesSchema | typeof targetedChangesSchema;
   /** Which slide fields to include in the prompt (reduces token usage) */
   slideFields: SlideField[];
+  /** Slide types to exclude from evaluation (always kept). Intent-specific. */
+  protectedSlideTypes?: string[];
+};
+
+/**
+ * Standard processing: optionally batch by slide count.
+ * Used for intents like changeReadingAge, translateLesson.
+ */
+type StandardProcessingConfig = BaseIntentConfig & {
+  processingMode: "standard";
   /** Number of slides per batch (smaller = faster per-batch, more API calls) */
   batchSize?: number;
-}
+};
+
+/**
+ * KLP-batched processing: group slides by Key Learning Point, evaluate each group,
+ * then reconcile with an orchestrator agent.
+ * Used for intents like removeNonEssentialContent that need cross-slide reasoning per KLP.
+ */
+type KlpBatchedProcessingConfig = BaseIntentConfig & {
+  processingMode: "klpBatched";
+  /** System prompt for the orchestrator agent that coordinates KLP evaluations */
+  orchestratorPrompt: string;
+};
+
+export type IntentConfig =
+  | StandardProcessingConfig
+  | KlpBatchedProcessingConfig;
+export type { KlpBatchedProcessingConfig };
 
 // ---------------------------------------------------------------------------
 // Shared Rules
@@ -68,6 +98,7 @@ Each table has a tableId and each cell has a composite cell ID shown as [cellId]
  */
 export const INTENT_CONFIGS: Record<string, IntentConfig> = {
   changeReadingAge: {
+    processingMode: "standard",
     prompt: `You are a slides adaptation agent for changing the reading age of lesson content in a Google Slides presentation. The presentation accompanies a lesson, which is part of a unit.
 
 ## Input
@@ -96,6 +127,7 @@ ${SHARED_RULES}`,
   },
 
   translateLesson: {
+    processingMode: "standard",
     prompt: `You are a slides adaptation agent for translating lesson content in a Google Slides presentation.
 
 ## Input
@@ -117,10 +149,11 @@ Return a structured plan of changes.
 ${SHARED_RULES}`,
     schema: bulkChangesSchema,
     slideFields: ["textElements", "tables"],
-    batchSize: 10, // Smaller batches for translation (more output tokens)
+    batchSize: 10,
   },
 
   removeNonEssentialContent: {
+    processingMode: "klpBatched",
     prompt: `You are a slides adaptation agent for removing non-essential slides from a Google Slides lesson presentation. The presentation accompanies a lesson, which is part of a unit.
 
 ## Input
@@ -135,13 +168,12 @@ Do not return any textEdits, tableCellEdits, or textElementDeletions — this in
 
 ## What is non-essential?
 A slide is a candidate for deletion if ANY of the following apply:
-1. **No KLP coverage**: The slide is not associated with any Key Learning Point and is not a structural slide (title, teacher, objectives/outcomes).
+1. **No KLP coverage**: The slide is not associated with any Key Learning Point and is not a structural slide (title, teacher, objectives/outcomes, keywords slide, copyright slide).
 2. **Redundant content**: The slide covers a KLP, but that same content has already been substantially covered by an earlier slide. The earlier slide should be kept; the later repetition is the candidate for removal.
 3. **Repeated checking-for-understanding**: If a checking-for-understanding activity (e.g. a quiz question, recall prompt, or practice task) appears on one slide and the same or very similar activity is repeated on a later slide, the later repetition is a candidate for removal.
 
 ## Rules
 - **KLP coverage is sacred**: Never delete a slide if it is the ONLY slide covering a particular KLP. Before marking any slide for deletion, verify that every KLP it covers is also covered by at least one other slide that you are keeping.
-- **Preserve structural slides**: Do not delete title slides, teacher-only slides, lesson objective/outcome slides, summary slides, keywords slides, or end-of-lesson slides.
 - **Preserve diversity slides**: Slides marked as "Covers Diversity: yes" should be kept, as they contribute to inclusive representation in the lesson.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
 - **Checking-for-understanding rule**: If a slide contains questions (e.g. quiz, recall, comprehension check), it is a checking-for-understanding slide. If the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
@@ -152,6 +184,64 @@ A slide is a candidate for deletion if ANY of the following apply:
 ${SHARED_RULES}`,
     schema: targetedChangesSchema,
     slideFields: ["textElements", "tables", "keyLearningPoints"],
+    protectedSlideTypes: [
+      "title",
+      "teacher",
+      "lessonOutcome",
+      "keywords",
+      "summary",
+      "copyright",
+    ],
+    orchestratorPrompt: `You are an orchestrator agent that coordinates the removal of non-essential slides from a lesson presentation.
+
+## Your Role
+You have a tool called "evaluateKlpSlides" that evaluates slides grouped by Key Learning Point (KLP). Your job is to:
+1. Call this tool once for each KLP group to get deletion recommendations
+2. Also call it for the "__unattached__" group (slides with no KLP)
+3. Reconcile any conflicts when a slide appears in multiple KLP groups
+4. Output a final unified plan
+
+## Protected Slides (Never Delete)
+The following slide types must ALWAYS appear in slidesToKeep, regardless of what the tool results say:
+- **Title slides** (lesson title, unit title)
+- **Keywords / vocabulary slides**
+- **Lesson outline / lesson overview slides**
+- **Learning objective / outcome slides**
+- **Summary / recap slides**
+- **End-of-lesson slides**
+- **Teacher-only slides**
+
+If any tool result recommends deleting one of these, override it and keep the slide.
+
+## Using Enriched Deletion Context
+Each deletion recommendation from the tool includes enriched context:
+- **slideTitle**: The slide's title
+- **slideTextContent**: The full text content from the slide
+- **allKeyLearningPoints**: ALL KLPs this slide covers (not just the one being evaluated)
+- **isMultiKlpSlide**: Whether this slide covers more than one KLP
+
+When \`isMultiKlpSlide\` is true, you MUST review the slide's \`slideTextContent\` and \`allKeyLearningPoints\` before accepting the deletion. A per-KLP evaluator only sees the slide through the lens of one KLP — the slide may contain content essential to other KLPs that the evaluator was not assessing. Use the text content to verify that no unique pedagogical content would be lost.
+
+## Conflict Resolution
+Some slides cover multiple KLPs and will appear in more than one tool result. When different KLP evaluations give conflicting recommendations for the same slide:
+
+1. **Any-keep rule**: If ANY KLP evaluation says "keep" because the slide provides essential coverage for that KLP, the slide must be kept — even if another KLP evaluation flagged it as redundant for a different KLP.
+2. **Cross-KLP awareness**: A slide may contain redundant content for KLP-A (because an earlier slide already covers KLP-A), but it may be the only slide covering KLP-B. In this case the slide is essential and must be kept.
+3. **Unanimous deletion only**: A slide is safe to delete ONLY if ALL KLP evaluations that include it agree it is non-essential AND it is not a protected slide type.
+
+## Post-Reconciliation Validation
+Before producing your final output, verify:
+1. **KLP coverage**: For every KLP mentioned across all slides, at least one slide covering that KLP remains in slidesToKeep.
+2. **Protected slides**: None of the protected slide types listed above appear in slideDeletions.
+3. **Complete accounting**: Every slide from the input appears in exactly one of slideDeletions or slidesToKeep — none are missing.
+
+If any check fails, move the affected slide from slideDeletions to slidesToKeep.
+
+## Output
+After calling the tool for each KLP group, synthesize the results into your final structured output:
+- slideDeletions: slides that are safe to remove (with reasoning)
+- slidesToKeep: all other slides
+- Every slide must appear in exactly one of these arrays`,
   },
 };
 

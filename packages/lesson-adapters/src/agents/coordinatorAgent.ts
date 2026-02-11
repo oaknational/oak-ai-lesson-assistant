@@ -4,29 +4,25 @@ import { classifyLessonAdaptIntent } from "./classifierAgent";
 import { generateSlidePlan } from "./slidesAgent";
 
 // ---------------------------------------------------------------------------
-// Intent config table (Option C)
-// Maps each intent to its edit scope and which agents to spawn.
-// To support a new intent: add an entry here and ensure each listed agent
-// has a registered prompt for that editType.
+// Intent config table
+// Maps each intent to which agents to spawn.
+// Processing mode and batching strategy live on each agent's own INTENT_CONFIGS.
 // ---------------------------------------------------------------------------
 
 type AgentId = "slides"; // | "worksheet" | "quiz" | "lessonDetails" in future
 
-export type EditScope = "global" | "structural" | "targeted";
-
 interface IntentConfig {
-  scope: EditScope;
   agents: AgentId[];
 }
 
 const INTENT_CONFIG: Record<string, IntentConfig> = {
-  changeReadingAge: { scope: "global", agents: ["slides"] },
-  translateLesson: { scope: "global", agents: ["slides"] },
-  removeNonEssentialContent: { scope: "structural", agents: ["slides"] },
+  changeReadingAge: { agents: ["slides"] },
+  translateLesson: { agents: ["slides"] },
+  removeNonEssentialContent: { agents: ["slides"] },
   // Future examples:
-  // removeKLP:        { scope: "structural", agents: ["slides", "lessonDetails", "quiz"] },
-  // deleteSlide:      { scope: "targeted",   agents: ["slides"] },
-  // editSlideText:    { scope: "structural", agents: ["slides"] },
+  // removeKLP: { agents: ["slides", "lessonDetails", "quiz"] },
+  // deleteSlide: { agents: ["slides"] },
+  // editSlideText: { agents: ["slides"] },
 };
 
 const MIN_CONFIDENCE = 0.6;
@@ -105,14 +101,11 @@ export async function coordinateAdaptation(
   let slidesResponse;
   if (config.agents.includes("slides")) {
     try {
-      slidesResponse = await generateSlidePlan(
-        {
-          editType: classification.intent,
-          userMessage,
-          slides: slideDeck.slides,
-        },
-        config.scope,
-      );
+      slidesResponse = await generateSlidePlan({
+        editType: classification.intent,
+        userMessage,
+        slides: slideDeck.slides,
+      });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown slides agent error";
@@ -156,7 +149,6 @@ export async function coordinateAdaptation(
     success: true,
     plan: {
       intent: classification.intent,
-      scope: config.scope,
       userMessage,
       classifierConfidence: classification.confidence,
       classifierReasoning: classification.reasoning,

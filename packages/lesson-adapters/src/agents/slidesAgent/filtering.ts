@@ -18,6 +18,7 @@ export function filterSlideContent(
       slideNumber: slide.slideNumber,
       slideId: slide.slideId,
       slideTitle: slide.slideTitle,
+      slideType: slide.slideType,
     };
 
     if (fields.includes("textElements")) {

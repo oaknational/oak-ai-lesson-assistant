@@ -2,6 +2,7 @@ import { openai } from "@ai-sdk/openai";
 import { Output, generateText } from "ai";
 import { z } from "zod";
 
+import { slideTypeSchema } from "../slides/extraction/schemas";
 import type { SlideContent } from "../slides/extraction/types";
 import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 
@@ -15,6 +16,9 @@ import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 export const slideKlpLcMappingSchema = z.object({
   slideNumber: z.number(),
   slideId: z.string(),
+  slideType: slideTypeSchema.describe(
+    "Classification of the slide's purpose/type",
+  ),
   keyLearningPoints: z
     .array(z.string())
     .describe(
@@ -81,8 +85,25 @@ const SYSTEM_PROMPT = `You are an educational expert and content analysis agent 
 
 ## Your Task
 Analyse each slide in the presentation and determine:
-1. Which key learning points (from the provided lesson KLPs) are covered on this slide
-2. Which learning cycles (from the provided lesson outline) are covered on this slide
+1. The slide's type (see Slide Type Classification below)
+2. Which key learning points (from the provided lesson KLPs) are covered on this slide
+3. Which learning cycles (from the provided lesson outline) are covered on this slide
+
+## Slide Type Classification
+Classify every slide as exactly one of these types:
+- **title**: The lesson title slide, usually the first slide
+- **keywords**: A slide that introduces or defines key vocabulary/terminology for the lesson
+- **lessonOutcome**: A slide stating what pupils will learn or achieve by the end of the lesson
+- **lessonOutline**: A slide showing the structure or outline of the lesson (e.g. listing learning cycles)
+- **summary**: A slide summarising what has been covered in the lesson
+- **endOfLesson**: The final slide, typically a closing or "end of lesson" slide
+- **teacher**: A slide with instructions or notes for the teacher (not pupil-facing content)
+- **copyright**: A slide containing copyright, licensing, or attribution information
+- **checkForUnderstanding**: A quiz or comprehension check slide (multiple choice, true/false, short answer)
+- **explanation**: A slide that explains a concept, provides information, or teaches new content
+- **practice**: A slide with exercises, activities, or tasks for pupils to complete
+- **feedback**: A slide that provides answers, model responses, or feedback on a practice activity
+- **content**: A general content slide that does not fit the above categories
 
 ## Input
 You receive:

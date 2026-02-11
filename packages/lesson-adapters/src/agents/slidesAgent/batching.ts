@@ -76,7 +76,10 @@ export async function processInBatches(
   userMessage: string,
   slides: SimplifiedSlideContent[],
 ): Promise<SlidesAgentResponse | undefined> {
-  const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
+  const batchSize =
+    config.processingMode === "standard"
+      ? (config.batchSize ?? DEFAULT_BATCH_SIZE)
+      : DEFAULT_BATCH_SIZE;
   const batches: SimplifiedSlideContent[][] = [];
   for (let i = 0; i < slides.length; i += batchSize) {
     batches.push(slides.slice(i, i + batchSize));

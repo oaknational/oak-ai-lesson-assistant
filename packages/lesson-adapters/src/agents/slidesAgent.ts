@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { SlidesAgentResponse } from "../schemas/plan";
-import type { EditScope } from "./coordinatorAgent";
 import {
   DEFAULT_BATCH_SIZE,
   type GenerateSlidePlanInput,
@@ -13,6 +12,7 @@ import {
   processInBatches,
   validateAgentOutput,
 } from "./slidesAgent/index";
+import { generateKlpBatchedSlidePlan } from "./slidesAgent/klpBatchedProcessing";
 
 const log = aiLogger("adaptations");
 
@@ -22,14 +22,12 @@ const log = aiLogger("adaptations");
 
 export async function generateSlidePlan(
   input: GenerateSlidePlanInput,
-  scope: EditScope = "global",
 ): Promise<SlidesAgentResponse | undefined> {
   try {
     log.info("Generating slide plan", {
       editType: input.editType,
       userMessage: input.userMessage,
       slideCount: input.slides.length,
-      scope,
     });
 
     const parsed = generateSlidePlanInputSchema.parse(input);
@@ -46,23 +44,35 @@ export async function generateSlidePlan(
       parsed.slides,
       config.slideFields,
     );
-    const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
-    const shouldBatch =
-      scope === "global" && slidesForPrompt.length > batchSize;
 
-    const output = shouldBatch
-      ? await processInBatches(
-          config,
-          parsed.editType,
-          parsed.userMessage,
-          slidesForPrompt,
-        )
-      : await callSlidesAgent(
-          config,
-          parsed.editType,
-          parsed.userMessage,
-          slidesForPrompt,
-        );
+    // Branch based on processing mode
+    let output: SlidesAgentResponse | undefined;
+
+    if (config.processingMode === "klpBatched") {
+      output = await generateKlpBatchedSlidePlan(
+        config,
+        slidesForPrompt,
+        parsed.userMessage,
+      );
+    } else {
+      // Standard processing: batch by slide count if needed
+      const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
+      const shouldBatch = slidesForPrompt.length > batchSize;
+
+      output = shouldBatch
+        ? await processInBatches(
+            config,
+            parsed.editType,
+            parsed.userMessage,
+            slidesForPrompt,
+          )
+        : await callSlidesAgent(
+            config,
+            parsed.editType,
+            parsed.userMessage,
+            slidesForPrompt,
+          );
+    }
 
     if (!output) {
       return undefined;

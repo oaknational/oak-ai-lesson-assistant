@@ -70,7 +70,9 @@ export const targetedChangesSchema = z.object({
       textElementDeletionBaseSchema.extend({ reasoning: z.string() }),
     ),
     slideDeletions: z.array(
-      slideDeletionBaseSchema.extend({ reasoning: z.string() }),
+      slideDeletionBaseSchema.extend({
+        reasoning: z.string(),
+      }),
     ),
     slidesToKeep: z.array(slidesToKeepSchema),
   }),
@@ -78,57 +80,54 @@ export const targetedChangesSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
-// Normalized types (used throughout the app after LLM response)
+// Normalized schemas (used throughout the app after LLM response)
 // Per-change reasoning is optional - present for targeted, absent for bulk
 // ---------------------------------------------------------------------------
 
-export interface TextEdit {
-  changeId: string;
-  slideNumber: number;
-  slideId: string;
-  elementId: string;
-  originalText: string;
-  newText: string;
-  reasoning?: string;
-}
+const normalizedTextEditSchema = textEditBaseSchema.extend({
+  changeId: z.string(),
+  reasoning: z.string().optional(),
+});
 
-export interface TableCellEdit {
-  changeId: string;
-  slideNumber: number;
-  slideId: string;
-  cellId: string;
-  originalText: string;
-  newText: string;
-  reasoning?: string;
-}
+const normalizedTableCellEditSchema = tableCellEditBaseSchema.extend({
+  changeId: z.string(),
+  reasoning: z.string().optional(),
+});
 
-export interface TextElementDeletion {
-  changeId: string;
-  slideNumber: number;
-  slideId: string;
-  elementId: string;
-  originalText: string;
-  reasoning?: string;
-}
+const normalizedTextElementDeletionSchema =
+  textElementDeletionBaseSchema.extend({
+    changeId: z.string(),
+    reasoning: z.string().optional(),
+  });
 
-export interface SlideDeletion {
-  changeId: string;
-  slideNumber: number;
-  slideId: string;
-  reasoning?: string;
-}
+const normalizedSlideDeletionSchema = slideDeletionBaseSchema.extend({
+  changeId: z.string(),
+  reasoning: z.string().optional(),
+});
 
-export interface SlidesAgentResponse {
-  analysis: string;
-  changes: {
-    textEdits: TextEdit[];
-    tableCellEdits: TableCellEdit[];
-    textElementDeletions: TextElementDeletion[];
-    slideDeletions: SlideDeletion[];
-    slidesToKeep: { slideNumber: number; slideId: string }[];
-  };
-  reasoning: string;
-}
+const slidesAgentResponseSchema = z.object({
+  analysis: z.string(),
+  changes: z.object({
+    textEdits: z.array(normalizedTextEditSchema),
+    tableCellEdits: z.array(normalizedTableCellEditSchema),
+    textElementDeletions: z.array(normalizedTextElementDeletionSchema),
+    slideDeletions: z.array(normalizedSlideDeletionSchema),
+    slidesToKeep: z.array(slidesToKeepSchema),
+  }),
+  reasoning: z.string(),
+});
+
+// ---------------------------------------------------------------------------
+// Derived types (inferred from Zod schemas)
+// ---------------------------------------------------------------------------
+
+export type TextEdit = z.infer<typeof normalizedTextEditSchema>;
+export type TableCellEdit = z.infer<typeof normalizedTableCellEditSchema>;
+export type TextElementDeletion = z.infer<
+  typeof normalizedTextElementDeletionSchema
+>;
+export type SlideDeletion = z.infer<typeof normalizedSlideDeletionSchema>;
+export type SlidesAgentResponse = z.infer<typeof slidesAgentResponseSchema>;
 
 /**
  * Adds changeIds to all changes in the response.
@@ -188,7 +187,6 @@ export function normalizeAgentResponse(
 
 export const adaptationPlanSchema = z.object({
   intent: intentSchema.shape.intent,
-  scope: z.enum(["global", "structural", "targeted"]),
   userMessage: z.string(),
   classifierConfidence: z.number(),
   classifierReasoning: z.string(),
