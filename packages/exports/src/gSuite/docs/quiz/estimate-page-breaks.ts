@@ -12,7 +12,11 @@
  * This module estimates quiz content height to determine the appropriate
  * footer strategy based on whether content will span multiple pages.
  */
+import { aiLogger } from "@oakai/logger";
+
 import type { QuizQuestion } from "../../../schema/input.schema";
+
+const logger = aiLogger("exports");
 
 // Single page capacity and safety padding
 export const SINGLE_PAGE_CAPACITY = 19;
@@ -42,36 +46,36 @@ export function countQuizLines(
   questions.forEach((q, index) => {
     // Each question has a title row
     height += 1;
-    if (debug) console.log(`  Q${index + 1} title: +1`);
+    if (debug) logger.info(`  Q${index + 1} title: +1`);
 
     if (q.questionType === "multiple-choice") {
       // Each answer option is a row
       height += q.answers.length;
-      if (debug) console.log(`  Q${index + 1} answers: +${q.answers.length}`);
+      if (debug) logger.info(`  Q${index + 1} answers: +${q.answers.length}`);
     } else if (q.questionType === "match") {
       // Each pair is a row
       height += q.pairs.length;
-      if (debug) console.log(`  Q${index + 1} pairs: +${q.pairs.length}`);
+      if (debug) logger.info(`  Q${index + 1} pairs: +${q.pairs.length}`);
     } else if (q.questionType === "order") {
       // Each item to order is a row
       height += q.items.length;
-      if (debug) console.log(`  Q${index + 1} items: +${q.items.length}`);
+      if (debug) logger.info(`  Q${index + 1} items: +${q.items.length}`);
     } else if (q.questionType === "short-answer") {
       // Short answer has two forms, both needing extra space:
       // 1. Separate answer line below the question
       // 2. Inline answer space that makes the question wrap to multiple lines
       height += 1;
-      if (debug) console.log(`  Q${index + 1} answer space/wrapping: +1`);
+      if (debug) logger.info(`  Q${index + 1} answer space/wrapping: +1`);
     }
 
     // Add spacing between questions (except last one)
     if (index < questions.length - 1) {
       height += 1;
-      if (debug) console.log(`  Spacing after Q${index + 1}: +1`);
+      if (debug) logger.info(`  Spacing after Q${index + 1}: +1`);
     }
   });
 
-  if (debug) console.log(`  Total height: ${height}`);
+  if (debug) logger.info(`  Total height: ${height}`);
   return height;
 }
 

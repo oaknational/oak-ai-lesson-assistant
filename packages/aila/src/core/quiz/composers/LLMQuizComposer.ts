@@ -13,15 +13,15 @@ import type {
 import type { Task } from "../reporting";
 import {
   type CompositionResponse,
-  CompositionResponseSchema,
   type SuccessData,
   buildCompositionPrompt,
+  buildCompositionResponseSchema,
 } from "./LLMQuizComposerPrompts";
 
 const log = aiLogger("aila:quiz");
 
 const OPENAI_MODEL = "o4-mini";
-const IS_REASONING_MODEL = true;
+const REASONING_EFFORT = "low" as const;
 
 const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
 
@@ -69,8 +69,11 @@ export class LLMComposer implements QuizComposer {
     });
 
     // Call LLM
+    const isModifying = questionPools.some(
+      (p) => p.source.type === "currentQuiz",
+    );
     const result = await task.child("llmCall", async (t) => {
-      const response = await this.callOpenAI(prompt);
+      const response = await this.callOpenAI(prompt, isModifying);
       t.addData({ response });
 
       if (response.status === "bail" || !response.success) {
@@ -104,25 +107,25 @@ export class LLMComposer implements QuizComposer {
     log.info(`LLM Composer: ${totalQuestions} total candidate questions`);
   }
 
-  private async callOpenAI(prompt: string): Promise<CompositionResponse> {
+  private async callOpenAI(
+    prompt: string,
+    isModifying: boolean,
+  ): Promise<CompositionResponse> {
     const openai = createOpenAIClient({ app: "quiz-composer" });
+    const responseSchema = buildCompositionResponseSchema(isModifying);
 
     try {
       const response = await openai.beta.chat.completions.parse({
         model: OPENAI_MODEL,
-        ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 16000 }
-          : { max_tokens: 8000 }),
+        max_completion_tokens: 16000,
+        reasoning_effort: REASONING_EFFORT,
         messages: [
           {
             role: "user",
             content: prompt,
           },
         ],
-        response_format: zodResponseFormat(
-          CompositionResponseSchema,
-          "QuizComposition",
-        ),
+        response_format: zodResponseFormat(responseSchema, "QuizComposition"),
       });
 
       const parsed = response.choices[0]?.message?.parsed;
@@ -141,8 +144,6 @@ export class LLMComposer implements QuizComposer {
     successData: SuccessData,
     questionPools: QuizQuestionPool[],
   ): RagQuizQuestion[] {
-    log.info(`Overall strategy: ${successData.overallStrategy}`);
-
     // Build lookup map of UID -> question from all pools
     const questionsByUid = new Map<string, RagQuizQuestion>();
     questionPools.forEach((pool) => {
@@ -161,10 +162,15 @@ export class LLMComposer implements QuizComposer {
           return null;
         }
 
-        log.info(`Selected: ${selection.questionUid} - ${selection.reasoning}`);
         return question;
       })
       .filter((q): q is RagQuizQuestion => q !== null);
+
+    if (selectedQuestions.length < successData.selectedQuestions.length) {
+      log.warn(
+        `Only found ${selectedQuestions.length} of ${successData.selectedQuestions.length} selected questions (some UIDs not found)`,
+      );
+    }
 
     return selectedQuestions;
   }

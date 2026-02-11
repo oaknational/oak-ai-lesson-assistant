@@ -402,7 +402,7 @@ export const lessonAdaptRouter = router({
         lessonId: z.string(),
       }),
     )
-    .query(async () => {
+    .query(() => {
       // TODO: Implement in follow-up PR
       // Query adaptation history from database
       throw new Error("Not implemented yet");

@@ -51,34 +51,15 @@ function buildQuestionSelectionCriteria(quizType: QuizPath): string {
   `;
 }
 
-// Nested structure for success data
-const SuccessDataSchema = z.object({
-  overallStrategy: z
+// Schema for selected question in composition response
+const SelectedQuestionSchema = z.object({
+  questionUid: z
+    .string()
+    .describe("The exact UID of the selected question from the candidate list"),
+  reasoning: z
     .string()
     .describe(
-      "Explain your selection strategy: which sources you prioritised, " +
-        "why you did or didn't use questions from the user-selected source lesson (if provided), " +
-        "and how the selected questions work together as a cohesive quiz",
-    ),
-  selectedQuestions: z
-    .array(
-      z.object({
-        questionUid: z
-          .string()
-          .describe(
-            "The exact UID of the selected question from the candidate list",
-          ),
-        reasoning: z
-          .string()
-          .describe(
-            "Brief explanation for selecting this question. For questions from the current quiz, note any changes (kept, reordered, etc.) per user instruction",
-          ),
-      }),
-    )
-    .min(3)
-    .max(6)
-    .describe(
-      "Aim for 6 questions, but fewer (minimum 3) is acceptable if insufficient suitable candidates are available",
+      "Brief explanation for selecting this question. For questions from the current quiz, note any changes (kept, reordered, etc.) per user instruction",
     ),
 });
 
@@ -87,26 +68,59 @@ const BailDataSchema = z.object({
   reason: z
     .string()
     .describe(
-      "Explain why you cannot compose a suitable quiz from the available candidates",
+      "Explanation of why the quiz could not be composed and suggested actions for the user",
     ),
 });
 
-// Combined schema using nested structure (OpenAI doesn't support discriminated unions)
-// Note: OpenAI requires fields to be required with nullable(), not optional()
-export const CompositionResponseSchema = z.object({
-  status: z
-    .enum(["success", "bail"])
-    .describe("Whether composition succeeded or bailed"),
-  success: SuccessDataSchema.nullable().describe(
-    "Present when status is 'success', null otherwise",
-  ),
-  bail: BailDataSchema.nullable().describe(
-    "Present when status is 'bail', null otherwise",
-  ),
-});
+/**
+ * Build the composition response schema.
+ * Schema always allows 1-6 questions, but description guides the LLM's default:
+ * - New quiz: target 6 unless user specifies otherwise
+ * - Modifying: maintain current count unless user instructs otherwise
+ *
+ * Includes bail support for when no suitable questions can be found.
+ */
+export function buildCompositionResponseSchema(isModifying: boolean) {
+  const description = isModifying
+    ? "Questions to include in the modified quiz. Maintain the current question count unless user explicitly asks to add or remove questions."
+    : "Questions to include in the quiz. Target 6 questions unless user specifies a different number.";
 
-export type CompositionResponse = z.infer<typeof CompositionResponseSchema>;
-export type SuccessData = z.infer<typeof SuccessDataSchema>;
+  const SuccessDataSchema = z.object({
+    overallStrategy: z
+      .string()
+      .describe(
+        "Explain your selection strategy: which sources you prioritised, " +
+          "why you did or didn't use questions from the user-selected source lesson (if provided), " +
+          "and how the selected questions work together as a cohesive quiz",
+      ),
+    selectedQuestions: z
+      .array(SelectedQuestionSchema)
+      .min(1)
+      .max(6)
+      .describe(description),
+  });
+
+  // Combined schema using nested structure (OpenAI doesn't support discriminated unions)
+  // Note: OpenAI requires fields to be required with nullable(), not optional()
+  return z.object({
+    status: z
+      .enum(["success", "bail"])
+      .describe("Whether composition succeeded or bailed"),
+    success: SuccessDataSchema.nullable().describe(
+      "Present when status is 'success', null otherwise",
+    ),
+    bail: BailDataSchema.nullable().describe(
+      "Present when status is 'bail', null otherwise",
+    ),
+  });
+}
+
+export type CompositionResponse = z.infer<
+  ReturnType<typeof buildCompositionResponseSchema>
+>;
+
+// Extract SuccessData type for use in mapResponseToQuestions
+export type SuccessData = NonNullable<CompositionResponse["success"]>;
 
 function buildUserInstructionsSection(
   instructions: string | null | undefined,
@@ -175,6 +189,8 @@ function buildOutputInstructions(): string {
     **Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
 
     It is better to bail than to return a quiz with irrelevant questions.
+
+    When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content. Quizzes are retrieved from Oak's existing question bank, so topics outside the curriculum may not have suitable questions available.
   `;
 }
 
@@ -189,7 +205,7 @@ function buildQuizTypeInstructions(
 }
 
 function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const priorKnowledge = lessonPlan.priorKnowledge || [];
+  const priorKnowledge = lessonPlan.priorKnowledge ?? [];
   const priorKnowledgeList =
     priorKnowledge.length > 0
       ? `\n\nPrior knowledge to assess:\n${priorKnowledge.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
@@ -208,7 +224,7 @@ function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
 }
 
 function buildExitQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const keyLearningPoints = lessonPlan.keyLearningPoints || [];
+  const keyLearningPoints = lessonPlan.keyLearningPoints ?? [];
   const learningPointsList =
     keyLearningPoints.length > 0
       ? `\n\nKey learning points to assess:\n${keyLearningPoints.map((item, i) => `${i + 1}. ${item}`).join("\n")}`

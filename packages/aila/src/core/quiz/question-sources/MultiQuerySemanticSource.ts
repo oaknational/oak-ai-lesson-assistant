@@ -66,8 +66,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
     topN: number,
     task: Task,
   ): Promise<RagQuizQuestion[]> {
-    log.info(`MultiQuerySemanticSource: Searching for: "${query}"`);
-
     const results = await task.child("elasticsearch", async (t) => {
       const hits = await this.searchService.searchWithHybrid(
         "oak-vector-2025-04-16",
@@ -91,10 +89,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
     });
 
     const questionUids = rerankedResults.map((result) => result.questionUid);
-
-    log.info(
-      `MultiQuerySemanticSource: Found ${questionUids.length} candidates for query: "${query.substring(0, 50)}..."`,
-    );
 
     const questions =
       await this.retrievalService.retrieveQuestionsByIds(questionUids);
@@ -126,10 +120,7 @@ export class MultiQuerySemanticSource implements QuestionSource {
     }
 
     log.info(
-      `MultiQuerySemanticSource: Running ${semanticQueries.queries.length} independent searches in parallel for ${quizType}`,
-    );
-    log.info(
-      `MultiQuerySemanticSource: Targeting ${POOL_SIZE} candidates per query`,
+      `MultiQuerySemanticSource: Running ${semanticQueries.queries.length} searches for ${quizType}`,
     );
 
     const pools = await Promise.all(
@@ -175,10 +166,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
       task,
     );
 
-    log.info(
-      `MultiQuerySemanticSource: Generated ${pools.length} starter quiz pools`,
-    );
-
     return pools;
   }
 
@@ -191,10 +178,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
       lessonPlan,
       "/exitQuiz",
       task,
-    );
-
-    log.info(
-      `MultiQuerySemanticSource: Generated ${pools.length} exit quiz pools`,
     );
 
     return pools;

@@ -1,5 +1,3 @@
-import { aiLogger } from "@oakai/logger";
-
 import invariant from "tiny-invariant";
 
 import type { ImageMetadata, QuizV3, QuizV3Question } from "../quizV3";
@@ -10,8 +8,6 @@ import type {
   StemTextObject,
 } from "../rawQuiz";
 import { getConstrainedStemImageUrl } from "./cloudinaryImageHelper";
-
-const log = aiLogger("aila:quiz");
 
 /**
  * Check if an item is a text item
@@ -115,10 +111,7 @@ function buildMarkdownFromContent(
  * Convert Hasura quiz format to Quiz V3 format
  */
 export function convertHasuraQuizToV3(hasuraQuiz: HasuraQuiz): QuizV3 {
-  log.info("convertHasuraQuizToV3 input:", { hasuraQuiz });
-
   if (!hasuraQuiz || !Array.isArray(hasuraQuiz)) {
-    log.info("Hasura quiz is not an array, returning empty quiz");
     return {
       version: "v3",
       questions: [],

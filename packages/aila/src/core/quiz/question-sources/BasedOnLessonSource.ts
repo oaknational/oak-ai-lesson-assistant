@@ -1,5 +1,3 @@
-import { aiLogger } from "@oakai/logger";
-
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -8,8 +6,6 @@ import type {
 import type { QuestionSource, QuizQuestionPool } from "../interfaces";
 import type { Task } from "../reporting";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
-
-const log = aiLogger("aila:quiz");
 
 /**
  * Retrieves quiz questions from the specific Oak lesson that the user
@@ -30,12 +26,7 @@ export class BasedOnLessonSource implements QuestionSource {
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
   ): Promise<QuizQuestionPool[]> {
-    log.info(
-      `Getting ${quizType} from basedOn lesson:`,
-      lessonPlan.basedOn?.id,
-    );
     if (!lessonPlan.basedOn?.id) {
-      log.info("Lesson plan basedOn is undefined. Returning empty array.");
       return [];
     }
     const questions = await this.retrievalService.getQuestionsForPlanId(

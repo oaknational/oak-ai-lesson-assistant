@@ -1,5 +1,3 @@
-import { aiLogger } from "@oakai/logger";
-
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -16,8 +14,6 @@ import type {
   RagQuizQuestion,
 } from "../interfaces";
 import type { Task } from "../reporting";
-
-const log = aiLogger("aila:quiz");
 
 /**
  * Extracts the user's current quiz from the lesson plan so they can modify it.
@@ -39,16 +35,11 @@ export class CurrentQuizSource implements QuestionSource {
         : lessonPlan.exitQuiz;
 
     if (!quiz || !quiz.questions || quiz.questions.length === 0) {
-      log.info(`No existing ${quizType} in lesson plan. Returning empty pool.`);
       return [];
     }
 
     const questions = quiz.questions.map((q, index) =>
       this.convertToRagQuestion(q, index, quiz),
-    );
-
-    log.info(
-      `Extracted ${questions.length} questions from current ${quizType}`,
     );
 
     return [
@@ -126,19 +117,19 @@ export class CurrentQuizSource implements QuestionSource {
     return parts.join(" ");
   }
 
-  async getStarterQuizCandidates(
+  getStarterQuizCandidates(
     lessonPlan: PartialLessonPlan,
     _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.getCandidates(lessonPlan, "/starterQuiz");
+    return Promise.resolve(this.getCandidates(lessonPlan, "/starterQuiz"));
   }
 
-  async getExitQuizCandidates(
+  getExitQuizCandidates(
     lessonPlan: PartialLessonPlan,
     _similarLessons: AilaRagRelevantLesson[],
     _task: Task,
   ): Promise<QuizQuestionPool[]> {
-    return this.getCandidates(lessonPlan, "/exitQuiz");
+    return Promise.resolve(this.getCandidates(lessonPlan, "/exitQuiz"));
   }
 }
