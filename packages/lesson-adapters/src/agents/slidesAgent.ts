@@ -2,7 +2,6 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SlidesAgentResponse } from "../schemas/plan";
 import {
-  DEFAULT_BATCH_SIZE,
   type GenerateSlidePlanInput,
   INTENT_CONFIGS,
   SUPPORTED_EDIT_TYPES,
@@ -45,33 +44,38 @@ export async function generateSlidePlan(
       config.slideFields,
     );
 
-    // Branch based on processing mode
     let output: SlidesAgentResponse | undefined;
 
-    if (config.processingMode === "klpBatched") {
-      output = await generateKlpBatchedSlidePlan(
-        config,
-        slidesForPrompt,
-        parsed.userMessage,
-      );
-    } else {
-      // Standard processing: batch by slide count if needed
-      const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
-      const shouldBatch = slidesForPrompt.length > batchSize;
-
-      output = shouldBatch
-        ? await processInBatches(
-            config,
-            parsed.editType,
-            parsed.userMessage,
-            slidesForPrompt,
-          )
-        : await callSlidesAgent(
-            config,
-            parsed.editType,
-            parsed.userMessage,
-            slidesForPrompt,
-          );
+    switch (config.processingMode) {
+      case "oneShot":
+        output = await callSlidesAgent(
+          config,
+          parsed.editType,
+          parsed.userMessage,
+          slidesForPrompt,
+        );
+        break;
+      case "slideBatched":
+        output = await processInBatches(
+          config,
+          parsed.editType,
+          parsed.userMessage,
+          slidesForPrompt,
+        );
+        break;
+      case "klpBatched":
+        output = await generateKlpBatchedSlidePlan(
+          config,
+          slidesForPrompt,
+          parsed.userMessage,
+        );
+        break;
+      default: {
+        const _exhaustive: never = config;
+        throw new Error(
+          `Unknown processingMode: ${(_exhaustive as { processingMode: string }).processingMode}`,
+        );
+      }
     }
 
     if (!output) {

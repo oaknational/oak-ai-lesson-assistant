@@ -8,7 +8,7 @@ import {
   normalizeAgentResponse,
 } from "../../schemas/plan";
 import { type SimplifiedSlideContent, formatSlidesForPrompt } from "../utils";
-import type { IntentConfig } from "./intents";
+import type { IntentConfig, SlideBatchedProcessingConfig } from "./intents";
 
 const log = aiLogger("adaptations");
 
@@ -16,7 +16,6 @@ const log = aiLogger("adaptations");
 // Constants
 // ---------------------------------------------------------------------------
 
-export const DEFAULT_BATCH_SIZE = 20;
 export const LLM_TIMEOUT_MS = 300_000; // 5 minutes per batch
 
 // ---------------------------------------------------------------------------
@@ -71,15 +70,12 @@ Reminder: Return your response using the schema with textEdits, tableCellEdits, 
  * This significantly reduces wall-clock time for large presentations.
  */
 export async function processInBatches(
-  config: IntentConfig,
+  config: SlideBatchedProcessingConfig,
   editType: string,
   userMessage: string,
   slides: SimplifiedSlideContent[],
 ): Promise<SlidesAgentResponse | undefined> {
-  const batchSize =
-    config.processingMode === "standard"
-      ? (config.batchSize ?? DEFAULT_BATCH_SIZE)
-      : DEFAULT_BATCH_SIZE;
+  const { batchSize } = config;
   const batches: SimplifiedSlideContent[][] = [];
   for (let i = 0; i < slides.length; i += batchSize) {
     batches.push(slides.slice(i, i + batchSize));

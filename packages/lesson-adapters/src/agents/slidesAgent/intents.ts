@@ -26,14 +26,16 @@ type BaseIntentConfig = {
   protectedSlideTypes?: string[];
 };
 
-/**
- * Standard processing: optionally batch by slide count.
- * Used for intents like changeReadingAge, translateLesson.
- */
-type StandardProcessingConfig = BaseIntentConfig & {
-  processingMode: "standard";
+/** One-shot: single LLM call with all slides. */
+type OneShotProcessingConfig = BaseIntentConfig & {
+  processingMode: "oneShot";
+};
+
+/** Slide-batched: split slides into fixed-size chunks, process in parallel. */
+type SlideBatchedProcessingConfig = BaseIntentConfig & {
+  processingMode: "slideBatched";
   /** Number of slides per batch (smaller = faster per-batch, more API calls) */
-  batchSize?: number;
+  batchSize: number;
 };
 
 /**
@@ -48,9 +50,10 @@ type KlpBatchedProcessingConfig = BaseIntentConfig & {
 };
 
 export type IntentConfig =
-  | StandardProcessingConfig
+  | OneShotProcessingConfig
+  | SlideBatchedProcessingConfig
   | KlpBatchedProcessingConfig;
-export type { KlpBatchedProcessingConfig };
+export type { SlideBatchedProcessingConfig, KlpBatchedProcessingConfig };
 
 // ---------------------------------------------------------------------------
 // Shared Rules
@@ -98,7 +101,7 @@ Each table has a tableId and each cell has a composite cell ID shown as [cellId]
  */
 export const INTENT_CONFIGS: Record<string, IntentConfig> = {
   changeReadingAge: {
-    processingMode: "standard",
+    processingMode: "slideBatched",
     prompt: `You are a slides adaptation agent for changing the reading age of lesson content in a Google Slides presentation. The presentation accompanies a lesson, which is part of a unit.
 
 ## Input
@@ -127,7 +130,7 @@ ${SHARED_RULES}`,
   },
 
   translateLesson: {
-    processingMode: "standard",
+    processingMode: "slideBatched",
     prompt: `You are a slides adaptation agent for translating lesson content in a Google Slides presentation.
 
 ## Input
@@ -168,15 +171,15 @@ Do not return any textEdits, tableCellEdits, or textElementDeletions — this in
 
 ## What is non-essential?
 A slide is a candidate for deletion if ANY of the following apply:
-1. **No KLP coverage**: The slide is not associated with any Key Learning Point and is not a structural slide (title, teacher, objectives/outcomes, keywords slide, copyright slide).
+1. **No KLP coverage**: The slide is not associated with any Key Learning Point.
 2. **Redundant content**: The slide covers a KLP, but that same content has already been substantially covered by an earlier slide. The earlier slide should be kept; the later repetition is the candidate for removal.
 3. **Repeated checking-for-understanding**: If a checking-for-understanding activity (e.g. a quiz question, recall prompt, or practice task) appears on one slide and the same or very similar activity is repeated on a later slide, the later repetition is a candidate for removal.
 
 ## Rules
-- **KLP coverage is sacred**: Never delete a slide if it is the ONLY slide covering a particular KLP. Before marking any slide for deletion, verify that every KLP it covers is also covered by at least one other slide that you are keeping.
+- **KLP coverage is sacred**: Never delete a slide if it is the ONLY slide covering a particular KLP or supporting knowledge. Before marking any slide for deletion, verify that every KLP it covers is also covered by at least one other slide that you are keeping.
 - **Preserve diversity slides**: Slides marked as "Covers Diversity: yes" should be kept, as they contribute to inclusive representation in the lesson.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
-- **Checking-for-understanding rule**: If a slide contains questions (e.g. quiz, recall, comprehension check), it is a checking-for-understanding slide. If the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
+- **Checking-for-understanding rule**: If slideType is checkForUnderstanding, ff the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
 - **First occurrence wins**: When content is repeated, always keep the first occurrence and mark the later repetition for deletion.
 - **Err on the side of caution**: If you are uncertain whether a slide is essential, keep it. Only delete slides you are confident are non-essential.
 - **Provide clear reasoning**: For each slide deletion, explain specifically why the slide is non-essential (which earlier slide already covers the content, or why the slide has no KLP relevance).
@@ -188,6 +191,7 @@ ${SHARED_RULES}`,
       "title",
       "teacher",
       "lessonOutcome",
+      "lessonOutline",
       "keywords",
       "summary",
       "copyright",
@@ -200,18 +204,6 @@ You have a tool called "evaluateKlpSlides" that evaluates slides grouped by Key 
 2. Also call it for the "__unattached__" group (slides with no KLP)
 3. Reconcile any conflicts when a slide appears in multiple KLP groups
 4. Output a final unified plan
-
-## Protected Slides (Never Delete)
-The following slide types must ALWAYS appear in slidesToKeep, regardless of what the tool results say:
-- **Title slides** (lesson title, unit title)
-- **Keywords / vocabulary slides**
-- **Lesson outline / lesson overview slides**
-- **Learning objective / outcome slides**
-- **Summary / recap slides**
-- **End-of-lesson slides**
-- **Teacher-only slides**
-
-If any tool result recommends deleting one of these, override it and keep the slide.
 
 ## Using Enriched Deletion Context
 Each deletion recommendation from the tool includes enriched context:
