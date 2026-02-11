@@ -113,7 +113,7 @@ export async function enrichSlidesWithKlpLc(
       ...slide,
       keyLearningPoints: mapping?.keyLearningPoints ?? [],
       learningCycles: mapping?.learningCycles ?? [],
-      slideType: mapping?.slideType,
+      slideType: mapping?.slideType ?? "other",
     };
   });
 
