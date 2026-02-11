@@ -177,7 +177,6 @@ export function AdaptationPlanView({
       {/* Summary badges */}
       <OakFlex $gap="spacing-8" $flexWrap="wrap">
         <Badge>{plan.intent}</Badge>
-        <Badge>{plan.scope}</Badge>
         <Badge>{plan.totalChanges} changes</Badge>
         <Badge>{Math.round(plan.classifierConfidence * 100)}% confidence</Badge>
       </OakFlex>
