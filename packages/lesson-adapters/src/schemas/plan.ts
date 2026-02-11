@@ -84,23 +84,23 @@ export const targetedChangesSchema = z.object({
 // Per-change reasoning is optional - present for targeted, absent for bulk
 // ---------------------------------------------------------------------------
 
-const normalizedTextEditSchema = textEditBaseSchema.extend({
+export const normalizedTextEditSchema = textEditBaseSchema.extend({
   changeId: z.string(),
   reasoning: z.string().optional(),
 });
 
-const normalizedTableCellEditSchema = tableCellEditBaseSchema.extend({
+export const normalizedTableCellEditSchema = tableCellEditBaseSchema.extend({
   changeId: z.string(),
   reasoning: z.string().optional(),
 });
 
-const normalizedTextElementDeletionSchema =
+export const normalizedTextElementDeletionSchema =
   textElementDeletionBaseSchema.extend({
     changeId: z.string(),
     reasoning: z.string().optional(),
   });
 
-const normalizedSlideDeletionSchema = slideDeletionBaseSchema.extend({
+export const normalizedSlideDeletionSchema = slideDeletionBaseSchema.extend({
   changeId: z.string(),
   reasoning: z.string().optional(),
 });

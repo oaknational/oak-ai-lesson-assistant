@@ -20,6 +20,7 @@ export const slideTypeSchema = z.enum([
   "feedback",
   "content",
   "other",
+  "unknown",
 ]);
 
 export const nonTextElementTypeSchema = z.enum([
