@@ -19,6 +19,7 @@ export function filterSlideContent(
       slideId: slide.slideId,
       slideTitle: slide.slideTitle,
       slideType: slide.slideType,
+      coversDiversity: slide.coversDiversity,
     };
 
     if (fields.includes("textElements")) {
@@ -39,7 +40,6 @@ export function filterSlideContent(
     }
     if (fields.includes("keyLearningPoints")) {
       filtered.keyLearningPoints = slide.keyLearningPoints;
-      filtered.coversDiversity = slide.coversDiversity;
     }
     if (fields.includes("learningCycles")) {
       filtered.learningCycles = slide.learningCycles;

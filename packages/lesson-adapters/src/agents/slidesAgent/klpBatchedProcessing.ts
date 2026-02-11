@@ -65,14 +65,18 @@ function isKlpBatchedConfig(
  */
 export function reconcileKlpResults(
   klpResults: { klp: string; result: SlidesAgentResponse }[],
-  klpToSlides: Map<string, number[]>,
   allSlides: SimplifiedSlideContent[],
 ): SlidesAgentResponse {
   // Collect votes from all evaluations
   const keepSlides = new Set<number>();
   const deleteVotes = new Map<
     number,
-    { klp: string; reasoning: string; slideId: string }[]
+    {
+      klp: string;
+      reasoning: string;
+      slideId: string;
+      supersededBySlides: number[];
+    }[]
   >();
 
   for (const { klp, result } of klpResults) {
@@ -85,6 +89,7 @@ export function reconcileKlpResults(
         klp,
         reasoning: del.reasoning ?? "",
         slideId: del.slideId,
+        supersededBySlides: del.supersededBySlides ?? [],
       });
       deleteVotes.set(del.slideNumber, existing);
     }
@@ -99,7 +104,12 @@ export function reconcileKlpResults(
   // Apply any-keep rule: remove deletion candidates that any evaluation kept
   const candidateDeletions = new Map<
     number,
-    { klp: string; reasoning: string; slideId: string }[]
+    {
+      klp: string;
+      reasoning: string;
+      slideId: string;
+      supersededBySlides: number[];
+    }[]
   >();
 
   for (const [slideNumber, votes] of deleteVotes) {
@@ -113,22 +123,20 @@ export function reconcileKlpResults(
     }
   }
 
-  // KLP coverage check: ensure no KLP loses all its slides
-  const finalDeletions = new Set(candidateDeletions.keys());
+  // Superseded-by validation: rescue deletions whose justification slides are also deleted
+  const deletionSet = new Set(candidateDeletions.keys());
 
-  for (const [klp, slideNumbers] of klpToSlides) {
-    if (klp === UNATTACHED_KEY) continue;
-    const remaining = slideNumbers.filter((n) => !finalDeletions.has(n));
-    if (remaining.length === 0 && slideNumbers.length > 0) {
-      // Rescue the first slide (earliest occurrence) to maintain coverage
-      const rescued = slideNumbers[0]!;
-      finalDeletions.delete(rescued);
-      candidateDeletions.delete(rescued);
+  for (const [slideNumber, votes] of [...candidateDeletions]) {
+    const allSuperseding = votes.flatMap((v) => v.supersededBySlides);
+    const deletedSuperseding = allSuperseding.filter((n) => deletionSet.has(n));
+    if (deletedSuperseding.length > 0) {
       log.info(
-        "  Slide %d: rescued (last slide covering KLP: %s)",
-        rescued,
-        klp,
+        "  Slide %d: rescued (superseding slide(s) %s also being deleted)",
+        slideNumber,
+        deletedSuperseding.join(", "),
       );
+      deletionSet.delete(slideNumber);
+      candidateDeletions.delete(slideNumber);
     }
   }
 
@@ -142,16 +150,18 @@ export function reconcileKlpResults(
   const slideDeletions = [...candidateDeletions.entries()].map(
     ([slideNumber, votes], idx) => ({
       slideNumber,
-      slideId:
-        votes[0]?.slideId ?? slideById.get(slideNumber)?.slideId ?? "",
+      slideId: votes[0]?.slideId ?? slideById.get(slideNumber)?.slideId ?? "",
       changeId: `sd-${slideNumber}-${idx + 1}`,
       reasoning: votes.map((v) => `[${v.klp}] ${v.reasoning}`).join("; "),
+      supersededBySlides: [
+        ...new Set(votes.flatMap((v) => v.supersededBySlides)),
+      ],
     }),
   );
 
-  const deletionSet = new Set(slideDeletions.map((d) => d.slideNumber));
+  const finalDeletionSet = new Set(slideDeletions.map((d) => d.slideNumber));
   const slidesToKeep = allSlides
-    .filter((s) => !deletionSet.has(s.slideNumber))
+    .filter((s) => !finalDeletionSet.has(s.slideNumber))
     .map((s) => ({ slideNumber: s.slideNumber, slideId: s.slideId }));
 
   log.info(
@@ -161,9 +171,7 @@ export function reconcileKlpResults(
   );
 
   return {
-    analysis: klpResults
-      .map((r) => `[${r.klp}] ${r.result.analysis}`)
-      .join("\n\n"),
+    analysis: `Evaluated ${klpResults.length} KLP groups across ${allSlides.length} slides. ${slideDeletions.length} slides marked for deletion, ${slidesToKeep.length} kept.`,
     changes: {
       textEdits: [],
       tableCellEdits: [],
@@ -171,9 +179,7 @@ export function reconcileKlpResults(
       slideDeletions,
       slidesToKeep,
     },
-    reasoning: klpResults
-      .map((r) => `[${r.klp}] ${r.result.reasoning}`)
-      .join("\n\n"),
+    reasoning: `Reconciled ${klpResults.length} KLP evaluations. Applied any-keep rule and superseded-by validation.`,
   };
 }
 
@@ -248,11 +254,7 @@ export async function generateKlpBatchedSlidePlan(
         .map((n) => slideByNumber.get(n))
         .filter((s): s is SimplifiedSlideContent => s !== undefined);
 
-      log.info(
-        "  Evaluating KLP group %s: %d slides",
-        klp,
-        klpSlides.length,
-      );
+      log.info("  Evaluating KLP group %s: %d slides", klp, klpSlides.length);
 
       if (klpSlides.length === 0) return { klp, result: undefined };
 
@@ -291,11 +293,7 @@ export async function generateKlpBatchedSlidePlan(
   }
 
   // Reconcile results deterministically
-  const reconciled = reconcileKlpResults(
-    klpResults,
-    klpToSlides,
-    evaluatableSlides,
-  );
+  const reconciled = reconcileKlpResults(klpResults, evaluatableSlides);
 
   // Add protected slides to keeps
   const protectedKeeps = protectedSlides.map((s) => ({

@@ -57,7 +57,11 @@ export function formatSlidesForPrompt(
         parts.push(`- Covers Diversity: yes`);
       }
 
-      const textElements = slide.textElements ?? [];
+      // Filter out text elements that are entirely whitespace (empty placeholders).
+      // This only affects what the LLM sees — the original slide data is unchanged.
+      const textElements = (slide.textElements ?? []).filter(
+        (te) => te.content.trim().length > 0,
+      );
       const tables = slide.tables ?? [];
 
       if (textElements.length > 0) {

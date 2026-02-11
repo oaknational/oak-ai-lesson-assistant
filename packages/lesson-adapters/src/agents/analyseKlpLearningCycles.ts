@@ -127,11 +127,12 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
 - Do NOT include slides that do not match a key learning point in content, concept, theme, or provide important knowledge pupils need to learn a key learning point
   - Example: Given key learning points: "Calligraphy involves creating letters with artistic flair to make beautiful handwriting"; "Learning and practising foundational calligraphic strokes builds the skills needed to create decorative letters"; "Techniques such as strokes and flourishes can help you create calligraphic letters and words"; "Practising calligraphy improves fine motor skills"
   - A slide with content "Here you can see a representation of an older calligraphy style, often used during the Middle Ages in Western Europe, and is referred to as 'gothic'" does NOT match any of these KLPs - it provides historical context but does not match the content, concept or theme of a key learning point or relate to important knowledge pupils need to learn a key learning point
-- For slides that do not match a key learning point, check if they contain diversity content and set coversDiversity accordingly
+- For EVERY slide, check if it contains diversity content and set coversDiversity accordingly — this applies whether or not the slide matches a KLP
   - Diversity content provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own
-  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds
+  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds (e.g. Henry Ossawa Tanner, Berthe Morisot)
   - Content that contextualises knowledge geographically or historically
   - Content that includes multiple perspectives and world-views
+  - A slide can both cover a KLP AND contain diversity content — these are not mutually exclusive
   - Set coversDiversity to true and explain the diversity content in the reasoning field
 - Consider text in both textElements and tables when making determinations
 - Do not invent new KLPs or learning cycles - only use the ones provided

@@ -21,8 +21,12 @@ type BaseIntentConfig = {
   prompt: string;
   /** Response schema (bulk = no per-change reasoning, targeted = with reasoning) */
   schema: typeof bulkChangesSchema | typeof targetedChangesSchema;
-  /** Which slide fields to include in the prompt (reduces token usage) */
+  /** Which slide fields to include on the data objects (available for processing logic) */
   slideFields: SlideField[];
+  /** Which slide fields to include in the LLM prompt. Defaults to slideFields if not set.
+   *  Use this when processing needs fields (e.g. keyLearningPoints for grouping)
+   *  that should not be shown to the evaluator LLM. */
+  promptSlideFields?: SlideField[];
   /** Slide types to exclude from evaluation (always kept). Intent-specific. */
   protectedSlideTypes?: string[];
 };
@@ -175,22 +179,25 @@ A slide is a candidate for deletion if ANY of the following apply:
    - An overview slide that introduces a topic does NOT make a detail slide redundant.
    - A slide with specific names, dates, examples, or explanations is NOT redundant with a slide that merely mentions the same topic in general terms.
    - Only mark a slide as redundant if you can confirm that every specific fact and example on the later slide is already present on the earlier slide.
+   - IMPORTANT: Sharing the same KLP does NOT mean slides have the same content. A KLP often spans multiple slides that teach different aspects. For example, slides teaching "raster graphics" and "vector graphics" may share a KLP about image types but contain completely different content — one teaches pixels, the other teaches shapes. Read the actual text content of each slide, not just the KLP label.
 3. **Repeated checking-for-understanding**: If a checking-for-understanding activity (e.g. a quiz question, recall prompt, or practice task) appears on one slide and the same or very similar activity is repeated on a later slide, the later repetition is a candidate for removal.
 
 ## Rules
 - **KLP coverage is sacred**: Never delete a slide if it is the ONLY slide covering a particular KLP or supporting knowledge. Before marking any slide for deletion, verify that every KLP it covers is also covered by at least one other slide that you are keeping.
 - **Preserve named examples and case studies**: If a slide introduces specific people, artists, historical figures, or named case studies that do not appear on any earlier slide, the slide MUST be kept. Named individuals are high-value pedagogical content — they are what students remember and get assessed on. Even if the surrounding topic overlaps with an earlier slide, new named examples make the slide essential.
 - **Partial overlap is not redundancy**: If a later slide shares some general content with an earlier slide but ALSO introduces new specific information (names, examples, details, case studies), it is NOT redundant. A slide is only redundant if it adds nothing new.
-- **Preserve diversity slides**: Slides marked as "Covers Diversity: yes" should be kept, as they contribute to inclusive representation in the lesson.
+- **Diversity as a tiebreaker**: If a slide is a candidate for deletion (e.g. it has some redundant content), check its "Covers Diversity" flag. If the slide is marked "Covers Diversity: yes", this is a strong reason to KEEP it — diversity content provides inclusive representation that has pedagogical value beyond the subject content. Only delete a diversity slide if its content is entirely duplicated on another slide that is also marked as covering diversity.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
 - **Checking-for-understanding rule**: If slideType is checkForUnderstanding, ff the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
 - **First occurrence wins**: When content is repeated, always keep the first occurrence and mark the later repetition for deletion.
+- **Superseding slide must be kept**: For each slide deletion, you MUST populate the supersededBySlides field with the slide numbers that already cover the deleted content. Every slide number in supersededBySlides MUST appear in your slidesToKeep list. You cannot justify deleting slide X by referencing slide Y if slide Y is also being deleted. Before finalising your deletions, cross-check: for every deletion, verify all its supersededBySlides are in slidesToKeep.
 - **Err on the side of caution**: If you are uncertain whether a slide is essential, keep it. Only delete slides you are confident are non-essential.
-- **Provide clear reasoning**: For each slide deletion, explain specifically why the slide is non-essential (which earlier slide already covers the content, or why the slide has no KLP relevance).
+- **Provide clear reasoning with evidence**: For each slide deletion, your reasoning MUST quote the specific text from the superseding slide that covers the deleted content. Do not just assert "covered by slide X" — prove it by citing what slide X says. If you cannot quote matching text from the superseding slide, do not delete the slide.
 - **Verify KLP safety**: After assembling your deletion list, do a final check: for each KLP mentioned across all slides, confirm that at least one slide covering that KLP remains in slidesToKeep.
 ${SHARED_RULES}`,
     schema: targetedChangesSchema,
     slideFields: ["textElements", "tables", "keyLearningPoints"],
+    promptSlideFields: ["textElements", "tables"],
     protectedSlideTypes: [
       "title",
       "teacher",

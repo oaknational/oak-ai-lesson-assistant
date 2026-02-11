@@ -72,6 +72,11 @@ export const targetedChangesSchema = z.object({
     slideDeletions: z.array(
       slideDeletionBaseSchema.extend({
         reasoning: z.string(),
+        supersededBySlides: z
+          .array(z.number())
+          .describe(
+            "Slide numbers that already cover this slide's content, justifying its deletion. These slides MUST be in your slidesToKeep list.",
+          ),
       }),
     ),
     slidesToKeep: z.array(slidesToKeepSchema),
@@ -103,6 +108,7 @@ export const normalizedTextElementDeletionSchema =
 export const normalizedSlideDeletionSchema = slideDeletionBaseSchema.extend({
   changeId: z.string(),
   reasoning: z.string().optional(),
+  supersededBySlides: z.array(z.number()).optional(),
 });
 
 const slidesAgentResponseSchema = z.object({

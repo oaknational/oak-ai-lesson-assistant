@@ -8,7 +8,11 @@ import {
   normalizeAgentResponse,
 } from "../../schemas/plan";
 import { type SimplifiedSlideContent, formatSlidesForPrompt } from "../utils";
-import type { IntentConfig, SlideBatchedProcessingConfig } from "./intents";
+import type {
+  IntentConfig,
+  SlideField,
+  SlideBatchedProcessingConfig,
+} from "./intents";
 
 const log = aiLogger("adaptations");
 
@@ -17,6 +21,40 @@ const log = aiLogger("adaptations");
 // ---------------------------------------------------------------------------
 
 export const LLM_TIMEOUT_MS = 300_000; // 5 minutes per batch
+
+// ---------------------------------------------------------------------------
+// Prompt field filtering
+// ---------------------------------------------------------------------------
+
+/**
+ * Strips a SimplifiedSlideContent down to only the fields allowed in the prompt.
+ * This lets processing logic use fields (e.g. keyLearningPoints for grouping)
+ * that the evaluator LLM should not see.
+ */
+function stripToPromptFields(
+  slides: SimplifiedSlideContent[],
+  fields: SlideField[],
+): SimplifiedSlideContent[] {
+  return slides.map((s) => {
+    const base: SimplifiedSlideContent = {
+      slideNumber: s.slideNumber,
+      slideId: s.slideId,
+      slideTitle: s.slideTitle,
+      slideType: s.slideType,
+      coversDiversity: s.coversDiversity,
+    };
+    if (fields.includes("textElements")) base.textElements = s.textElements;
+    if (fields.includes("tables")) base.tables = s.tables;
+    if (fields.includes("images")) base.images = s.images;
+    if (fields.includes("shapes")) base.shapes = s.shapes;
+    if (fields.includes("keyLearningPoints")) {
+      base.keyLearningPoints = s.keyLearningPoints;
+    }
+    if (fields.includes("learningCycles"))
+      base.learningCycles = s.learningCycles;
+    return base;
+  });
+}
 
 // ---------------------------------------------------------------------------
 // LLM Call
@@ -31,7 +69,11 @@ export async function callSlidesAgent(
   userMessage: string,
   slides: SimplifiedSlideContent[],
 ): Promise<SlidesAgentResponse | undefined> {
-  const formattedSlides = formatSlidesForPrompt(slides);
+  // If promptSlideFields is configured, strip fields the LLM shouldn't see
+  const slidesForPrompt = config.promptSlideFields
+    ? stripToPromptFields(slides, config.promptSlideFields)
+    : slides;
+  const formattedSlides = formatSlidesForPrompt(slidesForPrompt);
   const prompt = `Edit type: ${editType}
 User message: ${userMessage}
 Processing ${slides.length} slide(s)
@@ -42,6 +84,13 @@ ${formattedSlides}
 ---
 Reminder: Return your response using the schema with textEdits, tableCellEdits, textElementDeletions, and slideDeletions arrays.`;
 
+  log.info("=== SLIDES AGENT CALL ===");
+  log.info("  Model: gpt-4o-mini");
+  log.info("  Edit type: %s", editType);
+  log.info("  Slides: %d", slides.length);
+  log.info("--- SYSTEM PROMPT ---\n%s\n--- END SYSTEM PROMPT ---", config.prompt);
+  log.info("--- USER PROMPT ---\n%s\n--- END USER PROMPT ---", prompt);
+
   const { output, text } = await generateText({
     model: openai("gpt-4o-mini"),
     output: Output.object({ schema: config.schema }),
@@ -49,6 +98,8 @@ Reminder: Return your response using the schema with textEdits, tableCellEdits, 
     prompt,
     abortSignal: AbortSignal.timeout(LLM_TIMEOUT_MS),
   });
+
+  log.info("--- RAW OUTPUT ---\n%s\n--- END RAW OUTPUT ---", text);
 
   if (!output) {
     log.error(
