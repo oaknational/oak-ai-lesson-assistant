@@ -11,7 +11,7 @@ const apiKey = process.env.NEXT_PUBLIC_POSTHOG_API_KEY ?? "*";
 // Feature Flags Secure API Key for local evaluation (phs_... format)
 // Generate at: PostHog Settings → Feature Flags → Secure API Key
 const featureFlagsApiKey = process.env.POSTHOG_FEATURE_FLAGS_API_KEY;
-invariant(featureFlagsApiKey, "POSTHOG_FEATURE_FLAGS_API_KEY is required");
+// invariant(featureFlagsApiKey, "POSTHOG_FEATURE_FLAGS_API_KEY is required");
 
 const enableLocalEvaluation = process.env.NODE_ENV !== "test";
 
