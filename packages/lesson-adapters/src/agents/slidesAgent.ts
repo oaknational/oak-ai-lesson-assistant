@@ -1,9 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import type { SlidesAgentResponse } from "../schemas/plan";
-import type { EditScope } from "./coordinatorAgent";
 import {
-  DEFAULT_BATCH_SIZE,
   type GenerateSlidePlanInput,
   INTENT_CONFIGS,
   SUPPORTED_EDIT_TYPES,
@@ -13,6 +11,7 @@ import {
   processInBatches,
   validateAgentOutput,
 } from "./slidesAgent/index";
+import { generateKlpBatchedSlidePlan } from "./slidesAgent/klpBatchedProcessing";
 
 const log = aiLogger("adaptations");
 
@@ -22,14 +21,12 @@ const log = aiLogger("adaptations");
 
 export async function generateSlidePlan(
   input: GenerateSlidePlanInput,
-  scope: EditScope = "global",
 ): Promise<SlidesAgentResponse | undefined> {
   try {
     log.info("Generating slide plan", {
       editType: input.editType,
       userMessage: input.userMessage,
       slideCount: input.slides.length,
-      scope,
     });
 
     const parsed = generateSlidePlanInputSchema.parse(input);
@@ -46,23 +43,40 @@ export async function generateSlidePlan(
       parsed.slides,
       config.slideFields,
     );
-    const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
-    const shouldBatch =
-      scope === "global" && slidesForPrompt.length > batchSize;
 
-    const output = shouldBatch
-      ? await processInBatches(
-          config,
-          parsed.editType,
-          parsed.userMessage,
-          slidesForPrompt,
-        )
-      : await callSlidesAgent(
+    let output: SlidesAgentResponse | undefined;
+
+    switch (config.processingMode) {
+      case "oneShot":
+        output = await callSlidesAgent(
           config,
           parsed.editType,
           parsed.userMessage,
           slidesForPrompt,
         );
+        break;
+      case "slideBatched":
+        output = await processInBatches(
+          config,
+          parsed.editType,
+          parsed.userMessage,
+          slidesForPrompt,
+        );
+        break;
+      case "klpBatched":
+        output = await generateKlpBatchedSlidePlan(
+          config,
+          slidesForPrompt,
+          parsed.userMessage,
+        );
+        break;
+      default: {
+        const _exhaustive: never = config;
+        throw new Error(
+          `Unknown processingMode: ${(_exhaustive as { processingMode: string }).processingMode}`,
+        );
+      }
+    }
 
     if (!output) {
       return undefined;

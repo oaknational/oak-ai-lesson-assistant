@@ -1,3 +1,6 @@
+// Input schemas and types
+export { generatePlanInputSchema, type GeneratePlanInput } from "./input";
+
 // Plan schemas and types
 export {
   bulkChangesSchema,

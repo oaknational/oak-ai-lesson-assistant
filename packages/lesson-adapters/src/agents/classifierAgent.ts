@@ -6,6 +6,7 @@ export const intentSchema = z.object({
   intent: z.enum([
     "changeReadingAge",
     "translateLesson",
+    "removeNonEssentialContent",
     "deleteSlide",
     "editSlideText",
     "removeKLP",
@@ -30,6 +31,7 @@ Intent Categories:
 - deleteSlide: User wants to remove one or more slides from the lesson
 - editSlideText: User wants to modify text, images, or other content on existing slides
 - removeKLP: User wants to remove a key learning point from the lesson
+- removeNonEssentialContent: User wants to reduce the number of slides by removing non-essential content. Non-essential means slides not related to any key learning point, or slides whose content is redundant because it has already been covered in earlier slides. This is about deleting whole slides, not editing text.
 - translateLesson: User wants to translate the lesson content into another language, must include target language
 Guidelines:
 - Be specific in your classification

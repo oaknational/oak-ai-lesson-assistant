@@ -66,6 +66,7 @@ export function ThumbnailsWithKlpTab({
         const klps = mapping?.keyLearningPoints ?? [];
         const learningCycles = mapping?.learningCycles ?? [];
         const coversDiversity = mapping?.coversDiversity ?? false;
+        const slideType = mapping?.slideType ?? "other";
 
         return (
           <OakFlex
@@ -161,6 +162,21 @@ export function ThumbnailsWithKlpTab({
                       </OakFlex>
                     ))}
                   </OakFlex>
+                </OakBox>
+              )}
+              {slideType && (
+                <OakBox $mb="spacing-12">
+                  <OakP $font="body-3-bold" $mb="spacing-8">
+                    Slide Type:
+                  </OakP>
+                  <OakBox
+                    $background="bg-decorative3-subdued"
+                    $pa="spacing-4"
+                    $borderRadius="border-radius-s"
+                    className="inline-block"
+                  >
+                    <OakP $font="body-3">{slideType}</OakP>
+                  </OakBox>
                 </OakBox>
               )}
 
