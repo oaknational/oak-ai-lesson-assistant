@@ -8,6 +8,8 @@ jobs:
   test-e2e:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.51.1-noble
     if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'oak-ai-lesson-assistant')
     steps:
       - uses: actions/checkout@v4
@@ -28,8 +30,6 @@ jobs:
         id: ref_from_sha
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Playwright
-        run: npx playwright install --with-deps chromium webkit
       - name: Inject Doppler env vars
         uses: dopplerhq/secrets-fetch-action@v1.2.0
         id: doppler
