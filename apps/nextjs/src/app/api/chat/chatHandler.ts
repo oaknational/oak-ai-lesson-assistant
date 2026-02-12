@@ -76,7 +76,7 @@ async function setupChatHandler(req: NextRequest) {
   return await startSpan(
     "chat-setup-chat-handler",
     {},
-    async (span: TracingSpan) => {
+    async (_span: TracingSpan) => {
       const json = await req.json();
       const {
         id: chatId,
@@ -88,10 +88,10 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-nov-25");
-      const useLegacyAgenticAila = await serverSideFeatureFlag(
-        "agentic-aila-may-25",
-      );
+      const useAgenticAila =
+        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
+          ? false
+          : await serverSideFeatureFlag("agentic-aila-nov-25");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
@@ -101,7 +101,6 @@ async function setupChatHandler(req: NextRequest) {
         usePersistence: true,
         useModeration: true,
         useAgenticAila,
-        useLegacyAgenticAila,
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);

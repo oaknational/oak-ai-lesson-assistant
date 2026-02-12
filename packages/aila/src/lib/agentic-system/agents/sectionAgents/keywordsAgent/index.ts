@@ -1,3 +1,4 @@
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
 import { keywordsInstructions } from "./keywords.instructions";
@@ -8,4 +9,5 @@ export const keywordsAgent = createSectionAgent({
   instructions: keywordsInstructions,
   contentToString: stringListToText((k) => `${k.keyword}: ${k.definition}`),
   defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

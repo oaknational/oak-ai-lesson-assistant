@@ -37,7 +37,7 @@ interface QuizPlaygroundViewProps {
 export function QuizPlaygroundView({
   viewMode,
   report,
-  isStreaming = false,
+  isStreaming: _isStreaming = false,
 }: Readonly<QuizPlaygroundViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;
@@ -68,8 +68,8 @@ export function QuizPlaygroundView({
   );
   const composerNode = getChild(report ?? undefined, "llmComposer");
   // Composer has nested children for prompt and LLM response
-  const composerPromptNode = getChild(composerNode, "composerPrompt");
-  const composerLlmNode = getChild(composerNode, "composerLlm");
+  const composerPromptNode = getChild(composerNode, "buildPrompt");
+  const composerLlmNode = getChild(composerNode, "llmCall");
 
   // Get data from nodes (extractors use Zod validation and return undefined if not complete)
   const currentQuiz = extractGeneratorData(currentQuizNode);
@@ -322,13 +322,17 @@ export function QuizPlaygroundView({
             <ComposerSection
               prompt={(composerPromptNode?.data.prompt as string) ?? ""}
               response={
-                composerLlmNode.data.response as {
-                  overallStrategy: string;
-                  selectedQuestions: {
-                    questionUid: string;
-                    reasoning: string;
-                  }[];
-                }
+                (
+                  composerLlmNode.data.response as {
+                    success: {
+                      overallStrategy: string;
+                      selectedQuestions: {
+                        questionUid: string;
+                        reasoning: string;
+                      }[];
+                    };
+                  }
+                ).success
               }
               selectedQuestions={
                 (composerLlmNode.data.selectedQuestions as RagQuizQuestion[]) ??

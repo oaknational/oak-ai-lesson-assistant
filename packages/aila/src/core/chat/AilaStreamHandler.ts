@@ -1,6 +1,4 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
-import { RAG } from "@oakai/core/src/rag";
-import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import {
   getRagLessonPlansByIds,
@@ -10,27 +8,13 @@ import {
 } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
-import invariant from "tiny-invariant";
-import z from "zod";
 
-import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../constants";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
-import {
-  createInteractStreamHandler,
-  streamInteractResultToClient,
-} from "../../lib/agents/compatibility/streamHandling";
-import { interact } from "../../lib/agents/interact";
-import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
-import {
-  type CompletedLessonPlan,
-  CompletedLessonPlanSchemaWithoutLength,
-} from "../../protocol/schema";
-import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
 import { ReportStorage, createQuizTracker } from "../quiz/reporting";
@@ -108,16 +92,14 @@ export class AilaStreamHandler {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
-      if (
-        !this._chat.aila.options.useAgenticAila &&
-        !this._chat.aila.options.useLegacyAgenticAila
-      ) {
+      if (!this._chat.aila.options.useAgenticAila) {
         await this.span("set-up-generation", async () => {
           await this._chat.setupGeneration();
         });
       } else {
-        await this.span("initialise-chunks", async () => {
+        await this.span("initialise-chunks", () => {
           this._chat.initialiseChunks();
+          return Promise.resolve();
         });
       }
 
@@ -128,10 +110,6 @@ export class AilaStreamHandler {
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
           await this.startAgentStream();
-        });
-      } else if (this._chat.aila.options.useLegacyAgenticAila) {
-        await this.span("start-agent-stream-legacy", async () => {
-          await this.startAgentStreamLegacy();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -194,151 +172,6 @@ export class AilaStreamHandler {
     this._patchEnqueuer.setController(controller);
   }
 
-  private async startAgentStreamLegacy() {
-    await this._chat.enqueue({
-      type: "comment",
-      value: "CHAT_START",
-    });
-
-    const initialDocument = {
-      ...this._chat.aila.document.content,
-    };
-
-    // Create a stream handler
-    const streamHandler = createInteractStreamHandler(
-      this._chat,
-      this._controller!,
-    );
-
-    // Call interact with the stream handler
-    const interactResult = await interact({
-      userId: this._chat.userId ?? "anonymous",
-      chatId: this._chat.id,
-      initialDocument: initialDocument,
-      messageHistoryWithProtocol: this._chat.messages
-        .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => {
-          log.info(m);
-          return m;
-        }) as { role: "user" | "assistant"; content: string }[],
-      onUpdate: streamHandler, // This is the new part
-      customAgents: {
-        mathsStarterQuiz: async ({ document, userInstructions }) => {
-          const tracker = createQuizTracker();
-          const quiz = await tracker.run(async (task, reportId) => {
-            const result = await this._chat.quizService.buildQuiz(
-              "/starterQuiz",
-              document,
-              this._chat.relevantLessons ?? [],
-              task,
-              reportId,
-              userInstructions,
-            );
-            task.addData({ quiz: result, userInstructions });
-            return result;
-          });
-          await ReportStorage.store(tracker.getReport());
-
-          return quiz;
-        },
-        mathsExitQuiz: async ({ document, userInstructions }) => {
-          const tracker = createQuizTracker();
-          const quiz = await tracker.run(async (task, reportId) => {
-            const result = await this._chat.quizService.buildQuiz(
-              "/exitQuiz",
-              document,
-              this._chat.relevantLessons ?? [],
-              task,
-              reportId,
-              userInstructions,
-            );
-            task.addData({ quiz: result, userInstructions });
-            return result;
-          });
-          await ReportStorage.store(tracker.getReport());
-
-          return quiz;
-        },
-        fetchRagData: async ({ document }): Promise<CompletedLessonPlan[]> => {
-          const chatId = this._chat.id;
-          const userId = this._chat.userId ?? undefined;
-          const prisma = globalPrisma;
-          const { subject, keyStage, topic, title } = document;
-          invariant(title, "Document title is required to fetch RAG data");
-
-          const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
-
-          if (!isMaths) {
-            const rag = new RAG(prisma, { chatId, userId });
-            const relevantLessonPlans = await rag.fetchLessonPlans({
-              chatId: this._chat.id,
-              title,
-              keyStage,
-              subject,
-              topic: topic ?? undefined,
-              k:
-                this._chat.aila?.options.numberOfRecordsInRag ??
-                DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-            });
-
-            const migratedLessonPlans: CompletedLessonPlan[] = [];
-
-            for (const lessonPlan of relevantLessonPlans) {
-              try {
-                const result = await migrateLessonPlan({
-                  lessonPlan: lessonPlan.content as Record<string, unknown>,
-                  outputSchema: CompletedLessonPlanSchemaWithoutLength,
-                  persistMigration: null,
-                });
-                migratedLessonPlans.push(result.lessonPlan);
-              } catch (error) {
-                log.error("Failed to migrate lesson plan", { error });
-              }
-            }
-
-            this._chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
-              lessonPlanId: lesson.id,
-              title: z.object({ title: z.string() }).parse(lesson.content)
-                .title,
-            }));
-
-            return migratedLessonPlans;
-          }
-
-          if (this._chat.relevantLessons) {
-            const results = await getRagLessonPlansByIds({
-              lessonPlanIds: this._chat.relevantLessons.map(
-                (lesson) => lesson.lessonPlanId,
-              ),
-            });
-            return results.map((r) => r.lessonPlan);
-          }
-
-          const lessonPlanResults = await fetchRelevantLessonPlans({
-            document,
-          });
-
-          const relevantLessons = lessonPlanResults.map((result) => ({
-            lessonPlanId: result.ragLessonPlanId,
-            title: result.lessonPlan.title,
-          }));
-          this._chat.relevantLessons = relevantLessons;
-
-          return lessonPlanResults.map((l) => l.lessonPlan);
-        },
-      },
-      relevantLessons: this._chat.relevantLessons,
-    });
-
-    // Stream the final result to the client
-    await streamInteractResultToClient(
-      this._chat,
-      this._controller!,
-      initialDocument,
-      interactResult,
-    );
-  }
-
   private async startAgentStream() {
     await this._chat.enqueue({
       type: "comment",
@@ -390,21 +223,23 @@ export class AilaStreamHandler {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run(async (task, reportId) => {
-                  const result = await this._chat.quizService.buildQuiz(
-                    "/starterQuiz",
-                    ctx.currentTurn.document,
-                    this._chat.relevantLessons ?? [],
-                    task,
-                    reportId,
-                    userInstructions,
-                  );
-                  task.addData({ quiz: result, userInstructions });
-                  return result;
-                });
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/starterQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
+                );
                 await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating starter quiz", { error });
                 return {
@@ -420,21 +255,23 @@ export class AilaStreamHandler {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
                 const tracker = createQuizTracker();
-                const quiz = await tracker.run(async (task, reportId) => {
-                  const result = await this._chat.quizService.buildQuiz(
-                    "/exitQuiz",
-                    ctx.currentTurn.document,
-                    this._chat.relevantLessons ?? [],
-                    task,
-                    reportId,
-                    userInstructions,
-                  );
-                  task.addData({ quiz: result, userInstructions });
-                  return result;
-                });
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/exitQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
+                );
                 await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating exit quiz", { error });
                 return {

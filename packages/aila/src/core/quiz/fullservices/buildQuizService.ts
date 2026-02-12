@@ -16,8 +16,6 @@
  *
  * Pipeline flow: Sources → Enrichers → Composer → Final Quiz
  */
-import { aiLogger } from "@oakai/logger";
-
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -43,8 +41,6 @@ import type {
   QuizBuilderSettings,
   QuizComposerType,
 } from "../schema";
-
-const log = aiLogger("quiz");
 
 function createSource(type: QuestionSourceType): QuestionSource {
   switch (type) {
@@ -121,31 +117,33 @@ async function buildQuiz(
   }
 
   // Compose final questions from enriched pools
-  const selectedQuestions = await task.child(composer.name, async (t) => {
-    const questions = await composer.compose(
+  const composerResult = await task.child(composer.name, async (t) => {
+    const result = await composer.compose(
       questionPools,
       lessonPlan,
       quizType,
       t,
       userInstructions,
     );
-    t.addData({ selectedCount: questions.length });
-    return questions;
+    t.addData({
+      status: result.status,
+      selectedCount: result.questions.length,
+      ...(result.status === "bail" && { bailReason: result.bailReason }),
+    });
+    return result;
   });
 
-  return buildQuizFromQuestions(selectedQuestions, reportId);
+  const quiz = buildQuizFromQuestions(composerResult.questions, reportId);
+  const note =
+    composerResult.status === "bail" ? composerResult.bailReason : undefined;
+
+  return { quiz, note };
 }
 
 export function buildQuizService(settings: QuizBuilderSettings): QuizService {
   const sources = settings.sources.map(createSource);
   const enrichers = settings.enrichers.map(createEnricher);
   const composer = createComposer(settings.composer);
-
-  log.info("Building quiz service with settings:", {
-    sources: settings.sources,
-    enrichers: settings.enrichers,
-    composer: settings.composer,
-  });
 
   return {
     sources,

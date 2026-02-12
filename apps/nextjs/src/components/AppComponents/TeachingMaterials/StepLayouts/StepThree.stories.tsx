@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { promise } from "zod";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
 import TeachingMaterialsLayout from "@/components/ResourcesLayout";

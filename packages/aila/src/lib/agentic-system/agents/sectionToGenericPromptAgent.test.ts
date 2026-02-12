@@ -1,3 +1,4 @@
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../protocol/schema";
@@ -70,6 +71,7 @@ describe("sectionToGenericPromptAgent", () => {
       document: mockDocument,
       plannerOutput: null,
       errors: [],
+      notes: [],
       stepsExecuted: [],
       relevantLessonsFetched: false,
       relevantLessons: mockRelevantLessons,
@@ -87,6 +89,14 @@ describe("sectionToGenericPromptAgent", () => {
     return `${content.content}${content.items ? ` - ${content.items.join(", ")}` : ""}`;
   };
 
+  const defaultModelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  > = { model: "gpt-test-model" };
+
+  const createAgent = (props: SectionPromptAgentProps<MockSchemaType>) =>
+    sectionToGenericPromptAgent(props, defaultModelParams);
+
   const baseProps: SectionPromptAgentProps<MockSchemaType> = {
     responseSchema: mockSchema,
     messages: mockMessages,
@@ -101,7 +111,7 @@ describe("sectionToGenericPromptAgent", () => {
 
   describe("input message generation", () => {
     it("should generate consistent input messages with minimal props", () => {
-      const agent = sectionToGenericPromptAgent(baseProps);
+      const agent = createAgent(baseProps);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -117,7 +127,7 @@ describe("sectionToGenericPromptAgent", () => {
         currentValue,
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithCurrentValue);
+      const agent = createAgent(propsWithCurrentValue);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -139,7 +149,7 @@ describe("sectionToGenericPromptAgent", () => {
         exemplarContent,
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithExemplar);
+      const agent = createAgent(propsWithExemplar);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -155,7 +165,7 @@ describe("sectionToGenericPromptAgent", () => {
         basedOnContent,
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithBasedOn);
+      const agent = createAgent(propsWithBasedOn);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -166,7 +176,7 @@ describe("sectionToGenericPromptAgent", () => {
         defaultVoice: "TEACHER_TO_PUPIL_WRITTEN" as VoiceId,
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithVoice);
+      const agent = createAgent(propsWithVoice);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -178,7 +188,7 @@ describe("sectionToGenericPromptAgent", () => {
         voices: ["AILA_TO_TEACHER", "TEACHER_TO_PUPIL_WRITTEN"] as VoiceId[],
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithVoices);
+      const agent = createAgent(propsWithVoices);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -202,7 +212,7 @@ describe("sectionToGenericPromptAgent", () => {
         extraInputFromCtx,
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithExtra);
+      const agent = createAgent(propsWithExtra);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -242,7 +252,7 @@ describe("sectionToGenericPromptAgent", () => {
         voices: ["EXPERT_TEACHER", "TEACHER_TO_PUPIL_WRITTEN"] as VoiceId[],
       };
 
-      const agent = sectionToGenericPromptAgent(complexProps);
+      const agent = createAgent(complexProps);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -253,7 +263,7 @@ describe("sectionToGenericPromptAgent", () => {
         messages: [],
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithNoMessages);
+      const agent = createAgent(propsWithNoMessages);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -277,7 +287,7 @@ The content should be suitable for Key Stage 3 students.
           instructions: detailedInstructions,
         };
 
-      const agent = sectionToGenericPromptAgent(propsWithDetailedInstructions);
+      const agent = createAgent(propsWithDetailedInstructions);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -285,7 +295,7 @@ The content should be suitable for Key Stage 3 students.
 
   describe("schema validation", () => {
     it("should have the correct response schema", () => {
-      const agent = sectionToGenericPromptAgent(baseProps);
+      const agent = createAgent(baseProps);
 
       expect(agent.responseSchema).toBe(mockSchema);
       expect(typeof agent.responseSchema.parse).toBe("function");
@@ -301,7 +311,7 @@ The content should be suitable for Key Stage 3 students.
           voices: ["TEACHER_TO_PUPIL_WRITTEN"] as VoiceId[],
         };
 
-      const agent = sectionToGenericPromptAgent(propsWithVoiceNotInArray);
+      const agent = createAgent(propsWithVoiceNotInArray);
 
       expect(agent.input).toMatchSnapshot();
     });
@@ -313,7 +323,7 @@ The content should be suitable for Key Stage 3 students.
         voices: ["AILA_TO_TEACHER", "TEACHER_TO_PUPIL_WRITTEN"] as VoiceId[],
       };
 
-      const agent = sectionToGenericPromptAgent(propsWithVoiceInArray);
+      const agent = createAgent(propsWithVoiceInArray);
 
       expect(agent.input).toMatchSnapshot();
     });

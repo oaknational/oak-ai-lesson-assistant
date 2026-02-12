@@ -1,11 +1,9 @@
-import { aiLogger, structuredLogger } from "@oakai/logger";
+import { structuredLogger } from "@oakai/logger";
 
 import { EventSchemas, Inngest } from "inngest";
 
 import types from "../functions/event-types";
 import { eventLogger } from "../middleware/eventLogger";
-
-const log = aiLogger("core");
 
 const CONTEXT = process.env.VERCEL_ENV;
 const BRANCH = process.env.VERCEL_GIT_COMMIT_REF;
