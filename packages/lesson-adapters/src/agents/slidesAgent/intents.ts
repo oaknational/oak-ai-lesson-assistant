@@ -29,6 +29,8 @@ type BaseIntentConfig = {
   promptSlideFields?: SlideField[];
   /** Slide types to exclude from evaluation (always kept). Intent-specific. */
   protectedSlideTypes?: string[];
+  /** OpenAI model ID for the LLM calls. Defaults to "gpt-4o-mini" if not set. */
+  model?: string;
 };
 
 /** One-shot: single LLM call with all slides. */
@@ -191,11 +193,11 @@ A slide is a candidate for deletion if ANY of the following apply:
 - **Diversity as a tiebreaker**: If a slide is a candidate for deletion (e.g. it has some redundant content), check its "Covers Diversity" flag. If the slide is marked "Covers Diversity: yes", this is a strong reason to KEEP it — diversity content provides inclusive representation that has pedagogical value beyond the subject content. Only delete a diversity slide if its content is entirely duplicated on another slide that is also marked as covering diversity.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
 - **Checking-for-understanding rule**: If slideType is checkForUnderstanding, if the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
-- **Practice–feedback pairing**: A "practice" slide (slideType: practice) poses a question or task for pupils, while its corresponding "feedback" slide (slideType: feedback) provides the model answer or worked example. Even though the question text may be repeated on the feedback slide, this is NOT redundancy — the feedback slide exists to reveal the answer. These MUST be treated as a paired unit:
+- **Practice-feedback pairing**: A "practice" slide (slideType: practice) poses a question or task for pupils, while its corresponding "feedback" slide (slideType: feedback) provides the model answer or worked example. Even though the question text may be repeated on the feedback slide, this is NOT redundancy — the feedback slide exists to reveal the answer. These MUST be treated as a paired unit:
   - Never delete a practice slide while keeping its corresponding feedback slide, or vice versa. An orphaned answer without its question (or a question without its answer) makes the presentation incoherent.
   - A feedback slide immediately following a practice slide is the feedback for that practice. Treat them as a pair.
-  - Prefer keeping practice–feedback pairs intact. Only delete a pair if the same question AND model answer are already fully covered by an earlier practice–feedback pair in the presentation.
-  - If you decide to delete a practice–feedback pair, BOTH slides must appear in slideDeletions with reasoning explaining which earlier pair supersedes them.
+  - Prefer keeping practice-feedback pairs intact. Only delete a pair if the same question AND model answer are already fully covered by an earlier practice–feedback pair in the presentation.
+  - If you decide to delete a practice-feedback pair, BOTH slides must appear in slideDeletions with reasoning explaining which earlier pair supersedes them.
 - **First occurrence wins**: When content is repeated, always keep the first occurrence and mark the later repetition for deletion.
 - **Superseding slide must be kept**: For each slide deletion, you MUST populate the supersededBySlides field with the slide numbers that already cover the deleted content. Every slide number in supersededBySlides MUST appear in your slidesToKeep list. You cannot justify deleting slide X by referencing slide Y if slide Y is also being deleted. Before finalising your deletions, cross-check: for every deletion, verify all its supersededBySlides are in slidesToKeep.
 - **Err on the side of caution**: If you are uncertain whether a slide is essential, keep it. Only delete slides you are confident are non-essential.
@@ -214,6 +216,7 @@ ${SHARED_RULES}`,
       "summary",
       "copyright",
     ],
+    model: "gpt-4o",
   },
 };
 
