@@ -44,9 +44,7 @@ export function formatSlidesForPrompt(
       if (textElements.length > 0) {
         parts.push(
           `\n### Text Content (preserve all whitespace, including newlines and spacing):`,
-          ...textElements.map(
-            (te) => `Text element [${te.id}]: ${te.content}`,
-          ),
+          ...textElements.map((te) => `Text element [${te.id}]: ${te.content}`),
         );
       }
 
