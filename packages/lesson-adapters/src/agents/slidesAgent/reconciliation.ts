@@ -112,9 +112,7 @@ export function reconcileKlpResults(
 
   for (const [slideNumber, votes] of [...candidateDeletions]) {
     const allSuperseding = votes.flatMap((v) => v.supersededBySlides);
-    const deletedSuperseding = allSuperseding.filter((n) =>
-      deletionSet.has(n),
-    );
+    const deletedSuperseding = allSuperseding.filter((n) => deletionSet.has(n));
     if (deletedSuperseding.length > 0) {
       log.info(
         "  Slide %d: rescued (superseding slide(s) %s also being deleted)",

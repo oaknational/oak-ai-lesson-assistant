@@ -144,9 +144,7 @@ export function AllChangesTab({
 
       {/* Slides Kept */}
       {changes.slidesToKeep.length > 0 && (
-        <ChangeSection
-          title={`Slides Kept (${changes.slidesToKeep.length})`}
-        >
+        <ChangeSection title={`Slides Kept (${changes.slidesToKeep.length})`}>
           {changes.slidesToKeep.map((kept) => (
             <OakBox
               key={kept.slideId}
