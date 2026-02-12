@@ -1,3 +1,20 @@
+# [1.64.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.63.0...v1.64.0) (2026-02-12)
+
+
+### Bug Fixes
+
+* remove X/Twitter link from footer and menu bar ([#941](https://github.com/oaknational/oak-ai-lesson-assistant/issues/941)) ([0384189](https://github.com/oaknational/oak-ai-lesson-assistant/commit/03841896d5f310370c0419d1fea6c2fdf1f8ead7))
+
+
+### Features
+
+* zustand store and review modal ([#933](https://github.com/oaknational/oak-ai-lesson-assistant/issues/933)) ([03cea8e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/03cea8e8e3dd91d685d60353edc22fbdc9e45895))
+
+
+### Performance Improvements
+
+* **quiz:** use low reasoning effort for quiz composer [AI-1961] ([#916](https://github.com/oaknational/oak-ai-lesson-assistant/issues/916)) ([7a6852d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7a6852d4a3d7caa0dd0cbe9bb473062a3fea69ce))
+
 # [1.63.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.62.0...v1.63.0) (2026-02-10)
 
 
