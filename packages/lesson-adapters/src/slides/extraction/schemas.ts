@@ -59,6 +59,10 @@ export const slideContentSchema = z.object({
     .array(z.string())
     .optional()
     .describe("Learning cycles covered on this slide"),
+  coversDiversity: z
+    .boolean()
+    .optional()
+    .describe("Whether the slide covers diversity topics"),
 });
 
 export const slideDeckContentSchema = z.object({

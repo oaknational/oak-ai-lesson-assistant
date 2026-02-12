@@ -3,6 +3,7 @@ import {
   type SlideContent,
   adaptationPlanSchema,
   coordinateAdaptation,
+  executeSlideChanges,
   extractPresentationContent,
   slideDeckContentSchema,
 } from "@oakai/lesson-adapters";
@@ -48,6 +49,7 @@ function generateSessionId(): string {
 }
 
 const KV_SESSION_PREFIX = "lesson-adapt:session:";
+const KV_ENRICHMENT_PREFIX = "lesson-adapt:enrichment:";
 const SESSION_TTL_SECONDS = 60 * 60; // 1 hour for POC
 
 /**
@@ -64,6 +66,18 @@ const LessonAdaptSessionStorage = {
   async get(sessionId: string): Promise<LessonAdaptSession | null> {
     const key = `${KV_SESSION_PREFIX}${sessionId}`;
     return kv.get<LessonAdaptSession>(key);
+  },
+};
+
+const LessonEnrichmentStorage = {
+  async store(slide: SlideContent[], lessonSlug: string): Promise<void> {
+    const key = `${KV_ENRICHMENT_PREFIX}${lessonSlug}`;
+    await kv.set(key, slide, { ex: SESSION_TTL_SECONDS });
+  },
+
+  async get(lessonSlug: string): Promise<SlideContent[] | null> {
+    const key = `${KV_ENRICHMENT_PREFIX}${lessonSlug}`;
+    return kv.get<SlideContent[]>(key);
   },
 };
 
@@ -85,10 +99,10 @@ const generatePlanOutput = z.object({
 });
 
 const executeAdaptationsInput = z.object({
-  lessonId: z.string(),
-  presentationId: z.string(),
-  approvedChangeIds: z.array(z.string()),
-  planData: z.any(),
+  sessionId: z.string(),
+  planData: adaptationPlanSchema,
+  /** Reserved for future granular approval. Currently ignored (all changes are executed). */
+  approvedChangeIds: z.array(z.string()).optional(),
 });
 
 const executeAdaptationsOutput = z.object({
@@ -158,6 +172,7 @@ export const lessonAdaptRouter = router({
       log.info("Adaptation plan generated", {
         sessionId,
         owaLessonSlug: session.owaLessonSlug,
+        JSONPlan: JSON.stringify(coordinateAdaptationResult.plan),
       });
 
       return {
@@ -172,14 +187,51 @@ export const lessonAdaptRouter = router({
   executeAdaptations: adminProcedure
     .input(executeAdaptationsInput)
     .output(executeAdaptationsOutput)
-    .mutation(() => {
-      // TODO: Implement in follow-up PR
-      // 1. Filter changes by approved IDs
-      // 2. Execute via Google Slides API (text, deletions)
-      // 3. Execute via Apps Script (autofit, templates)
-      // 4. Update KLP array if needed
-      // 5. Return execution results
-      throw new Error("Not implemented yet");
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.auth.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+      }
+
+      const { sessionId, planData } = input;
+
+      // Retrieve session to get the presentationId securely
+      const session = await LessonAdaptSessionStorage.get(sessionId);
+      if (!session) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session not found. Please reload the lesson.",
+        });
+      }
+
+      log.info("Executing adaptations", {
+        sessionId,
+        presentationId: session.duplicatedPresentationId,
+        intent: planData.intent,
+        totalChanges: planData.totalChanges,
+      });
+
+      // Execute Google Slides changes
+      // Currently executes all changes in the plan ("accept all").
+      // Future: filter by approvedChangeIds for granular approval.
+      const result = await executeSlideChanges(
+        session.duplicatedPresentationId,
+        planData,
+      );
+
+      log.info("Adaptations executed", {
+        sessionId,
+        executedCount: result.executedChangeIds.length,
+        errorCount: result.errors.length,
+      });
+
+      return {
+        success: result.errors.length === 0,
+        executedChanges: result.executedChangeIds,
+        errors: result.errors.length > 0 ? result.errors : undefined,
+      };
     }),
 
   /**
@@ -239,12 +291,24 @@ export const lessonAdaptRouter = router({
         // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
 
-        // Analyze slides to identify key learning points and learning cycles covered on each slide
-        const enrichedSlides = await enrichSlidesWithKlpLc(
-          slideDeck.slides,
-          extractedLessonData.keyLearningPoints,
-          extractedLessonData.learningCycles,
-        );
+        let enrichedSlides = await LessonEnrichmentStorage.get(lessonSlug);
+
+        if (enrichedSlides === null) {
+          log.info(
+            "No kv store: Enriching slides with KLP and Learning Cycle data",
+            {
+              lessonSlug,
+            },
+          );
+          enrichedSlides = await enrichSlidesWithKlpLc(
+            slideDeck.slides,
+            extractedLessonData.keyLearningPoints,
+            extractedLessonData.learningCycles,
+          );
+          // Store enriched slides in KV for later retrieval by generatePlan
+          // Analyze slides to identify key learning points and learning cycles covered on each slide
+          await LessonEnrichmentStorage.store(enrichedSlides, lessonSlug);
+        }
 
         // Generate a unique session ID
         const sessionId = generateSessionId();
