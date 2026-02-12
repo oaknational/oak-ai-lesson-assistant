@@ -104,13 +104,13 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
         {messages.map((message) => (
           <OakBox
             key={message.id}
-            $background={message.isUser ? "black" : "bg-neutral"}
+            $background={message.isUser ? "bg-inverted" : "bg-neutral"}
             $pa="spacing-12"
             $borderRadius="border-radius-m"
           >
             <OakP
               $font="body-3"
-              $color={message.isUser ? "white" : "text-primary"}
+              $color={message.isUser ? "text-inverted" : "text-primary"}
             >
               {message.text}
             </OakP>

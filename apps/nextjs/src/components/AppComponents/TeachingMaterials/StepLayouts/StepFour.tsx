@@ -348,7 +348,7 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                         <OakIcon
                           iconName="download"
                           iconWidth="spacing-32"
-                          $colorFilter={"white"}
+                          $colorFilter={"icon-inverted"}
                           data-testid="download-icon-button"
                         />
                       )}

@@ -57,7 +57,7 @@
     "@oakai/prettier-config": "*",
     "@oakai/rag": "*",
     "@oakai/teaching-materials": "*",
-    "@oaknational/oak-components": "^1.174.1",
+    "@oaknational/oak-components": "^2.2.0",
     "@oaknational/oak-consent-client": "^2.1.0",
     "@oaknational/oak-curriculum-schema": "1.61.0",
     "@portabletext/react": "^3.1.0",
