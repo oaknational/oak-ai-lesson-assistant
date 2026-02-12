@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable no-console */
 import { useRef, useState } from "react";
 
 import {
@@ -12,47 +11,19 @@ import {
   OakTextInput,
 } from "@oaknational/oak-components";
 
-import { trpc } from "@/utils/trpc";
+import { useLessonAdaptChat } from "@/stores/lessonAdaptStore/LessonAdaptStoreProvider";
 
-import { AdaptationPlanView } from "./AdaptationPlanView";
-
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-}
-
-interface AdaptChatSidebarProps {
-  sessionId: string;
-}
-
-export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
+export function AdaptChatSidebar() {
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const mutation = trpc.lessonAdapt.generatePlan.useMutation();
-  console.log("state", mutation.status, mutation.data, mutation.error);
+  const { messages, sendMessage, isGenerating } = useLessonAdaptChat();
 
-  const handleSend = (messageText?: string) => {
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional: empty string should fall through to inputValue
-    const textToSend = messageText || inputValue.trim();
+  const handleSend = () => {
+    const textToSend = inputValue.trim();
     if (!textToSend) return;
-    setMessages([
-      ...messages,
-      {
-        id: `${Date.now()}`,
-        text: inputValue,
-        isUser: true,
-        timestamp: new Date(),
-      },
-    ]);
 
-    void mutation.mutateAsync({
-      sessionId,
-      userMessage: textToSend,
-    });
+    void sendMessage(textToSend);
     setInputValue("");
   };
 
@@ -77,7 +48,7 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
           >
             <OakP $font="body-4">Beta</OakP>
           </OakBox>
-          {mutation.status === "pending" && <OakLoadingSpinner />}
+          {isGenerating && <OakLoadingSpinner />}
         </OakFlex>
       </OakBox>
 
@@ -89,54 +60,32 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
         $overflowY="auto"
         $pa="spacing-24"
       >
-        {/* Initial message */}
-        <OakBox
-          $background="bg-neutral"
-          $pa="spacing-16"
-          $borderRadius="border-radius-m"
-          className="max-w-[277px]"
-        >
-          <OakP $font="body-3">
-            Hello! I'm Aila, your AI lesson assistant. How do you want to adapt
-            this lesson?
-          </OakP>
-        </OakBox>
         {messages.map((message) => (
           <OakBox
             key={message.id}
-            $background={message.isUser ? "black" : "bg-neutral"}
+            $background={message.role === "user" ? "black" : "bg-neutral"}
             $pa="spacing-12"
             $borderRadius="border-radius-m"
+            className={message.role === "assistant" ? "max-w-[320px]" : ""}
           >
             <OakP
               $font="body-3"
-              $color={message.isUser ? "white" : "text-primary"}
+              $color={message.role === "user" ? "white" : "text-primary"}
+              style={{ whiteSpace: "pre-wrap" }}
             >
-              {message.text}
+              {message.content}
             </OakP>
           </OakBox>
         ))}
 
-        {mutation.data && <AdaptationPlanView plan={mutation.data.plan} />}
-        {/* {messages && messages.length === 0 && (
-          <OakFlex $flexDirection="column" $gap="spacing-16">
-            <OakP $font="heading-7">Try asking:</OakP>
-
-            {suggestions.map((suggestion, index) => (
-              <OakSecondaryButton
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-              >
-                {suggestion}
-              </OakSecondaryButton>
-            ))}
-          </OakFlex>
-        )} */}
-        {/* Message history */}
-
         <div ref={messagesEndRef} />
       </OakFlex>
-      {mutation.status === "pending" && <OakLoadingSpinner />}
+
+      {isGenerating && (
+        <OakFlex $justifyContent="center" $pa="spacing-12">
+          <OakLoadingSpinner />
+        </OakFlex>
+      )}
 
       {/* Input area */}
       <OakBox
@@ -159,8 +108,9 @@ export function AdaptChatSidebar({ sessionId }: AdaptChatSidebarProps) {
               }
             }}
             placeholder=""
+            disabled={isGenerating}
           />
-          <OakSmallPrimaryButton onClick={() => handleSend()}>
+          <OakSmallPrimaryButton onClick={handleSend} disabled={isGenerating}>
             Send
           </OakSmallPrimaryButton>
         </OakFlex>

@@ -15,6 +15,15 @@ export {
   duplicateSlideDeckToDefaultFolder,
 } from "./operations";
 
+// Mutations
+export { batchUpdate } from "./batchUpdate";
+export {
+  replaceTextElements,
+  replaceTableCellText,
+  deletePageElements,
+  deleteSlides,
+} from "./mutations";
+
 // Types
 export type {
   // Google API types

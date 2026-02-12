@@ -1,66 +1,28 @@
-export type NonTextElementType =
-  | "shape"
-  | "image"
-  | "video"
-  | "table"
-  | "line"
-  | "diagram"
-  | "unknown";
+import { z } from "zod";
 
-export interface SlideTextElement {
-  id: string;
-  content: string;
-  placeholderType?: string;
-  placeholderIndex?: number;
-  layoutObjectId?: string;
-}
+import {
+  nonTextElementTypeSchema,
+  parsedCellIdSchema,
+  slideContentSchema,
+  slideDeckContentSchema,
+  slideNonTextElementSchema,
+  slideTableCellSchema,
+  slideTableSchema,
+  slideTextElementSchema,
+} from "./schemas";
 
-export interface SlideTableCell {
-  /** Composite ID: {tableId}_r{row}c{col} for LLM reference */
-  id: string;
-  content: string;
-  row: number;
-  col: number;
-}
+export type NonTextElementType = z.infer<typeof nonTextElementTypeSchema>;
 
-export interface SlideTable {
-  id: string;
-  rows: number;
-  columns: number;
-  cells: SlideTableCell[][];
-}
+export type SlideTextElement = z.infer<typeof slideTextElementSchema>;
 
-export interface SlideNonTextElement {
-  id: string;
-  type: NonTextElementType;
-  description: string;
-}
+export type SlideTableCell = z.infer<typeof slideTableCellSchema>;
 
-export interface SlideContent {
-  slideNumber: number;
-  slideId: string;
-  slideTitle?: string;
-  layoutName?: string;
-  textElements: SlideTextElement[];
-  tables: SlideTable[];
-  nonTextElements: SlideNonTextElement[];
-  /** Key learning points covered on this slide */
-  keyLearningPoints?: string[];
-  /** Learning cycles covered on this slide */
-  learningCycles?: string[];
-}
+export type SlideTable = z.infer<typeof slideTableSchema>;
 
-export interface SlideDeckContent {
-  slideDeckId: string;
-  lessonTitle: string;
-  slides: SlideContent[];
-}
+export type SlideNonTextElement = z.infer<typeof slideNonTextElementSchema>;
 
-/**
- * Parsed cell ID components
- */
-export interface ParsedCellId {
-  tableId: string;
-  row: number;
-  col: number;
-}
+export type SlideContent = z.infer<typeof slideContentSchema>;
+
+export type SlideDeckContent = z.infer<typeof slideDeckContentSchema>;
+
+export type ParsedCellId = z.infer<typeof parsedCellIdSchema>;
