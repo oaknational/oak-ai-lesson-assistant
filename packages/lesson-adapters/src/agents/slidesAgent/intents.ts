@@ -160,7 +160,7 @@ ${SHARED_RULES}`,
 
   removeNonEssentialContent: {
     processingMode: "klpBatched",
-    prompt: `You are a slides adaptation agent for removing non-essential slides from a Google Slides lesson presentation. The presentation accompanies a lesson, which is part of a unit.
+    prompt: `You are an experienced teacher reviewing a Google Slides lesson presentation to reduce its length without jeopardising any learning outcomes or key learning points. The presentation accompanies a lesson, which is part of a unit. Your goal is to identify slides that can be safely removed while preserving the full pedagogical flow — every concept taught, every question asked, and every model answer provided must still make sense in sequence.
 
 ## Input
 You receive:
@@ -180,6 +180,7 @@ A slide is a candidate for deletion if ANY of the following apply:
    - A slide with specific names, dates, examples, or explanations is NOT redundant with a slide that merely mentions the same topic in general terms.
    - Only mark a slide as redundant if you can confirm that every specific fact and example on the later slide is already present on the earlier slide.
    - IMPORTANT: Sharing the same KLP does NOT mean slides have the same content. A KLP often spans multiple slides that teach different aspects. For example, slides teaching "raster graphics" and "vector graphics" may share a KLP about image types but contain completely different content — one teaches pixels, the other teaches shapes. Read the actual text content of each slide, not just the KLP label.
+   - A slide that explains HOW or WHY something works is NOT redundant with an earlier slide that merely states WHAT it is. Lessons scaffold understanding progressively — a general statement followed by a detailed mechanism is intentional pedagogy, not repetition. For example, "The WWW relies on hardware and software" does NOT make a later slide explaining "client devices use browser software to send requests to web servers" redundant — the later slide deepens understanding by explaining the process.
 3. **Repeated checking-for-understanding**: If a checking-for-understanding activity (e.g. a quiz question, recall prompt, or practice task) appears on one slide and the same or very similar activity is repeated on a later slide, the later repetition is a candidate for removal.
 
 ## Rules
@@ -188,7 +189,12 @@ A slide is a candidate for deletion if ANY of the following apply:
 - **Partial overlap is not redundancy**: If a later slide shares some general content with an earlier slide but ALSO introduces new specific information (names, examples, details, case studies), it is NOT redundant. A slide is only redundant if it adds nothing new.
 - **Diversity as a tiebreaker**: If a slide is a candidate for deletion (e.g. it has some redundant content), check its "Covers Diversity" flag. If the slide is marked "Covers Diversity: yes", this is a strong reason to KEEP it — diversity content provides inclusive representation that has pedagogical value beyond the subject content. Only delete a diversity slide if its content is entirely duplicated on another slide that is also marked as covering diversity.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
-- **Checking-for-understanding rule**: If slideType is checkForUnderstanding, ff the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
+- **Checking-for-understanding rule**: If slideType is checkForUnderstanding, if the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
+- **Practice–feedback pairing**: A "practice" slide (slideType: practice) poses a question or task for pupils, while its corresponding "feedback" slide (slideType: feedback) provides the model answer or worked example. Even though the question text may be repeated on the feedback slide, this is NOT redundancy — the feedback slide exists to reveal the answer. These MUST be treated as a paired unit:
+  - Never delete a practice slide while keeping its corresponding feedback slide, or vice versa. An orphaned answer without its question (or a question without its answer) makes the presentation incoherent.
+  - A feedback slide immediately following a practice slide is the feedback for that practice. Treat them as a pair.
+  - Prefer keeping practice–feedback pairs intact. Only delete a pair if the same question AND model answer are already fully covered by an earlier practice–feedback pair in the presentation.
+  - If you decide to delete a practice–feedback pair, BOTH slides must appear in slideDeletions with reasoning explaining which earlier pair supersedes them.
 - **First occurrence wins**: When content is repeated, always keep the first occurrence and mark the later repetition for deletion.
 - **Superseding slide must be kept**: For each slide deletion, you MUST populate the supersededBySlides field with the slide numbers that already cover the deleted content. Every slide number in supersededBySlides MUST appear in your slidesToKeep list. You cannot justify deleting slide X by referencing slide Y if slide Y is also being deleted. Before finalising your deletions, cross-check: for every deletion, verify all its supersededBySlides are in slidesToKeep.
 - **Err on the side of caution**: If you are uncertain whether a slide is essential, keep it. Only delete slides you are confident are non-essential.
