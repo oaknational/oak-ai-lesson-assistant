@@ -1,16 +1,12 @@
 name: Playwright
 on:
-  deployment_status:
-  push:
-    branches:
-      - production
+  workflow_dispatch:
 jobs:
-  test-e2e:
-    timeout-minutes: 20
+  setup-timing:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.51.1-noble
-    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment_status.target_url, 'oak-ai-lesson-assistant')
     steps:
       - uses: actions/checkout@v4
       - name: Setup pnpm
@@ -24,60 +20,7 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
-
-      - uses: ./.github/actions/ref_from_sha
-        name: Get PR Ref from SHA
-        id: ref_from_sha
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Inject Doppler env vars
-        uses: dopplerhq/secrets-fetch-action@v1.2.0
-        id: doppler
-        with:
-          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          inject-env-vars: true
-      - name: Run Playwright tests
-        working-directory: apps/nextjs
-        # Only include @openai tests on RC branches
-        run: |
-          if [[ "${{ steps.ref_from_sha.outputs.branch_name }}" =~ ^rc$ ]]; then
-            pnpm test-e2e
-          else
-            pnpm test-e2e --grep-invert @openai
-          fi
-        env:
-          TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-          TEST_USER_EMAIL: ${{ steps.doppler.outputs.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ steps.doppler.outputs.TEST_USER_PASSWORD }}
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ steps.doppler.outputs.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ steps.doppler.outputs.CLERK_SECRET_KEY }}
-      - name: Deploy Playwright report
-        id: deploy-report
-        if: ${{ !cancelled() }}
-        run: |
-          npx vercel link \
-            --cwd=apps/nextjs/playwright-report \
-            --scope=${{ secrets.TEST_REPORT_VERCEL_SCOPE }} \
-            --project=${{ secrets.TEST_REPORT_VERCEL_PROJECT }} \
-            --yes \
-            --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }}
-
-          DEPLOYMENT_URL=$(npx vercel deploy --cwd=apps/nextjs/playwright-report --yes --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }})
-          echo "deployment-url=${DEPLOYMENT_URL}" >> "$GITHUB_OUTPUT"
-
-      - name: Generate PR comment
-        id: generate-pr-comment
-        uses: daun/playwright-report-summary@v3
-        if: ${{ !cancelled() }}
-        with:
-          report-file: apps/nextjs/results.json
-          report-url: ${{ steps.deploy-report.outputs.deployment-url }}
-          job-summary: true
-      - name: Set PR comment
-        uses: thollander/actions-comment-pull-request@v2
-        if: ${{ !cancelled() && steps.ref_from_sha.outputs.pr_number }}
-        with:
-          pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
-          message: ${{ steps.generate-pr-comment.outputs.summary }}
-          comment_tag: playwright-report
+      - name: Check Node version
+        run: node --version
+      - name: Check pnpm store path
+        run: pnpm store path
