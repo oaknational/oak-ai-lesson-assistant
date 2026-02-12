@@ -10,8 +10,8 @@ import {
 import { type SimplifiedSlideContent, formatSlidesForPrompt } from "../utils";
 import type {
   IntentConfig,
-  SlideField,
   SlideBatchedProcessingConfig,
+  SlideField,
 } from "./intents";
 
 const log = aiLogger("adaptations");
@@ -88,7 +88,10 @@ Reminder: Return your response using the schema with textEdits, tableCellEdits, 
   log.info("  Model: %s", config.model ?? "gpt-4o-mini");
   log.info("  Edit type: %s", editType);
   log.info("  Slides: %d", slides.length);
-  log.info("--- SYSTEM PROMPT ---\n%s\n--- END SYSTEM PROMPT ---", config.prompt);
+  log.info(
+    "--- SYSTEM PROMPT ---\n%s\n--- END SYSTEM PROMPT ---",
+    config.prompt,
+  );
   log.info("--- USER PROMPT ---\n%s\n--- END USER PROMPT ---", prompt);
 
   const { output, text } = await generateText({
