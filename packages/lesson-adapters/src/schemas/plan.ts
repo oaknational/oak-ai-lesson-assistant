@@ -37,6 +37,7 @@ const slideDeletionBaseSchema = z.object({
 const slidesToKeepSchema = z.object({
   slideNumber: z.number(),
   slideId: z.string(),
+  // reasoning: z.string(),
 });
 
 // ---------------------------------------------------------------------------
@@ -79,7 +80,11 @@ export const targetedChangesSchema = z.object({
           ),
       }),
     ),
-    slidesToKeep: z.array(slidesToKeepSchema),
+    slidesToKeep: z.array(
+      slidesToKeepSchema.extend({
+        reasoning: z.string(),
+      }),
+    ),
   }),
   reasoning: z.string(),
 });
@@ -111,6 +116,10 @@ export const normalizedSlideDeletionSchema = slideDeletionBaseSchema.extend({
   supersededBySlides: z.array(z.number()).optional(),
 });
 
+export const normalizedSlideKeepSchema = slidesToKeepSchema.extend({
+  reasoning: z.string().optional(),
+});
+
 const slidesAgentResponseSchema = z.object({
   analysis: z.string(),
   changes: z.object({
@@ -118,7 +127,7 @@ const slidesAgentResponseSchema = z.object({
     tableCellEdits: z.array(normalizedTableCellEditSchema),
     textElementDeletions: z.array(normalizedTextElementDeletionSchema),
     slideDeletions: z.array(normalizedSlideDeletionSchema),
-    slidesToKeep: z.array(slidesToKeepSchema),
+    slidesToKeep: z.array(normalizedSlideKeepSchema),
   }),
   reasoning: z.string(),
 });

@@ -142,6 +142,30 @@ export function AllChangesTab({
         </ChangeSection>
       )}
 
+      {/* Slides Kept */}
+      {changes.slidesToKeep.length > 0 && (
+        <ChangeSection
+          title={`Slides Kept (${changes.slidesToKeep.length})`}
+        >
+          {changes.slidesToKeep.map((kept) => (
+            <OakBox
+              key={kept.slideId}
+              $ba="border-solid-s"
+              $borderColor="border-neutral-lighter"
+              $borderRadius="border-radius-s"
+              $pa="spacing-12"
+            >
+              <OakP $font="body-4" $color="text-subdued" $mb="spacing-4">
+                Slide {kept.slideNumber}
+              </OakP>
+              <OakP $font="body-3">
+                {kept.reasoning ?? "No specific reasoning recorded"}
+              </OakP>
+            </OakBox>
+          ))}
+        </ChangeSection>
+      )}
+
       {/* Reasoning */}
       <OakBox>
         <OakHeading tag="h3" $font="heading-6" $mb="spacing-8">
