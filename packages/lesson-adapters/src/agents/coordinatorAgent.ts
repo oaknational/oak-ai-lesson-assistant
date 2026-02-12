@@ -101,14 +101,11 @@ export async function coordinateAdaptation(
   let slidesResponse;
   if (config.agents.includes("slides")) {
     try {
-      slidesResponse = await generateSlidePlan(
-        {
-          editType: classification.intent,
-          userMessage,
-          slides: slideDeck.slides,
-        },
-        config.scope,
-      );
+      slidesResponse = await generateSlidePlan({
+        editType: classification.intent,
+        userMessage,
+        slides: slideDeck.slides,
+      });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unknown slides agent error";

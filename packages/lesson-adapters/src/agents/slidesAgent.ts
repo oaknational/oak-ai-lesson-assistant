@@ -21,7 +21,6 @@ const log = aiLogger("adaptations");
 
 export async function generateSlidePlan(
   input: GenerateSlidePlanInput,
-  scope: EditScope = "global",
 ): Promise<SlidesAgentResponse | undefined> {
   try {
     log.info("Generating slide plan", {
@@ -44,9 +43,6 @@ export async function generateSlidePlan(
       parsed.slides,
       config.slideFields,
     );
-    const batchSize = config.batchSize ?? DEFAULT_BATCH_SIZE;
-    const shouldBatch =
-      scope === "global" && slidesForPrompt.length > batchSize;
 
     let output: SlidesAgentResponse | undefined;
 
