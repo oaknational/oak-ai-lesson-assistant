@@ -1,3 +1,10 @@
+## [1.64.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.0...v1.64.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* use Sanity thumbTime for Mux video thumbnails ([#954](https://github.com/oaknational/oak-ai-lesson-assistant/issues/954)) ([ce47ef6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ce47ef631265794ded093bf2ca141a1eb789fb84))
+
 # [1.64.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.63.0...v1.64.0) (2026-02-12)
 
 
