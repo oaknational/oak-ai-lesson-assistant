@@ -13,6 +13,7 @@ import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.p
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
 import { exemplarContentPromptPart } from "./sharedPromptParts/exemplarContent.part";
 import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.part";
+import { sectionInstructionsPromptPart } from "./sharedPromptParts/sectionInstructions.part";
 import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 
 export function sectionToGenericPromptAgent<SectionValueType>(
@@ -75,6 +76,12 @@ export function sectionToGenericPromptAgent<SectionValueType>(
         content: basedOnContentPromptPart(basedOnContent, contentToString),
       },
       ...(extraInputFromCtx ? extraInputFromCtx(ctx) : []),
+      ctx.currentTurn.currentStep?.sectionInstructions && {
+        role: "developer" as const,
+        content: sectionInstructionsPromptPart(
+          ctx.currentTurn.currentStep.sectionInstructions,
+        ),
+      },
       {
         role: "developer" as const,
         content: messageHistoryPromptPart(messages),
