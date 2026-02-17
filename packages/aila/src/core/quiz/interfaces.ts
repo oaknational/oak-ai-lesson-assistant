@@ -118,25 +118,6 @@ export interface QuizService {
   ): Promise<QuizBuildResult>;
 }
 
-export interface CustomSource {
-  text: string;
-  questionUid: string;
-  lessonSlug: string;
-  quizPatchType: string;
-  isLegacy: boolean;
-  embedding: number[];
-  [key: string]: unknown; // Allow for other unknown fields at the top level
-}
-
-export interface QuizQuestionTextOnlySource {
-  text: string;
-  metadata: {
-    questionUid: string;
-    lessonSlug: string;
-    raw_json: string; // Allow for raw JSON data
-  };
-}
-
 /**
  * Quiz question used throughout the quiz RAG pipeline.
  * Retrieved from Elasticsearch, contains the question in Latest format
@@ -151,10 +132,6 @@ export interface RagQuizQuestion {
   /** Raw Hasura record for provenance. Undefined for questions from currentQuiz. */
   source?: HasuraQuizQuestion;
   imageMetadata: EnrichedImageMetadata[];
-}
-
-export interface CustomHit {
-  _source: CustomSource;
 }
 
 export interface SimplifiedResult {
@@ -202,19 +179,6 @@ export interface DocumentWrapper {
   document: Document;
   index: number;
   relevanceScore: number;
-}
-
-export interface QuizSet {
-  exitQuiz: string[];
-  starterQuiz: string[];
-}
-
-export interface QuizIDSource {
-  text: QuizSet;
-  metadata: { lessonSlug: string };
-}
-export interface LessonSlugQuizMapping {
-  [lessonSlug: string]: QuizSet;
 }
 
 // FACTORIES BELOW
