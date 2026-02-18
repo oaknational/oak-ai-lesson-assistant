@@ -1,0 +1,35 @@
+codeHash: 4e43380e2a3b83b51ec791b66f7aab7a29f737c0fb6e317f42cba6af0f8e54df
+generated: 2026-02-18T10:02:20.639Z
+runsPerScenario: 3
+summary:
+  full-lesson:
+    plan-groupings:
+      flag: 3
+    additional-materials-tone:
+      flag: 1
+      pass: 1
+      skip: 1
+    cycle-verbosity:
+      pass: 3
+    keyword-casing:
+      flag: 3
+    title-no-gerund:
+      pass: 3
+    quiz-question-count:
+      pass: 3
+  no-rag-lesson:
+    plan-groupings:
+      flag: 3
+    additional-materials-tone:
+      skip: 2
+      pass: 1
+    cycle-verbosity:
+      pass: 3
+    keyword-casing:
+      flag: 3
+    title-no-gerund:
+      pass: 3
+    no-basedOn-without-rag:
+      pass: 3
+    quiz-question-count:
+      pass: 3
