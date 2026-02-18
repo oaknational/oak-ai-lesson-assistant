@@ -39,7 +39,7 @@ export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
 
     return (
       <OakBox
-        $pa="inner-padding-l"
+        $pa="spacing-24"
         $background="bg-decorative1-subdued"
         $borderRadius="border-radius-s"
       >
