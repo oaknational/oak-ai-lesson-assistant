@@ -1,0 +1,114 @@
+[
+  {
+    "title": "Language and discrimination",
+    "codePrefix": "l",
+    "categories": [
+      {
+        "code": "l/discriminatory-language",
+        "title": "Discriminatory Language"
+      },
+      { "code": "l/offensive-language", "title": "Offensive Language" }
+    ]
+  },
+  {
+    "title": "Upsetting, disturbing and sensitive",
+    "codePrefix": "u",
+    "categories": [
+      { "code": "u/sensitive-content", "title": "Sensitive Content" },
+      { "code": "u/violence-or-suffering", "title": "Violence or Suffering" },
+      {
+        "code": "u/mental-health-challenges",
+        "title": "Mental Health Challenges"
+      },
+      {
+        "code": "u/crime-or-illegal-activities",
+        "title": "Crime or Illegal Activities"
+      },
+      { "code": "u/sexual-violence", "title": "Sexual Violence" }
+    ]
+  },
+  {
+    "title": "Nudity and sex",
+    "codePrefix": "s",
+    "categories": [
+      {
+        "code": "s/nudity-or-sexual-content",
+        "title": "Nudity or Sexual Content"
+      }
+    ]
+  },
+  {
+    "title": "Physical",
+    "codePrefix": "p",
+    "categories": [
+      { "code": "p/practical-activities", "title": "Practical Activities" },
+      { "code": "p/outdoor-learning", "title": "Outdoor Learning" },
+      {
+        "code": "p/additional-qualifications",
+        "title": "Additional Qualifications"
+      }
+    ]
+  },
+  {
+    "title": "Recent and evolving",
+    "codePrefix": "r",
+    "categories": [
+      { "code": "r/recent-content", "title": "Recent Content" },
+      { "code": "r/recent-conflicts", "title": "Recent Conflicts" }
+    ]
+  },
+  {
+    "title": "Nuanced content requiring care",
+    "codePrefix": "n",
+    "categories": [
+      { "code": "n/self-harm-suicide", "title": "Self-harm and Suicide" },
+      {
+        "code": "n/potentially-offensive-language",
+        "title": "Potentially Offensive Language"
+      },
+      {
+        "code": "n/strangulation-suffocation",
+        "title": "Strangulation and Suffocation"
+      }
+    ]
+  },
+  {
+    "title": "Toxic",
+    "codePrefix": "t",
+    "categories": [
+      {
+        "code": "t/guides-self-harm-suicide",
+        "title": "Guides Self-harm or Suicide"
+      },
+      {
+        "code": "t/encourages-harmful-behaviour",
+        "title": "Encourages Harmful Behaviour"
+      },
+      {
+        "code": "t/encourages-illegal-activity",
+        "title": "Encourages Illegal Activity"
+      },
+      {
+        "code": "t/encourages-violence-harm-others",
+        "title": "Encourages Violence or Harm to Others"
+      },
+      {
+        "code": "t/using-creating-weapons",
+        "title": "Using or Creating Weapons"
+      },
+      {
+        "code": "t/using-creating-harmful-substances",
+        "title": "Using or Creating Harmful Substances"
+      },
+      {
+        "code": "t/extreme-offensive-language",
+        "title": "Extreme Offensive Language"
+      }
+    ]
+  },
+  {
+    "title": "RSHE",
+    "codePrefix": "e",
+    "categories": [{ "code": "e/rshe-content", "title": "RSHE Content" }]
+  }
+]

@@ -20,6 +20,8 @@ export interface OakModerationServiceModeratorConfig {
  * Moderator implementation that calls the Oak AI Moderation Service.
  * Uses Vercel OIDC tokens for authentication and openapi-fetch with
  * generated types from the OpenAPI spec.
+ * Returns 24 sub-category scores (1-5 Likert, 5 = safe).
+ * Categories are derived from scores < 5.
  */
 export class OakModerationServiceModerator extends AilaModerator {
   private readonly baseUrl: string;
@@ -57,7 +59,7 @@ export class OakModerationServiceModerator extends AilaModerator {
 
     try {
       const client = await this.createAuthenticatedClient();
-      const { data, error, response } = await client.POST("/v0/moderate", {
+      const { data, error, response } = await client.POST("/v1/moderate", {
         body: { content: input },
         signal: controller.signal,
       });
@@ -85,24 +87,28 @@ export class OakModerationServiceModerator extends AilaModerator {
         );
       }
 
+      const categories = Object.entries(data.scores)
+        .filter(([, score]) => score < 5)
+        .map(([code]) => code) as ModerationResult["categories"];
+
       log.info("Oak Moderation Service response received", {
-        categoriesCount: data.categories.length,
-        scores: data.scores,
+        categoriesCount: categories.length,
+        moderationId: data.moderation_id,
+        promptVersion: data.prompt_version,
       });
 
       return {
-        justification: data.message,
         scores: data.scores,
-        categories: data.categories,
+        categories,
       };
     } catch (err) {
       if (err instanceof AilaModerationError) {
         throw err;
       }
       log.error("Oak Moderation Service error", err);
-      throw new AilaModerationError(
-        `Oak Moderation Service failed: ${err instanceof Error ? err.message : "Unknown error"}`,
-      );
+      throw new AilaModerationError("Oak Moderation Service failed", {
+        cause: err,
+      });
     } finally {
       clearTimeout(timeout);
     }
