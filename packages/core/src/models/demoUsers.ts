@@ -38,23 +38,9 @@ function isOakDemoUser(user: User) {
 class DemoUsers {
   SUPPORTED_ISO_CODES = [
     "GB", // Great Britain
-    // Crown Dependencies
-    "GG", // Guernsey
     "IM", // Isle of Man
     "JE", // Jersey
-    // British Overseas Territories
-    "AI", // Anguilla
-    "BM", // Bermuda
-    "FK", // Falkland Islands
-    "GI", // Gibraltar
-    "GS", // South Georgia and the South Sandwich Islands
-    "IO", // British Indian Ocean Territory
-    "KY", // Cayman Islands
-    "MS", // Montserrat
-    "PN", // Pitcairn Islands
-    "SH", // Saint Helena, Ascension and Tristan da Cunha
-    "TC", // Turks and Caicos Islands
-    "VG", // British Virgin Islands
+    "GG", // Guernsey
   ];
 
   isSupportedRegion(region: string) {
