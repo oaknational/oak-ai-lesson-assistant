@@ -170,6 +170,120 @@ describe("AilaModeration", () => {
       });
     });
 
+    it("should handle Oak Moderation Service category codes", async () => {
+      const moderationResult: ModerationResult = {
+        categories: [
+          "l/discriminatory-language",
+          "u/violence-or-suffering",
+          "r/recent-conflicts",
+        ],
+        scores: {
+          "l/discriminatory-language": 2,
+          "l/offensive-language": 5,
+          "u/sensitive-content": 5,
+          "u/violence-or-suffering": 3,
+          "u/mental-health-challenges": 5,
+          "u/crime-or-illegal-activities": 5,
+          "u/sexual-violence": 5,
+          "s/nudity-or-sexual-content": 5,
+          "p/practical-activities": 5,
+          "p/outdoor-learning": 5,
+          "p/additional-qualifications": 5,
+          "r/recent-content": 5,
+          "r/recent-conflicts": 2,
+          "n/self-harm-suicide": 5,
+          "n/potentially-offensive-language": 5,
+          "n/strangulation-suffocation": 5,
+          "t/guides-self-harm-suicide": 5,
+          "t/encourages-harmful-behaviour": 5,
+          "t/encourages-illegal-activity": 5,
+          "t/encourages-violence-harm-others": 5,
+          "t/using-creating-weapons": 5,
+          "t/using-creating-harmful-substances": 5,
+          "t/extreme-offensive-language": 5,
+          "e/rshe-content": 5,
+        },
+      };
+      const moderator = new MockModerator([moderationResult]);
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+      const content = {};
+
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document: { content },
+        chat,
+        moderator,
+      });
+
+      const result = await ailaModeration.moderate({
+        messages,
+        content,
+        pluginContext,
+      });
+
+      expect(result).toEqual({
+        type: "moderation",
+        categories: moderationResult.categories,
+        id: undefined,
+      });
+    });
+
+    it("should detect toxic Oak Moderation Service categories", async () => {
+      const moderationResult: ModerationResult = {
+        categories: ["t/encourages-violence-harm-others"],
+      };
+      const moderator = new MockModerator([moderationResult]);
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+
+      const moderations = {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        create: jest.fn((mod) => ({ id: "ABC", ...mod })),
+      } as unknown as Moderations;
+      const mockPlugin = {
+        onToxicModeration: jest.fn(() => {}),
+      } as unknown as AilaPlugin;
+
+      const document = { content: {} };
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document,
+        chat,
+        moderator,
+        forcePersistence: true,
+        moderations,
+        plugins: [mockPlugin],
+      });
+
+      await ailaModeration.moderate({
+        messages,
+        content: document.content,
+        pluginContext,
+      });
+
+      expect(mockPlugin.onToxicModeration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          categories: ["t/encourages-violence-harm-others"],
+        }),
+        pluginContext,
+      );
+    });
+
     it("calls any Aila plugins on a toxic moderation", async () => {
       const moderationResult: ModerationResult = {
         categories: ["t/encouragement-illegal-activity"],

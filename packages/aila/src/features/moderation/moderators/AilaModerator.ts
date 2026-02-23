@@ -12,8 +12,8 @@ export abstract class AilaModerator {
 }
 
 export class AilaModerationError extends Error {
-  constructor(message: string) {
-    super(message);
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
     this.name = "ModerationError";
   }
 }

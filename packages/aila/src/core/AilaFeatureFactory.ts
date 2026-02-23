@@ -1,6 +1,8 @@
 // AilaFeatureFactory.ts
 import { aiLogger } from "@oakai/logger";
 
+import invariant from "tiny-invariant";
+
 import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
@@ -45,37 +47,44 @@ export class AilaFeatureFactory {
     openAiClient?: OpenAILike,
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
-      // Production moderator (always created)
-      const moderator = new OpenAiModerator({
-        userId: aila.userId,
+      const oakServicePrimary =
+        process.env.OAK_MODERATION_V1_PRIMARY === "true";
+      const baseUrl = process.env.MODERATION_API_URL;
+      invariant(
+        baseUrl,
+        "MODERATION_API_URL is required when moderation is enabled",
+      );
+
+      const oakModerator = new OakModerationServiceModerator({
+        baseUrl,
         chatId: aila.chatId,
-        openAiClient,
+        userId: aila.userId,
+        protectionBypassSecret:
+          process.env.MODERATION_API_BYPASS_SECRET || undefined,
       });
 
-      // Shadow moderator (optional, based on env vars)
-      const shadowEnabled =
-        process.env.OAK_MODERATION_SHADOW_ENABLED === "true";
-      const shadowBaseUrl = process.env.MODERATION_API_URL;
-
-      let shadowModerator: OakModerationServiceModerator | undefined;
-
-      if (shadowEnabled && shadowBaseUrl) {
-        log.info("Shadow moderation enabled");
-        shadowModerator = new OakModerationServiceModerator({
-          baseUrl: shadowBaseUrl,
-          chatId: aila.chatId,
-          userId: aila.userId,
+      if (oakServicePrimary) {
+        log.info("Oak Moderation Service is primary moderator");
+        return new AilaModeration({
+          aila,
+          moderator: oakModerator,
+          shadowModerator: new OpenAiModerator({
+            userId: aila.userId,
+            chatId: aila.chatId,
+            openAiClient,
+          }),
         });
-      } else if (shadowEnabled && !shadowBaseUrl) {
-        log.warn(
-          "OAK_MODERATION_SHADOW_ENABLED is true but MODERATION_API_URL is not set. Shadow moderation disabled.",
-        );
       }
 
+      log.info("Shadow moderation enabled (Oak Moderation Service)");
       return new AilaModeration({
         aila,
-        moderator,
-        shadowModerator,
+        moderator: new OpenAiModerator({
+          userId: aila.userId,
+          chatId: aila.chatId,
+          openAiClient,
+        }),
+        shadowModerator: oakModerator,
       });
     }
     return undefined;

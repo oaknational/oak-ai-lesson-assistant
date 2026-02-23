@@ -1,9 +1,20 @@
 import { aiLogger } from "@oakai/logger";
 
 import moderationCategories from "./moderationCategories.json";
+import oakServiceCategories from "./moderationCategoriesOakService.json";
 import type { ModerationBase, ModerationResult } from "./moderationSchema";
 
 const log = aiLogger("aila:moderation");
+
+const allAilaCategories = moderationCategories.flatMap(
+  (group) => group.categories,
+);
+const allOakServiceCategories = oakServiceCategories.flatMap(
+  (group) => group.categories,
+);
+
+const allCategories = [...allAilaCategories, ...allOakServiceCategories];
+
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>
     typeof category === "string" ? category.startsWith("t/") : false,
@@ -35,12 +46,12 @@ export function getSafetyResult(
 export function moderationSlugToDescription(
   slug: ModerationBase["categories"][number],
 ): string {
-  const allCategories = moderationCategories.flatMap(
-    (category) => category.categories,
-  );
+  if (typeof slug !== "string") {
+    return "Unknown category";
+  }
 
   return (
-    allCategories.find((category) => category.code === slug)?.userDescription ??
+    allCategories.find((c) => c.code === slug)?.userDescription ??
     "Unknown category"
   );
 }
@@ -49,7 +60,11 @@ export function getCategoryGroup(category: string) {
   return (
     moderationCategories.find((group) =>
       group.categories.some((c) => c.code === category),
-    ) ?? null
+    ) ??
+    oakServiceCategories.find((group) =>
+      group.categories.some((c) => c.code === category),
+    ) ??
+    null
   );
 }
 
