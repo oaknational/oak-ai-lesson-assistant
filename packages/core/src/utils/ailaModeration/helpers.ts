@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import moderationCategories from "./moderationCategories.json";
 import oakServiceCategories from "./moderationCategoriesOakService.json";
 import type { ModerationBase, ModerationResult } from "./moderationSchema";
+import { oakModerationServiceCodes } from "./moderationSchema";
 
 const log = aiLogger("aila:moderation");
 
@@ -125,7 +126,9 @@ const MOCK_SENSITIVE_RESULT: ModerationResult = {
   justification: "Mock sensitive result",
 };
 
-export function getMockModerationResult(message?: string) {
+export function getMockModerationResult(
+  message?: string,
+): ModerationResult | null {
   if (message?.includes("mod:tox")) {
     log.info("mod:tox detected, returning mock toxic result");
     return MOCK_TOXIC_RESULT;
@@ -133,6 +136,20 @@ export function getMockModerationResult(message?: string) {
   if (message?.includes("mod:sen")) {
     log.info("mod:sen detected, returning mock sensitive result");
     return MOCK_SENSITIVE_RESULT;
+  }
+  const catMatch = message?.match(/mod:cat:([\w/,-]+)/);
+  if (catMatch?.[1]) {
+    const codes = catMatch[1]
+      .split(",")
+      .filter((code) =>
+        (oakModerationServiceCodes as readonly string[]).includes(code),
+      );
+    if (codes.length > 0) {
+      log.info("mod:cat detected, returning mock result", { codes });
+      return {
+        categories: codes as ModerationResult["categories"],
+      };
+    }
   }
   return null;
 }

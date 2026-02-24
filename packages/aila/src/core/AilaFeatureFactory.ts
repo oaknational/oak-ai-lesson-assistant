@@ -7,6 +7,7 @@ import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
+import { MockOakModerationServiceModerator } from "../features/moderation/moderators/MockOakModerationServiceModerator";
 import { OakModerationServiceModerator } from "../features/moderation/moderators/OakModerationServiceModerator";
 import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
@@ -55,11 +56,16 @@ export class AilaFeatureFactory {
         "MODERATION_API_URL is required when moderation is enabled",
       );
 
-      const oakModerator = new OakModerationServiceModerator({
-        baseUrl,
-        chatId: aila.chatId,
-        userId: aila.userId,
-      });
+      const oakModerator = process.env.VERCEL
+        ? new OakModerationServiceModerator({
+            baseUrl,
+            chatId: aila.chatId,
+            userId: aila.userId,
+          })
+        : new MockOakModerationServiceModerator({
+            userId: aila.userId,
+            chatId: aila.chatId,
+          });
 
       if (oakServicePrimary) {
         log.info("Oak Moderation Service is primary moderator");
