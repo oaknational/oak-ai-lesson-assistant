@@ -18,6 +18,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/agentic-scoring-reminder.sh"
+          }
+        ]
+      }
     ]
   }
 }
