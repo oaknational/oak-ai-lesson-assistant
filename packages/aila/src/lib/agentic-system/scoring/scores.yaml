@@ -1,5 +1,5 @@
-codeHash: 401ead87b6fa8ff00025372a49765a109cdf0c367ee18f31fce8cdd361b86199
-generated: 2026-02-18T13:14:56.342Z
+codeHash: 5499b3383906dd052cbc174e2a515face573d7cd591457cf8aaaf7546244dd19
+generated: 2026-02-24T12:45:22.745Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -12,21 +12,20 @@ summary:
     cycle-verbosity:
       pass: 3
     keyword-casing:
-      flag: 3
+      pass: 3
     title-no-gerund:
       pass: 3
     quiz-question-count:
       pass: 3
   no-rag-lesson:
     plan-groupings:
-      pass: 1
-      flag: 2
+      flag: 3
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
       pass: 3
     keyword-casing:
-      flag: 3
+      pass: 3
     title-no-gerund:
       pass: 3
     no-basedOn-without-rag:
