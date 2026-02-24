@@ -195,7 +195,7 @@ export const lessonAdaptRouter = router({
         });
       }
 
-      const { sessionId, planData } = input;
+      const { sessionId, planData, approvedChangeIds } = input;
 
       // Retrieve session to get the presentationId securely
       const session = await LessonAdaptSessionStorage.get(sessionId);
@@ -219,6 +219,7 @@ export const lessonAdaptRouter = router({
       const result = await executeSlideChanges(
         session.duplicatedPresentationId,
         planData,
+        approvedChangeIds,
       );
 
       log.info("Adaptations executed", {

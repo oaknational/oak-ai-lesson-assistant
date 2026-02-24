@@ -36,10 +36,34 @@ export interface ExecuteSlideChangesResult {
 export async function executeSlideChanges(
   presentationId: string,
   plan: AdaptationPlan,
+  approvedChangeIds: string[] | undefined,
 ): Promise<ExecuteSlideChangesResult> {
   const executedChangeIds: string[] = [];
   const errors: string[] = [];
-  const { changes } = plan.slidesAgentResponse;
+
+  const approvedChangesPlan = {
+    ...plan,
+    slidesAgentResponse: {
+      ...plan.slidesAgentResponse,
+      changes: {
+        textEdits: plan.slidesAgentResponse.changes.textEdits.filter((s) =>
+          approvedChangeIds?.includes(s.changeId),
+        ),
+        tableCellEdits: plan.slidesAgentResponse.changes.tableCellEdits.filter(
+          (s) => approvedChangeIds?.includes(s.changeId),
+        ),
+        textElementDeletions:
+          plan.slidesAgentResponse.changes.textElementDeletions.filter((s) =>
+            approvedChangeIds?.includes(s.changeId),
+          ),
+        slideDeletions: plan.slidesAgentResponse.changes.slideDeletions.filter(
+          (s) => approvedChangeIds?.includes(s.changeId),
+        ),
+      },
+    },
+  };
+
+  const { changes } = approvedChangesPlan.slidesAgentResponse;
 
   // 1. Apply text edits to regular text elements
   if (changes.textEdits.length > 0) {

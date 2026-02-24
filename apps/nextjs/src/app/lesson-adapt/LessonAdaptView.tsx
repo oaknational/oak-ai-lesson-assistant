@@ -78,7 +78,7 @@ function LessonAdaptContent() {
             <input
               type="text"
               value={lessonIdInput}
-              onChange={(e) => setLessonIdInput(e.target.value)}
+              onChange={(e) => setLessonIdInput(e.target.value.trim())}
               placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
               className="flex-1 rounded border p-2"
             />
