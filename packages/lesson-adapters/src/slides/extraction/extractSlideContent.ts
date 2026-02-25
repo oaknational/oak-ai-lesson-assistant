@@ -118,6 +118,6 @@ export function extractSlideContent(
     textElements,
     tables,
     nonTextElements,
-    slideType: "unknown",
+    slideType: "unclassified",
   };
 }

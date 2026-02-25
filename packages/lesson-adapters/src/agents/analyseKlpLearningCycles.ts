@@ -90,7 +90,7 @@ Analyse each slide in the presentation and determine:
 3. Which learning cycles (from the provided lesson outline) are covered on this slide
 
 ## Slide Type Classification
-Classify every slide as exactly one of these types:
+Classify every slide as exactly one of these types: replace - unclassified with one of these types
 - **title**: The lesson title slide, usually the first slide
 - **keywords**: A slide that introduces or defines key vocabulary/terminology for the lesson
 - **lessonOutcome**: A slide stating what pupils will learn or achieve by the end of the lesson
@@ -159,40 +159,54 @@ export async function analyseKlpLearningCycles(
 
     const parsed = analyseKlpLcInputSchema.parse(input);
 
-    // Prepare simplified slide content for the LLM (text and tables only)
-    const slidesForPrompt = simplifySlideContent(parsed.slides);
+    // Batch slides for LLM calls
+    const batchSize = 20;
+    const slideBatches: SlideContent[][] = [];
+    for (let i = 0; i < parsed.slides.length; i += batchSize) {
+      slideBatches.push(parsed.slides.slice(i, i + batchSize));
+    }
 
-    // Format slides in a more readable structure for the LLM
-    const formattedSlides = formatSlidesForPrompt(slidesForPrompt);
-
-    const promptContent = `# Key Learning Points
-${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}
-
-# Learning Cycles
-${parsed.learningCycles.map((lc, i) => `${i + 1}. ${lc}`).join("\n")}
-
-# Slides to Analyse
-${formattedSlides}
-
----
-
-Analyse each slide above and map which key learning points and learning cycles it covers.`;
-
-    const { output } = await generateText({
-      model: openai("gpt-4o"),
-      output: Output.object({ schema: klpLcAgentResponseSchema }),
-      system: SYSTEM_PROMPT,
-      prompt: promptContent,
-      temperature: 0.3, // Lower temperature for more consistent analysis
+    // Prepare prompts for each batch
+    const batchPromises = slideBatches.map(async (batchSlides, batchIdx) => {
+      const slidesForPrompt = simplifySlideContent(batchSlides);
+      console.log("slide for prompt", slidesForPrompt);
+      const formattedSlides = formatSlidesForPrompt(slidesForPrompt, {
+        includeElementIds: false,
+      });
+      console.log("formatted slides for prompt", formattedSlides);
+      const promptContent = `# Key Learning Points\n${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}\n\n# Learning Cycles\n${parsed.learningCycles.map((lc, i) => `${i + 1}. ${lc}`).join("\n")}\n\n# Slides to Analyse\n${formattedSlides}\n\n---\n\nAnalyse each slide above and map which key learning points, learning cycles, slide type and diversity content it covers.`;
+      console.log(`Prompt for batch ${batchIdx + 1}:\n`, promptContent);
+      const { output } = await generateText({
+        model: openai("gpt-4o"),
+        output: Output.object({ schema: klpLcAgentResponseSchema }),
+        system: SYSTEM_PROMPT,
+        prompt: promptContent,
+        temperature: 0.3,
+      });
+      return output;
     });
 
-    console.log(
-      `[klpLcAgent] Analysis complete: mapped ${output.slideMappings.length} slides`,
-    );
-    console.log("Prompt used:", promptContent);
-    console.log("Output:", JSON.stringify(output, null, 2));
+    // Run all batches in parallel
+    const batchResults = await Promise.all(batchPromises);
 
-    return output;
+    // Consolidate results
+    const allSlideMappings = batchResults.flatMap((r) => r.slideMappings);
+    const allAnalyses = batchResults.map(
+      (r, i) => `Batch ${i + 1}: ${r.analysis}`,
+    );
+    const consolidatedAnalysis = allAnalyses.join("\n\n");
+
+    console.log(
+      `[klpLcAgent] Analysis complete: mapped ${allSlideMappings.length} slides`,
+    );
+    console.log(
+      `[klpLcAgent] Sample mapping:`,
+      JSON.stringify(allSlideMappings, null, 2),
+    );
+    return {
+      analysis: consolidatedAnalysis,
+      slideMappings: allSlideMappings,
+    };
   } catch (error) {
     console.error("[klpLcAgent] Analysis failed:", error);
     throw error;

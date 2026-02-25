@@ -23,10 +23,20 @@ export function filterSlideContent(
     };
 
     if (fields.includes("textElements")) {
-      filtered.textElements = slide.textElements;
+      filtered.textElements = slide.textElements.map((el) => ({
+        id: el.id,
+        content: el.content,
+      }));
     }
     if (fields.includes("tables")) {
-      filtered.tables = slide.tables;
+      filtered.tables = slide.tables.map((table) => ({
+        id: table.id,
+        rows: table.rows,
+        columns: table.columns,
+        cells: table.cells.map((row) =>
+          row.map((cell) => ({ id: cell.id, content: cell.content }))
+        ),
+      }));
     }
     if (fields.includes("images")) {
       filtered.images = slide.nonTextElements

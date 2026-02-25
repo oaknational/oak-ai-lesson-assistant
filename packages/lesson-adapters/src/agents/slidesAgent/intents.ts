@@ -205,8 +205,8 @@ A slide is a candidate for deletion if ANY of the following apply:
 - **Verify KLP safety**: After assembling your deletion list, do a final check: for each KLP mentioned across all slides, confirm that at least one slide covering that KLP remains in slidesToKeep.
 ${SHARED_RULES}`,
     schema: targetedChangesSchema,
-    slideFields: ["textElements", "tables", "keyLearningPoints"],
-    promptSlideFields: ["textElements", "tables"],
+    slideFields: ["textElements", "tables", "keyLearningPoints", "images"],
+    promptSlideFields: ["textElements", "tables", "images"],
     protectedSlideTypes: [
       "title",
       "teacher",
