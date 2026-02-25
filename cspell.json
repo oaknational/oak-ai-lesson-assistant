@@ -322,6 +322,10 @@
     "googleusercontent",
     "reranks",
     "evals",
-    "BPWF"
+    "BPWF",
+    "tsvector",
+    "tsquery",
+    "plainto",
+    "ragquizquestion"
   ]
 }
