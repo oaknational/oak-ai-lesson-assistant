@@ -1036,6 +1036,10 @@ model RagQuizQuestion {
   quizType         String   @map("quiz_type")
   questionPosition Int      @map("question_position")
   rawJson          Json     @map("raw_json") @db.JsonB
+  // V3 format: converted from rawJson at ingest time.
+  // TODO: Once all rows are populated, make these required and deprecate raw_json
+  quizQuestion     Json?    @map("quiz_question") @db.JsonB
+  imageMetadata    Json?    @map("image_metadata") @db.JsonB
   description      String?
   embedding        Unsupported("vector(768)")?
   createdAt        DateTime @default(now()) @map("created_at")

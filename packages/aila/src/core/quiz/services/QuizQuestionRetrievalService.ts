@@ -6,6 +6,10 @@ import { z } from "zod";
 
 import type { QuizPath } from "../../../protocol/schema";
 import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
+import type {
+  ImageMetadata,
+  QuizV3Question,
+} from "../../../protocol/schemas/quiz/quizV3";
 import { hasuraQuizQuestionSchema } from "../../../protocol/schemas/quiz/rawQuiz";
 import type { RagQuizQuestion } from "../interfaces";
 
@@ -110,7 +114,7 @@ export class QuizQuestionRetrievalService {
 
   /**
    * Retrieves quiz questions by their UIDs from Postgres.
-   * Converts to V3 format immediately (supporting all question types).
+   * Uses pre-converted V3 columns when available, falls back to rawJson conversion.
    * Preserves the order of the input questionUids array.
    */
   async retrieveQuestionsByIds(
@@ -122,7 +126,12 @@ export class QuizQuestionRetrievalService {
 
     const rows = await this.db.ragQuizQuestion.findMany({
       where: { questionUid: { in: questionUids } },
-      select: { questionUid: true, rawJson: true },
+      select: {
+        questionUid: true,
+        quizQuestion: true,
+        imageMetadata: true,
+        rawJson: true,
+      },
     });
 
     if (rows.length === 0) {
@@ -131,7 +140,7 @@ export class QuizQuestionRetrievalService {
     }
 
     const parsedQuestions: RagQuizQuestion[] = rows
-      .map((row) => this.parseRagQuizQuestion(row.questionUid, row.rawJson))
+      .map((row) => this.parseRagQuizQuestion(row))
       .filter((item): item is RagQuizQuestion => item !== null);
 
     // Sort to match input order — Prisma IN doesn't guarantee order
@@ -142,7 +151,26 @@ export class QuizQuestionRetrievalService {
     return orderedQuestions;
   }
 
-  private parseRagQuizQuestion(
+  private parseRagQuizQuestion(row: {
+    questionUid: string;
+    quizQuestion: unknown;
+    imageMetadata: unknown;
+    rawJson: unknown;
+  }): RagQuizQuestion | null {
+    // Prefer pre-converted V3 columns (populated at ingest time)
+    if (row.quizQuestion) {
+      return {
+        question: row.quizQuestion as QuizV3Question,
+        sourceUid: row.questionUid,
+        imageMetadata: (row.imageMetadata as ImageMetadata[]) ?? [],
+      };
+    }
+
+    // TODO: Remove rawJson fallback once all rows have quiz_question populated
+    return this.parseFromRawJson(row.questionUid, row.rawJson);
+  }
+
+  private parseFromRawJson(
     questionUid: string,
     rawJson: unknown,
   ): RagQuizQuestion | null {
@@ -151,7 +179,6 @@ export class QuizQuestionRetrievalService {
     }
 
     try {
-      // Postgres JSONB returns an object directly — no JSON.parse needed
       const source = hasuraQuizQuestionSchema.parse(rawJson);
       const quizV3 = convertHasuraQuizToV3([source]);
 
@@ -165,7 +192,6 @@ export class QuizQuestionRetrievalService {
       return {
         question: quizV3.questions[0],
         sourceUid: source.questionUid,
-        source,
         imageMetadata: quizV3.imageMetadata,
       };
     } catch (error) {
