@@ -4,7 +4,7 @@ import type { GetStore } from "@/stores/AilaStoresProvider";
 
 import type { ModerationGetter, ModerationSetter } from "../types";
 
-export const handleToxicModeration =
+export const handleLockingModeration =
   (
     getStore: GetStore,
     set: ModerationSetter,
@@ -12,7 +12,7 @@ export const handleToxicModeration =
     get: ModerationGetter,
   ) =>
   (mod: PersistedModerationBase | null) => {
-    set({ toxicModeration: mod });
+    set({ lockingModeration: mod });
     getStore("chat").actions.setMessages([], false);
     getStore("lessonPlan").actions.resetStore();
   };

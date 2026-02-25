@@ -61,6 +61,10 @@ export function getModerationTypes(
       if (category.startsWith("t/")) {
         return ModeratedContentType.TOXIC;
       }
+      // TODO: add dedicated Avo type when schema is updated
+      if (category.startsWith("n/")) {
+        return ModeratedContentType.UPSETTING_DISTURBING_SENSITIVE;
+      }
     })
     .filter(isTruthy);
 }
