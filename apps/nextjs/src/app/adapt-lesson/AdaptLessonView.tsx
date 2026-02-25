@@ -255,13 +255,6 @@ function LessonAdaptContent() {
                 >
                   {currentPlan ? "Reset to all slides" : "Reduce slides"}
                 </OakSmallPrimaryButton>
-                {currentPlan && (
-                  <OakSmallSecondaryButton
-                    onClick={() => void actions.executeAdaptations()}
-                  >
-                    Except changes and modify slide
-                  </OakSmallSecondaryButton>
-                )}
               </OakFlex>
 
               {/* Slide cards */}
@@ -297,6 +290,33 @@ function LessonAdaptContent() {
                 </OakFlex>
               )}
             </OakFlex>
+            {/* Debug info - collapsible */}
+            {isReady && slideContent && (
+              <details className="border-t border-gray-300 bg-gray-50 p-4">
+                <summary className="cursor-pointer text-sm font-semibold">
+                  Debug Info (Click to expand)
+                </summary>
+                <div className="mt-2 space-y-2">
+                  <details className="rounded border bg-white p-2">
+                    <summary className="cursor-pointer text-xs font-semibold">
+                      Extracted Slide Content - LLM Format
+                    </summary>
+                    <pre className="mt-2 max-h-48 overflow-auto text-xs">
+                      {JSON.stringify(slideContent, null, 2)}
+                    </pre>
+                  </details>
+
+                  <details className="rounded border bg-white p-2">
+                    <summary className="cursor-pointer text-xs font-semibold">
+                      Change plan for slides
+                    </summary>
+                    <pre className="mt-2 max-h-48 overflow-auto text-xs">
+                      {JSON.stringify(previousPlanResponse, null, 2)}
+                    </pre>
+                  </details>
+                </div>
+              </details>
+            )}
           </OakFlex>
         </OakMaxWidth>
       </>
@@ -357,18 +377,20 @@ function LessonAdaptContent() {
           </OakBox>
 
           {isLoading && (
-            <OakBox
+            <OakFlex
               $background="bg-decorative2-very-subdued"
               $bl="border-solid-l"
               $borderColor="border-decorative2-stronger"
               $pa="spacing-16"
               $mt="spacing-16"
               $borderRadius="border-radius-s"
+              $flexDirection="row"
             >
-              <OakP $font="body-2">
+              <OakLoadingSpinner />
+              <OakP $ml="spacing-12" $font="body-2">
                 Fetching lesson data... This may take some time.
               </OakP>
-            </OakBox>
+            </OakFlex>
           )}
 
           {error && !isLoading && (
