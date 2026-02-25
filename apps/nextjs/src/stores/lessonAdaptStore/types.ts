@@ -2,6 +2,13 @@ import type { AdaptationPlan, SlideDeckContent } from "@oakai/lesson-adapters";
 
 import type { StoreApi } from "zustand";
 
+export type UserSlideDeletion = {
+  clientId: string;
+  slideId: string;
+  slideNumber: number;
+  reasoning?: string;
+};
+
 /**
  * Extracted lesson data for display
  */
@@ -78,6 +85,7 @@ export interface LessonAdaptState {
   currentPlan: AdaptationPlan | null;
   previousPlanResponse: AdaptationPlan | null;
   approvedChangeIds: string[];
+  userSlideDeletions: UserSlideDeletion[];
 
   // UI
   activeTab: LessonAdaptTab;
@@ -102,6 +110,8 @@ export interface LessonAdaptState {
     rejectAllChanges: () => void;
     setPlanFromResponse: (plan: AdaptationPlan) => void;
     clearPlan: () => void;
+    addUserSlideDeletion: (slideId: string, slideNumber: number) => void;
+    removeUserSlideDeletion: (slideId: string) => void;
 
     // Async operations
     fetchLessonContent: () => Promise<void>;

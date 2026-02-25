@@ -101,8 +101,14 @@ const generatePlanOutput = z.object({
 const executeAdaptationsInput = z.object({
   sessionId: z.string(),
   planData: adaptationPlanSchema,
-  /** Reserved for future granular approval. Currently ignored (all changes are executed). */
   approvedChangeIds: z.array(z.string()).optional(),
+  additionalChanges: z
+    .object({
+      slideDeletions: z.array(
+        z.object({ slideId: z.string(), slideNumber: z.number() }),
+      ),
+    })
+    .optional(),
 });
 
 const executeAdaptationsOutput = z.object({
@@ -195,7 +201,8 @@ export const lessonAdaptRouter = router({
         });
       }
 
-      const { sessionId, planData, approvedChangeIds } = input;
+      const { sessionId, planData, approvedChangeIds, additionalChanges } =
+        input;
 
       // Retrieve session to get the presentationId securely
       const session = await LessonAdaptSessionStorage.get(sessionId);
@@ -220,6 +227,7 @@ export const lessonAdaptRouter = router({
         session.duplicatedPresentationId,
         planData,
         approvedChangeIds,
+        additionalChanges,
       );
 
       log.info("Adaptations executed", {

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import type { AdaptationPlan } from "@oakai/lesson-adapters";
+
 import {
   OakBox,
   OakCheckBox,
@@ -12,15 +14,50 @@ import {
   OakP,
   OakPrimaryButton,
   OakSecondaryButton,
+  OakSmallPrimaryButton,
+  OakSmallSecondaryButton,
   OakSpan,
 } from "@oaknational/oak-components";
 
+import type { SlidePlan } from "@/components/AppComponents/LessonAdapt/AdaptSlideCard";
 import { AdaptSlideCard } from "@/components/AppComponents/LessonAdapt/AdaptSlideCard";
 import {
   LessonAdaptStoreProvider,
   useLessonAdaptActions,
   useLessonAdaptStore,
 } from "@/stores/lessonAdaptStore/LessonAdaptStoreProvider";
+import type { UserSlideDeletion } from "@/stores/lessonAdaptStore/types";
+
+function getSlideCardPlan(
+  slideId: string,
+  plan: AdaptationPlan | null,
+  userSlideDeletions: UserSlideDeletion[],
+): SlidePlan {
+  const userDeletion = userSlideDeletions.find((d) => d.slideId === slideId);
+  if (userDeletion) {
+    return {
+      isDeleted: true,
+      source: "user",
+      reasoning: userDeletion.reasoning,
+    };
+  }
+
+  if (!plan) return null;
+
+  const { changes } = plan.slidesAgentResponse;
+
+  const aiDeletion = changes.slideDeletions.find((d) => d.slideId === slideId);
+  if (aiDeletion) {
+    return { isDeleted: true, source: "ai", reasoning: aiDeletion.reasoning };
+  }
+
+  const kept = changes.slidesToKeep.find((k) => k.slideId === slideId);
+  if (kept) {
+    return { isDeleted: false, source: "ai", reasoning: kept.reasoning };
+  }
+
+  return null;
+}
 
 function LessonAdaptContent() {
   const [lessonIdInput, setLessonIdInput] = useState("");
@@ -47,8 +84,8 @@ function LessonAdaptContent() {
     (state) => state.previousPlanResponse,
   );
   const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
-  const approvedChangeIds = useLessonAdaptStore(
-    (state) => state.approvedChangeIds,
+  const userSlideDeletions = useLessonAdaptStore(
+    (state) => state.userSlideDeletions,
   );
 
   const selectedKlps = useLessonAdaptStore((state) => state.selectedKlps);
@@ -59,25 +96,6 @@ function LessonAdaptContent() {
   const isLoading = status === "loading-lesson";
   const isReady = status === "ready" || status === "generating-plan";
 
-  const planBySlide = slideContent?.slides.map((slide) => {
-    return {
-      slideId: slide.slideId,
-      deleted: currentPlan?.slidesAgentResponse.changes.slideDeletions.find(
-        (deletion) => deletion.slideId === slide.slideId,
-      ),
-      textEdits: currentPlan?.slidesAgentResponse.changes.textEdits.filter(
-        (edit) => edit.slideId === slide.slideId,
-      ),
-      tableCellEdits:
-        currentPlan?.slidesAgentResponse.changes.tableCellEdits.filter(
-          (edit) => edit.slideId === slide.slideId,
-        ),
-      slideToKeep: currentPlan?.slidesAgentResponse.changes.slidesToKeep.find(
-        (keep) => keep.slideId === slide.slideId,
-      ),
-    };
-  });
-
   const handleFetch = () => {
     if (lessonIdInput.trim()) {
       actions.setLessonSlug(lessonIdInput);
@@ -87,172 +105,219 @@ function LessonAdaptContent() {
 
   if (isReady) {
     return (
-      <OakMaxWidth>
-        <OakFlex $flexDirection="column" className="min-h-screen">
-          {/* Header bar */}
-          <div className="flex justify-end border-b border-gray-200 bg-white px-6 py-4">
-            <OakSecondaryButton onClick={() => actions.reset()}>
-              Fetch new lesson
-            </OakSecondaryButton>
-          </div>
-
-          {/* Green banner */}
-          <div className="border-b border-black/10 bg-[#BEF2BD] px-16 py-6">
-            <OakHeading tag="h1" $font="heading-3" $mb="spacing-8">
-              {lessonData?.title}
-            </OakHeading>
-            <OakP $font="body-1" $color="text-subdued">
-              {lessonData?.learningOutcome}
-            </OakP>
-          </div>
-
-          {/* Main content */}
-          <div className="px-16 py-8">
-            {/* Lesson details card */}
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-              <OakHeading tag="h2" $font="heading-4" $mb="spacing-24">
-                Lesson details
+      <>
+        {/* Header bar */}
+        <OakFlex
+          $alignItems="end"
+          $justifyContent={"end"}
+          $ph="spacing-24"
+          $pv="spacing-16"
+        >
+          <OakSmallPrimaryButton onClick={() => actions.reset()}>
+            Fetch new lesson
+          </OakSmallPrimaryButton>
+        </OakFlex>
+        <OakFlex
+          $background="mint"
+          $gap="spacing-16"
+          $alignItems="center"
+          $pa="spacing-24"
+        >
+          <OakMaxWidth>
+            <OakFlex $flexDirection="column" $mt="spacing-16">
+              <OakHeading tag="h1" $font="heading-3" $mb="spacing-12">
+                {lessonData?.title}
               </OakHeading>
-
-              {/* Key learning points */}
-              <OakBox $mb="spacing-48">
-                <OakHeading tag="h3" $font="heading-5" $mb="spacing-8">
-                  Key learning points
+              <OakP $font="body-1" $color="text-subdued" $mb="spacing-16">
+                {lessonData?.learningOutcome}
+              </OakP>
+            </OakFlex>
+          </OakMaxWidth>
+        </OakFlex>
+        <OakMaxWidth>
+          <OakFlex $flexDirection="column">
+            {/* Main content */}
+            <OakBox $mb="spacing-32" $mt="spacing-32">
+              {/* Lesson details card */}
+              <OakFlex
+                $borderRadius="border-radius-m"
+                // $bb="border-solid-s"
+                $borderColor="border-neutral-lighter"
+                $pa="spacing-24"
+                $flexDirection={"column"}
+                $background={"white"}
+                $ba="border-solid-m"
+              >
+                <OakHeading tag="h2" $font="heading-5" $mb="spacing-24">
+                  Lesson details
                 </OakHeading>
-                <OakP $font="body-2" $mb="spacing-8" $color="text-subdued">
-                  Select key learning points required for your lesson.
-                </OakP>
-                <div className="space-y-3 rounded-lg bg-gray-50 p-4">
-                  {lessonData?.keyLearningPoints.map((point, index) => (
-                    <>
-                      <OakCheckBox
-                        id={point}
-                        value={point}
-                        onChange={() => actions.toggleKlp(point)}
-                        checked={selectedKlps.includes(point)}
-                      />
-                    </>
-                  ))}
-                </div>
-                {selectedKlps.length <
-                  (lessonData?.keyLearningPoints.length ?? 0) && (
-                  <div className="border-amber-400 bg-amber-50 mt-4 rounded border-l-4 p-4">
-                    <OakP $font="body-2" $color="text-primary">
-                      If you select only {selectedKlps.length} key learning{" "}
-                      {selectedKlps.length === 1 ? "point" : "points"} to teach,
-                      the lesson outcome may not be achieved.
+
+                {/* Key learning points */}
+                <OakBox $mb="spacing-48">
+                  <OakHeading tag="h3" $font="heading-6" $mb="spacing-8">
+                    Key learning points
+                  </OakHeading>
+
+                  <OakFlex
+                    $font="body-3"
+                    $flexDirection="column"
+                    $gap="spacing-4"
+                    $pa={"spacing-16"}
+                    $background={"grey10"}
+                  >
+                    {lessonData?.keyLearningPoints.map((point, index) => (
+                      <OakP key={index}>
+                        {index + 1}. {point}
+                      </OakP>
+                    ))}
+                  </OakFlex>
+                  {selectedKlps.length <
+                    (lessonData?.keyLearningPoints.length ?? 0) && (
+                    <div className="border-amber-400 bg-amber-50 mt-4 rounded border-l-4 p-4">
+                      <OakP $font="body-3" $color="text-primary">
+                        If you select only {selectedKlps.length} key learning{" "}
+                        {selectedKlps.length === 1 ? "point" : "points"} to
+                        teach, the lesson outcome may not be achieved.
+                      </OakP>
+                    </div>
+                  )}
+                </OakBox>
+
+                {/* Keywords */}
+                <OakBox $mb="spacing-48">
+                  <OakHeading tag="h3" $font="heading-6" $mb="spacing-16">
+                    Keywords
+                  </OakHeading>
+                  <OakFlex
+                    $flexDirection="column"
+                    $gap="spacing-4"
+                    $maxWidth="spacing-640"
+                  >
+                    {lessonData?.keywords.map((kw, index) => (
+                      <OakP key={index} $font="body-3">
+                        <OakSpan $font="body-3-bold">{kw.keyword}</OakSpan> -{" "}
+                        {kw.definition}
+                      </OakP>
+                    ))}
+                  </OakFlex>
+                </OakBox>
+
+                {/* Common misconception */}
+                {lessonData?.misconceptions[0] && (
+                  <OakBox>
+                    <OakHeading tag="h3" $font="heading-6" $mb="spacing-16">
+                      Common misconception
+                    </OakHeading>
+                    <OakP $font="body-3" $mb="spacing-4">
+                      <OakSpan $font="body-3-bold">
+                        {lessonData.misconceptions[0].misconception}
+                      </OakSpan>
                     </OakP>
-                  </div>
+                    <OakP $font="body-3">
+                      {lessonData.misconceptions[0].description}
+                    </OakP>
+                  </OakBox>
                 )}
-              </OakBox>
+              </OakFlex>
+            </OakBox>
 
-              {/* Keywords */}
-              <OakBox $mb="spacing-48">
-                <OakHeading tag="h3" $font="heading-5" $mb="spacing-16">
-                  Keywords
-                </OakHeading>
-                <OakFlex
-                  $flexDirection="column"
-                  $gap="spacing-4"
-                  $maxWidth="spacing-640"
+            {/* Lesson slides */}
+            <OakFlex $flexDirection={"column"}>
+              <OakHeading tag="h2" $font="heading-5" $mb="spacing-4">
+                Lesson slides
+              </OakHeading>
+              <OakP $font="body-3" $color="text-subdued">
+                {selectedSlideIds.length} of {slideContent?.slides.length ?? 0}{" "}
+                slides included
+              </OakP>
+
+              {/* Streamline option */}
+              <OakFlex
+                $gap={"spacing-16"}
+                $flexDirection={"row"}
+                $pv="spacing-16"
+              >
+                <OakSmallPrimaryButton
+                  onClick={() => {
+                    if (currentPlan) {
+                      console.log(
+                        "Rejecting all changes and keeping all slides",
+                      );
+                      void actions.rejectAllChanges();
+                    } else {
+                      console.log(
+                        "Generating plan to remove non essential slides",
+                      );
+                      void actions.generatePlan(`Remove non essential slides`);
+                    }
+                  }}
+                  disabled={status === "generating-plan"}
                 >
-                  {lessonData?.keywords.map((kw, index) => (
-                    <OakP key={index} $font="body-1">
-                      <OakSpan $font="body-1-bold">{kw.keyword}</OakSpan> -{" "}
-                      {kw.definition}
-                    </OakP>
+                  {currentPlan ? "Reset to all slides" : "Reduce slides"}
+                </OakSmallPrimaryButton>
+                {currentPlan && (
+                  <OakSmallSecondaryButton
+                    onClick={() => void actions.executeAdaptations()}
+                  >
+                    Except changes and modify slide
+                  </OakSmallSecondaryButton>
+                )}
+              </OakFlex>
+
+              {/* Slide cards */}
+              {status === "generating-plan" && (
+                <OakFlex
+                  $mb={"spacing-80"}
+                  $alignItems="center"
+                  $gap="spacing-4"
+                >
+                  <OakLoadingSpinner />
+                  <OakP $font="body-2">Generating adaptation plan...</OakP>
+                </OakFlex>
+              )}
+              {slideContent && status !== "generating-plan" && (
+                <OakFlex $flexDirection="column" $gap="spacing-24">
+                  {slideContent.slides?.map((slide, index) => (
+                    <AdaptSlideCard
+                      key={`slide-${slide.slideId}-${index}`}
+                      slide={slide}
+                      thumbnailsLoading={thumbnailsLoading}
+                      thumbnailUrl={
+                        thumbnails?.find(
+                          (t) => t.slideIndex === slide.slideNumber - 1,
+                        )?.thumbnailUrl
+                      }
+                      slidePlan={getSlideCardPlan(
+                        slide.slideId,
+                        currentPlan,
+                        userSlideDeletions,
+                      )}
+                    />
                   ))}
                 </OakFlex>
-              </OakBox>
-
-              {/* Common misconception */}
-              {lessonData?.misconceptions[0] && (
-                <OakBox>
-                  <OakHeading tag="h3" $font="heading-5" $mb="spacing-16">
-                    Common misconception
-                  </OakHeading>
-                  <OakP $font="body-1" $mb="spacing-4">
-                    <OakSpan $font="body-1-bold">
-                      {lessonData.misconceptions[0].misconception}
-                    </OakSpan>
-                  </OakP>
-                  <OakP $font="body-1">
-                    {lessonData.misconceptions[0].description}
-                  </OakP>
-                </OakBox>
               )}
-            </div>
-          </div>
-
-          {/* Lesson slides */}
-          <div className="px-16 pb-16 pt-8">
-            <OakHeading tag="h2" $font="heading-4" $mb="spacing-4">
-              Lesson slides
-            </OakHeading>
-            <OakP $font="body-2" $color="text-subdued" $mb="spacing-16">
-              {selectedSlideIds.length} of {slideContent?.slides.length ?? 0}{" "}
-              slides included
-            </OakP>
-
-            {/* Streamline option */}
-            <div className="border-purple-200 mb-6 flex items-center justify-between rounded-lg border-2 bg-white p-4">
-              <OakP $font="body-1">
-                Streamline slide deck, while keeping the key learning points you
-                have selected above.
-              </OakP>
-              <OakPrimaryButton
-                onClick={() =>
-                  void actions.generatePlan(`Remove non essential slides while`)
-                }
-                disabled={status === "generating-plan"}
-              >
-                Streamline Slide Deck
-              </OakPrimaryButton>
-            </div>
-
-            {/* Slide cards */}
-            {status === "generating-plan" && (
-              <OakFlex $alignItems="center" $gap="spacing-4" $mb="spacing-16">
-                <OakLoadingSpinner />
-                <OakP $font="body-2">Generating adaptation plan...</OakP>
-              </OakFlex>
-            )}
-            {slideContent && status !== "generating-plan" && (
-              <OakFlex $flexDirection="column" $gap="spacing-24">
-                {slideContent.slides?.map((slide, index) => (
-                  <AdaptSlideCard
-                    key={`slide-${slide.slideId}-${index}`}
-                    slide={slide}
-                    thumbnailsLoading={thumbnailsLoading}
-                    thumbnailUrl={
-                      thumbnails?.find(
-                        (t) => t.slideIndex === slide.slideNumber - 1,
-                      )?.thumbnailUrl
-                    }
-                    isIncluded={selectedSlideIds.includes(slide.slideId)}
-                    slidePlan={planBySlide?.find(
-                      (s) => s.slideId === slide.slideId,
-                    )}
-                  />
-                ))}
-              </OakFlex>
-            )}
-          </div>
-        </OakFlex>
-      </OakMaxWidth>
+            </OakFlex>
+          </OakFlex>
+        </OakMaxWidth>
+      </>
     );
   }
 
   return (
     <OakMaxWidth>
       <OakFlex $flexDirection="column" className="min-h-screen">
-        <OakBox $pa="spacing-24">
-          <OakHeading tag="h1" $font="heading-3" $mb="spacing-8">
+        <OakBox
+          $pv="spacing-32"
+          $ph="spacing-64"
+          $bb="border-solid-s"
+          $borderColor="border-neutral-lighter"
+        >
+          <OakHeading tag="h1" $font="heading-3" $mb="spacing-24">
             Lesson AI adaptations
           </OakHeading>
 
-          <OakBox $mb="spacing-8">
-            <OakP $font="body-1" $mb="spacing-4">
+          <OakBox $mb="spacing-32">
+            <OakP $font="body-1" $mb="spacing-16">
               This is a prototype the AI enablement team have been working on to
               explore how well AI can identify key learning points (and slide
               based information) within Oak lessons, so that teachers can make
@@ -265,13 +330,13 @@ function LessonAdaptContent() {
             </OakP>
           </OakBox>
 
-          <OakBox $mb="spacing-8">
+          <OakBox $mb="spacing-16">
             <label htmlFor="lesson-slug-input">
-              <OakP $font="heading-7" $mb="spacing-4">
+              <OakP $font="heading-7" $mb="spacing-8">
                 Lesson ID (Lesson slug):
               </OakP>
             </label>
-            <OakFlex $gap="spacing-8" $alignItems="center">
+            <OakFlex $gap="spacing-12" $alignItems="center">
               <input
                 id="lesson-slug-input"
                 type="text"
@@ -292,17 +357,18 @@ function LessonAdaptContent() {
           </OakBox>
 
           {isLoading && (
-            <OakFlex
-              $alignItems="center"
-              $gap="spacing-4"
-              $pa="spacing-8"
-              $background="bg-decorative1-subdued"
+            <OakBox
+              $background="bg-decorative2-very-subdued"
+              $bl="border-solid-l"
+              $borderColor="border-decorative2-stronger"
+              $pa="spacing-16"
+              $mt="spacing-16"
+              $borderRadius="border-radius-s"
             >
-              <OakLoadingSpinner />
               <OakP $font="body-2">
                 Fetching lesson data... This may take some time.
               </OakP>
-            </OakFlex>
+            </OakBox>
           )}
 
           {error && !isLoading && (

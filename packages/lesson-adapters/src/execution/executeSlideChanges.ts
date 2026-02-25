@@ -22,6 +22,13 @@ export interface ExecuteSlideChangesResult {
 }
 
 /**
+ * User-initiated changes that have no corresponding entry in the plan.
+ */
+export interface AdditionalChanges {
+  slideDeletions?: Array<{ slideId: string; slideNumber: number }>;
+}
+
+/**
  * Executes all slide changes from an adaptation plan against a Google Slides presentation.
  *
  * Operations are applied in a safe order:
@@ -37,6 +44,7 @@ export async function executeSlideChanges(
   presentationId: string,
   plan: AdaptationPlan,
   approvedChangeIds: string[] | undefined,
+  additionalChanges?: AdditionalChanges,
 ): Promise<ExecuteSlideChangesResult> {
   const executedChangeIds: string[] = [];
   const errors: string[] = [];
@@ -139,9 +147,15 @@ export async function executeSlideChanges(
   }
 
   // 4. Delete slides (in reverse slide number order to avoid index shifts)
-  if (changes.slideDeletions.length > 0) {
+  const userDeletions = (additionalChanges?.slideDeletions ?? []).map((d) => ({
+    ...d,
+    changeId: `user-sd-${d.slideId}`,
+  }));
+  const allSlideDeletions = [...changes.slideDeletions, ...userDeletions];
+
+  if (allSlideDeletions.length > 0) {
     try {
-      const sortedDeletions = [...changes.slideDeletions].sort(
+      const sortedDeletions = [...allSlideDeletions].sort(
         (a, b) => b.slideNumber - a.slideNumber,
       );
 

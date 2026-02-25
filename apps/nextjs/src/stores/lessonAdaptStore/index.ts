@@ -41,13 +41,14 @@ export const createLessonAdaptStore = ({
     thumbnailsError: null,
 
     // Status
-    status: "idle",
+    status: "idle" as LessonAdaptState["status"],
     error: null,
 
     // Plan
     currentPlan: null,
     previousPlanResponse: null,
     approvedChangeIds: [],
+    userSlideDeletions: [],
 
     // UI
     activeTab: "lesson-details",
@@ -103,7 +104,7 @@ export const createLessonAdaptStore = ({
       },
 
       rejectAllChanges: () => {
-        set({ approvedChangeIds: [] });
+        set({ approvedChangeIds: [], currentPlan: null });
       },
 
       setPlanFromResponse: (plan) => {
@@ -115,7 +116,30 @@ export const createLessonAdaptStore = ({
       },
 
       clearPlan: () => {
-        set({ currentPlan: null, approvedChangeIds: [] });
+        set({
+          currentPlan: null,
+          approvedChangeIds: [],
+          userSlideDeletions: [],
+        });
+      },
+
+      addUserSlideDeletion: (slideId, slideNumber) => {
+        const { userSlideDeletions } = get();
+        if (userSlideDeletions.some((d) => d.slideId === slideId)) return;
+        set({
+          userSlideDeletions: [
+            ...userSlideDeletions,
+            { clientId: crypto.randomUUID(), slideId, slideNumber },
+          ],
+        });
+      },
+
+      removeUserSlideDeletion: (slideId) => {
+        set({
+          userSlideDeletions: get().userSlideDeletions.filter(
+            (d) => d.slideId !== slideId,
+          ),
+        });
       },
 
       // Async operations
@@ -140,6 +164,7 @@ export const createLessonAdaptStore = ({
           error: null,
           currentPlan: null,
           approvedChangeIds: [],
+          userSlideDeletions: [],
           activeTab: "lesson-details",
           showReviewModal: false,
           selectedKlps: [],

@@ -1,10 +1,7 @@
 "use client";
 
-import type { SlidesAgentResponse } from "@oakai/lesson-adapters";
-
 import {
   OakBox,
-  OakCheckBox,
   OakFlex,
   OakHeading,
   OakLI,
@@ -12,27 +9,27 @@ import {
   OakOL,
   OakP,
   OakSpan,
+  OakTagFunctional,
 } from "@oaknational/oak-components";
 import Image from "next/image";
-import { ta } from "zod/v4/locales";
 
 const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
   title:
-    "This slide introduces the lesson title and the unit it belongs to. The learning outcome is introduced later.",
+    "Title slide: This slide introduces the lesson title and the unit it belongs to. The learning outcome is introduced later.",
   lessonOutcome:
-    "This slide enables pupils to understand the aim and purpose of their learning.",
+    "Lesson outcome: This slide enables pupils to understand the aim and purpose of their learning.",
   keywords:
-    "This slide introduces the keywords taught in the lesson. They are taught in context throughout the lesson.",
+    "Keywords: This slide introduces the keywords taught in the lesson. They are taught in context throughout the lesson.",
   lessonOutline:
-    "This slide allows pupils to understand the structure of the lesson and their learning.",
+    "Lesson outline: This slide allows pupils to understand the structure of the lesson and their learning.",
   explanation:
-    "This slide teaches the key learning points and keywords pupils need to meet the learning outcome.",
+    "Explanation: This slide teaches the key learning points and keywords pupils need to meet the learning outcome.",
   checkForUnderstanding:
-    "This slide provides the opportunity to check pupils' understanding of what has been explained.",
+    "Check for understanding: This slide provides the opportunity to check pupils' understanding of what has been explained.",
   practice:
-    "This slide provides the opportunity for pupils to practise their knowledge of the key learning points.",
-  summary: "This slide summarises the key learning from the lesson.",
-  endOfLesson: "This slide marks the end of the lesson.",
+    "Practice: This slide provides the opportunity for pupils to practise their knowledge of the key learning points.",
+  summary: "Summary: This slide summarises the key learning from the lesson.",
+  endOfLesson: "End of lesson: This slide marks the end of the lesson.",
 };
 
 function formatSlideType(slideType: string): string {
@@ -41,8 +38,11 @@ function formatSlideType(slideType: string): string {
     .replace(/^./, (s) => s.toUpperCase());
 }
 
-const THUMBNAIL_SIZES =
-  "(min-width: 1024px) 50vw, (min-width: 768px) 50vw, 100vw";
+export type SlidePlan = {
+  isDeleted: boolean;
+  source: "ai" | "user";
+  reasoning?: string;
+} | null;
 
 export type AdaptSlideCardProps = {
   slide: {
@@ -51,55 +51,29 @@ export type AdaptSlideCardProps = {
     slideTitle?: string;
     slideType: string;
     keyLearningPoints?: string[];
-    slideToKeep?: boolean;
-    slideToDelete?: boolean;
   };
   thumbnailUrl: string | undefined;
   thumbnailsLoading?: boolean;
-  isIncluded: boolean;
-  slidePlan?:
-    | ({ slideId: string } & {
-        textEdits: SlidesAgentResponse["changes"]["textEdits"] | undefined;
-      } & {
-        deleted:
-          | SlidesAgentResponse["changes"]["slideDeletions"][number]
-          | undefined;
-      } & {
-        tableCellEdits:
-          | SlidesAgentResponse["changes"]["tableCellEdits"]
-          | undefined;
-      } & {
-        slideToKeep:
-          | SlidesAgentResponse["changes"]["slidesToKeep"][number]
-          | undefined;
-      })
-    | null
-    | undefined;
+  slidePlan?: SlidePlan;
 };
-const getSummary = (
-  changes: AdaptSlideCardProps["slidePlan"] | undefined,
-): React.ReactNode => {
-  if (!changes) return undefined;
-  if (changes?.deleted) {
-    return (
-      <OakP $font="body-1">
-        <OakSpan $font="body-1-bold">Excluded:</OakSpan>{" "}
-        {changes.deleted.reasoning}
-      </OakP>
-    );
+
+function getSummary(
+  plan: SlidePlan | undefined,
+  slideType: string,
+): React.ReactNode {
+  if (!plan)
+    return <OakP $font="body-3">{SLIDE_TYPE_SUMMARIES[slideType]}</OakP>;
+
+  if (plan.isDeleted) {
+    return <OakP $font="body-3">{plan.reasoning}</OakP>;
   }
 
-  if (changes?.slideToKeep) {
-    return (
-      <OakP $font="body-1">
-        <OakSpan $font="body-1-bold">Included:</OakSpan>{" "}
-        {changes.slideToKeep.reasoning}
-      </OakP>
-    );
+  if (plan.reasoning) {
+    return <OakP $font="body-3">{plan.reasoning}</OakP>;
   }
 
   return null;
-};
+}
 
 export function AdaptSlideCard({
   slide,
@@ -108,23 +82,33 @@ export function AdaptSlideCard({
   slidePlan,
 }: AdaptSlideCardProps) {
   const title = slide.slideTitle ?? formatSlideType(slide.slideType);
-  const summary = SLIDE_TYPE_SUMMARIES[slide.slideType];
-
-  console.log("Slide changes for slide", slide.slideNumber, slidePlan);
 
   return (
     <OakBox
       $borderRadius="border-radius-m"
-      $background={"white"}
+      $background={!slidePlan?.isDeleted ? "white" : "grey20"}
       $ba="border-solid-m"
       $borderColor={"border-primary"}
     >
       <OakBox $pa="spacing-16">
-        <OakFlex $justifyContent="space-between" $alignItems="center">
-          <OakHeading tag="h3" $font="heading-6">
-            {slide.slideNumber}: {title}{" "}
-            {slidePlan ? (slide.slideToDelete ? `Excluded` : `Included`) : ``}
-          </OakHeading>
+        <OakFlex
+          $justifyContent="space-between"
+          $alignItems="center"
+          $flexDirection={"row"}
+        >
+          <OakFlex $justifyContent="center" $alignItems="center">
+            <OakHeading tag="h3" $font="heading-7" $mr={"spacing-16"}>
+              {slide.slideNumber}: {title}
+            </OakHeading>
+            {slidePlan && (
+              <OakTagFunctional
+                $color={"black"}
+                $background={!slidePlan.isDeleted ? "mint" : "grey30"}
+                label={slidePlan.isDeleted ? "Excluded" : "Included"}
+                $font={"body-4"}
+              />
+            )}
+          </OakFlex>
         </OakFlex>
 
         <OakFlex
@@ -159,7 +143,7 @@ export function AdaptSlideCard({
             )}
           </OakBox>
           <OakFlex $flexDirection="column" $pa="spacing-16" $gap="spacing-12">
-            {getSummary(slidePlan) || summary}
+            {getSummary(slidePlan, slide.slideType)}
             {slide.keyLearningPoints && slide.keyLearningPoints.length > 0 && (
               <OakBox
                 $mt="spacing-16"
@@ -167,14 +151,14 @@ export function AdaptSlideCard({
                 $ba="border-solid-s"
                 $borderColor="border-neutral-lighter"
                 $pa="spacing-12"
-                $background={slide.slideToDelete ? "grey10" : "white"}
+                $background={slidePlan?.isDeleted ? "grey10" : "white"}
               >
                 <OakP $font="body-2" $mb="spacing-4">
-                  <OakSpan $font="body-1-bold">Key learning points:</OakSpan>
+                  <OakSpan $font="body-3-bold">Key learning points:</OakSpan>
                 </OakP>
                 <OakOL $ml="spacing-16">
                   {slide.keyLearningPoints.map((point, i) => (
-                    <OakLI key={i} $font="body-2">
+                    <OakLI key={i} $font="body-3">
                       {point}
                     </OakLI>
                   ))}
