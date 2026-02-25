@@ -29,6 +29,8 @@ const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
   practice:
     "Practice: This slide provides the opportunity for pupils to practise their knowledge of the key learning points.",
   summary: "Summary: This slide summarises the key learning from the lesson.",
+  feedback:
+    "Feedback: This slide provides feedback to pupils on their learning.",
   endOfLesson: "End of lesson: This slide marks the end of the lesson.",
 };
 
