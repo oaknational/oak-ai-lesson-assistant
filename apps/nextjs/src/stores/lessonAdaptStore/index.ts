@@ -52,6 +52,8 @@ export const createLessonAdaptStore = ({
     // UI
     activeTab: "lesson-details",
     showReviewModal: false,
+    selectedKlps: [],
+    selectedSlideIds: [],
 
     // Actions
     actions: {
@@ -61,6 +63,22 @@ export const createLessonAdaptStore = ({
       setStatus: (status) => set({ status }),
       setShowReviewModal: (show) => set({ showReviewModal: show }),
       setError: (error) => set({ error }),
+
+      toggleKlp: (klp) => {
+        const { selectedKlps } = get();
+        const next = selectedKlps.includes(klp)
+          ? selectedKlps.filter((k) => k !== klp)
+          : [...selectedKlps, klp];
+        set({ selectedKlps: next });
+      },
+
+      toggleSlide: (slideId) => {
+        const { selectedSlideIds } = get();
+        const next = selectedSlideIds.includes(slideId)
+          ? selectedSlideIds.filter((id) => id !== slideId)
+          : [...selectedSlideIds, slideId];
+        set({ selectedSlideIds: next });
+      },
 
       // Plan management
       toggleChangeApproval: (changeId) => {
@@ -124,6 +142,8 @@ export const createLessonAdaptStore = ({
           approvedChangeIds: [],
           activeTab: "lesson-details",
           showReviewModal: false,
+          selectedKlps: [],
+          selectedSlideIds: [],
         });
       },
     },

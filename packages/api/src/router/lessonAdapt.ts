@@ -292,6 +292,11 @@ export const lessonAdaptRouter = router({
         // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);
 
+        console.log(
+          "Extracted lesson data",
+          JSON.stringify(extractedLessonData, null, 2),
+        );
+
         let enrichedSlides = await LessonEnrichmentStorage.get(lessonSlug);
 
         if (enrichedSlides === null) {
@@ -313,6 +318,11 @@ export const lessonAdaptRouter = router({
 
         // Generate a unique session ID
         const sessionId = generateSessionId();
+
+        console.log(
+          "Extracted lesson data",
+          JSON.stringify(enrichedSlides, null, 2),
+        );
 
         // Store session in KV for later retrieval by generatePlan
         await LessonAdaptSessionStorage.store({

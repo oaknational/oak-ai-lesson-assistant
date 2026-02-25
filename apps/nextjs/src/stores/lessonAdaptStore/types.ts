@@ -82,6 +82,8 @@ export interface LessonAdaptState {
   // UI
   activeTab: LessonAdaptTab;
   showReviewModal: boolean;
+  selectedKlps: string[];
+  selectedSlideIds: string[];
 
   // Actions
   actions: {
@@ -91,6 +93,8 @@ export interface LessonAdaptState {
     setStatus: (status: LessonAdaptStatus) => void;
     setShowReviewModal: (show: boolean) => void;
     setError: (error: Error | null) => void;
+    toggleKlp: (klp: string) => void;
+    toggleSlide: (slideId: string) => void;
 
     // Plan management
     toggleChangeApproval: (changeId: string) => void;

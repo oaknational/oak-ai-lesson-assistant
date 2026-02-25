@@ -12,6 +12,15 @@ import type {
 } from "./types";
 
 /**
+ * Checks if a value is a string containing only whitespace
+ * @param value - The value to check
+ * @returns True if the value is a string containing only whitespace, false otherwise
+ */
+export function isOnlyWhitespace(value: unknown): value is string {
+  return typeof value === "string" && /^\s*$/.test(value);
+}
+
+/**
  * Extracts all content from a single slide
  *
  * @param slide - The slide page to process
@@ -42,7 +51,7 @@ export function extractSlideContent(
         const content = extractTextFromTextElements(
           element.shape.text.textElements,
         );
-        if (content) {
+        if (content && !isOnlyWhitespace(content)) {
           textElements.push({
             id: element.objectId,
             content,
@@ -66,7 +75,7 @@ export function extractSlideContent(
         element.shape.text.textElements,
       );
 
-      if (content) {
+      if (content && !isOnlyWhitespace(content)) {
         textElements.push({
           id: element.objectId,
           content,
