@@ -4,7 +4,7 @@ import {
   adaptationPlanSchema,
   coordinateAdaptation,
   executeSlideChanges,
-  extractPresentationContent,
+  extractPresentationContentWithImageDescriptions,
   slideDeckContentSchema,
 } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
@@ -295,7 +295,8 @@ export const lessonAdaptRouter = router({
           await duplicateLessonSlideDeck(lessonData, lessonSlug);
 
         const presentation = await getPresentation(duplicatedPresentationId);
-        const slideDeck = extractPresentationContent(presentation);
+        const slideDeck =
+          await extractPresentationContentWithImageDescriptions(presentation);
 
         // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);

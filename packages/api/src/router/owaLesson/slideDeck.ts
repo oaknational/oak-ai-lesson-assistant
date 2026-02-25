@@ -114,6 +114,7 @@ export async function enrichSlidesWithKlpLc(
       keyLearningPoints: mapping?.keyLearningPoints ?? [],
       learningCycles: mapping?.learningCycles ?? [],
       slideType: mapping?.slideType ?? "other",
+      coversDiversity: mapping?.coversDiversity ?? false,
     };
   });
 

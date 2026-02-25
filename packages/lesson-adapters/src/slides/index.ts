@@ -12,6 +12,8 @@ export {
   extractTextFromTextElements,
   generateCellId,
   parseCellId,
+  extractPresentationContentWithImageDescriptions,
+  generateImageDescriptions,
 } from "./extraction";
 
 // Schemas
