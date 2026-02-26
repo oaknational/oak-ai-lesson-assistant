@@ -10,11 +10,11 @@ import {
 } from "@oaknational/oak-components";
 import Image from "next/image";
 
-import type { SlideKlpMapping, Thumbnail } from "./types";
+import type { SlideContent, Thumbnail } from "./types";
 
 interface ThumbnailsWithKlpTabProps {
   thumbnails: Thumbnail[] | null | undefined;
-  slideKlpMappings: SlideKlpMapping[];
+  slideKlpMappings: SlideContent[];
 }
 
 const THUMBNAIL_SIZES =

@@ -5,6 +5,6 @@ export { ThumbnailsWithKlpTab } from "./ThumbnailsWithKlpTab";
 export type {
   ReviewModalProps,
   ReviewTab,
-  SlideKlpMapping,
+  SlideContent,
   Thumbnail,
 } from "./types";
