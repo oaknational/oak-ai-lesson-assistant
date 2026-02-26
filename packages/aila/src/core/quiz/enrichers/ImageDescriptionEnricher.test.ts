@@ -1,6 +1,5 @@
 import { kv } from "@vercel/kv";
 
-import type { HasuraQuizQuestion } from "../../../protocol/schemas/quiz/rawQuiz";
 import type { QuizQuestionPool } from "../interfaces";
 import { createMockTask } from "../reporting";
 import { ImageDescriptionEnricher } from "./ImageDescriptionEnricher";
@@ -29,22 +28,6 @@ jest.mock("p-limit", () => {
 
 const mockKv = kv as jest.Mocked<typeof kv>;
 
-// Helper to create a minimal valid HasuraQuizQuestion
-function createMockHasuraQuestion(
-  overrides: Partial<HasuraQuizQuestion> = {},
-): HasuraQuizQuestion {
-  return {
-    questionId: 1,
-    questionUid: "test-uid",
-    questionType: "multiple-choice",
-    questionStem: [{ type: "text", text: "Test question" }],
-    feedback: "",
-    hint: "",
-    active: true,
-    ...overrides,
-  };
-}
-
 // Helper to create a minimal valid QuizQuestionPool
 function createMockQuestionPool(
   question: string,
@@ -68,7 +51,6 @@ function createMockQuestionPool(
           hint: null,
         },
         sourceUid: "test-uid",
-        source: createMockHasuraQuestion(),
         imageMetadata,
       },
     ],
