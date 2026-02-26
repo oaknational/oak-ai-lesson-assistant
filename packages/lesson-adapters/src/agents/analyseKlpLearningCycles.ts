@@ -116,7 +116,9 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
 
 ## Rules
 - A slide may cover multiple KLPs and/or multiple learning cycles
+- Not every slide will be associated to a KLP
 - A KLP or multiple KLPs may be covered across multiple learning cycles
+- If a slide contains a keyword or piece of technical language that forms part of a key learning point, assign that key learning point to the slide
 - Title slide, teacher note slide, outcome slide, lesson outline slides and end slide will never cover a key learning point
 - Practice and feedback slides may cover multiple KLPs - check these carefully for multiple key learning points
 - Include the keyword slide if one of the keywords is included in the key learning point or conceptually relates to it
