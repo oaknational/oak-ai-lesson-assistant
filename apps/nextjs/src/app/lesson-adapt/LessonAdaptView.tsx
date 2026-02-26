@@ -13,6 +13,7 @@ import {
   useLessonAdaptActions,
   useLessonAdaptStore,
 } from "@/stores/lessonAdaptStore/LessonAdaptStoreProvider";
+import { extractLessonSlugFromInput } from "@/utils/extract-lesson-slug";
 
 function LessonAdaptContent() {
   const [lessonIdInput, setLessonIdInput] = useState("");
@@ -47,22 +48,16 @@ function LessonAdaptContent() {
   const isReady = status === "ready" || status === "generating-plan";
 
   const handleFetch = () => {
-    if (lessonIdInput.trim()) {
-      actions.setLessonSlug(lessonIdInput);
+    const lessonSlug = extractLessonSlugFromInput(lessonIdInput);
+
+    if (lessonSlug) {
+      actions.setLessonSlug(lessonSlug);
+      setLessonIdInput(lessonSlug);
       void actions.fetchLessonContent();
     }
   };
 
-  // Build slide KLP mappings for the modal
-  const slideKlpMappings =
-    slideContent?.slides.map((slide) => ({
-      slideNumber: slide.slideNumber,
-      slideId: slide.slideId,
-      keyLearningPoints: slide.keyLearningPoints ?? [],
-      learningCycles: slide.learningCycles ?? [],
-      coversDiversity: slide.coversDiversity ?? false,
-      slideType: slide.slideType ?? "",
-    })) ?? [];
+  const slideKlpMappings = slideContent?.slides ?? [];
 
   return (
     <div className="flex h-screen flex-col">
@@ -72,14 +67,14 @@ function LessonAdaptContent() {
 
         <div className="mb-2">
           <label className="mb-2 block text-sm font-medium">
-            Lesson ID (Lesson Slug): the-modern-world-of-work
+            Lesson slug or URL: the-modern-world-of-work
           </label>
           <div className="flex gap-2">
             <input
               type="text"
               value={lessonIdInput}
               onChange={(e) => setLessonIdInput(e.target.value.trim())}
-              placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
+              placeholder="Enter lesson slug or URL (e.g. 'identifying-equivalent-fractions')"
               className="flex-1 rounded border p-2"
             />
             <button

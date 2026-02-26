@@ -13,7 +13,6 @@ import {
   OakMaxWidth,
   OakOL,
   OakP,
-  OakPrimaryButton,
   OakSmallPrimaryButton,
   OakSpan,
   OakTagFunctional,
@@ -26,12 +25,14 @@ import {
   getSummary,
 } from "@/components/AppComponents/LessonAdapt/AdaptSlideCard";
 import { LessonDetailsCard } from "@/components/AppComponents/LessonAdapt/LessonDetailsCard";
+import { LessonAdaptIntro } from "@/components/AppComponents/LessonAdapt/lesson-adapt-intro";
 import {
   LessonAdaptStoreProvider,
   useLessonAdaptActions,
   useLessonAdaptStore,
 } from "@/stores/lessonAdaptStore/LessonAdaptStoreProvider";
 import type { UserSlideDeletion } from "@/stores/lessonAdaptStore/types";
+import { extractLessonSlugFromInput } from "@/utils/extract-lesson-slug";
 
 function getSlideCardPlan(
   slideId: string,
@@ -102,8 +103,11 @@ function SurfaceSlideContent() {
   const isReady = status === "ready" || status === "generating-plan";
 
   const handleFetch = () => {
-    if (lessonIdInput.trim()) {
-      actions.setLessonSlug(lessonIdInput);
+    const lessonSlug = extractLessonSlugFromInput(lessonIdInput);
+
+    if (lessonSlug) {
+      actions.setLessonSlug(lessonSlug);
+      setLessonIdInput(lessonSlug);
       void actions.fetchLessonContent();
     }
   };
@@ -239,84 +243,14 @@ function SurfaceSlideContent() {
   }
 
   return (
-    <OakMaxWidth>
-      <OakFlex $flexDirection="column" className="min-h-screen">
-        <OakBox
-          $pv="spacing-32"
-          $ph="spacing-64"
-          $bb="border-solid-s"
-          $borderColor="border-neutral-lighter"
-        >
-          <OakHeading tag="h1" $font="heading-3" $mb="spacing-24">
-            Lesson AI adaptations
-          </OakHeading>
-
-          <OakBox $mb="spacing-32">
-            <OakP $font="body-1" $mb="spacing-16">
-              This is a prototype the AI enablement team have been working on to
-              explore how well AI can identify key learning points (and slide
-              based information) within Oak lessons, so that teachers can make
-              AI adaptations without risking the integrity of the lesson.
-            </OakP>
-          </OakBox>
-
-          <OakBox $mb="spacing-16">
-            <label htmlFor="lesson-slug-input">
-              <OakP $font="heading-7" $mb="spacing-8">
-                Lesson ID (Lesson slug):
-              </OakP>
-            </label>
-            <OakFlex $gap="spacing-12" $alignItems="center">
-              <input
-                id="lesson-slug-input"
-                type="text"
-                value={lessonIdInput}
-                onChange={(e) => setLessonIdInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleFetch()}
-                placeholder="Enter lesson slug (e.g. 'identifying-equivalent-fractions')"
-                disabled={isLoading}
-                className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black disabled:bg-gray-100 disabled:text-gray-500"
-              />
-              <OakPrimaryButton
-                onClick={handleFetch}
-                disabled={isLoading || !lessonIdInput.trim()}
-              >
-                {isLoading ? "Fetching..." : "Fetch lesson"}
-              </OakPrimaryButton>
-            </OakFlex>
-          </OakBox>
-
-          {isLoading && (
-            <OakFlex
-              $background="bg-decorative2-very-subdued"
-              $bl="border-solid-l"
-              $borderColor="border-decorative2-stronger"
-              $pa="spacing-16"
-              $mt="spacing-16"
-              $borderRadius="border-radius-s"
-              $flexDirection="row"
-            >
-              <OakLoadingSpinner />
-              <OakP $ml="spacing-12" $font="body-2">
-                Fetching lesson data... This may take some time.
-              </OakP>
-            </OakFlex>
-          )}
-
-          {error && !isLoading && (
-            <OakBox
-              $pa="spacing-8"
-              $background="bg-decorative5-subdued"
-              $borderRadius="border-radius-m"
-            >
-              <OakP $font="body-2" $color="text-error">
-                {error.message}
-              </OakP>
-            </OakBox>
-          )}
-        </OakBox>
-      </OakFlex>
-    </OakMaxWidth>
+    <LessonAdaptIntro
+      introText="This is a prototype the AI enablement team have been working on to explore how well AI can identify key learning points (and slide based information) within Oak lessons, so that teachers can make AI adaptations without risking the integrity of the lesson."
+      lessonIdInput={lessonIdInput}
+      onLessonIdChange={setLessonIdInput}
+      onFetch={handleFetch}
+      isLoading={isLoading}
+      error={error}
+    />
   );
 }
 

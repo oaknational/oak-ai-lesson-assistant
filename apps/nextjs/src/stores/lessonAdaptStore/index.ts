@@ -104,7 +104,7 @@ export const createLessonAdaptStore = ({
       },
 
       rejectAllChanges: () => {
-        set({ approvedChangeIds: [], currentPlan: null });
+        set({ approvedChangeIds: [] });
       },
 
       setPlanFromResponse: (plan) => {

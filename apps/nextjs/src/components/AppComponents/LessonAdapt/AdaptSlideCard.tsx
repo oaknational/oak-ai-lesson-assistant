@@ -81,7 +81,7 @@ export function AdaptSlideCard({
       $borderRadius="border-radius-m"
       $background={!isDeleted ? "white" : "grey20"}
       $ba="border-solid-m"
-      $borderColor={"border-primary"}
+      $borderColor={!isDeleted ? "border-primary" : "border-neutral-lighter"}
     >
       <OakBox $pa="spacing-16">
         <OakFlex
