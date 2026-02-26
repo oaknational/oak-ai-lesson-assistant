@@ -13,7 +13,7 @@ const allOakServiceCategories = oakServiceCategories.flatMap(
   (group) => group.categories,
 );
 
-const allCategories = [...allAilaCategories, ...allOakServiceCategories];
+const allCategories = [...allOakServiceCategories, ...allAilaCategories];
 
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>
@@ -43,17 +43,17 @@ export function getSafetyResult(
   return "safe";
 }
 
-export function moderationSlugToDescription(
-  slug: ModerationBase["categories"][number],
-): string {
-  if (typeof slug !== "string") {
-    return "Unknown category";
-  }
+function findCategory(slug: string) {
+  return allCategories.find((c) => c.code === slug);
+}
 
-  return (
-    allCategories.find((c) => c.code === slug)?.userDescription ??
-    "Unknown category"
-  );
+export function moderationGuidanceText(result: ModerationBase): string {
+  const descriptions = result.categories
+    .map((slug) => (typeof slug === "string" ? findCategory(slug) : undefined))
+    .filter((c): c is (typeof allCategories)[number] => c !== undefined)
+    .map((c) => c.userDescription);
+
+  return `Contains ${descriptions.join(", ")}. Check content carefully.`;
 }
 
 export function getCategoryGroup(category: string) {

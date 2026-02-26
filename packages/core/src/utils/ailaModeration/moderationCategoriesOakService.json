@@ -5,13 +5,11 @@
     "categories": [
       {
         "code": "l/discriminatory-language",
-        "title": "Discriminatory Language",
-        "userDescription": "discriminatory language, behaviour or images"
+        "userDescription": "depiction or discussion of discriminatory behaviour or language (including stereotypes or slurs)"
       },
       {
         "code": "l/offensive-language",
-        "title": "Offensive Language",
-        "userDescription": "language which has the power to offend"
+        "userDescription": "language that may offend (e.g. swear words or abusive/offensive terms)"
       }
     ]
   },
@@ -21,28 +19,23 @@
     "categories": [
       {
         "code": "u/sensitive-content",
-        "title": "Sensitive Content",
-        "userDescription": "subjects which particular individuals may be sensitive to"
+        "userDescription": "sensitive or upsetting topics (e.g. bullying, bereavement, medical themes, or substance use)"
       },
       {
         "code": "u/violence-or-suffering",
-        "title": "Violence or Suffering",
-        "userDescription": "depiction of war, threats of war, death or the aftermath of war or terrorism"
+        "userDescription": "violence or suffering (e.g. war, famine, disasters, or animal cruelty)"
       },
       {
         "code": "u/mental-health-challenges",
-        "title": "Mental Health Challenges",
-        "userDescription": "depiction or discussion of serious mental health issues"
+        "userDescription": "mental health challenges (e.g. anxiety, depression, eating disorders, gambling, or substance abuse)"
       },
       {
         "code": "u/crime-or-illegal-activities",
-        "title": "Crime or Illegal Activities",
-        "userDescription": "immoral behaviour or minor criminal offences"
+        "userDescription": "crime or illegal activities (including online harms or age-related offences)"
       },
       {
         "code": "u/sexual-violence",
-        "title": "Sexual Violence",
-        "userDescription": "depiction or discussion of sexual or domestic abuse or violence"
+        "userDescription": "sexual violence themes (e.g. harassment, coercion, exploitation, or abuse)"
       }
     ]
   },
@@ -52,68 +45,57 @@
     "categories": [
       {
         "code": "s/nudity-or-sexual-content",
-        "title": "Nudity or Sexual Content",
-        "userDescription": "depiction or discussion of nudity or sexual content"
+        "userDescription": "nudity or sexual themes (e.g. relationships, reproduction, or sex education)"
       }
     ]
   },
   {
-    "title": "Physical",
+    "title": "Physical activity and equipment requiring safe use",
     "codePrefix": "p",
     "categories": [
       {
         "code": "p/practical-activities",
-        "title": "Practical Activities",
-        "userDescription": "use of equipment or ingredients that may require supervision for safety"
+        "userDescription": "practical activities or equipment that may require additional safety consideration or supervision"
       },
       {
         "code": "p/outdoor-learning",
-        "title": "Outdoor Learning",
-        "userDescription": "physical activity"
+        "userDescription": "learning activities outside the classroom"
       },
       {
         "code": "p/additional-qualifications",
-        "title": "Additional Qualifications",
-        "userDescription": "external URLs and 3rd party sites"
+        "userDescription": "activities that may require specialist qualifications or certified supervision"
       }
     ]
   },
   {
-    "title": "Recent and evolving",
+    "title": "Recent and time-sensitive content",
     "codePrefix": "r",
-    "_todo": "Descriptions need confirming with moderation team — no v0 equivalent",
     "categories": [
       {
         "code": "r/recent-content",
-        "title": "Recent Content",
-        "userDescription": "content relating to recent events which may be subject to change"
+        "userDescription": "recent events"
       },
       {
         "code": "r/recent-conflicts",
-        "title": "Recent Conflicts",
-        "userDescription": "content relating to recent or ongoing conflicts"
+        "userDescription": "recently ended armed conflicts (2009–December 2023)"
       }
     ]
   },
   {
     "title": "Nuanced content requiring care",
     "codePrefix": "n",
-    "_todo": "Descriptions need confirming with moderation team — no v0 equivalent",
     "categories": [
       {
         "code": "n/self-harm-suicide",
-        "title": "Self-harm and Suicide",
-        "userDescription": "depiction or discussion of self-harm or suicide"
+        "userDescription": "self-harm and suicide"
       },
       {
         "code": "n/potentially-offensive-language",
-        "title": "Potentially Offensive Language",
-        "userDescription": "language which may be considered offensive in some contexts"
+        "userDescription": "offensive language"
       },
       {
         "code": "n/strangulation-suffocation",
-        "title": "Strangulation and Suffocation",
-        "userDescription": "content relating to strangulation or suffocation"
+        "userDescription": "strangulation and suffocation"
       }
     ]
   },
@@ -123,52 +105,41 @@
     "categories": [
       {
         "code": "t/guides-self-harm-suicide",
-        "title": "Guides Self-harm or Suicide",
-        "userDescription": "guides, instructions or learning materials on how to harm oneself"
+        "userDescription": "guides self-harm or suicide"
       },
       {
         "code": "t/encourages-harmful-behaviour",
-        "title": "Encourages Harmful Behaviour",
-        "userDescription": "encouragement of harmful behaviour"
+        "userDescription": "encourages harmful behaviour"
       },
       {
         "code": "t/encourages-illegal-activity",
-        "title": "Encourages Illegal Activity",
-        "userDescription": "encouragement of illegal activity"
+        "userDescription": "encourages illegal activity"
       },
       {
         "code": "t/encourages-violence-harm-others",
-        "title": "Encourages Violence or Harm to Others",
-        "userDescription": "encouragement of violence"
+        "userDescription": "encourages violence or harm to others"
       },
       {
         "code": "t/using-creating-weapons",
-        "title": "Using or Creating Weapons",
-        "_todo": "Description needs confirming with moderation team — no v0 equivalent",
-        "userDescription": "content relating to using or creating weapons"
+        "userDescription": "using or creating weapons"
       },
       {
         "code": "t/using-creating-harmful-substances",
-        "title": "Using or Creating Harmful Substances",
-        "userDescription": "guides, recipes, instructions or learning materials for harmful substances"
+        "userDescription": "using or creating harmful substances"
       },
       {
         "code": "t/extreme-offensive-language",
-        "title": "Extreme Offensive Language",
-        "_todo": "Description needs confirming with moderation team — no v0 equivalent",
-        "userDescription": "extremely offensive language"
+        "userDescription": "extreme offensive or abusive language"
       }
     ]
   },
   {
     "title": "RSHE",
     "codePrefix": "e",
-    "_todo": "Description needs confirming with moderation team — no v0 equivalent",
     "categories": [
       {
         "code": "e/rshe-content",
-        "title": "RSHE Content",
-        "userDescription": "relationships, sex and health education content"
+        "userDescription": "RSHE content"
       }
     ]
   }
