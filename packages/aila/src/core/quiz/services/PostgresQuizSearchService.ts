@@ -3,16 +3,22 @@ import { aiLogger } from "@oakai/logger";
 
 import OpenAI from "openai";
 
+import type {
+  ImageMetadata,
+  QuizV3Question,
+} from "../../../protocol/schemas/quiz/quizV3";
 import type { SimplifiedResult } from "../interfaces";
 import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 
-interface HybridSearchRow {
+export interface HybridSearchRow {
   question_uid: string;
   description: string;
   lesson_slug: string;
   quiz_type: string;
+  quiz_question: QuizV3Question;
+  image_metadata: ImageMetadata[];
   score: number;
 }
 
@@ -72,6 +78,8 @@ export class PostgresQuizSearchService {
           description,
           lesson_slug,
           quiz_type,
+          quiz_question,
+          image_metadata,
           (${1 - hybridWeight} * ts_rank(to_tsvector('english', description), plainto_tsquery('english', ${query}))
             + ${hybridWeight} * (1 - (embedding <=> ${queryVectorString}::vector))) AS score
         FROM rag.quiz_questions
