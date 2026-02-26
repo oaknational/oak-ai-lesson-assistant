@@ -43,17 +43,33 @@ export function getSafetyResult(
   return "safe";
 }
 
-export function moderationSlugToDescription(
-  slug: ModerationBase["categories"][number],
-): string {
-  if (typeof slug !== "string") {
-    return "Unknown category";
+function findCategory(slug: string) {
+  return allCategories.find((c) => c.code === slug);
+}
+
+export function moderationGuidanceText(result: ModerationBase): string {
+  const matched = result.categories
+    .map((slug) => (typeof slug === "string" ? findCategory(slug) : undefined))
+    .filter((c): c is (typeof allCategories)[number] => c !== undefined);
+
+  const first = matched[0];
+  if (
+    matched.length === 1 &&
+    first &&
+    "longMessage" in first &&
+    typeof first.longMessage === "string"
+  ) {
+    return first.longMessage;
   }
 
-  return (
-    allCategories.find((c) => c.code === slug)?.userDescription ??
-    "Unknown category"
+  const descriptions = matched.map(
+    (c) =>
+      ("shortMessage" in c ? c.shortMessage : undefined) ??
+      ("userDescription" in c ? c.userDescription : undefined) ??
+      "unknown category",
   );
+
+  return `Contains ${descriptions.join(", ")}. Check content carefully.`;
 }
 
 export function getCategoryGroup(category: string) {
