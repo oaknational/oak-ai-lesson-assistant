@@ -222,14 +222,6 @@ function SurfaceSlideContent() {
                               </OakOL>
                             </OakBox>
                           )}
-                        {slide.coversDiversity && (
-                          <OakTagFunctional
-                            $color={"black"}
-                            $background={"mint"}
-                            label={"Cultural diversity content"}
-                            $font={"body-4"}
-                          />
-                        )}
                       </AdaptSlideCard>
                     );
                   })}
