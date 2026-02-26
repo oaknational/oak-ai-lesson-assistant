@@ -16,6 +16,7 @@ import {
   OakPrimaryButton,
   OakSmallPrimaryButton,
   OakSpan,
+  OakTagFunctional,
 } from "@oaknational/oak-components";
 
 import type { SlidePlan } from "@/components/AppComponents/LessonAdapt/AdaptSlideCard";
@@ -63,7 +64,7 @@ function getSlideCardPlan(
   return null;
 }
 
-function LessonAdaptContent() {
+function SurfaceSlideContent() {
   const [lessonIdInput, setLessonIdInput] = useState("");
 
   const actions = useLessonAdaptActions();
@@ -160,32 +161,6 @@ function LessonAdaptContent() {
                 slides included
               </OakP>
 
-              {/* Streamline option */}
-              <OakFlex
-                $gap={"spacing-16"}
-                $flexDirection={"row"}
-                $pv="spacing-16"
-              >
-                <OakSmallPrimaryButton
-                  onClick={() => {
-                    if (currentPlan) {
-                      console.log(
-                        "Rejecting all changes and keeping all slides",
-                      );
-                      void actions.rejectAllChanges();
-                    } else {
-                      console.log(
-                        "Generating plan to remove non essential slides",
-                      );
-                      void actions.generatePlan(`Remove non essential slides`);
-                    }
-                  }}
-                  disabled={status === "generating-plan"}
-                >
-                  {currentPlan ? "Reset to all slides" : "Reduce slides"}
-                </OakSmallPrimaryButton>
-              </OakFlex>
-
               {/* Slide cards */}
               {status === "generating-plan" && (
                 <OakFlex
@@ -208,8 +183,7 @@ function LessonAdaptContent() {
                     return (
                       <AdaptSlideCard
                         key={`slide-${slide.slideId}-${index}`}
-                        title={`${slide.slideNumber}: ${formatSlideType(slide.slideType)}`}
-                        isDeleted={slidePlan?.isDeleted}
+                        title={`${formatSlideType(slide.slideType)} ${slide.learningCycles?.length ? `- ${slide.learningCycles.join(", ")}` : ""}`}
                         thumbnailsLoading={thumbnailsLoading}
                         thumbnailUrl={
                           thumbnails?.find(
@@ -244,39 +218,20 @@ function LessonAdaptContent() {
                               </OakOL>
                             </OakBox>
                           )}
+                        {slide.coversDiversity && (
+                          <OakTagFunctional
+                            $color={"black"}
+                            $background={"mint"}
+                            label={"Cultural diversity content"}
+                            $font={"body-4"}
+                          />
+                        )}
                       </AdaptSlideCard>
                     );
                   })}
                 </OakFlex>
               )}
             </OakFlex>
-            {/* Debug info - collapsible */}
-            {isReady && slideContent && (
-              <details className="border-t border-gray-300 bg-gray-50 p-4">
-                <summary className="cursor-pointer text-sm font-semibold">
-                  Debug Info (Click to expand)
-                </summary>
-                <div className="mt-2 space-y-2">
-                  <details className="rounded border bg-white p-2">
-                    <summary className="cursor-pointer text-xs font-semibold">
-                      Extracted Slide Content - LLM Format
-                    </summary>
-                    <pre className="mt-2 max-h-48 overflow-auto text-xs">
-                      {JSON.stringify(slideContent, null, 2)}
-                    </pre>
-                  </details>
-
-                  <details className="rounded border bg-white p-2">
-                    <summary className="cursor-pointer text-xs font-semibold">
-                      Change plan for slides
-                    </summary>
-                    <pre className="mt-2 max-h-48 overflow-auto text-xs">
-                      {JSON.stringify(previousPlanResponse, null, 2)}
-                    </pre>
-                  </details>
-                </div>
-              </details>
-            )}
           </OakFlex>
         </OakMaxWidth>
       </>
@@ -302,11 +257,6 @@ function LessonAdaptContent() {
               explore how well AI can identify key learning points (and slide
               based information) within Oak lessons, so that teachers can make
               AI adaptations without risking the integrity of the lesson.
-            </OakP>
-            <OakP $font="body-1">
-              Please try adapting a few lessons and see what you think.
-              We&apos;d love to hear your feedback and ideas for how we might
-              integrate AI adaptations in the future.
             </OakP>
           </OakBox>
 
@@ -370,12 +320,12 @@ function LessonAdaptContent() {
   );
 }
 
-const AdaptLessonView = () => {
+const SurfaceSlideContentView = () => {
   return (
     <LessonAdaptStoreProvider>
-      <LessonAdaptContent />
+      <SurfaceSlideContent />
     </LessonAdaptStoreProvider>
   );
 };
 
-export default AdaptLessonView;
+export default SurfaceSlideContentView;

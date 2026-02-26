@@ -4,16 +4,13 @@ import {
   OakBox,
   OakFlex,
   OakHeading,
-  OakLI,
   OakLoadingSpinner,
-  OakOL,
   OakP,
-  OakSpan,
   OakTagFunctional,
 } from "@oaknational/oak-components";
 import Image from "next/image";
 
-const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
+export const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
   title:
     "Title slide: This slide introduces the lesson title and the unit it belongs to. The learning outcome is introduced later.",
   lessonOutcome:
@@ -34,7 +31,7 @@ const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
   endOfLesson: "End of lesson: This slide marks the end of the lesson.",
 };
 
-function formatSlideType(slideType: string): string {
+export function formatSlideType(slideType: string): string {
   return slideType
     .replace(/([A-Z])/g, " $1")
     .replace(/^./, (s) => s.toUpperCase());
@@ -46,20 +43,7 @@ export type SlidePlan = {
   reasoning?: string;
 } | null;
 
-export type AdaptSlideCardProps = {
-  slide: {
-    slideNumber: number;
-    slideId: string;
-    slideTitle?: string;
-    slideType: string;
-    keyLearningPoints?: string[];
-  };
-  thumbnailUrl: string | undefined;
-  thumbnailsLoading?: boolean;
-  slidePlan?: SlidePlan;
-};
-
-function getSummary(
+export function getSummary(
   plan: SlidePlan | undefined,
   slideType: string,
 ): React.ReactNode {
@@ -77,18 +61,25 @@ function getSummary(
   return null;
 }
 
+export type AdaptSlideCardProps = {
+  title: string;
+  isDeleted?: boolean;
+  thumbnailUrl?: string;
+  thumbnailsLoading?: boolean;
+  children?: React.ReactNode;
+};
+
 export function AdaptSlideCard({
-  slide,
+  title,
+  isDeleted,
   thumbnailUrl,
   thumbnailsLoading,
-  slidePlan,
+  children,
 }: AdaptSlideCardProps) {
-  const title = slide.slideTitle ?? formatSlideType(slide.slideType);
-
   return (
     <OakBox
       $borderRadius="border-radius-m"
-      $background={!slidePlan?.isDeleted ? "white" : "grey20"}
+      $background={!isDeleted ? "white" : "grey20"}
       $ba="border-solid-m"
       $borderColor={"border-primary"}
     >
@@ -100,13 +91,13 @@ export function AdaptSlideCard({
         >
           <OakFlex $justifyContent="center" $alignItems="center">
             <OakHeading tag="h3" $font="heading-7" $mr={"spacing-16"}>
-              {slide.slideNumber}: {title}
+              {title}
             </OakHeading>
-            {slidePlan && (
+            {isDeleted !== undefined && (
               <OakTagFunctional
                 $color={"black"}
-                $background={!slidePlan.isDeleted ? "mint" : "grey30"}
-                label={slidePlan.isDeleted ? "Excluded" : "Included"}
+                $background={!isDeleted ? "mint" : "grey30"}
+                label={isDeleted ? "Excluded" : "Included"}
                 $font={"body-4"}
               />
             )}
@@ -136,7 +127,7 @@ export function AdaptSlideCard({
               >
                 <Image
                   src={thumbnailUrl}
-                  alt={`Slide ${slide.slideNumber} thumbnail`}
+                  alt={`${title} thumbnail`}
                   fill
                   className="object-contain"
                   loading="lazy"
@@ -145,28 +136,7 @@ export function AdaptSlideCard({
             )}
           </OakBox>
           <OakFlex $flexDirection="column" $pa="spacing-16" $gap="spacing-12">
-            {getSummary(slidePlan, slide.slideType)}
-            {slide.keyLearningPoints && slide.keyLearningPoints.length > 0 && (
-              <OakBox
-                $mt="spacing-16"
-                $borderRadius="border-radius-s"
-                $ba="border-solid-s"
-                $borderColor="border-neutral-lighter"
-                $pa="spacing-12"
-                $background={slidePlan?.isDeleted ? "grey10" : "white"}
-              >
-                <OakP $font="body-2" $mb="spacing-4">
-                  <OakSpan $font="body-3-bold">Key learning points:</OakSpan>
-                </OakP>
-                <OakOL $ml="spacing-16">
-                  {slide.keyLearningPoints.map((point, i) => (
-                    <OakLI key={i} $font="body-3">
-                      {point}
-                    </OakLI>
-                  ))}
-                </OakOL>
-              </OakBox>
-            )}
+            {children}
           </OakFlex>
         </OakFlex>
       </OakBox>
