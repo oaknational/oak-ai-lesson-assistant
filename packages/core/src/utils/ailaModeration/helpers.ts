@@ -21,6 +21,12 @@ export function isToxic(result: ModerationBase): boolean {
   );
 }
 
+export function isHighlySensitive(result: ModerationBase): boolean {
+  return result.categories.some((category) =>
+    typeof category === "string" ? category.startsWith("n/") : false,
+  );
+}
+
 export function isGuidanceRequired(result: ModerationBase): boolean {
   return result.categories.length > 0;
 }
@@ -29,11 +35,19 @@ export function isSafe(result: ModerationBase): boolean {
   return result.categories.length === 0;
 }
 
-export function getSafetyResult(
-  result: ModerationBase,
-): "safe" | "guidance-required" | "toxic" {
+export type SafetyResult =
+  | "safe"
+  | "guidance-required"
+  | "highly-sensitive"
+  | "toxic";
+
+export function getSafetyResult(result: ModerationBase): SafetyResult {
   if (isToxic(result)) {
     return "toxic";
+  }
+
+  if (isHighlySensitive(result)) {
+    return "highly-sensitive";
   }
 
   if (isGuidanceRequired(result)) {
@@ -89,6 +103,11 @@ const MOCK_TOXIC_RESULT: ModerationResult = {
   justification: "Mock toxic result",
 };
 
+const MOCK_HIGHLY_SENSITIVE_RESULT: ModerationResult = {
+  categories: ["n/self-harm-suicide"],
+  justification: "Mock highly sensitive result",
+};
+
 const MOCK_SENSITIVE_RESULT: ModerationResult = {
   categories: ["l/strong-language"],
   justification: "Mock sensitive result",
@@ -98,6 +117,10 @@ export function getMockModerationResult(message?: string) {
   if (message?.includes("mod:tox")) {
     log.info("mod:tox detected, returning mock toxic result");
     return MOCK_TOXIC_RESULT;
+  }
+  if (message?.includes("mod:hs")) {
+    log.info("mod:hs detected, returning mock highly sensitive result");
+    return MOCK_HIGHLY_SENSITIVE_RESULT;
   }
   if (message?.includes("mod:sen")) {
     log.info("mod:sen detected, returning mock sensitive result");

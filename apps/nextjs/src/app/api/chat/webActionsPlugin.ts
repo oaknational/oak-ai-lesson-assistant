@@ -102,6 +102,32 @@ export const createWebActionsPlugin: PluginCreator = (
     }
   };
 
+  const onHighlySensitiveModeration: AilaPlugin["onHighlySensitiveModeration"] =
+    async (moderation, { aila }) => {
+      const { userId } = aila;
+      if (!userId) {
+        throw new Error("User ID not set");
+      }
+
+      try {
+        log.info("Sending slack notification for highly sensitive moderation");
+        await inngest.send({
+          name: "app/slack.notifyModeration",
+          user: {
+            id: userId,
+          },
+          data: {
+            chatId: aila.chatId || "Unknown",
+            categories: moderation.categories as string[],
+            justification: moderation.justification ?? "Unknown",
+          },
+        });
+      } catch (e) {
+        log.error("Error scheduling slack notification", e);
+        Sentry.captureException(e);
+      }
+    };
+
   const onBackgroundWork: AilaPlugin["onBackgroundWork"] = (promise) => {
     waitUntil(promise);
   };
@@ -109,6 +135,7 @@ export const createWebActionsPlugin: PluginCreator = (
   return {
     onStreamError,
     onToxicModeration,
+    onHighlySensitiveModeration,
     onBackgroundWork,
   };
 };
