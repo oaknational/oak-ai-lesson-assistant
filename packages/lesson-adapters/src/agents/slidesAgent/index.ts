@@ -3,6 +3,7 @@
 export {
   type SlideField,
   type IntentConfig,
+  type SlideBatchedProcessingConfig,
   SHARED_RULES,
   INTENT_CONFIGS,
   SUPPORTED_EDIT_TYPES,
@@ -18,7 +19,6 @@ export { filterSlideContent } from "./filtering";
 export { validateAgentOutput } from "./validation";
 
 export {
-  DEFAULT_BATCH_SIZE,
   LLM_TIMEOUT_MS,
   callSlidesAgent,
   processInBatches,
