@@ -42,7 +42,6 @@ export function SlideDeleteAdaptation({
           checked={isApproved}
           onChange={onToggle}
         />
-        <OakP $font="body-3-bold">Accept</OakP>
       </OakFlex>
     </OakFlex>
   );
