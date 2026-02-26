@@ -3,11 +3,14 @@
 /* eslint-disable no-console */
 import { useState } from "react";
 
+import { OakFlex, OakSmallPrimaryButton } from "@oaknational/oak-components";
+
 import {
   AdaptChatSidebar,
   AdaptLessonContent,
 } from "@/components/AppComponents/LessonAdapt";
 import { ReviewModal } from "@/components/AppComponents/LessonAdapt/ReviewModal";
+import { LessonAdaptIntro } from "@/components/AppComponents/LessonAdapt/lesson-adapt-intro";
 import {
   LessonAdaptStoreProvider,
   useLessonAdaptActions,
@@ -40,6 +43,7 @@ function LessonAdaptContent() {
     (state) => state.previousPlanResponse,
   );
   const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
+
   const approvedChangeIds = useLessonAdaptStore(
     (state) => state.approvedChangeIds,
   );
@@ -61,63 +65,42 @@ function LessonAdaptContent() {
 
   return (
     <div className="flex h-screen flex-col">
-      {/* Top input section - always visible */}
-      <div className="border-b border-gray-300 bg-white p-6">
-        <h1 className="mb-4 text-2xl font-bold">Lesson Adapt</h1>
-
-        <div className="mb-2">
-          <label className="mb-2 block text-sm font-medium">
-            Lesson slug or URL: the-modern-world-of-work
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={lessonIdInput}
-              onChange={(e) => setLessonIdInput(e.target.value.trim())}
-              placeholder="Enter lesson slug or URL (e.g. 'identifying-equivalent-fractions')"
-              className="flex-1 rounded border p-2"
-            />
-            <button
-              onClick={handleFetch}
-              disabled={!lessonIdInput.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-grey-400 rounded px-4 py-2"
-            >
-              {isLoading ? "Loading..." : "Fetch Lesson"}
-            </button>
-          </div>
-        </div>
-
-        {error && (
-          <div className="mt-4 rounded border border-red-200 bg-red-50 p-4">
-            <p className="font-semibold text-red-800">Error:</p>
-            <p className="text-red-600">{error.message}</p>
-          </div>
-        )}
-
-        {isReady && lessonData && (
-          <div className="mt-4 rounded border border-green-200 bg-green-50 p-3">
-            <p className="text-sm font-semibold text-green-800">
-              Lesson fetched successfully! Slide deck duplicated and ready for
-              adaptation
-            </p>
-          </div>
-        )}
-      </div>
-
       {/* Main content area with chat and lesson content */}
+      {!isReady && (
+        <LessonAdaptIntro
+          introText="This is a prototype the AI enablement team have been working on to explore how well AI can identify key learning points (and slide based information) within Oak lessons, so that teachers can make AI adaptations without risking the integrity of the lesson."
+          lessonIdInput={lessonIdInput}
+          onLessonIdChange={setLessonIdInput}
+          onFetch={handleFetch}
+          isLoading={isLoading}
+          error={error}
+        />
+      )}
       {isReady && lessonData && sessionId && (
-        <div className="flex flex-1 overflow-hidden">
-          <AdaptChatSidebar />
-          <AdaptLessonContent
-            presentationId={duplicatedPresentationId ?? ""}
-            presentationUrl={duplicatedPresentationUrl ?? ""}
-            lessonData={lessonData}
-            thumbnails={thumbnails ?? undefined}
-            thumbnailsLoading={thumbnailsLoading}
-            thumbnailsError={thumbnailsError}
-            slideKlpMappings={slideKlpMappings}
-          />
-        </div>
+        <>
+          <OakFlex
+            $alignItems="end"
+            $justifyContent={"end"}
+            $ph="spacing-24"
+            $pv="spacing-16"
+          >
+            <OakSmallPrimaryButton onClick={() => actions.reset()}>
+              Fetch new lesson
+            </OakSmallPrimaryButton>
+          </OakFlex>
+          <div className="flex flex-1 overflow-hidden">
+            <AdaptChatSidebar />
+            <AdaptLessonContent
+              presentationId={duplicatedPresentationId ?? ""}
+              presentationUrl={duplicatedPresentationUrl ?? ""}
+              lessonData={lessonData}
+              thumbnails={thumbnails ?? undefined}
+              thumbnailsLoading={thumbnailsLoading}
+              thumbnailsError={thumbnailsError}
+              slideKlpMappings={slideKlpMappings}
+            />
+          </div>
+        </>
       )}
 
       {/* Debug info - collapsible */}

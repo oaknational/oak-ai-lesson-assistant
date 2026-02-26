@@ -54,7 +54,8 @@ export const LessonAdaptIntro: FC<LessonAdaptIntroProps> = ({
           <OakBox $mb="spacing-16">
             <label htmlFor="lesson-slug-input">
               <OakP $font="heading-7" $mb="spacing-8">
-                Lesson URL or slug (e.g. "identifying-equivalent-fractions"):
+                Lesson URL or slug (e.g.
+                "use-the-language-of-equivalent-fractions-correctly"):
               </OakP>
             </label>
             <OakFlex $gap="spacing-12" $alignItems="center">
@@ -64,7 +65,7 @@ export const LessonAdaptIntro: FC<LessonAdaptIntroProps> = ({
                 value={lessonIdInput}
                 onChange={(e) => onLessonIdChange(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && onFetch()}
-                placeholder='Lesson URL or slug (e.g. "identifying-equivalent-fractions")'
+                placeholder='Lesson URL or slug (e.g. "use-the-language-of-equivalent-fractions-correctly")'
                 disabled={isLoading}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-3 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-black disabled:bg-gray-100 disabled:text-gray-500"
               />

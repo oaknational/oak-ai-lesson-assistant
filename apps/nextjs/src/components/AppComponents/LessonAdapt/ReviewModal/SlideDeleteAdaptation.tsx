@@ -38,7 +38,7 @@ export function SlideDeleteAdaptation({
       <OakFlex $alignItems="center" $gap="spacing-8" className="shrink-0">
         <OakCheckBox
           id={changeId}
-          value={changeId}
+          value={"Accept"}
           checked={isApproved}
           onChange={onToggle}
         />

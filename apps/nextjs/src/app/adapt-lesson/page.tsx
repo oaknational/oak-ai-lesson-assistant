@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import LessonAdaptView from "./LessonAdaptView";
+import AdaptLessonView from "./AdaptLessonView";
 
 export default async function LessonAdaptPageServer() {
   const clerkAuthentication = await auth();
@@ -17,5 +17,5 @@ export default async function LessonAdaptPageServer() {
     redirect("/");
   }
 
-  return <LessonAdaptView />;
+  return <AdaptLessonView />;
 }

@@ -70,6 +70,7 @@ export const LessonAdaptStoreProvider: React.FC<
       // Open the review modal
       store.getState().actions.setShowReviewModal(true);
       setIsGenerating(false);
+      setMessages([]);
     },
     onError: (error) => {
       setMessages((prev) => [

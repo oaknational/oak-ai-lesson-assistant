@@ -107,7 +107,7 @@ export function ReviewModal({
                 >
                   {slide.description && (
                     <OakP $font="body-3">
-                      <OakSpan $font="body-3-bold">[{slide.typeLabel}]</OakSpan>{" "}
+                      <OakSpan $font="body-3-bold">{slide.typeLabel}</OakSpan>{" "}
                       {slide.description}
                     </OakP>
                   )}
