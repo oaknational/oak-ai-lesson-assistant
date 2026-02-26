@@ -6,16 +6,13 @@ import type { AdaptationPlan } from "@oakai/lesson-adapters";
 
 import {
   OakBox,
-  OakCheckBox,
   OakFlex,
   OakHeading,
   OakLoadingSpinner,
   OakMaxWidth,
   OakP,
   OakPrimaryButton,
-  OakSecondaryButton,
   OakSmallPrimaryButton,
-  OakSmallSecondaryButton,
   OakSpan,
 } from "@oaknational/oak-components";
 
