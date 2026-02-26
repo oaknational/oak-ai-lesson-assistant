@@ -34,7 +34,7 @@ export function filterSlideContent(
         rows: table.rows,
         columns: table.columns,
         cells: table.cells.map((row) =>
-          row.map((cell) => ({ id: cell.id, content: cell.content }))
+          row.map((cell) => ({ id: cell.id, content: cell.content })),
         ),
       }));
     }
