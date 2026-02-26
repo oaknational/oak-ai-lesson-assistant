@@ -1,3 +1,37 @@
+## [1.64.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.1...v1.64.2) (2026-02-24)
+
+
+### Bug Fixes
+
+* **agentic:** keyword definitions should use sentence case ([#957](https://github.com/oaknational/oak-ai-lesson-assistant/issues/957)) ([ef7b833](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ef7b833315733f61554355eaf950d05c3321a43d))
+* **agentic:** section agents produce conversational responses instead of content ([#959](https://github.com/oaknational/oak-ai-lesson-assistant/issues/959)) ([7caa537](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7caa537df0ca1963f64e1062cf612bf1231e3e4f))
+* remove stale Turbopack guard that prevented Sentry init ([#966](https://github.com/oaknational/oak-ai-lesson-assistant/issues/966)) ([a86d13c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a86d13c659183f2f93515c798067a31cdca8fe87))
+* update empty screen accordion copy to match Figma designs ([#940](https://github.com/oaknational/oak-ai-lesson-assistant/issues/940)) ([9671921](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9671921d13f42e4b76d285e94505708254181c8f))
+
+## [1.64.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.0...v1.64.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* use Sanity thumbTime for Mux video thumbnails ([#954](https://github.com/oaknational/oak-ai-lesson-assistant/issues/954)) ([ce47ef6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ce47ef631265794ded093bf2ca141a1eb789fb84))
+
+# [1.64.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.63.0...v1.64.0) (2026-02-12)
+
+
+### Bug Fixes
+
+* remove X/Twitter link from footer and menu bar ([#941](https://github.com/oaknational/oak-ai-lesson-assistant/issues/941)) ([0384189](https://github.com/oaknational/oak-ai-lesson-assistant/commit/03841896d5f310370c0419d1fea6c2fdf1f8ead7))
+
+
+### Features
+
+* zustand store and review modal ([#933](https://github.com/oaknational/oak-ai-lesson-assistant/issues/933)) ([03cea8e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/03cea8e8e3dd91d685d60353edc22fbdc9e45895))
+
+
+### Performance Improvements
+
+* **quiz:** use low reasoning effort for quiz composer [AI-1961] ([#916](https://github.com/oaknational/oak-ai-lesson-assistant/issues/916)) ([7a6852d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7a6852d4a3d7caa0dd0cbe9bb473062a3fea69ce))
+
 # [1.63.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.62.0...v1.63.0) (2026-02-10)
 
 
