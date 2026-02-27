@@ -1027,6 +1027,26 @@ model RagLessonPlanPart {
   @@schema("rag")
 }
 
+model RagQuizQuestion {
+  id               Int      @id @default(autoincrement())
+  questionUid      String   @unique @map("question_uid")
+  lessonSlug       String   @map("lesson_slug")
+  subjectSlug      String   @map("subject_slug")
+  keyStageSlug     String   @map("key_stage_slug")
+  quizType         String   @map("quiz_type")
+  questionPosition Int      @map("question_position")
+  rawJson          Json     @map("raw_json") @db.JsonB
+  description      String?
+  embedding        Unsupported("vector(768)")?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([lessonSlug], name: "idx_rag_quiz_questions_lesson_slug")
+  @@index([subjectSlug, keyStageSlug], name: "idx_rag_quiz_questions_subject_ks")
+  @@map("quiz_questions")
+  @@schema("rag")
+}
+
 model AdditionalMaterialInteraction {
   id     String @id @default(uuid())
   userId String @map("user_id")
