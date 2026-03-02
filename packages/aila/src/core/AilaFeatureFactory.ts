@@ -7,6 +7,7 @@ import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
 import { AilaModeration } from "../features/moderation";
+import type { AilaModerator } from "../features/moderation/moderators";
 import { OakModerationServiceModerator } from "../features/moderation/moderators/OakModerationServiceModerator";
 import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
@@ -45,23 +46,28 @@ export class AilaFeatureFactory {
     aila: AilaServices,
     options: AilaOptions,
     openAiClient?: OpenAILike,
+    fixtureOakModerator?: AilaModerator,
   ): AilaModerationFeature | undefined {
     if (options.useModeration) {
       const oakServicePrimary =
         process.env.OAK_MODERATION_V1_PRIMARY === "true";
       const baseUrl = process.env.MODERATION_API_URL;
-      invariant(
-        baseUrl,
-        "MODERATION_API_URL is required when moderation is enabled",
-      );
 
-      const oakModerator = new OakModerationServiceModerator({
-        baseUrl,
-        chatId: aila.chatId,
-        userId: aila.userId,
-        protectionBypassSecret:
-          process.env.MODERATION_API_BYPASS_SECRET || undefined,
-      });
+      const oakModerator =
+        fixtureOakModerator ??
+        (() => {
+          invariant(
+            baseUrl,
+            "MODERATION_API_URL is required when moderation is enabled",
+          );
+          return new OakModerationServiceModerator({
+            baseUrl,
+            chatId: aila.chatId,
+            userId: aila.userId,
+            protectionBypassSecret:
+              process.env.MODERATION_API_BYPASS_SECRET || undefined,
+          });
+        })();
 
       if (oakServicePrimary) {
         log.info("Oak Moderation Service is primary moderator");
