@@ -5,9 +5,17 @@ import { aiLogger } from "@oakai/logger";
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
 
+import thresholdsConfig from "../moderationThresholdsOakService.json";
 import { AilaModerationError, AilaModerator } from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
+
+const thresholds: Record<string, number> = thresholdsConfig.thresholds;
+
+function isCategoryFlagged(code: string, score: number): boolean {
+  const threshold = thresholds[code] ?? thresholdsConfig.defaultThreshold;
+  return score < threshold;
+}
 
 export interface OakModerationServiceModeratorConfig {
   baseUrl: string;
@@ -22,7 +30,8 @@ export interface OakModerationServiceModeratorConfig {
  * Uses Vercel OIDC tokens for authentication and openapi-fetch with
  * generated types from the OpenAPI spec.
  * Returns 24 sub-category scores (1-5 Likert, 5 = safe).
- * Categories are derived from scores < 5.
+ * Categories are flagged when their score falls below a per-category
+ * threshold defined in moderationThresholdsOakService.json.
  */
 export class OakModerationServiceModerator extends AilaModerator {
   private readonly baseUrl: string;
@@ -99,7 +108,7 @@ export class OakModerationServiceModerator extends AilaModerator {
       }
 
       const categories = Object.entries(data.scores)
-        .filter(([, score]) => score < 5)
+        .filter(([code, score]) => isCategoryFlagged(code, score))
         .map(([code]) => code) as ModerationResult["categories"];
 
       log.info("Oak Moderation Service response received", {
