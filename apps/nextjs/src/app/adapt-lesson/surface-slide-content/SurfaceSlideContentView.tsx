@@ -132,8 +132,13 @@ function SurfaceSlideContent() {
           $alignItems="center"
           $pa="spacing-24"
         >
-          <OakMaxWidth>
-            <OakFlex $flexDirection="column" $mt="spacing-16">
+          <OakMaxWidth $maxWidth={"spacing-960"}>
+            <OakFlex
+              $mh={"spacing-48"}
+              $flexDirection="column"
+              $mt="spacing-16"
+              $maxWidth={"spacing-960"}
+            >
               <OakHeading tag="h1" $font="heading-3" $mb="spacing-12">
                 {lessonData?.title}
               </OakHeading>
@@ -143,8 +148,8 @@ function SurfaceSlideContent() {
             </OakFlex>
           </OakMaxWidth>
         </OakFlex>
-        <OakMaxWidth>
-          <OakFlex $flexDirection="column">
+        <OakMaxWidth $maxWidth={"spacing-960"}>
+          <OakFlex $mh={"spacing-48"} $flexDirection="column">
             {/* Main content */}
             <OakBox $mb="spacing-32" $mt="spacing-32">
               <LessonDetailsCard
@@ -160,7 +165,7 @@ function SurfaceSlideContent() {
               <OakHeading tag="h2" $font="heading-5" $mb="spacing-4">
                 Lesson slides
               </OakHeading>
-              <OakP $font="body-3" $color="text-subdued">
+              <OakP $mb={"spacing-16"} $font="body-3" $color="text-subdued">
                 {selectedSlideIds.length} of {slideContent?.slides.length ?? 0}{" "}
                 slides included
               </OakP>
@@ -177,7 +182,11 @@ function SurfaceSlideContent() {
                 </OakFlex>
               )}
               {slideContent && status !== "generating-plan" && (
-                <OakFlex $flexDirection="column" $gap="spacing-24">
+                <OakFlex
+                  $flexDirection="column"
+                  $gap="spacing-24"
+                  $justifyContent={"center"}
+                >
                   {slideContent.slides?.map((slide, index) => {
                     const slidePlan = getSlideCardPlan(
                       slide.slideId,
@@ -204,9 +213,7 @@ function SurfaceSlideContent() {
                               $ba="border-solid-s"
                               $borderColor="border-neutral-lighter"
                               $pa="spacing-12"
-                              $background={
-                                slidePlan?.isDeleted ? "grey10" : "white"
-                              }
+                              $background={"grey10"}
                             >
                               <OakP $font="body-2" $mb="spacing-4">
                                 <OakSpan $font="body-3-bold">
@@ -215,7 +222,11 @@ function SurfaceSlideContent() {
                               </OakP>
                               <OakOL $ml="spacing-16">
                                 {slide.keyLearningPoints.map((point, i) => (
-                                  <OakLI key={i} $font="body-3">
+                                  <OakLI
+                                    key={i}
+                                    $font="body-3"
+                                    style={{ lineHeight: "1.5" }}
+                                  >
                                     {point}
                                   </OakLI>
                                 ))}
@@ -236,13 +247,34 @@ function SurfaceSlideContent() {
 
   return (
     <LessonAdaptIntro
-      introText="This is a prototype the AI enablement team have been working on to explore how well AI can identify key learning points (and slide based information) within Oak lessons, so that teachers can make AI adaptations without risking the integrity of the lesson."
       lessonIdInput={lessonIdInput}
       onLessonIdChange={setLessonIdInput}
       onFetch={handleFetch}
       isLoading={isLoading}
       error={error}
-    />
+    >
+      <OakP $font="body-1" $mb="spacing-16">
+        This is a prototype that the AI enablement team have been working on to
+        explore the potential of AI in lesson adaptation. We are moving from
+        'squad-only' testing to this first internal pilot. Your feedback at this
+        stage is critical to support iteration.
+      </OakP>
+      <OakP $font="body-1">We would like you to evaluate whether:</OakP>
+      <OakOL $ml="spacing-16" $mb="spacing-16">
+        <OakLI $font="body-1">
+          you think the LLM has assigned the correct KLPs to the correct slides.
+        </OakLI>
+        <OakLI $font="body-1">
+          you think the LLM has assigned the correct slide type, learning cycle
+          title and explanation sentence to the correct slide.
+        </OakLI>
+      </OakOL>
+      <OakP $font="body-1">
+        We know that this is not a 'finished product' as we are focused on
+        testing the intelligence and proficiency of AI. Out of scope elements
+        include the time taken to 'fetch' a lesson.
+      </OakP>
+    </LessonAdaptIntro>
   );
 }
 

@@ -11,30 +11,36 @@ import {
 import Image from "next/image";
 
 export const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
-  title:
-    "Title slide: This slide introduces the lesson title and the unit it belongs to. The learning outcome is introduced later.",
-  lessonOutcome:
-    "Lesson outcome: This slide enables pupils to understand the aim and purpose of their learning.",
+  title: "This slide shows the lesson title and the unit it belongs to.",
+  lessonOutcome: "This slide introduces pupils to the lesson's aim.",
   keywords:
-    "Keywords: This slide introduces the keywords taught in the lesson. They are taught in context throughout the lesson.",
+    "This slide introduces pupils to the tier 3 and tier 2 vocabulary that will be taught in the lesson.",
   lessonOutline:
-    "Lesson outline: This slide allows pupils to understand the structure of the lesson and their learning.",
-  explanation:
-    "Explanation: This slide teaches the key learning points and keywords pupils need to meet the learning outcome.",
+    "This slide provides an overview of the structure of the lesson.  It appears at the beginning of each section.",
+  explanation: "This slide teaches and models the knowledge in the lesson",
   checkForUnderstanding:
-    "Check for understanding: This slide provides the opportunity to check pupils' understanding of what has been explained.",
+    "This slide checks pupils’ understanding of the knowledge taught",
   practice:
-    "Practice: This slide provides the opportunity for pupils to practise their knowledge of the key learning points.",
-  summary: "Summary: This slide summarises the key learning from the lesson.",
+    "This slide provides the opportunity for pupils to practise new knowledge",
+  summary: "This slide summarises the key learning from the lesson.",
   feedback:
-    "Feedback: This slide provides feedback to pupils on their learning.",
+    "This slide provides an opportunity to check pupils’ understanding and address misconceptions.",
   endOfLesson: "End of lesson: This slide marks the end of the lesson.",
 };
 
 export function formatSlideType(slideType: string): string {
-  return slideType
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (s) => s.toUpperCase());
+  return (
+    slideType
+      .replace(/([A-Z])/g, " $1")
+      .toLowerCase()
+      .slice(0, 1)
+      .toUpperCase() +
+    slideType
+      .replace(/([A-Z])/g, " $1")
+      .toLowerCase()
+      .slice(1)
+  );
+  // .replace(/^./, (s) => s.toUpperCase());
 }
 
 export type SlidePlan = {
@@ -120,16 +126,18 @@ export function AdaptSlideCard({
             )}
             {thumbnailUrl && (
               <OakFlex
+                $mv={"spacing-16"}
                 $width={"spacing-360"}
-                $height={"spacing-240"}
                 $position="relative"
                 $flexDirection={"row"}
+                style={{ aspectRatio: "16 / 9" }}
               >
                 <Image
+                  style={{ border: "solid #cacaca 0.5px" }}
                   src={thumbnailUrl}
                   alt={`${title} thumbnail`}
                   fill
-                  className="object-contain"
+                  className="object-fit"
                   loading="lazy"
                 />
               </OakFlex>

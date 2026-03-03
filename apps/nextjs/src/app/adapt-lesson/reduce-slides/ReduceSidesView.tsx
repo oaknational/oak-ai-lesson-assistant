@@ -288,14 +288,24 @@ function LessonAdaptContent() {
 
   return (
     <LessonAdaptIntro
-      introText="This is a prototype the AI enablement team have been working on to explore how well AI can identify key learning points (and slide based information) within Oak lessons, so that teachers can make AI adaptations without risking the integrity of the lesson."
-      introTextSecondary="Please try adapting a few lessons and see what you think. We'd love to hear your feedback and ideas for how we might integrate AI adaptations in the future."
       lessonIdInput={lessonIdInput}
       onLessonIdChange={setLessonIdInput}
       onFetch={handleFetch}
       isLoading={isLoading}
       error={error}
-    />
+    >
+      <OakP $font="body-1" $mb="spacing-16">
+        This is a prototype the AI enablement team have been working on to
+        explore how well AI can identify key learning points (and slide based
+        information) within Oak lessons, so that teachers can make AI
+        adaptations without risking the integrity of the lesson.
+      </OakP>
+      <OakP $font="body-1">
+        Please try adapting a few lessons and see what you think. We'd love to
+        hear your feedback and ideas for how we might integrate AI adaptations
+        in the future.
+      </OakP>
+    </LessonAdaptIntro>
   );
 }
 

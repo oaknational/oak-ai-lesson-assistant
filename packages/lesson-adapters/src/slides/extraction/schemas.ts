@@ -12,7 +12,7 @@ export const slideTypeSchema = z.enum([
   "lessonOutline",
   "summary",
   "endOfLesson",
-  "teacher",
+  "teacherGuidance",
   "copyright",
   "checkForUnderstanding",
   "explanation",

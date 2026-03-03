@@ -18,7 +18,7 @@ export function Keywords({ keywords }: KeywordsProps) {
       <OakHeading tag="h3" $font="heading-6" $mb="spacing-16">
         Keywords
       </OakHeading>
-      <OakFlex $flexDirection="column" $gap="spacing-4" $maxWidth="spacing-640">
+      <OakFlex $flexDirection="column" $gap="spacing-4">
         {keywords.map((kw, index) => (
           <OakP key={index} $font="body-3">
             <OakSpan $font="body-3-bold">{kw.keyword}</OakSpan> -{" "}

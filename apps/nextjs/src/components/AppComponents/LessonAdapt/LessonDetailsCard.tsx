@@ -36,7 +36,12 @@ export function LessonDetailsCard({
         selectedKlps={selectedKlps}
       />
       <Keywords keywords={keywords} />
-      <CommonMisconception misconception={misconceptions[0]} />
+      {misconceptions.map((misconception, index) => (
+        <CommonMisconception
+          key={`${misconception.misconception}-${index}`}
+          misconception={misconception}
+        />
+      ))}
     </OakFlex>
   );
 }

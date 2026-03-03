@@ -3,7 +3,11 @@
 /* eslint-disable no-console */
 import { useState } from "react";
 
-import { OakFlex, OakSmallPrimaryButton } from "@oaknational/oak-components";
+import {
+  OakFlex,
+  OakP,
+  OakSmallPrimaryButton,
+} from "@oaknational/oak-components";
 
 import {
   AdaptChatSidebar,
@@ -68,13 +72,19 @@ function LessonAdaptContent() {
       {/* Main content area with chat and lesson content */}
       {!isReady && (
         <LessonAdaptIntro
-          introText="This is a prototype the AI enablement team have been working on to explore how well AI can identify key learning points (and slide based information) within Oak lessons, so that teachers can make AI adaptations without risking the integrity of the lesson."
           lessonIdInput={lessonIdInput}
           onLessonIdChange={setLessonIdInput}
           onFetch={handleFetch}
           isLoading={isLoading}
           error={error}
-        />
+        >
+          <OakP $font="body-1" $mb="spacing-16">
+            This is a prototype the AI enablement team have been working on to
+            explore how well AI can identify key learning points (and slide
+            based information) within Oak lessons, so that teachers can make AI
+            adaptations without risking the integrity of the lesson.
+          </OakP>
+        </LessonAdaptIntro>
       )}
       {isReady && lessonData && sessionId && (
         <>
