@@ -1,6 +1,10 @@
 export { AdaptChatSidebar } from "./AdaptChatSidebar";
 export { AdaptLessonContent } from "./AdaptLessonContent";
 export { AdaptationPlanView } from "./AdaptationPlanView";
+export { CommonMisconception } from "./CommonMisconception";
+export { KeyLearningPoints } from "./KeyLearningPoints";
+export { Keywords } from "./Keywords";
+export { LessonDetailsCard } from "./LessonDetailsCard";
 export { LessonDetailsTab } from "./LessonDetailsTab";
 export { SlidesTab } from "./SlidesTab";
 export { ThumbnailsTab } from "./ThumbnailsTab";

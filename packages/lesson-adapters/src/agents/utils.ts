@@ -23,25 +23,36 @@ export interface SimplifiedSlideContent {
   slideType?: string;
 }
 
+export interface FormatSlidesOptions {
+  /**
+   * When true (default), text elements and table cells are prefixed with their
+   * element IDs. Required for editing agents that need to reference specific
+   * elements. Set to false for classification/analysis agents where IDs add
+   * noise without value.
+   */
+  includeElementIds?: boolean;
+}
+
 /**
  * Format slides in a readable structure for LLM prompts
  * @param slides - Array of slide content to format
+ * @param options - Formatting options
  * @returns Formatted string representation of slides
  */
 export function formatSlidesForPrompt(
   slides: SimplifiedSlideContent[],
+  options: FormatSlidesOptions = {},
 ): string {
+  const { includeElementIds = true } = options;
+
   return slides
     .map((slide) => {
-      const parts = [
-        `## Slide ${slide.slideNumber}`,
-        `- Slide ID: ${slide.slideId}`,
-      ];
+      const parts = [`## Slide ${slide.slideNumber} [${slide.slideId}]`];
 
       if (slide.slideTitle) {
         parts.push(`- Title: ${slide.slideTitle}`);
       }
-      if (slide.slideType) {
+      if (slide.slideType && slide.slideType !== "unclassified") {
         parts.push(`- Slide Type: ${slide.slideType}`);
       }
 
@@ -65,29 +76,63 @@ export function formatSlidesForPrompt(
       const tables = slide.tables ?? [];
 
       if (textElements.length > 0) {
-        parts.push(
-          `\n### Text Content (preserve all whitespace, including newlines and spacing):`,
-          ...textElements.map((te) => `Text element [${te.id}]: ${te.content}`),
-        );
+        if (includeElementIds) {
+          parts.push(
+            `\n### Text Content (preserve all whitespace, including newlines and spacing):`,
+            ...textElements.map(
+              (te) => `Text element [${te.id}]: ${te.content}`,
+            ),
+          );
+        } else {
+          parts.push(
+            `\n### Text Content:`,
+            ...textElements.map((te) => te.content),
+          );
+        }
       }
 
       if (tables.length > 0) {
         parts.push(`\n### Tables:`);
         tables.forEach((table, tableIdx) => {
-          parts.push(
-            `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
-          );
-          table.cells.forEach((row) => {
-            const rowContent = row
-              .map((cell) => `[${cell.id}]${cell.content}`)
-              .join(" | ");
-            parts.push(`  ${rowContent}`);
-          });
+          if (includeElementIds) {
+            parts.push(
+              `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
+              `| Cell ID & Content |`,
+              `| --- | --- | --- |`,
+            );
+            table.cells.forEach((row) => {
+              const rowContent = row
+                .map((cell) => `[${cell.id}]${cell.content}`)
+                .join(" | ");
+              parts.push(`| ${rowContent} |`);
+            });
+          } else {
+            parts.push(
+              `\nTable ${tableIdx + 1} (${table.rows}×${table.columns}):`,
+              `| ${table.cells[0]?.map(() => "").join(" | ") ?? ""} |`,
+              `| --- |`,
+            );
+            table.cells.forEach((row) => {
+              const rowContent = row.map((cell) => cell.content).join(" | ");
+              parts.push(`| ${rowContent} |`);
+            });
+          }
         });
       }
 
       if (textElements.length === 0 && tables.length === 0) {
         parts.push(`- No text content`);
+      }
+
+      if (slide.images && slide.images.length > 0) {
+        parts.push(`\n### Images:`);
+        slide.images.forEach((img) => {
+          if (includeElementIds) {
+            parts.push(`- Image [${img.id}]: ${img.description}`);
+          } else {
+            parts.push(`- Image: ${img.description}`);
+          }
+        });
       }
 
       return parts.join("\n");
@@ -110,5 +155,8 @@ export function simplifySlideContent(
     slideType: slide.slideType,
     textElements: slide.textElements,
     tables: slide.tables,
+    images: slide.nonTextElements
+      ?.filter((e) => e.type === "image")
+      .map((e) => ({ id: e.id, description: e.description })),
   }));
 }

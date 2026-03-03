@@ -190,9 +190,12 @@ A slide is a candidate for deletion if ANY of the following apply:
 - **Preserve named examples and case studies**: If a slide introduces specific people, artists, historical figures, or named case studies that do not appear on any earlier slide, the slide MUST be kept. Named individuals are high-value pedagogical content — they are what students remember and get assessed on. Even if the surrounding topic overlaps with an earlier slide, new named examples make the slide essential.
 - **Partial overlap is not redundancy**: If a later slide shares some general content with an earlier slide but ALSO introduces new specific information (names, examples, details, case studies), it is NOT redundant. A slide is only redundant if it adds nothing new.
 - **Progressive depth is not redundancy**: Lessons build understanding in layers — first stating WHAT something is, then explaining HOW or WHY it works. If a later slide explains the mechanism, process, or reasoning behind a concept that an earlier slide only introduced at a high level, the later slide MUST be kept. Ask: "Would a student understand the detail or process from the earlier slide alone?" If not, the later slide is essential and the earlier slide does not supersede it.
+- **Explanation slide limit**: Allow only one explanation slide directly leading up to or following a KLP if it provides additional contextual information, models, or images for setting context or broadening knowledge. If an explanation slide provides additional new information directly related to the KLP that progresses pupils' knowledge, it MUST NOT be removed.
 - **Diversity as a tiebreaker**: If a slide is a candidate for deletion (e.g. it has some redundant content), check its "Covers Diversity" flag. If the slide is marked "Covers Diversity: yes", this is a strong reason to KEEP it — diversity content provides inclusive representation that has pedagogical value beyond the subject content. Only delete a diversity slide if its content is entirely duplicated on another slide that is also marked as covering diversity.
 - **Preserve student activities**: Do not delete slides containing student activities or tasks, unless the same activity is repeated on a later slide — in that case the later repetition may be deleted.
 - **Checking-for-understanding rule**: If slideType is checkForUnderstanding, if the same understanding has already been checked on an earlier slide, the later slide can be deleted. If the understanding has NOT been checked before, the slide must be kept.
+- **Checking-for-understanding purpose**: A check-for-understanding slide exists to check if pupils understand the Key Learning Point(s) from preceding slides. This is different from repetition in explanation slides. A check-for-understanding slide should ONLY be removed if it does not relate to a KLP OR that knowledge has already been checked on an earlier slide.
+- **Task purpose**: A task slide exists for pupils to practise knowledge of KLPs from preceding slides. This is different from repetition in explanation slides. Task slides must NEVER be removed.
 - **Practice-feedback pairing**: A "practice" slide (slideType: practice) poses a question or task for pupils, while its corresponding "feedback" slide (slideType: feedback) provides the model answer or worked example. Even though the question text may be repeated on the feedback slide, this is NOT redundancy — the feedback slide exists to reveal the answer. These MUST be treated as a paired unit:
   - Never delete a practice slide while keeping its corresponding feedback slide, or vice versa. An orphaned answer without its question (or a question without its answer) makes the presentation incoherent.
   - A feedback slide immediately following a practice slide is the feedback for that practice. Treat them as a pair.
@@ -205,8 +208,8 @@ A slide is a candidate for deletion if ANY of the following apply:
 - **Verify KLP safety**: After assembling your deletion list, do a final check: for each KLP mentioned across all slides, confirm that at least one slide covering that KLP remains in slidesToKeep.
 ${SHARED_RULES}`,
     schema: targetedChangesSchema,
-    slideFields: ["textElements", "tables", "keyLearningPoints"],
-    promptSlideFields: ["textElements", "tables"],
+    slideFields: ["textElements", "tables", "keyLearningPoints", "images"],
+    promptSlideFields: ["textElements", "tables", "images"],
     protectedSlideTypes: [
       "title",
       "teacher",

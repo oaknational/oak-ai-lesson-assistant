@@ -11,7 +11,7 @@ import {
 } from "@oaknational/oak-components";
 
 import { LessonDetailsTab } from "./LessonDetailsTab";
-import { type SlideKlpMapping, ThumbnailsWithKlpTab } from "./ReviewModal";
+import { type SlideContent, ThumbnailsWithKlpTab } from "./ReviewModal";
 import { SlidesTab } from "./SlidesTab";
 import { ThumbnailsTab } from "./ThumbnailsTab";
 
@@ -47,7 +47,7 @@ interface AdaptLessonContentProps {
   thumbnails: Thumbnail[] | undefined;
   thumbnailsError: { message: string } | null;
   thumbnailsLoading?: boolean;
-  slideKlpMappings: SlideKlpMapping[];
+  slideKlpMappings: SlideContent[];
 }
 
 const tabs = ["Lesson details", "Slides", "Thumbnails"];
