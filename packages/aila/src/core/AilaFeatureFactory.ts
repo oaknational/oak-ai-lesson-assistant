@@ -65,7 +65,7 @@ export class AilaFeatureFactory {
             chatId: aila.chatId,
             userId: aila.userId,
             protectionBypassSecret:
-              process.env.MODERATION_API_BYPASS_SECRET || undefined,
+              process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
           });
         })();
 

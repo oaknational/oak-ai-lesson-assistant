@@ -11,6 +11,7 @@ export class FixtureReplayOakModerator extends AilaModerator {
     super({});
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async moderate() {
     log.info("Using Oak moderation fixture: %s", this.scenarioName);
     return oakModerationFixtures[this.scenarioName];
