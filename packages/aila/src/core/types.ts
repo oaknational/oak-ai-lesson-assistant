@@ -82,6 +82,7 @@ export type AilaInitializationOptions = {
     chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
+    oakModerator?: AilaModerator;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];

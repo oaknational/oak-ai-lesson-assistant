@@ -86,9 +86,16 @@ export async function expectSectionsComplete(
 
 export type FixtureMode = "record" | "replay";
 
+export type OakModerationFixture =
+  | "clean"
+  | "guidance"
+  | "toxic"
+  | "highly-sensitive";
+
 export const applyLlmFixtures = async (
   page: Page,
   fixtureMode: FixtureMode,
+  oakModerationFixture: OakModerationFixture = "clean",
 ) => {
   let fixtureName: string;
 
@@ -96,6 +103,7 @@ export const applyLlmFixtures = async (
     const headers = route.request().headers();
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = fixtureMode;
+    headers["x-e2e-oak-moderation-fixture"] = oakModerationFixture;
     await route.fallback({ headers });
   });
 
