@@ -175,6 +175,7 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     service: posthogServiceAiBeta,
     config: { ...posthogAiBetaConfig, bootstrappedFeatures },
     consentState: posthogConsentAiBeta,
+    initOnMount: true,
   });
 
   /**
