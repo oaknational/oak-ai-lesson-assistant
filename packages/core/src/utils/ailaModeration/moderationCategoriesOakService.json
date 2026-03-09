@@ -1,0 +1,170 @@
+[
+  {
+    "title": "Language and discrimination",
+    "codePrefix": "l",
+    "categories": [
+      {
+        "code": "l/discriminatory-language",
+        "shortDescription": "Discriminatory behaviour or language",
+        "longDescription": "This lesson contains depiction or discussion of discriminatory behaviour or language (including stereotypes or slurs). Some pupils may find this upsetting. Please check this content carefully."
+      },
+      {
+        "code": "l/offensive-language",
+        "shortDescription": "Language may offend",
+        "longDescription": "This lesson contains language that may offend (e.g., swear words or abusive/offensive terms). Some pupils may find this upsetting. Please check this content carefully."
+      }
+    ]
+  },
+  {
+    "title": "Upsetting, disturbing and sensitive",
+    "codePrefix": "u",
+    "categories": [
+      {
+        "code": "u/sensitive-content",
+        "shortDescription": "Sensitive or upsetting content",
+        "longDescription": "This lesson contains sensitive or upsetting topics (e.g., bullying, bereavement, medical themes, or substance use). Some pupils may find this upsetting. Please check this content carefully."
+      },
+      {
+        "code": "u/violence-or-suffering",
+        "shortDescription": "Violence or suffering",
+        "longDescription": "This lesson contains violence or suffering (e.g., war, famine, disasters, or animal cruelty). Some pupils may find this distressing. Please check this content carefully."
+      },
+      {
+        "code": "u/mental-health-challenges",
+        "shortDescription": "Mental health challenges",
+        "longDescription": "This lesson includes mental health challenges (e.g., anxiety, depression, eating disorders, gambling, or substance abuse). Please check the handling and framing carefully."
+      },
+      {
+        "code": "u/crime-or-illegal-activities",
+        "shortDescription": "Crime or illegal activities",
+        "longDescription": "This lesson contains crime or illegal activities (including online harms or age-related offences). Please check this content carefully and ensure it is age-appropriate and well contextualised."
+      },
+      {
+        "code": "u/sexual-violence",
+        "shortDescription": "Sexual violence",
+        "longDescription": "This lesson contains sexual violence themes (e.g., harassment, coercion, exploitation, or abuse). This is highly sensitive. Please check the content carefully and ensure appropriate safeguarding considerations."
+      }
+    ]
+  },
+  {
+    "title": "Nudity and sex",
+    "codePrefix": "s",
+    "categories": [
+      {
+        "code": "s/nudity-or-sexual-content",
+        "shortDescription": "Nudity or sexual content",
+        "longDescription": "This lesson contains nudity or sexual themes (e.g., relationships, reproduction, or sex education). Please check that the content is age-appropriate and framed appropriately."
+      }
+    ]
+  },
+  {
+    "title": "Physical activity and equipment requiring safe use",
+    "codePrefix": "p",
+    "categories": [
+      {
+        "code": "p/practical-activities",
+        "shortDescription": "Practical equipment and activities",
+        "longDescription": "This lesson includes practical activities or equipment that may require additional safety consideration or supervision. Please check that appropriate risk assessment and supervision are in place."
+      },
+      {
+        "code": "p/outdoor-learning",
+        "shortDescription": "Outdoor learning",
+        "longDescription": "This lesson includes learning activities outside the classroom. Please check supervision, boundaries, risk assessment and any trip/fieldwork requirements."
+      },
+      {
+        "code": "p/additional-qualifications",
+        "shortDescription": "Additional qualifications required",
+        "longDescription": "This lesson includes activities that may require specialist qualifications or certified supervision. Please check staffing requirements and school policy before delivery."
+      }
+    ]
+  },
+  {
+    "title": "RSHE",
+    "codePrefix": "e",
+    "categories": [
+      {
+        "code": "e/rshe-content",
+        "shortDescription": "RSHE content",
+        "longDescription": "This lesson contains RSHE content. Please review it against your school's RSHE policy and ensure the approach is appropriate for your context and pupils."
+      }
+    ]
+  },
+  {
+    "title": "Recent and time-sensitive content",
+    "codePrefix": "r",
+    "categories": [
+      {
+        "code": "r/recent-content",
+        "shortDescription": "Recent content",
+        "longDescription": "This lesson references recent events. Please double-check key facts and ensure the information is current and accurate."
+      },
+      {
+        "code": "r/recent-conflicts",
+        "shortDescription": "Recent conflicts (ended)",
+        "longDescription": "This lesson references an armed conflict from 2009\u2013December 2023 that has ended. Please double-check factual accuracy and ensure it is appropriately contextualised for pupils."
+      }
+    ]
+  },
+  {
+    "title": "Nuanced content requiring care",
+    "codePrefix": "n",
+    "categories": [
+      {
+        "code": "n/self-harm-suicide",
+        "shortDescription": "Self-harm and suicide",
+        "longDescription": "This lesson contains content related to self-harm and suicide. This is highly sensitive and the lesson should not be used."
+      },
+      {
+        "code": "n/potentially-offensive-language",
+        "shortDescription": "Offensive language",
+        "longDescription": "This lesson contains offensive or abusive language explored in depth. The level of engagement or exposure makes the content unsuitable for classroom planning."
+      },
+      {
+        "code": "n/strangulation-suffocation",
+        "shortDescription": "Strangulation and suffocation",
+        "longDescription": "This lesson contains content related to strangulation and suffocation. This is highly sensitive and the lesson should not be used."
+      }
+    ]
+  },
+  {
+    "title": "Toxic",
+    "codePrefix": "t",
+    "categories": [
+      {
+        "code": "t/guides-self-harm-suicide",
+        "shortDescription": "Guides self-harm or suicide",
+        "longDescription": "This lesson has been blocked because it contains content that guides self-harm or suicide."
+      },
+      {
+        "code": "t/encourages-harmful-behaviour",
+        "shortDescription": "Encourages harmful behaviour",
+        "longDescription": "This lesson has been blocked because it encourages harmful behaviour."
+      },
+      {
+        "code": "t/encourages-illegal-activity",
+        "shortDescription": "Encourages illegal activity",
+        "longDescription": "This lesson has been blocked because it encourages illegal activity."
+      },
+      {
+        "code": "t/encourages-violence-harm-others",
+        "shortDescription": "Encourages violence or harm to others",
+        "longDescription": "This lesson has been blocked because it encourages violence or harm to others."
+      },
+      {
+        "code": "t/using-creating-weapons",
+        "shortDescription": "Using or creating weapons",
+        "longDescription": "This lesson has been blocked because it contains content about using or creating weapons."
+      },
+      {
+        "code": "t/using-creating-harmful-substances",
+        "shortDescription": "Using or creating harmful substances",
+        "longDescription": "This lesson has been blocked because it contains content about using or creating harmful substances."
+      },
+      {
+        "code": "t/extreme-offensive-language",
+        "shortDescription": "Extreme offensive or abusive language",
+        "longDescription": "This lesson has been blocked because it contains extreme offensive or abusive language."
+      }
+    ]
+  }
+]

@@ -99,6 +99,7 @@ export class Aila implements AilaServices {
       this,
       this._options,
       options.services?.moderationAiClient,
+      options.services?.oakModerator,
     );
     this._snapshotStore = AilaFeatureFactory.createSnapshotStore(this);
     this._persistence = AilaFeatureFactory.createPersistence(
