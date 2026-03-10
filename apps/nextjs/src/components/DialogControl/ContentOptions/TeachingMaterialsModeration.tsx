@@ -1,6 +1,6 @@
 import {
   getSafetyResult,
-  moderationSlugToDescription,
+  moderationGuidanceText,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import invariant from "tiny-invariant";
@@ -28,10 +28,7 @@ const TeachingMaterialsModeration = ({
     surveyName: "Moderation feedback",
   });
 
-  const message = `  Contains 
-              ${moderation.categories.map(moderationSlugToDescription).join(", ")}.
-              Check content carefully. If you have feedback on this guidance,
-              please provide details below.`;
+  const message = `${moderationGuidanceText(moderation)} If you have feedback on this guidance, please provide details below.`;
 
   return (
     <TeachingMaterialsModerationFeedback

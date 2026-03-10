@@ -1,12 +1,25 @@
 import { aiLogger } from "@oakai/logger";
 
 import moderationCategories from "./moderationCategories.json";
+import oakServiceCategories from "./moderationCategoriesOakService.json";
 import type { ModerationBase, ModerationResult } from "./moderationSchema";
 
 const log = aiLogger("aila:moderation");
+
+const allAilaCategories = moderationCategories.flatMap(
+  (group) => group.categories,
+);
+const allOakServiceCategories = oakServiceCategories.flatMap(
+  (group) => group.categories,
+);
+
+// TODO: n/ (highly-sensitive) categories are temporarily treated as toxic
+// until a dedicated highly-sensitive tier is implemented
 export function isToxic(result: ModerationBase): boolean {
   return result.categories.some((category) =>
-    typeof category === "string" ? category.startsWith("t/") : false,
+    typeof category === "string"
+      ? category.startsWith("t/") || category.startsWith("n/")
+      : false,
   );
 }
 
@@ -32,24 +45,54 @@ export function getSafetyResult(
   return "safe";
 }
 
-export function moderationSlugToDescription(
-  slug: ModerationBase["categories"][number],
-): string {
-  const allCategories = moderationCategories.flatMap(
-    (category) => category.categories,
-  );
+function categorySlugs(result: ModerationBase): string[] {
+  return result.categories.filter((c): c is string => typeof c === "string");
+}
 
-  return (
-    allCategories.find((category) => category.code === slug)?.userDescription ??
-    "Unknown category"
-  );
+function findOakServiceCategory(slug: string) {
+  return allOakServiceCategories.find((c) => c.code === slug);
+}
+
+function findLegacyCategory(slug: string) {
+  return allAilaCategories.find((c) => c.code === slug);
+}
+
+export function moderationGuidanceText(result: ModerationBase): string {
+  const slugs = categorySlugs(result);
+
+  const oakCategories = slugs
+    .map(findOakServiceCategory)
+    .filter(
+      (c): c is (typeof allOakServiceCategories)[number] => c !== undefined,
+    );
+
+  if (oakCategories.length === 1 && oakCategories[0]) {
+    return oakCategories[0].longDescription;
+  }
+
+  if (oakCategories.length > 1) {
+    const names = oakCategories.map((c) => c.shortDescription);
+    return `This lesson has been flagged for: ${names.join("; ")}. Please review the content carefully and ensure it is age-appropriate and aligned with your school's policies.`;
+  }
+
+  // Legacy Aila/OpenAI category codes (historical moderations)
+  const legacyDescriptions = slugs
+    .map(findLegacyCategory)
+    .filter((c): c is (typeof allAilaCategories)[number] => c !== undefined)
+    .map((c) => c.userDescription);
+
+  return `Contains ${legacyDescriptions.join(", ")}. Check content carefully.`;
 }
 
 export function getCategoryGroup(category: string) {
   return (
     moderationCategories.find((group) =>
       group.categories.some((c) => c.code === category),
-    ) ?? null
+    ) ??
+    oakServiceCategories.find((group) =>
+      group.categories.some((c) => c.code === category),
+    ) ??
+    null
   );
 }
 
