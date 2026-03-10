@@ -1,3 +1,16 @@
+# [1.65.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.2...v1.65.0) (2026-03-10)
+
+
+### Bug Fixes
+
+* show info message when RAG quiz bails ([#964](https://github.com/oaknational/oak-ai-lesson-assistant/issues/964)) ([cf881e6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cf881e6a88967f2353f08987ac7ac6674dd0c997))
+
+
+### Features
+
+* adopt Oak Moderation Service v1 with feature flag ([#967](https://github.com/oaknational/oak-ai-lesson-assistant/issues/967)) ([4c6bd53](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4c6bd538a8381b704db78a994e60848018ba97a7))
+* removing non essential slides ([#951](https://github.com/oaknational/oak-ai-lesson-assistant/issues/951)) ([f34e02c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f34e02cc55205fbe00be049c37c13cc169e6ef59))
+
 ## [1.64.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.1...v1.64.2) (2026-02-24)
 
 
