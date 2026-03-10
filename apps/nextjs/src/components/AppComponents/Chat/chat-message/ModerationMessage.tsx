@@ -42,16 +42,16 @@ const severityDisplay: Record<SeverityLevel, { banner: string; link: string }> =
     "content-guidance": {
       banner:
         "The content in this lesson may require additional consideration before delivery.",
-      link: "View content guidance",
+      link: "View content guidance.",
     },
     "enhanced-scrutiny": {
       banner: "This lesson includes content that requires enhanced scrutiny.",
-      link: "View details",
+      link: "View details.",
     },
     "heightened-caution": {
       banner:
         "This lesson includes content that requires heightened professional caution.",
-      link: "View details",
+      link: "View details.",
     },
   };
 
