@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import { ChatModerationProvider } from "@/components/ContextProviders/ChatModerationContext";
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
@@ -10,14 +9,7 @@ const meta = {
   title: "Components/Chat/ChatMessage",
   component: ChatMessage,
   tags: ["autodocs"],
-  decorators: [
-    (Story) => (
-      <ChatModerationProvider chatId="test-chat-id">
-        <Story />
-      </ChatModerationProvider>
-    ),
-    StoreDecorator,
-  ],
+  decorators: [StoreDecorator],
   args: {},
   parameters: {
     ...chromaticParams(["desktop"]),

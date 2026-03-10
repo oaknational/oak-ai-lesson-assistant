@@ -11,7 +11,7 @@ type MessageContainerProps = Readonly<{
 const roleClassNames = {
   user: "bg-teachersLilac p-9",
   aila: "",
-  moderation: "bg-videoBlue p-9",
+  moderation: "bg-lemon30 p-9",
   error: "bg-peachCream p-9",
 };
 
