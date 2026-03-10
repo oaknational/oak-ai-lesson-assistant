@@ -1,5 +1,4 @@
 import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { getHighestSeverity } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import {
   OakModalCenter,
@@ -9,21 +8,18 @@ import {
   OakSecondaryLink,
 } from "@oaknational/oak-components";
 
-const footerBySeverity = {
-  "content-guidance": "Please check content carefully.",
-  "enhanced-scrutiny": "Please check content carefully and verify accuracy.",
-  "heightened-caution": "Please review carefully and follow school policy.",
-};
-
-function getFooterText(categories: DisplayCategory[]): string {
-  return footerBySeverity[getHighestSeverity(categories)];
-}
-
 function getTitle(categories: DisplayCategory[]): string {
   if (categories.length === 1) {
     return categories[0]!.shortDescription;
   }
   return "Multiple Content Guidance Categories Identified";
+}
+
+function getBody(categories: DisplayCategory[]): string {
+  if (categories.length === 1) {
+    return categories[0]!.longDescription;
+  }
+  return `This lesson has been flagged under multiple content guidance categories: ${categories.map((c) => c.shortDescription).join("; ")}. These topics may be sensitive or require careful handling in the classroom. Please review the content thoroughly to ensure it is age-appropriate, factually accurate, and aligned with your school's policies.`;
 }
 
 type ContentGuidanceModalContentProps = Readonly<{
@@ -35,17 +31,9 @@ export function ContentGuidanceModalContent({
   categories,
   onClose,
 }: ContentGuidanceModalContentProps) {
-  const footer = getFooterText(categories);
-
-  const isSingle = categories.length === 1;
-  const body = isSingle
-    ? categories[0]!.longDescription
-    : `This lesson has been flagged for: ${categories.map((c) => c.shortDescription).join("; ")}.`;
-
   return (
     <>
-      <OakP>{body}</OakP>
-      <OakP>{footer}</OakP>
+      <OakP>{getBody(categories)}</OakP>
       <OakSecondaryLink
         element="a"
         href="https://support.thenational.academy/ailas-safety-guardrails"
