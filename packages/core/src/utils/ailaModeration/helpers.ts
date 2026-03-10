@@ -96,6 +96,46 @@ export function getCategoryGroup(category: string) {
   );
 }
 
+export const severityPriority = [
+  "heightened-caution",
+  "enhanced-scrutiny",
+  "content-guidance",
+] as const;
+
+export type SeverityLevel = (typeof severityPriority)[number];
+
+export type DisplayCategory = {
+  code: string;
+  shortDescription: string;
+  longDescription: string;
+  severityLevel: string;
+};
+
+export function getDisplayCategories(
+  result: ModerationBase,
+): DisplayCategory[] {
+  const slugs = categorySlugs(result);
+
+  return slugs.flatMap((slug) => {
+    const category = findOakServiceCategory(slug);
+    if (!category) return [];
+
+    const group = oakServiceCategories.find((g) =>
+      g.categories.some((c) => c.code === slug),
+    );
+    if (!group) return [];
+
+    return [
+      {
+        code: category.code,
+        shortDescription: category.shortDescription,
+        longDescription: category.longDescription,
+        severityLevel: group.severityLevel,
+      },
+    ];
+  });
+}
+
 const MOCK_TOXIC_RESULT: ModerationResult = {
   categories: ["t/encouragement-violence"],
   justification: "Mock toxic result",

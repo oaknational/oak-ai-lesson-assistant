@@ -1,11 +1,19 @@
-import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { useState } from "react";
+
+import {
+  type SeverityLevel,
+  getDisplayCategories,
+  isSafe,
+  severityPriority,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
-import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
-import { Icon } from "@/components/Icon";
+import { OakIcon } from "@oaknational/oak-components";
+
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
+import { ContentGuidanceModal } from "../content-guidance-modal";
 import { Message } from "./layout";
 import { isModeration } from "./protocol";
 
@@ -29,38 +37,73 @@ export function getModeration(
   return null;
 }
 
+const severityDisplay: Record<SeverityLevel, { banner: string; link: string }> =
+  {
+    "content-guidance": {
+      banner:
+        "The content in this lesson may require additional consideration before delivery.",
+      link: "View content guidance",
+    },
+    "enhanced-scrutiny": {
+      banner: "This lesson includes content that requires enhanced scrutiny.",
+      link: "View details",
+    },
+    "heightened-caution": {
+      banner:
+        "This lesson includes content that requires heightened professional caution.",
+      link: "View details",
+    },
+  };
+
+function getSeverityDisplay(categories: { severityLevel: string }[]) {
+  const levels = categories.map((c) => c.severityLevel);
+  const highest = severityPriority.find((l) => levels.includes(l));
+  return severityDisplay[highest ?? "content-guidance"];
+}
+
 export function Moderation({
   forMessage,
 }: Readonly<{ forMessage: ParsedMessage }>) {
   const persistedModerations = useModerationStore((state) => state.moderations);
   const moderation = getModeration(forMessage, persistedModerations);
-  const { moderationModalHelpers } = useChatModeration();
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (!moderation) {
     return null;
   }
 
+  const categories = getDisplayCategories(moderation);
+  const { banner, link } = getSeverityDisplay(categories);
+
   return (
-    <Message.Container roleType="moderation">
-      <Message.Content>
-        <div className="flex items-center">
-          <Icon icon="warning" size="sm" className="mr-6" />
-          <aside className="pt-3 text-sm">
-            <a
-              href="#"
-              onClick={() => {
-                moderationModalHelpers.openModal({
-                  moderation,
-                  closeModal: moderationModalHelpers.closeModal,
-                });
-              }}
-              className="underline"
-            >
-              View content guidance
-            </a>
-          </aside>
-        </div>
-      </Message.Content>
-    </Message.Container>
+    <>
+      <Message.Container roleType="moderation">
+        <Message.Content>
+          <div className="flex items-center">
+            <span className="mr-6 flex-shrink-0">
+              <OakIcon iconName="info" alt="" />
+            </span>
+            <aside className="pt-3 text-sm">
+              {banner}{" "}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setModalOpen(true);
+                }}
+                className="underline"
+              >
+                {link}
+              </a>
+            </aside>
+          </div>
+        </Message.Content>
+      </Message.Container>
+      <ContentGuidanceModal
+        categories={categories}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
+    </>
   );
 }
