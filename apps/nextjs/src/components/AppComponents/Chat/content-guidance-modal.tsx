@@ -4,6 +4,7 @@ import { severityPriority } from "@oakai/core/src/utils/ailaModeration/helpers";
 import {
   OakModalCenter,
   OakModalCenterBody,
+  OakP,
   OakPrimaryButton,
   OakSecondaryLink,
 } from "@oaknational/oak-components";
@@ -45,8 +46,8 @@ export function ContentGuidanceModalContent({
 
   return (
     <>
-      <p>{body}</p>
-      <p>{footer}</p>
+      <OakP>{body}</OakP>
+      <OakP>{footer}</OakP>
       <OakSecondaryLink
         element="a"
         href="https://support.thenational.academy/ailas-safety-guardrails"
