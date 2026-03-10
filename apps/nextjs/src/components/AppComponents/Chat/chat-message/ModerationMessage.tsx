@@ -3,8 +3,8 @@ import { useState } from "react";
 import {
   type SeverityLevel,
   getDisplayCategories,
+  getHighestSeverity,
   isSafe,
-  severityPriority,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
@@ -56,9 +56,7 @@ const severityDisplay: Record<SeverityLevel, { banner: string; link: string }> =
   };
 
 function getSeverityDisplay(categories: { severityLevel: string }[]) {
-  const levels = categories.map((c) => c.severityLevel);
-  const highest = severityPriority.find((l) => levels.includes(l));
-  return severityDisplay[highest ?? "content-guidance"];
+  return severityDisplay[getHighestSeverity(categories)];
 }
 
 export function Moderation({

@@ -104,6 +104,13 @@ export const severityPriority = [
 
 export type SeverityLevel = (typeof severityPriority)[number];
 
+export function getHighestSeverity(
+  categories: { severityLevel: string }[],
+): SeverityLevel {
+  const levels = new Set(categories.map((c) => c.severityLevel));
+  return severityPriority.find((l) => levels.has(l)) ?? "content-guidance";
+}
+
 export type DisplayCategory = {
   code: string;
   shortDescription: string;

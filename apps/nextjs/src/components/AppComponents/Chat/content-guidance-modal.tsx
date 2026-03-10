@@ -1,5 +1,5 @@
 import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { severityPriority } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getHighestSeverity } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import {
   OakModalCenter,
@@ -16,9 +16,7 @@ const footerBySeverity = {
 };
 
 function getFooterText(categories: DisplayCategory[]): string {
-  const levels = categories.map((c) => c.severityLevel);
-  const highest = severityPriority.find((l) => levels.includes(l));
-  return footerBySeverity[highest ?? "content-guidance"];
+  return footerBySeverity[getHighestSeverity(categories)];
 }
 
 function getTitle(categories: DisplayCategory[]): string {
