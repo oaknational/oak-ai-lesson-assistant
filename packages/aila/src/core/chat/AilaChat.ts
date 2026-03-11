@@ -85,7 +85,7 @@ export class AilaChat implements AilaChatService {
 
     this.quizService = buildQuizService({
       sources: aila.options.quizSources,
-      enrichers: ["imageDescriptions"],
+      enrichers: [],
       composer: "llm",
     });
   }

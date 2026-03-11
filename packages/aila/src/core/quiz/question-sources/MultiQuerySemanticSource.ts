@@ -9,7 +9,6 @@ import type {
 import type { Task } from "../reporting";
 import { CohereReranker } from "../services/CohereReranker";
 import { PostgresQuizSearchService } from "../services/PostgresQuizSearchService";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
 
 const log = aiLogger("aila:quiz");
@@ -33,14 +32,11 @@ export class MultiQuerySemanticSource implements QuestionSource {
   protected queryGenerator: SemanticQueryGenerator;
   protected searchService: PostgresQuizSearchService;
   protected rerankService: CohereReranker;
-  protected retrievalService: QuizQuestionRetrievalService;
 
-  constructor(retrievalService?: QuizQuestionRetrievalService) {
+  constructor() {
     this.queryGenerator = new SemanticQueryGenerator();
     this.searchService = new PostgresQuizSearchService();
     this.rerankService = new CohereReranker();
-    this.retrievalService =
-      retrievalService ?? new QuizQuestionRetrievalService();
   }
 
   /**
@@ -59,7 +55,9 @@ export class MultiQuerySemanticSource implements QuestionSource {
   }
 
   /**
-   * Searches and retrieves questions for a single query
+   * Searches and retrieves questions for a single query.
+   * Search returns full question data (quiz_question, image_metadata),
+   * so after reranking we look up the full row by UID — no second DB query.
    */
   private async searchAndRetrieveForQuery(
     query: string,
@@ -67,13 +65,7 @@ export class MultiQuerySemanticSource implements QuestionSource {
     task: Task,
   ): Promise<RagQuizQuestion[]> {
     const rows = await task.child("search", async (t) => {
-      const results = await this.searchService.searchWithHybrid(
-        query,
-        t,
-        SEARCH_SIZE,
-        0.5,
-      );
-      return results;
+      return this.searchService.searchWithHybrid(query, t, SEARCH_SIZE, 0.5);
     });
 
     const simplifiedResults = this.searchService.transformHits(rows);
@@ -87,10 +79,16 @@ export class MultiQuerySemanticSource implements QuestionSource {
       );
     });
 
-    const questionUids = rerankedResults.map((result) => result.questionUid);
+    const rowsByUid = new Map(rows.map((row) => [row.question_uid, row]));
 
-    const questions =
-      await this.retrievalService.retrieveQuestionsByIds(questionUids);
+    const questions: RagQuizQuestion[] = rerankedResults.map((result) => {
+      const row = rowsByUid.get(result.questionUid)!;
+      return {
+        question: row.quiz_question,
+        sourceUid: row.question_uid,
+        imageMetadata: row.image_metadata,
+      };
+    });
 
     task.addData({ finalCandidates: questions });
 
