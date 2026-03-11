@@ -79,13 +79,6 @@ export function ReviewModal({
                 >
                   <OakP $font="body-4">{plan.intent}</OakP>
                 </OakBox>
-                <OakBox
-                  $background="bg-neutral"
-                  $pa="spacing-4"
-                  $borderRadius="border-radius-s"
-                >
-                  <OakP $font="body-4">{plan.scope}</OakP>
-                </OakBox>
                 <OakP $font="body-3" $color="text-subdued">
                   {approvedCount} of {totalChanges} changes approved
                 </OakP>

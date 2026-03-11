@@ -18,6 +18,8 @@ export function filterSlideContent(
       slideNumber: slide.slideNumber,
       slideId: slide.slideId,
       slideTitle: slide.slideTitle,
+      slideType: slide.slideType,
+      coversDiversity: slide.coversDiversity,
     };
 
     if (fields.includes("textElements")) {
@@ -35,6 +37,12 @@ export function filterSlideContent(
       filtered.shapes = slide.nonTextElements
         .filter((el) => el.type === "shape")
         .map((el) => ({ id: el.id, description: el.description }));
+    }
+    if (fields.includes("keyLearningPoints")) {
+      filtered.keyLearningPoints = slide.keyLearningPoints;
+    }
+    if (fields.includes("learningCycles")) {
+      filtered.learningCycles = slide.learningCycles;
     }
 
     return filtered;

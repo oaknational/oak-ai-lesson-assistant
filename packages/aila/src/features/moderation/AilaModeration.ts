@@ -203,6 +203,15 @@ export class AilaModeration implements AilaModerationFeature {
     if (this._shadowModerator) {
       const shadowPromise = this._shadowModerator
         .moderate(contentString)
+        .then((result) => {
+          if (result) {
+            log.info("Shadow moderation result", {
+              categories: result.categories,
+              scores: result.scores,
+              safety: getSafetyResult(result),
+            });
+          }
+        })
         .catch((err) => {
           log.error("Shadow moderation failed (non-fatal)", { err });
         });

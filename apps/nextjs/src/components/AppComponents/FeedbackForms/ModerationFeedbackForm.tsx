@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { moderationSlugToDescription } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { moderationGuidanceText } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { Dialog } from "@radix-ui/themes";
@@ -53,10 +53,8 @@ export const ModerationFeedbackForm = ({
         </Dialog.Title>
         <Dialog.Description>
           <span>
-            Contains{" "}
-            {moderation.categories.map(moderationSlugToDescription).join(", ")}.
-            Check content carefully. If you have feedback on this guidance,
-            please provide details below.
+            {moderationGuidanceText(moderation)} If you have feedback on this
+            guidance, please provide details below.
           </span>
         </Dialog.Description>
       </div>

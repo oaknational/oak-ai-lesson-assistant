@@ -109,5 +109,6 @@ export function extractSlideContent(
     textElements,
     tables,
     nonTextElements,
+    slideType: "unknown",
   };
 }

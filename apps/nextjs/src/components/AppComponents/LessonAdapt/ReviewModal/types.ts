@@ -14,6 +14,7 @@ export interface SlideKlpMapping {
   keyLearningPoints: string[];
   learningCycles: string[];
   coversDiversity: boolean;
+  slideType: string;
 }
 
 export interface ReviewModalProps {

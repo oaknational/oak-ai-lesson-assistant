@@ -1,0 +1,30 @@
+{
+  "_comment": "Per-category score thresholds for Oak Moderation Service v1. Scores are 1-5 Likert (5 = safe). A category is flagged when its score is strictly below its threshold. Half-step values avoid ambiguity between < and <=. Thresholds for categories with positive samples are from the moderation team; others default to 2.5.",
+  "defaultThreshold": 2.5,
+  "thresholds": {
+    "e/rshe-content": 2.5,
+    "l/discriminatory-language": 3.5,
+    "l/offensive-language": 1.5,
+    "n/potentially-offensive-language": 2.5,
+    "n/self-harm-suicide": 2.5,
+    "n/strangulation-suffocation": 2.5,
+    "p/additional-qualifications": 2.5,
+    "p/outdoor-learning": 3.5,
+    "p/practical-activities": 1.5,
+    "r/recent-conflicts": 2.5,
+    "r/recent-content": 2.5,
+    "s/nudity-or-sexual-content": 3.5,
+    "t/encourages-harmful-behaviour": 2.5,
+    "t/encourages-illegal-activity": 2.5,
+    "t/encourages-violence-harm-others": 2.5,
+    "t/extreme-offensive-language": 2.5,
+    "t/guides-self-harm-suicide": 2.5,
+    "t/using-creating-harmful-substances": 2.5,
+    "t/using-creating-weapons": 2.5,
+    "u/crime-or-illegal-activities": 2.5,
+    "u/mental-health-challenges": 2.5,
+    "u/sensitive-content": 3.5,
+    "u/sexual-violence": 2.5,
+    "u/violence-or-suffering": 3.5
+  }
+}

@@ -2,6 +2,7 @@ import { openai } from "@ai-sdk/openai";
 import { Output, generateText } from "ai";
 import { z } from "zod";
 
+import { slideTypeSchema } from "../slides/extraction/schemas";
 import type { SlideContent } from "../slides/extraction/types";
 import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 
@@ -15,6 +16,9 @@ import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 export const slideKlpLcMappingSchema = z.object({
   slideNumber: z.number(),
   slideId: z.string(),
+  slideType: slideTypeSchema.describe(
+    "Classification of the slide's purpose/type",
+  ),
   keyLearningPoints: z
     .array(z.string())
     .describe(
@@ -81,8 +85,25 @@ const SYSTEM_PROMPT = `You are an educational expert and content analysis agent 
 
 ## Your Task
 Analyse each slide in the presentation and determine:
-1. Which key learning points (from the provided lesson KLPs) are covered on this slide
-2. Which learning cycles (from the provided lesson outline) are covered on this slide
+1. The slide's type (see Slide Type Classification below)
+2. Which key learning points (from the provided lesson KLPs) are covered on this slide
+3. Which learning cycles (from the provided lesson outline) are covered on this slide
+
+## Slide Type Classification
+Classify every slide as exactly one of these types:
+- **title**: The lesson title slide, usually the first slide
+- **keywords**: A slide that introduces or defines key vocabulary/terminology for the lesson
+- **lessonOutcome**: A slide stating what pupils will learn or achieve by the end of the lesson
+- **lessonOutline**: A slide showing the structure or outline of the lesson (e.g. listing learning cycles)
+- **summary**: A slide summarising what has been covered in the lesson
+- **endOfLesson**: The final slide, typically a closing or "end of lesson" slide
+- **teacher**: A slide with instructions or notes for the teacher (not pupil-facing content)
+- **copyright**: A slide containing copyright, licensing, or attribution information
+- **checkForUnderstanding**: A quiz or comprehension check slide (multiple choice, true/false, short answer)
+- **explanation**: A slide that explains a concept, provides information, or teaches new content
+- **practice**: A slide with exercises, activities, or tasks for pupils to complete
+- **feedback**: A slide that provides answers, model responses, or feedback on a practice activity
+- **content**: A general content slide that does not fit the above categories
 
 ## Input
 You receive:
@@ -106,11 +127,12 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
 - Do NOT include slides that do not match a key learning point in content, concept, theme, or provide important knowledge pupils need to learn a key learning point
   - Example: Given key learning points: "Calligraphy involves creating letters with artistic flair to make beautiful handwriting"; "Learning and practising foundational calligraphic strokes builds the skills needed to create decorative letters"; "Techniques such as strokes and flourishes can help you create calligraphic letters and words"; "Practising calligraphy improves fine motor skills"
   - A slide with content "Here you can see a representation of an older calligraphy style, often used during the Middle Ages in Western Europe, and is referred to as 'gothic'" does NOT match any of these KLPs - it provides historical context but does not match the content, concept or theme of a key learning point or relate to important knowledge pupils need to learn a key learning point
-- For slides that do not match a key learning point, check if they contain diversity content and set coversDiversity accordingly
+- For EVERY slide, check if it contains diversity content and set coversDiversity accordingly — this applies whether or not the slide matches a KLP
   - Diversity content provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own
-  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds
+  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds (e.g. Henry Ossawa Tanner, Berthe Morisot)
   - Content that contextualises knowledge geographically or historically
   - Content that includes multiple perspectives and world-views
+  - A slide can both cover a KLP AND contain diversity content — these are not mutually exclusive
   - Set coversDiversity to true and explain the diversity content in the reasoning field
 - Consider text in both textElements and tables when making determinations
 - Do not invent new KLPs or learning cycles - only use the ones provided
