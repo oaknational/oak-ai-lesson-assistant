@@ -9,7 +9,7 @@ export type ModerationBase = {
 
 /**
  * Category codes from the Oak Moderation Service.
- * These are also the score keys — any key with score < 5 is flagged.
+ * The service applies per-category thresholds and returns flagged codes.
  */
 export const oakModerationServiceCodes = [
   "l/discriminatory-language",
