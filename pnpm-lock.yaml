@@ -485,9 +485,6 @@ importers:
       '@clerk/nextjs':
         specifier: 6.36.1
         version: 6.36.1(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)
-      '@elastic/elasticsearch':
-        specifier: ^8.13.1
-        version: 8.13.1
       '@faker-js/faker':
         specifier: ^9.4.0
         version: 9.4.0
@@ -4350,30 +4347,6 @@ packages:
     resolution: {integrity: sha512-d5RjycE+MObE/hU+8OM5Zp4VjTwiPLRa8299fj7muOmR16fb942z8byoMbCErnGh0lBevvgkGrLclQDvINbIyg==}
     dev: false
 
-  /@elastic/elasticsearch@8.13.1:
-    resolution: {integrity: sha512-2G4Vu6OHw4+XTrp7AGIcOEezpPEoVrWg2JTK1v/exEKSLYquZkUdd+m4yOL3/UZ6bTj7hmXwrmYzW76BnLCkJQ==}
-    engines: {node: '>=18'}
-    dependencies:
-      '@elastic/transport': 8.4.1
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@elastic/transport@8.4.1:
-    resolution: {integrity: sha512-/SXVuVnuU5b4dq8OFY4izG+dmGla185PcoqgK6+AJMpmOeY1QYVNbWtCwvSvoAANN5D/wV+EBU8+x7Vf9EphbA==}
-    engines: {node: '>=16'}
-    dependencies:
-      debug: 4.4.3(supports-color@5.5.0)
-      hpagent: 1.2.0
-      ms: 2.1.3
-      secure-json-parse: 2.7.0
-      tslib: 2.8.1
-      undici: 5.28.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@emnapi/core@1.7.0:
     resolution: {integrity: sha512-pJdKGq/1iquWYtv1RRSljZklxHCOCAJFJrImO5ZLKPJVJlVUcs8yFwNQlqS0Lo8xT1VAXXTCZocF9n26FWEKsw==}
     requiresBuild: true
@@ -4721,6 +4694,7 @@ packages:
   /@fastify/busboy@2.1.1:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+    dev: true
 
   /@floating-ui/core@1.7.3:
     resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
@@ -18292,6 +18266,7 @@ packages:
   /hpagent@1.2.0:
     resolution: {integrity: sha512-A91dYTeIB6NoXG+PxTQpCCDDnfHsW9kc06Lvpu1TEe9gnd6ZFeiBoRO9JvzEv6xK7EX97/dUE8g/vBMTqTS3CA==}
     engines: {node: '>=14'}
+    dev: true
 
   /html-encoding-sniffer@3.0.0:
     resolution: {integrity: sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA==}
@@ -27329,6 +27304,7 @@ packages:
     engines: {node: '>=14.0'}
     dependencies:
       '@fastify/busboy': 2.1.1
+    dev: true
 
   /undici@5.29.0:
     resolution: {integrity: sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==}
