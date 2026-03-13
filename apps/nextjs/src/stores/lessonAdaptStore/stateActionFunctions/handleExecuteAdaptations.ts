@@ -14,7 +14,8 @@ export const handleExecuteAdaptations = (
   trpcUtils: TrpcUtils,
 ) => {
   return async () => {
-    const { sessionId, currentPlan, approvedChangeIds } = get();
+    const { sessionId, currentPlan, approvedChangeIds, userSlideDeletions } =
+      get();
 
     if (!sessionId) {
       log.warn("Cannot execute adaptations: no sessionId available");
@@ -26,8 +27,8 @@ export const handleExecuteAdaptations = (
       return;
     }
 
-    if (approvedChangeIds.length === 0) {
-      log.warn("Cannot execute adaptations: no changes approved");
+    if (approvedChangeIds.length === 0 && userSlideDeletions.length === 0) {
+      log.warn("Cannot execute adaptations: no changes to apply");
       return;
     }
 
@@ -39,6 +40,12 @@ export const handleExecuteAdaptations = (
           sessionId,
           planData: currentPlan,
           approvedChangeIds,
+          additionalChanges: {
+            slideDeletions: userSlideDeletions.map((d) => ({
+              slideId: d.slideId,
+              slideNumber: d.slideNumber,
+            })),
+          },
         });
 
       if (result.success) {
@@ -53,6 +60,7 @@ export const handleExecuteAdaptations = (
         set({
           currentPlan: null,
           approvedChangeIds: [],
+          userSlideDeletions: [],
           showReviewModal: false,
           status: "ready",
         });

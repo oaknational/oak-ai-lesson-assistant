@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
 import {
+  OakAccordion,
   OakBox,
   OakFlex,
   OakHeading,
@@ -10,25 +9,20 @@ import {
   OakP,
   OakPrimaryButton,
   OakSecondaryButton,
+  OakSpan,
 } from "@oaknational/oak-components";
 
-import { AllChangesTab } from "./AllChangesTab";
-import { SlidesTab } from "./SlidesTab";
-import { ThumbnailsWithKlpTab } from "./ThumbnailsWithKlpTab";
-import type { ReviewModalProps, ReviewTab } from "./types";
-
-const TAB_CONFIG: { id: ReviewTab; label: string }[] = [
-  { id: "slides", label: "Slides" },
-  { id: "changes", label: "All Changes" },
-  { id: "thumbnails", label: "Thumbnails" },
-];
+import { AdaptSlideCard } from "../AdaptSlideCard";
+import { NoChangesAdaptation } from "./NoChangesAdaptation";
+import { SlideDeleteAdaptation } from "./SlideDeleteAdaptation";
+import { TextEditAdaptation } from "./TextEditAdaptation";
+import { groupChangesBySlide } from "./groupChangesBySlide";
+import type { ReviewModalProps } from "./types";
 
 export function ReviewModal({
   isOpen,
   onClose,
   plan,
-  presentationId,
-  presentationUrl,
   thumbnails,
   slideKlpMappings,
   approvedChangeIds,
@@ -38,12 +32,11 @@ export function ReviewModal({
   onExecute,
   isExecuting,
 }: ReviewModalProps) {
-  const [activeTab, setActiveTab] = useState<ReviewTab>("slides");
-
   if (!isOpen) return null;
 
   const totalChanges = plan.totalChanges;
   const approvedCount = approvedChangeIds.length;
+  const slides = groupChangesBySlide(plan, slideKlpMappings, thumbnails);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -94,46 +87,98 @@ export function ReviewModal({
           </OakFlex>
         </OakBox>
 
-        {/* Tabs */}
-        <OakBox $pa="spacing-16" className="border-b border-gray-200">
-          <OakFlex $gap="spacing-8">
-            {TAB_CONFIG.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`rounded-full px-4 py-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-2 border-gray-800 bg-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-              >
-                <OakP $font="heading-7">{tab.label}</OakP>
-              </button>
-            ))}
-          </OakFlex>
-        </OakBox>
-
         {/* Content */}
         <OakBox $pa="spacing-24" className="flex-1 overflow-auto">
-          {activeTab === "slides" && (
-            <SlidesTab
-              presentationId={presentationId}
-              presentationUrl={presentationUrl}
-            />
-          )}
-          {activeTab === "changes" && (
-            <AllChangesTab
-              plan={plan}
-              approvedChangeIds={approvedChangeIds}
-              onToggleChange={onToggleChange}
-            />
-          )}
-          {activeTab === "thumbnails" && (
-            <ThumbnailsWithKlpTab
-              thumbnails={thumbnails}
-              slideKlpMappings={slideKlpMappings}
-            />
-          )}
+          <OakFlex $flexDirection="column" $gap="spacing-16">
+            {slides.map((slide) => {
+              const isDeleted =
+                slide.slideDeletion !== null &&
+                approvedChangeIds.includes(slide.slideDeletion.changeId);
+
+              return (
+                <AdaptSlideCard
+                  key={slide.slideNumber}
+                  title={slide.title}
+                  isDeleted={
+                    slide.slideDeletion !== null ? isDeleted : undefined
+                  }
+                  thumbnailUrl={slide.thumbnailUrl}
+                  thumbnailsLoading={thumbnails === null}
+                >
+                  {slide.description && (
+                    <OakP $font="body-3">
+                      <OakSpan $font="body-3-bold">{slide.typeLabel}</OakSpan>{" "}
+                      {slide.description}
+                    </OakP>
+                  )}
+
+                  {slide.klps.length > 0 && (
+                    <OakAccordion
+                      header="Key learning points"
+                      id={`klp-${slide.slideNumber}`}
+                    >
+                      <OakFlex $flexDirection="column" $gap="spacing-8">
+                        {slide.klps.map((klp, index) => (
+                          <OakP key={index} $font="body-3">
+                            {index + 1}. {klp}
+                          </OakP>
+                        ))}
+                      </OakFlex>
+                    </OakAccordion>
+                  )}
+
+                  {slide.slideDeletion && (
+                    <SlideDeleteAdaptation
+                      changeId={slide.slideDeletion.changeId}
+                      reasoning={slide.slideDeletion.reasoning ?? ""}
+                      isApproved={approvedChangeIds.includes(
+                        slide.slideDeletion.changeId,
+                      )}
+                      onToggle={() =>
+                        onToggleChange(slide.slideDeletion!.changeId)
+                      }
+                    />
+                  )}
+
+                  {slide.textEdits.map((edit) => (
+                    <TextEditAdaptation
+                      key={edit.changeId}
+                      changeId={edit.changeId}
+                      originalText={edit.originalText}
+                      newText={edit.newText}
+                      isApproved={approvedChangeIds.includes(edit.changeId)}
+                      onToggle={() => onToggleChange(edit.changeId)}
+                    />
+                  ))}
+
+                  {slide.tableEdits.map((edit) => (
+                    <TextEditAdaptation
+                      key={edit.changeId}
+                      changeId={edit.changeId}
+                      originalText={edit.originalText}
+                      newText={edit.newText}
+                      isApproved={approvedChangeIds.includes(edit.changeId)}
+                      onToggle={() => onToggleChange(edit.changeId)}
+                    />
+                  ))}
+
+                  {slide.textDeletions.map((deletion) => (
+                    <TextEditAdaptation
+                      key={deletion.changeId}
+                      changeId={deletion.changeId}
+                      originalText={deletion.originalText}
+                      isApproved={approvedChangeIds.includes(deletion.changeId)}
+                      onToggle={() => onToggleChange(deletion.changeId)}
+                    />
+                  ))}
+
+                  {!slide.hasChanges && (
+                    <NoChangesAdaptation reasoning={slide.keepReasoning} />
+                  )}
+                </AdaptSlideCard>
+              );
+            })}
+          </OakFlex>
         </OakBox>
 
         {/* Footer */}

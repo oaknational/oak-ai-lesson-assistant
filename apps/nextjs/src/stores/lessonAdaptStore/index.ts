@@ -41,17 +41,20 @@ export const createLessonAdaptStore = ({
     thumbnailsError: null,
 
     // Status
-    status: "idle",
+    status: "idle" as LessonAdaptState["status"],
     error: null,
 
     // Plan
     currentPlan: null,
     previousPlanResponse: null,
     approvedChangeIds: [],
+    userSlideDeletions: [],
 
     // UI
     activeTab: "lesson-details",
     showReviewModal: false,
+    selectedKlps: [],
+    selectedSlideIds: [],
 
     // Actions
     actions: {
@@ -61,6 +64,22 @@ export const createLessonAdaptStore = ({
       setStatus: (status) => set({ status }),
       setShowReviewModal: (show) => set({ showReviewModal: show }),
       setError: (error) => set({ error }),
+
+      toggleKlp: (klp) => {
+        const { selectedKlps } = get();
+        const next = selectedKlps.includes(klp)
+          ? selectedKlps.filter((k) => k !== klp)
+          : [...selectedKlps, klp];
+        set({ selectedKlps: next });
+      },
+
+      toggleSlide: (slideId) => {
+        const { selectedSlideIds } = get();
+        const next = selectedSlideIds.includes(slideId)
+          ? selectedSlideIds.filter((id) => id !== slideId)
+          : [...selectedSlideIds, slideId];
+        set({ selectedSlideIds: next });
+      },
 
       // Plan management
       toggleChangeApproval: (changeId) => {
@@ -97,7 +116,30 @@ export const createLessonAdaptStore = ({
       },
 
       clearPlan: () => {
-        set({ currentPlan: null, approvedChangeIds: [] });
+        set({
+          currentPlan: null,
+          approvedChangeIds: [],
+          userSlideDeletions: [],
+        });
+      },
+
+      addUserSlideDeletion: (slideId, slideNumber) => {
+        const { userSlideDeletions } = get();
+        if (userSlideDeletions.some((d) => d.slideId === slideId)) return;
+        set({
+          userSlideDeletions: [
+            ...userSlideDeletions,
+            { clientId: crypto.randomUUID(), slideId, slideNumber },
+          ],
+        });
+      },
+
+      removeUserSlideDeletion: (slideId) => {
+        set({
+          userSlideDeletions: get().userSlideDeletions.filter(
+            (d) => d.slideId !== slideId,
+          ),
+        });
       },
 
       // Async operations
@@ -122,8 +164,11 @@ export const createLessonAdaptStore = ({
           error: null,
           currentPlan: null,
           approvedChangeIds: [],
+          userSlideDeletions: [],
           activeTab: "lesson-details",
           showReviewModal: false,
+          selectedKlps: [],
+          selectedSlideIds: [],
         });
       },
     },

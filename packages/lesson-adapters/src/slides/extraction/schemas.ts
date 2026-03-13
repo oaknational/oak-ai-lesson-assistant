@@ -12,7 +12,7 @@ export const slideTypeSchema = z.enum([
   "lessonOutline",
   "summary",
   "endOfLesson",
-  "teacher",
+  "teacherGuidance",
   "copyright",
   "checkForUnderstanding",
   "explanation",
@@ -20,7 +20,7 @@ export const slideTypeSchema = z.enum([
   "feedback",
   "content",
   "other",
-  "unknown",
+  "unclassified",
 ]);
 
 export const nonTextElementTypeSchema = z.enum([

@@ -7,6 +7,8 @@ export {
   // Extraction functions
   classifyNonTextElement,
   extractPresentationContent,
+  extractPresentationContentWithImageDescriptions,
+  generateImageDescriptions,
   extractSlideContent,
   extractSlideTitle,
   extractTableCells,

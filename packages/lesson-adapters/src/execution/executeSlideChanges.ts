@@ -22,6 +22,13 @@ export interface ExecuteSlideChangesResult {
 }
 
 /**
+ * User-initiated changes that have no corresponding entry in the plan.
+ */
+export interface AdditionalChanges {
+  slideDeletions?: Array<{ slideId: string; slideNumber: number }>;
+}
+
+/**
  * Executes all slide changes from an adaptation plan against a Google Slides presentation.
  *
  * Operations are applied in a safe order:
@@ -36,10 +43,35 @@ export interface ExecuteSlideChangesResult {
 export async function executeSlideChanges(
   presentationId: string,
   plan: AdaptationPlan,
+  approvedChangeIds: string[] | undefined,
+  additionalChanges?: AdditionalChanges,
 ): Promise<ExecuteSlideChangesResult> {
   const executedChangeIds: string[] = [];
   const errors: string[] = [];
-  const { changes } = plan.slidesAgentResponse;
+
+  const approvedChangesPlan = {
+    ...plan,
+    slidesAgentResponse: {
+      ...plan.slidesAgentResponse,
+      changes: {
+        textEdits: plan.slidesAgentResponse.changes.textEdits.filter((s) =>
+          approvedChangeIds?.includes(s.changeId),
+        ),
+        tableCellEdits: plan.slidesAgentResponse.changes.tableCellEdits.filter(
+          (s) => approvedChangeIds?.includes(s.changeId),
+        ),
+        textElementDeletions:
+          plan.slidesAgentResponse.changes.textElementDeletions.filter((s) =>
+            approvedChangeIds?.includes(s.changeId),
+          ),
+        slideDeletions: plan.slidesAgentResponse.changes.slideDeletions.filter(
+          (s) => approvedChangeIds?.includes(s.changeId),
+        ),
+      },
+    },
+  };
+
+  const { changes } = approvedChangesPlan.slidesAgentResponse;
 
   // 1. Apply text edits to regular text elements
   if (changes.textEdits.length > 0) {
@@ -115,9 +147,15 @@ export async function executeSlideChanges(
   }
 
   // 4. Delete slides (in reverse slide number order to avoid index shifts)
-  if (changes.slideDeletions.length > 0) {
+  const userDeletions = (additionalChanges?.slideDeletions ?? []).map((d) => ({
+    ...d,
+    changeId: `user-sd-${d.slideId}`,
+  }));
+  const allSlideDeletions = [...changes.slideDeletions, ...userDeletions];
+
+  if (allSlideDeletions.length > 0) {
     try {
-      const sortedDeletions = [...changes.slideDeletions].sort(
+      const sortedDeletions = [...allSlideDeletions].sort(
         (a, b) => b.slideNumber - a.slideNumber,
       );
 
