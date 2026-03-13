@@ -7,6 +7,7 @@ import type {
 import { aiLogger } from "@oakai/logger";
 
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
+import { MathJaxWrap } from "@/components/MathJax";
 
 const log = aiLogger("chat");
 
@@ -73,7 +74,11 @@ function ErrorMessagePart({
 }
 
 function TextMessagePart({ part }: Readonly<{ part: TextDocument }>) {
-  return <MemoizedReactMarkdownWithStyles markdown={part.value} />;
+  return (
+    <MathJaxWrap>
+      <MemoizedReactMarkdownWithStyles markdown={part.value} />
+    </MathJaxWrap>
+  );
 }
 
 function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
