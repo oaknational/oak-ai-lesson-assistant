@@ -17,7 +17,6 @@
     "doppler:run:stg": "doppler run -c stg --silent",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "process:answersAndDistractors": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/batchAnswersAndDistractorsForJudgement.ts",
     "process:createSnippetsForNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/createSnippetsForNewLessons.ts",
     "process:getTranscriptsForNewLessons": "ts-node --compilerOptions \"{\\\"module\\\": \\\"CommonJS\\\", \\\"allowJs\\\": true}\" ./src/scripts/import-new-lessons/getTranscriptsForNewLessons.ts",
     "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
@@ -25,10 +24,6 @@
     "process:lessons:dev": "pnpm doppler:run:dev -- pnpm process:lessons",
     "prompts": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
     "prompts:dev": "dotenv -e ../../.env -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
-    "seed": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/seedLessons.ts",
-    "seed:dev": "dotenv -e ../../.env -- pnpm seed",
-    "seed:prd": "pnpm doppler:run:prd -- pnpm seed",
-    "seed:stg": "pnpm doppler:run:stg -- pnpm seed",
     "test": "jest --config jest.config.mjs",
     "type-check": "tsc --noEmit"
   },
