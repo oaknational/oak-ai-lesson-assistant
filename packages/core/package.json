@@ -21,8 +21,6 @@
     "process:createSnippetsForNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/createSnippetsForNewLessons.ts",
     "process:getTranscriptsForNewLessons": "ts-node --compilerOptions \"{\\\"module\\\": \\\"CommonJS\\\", \\\"allowJs\\\": true}\" ./src/scripts/import-new-lessons/getTranscriptsForNewLessons.ts",
     "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
-    "process:lessons": "pnpm doppler:run:dev -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/processLessons.ts",
-    "process:lessons:dev": "pnpm doppler:run:dev -- pnpm process:lessons",
     "prompts": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
     "prompts:dev": "dotenv -e ../../.env -- ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/setupPrompts.ts",
     "seed": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/seedLessons.ts",
