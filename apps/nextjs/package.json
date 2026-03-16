@@ -4,7 +4,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "aila": "tsx scripts/aila-cli.ts",
     "build": "next build",
     "build-storybook": "dotenv -e ../../.env -- storybook build",
     "build:dev": "pnpm with-env next build",
