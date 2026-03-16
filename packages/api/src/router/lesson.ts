@@ -1,5 +1,4 @@
-import { Lessons, inngest } from "@oakai/core";
-import type { LessonSummary, Transcript } from "@oakai/db";
+import { Lessons } from "@oakai/core";
 import { LessonWithSnippets } from "@oakai/db";
 
 import { TRPCError } from "@trpc/server";
@@ -16,11 +15,6 @@ type SimilarityResult = {
   id: string;
   title: string;
   relevance: number;
-};
-
-type CustomError = {
-  message: string;
-  code?: number;
 };
 
 type LessonWithSnippetsType = z.infer<typeof LessonWithSnippets>;
@@ -173,30 +167,6 @@ export const lessonRouter = router({
 
       return res.summaries[0];
     }),
-  summarise: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .output(z.object({ error: z.any(), summary: z.any() })) // FIXME: Define the output type using zod
-    .mutation(async ({ ctx, input }) => {
-      let error: CustomError | null = null;
-      let summary: LessonSummary | null = null;
-      try {
-        summary = await ctx.prisma.lessonSummary.create({
-          data: { lessonId: input.id },
-        });
-        await inngest.send({
-          name: "app/lesson.summarise",
-          data: { lessonId: input.id, lessonSummaryId: summary.id },
-        });
-      } catch (e) {
-        error = { message: (e as Error).message, code: 400 };
-      }
-      return { error, summary };
-    }),
-
   getOriginalTranscript: protectedProcedure
     .input(
       z.object({
@@ -235,44 +205,6 @@ export const lessonRouter = router({
         transcript: content.raw,
       };
     }),
-  createOriginalTranscript: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .output(z.object({ error: z.any(), transcript: z.any() })) // FIXME: Define the output type using zod
-    .mutation(async ({ ctx, input }) => {
-      let error: CustomError | null = null;
-      let transcript: Transcript | null = null;
-      try {
-        transcript = await new Lessons(ctx.prisma).createOriginalTranscript(
-          input.id,
-        );
-      } catch (e) {
-        error = { message: (e as Error).message, code: 400 };
-      }
-      return { error, transcript };
-    }),
-  createQuizStructure: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      }),
-    )
-    .output(z.object({ error: z.any(), success: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      let error: CustomError | null = null;
-      let success: boolean = false;
-      try {
-        await new Lessons(ctx.prisma).createQuizStructure(input.id);
-        success = true;
-      } catch (e) {
-        error = { message: (e as Error).message, code: 400 };
-      }
-      return { error, success };
-    }),
-
   getQuizStructure: protectedProcedure
     .input(
       z.object({

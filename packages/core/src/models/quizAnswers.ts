@@ -1,6 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { inngest } from "../inngest";
 import { embedWithCache } from "../utils/embeddings";
 
 export class QuizAnswers {
@@ -24,19 +23,5 @@ export class QuizAnswers {
       SET embedding = ${vector}::vector
       WHERE id = ${id}`;
     return result;
-  }
-
-  async embedAll(): Promise<void> {
-    const quizAnswers = await this.prisma.quizAnswer.findMany({
-      where: {
-        status: "PENDING",
-      },
-    });
-    for (const quizAnswer of quizAnswers) {
-      await inngest.send({
-        name: "app/quizAnswer.embed",
-        data: { quizAnswerId: quizAnswer.id },
-      });
-    }
   }
 }
