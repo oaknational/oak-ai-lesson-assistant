@@ -17,9 +17,6 @@
     "doppler:run:stg": "doppler run -c stg --silent",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "process:createSnippetsForNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/createSnippetsForNewLessons.ts",
-    "process:getTranscriptsForNewLessons": "ts-node --compilerOptions \"{\\\"module\\\": \\\"CommonJS\\\", \\\"allowJs\\\": true}\" ./src/scripts/import-new-lessons/getTranscriptsForNewLessons.ts",
-    "process:importNewLessons": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} ./src/scripts/import-new-lessons/importNewLessons.ts",
     "test": "jest --config jest.config.mjs",
     "type-check": "tsc --noEmit"
   },
