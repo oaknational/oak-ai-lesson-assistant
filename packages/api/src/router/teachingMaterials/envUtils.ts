@@ -6,6 +6,7 @@ const log = aiLogger("teaching-materials");
 
 export interface CurriculumApiConfig {
   authKey: string;
+  authType: string;
   graphqlEndpoint: string;
 }
 
@@ -15,12 +16,14 @@ export interface CurriculumApiConfig {
  * @returns {CurriculumApiConfig} The validated environment configuration
  */
 export function validateCurriculumApiEnv(): CurriculumApiConfig {
-  const AUTH_KEY = process.env.CURRIC_DB_HASURA_AUTH_AILA_API_KEY;
+  const AUTH_KEY = process.env.CURRICULUM_API_AUTH_KEY;
+  const AUTH_TYPE = process.env.CURRICULUM_API_AUTH_TYPE;
   const GRAPHQL_ENDPOINT = process.env.CURRICULUM_API_URL;
 
-  if (!AUTH_KEY || !GRAPHQL_ENDPOINT) {
+  if (!AUTH_KEY || !AUTH_TYPE || !GRAPHQL_ENDPOINT) {
     log.error("Missing environment variables", {
       AUTH_KEY: !!AUTH_KEY,
+      AUTH_TYPE: !!AUTH_TYPE,
       GRAPHQL_ENDPOINT: !!GRAPHQL_ENDPOINT,
     });
     throw new TRPCError({
@@ -31,6 +34,7 @@ export function validateCurriculumApiEnv(): CurriculumApiConfig {
 
   return {
     authKey: AUTH_KEY,
+    authType: AUTH_TYPE,
     graphqlEndpoint: GRAPHQL_ENDPOINT,
   };
 }

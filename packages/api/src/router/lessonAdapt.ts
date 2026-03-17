@@ -269,13 +269,15 @@ export const lessonAdaptRouter = router({
         const { lessonSlug } = input;
         const programmeSlug = null; // Canonical lesson for now
 
-        const { authKey, graphqlEndpoint } = validateCurriculumApiEnv();
+        const { authKey, authType, graphqlEndpoint } =
+          validateCurriculumApiEnv();
 
         // Fetch lesson data from OWA
         const { lessonData } = await fetchOwaLessonAndTcp({
           lessonSlug,
           programmeSlug,
           authKey,
+          authType,
           graphqlEndpoint: String(graphqlEndpoint),
         });
 
