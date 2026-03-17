@@ -56,7 +56,7 @@ export function ReviewModal({
 
       {/* Modal */}
       <OakBox
-        $background="white"
+        $background="bg-primary"
         $borderRadius="border-radius-m"
         className="relative z-10 flex h-[90vh] w-[90vw] max-w-6xl flex-col overflow-hidden shadow-xl"
       >

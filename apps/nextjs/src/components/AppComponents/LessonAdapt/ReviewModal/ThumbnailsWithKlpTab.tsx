@@ -129,7 +129,7 @@ export function ThumbnailsWithKlpTab({
                           $borderRadius="border-radius-circle"
                           className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center"
                         >
-                          <OakP $font="body-4" $color="white">
+                          <OakP $font="body-4" $color="text-inverted">
                             {index + 1}
                           </OakP>
                         </OakBox>
@@ -154,7 +154,7 @@ export function ThumbnailsWithKlpTab({
                           $borderRadius="border-radius-circle"
                           className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center"
                         >
-                          <OakP $font="body-4" $color="white">
+                          <OakP $font="body-4" $color="text-inverted">
                             {index + 1}
                           </OakP>
                         </OakBox>
@@ -187,7 +187,7 @@ export function ThumbnailsWithKlpTab({
                   $pa="spacing-8"
                   $borderRadius="border-radius-s"
                 >
-                  <OakP $font="body-3-bold" $color="white">
+                  <OakP $font="body-3-bold" $color="text-inverted">
                     ✓ Covers Diversity Content
                   </OakP>
                 </OakBox>

@@ -63,14 +63,16 @@ export function AdaptChatSidebar() {
         {messages.map((message) => (
           <OakBox
             key={message.id}
-            $background={message.role === "user" ? "black" : "bg-neutral"}
+            $background={message.role === "user" ? "bg-inverted" : "bg-neutral"}
             $pa="spacing-12"
             $borderRadius="border-radius-m"
             className={message.role === "assistant" ? "max-w-[320px]" : ""}
           >
             <OakP
               $font="body-3"
-              $color={message.role === "user" ? "white" : "text-primary"}
+              $color={
+                message.role === "user" ? "text-inverted" : "text-primary"
+              }
               style={{ whiteSpace: "pre-wrap" }}
             >
               {message.content}

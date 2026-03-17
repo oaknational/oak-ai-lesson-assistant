@@ -62,7 +62,7 @@ export const LessonPlanSection = ({
 
   return (
     <DropDownSectionWrapper
-      $borderColor="black"
+      $borderColor="border-primary"
       $bb="border-solid-m"
       $pv="spacing-24"
       ref={sectionRef}
