@@ -146,8 +146,8 @@ importers:
         specifier: '*'
         version: link:../../packages/teaching-materials
       '@oaknational/oak-components':
-        specifier: ^1.174.1
-        version: 1.174.1(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11)
+        specifier: ^2.13.1
+        version: 2.13.1(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11)
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
         version: 2.1.0(react-dom@19.2.1)(react@19.2.1)(zod@3.25.76)
@@ -989,73 +989,6 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
-
-  packages/ingest:
-    dependencies:
-      '@google-cloud/storage':
-        specifier: ^7.7.0
-        version: 7.7.0
-      '@oakai/aila':
-        specifier: '*'
-        version: link:../aila
-      '@oakai/core':
-        specifier: '*'
-        version: link:../core
-      '@oakai/db':
-        specifier: '*'
-        version: link:../db
-      '@oakai/logger':
-        specifier: '*'
-        version: link:../logger
-      '@oakai/rag':
-        specifier: '*'
-        version: link:../rag
-      '@paralleldrive/cuid2':
-        specifier: ^2.2.2
-        version: 2.2.2
-      '@types/yargs':
-        specifier: ^17.0.33
-        version: 17.0.33
-      csv-parser:
-        specifier: ^3.0.0
-        version: 3.0.0
-      graphql-request:
-        specifier: ^6.1.0
-        version: 6.1.0(graphql@16.12.0)
-      tsx:
-        specifier: ^4.16.0
-        version: 4.16.0
-      webvtt-parser:
-        specifier: ^2.2.0
-        version: 2.2.0
-      yargs:
-        specifier: ^17.7.2
-        version: 17.7.2
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
-    devDependencies:
-      '@oakai/eslint-config':
-        specifier: '*'
-        version: link:../eslint-config
-      '@oakai/prettier-config':
-        specifier: '*'
-        version: link:../prettier-config
-      '@types/jest':
-        specifier: ^30.0.0
-        version: 30.0.0
-      '@types/webvtt-parser':
-        specifier: ^2.2.0
-        version: 2.2.0
-      jest:
-        specifier: ^30.0.0
-        version: 30.2.0(@types/node@20.17.9)(ts-node@10.9.2)
-      setup-polly-jest:
-        specifier: ^0.11.0
-        version: 0.11.0(@pollyjs/core@6.0.6)
-      ts-jest:
-        specifier: ^29.2.5
-        version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
 
   packages/lesson-adapters:
     dependencies:
@@ -6431,11 +6364,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@noble/hashes@1.7.0:
-    resolution: {integrity: sha512-HXydb0DgzTpDPwbVeDGCG1gIu7X6+AuU6Zl6av/E/KG8LMsvPntvq+w17CHRpKBmN6Ybdrt1eP3k4cj8DJa78w==}
-    engines: {node: ^14.21.3 || >=16}
-    dev: false
-
   /@nodelib/fs.scandir@2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -6454,8 +6382,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@oaknational/oak-components@1.174.1(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11):
-    resolution: {integrity: sha512-Y3bxugFKGiORcdaxVfUGL0pUEyizecnd/S3yj3pjClVs9XXPGFB1UzCnOmgvMqBr7sXTMPzetLUexTO/V0smgA==}
+  /@oaknational/oak-components@2.13.1(next-cloudinary@6.17.4)(next@16.0.10)(react-dom@19.2.1)(react@19.2.1)(styled-components@5.3.11):
+    resolution: {integrity: sha512-J6tLTyCTo/ecrPxHUKMjLbykDmoGoIS6aqNoLV+HS6oB70PWnbkrNcE0OBxQiNgc4ZPb5OoUwQrJXU7k0lAcfQ==}
     peerDependencies:
       next: '>=14.2.12'
       next-cloudinary: '>=6.16.0'
@@ -7819,12 +7747,6 @@ packages:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.2.0(@opentelemetry/api@1.9.0)
-    dev: false
-
-  /@paralleldrive/cuid2@2.2.2:
-    resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
-    dependencies:
-      '@noble/hashes': 1.7.0
     dev: false
 
   /@pkgjs/parseargs@0.11.0:
@@ -11733,10 +11655,6 @@ packages:
   /@types/uuid@9.0.3:
     resolution: {integrity: sha512-taHQQH/3ZyI3zP8M/puluDEIEvtQHVYcC6y3N8ijFtAd28+Ey/G4sg1u2gB01S8MwybLOKAp9/yCMu/uR5l3Ug==}
     dev: false
-
-  /@types/webvtt-parser@2.2.0:
-    resolution: {integrity: sha512-T8n08m3VWAOCVDHWPOtEehnLcVSyQaUmyjIvGCERWRPMyVooUjqWaDsvKD3bcwQSU8TLBW19YTSRx9UxBNfckA==}
-    dev: true
 
   /@types/yargs-parser@21.0.3:
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
