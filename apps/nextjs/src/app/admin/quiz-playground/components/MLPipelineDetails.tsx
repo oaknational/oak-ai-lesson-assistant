@@ -62,12 +62,13 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
     const queryNode = reportNode.children[key];
     if (!queryNode) continue;
 
-    const esNode = queryNode.children.elasticsearch;
+    const searchNode =
+      queryNode.children.search ?? queryNode.children.elasticsearch;
     const cohereNode = queryNode.children.cohere;
 
-    // Extract ES hits
-    const esHits =
-      (esNode?.data.hitsWithScores as Array<{
+    // Extract search hits (Postgres hybrid or legacy ES)
+    const searchHits =
+      (searchNode?.data.hitsWithScores as Array<{
         questionUid: string;
         text: string;
         score: number;
@@ -90,9 +91,9 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
     terms.push({
       query:
         (queryNode.data.query as string) ??
-        (esNode?.data.query as string) ??
+        (searchNode?.data.query as string) ??
         "",
-      elasticsearchHits: esHits,
+      elasticsearchHits: searchHits,
       cohereResults,
       finalCandidates,
       timingMs: queryNode.durationMs ?? 0,
@@ -166,17 +167,17 @@ function SearchTermAccordion({
 
       {isOpen && (
         <div className="space-y-6 border-t p-4">
-          {/* Elasticsearch Results */}
+          {/* Search Results */}
           <section>
             <h4 className="mb-2 font-medium">
-              Elasticsearch Hits ({term.elasticsearchHits.length} total)
+              Search Hits ({term.elasticsearchHits.length} total)
             </h4>
             <LearnBlock>
               <p className="text-sm text-gray-600">
-                These are the raw results from Elasticsearch hybrid search. The
-                score combines BM25 text relevance (keyword matching) with
-                vector similarity (semantic meaning). Higher scores indicate
-                better matches to the search query.
+                These are the raw results from Postgres hybrid search. The score
+                combines BM25 text relevance (keyword matching) with vector
+                similarity (semantic meaning). Higher scores indicate better
+                matches to the search query.
               </p>
             </LearnBlock>
             <div className="overflow-x-auto">
