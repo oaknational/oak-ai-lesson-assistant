@@ -1,0 +1,18 @@
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+
+import type { GetStore } from "@/stores/AilaStoresProvider";
+
+import type { ModerationGetter, ModerationSetter } from "../types";
+
+export const handleLockingModeration =
+  (
+    getStore: GetStore,
+    set: ModerationSetter,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    get: ModerationGetter,
+  ) =>
+  (mod: PersistedModerationBase | null) => {
+    set({ lockingModeration: mod });
+    getStore("chat").actions.setMessages([], false);
+    getStore("lessonPlan").actions.resetStore();
+  };
