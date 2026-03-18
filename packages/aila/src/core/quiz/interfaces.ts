@@ -14,15 +14,6 @@ import type {
 import type { Task } from "./reporting";
 import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
-/**
- * Extended ImageMetadata for use within the quiz RAG pipeline.
- * Adds AI-generated description for LLM context during composition.
- * The aiDescription is dropped when outputting to LatestQuiz.
- */
-export interface EnrichedImageMetadata extends ImageMetadata {
-  aiDescription?: string;
-}
-
 // TODO: GCLOMAX - we need to update the typing on here - do we use both cohere and replicate types?
 // Replicate is just returning json anyway.
 export interface DocumentReranker {
@@ -121,13 +112,11 @@ export interface QuizService {
  * Quiz question used throughout the quiz RAG pipeline.
  * Retrieved from Postgres (rag.quiz_questions) with pre-converted V3 format,
  * or from the current lesson plan (currentQuiz source).
- *
- * Uses EnrichedImageMetadata which may include aiDescription for LLM context.
  */
 export interface RagQuizQuestion {
   question: LatestQuizQuestion;
   sourceUid: string;
-  imageMetadata: EnrichedImageMetadata[];
+  imageMetadata: ImageMetadata[];
 }
 
 export interface SimplifiedResult {

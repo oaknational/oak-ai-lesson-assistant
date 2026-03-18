@@ -7,8 +7,8 @@ import type {
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../../protocol/schemas/quiz";
+import type { ImageMetadata } from "../../../protocol/schemas/quiz";
 import type {
-  EnrichedImageMetadata,
   QuestionSource,
   QuizQuestionPool,
   RagQuizQuestion,
@@ -81,19 +81,12 @@ export class CurrentQuizSource implements QuestionSource {
   private extractImageMetadataForQuestion(
     question: LatestQuizQuestion,
     quizImageMetadata: LatestQuiz["imageMetadata"],
-  ): EnrichedImageMetadata[] {
+  ): ImageMetadata[] {
     // Gather all text content from the question
     const allText = this.gatherQuestionText(question);
 
     // Find images referenced in this question
-    return quizImageMetadata
-      .filter((meta) => allText.includes(meta.imageUrl))
-      .map((meta) => ({
-        imageUrl: meta.imageUrl,
-        attribution: meta.attribution,
-        width: meta.width,
-        height: meta.height,
-      }));
+    return quizImageMetadata.filter((meta) => allText.includes(meta.imageUrl));
   }
 
   private gatherQuestionText(question: LatestQuizQuestion): string {
