@@ -2,15 +2,12 @@ import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { PrismaClient } from "@prisma/client";
-import { z } from "zod";
 
 import type { QuizPath } from "../../../protocol/schema";
-import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
 import type {
   ImageMetadata,
   QuizV3Question,
 } from "../../../protocol/schemas/quiz/quizV3";
-import { hasuraQuizQuestionSchema } from "../../../protocol/schemas/quiz/rawQuiz";
 import type { RagQuizQuestion } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
@@ -114,7 +111,6 @@ export class QuizQuestionRetrievalService {
 
   /**
    * Retrieves quiz questions by their UIDs from Postgres.
-   * Uses pre-converted V3 columns when available, falls back to rawJson conversion.
    * Preserves the order of the input questionUids array.
    */
   async retrieveQuestionsByIds(
@@ -130,7 +126,6 @@ export class QuizQuestionRetrievalService {
         questionUid: true,
         quizQuestion: true,
         imageMetadata: true,
-        rawJson: true,
       },
     });
 
@@ -155,57 +150,16 @@ export class QuizQuestionRetrievalService {
     questionUid: string;
     quizQuestion: unknown;
     imageMetadata: unknown;
-    rawJson: unknown;
   }): RagQuizQuestion | null {
-    // Prefer pre-converted V3 columns (populated at ingest time)
-    if (row.quizQuestion) {
-      return {
-        question: row.quizQuestion as QuizV3Question,
-        sourceUid: row.questionUid,
-        imageMetadata: (row.imageMetadata as ImageMetadata[]) ?? [],
-      };
-    }
-
-    // TODO: Remove rawJson fallback once all rows have quiz_question populated
-    return this.parseFromRawJson(row.questionUid, row.rawJson);
-  }
-
-  private parseFromRawJson(
-    questionUid: string,
-    rawJson: unknown,
-  ): RagQuizQuestion | null {
-    if (!rawJson) {
+    if (!row.quizQuestion) {
+      log.warn("Missing quizQuestion for questionUid:", row.questionUid);
       return null;
     }
 
-    try {
-      const source = hasuraQuizQuestionSchema.parse(rawJson);
-      const quizV3 = convertHasuraQuizToV3([source]);
-
-      if (!quizV3.questions[0]) {
-        log.error("No question returned from V3 conversion", {
-          sourceUid: source.questionUid,
-        });
-        return null;
-      }
-
-      return {
-        question: quizV3.questions[0],
-        sourceUid: source.questionUid,
-        imageMetadata: quizV3.imageMetadata,
-      };
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        log.error("Validation error:", {
-          errors: error.errors,
-          rawJsonPreview: JSON.stringify(rawJson).substring(0, 300),
-        });
-      } else if (error instanceof SyntaxError) {
-        log.error("JSON parsing error:", error.message);
-      } else {
-        log.error("An unexpected error occurred:", error);
-      }
-      return null;
-    }
+    return {
+      question: row.quizQuestion as QuizV3Question,
+      sourceUid: row.questionUid,
+      imageMetadata: (row.imageMetadata as ImageMetadata[]) ?? [],
+    };
   }
 }

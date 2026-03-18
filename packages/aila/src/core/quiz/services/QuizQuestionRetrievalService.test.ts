@@ -2,24 +2,12 @@ import type { PrismaClient } from "@prisma/client";
 
 import { QuizQuestionRetrievalService } from "./QuizQuestionRetrievalService";
 
-// Helper to create valid HasuraQuizQuestion raw_json (as a JS object, not a string)
-const createValidRawJson = (uid: string, questionText: string) => ({
-  questionId: parseInt(uid.replace("QUES-", ""), 10) || 1,
-  questionUid: uid,
-  questionType: "multiple-choice",
-  questionStem: [{ text: questionText, type: "text" }],
-  answers: {
-    "multiple-choice": [
-      {
-        answer: [{ text: "Correct", type: "text" }],
-        answer_is_correct: true,
-      },
-      { answer: [{ text: "Wrong", type: "text" }], answer_is_correct: false },
-    ],
-  },
-  feedback: "Good job!",
+const createV3Question = (questionText: string) => ({
+  questionType: "multiple-choice" as const,
+  question: questionText,
+  answers: ["Correct"],
+  distractors: ["Wrong"],
   hint: "Think about it",
-  active: true,
 });
 
 const createMockPrisma = () => ({
@@ -58,15 +46,13 @@ describe("QuizQuestionRetrievalService", () => {
         .mockResolvedValueOnce([
           {
             questionUid: "QUES-001",
-            quizQuestion: null,
+            quizQuestion: createV3Question("What is 2+2?"),
             imageMetadata: null,
-            rawJson: createValidRawJson("QUES-001", "What is 2+2?"),
           },
           {
             questionUid: "QUES-002",
-            quizQuestion: null,
+            quizQuestion: createV3Question("What is 3+3?"),
             imageMetadata: null,
-            rawJson: createValidRawJson("QUES-002", "What is 3+3?"),
           },
         ]);
 
@@ -155,15 +141,13 @@ describe("QuizQuestionRetrievalService", () => {
       mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
         {
           questionUid: "QUES-002",
-          quizQuestion: null,
+          quizQuestion: createV3Question("Second question"),
           imageMetadata: null,
-          rawJson: createValidRawJson("QUES-002", "Second question"),
         },
         {
           questionUid: "QUES-001",
-          quizQuestion: null,
+          quizQuestion: createV3Question("First question"),
           imageMetadata: null,
-          rawJson: createValidRawJson("QUES-001", "First question"),
         },
       ]);
 
@@ -195,14 +179,7 @@ describe("QuizQuestionRetrievalService", () => {
       expect(mockPrisma.ragQuizQuestion.findMany).not.toHaveBeenCalled();
     });
 
-    it("should use quizQuestion column directly when available", async () => {
-      const v3Question = {
-        questionType: "multiple-choice",
-        question: "Pre-converted V3 question",
-        answers: ["Correct"],
-        distractors: ["Wrong"],
-        hint: null,
-      };
+    it("should include imageMetadata when available", async () => {
       const v3ImageMetadata = [
         {
           imageUrl: "http://example.com/img.png",
@@ -215,49 +192,29 @@ describe("QuizQuestionRetrievalService", () => {
       mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
         {
           questionUid: "QUES-V3",
-          quizQuestion: v3Question,
+          quizQuestion: createV3Question("Question with image"),
           imageMetadata: v3ImageMetadata,
-          rawJson: createValidRawJson("QUES-V3", "Should not be used"),
         },
       ]);
 
       const result = await service.retrieveQuestionsByIds(["QUES-V3"]);
 
       expect(result).toHaveLength(1);
-      expect(result[0]!.question.question).toBe("Pre-converted V3 question");
+      expect(result[0]!.question.question).toBe("Question with image");
       expect(result[0]!.imageMetadata).toEqual(v3ImageMetadata);
     });
 
-    it("should fall back to rawJson when quizQuestion is null", async () => {
-      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
-        {
-          questionUid: "QUES-LEGACY",
-          quizQuestion: null,
-          imageMetadata: null,
-          rawJson: createValidRawJson("QUES-LEGACY", "Legacy question"),
-        },
-      ]);
-
-      const result = await service.retrieveQuestionsByIds(["QUES-LEGACY"]);
-
-      expect(result).toHaveLength(1);
-      expect(result[0]!.question.question).toBe("Legacy question");
-      expect(result[0]!.sourceUid).toBe("QUES-LEGACY");
-    });
-
-    it("should filter out questions with invalid rawJson", async () => {
+    it("should filter out questions with null quizQuestion", async () => {
       mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
         {
           questionUid: "QUES-001",
-          quizQuestion: null,
+          quizQuestion: createV3Question("Valid question"),
           imageMetadata: null,
-          rawJson: createValidRawJson("QUES-001", "Valid question"),
         },
         {
           questionUid: "QUES-002",
           quizQuestion: null,
           imageMetadata: null,
-          rawJson: { invalid: "data" },
         },
       ]);
 

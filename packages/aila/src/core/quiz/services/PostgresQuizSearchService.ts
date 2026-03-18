@@ -8,7 +8,7 @@ import type { Task } from "../reporting";
 
 const log = aiLogger("aila:quiz");
 
-interface HybridSearchRow {
+export interface SearchRow {
   question_uid: string;
   description: string;
   lesson_slug: string;
@@ -17,8 +17,7 @@ interface HybridSearchRow {
 }
 
 /**
- * Service for searching quiz questions using Postgres hybrid search.
- * Combines full-text search (ts_rank) with vector similarity (pgvector cosine).
+ * Service for searching quiz questions using pgvector cosine similarity.
  * Replaces ElasticsearchQuizSearchService.
  */
 export class PostgresQuizSearchService {
@@ -50,37 +49,34 @@ export class PostgresQuizSearchService {
   }
 
   /**
-   * Performs hybrid search combining full-text search and vector similarity.
-   * @param hybridWeight - Weight for vector search (0.0-1.0), text gets (1 - hybridWeight)
-   * @param task - Task for tracking debug data
+   * Performs vector similarity search using pgvector cosine distance.
+   * Uses the IVFFlat index on the embedding column for fast approximate search.
    */
-  public async searchWithHybrid(
+  public async search(
     query: string,
     task: Task,
-    size: number = 100,
-    hybridWeight: number = 0.5,
-  ): Promise<HybridSearchRow[]> {
+    size: number = 50,
+  ): Promise<SearchRow[]> {
     try {
-      log.info(`Performing hybrid search, query: ${query}`);
+      log.info(`Performing vector search, query: ${query}`);
 
       const queryEmbedding = await this.createEmbedding(query);
       const queryVectorString = `[${queryEmbedding.join(",")}]`;
 
-      const rows = await prisma.$queryRaw<HybridSearchRow[]>`
+      const rows = await prisma.$queryRaw<SearchRow[]>`
         SELECT
           question_uid,
           description,
           lesson_slug,
           quiz_type,
-          (${1 - hybridWeight} * ts_rank(to_tsvector('english', description), plainto_tsquery('english', ${query}))
-            + ${hybridWeight} * (1 - (embedding <=> ${queryVectorString}::vector))) AS score
+          (1 - (embedding <=> ${queryVectorString}::vector)) AS score
         FROM rag.quiz_questions
-        WHERE description IS NOT NULL AND embedding IS NOT NULL
-        ORDER BY score DESC
+        WHERE embedding IS NOT NULL AND description IS NOT NULL
+        ORDER BY embedding <=> ${queryVectorString}::vector
         LIMIT ${size}
       `;
 
-      log.info(`Hybrid search found ${rows.length} hits`);
+      log.info(`Vector search found ${rows.length} hits`);
 
       task.addData({
         query,
@@ -96,7 +92,7 @@ export class PostgresQuizSearchService {
 
       return rows;
     } catch (error) {
-      log.error("Error performing hybrid search:", error);
+      log.error("Error performing vector search:", error);
       throw error;
     }
   }
@@ -104,7 +100,7 @@ export class PostgresQuizSearchService {
   /**
    * Transforms Postgres rows into simplified results for reranking
    */
-  public transformHits(rows: HybridSearchRow[]): SimplifiedResult[] {
+  public transformHits(rows: SearchRow[]): SimplifiedResult[] {
     return rows
       .filter((row) => row.description && row.question_uid)
       .map((row) => ({

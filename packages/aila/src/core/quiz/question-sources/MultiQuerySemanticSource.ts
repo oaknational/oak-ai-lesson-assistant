@@ -67,13 +67,7 @@ export class MultiQuerySemanticSource implements QuestionSource {
     task: Task,
   ): Promise<RagQuizQuestion[]> {
     const rows = await task.child("search", async (t) => {
-      const results = await this.searchService.searchWithHybrid(
-        query,
-        t,
-        SEARCH_SIZE,
-        0.5,
-      );
-      return results;
+      return this.searchService.search(query, t, SEARCH_SIZE);
     });
 
     const simplifiedResults = this.searchService.transformHits(rows);
