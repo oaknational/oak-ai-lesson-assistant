@@ -1022,6 +1022,8 @@ model RagLessonPlanPart {
 
   ragLessonPlan RagLessonPlan              @relation(fields: [ragLessonPlanId], references: [id], onDelete: Cascade)
   embedding     Unsupported("vector(256)")
+  // The following index is not supported by prisma so is applied manually in ./additions/rag_lesson_plans_ivfflat_index.sql
+  //  ivfflat index on embedding vector_cosine_ops WITH (lists = 100)
 
   @@map("rag_lesson_plan_parts")
   @@schema("rag")
@@ -1041,6 +1043,8 @@ model RagQuizQuestion {
   imageMetadata    Json?    @map("image_metadata") @db.JsonB
   description      String?
   embedding        Unsupported("vector(768)")?
+  // The following index is not supported by prisma so is applied manually in ./additions/rag_quiz_questions_indexes.sql
+  //  ivfflat index on embedding vector_cosine_ops WITH (lists = 100)
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
