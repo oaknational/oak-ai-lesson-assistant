@@ -5,15 +5,11 @@ import { textify } from "@oakai/core/src/utils/textify";
 import translator from "american-british-english-translator";
 
 import type { AilaAmericanismsFeature } from ".";
-import type {
-  AmericanismIssue,
-  AmericanismIssueBySection,
+import {
+  type AmericanismIssue,
+  type AmericanismIssueBySection,
+  americanismIssueSchema,
 } from "../../features/americanisms";
-
-export type TranslationResult = Record<
-  string,
-  Array<{ [phrase: string]: { issue: string; details: string } }>
->;
 
 export type AilaDocumentContent = Record<string, unknown>;
 
@@ -39,10 +35,9 @@ export class AilaAmericanisms<T extends AilaDocumentContent>
     if (!sectionContent) return;
 
     const sectionText = textify(sectionContent);
-    const sectionAmericanismScan: TranslationResult = translator.translate(
-      sectionText,
-      { american: true },
-    );
+    const sectionAmericanismScan = translator.translate(sectionText, {
+      american: true,
+    });
 
     const issues: AmericanismIssue[] = [];
     Object.values(sectionAmericanismScan).forEach((lineIssues) => {
@@ -50,7 +45,9 @@ export class AilaAmericanisms<T extends AilaDocumentContent>
         const [phrase, issueDefinition] = Object.entries(lineIssue)[0] ?? [];
         if (phrase && issueDefinition && !filterOutPhrases.has(phrase)) {
           if (!issues.some((issue) => issue.phrase === phrase)) {
-            issues.push({ phrase, ...issueDefinition });
+            issues.push(
+              americanismIssueSchema.parse({ phrase, ...issueDefinition }),
+            );
           }
         }
       });

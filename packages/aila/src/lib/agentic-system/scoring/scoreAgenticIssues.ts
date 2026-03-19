@@ -13,12 +13,15 @@
  * Configure runs per scenario with SCORE_RUNS env var (default 3).
  * Output: packages/aila/src/lib/agentic-system/scoring/scores.yaml
  */
+import { textify } from "@oakai/core/src/utils/textify";
+
 import { execSync } from "child_process";
 import fs from "fs";
 import OpenAI from "openai";
 import path from "path";
 import YAML from "yaml";
 
+import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";
 import {
   CompletedLessonPlanSchema,
   type PartialLessonPlan,
@@ -78,6 +81,66 @@ type RunCapture = ScorerInput & { error?: string; durationSec: number };
 
 function wordCount(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
+}
+
+type MeaningOccurrence = { section: string; snippet: string };
+type MeaningEntry = { occurrences: MeaningOccurrence[]; meaning: string };
+
+function extractAmericanMeaning(details: Record<string, string>): string {
+  return details["American English"] ?? "";
+}
+
+function extractSnippet(text: string, phrase: string): string {
+  const pattern = new RegExp(
+    String.raw`[^.!?\n]*\b${phrase}\b[^.!?\n]*[.!?]?`,
+    "i",
+  );
+  const match = pattern.exec(text);
+  return match ? match[0].trim() : "";
+}
+
+function collectMeaningOccurrences(
+  issues: Array<{
+    section: string;
+    phrase: string;
+    details: Record<string, string>;
+  }>,
+  finalDocument: PartialLessonPlan,
+): Map<string, MeaningEntry> {
+  const byPhrase = new Map<string, MeaningEntry>();
+  for (const { section, phrase, details } of issues) {
+    const sectionText = textify(
+      finalDocument[section as keyof typeof finalDocument],
+    );
+    const snippet = extractSnippet(sectionText, phrase);
+    const entry = byPhrase.get(phrase);
+    if (entry) {
+      entry.occurrences.push({ section, snippet });
+    } else {
+      byPhrase.set(phrase, {
+        occurrences: [{ section, snippet }],
+        meaning: extractAmericanMeaning(details),
+      });
+    }
+  }
+  return byPhrase;
+}
+
+function formatMeaningEvidence(byPhrase: Map<string, MeaningEntry>): string {
+  const lines: string[] = [];
+  for (const [phrase, { occurrences, meaning }] of byPhrase) {
+    const sections = occurrences.map((o) => o.section);
+    lines.push(`- "${phrase}" [${sections.join(", ")}]`);
+    if (meaning) lines.push(`  US: ${meaning.replaceAll("\n", " ").trim()}`);
+    const seen = new Set<string>();
+    for (const { section, snippet } of occurrences) {
+      if (snippet && !seen.has(snippet)) {
+        seen.add(snippet);
+        lines.push(`  ${section}: "...${snippet}..."`);
+      }
+    }
+  }
+  return lines.join("\n");
 }
 
 const SCORERS: Scorer[] = [
@@ -220,6 +283,64 @@ const SCORERS: Scorer[] = [
       return {
         heuristic: "flag",
         evidence: `basedOn present: ${JSON.stringify(basedOn)}`,
+      };
+    },
+  },
+  {
+    id: "americanisms-spelling",
+    description:
+      "American English spellings and phrasing (should use British English)",
+    fn: ({ finalDocument }) => {
+      const detector = new AilaAmericanisms();
+      const issuesBySection = detector.findAmericanisms(finalDocument);
+
+      const americanIssues = issuesBySection.flatMap(({ section, issues }) =>
+        issues
+          .filter(
+            (i) =>
+              i.issue === "American English Spelling" ||
+              i.issue === "American English",
+          )
+          .map((i) => ({ section, ...i })),
+      );
+
+      if (americanIssues.length === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No American English detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: americanIssues
+          .map(
+            (i) => `- [${i.section}] (${i.issue}) "${i.phrase}" → ${i.details}`,
+          )
+          .join("\n"),
+      };
+    },
+  },
+  {
+    id: "americanisms-meanings",
+    description: "Words with different US/UK meanings (needs human review)",
+    fn: ({ finalDocument }) => {
+      const detector = new AilaAmericanisms();
+      const issuesBySection = detector.findAmericanisms(finalDocument);
+
+      const meaningIssues = issuesBySection.flatMap(({ section, issues }) =>
+        issues
+          .filter((i) => i.issue === "Different meanings")
+          .map((i) => ({ section, ...i })),
+      );
+
+      const byPhrase = collectMeaningOccurrences(meaningIssues, finalDocument);
+      if (byPhrase.size === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No different-meaning words detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: formatMeaningEvidence(byPhrase),
       };
     },
   },
@@ -557,7 +678,7 @@ describe("Agentic Issue Scoring", () => {
       const scorerTotals: Record<string, Record<string, number>> = {};
       for (const run of scenario.runs) {
         for (const { scorerId, result } of run.scores) {
-          if (!scorerTotals[scorerId]) scorerTotals[scorerId] = {};
+          scorerTotals[scorerId] ??= {};
           const counts = scorerTotals[scorerId];
           counts[result.heuristic] = (counts[result.heuristic] ?? 0) + 1;
         }
