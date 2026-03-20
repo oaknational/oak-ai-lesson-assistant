@@ -111,7 +111,7 @@ export async function POST(request: Request) {
           "similarLessons",
           "multiQuerySemantic",
         ],
-        enrichers: ["imageDescriptions"],
+        enrichers: [],
         composer: "llm",
       });
 

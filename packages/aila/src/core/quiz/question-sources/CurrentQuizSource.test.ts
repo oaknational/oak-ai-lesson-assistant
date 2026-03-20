@@ -84,6 +84,7 @@ const createQuizWithImages = (): LatestQuiz => ({
       attribution: "Public domain",
       width: 100,
       height: 100,
+      aiDescription: "A right triangle with sides labeled 3cm, 4cm, and 5cm",
     },
   ],
 });

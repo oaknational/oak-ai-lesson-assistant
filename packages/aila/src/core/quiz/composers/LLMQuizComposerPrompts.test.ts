@@ -138,7 +138,7 @@ describe("buildCompositionPrompt", () => {
       expect(prompt).not.toContain("![triangle](http://example.com/img.png)");
     });
 
-    it("should leave images unchanged when no aiDescription", () => {
+    it("should throw when aiDescription is empty", () => {
       const questionWithImage: RagQuizQuestion = {
         question: {
           questionType: "multiple-choice",
@@ -155,6 +155,7 @@ describe("buildCompositionPrompt", () => {
             attribution: null,
             width: 100,
             height: 100,
+            aiDescription: "",
           },
         ],
       };
@@ -166,9 +167,9 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
-
-      expect(prompt).toContain("![triangle](http://example.com/img.png)");
+      expect(() =>
+        buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz"),
+      ).toThrow("Missing aiDescription for image");
     });
 
     it("should replace images in answers and distractors", () => {
