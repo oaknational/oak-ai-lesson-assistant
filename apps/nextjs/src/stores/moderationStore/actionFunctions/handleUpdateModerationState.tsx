@@ -1,4 +1,7 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import {
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import type { Moderation } from "@prisma/client";
 
@@ -13,14 +16,16 @@ export const handleUpdateModerationState = (
       return;
     }
     const lastMod = mods[mods.length - 1] ?? null;
-    const toxicMod = mods.find((mod) => isToxic(mod));
+    const lockingMod = mods.find(
+      (mod) => isToxic(mod) || isHighlySensitive(mod),
+    );
     set({
       moderations: mods,
       lastModeration: lastMod,
     });
 
-    if (toxicMod) {
-      get().actions.updateToxicModeration(lastMod);
+    if (lockingMod) {
+      get().actions.updateLockingModeration(lastMod);
     }
   };
 };

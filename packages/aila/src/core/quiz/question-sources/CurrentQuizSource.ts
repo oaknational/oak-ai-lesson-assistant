@@ -4,10 +4,10 @@ import type {
   QuizPath,
 } from "../../../protocol/schema";
 import type {
+  ImageMetadata,
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../../protocol/schemas/quiz";
-import type { ImageMetadata } from "../../../protocol/schemas/quiz";
 import type {
   QuestionSource,
   QuizQuestionPool,

@@ -14,7 +14,6 @@ import { z } from "zod";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";
-import { inngest } from "../inngest";
 import { createOpenAIClient } from "../llm/openai";
 import { template } from "../prompts/lesson-assistant";
 import { RAG } from "../rag";
@@ -61,59 +60,6 @@ export class LessonPlans {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });
-  }
-
-  async embedAllParts(): Promise<void> {
-    const lessonPlanParts = await this._prisma.lessonPlan.findMany({
-      where: {
-        status: LessonPlanPartStatus.PENDING,
-      },
-    });
-    for (const lessonPlanPart of lessonPlanParts) {
-      await inngest.send({
-        name: "app/lessonPlan.embedPart",
-        data: { lessonPlanPartId: lessonPlanPart.id },
-      });
-    }
-  }
-
-  async embedAll(): Promise<void> {
-    const lessonPlans = await this._prisma.lessonPlan.findMany({
-      where: {
-        status: LessonPlanStatus.GENERATED,
-      },
-    });
-    for (const lessonPlan of lessonPlans) {
-      await inngest.send({
-        name: "app/lessonPlan.embed",
-        data: { lessonPlanId: lessonPlan.id },
-      });
-    }
-  }
-
-  async createFromLesson(id: string): Promise<LessonPlan> {
-    const lesson: Lesson | null = await this._prisma.lesson.findUnique({
-      where: { id },
-    });
-    if (!lesson) {
-      throw new Error("Lesson not found");
-    }
-    const lessonPlan = await this._prisma.lessonPlan.create({
-      data: {
-        lessonId: lesson.id,
-        status: "PENDING",
-        // Metadata for Langchain vector store
-        subjectId: lesson.subjectId,
-        keyStageId: lesson.keyStageId,
-      },
-    });
-
-    await inngest.send({
-      name: "app/lessonPlan.process",
-      data: { lessonPlanId: lessonPlan.id },
-    });
-
-    return lessonPlan;
   }
 
   async generateContent(

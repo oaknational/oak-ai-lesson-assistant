@@ -8,5 +8,6 @@ export const notifyModerationSchema = {
     chatId: z.string(),
     justification: z.string(),
     categories: z.array(z.string()),
+    safetyLevel: z.enum(["toxic", "highly-sensitive"]).optional(),
   }),
 };

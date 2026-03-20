@@ -15,12 +15,17 @@ export type ChatModerationProps = Readonly<{
 
 const ChatModeration = ({ children }: ChatModerationProps) => {
   const id = useModerationStore((state) => state.id);
-  const toxicModeration = useModerationStore((state) => state.toxicModeration);
+  const lockingModeration = useModerationStore(
+    (state) => state.lockingModeration,
+  );
 
-  if (toxicModeration) {
-    if (!id) throw new Error("Toxic moderation, but no chat id");
+  if (lockingModeration) {
+    if (!id) throw new Error("Locking moderation, but no chat id");
     return (
-      <ChatModerationDisplay toxicModeration={toxicModeration} chatId={id} />
+      <ChatModerationDisplay
+        lockingModeration={lockingModeration}
+        chatId={id}
+      />
     );
   }
 
