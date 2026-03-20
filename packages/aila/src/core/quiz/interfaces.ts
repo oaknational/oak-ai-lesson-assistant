@@ -11,7 +11,6 @@ import type {
   LatestQuiz,
   LatestQuizQuestion,
 } from "../../protocol/schemas/quiz";
-import type { HasuraQuizQuestion } from "../../protocol/schemas/quiz/rawQuiz";
 import type { Task } from "./reporting";
 import type { QuizRecommenderType, QuizServiceSettings } from "./schema";
 
@@ -118,43 +117,17 @@ export interface QuizService {
   ): Promise<QuizBuildResult>;
 }
 
-export interface CustomSource {
-  text: string;
-  questionUid: string;
-  lessonSlug: string;
-  quizPatchType: string;
-  isLegacy: boolean;
-  embedding: number[];
-  [key: string]: unknown; // Allow for other unknown fields at the top level
-}
-
-export interface QuizQuestionTextOnlySource {
-  text: string;
-  metadata: {
-    questionUid: string;
-    lessonSlug: string;
-    raw_json: string; // Allow for raw JSON data
-  };
-}
-
 /**
  * Quiz question used throughout the quiz RAG pipeline.
- * Retrieved from Elasticsearch, contains the question in Latest format
- * (supporting all question types: multiple-choice, short-answer, match, order),
- * source data, and associated image metadata.
+ * Retrieved from Postgres (rag.quiz_questions) with pre-converted V3 format,
+ * or from the current lesson plan (currentQuiz source).
  *
  * Uses EnrichedImageMetadata which may include aiDescription for LLM context.
  */
 export interface RagQuizQuestion {
   question: LatestQuizQuestion;
   sourceUid: string;
-  /** Raw Hasura record for provenance. Undefined for questions from currentQuiz. */
-  source?: HasuraQuizQuestion;
   imageMetadata: EnrichedImageMetadata[];
-}
-
-export interface CustomHit {
-  _source: CustomSource;
 }
 
 export interface SimplifiedResult {
@@ -202,19 +175,6 @@ export interface DocumentWrapper {
   document: Document;
   index: number;
   relevanceScore: number;
-}
-
-export interface QuizSet {
-  exitQuiz: string[];
-  starterQuiz: string[];
-}
-
-export interface QuizIDSource {
-  text: QuizSet;
-  metadata: { lessonSlug: string };
-}
-export interface LessonSlugQuizMapping {
-  [lessonSlug: string]: QuizSet;
 }
 
 // FACTORIES BELOW

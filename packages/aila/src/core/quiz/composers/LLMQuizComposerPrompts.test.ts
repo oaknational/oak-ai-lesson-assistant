@@ -14,7 +14,6 @@ const mockMultipleChoice = (
     distractors: ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -29,7 +28,6 @@ const mockShortAnswer = (
     answers: ["Acceptable answer 1", "Acceptable answer 2"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -45,7 +43,6 @@ const mockMatch = (uid: string, questionText: string): RagQuizQuestion => ({
     ],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -57,7 +54,6 @@ const mockOrder = (uid: string, questionText: string): RagQuizQuestion => ({
     items: ["First step", "Second step", "Third step", "Fourth step"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -116,7 +112,6 @@ describe("buildCompositionPrompt", () => {
           distractors: ["12 cm²", "3 cm²"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/img.png",
@@ -154,7 +149,6 @@ describe("buildCompositionPrompt", () => {
           distractors: ["12 cm²"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/img.png",
@@ -187,7 +181,6 @@ describe("buildCompositionPrompt", () => {
           distractors: ["![wrong](http://example.com/wrong.png)"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/correct.png",

@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
       try {
         await tracker.run(async (task, reportId) => {
-          const quiz = await service.buildQuiz(
+          const result = await service.buildQuiz(
             quizType,
             lessonPlan,
             relevantLessons,
@@ -125,7 +125,7 @@ export async function POST(request: Request) {
             reportId,
             userInstructions,
           );
-          task.addData({ quiz });
+          task.addData({ quiz: result.quiz, note: result.note });
         });
 
         const report = tracker.getReport();

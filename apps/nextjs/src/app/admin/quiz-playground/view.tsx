@@ -41,6 +41,7 @@ export function QuizPlaygroundView({
 }: Readonly<QuizPlaygroundViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;
+  const note = report?.data.note as string | undefined;
   // Helper to check stage status from report tree
   const getNodeStatus = (path: string[]) => {
     let node: ReportNode | undefined = report ?? undefined;
@@ -372,11 +373,16 @@ export function QuizPlaygroundView({
           defaultOpen
           color="pink"
           stats={
-            quiz
+            quiz?.questions
               ? `${quiz.questions.length} questions, ${formatSeconds(report?.durationMs ?? 0)} total`
               : undefined
           }
         >
+          {note && (
+            <p className="bg-amber-50 text-amber-800 mb-4 rounded p-3 text-sm">
+              {note}
+            </p>
+          )}
           {quiz ? (
             <FinalQuizDisplay quiz={quiz} report={report} />
           ) : (
