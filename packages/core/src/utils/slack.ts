@@ -2,8 +2,6 @@ import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
-import type { LakeraGuardResponse } from "../threatDetection/lakera";
-import type { Message } from "../threatDetection/lakera/schema";
 import type {
   ThreatDetectionResult,
   ThreatDetectionMessage,
@@ -207,24 +205,6 @@ function createSlackThreatDetectionSummary(args: {
     detectedThreats: args.detectedThreats,
     requestId: args.requestId,
   };
-}
-
-export function formatLakeraThreatDetectionWithMessages(
-  lakeraResult: LakeraGuardResponse,
-  messages: Message[],
-): SlackThreatDetectionSummary {
-  return createSlackThreatDetectionSummary({
-    messages,
-    flagged: lakeraResult.flagged,
-    detectedThreats:
-      lakeraResult.breakdown
-        ?.filter((item) => item.detected)
-        .map((item) => ({
-          detectorType: item.detector_type,
-          detectorId: item.detector_id,
-        })) ?? [],
-    requestId: lakeraResult.metadata?.request_uuid,
-  });
 }
 
 export function formatThreatDetectionResultWithMessages(
