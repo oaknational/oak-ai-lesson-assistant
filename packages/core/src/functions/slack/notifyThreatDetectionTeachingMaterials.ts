@@ -5,7 +5,7 @@ import {
   actionsBlock,
   createHeaderBlock,
   createThreatSectionBlock,
-  formatThreatDetectionWithMessages,
+  formatLakeraThreatDetectionWithMessages,
   slackNotificationChannelId,
   slackWebClient,
   userIdBlock,
@@ -42,10 +42,11 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
           },
         );
 
-        const getSlackThreadDetectionsData = formatThreatDetectionWithMessages(
-          args.threatDetection,
-          event.data.messages,
-        );
+        const getSlackThreadDetectionsData =
+          formatLakeraThreatDetectionWithMessages(
+            args.threatDetection,
+            event.data.messages,
+          );
 
         const response = await slackWebClient.chat.postMessage({
           channel: slackNotificationChannelId,
@@ -62,7 +63,7 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
             }),
             actionsBlock({
               userActionsProps: { userId: event.user.id },
-              lakeraTimestamp: new Date(),
+              lakeraConsoleTimestamp: new Date(),
             }),
           ],
         });

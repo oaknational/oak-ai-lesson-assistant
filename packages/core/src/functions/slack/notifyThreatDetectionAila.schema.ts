@@ -1,7 +1,9 @@
 import z from "zod";
 
-import { lakeraGuardResponseSchema } from "../../threatDetection/lakera";
-import { messageSchema } from "../../threatDetection/lakera/schema";
+import {
+  threatDetectionResultSchema,
+  threatDetectionMessageSchema,
+} from "../../threatDetection/types";
 
 export const notifyThreatDetectionAilaSchema = {
   user: z.object({
@@ -10,7 +12,7 @@ export const notifyThreatDetectionAilaSchema = {
   data: z.object({
     chatId: z.string(),
     userAction: z.string(),
-    threatDetection: lakeraGuardResponseSchema,
-    messages: z.array(messageSchema),
+    threatDetection: threatDetectionResultSchema,
+    messages: z.array(threatDetectionMessageSchema),
   }),
 };
