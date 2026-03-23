@@ -107,6 +107,7 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     highestThreat: BreakdownItem | undefined,
   ): ThreatDetectionResult {
     return {
+      provider: "lakera",
       isThreat: data.flagged,
       severity: highestThreat
         ? this.mapSeverity(highestThreat.detector_type)
@@ -118,6 +119,24 @@ export class LakeraThreatDetector extends AilaThreatDetector {
         ? "Potential threat detected"
         : "No threats detected",
       rawResponse: data,
+      requestId: data.metadata?.request_uuid,
+      findings:
+        data.breakdown
+          ?.filter((item) => item.detected)
+          .map((item) => ({
+            category: this.mapCategory(item.detector_type),
+            severity: this.mapSeverity(item.detector_type),
+            providerCode: item.detector_type,
+            detected: item.detected,
+            snippet: data.payload?.find(
+              (payload) => payload.detector_type === item.detector_type,
+            )?.text,
+            metadata: {
+              detectorId: item.detector_id,
+              policyId: item.policy_id,
+              projectId: item.project_id,
+            },
+          })) ?? [],
       details: {
         detectedElements: data.payload?.map((p) => p.text) ?? [],
       },
@@ -145,10 +164,13 @@ export class LakeraThreatDetector extends AilaThreatDetector {
 
     if (!data.flagged) {
       return {
+        provider: "lakera",
         isThreat: false,
         message: "No threats detected",
-        details: {},
         rawResponse: data,
+        requestId: data.metadata?.request_uuid,
+        findings: [],
+        details: {},
       };
     }
 

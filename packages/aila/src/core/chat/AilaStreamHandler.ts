@@ -72,13 +72,14 @@ export class AilaStreamHandler {
     const detectors = this._chat.aila.threatDetection?.detectors ?? [];
     for (const detector of detectors) {
       log.info("Running detector", { detector: detector.constructor.name });
-      const result = await detector.detectThreat(messagesToCheck);
-      if (result.isThreat) {
-        log.info("Threat detected", { result });
+      const threatDetection = await detector.detectThreat(messagesToCheck);
+      if (threatDetection.isThreat) {
+        log.info("Threat detected", { threatDetection });
         throw new AilaThreatDetectionError(
           this._chat.userId ?? "unknown",
           "Potential threat detected",
-          { cause: result },
+          threatDetection,
+          { cause: threatDetection },
         );
       }
     }
@@ -366,6 +367,7 @@ export class AilaStreamHandler {
           throw new AilaThreatDetectionError(
             this._chat.userId ?? "unknown",
             "Threat detected",
+            undefined,
             { cause: error },
           );
         }

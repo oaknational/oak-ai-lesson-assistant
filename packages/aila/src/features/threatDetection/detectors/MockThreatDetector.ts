@@ -12,10 +12,12 @@ export class MockThreatDetector extends AilaThreatDetector {
 
   async authenticate(): Promise<void> {}
   async detectThreat(): Promise<ThreatDetectionResult> {
-    return Promise.resolve({
+    return {
+      provider: "mock",
       isThreat: this._response,
       message: "Mocked response",
-    });
+      findings: [],
+    };
   }
   async isThreatError(): Promise<boolean> {
     return Promise.resolve(false);

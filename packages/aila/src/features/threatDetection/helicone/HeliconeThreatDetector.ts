@@ -7,14 +7,15 @@ export class HeliconeThreatDetector extends AilaThreatDetector {
   }
 
   async detectThreat(): Promise<ThreatDetectionResult> {
-    // Stub implementation since Helicone doesn't have a direct threat detection API
-    return Promise.resolve({
+    return {
+      provider: "helicone",
       isThreat: false,
       message: "Helicone threat detection not implemented",
+      findings: [],
       details: {
         confidence: 0,
       },
-    });
+    };
   }
 
   async isThreatError(error: unknown): Promise<boolean> {

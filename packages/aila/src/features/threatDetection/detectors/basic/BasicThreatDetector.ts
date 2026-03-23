@@ -74,8 +74,11 @@ export class BasicThreatDetector extends AilaThreatDetector {
 
     if (detectedThreats.length === 0) {
       return {
+        provider: "basic",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
+        rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
       };
     }
@@ -98,23 +101,43 @@ export class BasicThreatDetector extends AilaThreatDetector {
     }, detectedThreats[0]);
 
     if (!highestThreat) {
-      return Promise.resolve({
+      return {
+        provider: "basic",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
+        rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
-      });
+      };
     }
 
-    return Promise.resolve({
+    return {
+      provider: "basic",
       isThreat: true,
       severity: highestThreat.pattern.severity,
       category: highestThreat.pattern.category,
       message: highestThreat.pattern.message,
+      findings: detectedThreats.map((threat) => ({
+        category: threat.pattern.category,
+        severity: threat.pattern.severity,
+        providerCode: threat.pattern.pattern.source,
+        detected: true,
+        snippet: threat.pattern.message,
+        confidence: 1,
+      })),
+      rawResponse: {
+        matchedPatterns: detectedThreats.map((threat) => ({
+          pattern: threat.pattern.pattern.source,
+          category: threat.pattern.category,
+          severity: threat.pattern.severity,
+          message: threat.pattern.message,
+        })),
+      },
       details: {
         detectedElements: detectedThreats.map((t) => t.pattern.message),
         confidence: 1.0,
       },
-    });
+    };
   }
 
   // Not implemented

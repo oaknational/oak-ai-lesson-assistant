@@ -25,8 +25,10 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
 
     if (threatResults.length === 0) {
       return {
+        provider: "aggregate",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
         details: { confidence: 1.0 },
       };
     }
