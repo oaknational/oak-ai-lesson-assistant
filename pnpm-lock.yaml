@@ -112,6 +112,9 @@ importers:
       '@mux/mux-player-react':
         specifier: ^2.9.1
         version: 2.9.1(@types/react-dom@19.2.3)(@types/react@19.2.7)(react-dom@19.2.1)(react@19.2.1)
+      '@oakai/ai-threat-detection':
+        specifier: '*'
+        version: link:../../packages/ai-threat-detection
       '@oakai/aila':
         specifier: '*'
         version: link:../../packages/aila
@@ -214,6 +217,9 @@ importers:
       '@vercel/functions':
         specifier: ^1.4.0
         version: 1.4.0
+      '@vercel/oidc':
+        specifier: ^3.1.0
+        version: 3.1.0
       ai:
         specifier: 4.0.20
         version: 4.0.20(react@19.2.1)(zod@3.25.76)
@@ -476,6 +482,12 @@ importers:
       web-streams-polyfill:
         specifier: ^4.0.0
         version: 4.0.0
+
+  packages/ai-threat-detection:
+    devDependencies:
+      '@oakai/prettier-config':
+        specifier: '*'
+        version: link:../prettier-config
 
   packages/aila:
     dependencies:

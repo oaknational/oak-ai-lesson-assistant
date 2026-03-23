@@ -1,0 +1,25 @@
+{
+  "name": "@oakai/ai-threat-detection",
+  "version": "1.0.0",
+  "description": "Keyless Model Armor threat detection client and auth helpers",
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@oakai/eslint-config"
+  },
+  "devDependencies": {
+    "@oakai/prettier-config": "*"
+  }
+}
