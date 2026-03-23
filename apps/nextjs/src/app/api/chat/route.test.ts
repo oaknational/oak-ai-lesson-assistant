@@ -20,6 +20,16 @@ jest.mock("@/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
 }));
 
+jest.mock(
+  "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector",
+  () => ({
+    LakeraThreatDetector: jest.fn().mockImplementation(() => ({
+      detectThreat: jest.fn(),
+      isThreatError: jest.fn().mockResolvedValue(false),
+    })),
+  }),
+);
+
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
