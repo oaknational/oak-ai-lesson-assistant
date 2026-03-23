@@ -3,6 +3,7 @@ import {
   getCategoryGroup,
   getMockModerationResult,
   getSafetyResult,
+  isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -129,6 +130,10 @@ export class AilaModeration implements AilaModerationFeature {
         for (const plugin of this._aila.plugins ?? []) {
           await plugin.onToxicModeration?.(moderation, pluginContext);
         }
+      } else if (isHighlySensitive(moderationResult)) {
+        for (const plugin of this._aila.plugins ?? []) {
+          await plugin.onHighlySensitiveModeration?.(moderation, pluginContext);
+        }
       }
 
       const message: ModerationDocument = {
@@ -203,6 +208,15 @@ export class AilaModeration implements AilaModerationFeature {
     if (this._shadowModerator) {
       const shadowPromise = this._shadowModerator
         .moderate(contentString)
+        .then((result) => {
+          if (result) {
+            log.info("Shadow moderation result", {
+              categories: result.categories,
+              scores: result.scores,
+              safety: getSafetyResult(result),
+            });
+          }
+        })
         .catch((err) => {
           log.error("Shadow moderation failed (non-fatal)", { err });
         });

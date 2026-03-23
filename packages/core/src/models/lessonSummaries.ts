@@ -8,7 +8,6 @@ import { Prisma } from "@prisma/client";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 
-import { inngest } from "../inngest";
 import { RAG } from "../rag";
 import { embedWithCache } from "../utils/embeddings";
 
@@ -34,20 +33,6 @@ export class LessonSummaries {
   constructor(prisma: PrismaClientWithAccelerate) {
     this._prisma = prisma;
     this._rag = new RAG(this._prisma, { chatId: "none" });
-  }
-
-  async embedAll(): Promise<void> {
-    const lessonSummaries = await this._prisma.lessonSummary.findMany({
-      where: {
-        status: "GENERATED",
-      },
-    });
-    for (const lessonSummary of lessonSummaries) {
-      await inngest.send({
-        name: "app/lessonSummary.embed",
-        data: { lessonSummaryId: lessonSummary.id },
-      });
-    }
   }
 
   async embed(id: string): Promise<number> {

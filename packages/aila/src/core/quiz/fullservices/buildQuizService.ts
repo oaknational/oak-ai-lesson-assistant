@@ -23,7 +23,6 @@ import type {
 } from "../../../protocol/schema";
 import { buildQuizFromQuestions } from "../buildQuizObject";
 import { LLMComposer } from "../composers/LLMQuizComposer";
-import { ImageDescriptionEnricher } from "../enrichers/ImageDescriptionEnricher";
 import type {
   QuestionEnricher,
   QuestionSource,
@@ -56,10 +55,7 @@ function createSource(type: QuestionSourceType): QuestionSource {
 }
 
 function createEnricher(type: QuestionEnricherType): QuestionEnricher {
-  switch (type) {
-    case "imageDescriptions":
-      return new ImageDescriptionEnricher();
-  }
+  throw new Error(`Unknown enricher type: ${type}`);
 }
 
 function createComposer(type: QuizComposerType): QuizComposer {

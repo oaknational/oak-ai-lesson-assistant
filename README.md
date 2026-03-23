@@ -61,11 +61,28 @@ pnpm install -r
 
 ### Turborepo
 
-This application is structured as a Turborepo monorepo. Install the "turbo" command globally:
+This application is structured as a Turborepo monorepo. `turbo` is already installed as a dev dependency so you can simply use the local turbo binary. If you prefer, you can install the "turbo" command globally:
 
 ```shell
 pnpm install turbo --global
 ```
+
+## Doppler
+
+We use [Doppler](https://doppler.com) for secrets management. To run the application, you need to set up the Doppler CLI.
+
+> If you don't yet have the necessary permissions, use the Permissions workflow to request access to the `oak-ai-lesson-assistant` project on Doppler.
+
+Then navigate to the turborepo root:
+
+```shell
+brew install dopplerhq/cli/doppler
+doppler login
+doppler setup
+pnpm doppler:pull:dev
+```
+
+This command copies the Doppler environment variables for the dev environment to a local `.env` file. When secrets change, run this command again.
 
 ## Postgres Setup
 
@@ -107,10 +124,10 @@ pnpm run docker-bootstrap
    pnpm run db-push
    ```
 
-   2. Seed from stg/prd (where `:prd` can be either `:prd` or `:stg`, matching the Doppler environments). This will only seed the apps table and lesson-related tables used for RAG.
+   2. Use the `seed.ts` file which will populate the required tables only:
 
    ```shell
-   pnpm run db-seed-local-from:prd
+   pnpm prisma db seed
    ```
 
 ### Utility Commands
@@ -126,21 +143,6 @@ If you need to reset and start fresh:
 ```shell
 pnpm run docker-reset
 ```
-
-## Doppler
-
-We use [Doppler](https://doppler.com) for secrets management. To run the application, you need to set up the Doppler CLI.
-
-Navigate to the turborepo root:
-
-```shell
-brew install dopplerhq/cli/doppler
-doppler login
-doppler setup
-pnpm doppler:pull:dev
-```
-
-This command copies the Doppler environment variables for the dev environment to a local `.env` file. When secrets change, run this command again.
 
 ## Start the development server
 

@@ -17,6 +17,10 @@ export interface SimplifiedSlideContent {
   }[];
   images?: { id: string; description: string }[];
   shapes?: { id: string; description: string }[];
+  keyLearningPoints?: string[];
+  learningCycles?: string[];
+  coversDiversity?: boolean;
+  slideType?: string;
 }
 
 /**
@@ -37,8 +41,27 @@ export function formatSlidesForPrompt(
       if (slide.slideTitle) {
         parts.push(`- Title: ${slide.slideTitle}`);
       }
+      if (slide.slideType) {
+        parts.push(`- Slide Type: ${slide.slideType}`);
+      }
 
-      const textElements = slide.textElements ?? [];
+      if (slide.keyLearningPoints && slide.keyLearningPoints.length > 0) {
+        parts.push(
+          `- Key Learning Points: ${slide.keyLearningPoints.join("; ")}`,
+        );
+      }
+      if (slide.learningCycles && slide.learningCycles.length > 0) {
+        parts.push(`- Learning Cycles: ${slide.learningCycles.join("; ")}`);
+      }
+      if (slide.coversDiversity) {
+        parts.push(`- Covers Diversity: yes`);
+      }
+
+      // Filter out text elements that are entirely whitespace (empty placeholders).
+      // This only affects what the LLM sees — the original slide data is unchanged.
+      const textElements = (slide.textElements ?? []).filter(
+        (te) => te.content.trim().length > 0,
+      );
       const tables = slide.tables ?? [];
 
       if (textElements.length > 0) {
@@ -84,6 +107,7 @@ export function simplifySlideContent(
     slideNumber: slide.slideNumber,
     slideId: slide.slideId,
     slideTitle: slide.slideTitle,
+    slideType: slide.slideType,
     textElements: slide.textElements,
     tables: slide.tables,
   }));

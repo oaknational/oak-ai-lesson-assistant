@@ -12,27 +12,6 @@ const createMockQuestion = (uid: string): RagQuizQuestion => ({
     hint: null,
   },
   sourceUid: uid,
-  source: {
-    questionId: 1,
-    questionUid: uid,
-    questionStem: [{ type: "text", text: `Test question ${uid}` }],
-    answers: {
-      "multiple-choice": [
-        {
-          answer: [{ type: "text", text: "Correct answer" }],
-          answer_is_correct: true,
-        },
-        {
-          answer: [{ type: "text", text: "Wrong answer" }],
-          answer_is_correct: false,
-        },
-      ],
-    },
-    questionType: "multiple-choice",
-    hint: "",
-    feedback: "",
-    active: true,
-  },
   imageMetadata: [],
 });
 

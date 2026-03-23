@@ -1,3 +1,40 @@
+# [1.66.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.65.0...v1.66.0) (2026-03-19)
+
+
+### Bug Fixes
+
+* reduce sentry trace sampling to 0.05 ([#979](https://github.com/oaknational/oak-ai-lesson-assistant/issues/979)) ([7c4d3cc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c4d3cc35566f0cbc36d54c3de1b102199ef8225))
+* surface stream errors to frontend and handle controller double-close ([#975](https://github.com/oaknational/oak-ai-lesson-assistant/issues/975)) ([4cb2c33](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4cb2c33d4fac973c5328db84c459795b28ac5759))
+
+
+### Features
+
+* add highly-sensitive moderation category ([#973](https://github.com/oaknational/oak-ai-lesson-assistant/issues/973)) ([673d638](https://github.com/oaknational/oak-ai-lesson-assistant/commit/673d638a233f6c9e5661adc52de97c9a46721391))
+* use flagged_categories from Oak Moderation Service ([#976](https://github.com/oaknational/oak-ai-lesson-assistant/issues/976)) ([314b2c0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/314b2c01a4489cb9f2506a0659194949bd4b0919))
+
+# [1.65.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.2...v1.65.0) (2026-03-10)
+
+
+### Bug Fixes
+
+* show info message when RAG quiz bails ([#964](https://github.com/oaknational/oak-ai-lesson-assistant/issues/964)) ([cf881e6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cf881e6a88967f2353f08987ac7ac6674dd0c997))
+
+
+### Features
+
+* adopt Oak Moderation Service v1 with feature flag ([#967](https://github.com/oaknational/oak-ai-lesson-assistant/issues/967)) ([4c6bd53](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4c6bd538a8381b704db78a994e60848018ba97a7))
+* removing non essential slides ([#951](https://github.com/oaknational/oak-ai-lesson-assistant/issues/951)) ([f34e02c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f34e02cc55205fbe00be049c37c13cc169e6ef59))
+
+## [1.64.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.1...v1.64.2) (2026-02-24)
+
+
+### Bug Fixes
+
+* **agentic:** keyword definitions should use sentence case ([#957](https://github.com/oaknational/oak-ai-lesson-assistant/issues/957)) ([ef7b833](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ef7b833315733f61554355eaf950d05c3321a43d))
+* **agentic:** section agents produce conversational responses instead of content ([#959](https://github.com/oaknational/oak-ai-lesson-assistant/issues/959)) ([7caa537](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7caa537df0ca1963f64e1062cf612bf1231e3e4f))
+* remove stale Turbopack guard that prevented Sentry init ([#966](https://github.com/oaknational/oak-ai-lesson-assistant/issues/966)) ([a86d13c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a86d13c659183f2f93515c798067a31cdca8fe87))
+* update empty screen accordion copy to match Figma designs ([#940](https://github.com/oaknational/oak-ai-lesson-assistant/issues/940)) ([9671921](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9671921d13f42e4b76d285e94505708254181c8f))
+
 ## [1.64.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.0...v1.64.1) (2026-02-16)
 
 

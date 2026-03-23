@@ -1,5 +1,8 @@
 import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAssistantMessage";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import {
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
@@ -115,7 +118,9 @@ export const handleTrackCompletion =
     const accountLocked = messageParts
       .map((p) => p.document)
       .some(isAccountLocked);
-    const isTerminated = accountLocked || (moderation && isToxic(moderation)); // @todo: broken for toxic moderation
+    const isTerminated =
+      accountLocked ||
+      (moderation && (isToxic(moderation) || isHighlySensitive(moderation)));
     if (isTerminated) {
       track.lessonPlanTerminated({
         chatId,

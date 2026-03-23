@@ -157,9 +157,11 @@ export class AilaStreamHandler {
         } catch (e) {
           log.error("Error in complete", e);
           this._chat.aila.errorReporter?.reportError(e);
-          controller.error(
-            new AilaChatError("Chat completion failed", { cause: e }),
-          );
+          await this._chat.enqueue({
+            type: "error",
+            value:
+              "Something went wrong. Please try sending your message again.",
+          });
         }
       }
       this.closeController();
@@ -377,7 +379,20 @@ export class AilaStreamHandler {
 
   private closeController() {
     if (this._controller) {
-      this._controller.close();
+      try {
+        this._controller.close();
+      } catch (e) {
+        if (
+          e instanceof TypeError &&
+          (e as NodeJS.ErrnoException).code === "ERR_INVALID_STATE"
+        ) {
+          log.info(
+            "Controller already terminated (closed or errored), skipping close",
+          );
+        } else {
+          throw e;
+        }
+      }
     }
   }
 }
