@@ -64,7 +64,8 @@ describe("AilaChat.generationFailed", () => {
       } as never,
     });
 
-    await expect(chat.generationFailed(new Error("Unexpected failure"))).rejects
-      .toThrow("Generation not initialised");
+    await expect(
+      chat.generationFailed(new Error("Unexpected failure")),
+    ).rejects.toThrow("Generation not initialised");
   });
 });
