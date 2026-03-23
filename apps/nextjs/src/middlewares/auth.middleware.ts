@@ -37,6 +37,7 @@ const publicRoutes = [
    * @see https://www.inngest.com/docs/faq#my-app-s-serve-endpoint-requires-authentication-what-should-i-do
    */
   "/api/inngest",
+  "/api/debug/model-armor-smoke",
   /**
    * TRPC handles authentication with protected/public procedures
    * @see file://./../../../../packages/api/src/router/index.ts
