@@ -1,6 +1,6 @@
 import {
   ModelArmorClient,
-  type ModelArmorSanitizeUserPromptResponse,
+  toModelArmorThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/modelArmor";
 import { threatDetectionMessageSchema } from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
@@ -10,37 +10,12 @@ import { z } from "zod";
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
 import {
   AilaThreatDetector,
-  type ThreatFinding,
-  type ThreatCategory,
   type ThreatDetectionResult,
-  type ThreatSeverity,
 } from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
 
 type ThreatMessage = z.infer<typeof threatDetectionMessageSchema>;
-
-const PI_AND_JAILBREAK_CATEGORY_RULES: Array<{
-  keywords: string[];
-  category: ThreatCategory;
-}> = [
-  { keywords: ["prompt injection"], category: "prompt_injection" },
-  { keywords: ["prompt extraction"], category: "prompt_extraction" },
-  { keywords: ["exfiltration"], category: "rag_exfiltration" },
-  { keywords: ["pii"], category: "pii" },
-  { keywords: ["sensitive data"], category: "pii" },
-  { keywords: ["jailbreak"], category: "system_prompt_override" },
-  { keywords: ["system prompt"], category: "system_prompt_override" },
-];
-
-const SDP_INFO_TYPE_CATEGORY_RULES: Array<{
-  keywords: string[];
-  category: ThreatCategory;
-}> = [
-  { keywords: ["prompt", "extract"], category: "prompt_extraction" },
-  { keywords: ["exfiltration"], category: "rag_exfiltration" },
-  { keywords: ["sensitive"], category: "rag_exfiltration" },
-];
 
 export class ModelArmorThreatDetector extends AilaThreatDetector {
   private readonly modelArmorClient: ModelArmorClient;
@@ -103,24 +78,7 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
     const extractedMessages = extractPromptTextFromMessages(content);
     const prompt = this.buildPrompt(extractedMessages);
     const data = await this.modelArmorClient.sanitizeUserPrompt(prompt);
-    const findings = this.extractFindings(data, prompt);
-    const highestThreat = this.getHighestThreat(findings);
-    const isThreat = data.sanitizationResult.filterMatchState === "MATCH_FOUND";
-    const detectedElements = findings
-      .filter((finding) => finding.detected)
-      .map((finding) => finding.snippet ?? finding.providerCode);
-
-    return {
-      provider: "model_armor",
-      isThreat,
-      severity: highestThreat?.severity,
-      category: highestThreat?.category,
-      message: isThreat ? "Potential threat detected" : "No threats detected",
-      rawResponse: data.rawResponse,
-      requestId: data.requestId,
-      findings,
-      details: detectedElements.length > 0 ? { detectedElements } : {},
-    };
+    return toModelArmorThreatDetectionResult(data, prompt);
   }
 
   async isThreatError(): Promise<boolean> {
@@ -131,189 +89,6 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
     return messages
       .map((message) => `${message.role}: ${message.content}`)
       .join("\n");
-  }
-
-  private extractFindings(
-    data: ModelArmorSanitizeUserPromptResponse,
-    prompt: string,
-  ): ThreatFinding[] {
-    const findings: ThreatFinding[] = [];
-    const { filterResults } = data.sanitizationResult;
-
-    const piAndJailbreakResult =
-      filterResults.piAndJailbreak?.piAndJailbreakFilterResult;
-    if (piAndJailbreakResult?.matchState === "MATCH_FOUND") {
-      const category = this.mapPiAndJailbreakMessagesToCategory(
-        piAndJailbreakResult.messageItems?.map((item) => item.message) ?? [],
-      );
-
-      findings.push({
-        category,
-        severity: "critical",
-        providerCode: "pi_and_jailbreak",
-        detected: true,
-        confidence: this.mapPiAndJailbreakConfidenceLevelToConfidence(
-          piAndJailbreakResult.confidenceLevel,
-        ),
-        metadata: {
-          confidenceLevel: piAndJailbreakResult.confidenceLevel,
-          executionState: piAndJailbreakResult.executionState,
-          messageItems: piAndJailbreakResult.messageItems,
-        },
-      });
-    }
-
-    const sdpFindings = filterResults.sdp?.sdpFilterResult?.inspectResult?.findings;
-    for (const finding of sdpFindings ?? []) {
-      const codepointRange = finding.location?.codepointRange;
-      const start = this.parseOffset(codepointRange?.start);
-      const end = this.parseOffset(codepointRange?.end);
-
-      findings.push({
-        category: this.mapSdpInfoTypeToThreatCategory(finding.infoType),
-        severity: "high",
-        providerCode: finding.infoType,
-        detected: true,
-        snippet:
-          start !== undefined && end !== undefined
-            ? prompt.slice(start, end)
-            : undefined,
-        start,
-        end,
-        confidence: this.mapSdpLikelihoodToConfidence(finding.likelihood),
-        metadata: {
-          likelihood: finding.likelihood,
-          location: finding.location,
-        },
-      });
-    }
-
-    const maliciousUris =
-      filterResults.maliciousUri?.maliciousUriFilterResult?.maliciousUriMatchedItems;
-    for (const maliciousUri of maliciousUris ?? []) {
-      const location = maliciousUri.locations?.[0];
-      findings.push({
-        category: "malicious_code",
-        severity: "high",
-        providerCode: "malicious_uri",
-        detected: true,
-        snippet: maliciousUri.uri,
-        start: this.parseOffset(location?.start),
-        end: this.parseOffset(location?.end),
-        metadata: {
-          uri: maliciousUri.uri,
-          locations: maliciousUri.locations,
-        },
-      });
-    }
-
-    if (
-      findings.length === 0 &&
-      data.sanitizationResult.filterMatchState === "MATCH_FOUND"
-    ) {
-      findings.push({
-        category: "other",
-        severity: "high",
-        providerCode: "model_armor_match",
-        detected: true,
-        metadata: {
-          invocationResult: data.sanitizationResult.invocationResult,
-          filterResults: data.sanitizationResult.filterResults,
-          sanitizationMetadata: data.sanitizationResult.sanitizationMetadata,
-        },
-      });
-    }
-
-    return findings;
-  }
-
-  private getHighestThreat(
-    findings: ThreatFinding[],
-  ): ThreatFinding | undefined {
-    return findings.reduce<ThreatFinding | undefined>(
-      (highest, current) => {
-        if (!current.detected) return highest;
-        if (!highest) return current;
-
-        return this.compareSeverity(current.severity, highest.severity) > 0
-          ? current
-          : highest;
-      },
-      undefined,
-    );
-  }
-
-  private mapPiAndJailbreakMessagesToCategory(
-    messages: string[],
-  ): ThreatCategory {
-    return this.matchThreatCategoryFromKeywords(
-      messages.join(" ").toLowerCase(),
-      PI_AND_JAILBREAK_CATEGORY_RULES,
-      "system_prompt_override",
-    );
-  }
-
-  private mapSdpInfoTypeToThreatCategory(infoType: string): ThreatCategory {
-    return this.matchThreatCategoryFromKeywords(
-      infoType.toLowerCase(),
-      SDP_INFO_TYPE_CATEGORY_RULES,
-      "pii",
-    );
-  }
-
-  private mapPiAndJailbreakConfidenceLevelToConfidence(
-    confidenceLevel?: string,
-  ): number | undefined {
-    switch (confidenceLevel) {
-      case "LOW":
-        return 0.3;
-      case "MEDIUM":
-        return 0.6;
-      case "HIGH":
-        return 0.9;
-      default:
-        return undefined;
-    }
-  }
-
-  private mapSdpLikelihoodToConfidence(
-    likelihood?: string,
-  ): number | undefined {
-    switch (likelihood) {
-      case "VERY_UNLIKELY":
-        return 0.1;
-      case "UNLIKELY":
-        return 0.25;
-      case "POSSIBLE":
-        return 0.5;
-      case "LIKELY":
-        return 0.75;
-      case "VERY_LIKELY":
-        return 0.95;
-      default:
-        return undefined;
-    }
-  }
-
-  private matchThreatCategoryFromKeywords(
-    value: string,
-    rules: Array<{ keywords: string[]; category: ThreatCategory }>,
-    fallbackCategory: ThreatCategory,
-  ): ThreatCategory {
-    const matchingRule = rules.find((rule) =>
-      rule.keywords.every((keyword) => value.includes(keyword)),
-    );
-
-    return matchingRule?.category ?? fallbackCategory;
-  }
-
-  private parseOffset(value?: string): number | undefined {
-    if (value === undefined) {
-      return undefined;
-    }
-
-    const parsed = Number.parseInt(value, 10);
-    return Number.isNaN(parsed) ? undefined : parsed;
   }
 
   private isThreatMessage(message: unknown): message is ThreatMessage {

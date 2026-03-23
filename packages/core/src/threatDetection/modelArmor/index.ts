@@ -1,4 +1,5 @@
 export { ModelArmorClient, type ModelArmorClientConfig } from "./ModelArmorClient";
+export { toModelArmorThreatDetectionResult } from "./toThreatDetectionResult";
 export {
   modelArmorCredentialsSchema,
   modelArmorRequestSchema,

@@ -1,8 +1,7 @@
 import {
-  type BreakdownItem,
   LakeraClient,
-  type LakeraGuardResponse,
   type Message,
+  toLakeraThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/lakera";
 import { aiLogger } from "@oakai/logger";
 
@@ -11,9 +10,7 @@ import { z } from "zod";
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
 import {
   AilaThreatDetector,
-  type ThreatCategory,
   type ThreatDetectionResult,
-  type ThreatSeverity,
 } from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
@@ -42,107 +39,6 @@ export class LakeraThreatDetector extends AilaThreatDetector {
     return Promise.resolve();
   }
 
-  private mapSeverity(detectorType: string): ThreatSeverity {
-    // Map Lakera detector types to our severity levels
-    switch (detectorType) {
-      case "jailbreak":
-      case "prompt_injection":
-        return "critical";
-      case "pii":
-      case "sensitive_info":
-        return "high";
-      case "harmful_content":
-        return "high";
-      default:
-        return "high";
-    }
-  }
-
-  private mapCategory(detectorType: string): ThreatCategory {
-    // Map Lakera detector types to our categories
-    switch (detectorType) {
-      case "jailbreak":
-        return "system_prompt_override";
-      case "prompt_injection":
-        return "prompt_injection";
-      case "pii":
-        return "pii";
-      case "sensitive_info":
-        return "rag_exfiltration";
-      default:
-        return "other";
-    }
-  }
-
-  private async callLakeraAPI(
-    messages: Message[],
-  ): Promise<LakeraGuardResponse> {
-    // Use the shared LakeraClient for API calls
-    return await this.lakeraClient.checkMessages(messages);
-  }
-
-  private getHighestThreatFromBreakdown(
-    data: LakeraGuardResponse,
-  ): BreakdownItem | undefined {
-    if (!data.breakdown?.length) return undefined;
-
-    return data.breakdown.reduce(
-      (highest, current) => {
-        if (!current.detected) return highest;
-        if (!highest) return current;
-
-        const currentSeverity = this.mapSeverity(current.detector_type);
-        const highestSeverity = this.mapSeverity(highest.detector_type);
-
-        return this.compareSeverity(currentSeverity, highestSeverity) > 0
-          ? current
-          : highest;
-      },
-      undefined as BreakdownItem | undefined,
-    );
-  }
-
-  private buildThreatResult(
-    data: LakeraGuardResponse,
-    highestThreat: BreakdownItem | undefined,
-  ): ThreatDetectionResult {
-    return {
-      provider: "lakera",
-      isThreat: data.flagged,
-      severity: highestThreat
-        ? this.mapSeverity(highestThreat.detector_type)
-        : undefined,
-      category: highestThreat
-        ? this.mapCategory(highestThreat.detector_type)
-        : undefined,
-      message: data.flagged
-        ? "Potential threat detected"
-        : "No threats detected",
-      rawResponse: data,
-      requestId: data.metadata?.request_uuid,
-      findings:
-        data.breakdown
-          ?.filter((item) => item.detected)
-          .map((item) => ({
-            category: this.mapCategory(item.detector_type),
-            severity: this.mapSeverity(item.detector_type),
-            providerCode: item.detector_type,
-            detected: item.detected,
-            snippet: data.payload?.find(
-              (payload) => payload.detector_type === item.detector_type,
-            )?.text,
-            metadata: {
-              detectorId: item.detector_id,
-              policyId: item.policy_id,
-              projectId: item.project_id,
-            },
-          })) ?? [],
-      details: {
-        detectedElements: data.payload?.map((p) => p.text) ?? [],
-      },
-    };
-  }
-
   async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
     log.info("Detecting threat", {
       contentType: typeof content,
@@ -158,24 +54,11 @@ export class LakeraThreatDetector extends AilaThreatDetector {
       throw new Error("Input must be an array of Messages");
     }
 
-    const data = await this.callLakeraAPI(
+    const data = await this.lakeraClient.checkMessages(
       extractPromptTextFromMessages(content),
     );
 
-    if (!data.flagged) {
-      return {
-        provider: "lakera",
-        isThreat: false,
-        message: "No threats detected",
-        rawResponse: data,
-        requestId: data.metadata?.request_uuid,
-        findings: [],
-        details: {},
-      };
-    }
-
-    const highestThreat = this.getHighestThreatFromBreakdown(data);
-    return this.buildThreatResult(data, highestThreat);
+    return toLakeraThreatDetectionResult(data);
   }
 
   private isMessage(msg: unknown): msg is Message {

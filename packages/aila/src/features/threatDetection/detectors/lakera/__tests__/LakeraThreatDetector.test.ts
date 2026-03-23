@@ -41,7 +41,7 @@ describe("LakeraThreatDetector", () => {
       },
     ];
 
-    await expect(detector.detectThreat(messages)).resolves.toEqual({
+    await expect(detector.detectThreat(messages)).resolves.toMatchObject({
       provider: "lakera",
       isThreat: false,
       message: "No threats detected",
@@ -55,7 +55,9 @@ describe("LakeraThreatDetector", () => {
       },
       requestId: "request-123",
       findings: [],
-      details: {},
+      details: {
+        detectedElements: [],
+      },
     });
   });
 

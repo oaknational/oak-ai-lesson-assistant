@@ -3,6 +3,7 @@ import { ModelArmorThreatDetector } from "../ModelArmorThreatDetector";
 const mockSanitizeUserPrompt = jest.fn();
 
 jest.mock("@oakai/core/src/threatDetection/modelArmor", () => ({
+  ...jest.requireActual("@oakai/core/src/threatDetection/modelArmor"),
   ModelArmorClient: jest.fn().mockImplementation(() => ({
     sanitizeUserPrompt: mockSanitizeUserPrompt,
   })),
