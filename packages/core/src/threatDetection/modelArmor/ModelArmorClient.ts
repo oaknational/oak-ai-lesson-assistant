@@ -1,124 +1,264 @@
-import { ExternalAccountClient } from "google-auth-library";
-import type {
-  BaseExternalAccountClient,
-  ExternalAccountClientOptions,
-} from "google-auth-library";
+const CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+const DEFAULT_LOCATION = "europe-west1";
 
-import { aiLogger } from "@oakai/logger";
+interface RangeInfo {
+  start?: string;
+  end?: string;
+}
 
-import {
-  modelArmorCredentialsSchema,
-  modelArmorRequestSchema,
-  modelArmorSanitizeUserPromptResponseSchema,
-  normalizeModelArmorFilterResults,
-  type ModelArmorSanitizeUserPromptResponse,
-} from "./schema";
+interface MessageItem {
+  messageType?: string;
+  message: string;
+}
 
-const log = aiLogger("core");
+interface SdpFinding {
+  infoType: string;
+  likelihood?: string;
+  location?: {
+    byteRange?: RangeInfo;
+    codepointRange?: RangeInfo;
+  };
+}
 
-const MODEL_ARMOR_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
+export interface ModelArmorSanitizationResponse {
+  sanitizationResult: {
+    filterMatchState: string;
+    invocationResult: string;
+    filterResults?: Record<string, unknown> & {
+      csam?: {
+        csamFilterFilterResult?: {
+          executionState?: string;
+          matchState?: string;
+        };
+      };
+      pi_and_jailbreak?: {
+        piAndJailbreakFilterResult?: {
+          executionState?: string;
+          matchState?: string;
+          confidenceLevel?: string;
+          messageItems?: MessageItem[];
+        };
+      };
+      rai?: {
+        raiFilterResult?: {
+          executionState?: string;
+          matchState?: string;
+        };
+      };
+      sdp?: {
+        sdpFilterResult?: {
+          inspectResult?: {
+            executionState?: string;
+            messageItems?: MessageItem[];
+            matchState?: string;
+            findings?: SdpFinding[];
+            findingsTruncated?: boolean;
+          };
+        };
+      };
+      malicious_uris?: {
+        maliciousUriFilterResult?: {
+          executionState?: string;
+          messageItems?: MessageItem[];
+          matchState?: string;
+          maliciousUriMatchedItems?: Array<{
+            uri: string;
+            locations?: RangeInfo[];
+          }>;
+        };
+      };
+    };
+    sanitizationMetadata?: Record<string, unknown>;
+  };
+}
+
+export interface WorkloadIdentityAccessTokenProviderConfig {
+  getSubjectToken: () => Promise<string>;
+  projectNumber: string;
+  serviceAccountEmail: string;
+  workloadIdentityPoolId: string;
+  workloadIdentityPoolProviderId: string;
+}
 
 export interface ModelArmorClientConfig {
-  credentialsJson: string;
+  defaultTemplateId: string;
+  getAccessToken: () => Promise<string>;
+  location?: string;
   projectId: string;
-  location: string;
-  templateId: string;
-  apiBaseUrl?: string;
 }
 
 export class ModelArmorClient {
-  private readonly authClient: BaseExternalAccountClient;
-  private readonly apiBaseUrl: string;
-  private readonly templateName: string;
+  private readonly defaultTemplateId: string;
+  private readonly getAccessToken: () => Promise<string>;
+  private readonly location: string;
+  private readonly projectId: string;
 
   constructor(config: ModelArmorClientConfig) {
-    const credentials = modelArmorCredentialsSchema.parse(
-      JSON.parse(config.credentialsJson),
-    ) as unknown as ExternalAccountClientOptions;
-    const authClient = ExternalAccountClient.fromJSON(credentials);
-
-    if (!authClient) {
-      throw new Error("Failed to create Model Armor auth client");
-    }
-
-    (
-      authClient as BaseExternalAccountClient & {
-        scopes?: string | string[];
-      }
-    ).scopes = [MODEL_ARMOR_SCOPE];
-
-    this.authClient = authClient;
-    this.apiBaseUrl =
-      config.apiBaseUrl?.replace(/\/$/u, "") ?? "https://modelarmor.googleapis.com";
-    this.templateName = `projects/${config.projectId}/locations/${config.location}/templates/${config.templateId}`;
-
-    log.info("ModelArmorClient initialized", {
-      apiBaseUrl: this.apiBaseUrl,
-      templateName: this.templateName,
-    });
+    this.defaultTemplateId = config.defaultTemplateId;
+    this.getAccessToken = config.getAccessToken;
+    this.location = config.location ?? DEFAULT_LOCATION;
+    this.projectId = config.projectId;
   }
 
   async sanitizeUserPrompt(
-    prompt: string,
-  ): Promise<ModelArmorSanitizeUserPromptResponse> {
-    const accessTokenResponse = await this.authClient.getAccessToken();
-    const accessToken = accessTokenResponse.token;
-
-    if (!accessToken) {
-      throw new Error("Failed to acquire Model Armor access token");
-    }
-
-    const requestBody = modelArmorRequestSchema.parse({
-      userPromptData: {
-        text: prompt,
-      },
+    text: string,
+    templateId = this.defaultTemplateId,
+  ): Promise<ModelArmorSanitizationResponse> {
+    return this.callModelArmor(`${templateId}:sanitizeUserPrompt`, {
+      userPromptData: { text },
     });
+  }
 
-    const url = `${this.apiBaseUrl}/v1/${this.templateName}:sanitizeUserPrompt`;
-
-    log.info("Model Armor API request", {
-      url,
-      promptLength: prompt.length,
+  async sanitizeModelResponse({
+    modelResponseText,
+    templateId = this.defaultTemplateId,
+    userPromptText,
+  }: {
+    modelResponseText: string;
+    templateId?: string;
+    userPromptText: string;
+  }): Promise<ModelArmorSanitizationResponse> {
+    return this.callModelArmor(`${templateId}:sanitizeModelResponse`, {
+      modelResponseData: { text: modelResponseText },
+      userPromptData: { text: userPromptText },
     });
+  }
 
-    const response = await fetch(url, {
-      method: "POST",
+  private async callModelArmor(
+    pathSuffix: string,
+    body: Record<string, unknown>,
+  ): Promise<ModelArmorSanitizationResponse> {
+    const accessToken = await this.getAccessToken();
+    const response = await fetch(this.buildUrl(pathSuffix), {
+      body: JSON.stringify(body),
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody),
+      method: "POST",
     });
 
-    const responseData = await response.json();
+    const responseBody = (await response.json()) as unknown;
 
     if (!response.ok) {
-      log.error("Model Armor API error", {
-        status: response.status,
-        statusText: response.statusText,
-        responseBody: responseData,
-      });
       throw new Error(
-        `Model Armor API error: ${response.status} ${response.statusText}`,
+        `Model Armor request failed: ${response.status} ${response.statusText}\n${JSON.stringify(
+          responseBody,
+          null,
+          2,
+        )}`,
       );
     }
 
-    const parsed =
-      modelArmorSanitizeUserPromptResponseSchema.parse(responseData);
-    const requestId =
-      response.headers.get("x-request-id") ??
-      response.headers.get("x-goog-request-id") ??
-      undefined;
-
-    return {
-      requestId,
-      rawResponse: parsed,
-      sanitizationResult: {
-        ...parsed.sanitizationResult,
-        filterResults: normalizeModelArmorFilterResults(
-          parsed.sanitizationResult.filterResults,
-        ),
-      },
-    };
+    return responseBody as ModelArmorSanitizationResponse;
   }
+
+  private buildUrl(pathSuffix: string) {
+    const resourcePath = [
+      "projects",
+      this.projectId,
+      "locations",
+      this.location,
+      "templates",
+      pathSuffix,
+    ].join("/");
+
+    return `https://modelarmor.${this.location}.rep.googleapis.com/v1/${resourcePath}`;
+  }
+}
+
+export function createWorkloadIdentityAccessTokenProvider({
+  getSubjectToken,
+  projectNumber,
+  serviceAccountEmail,
+  workloadIdentityPoolId,
+  workloadIdentityPoolProviderId,
+}: WorkloadIdentityAccessTokenProviderConfig) {
+  return async () => {
+    const subjectToken = await getSubjectToken();
+    const audience = `//iam.googleapis.com/projects/${projectNumber}/locations/global/workloadIdentityPools/${workloadIdentityPoolId}/providers/${workloadIdentityPoolProviderId}`;
+
+    const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
+      body: new URLSearchParams({
+        audience,
+        grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+        requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+        scope: CLOUD_PLATFORM_SCOPE,
+        subject_token: subjectToken,
+        subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      method: "POST",
+    });
+
+    const stsBody = (await stsResponse.json()) as
+      | {
+          access_token?: string;
+          error?: string;
+          error_description?: string;
+        }
+      | undefined;
+
+    if (!stsResponse.ok || !stsBody?.access_token) {
+      throw new Error(
+        `STS token exchange failed: ${stsResponse.status} ${stsResponse.statusText}\n${JSON.stringify(
+          stsBody,
+          null,
+          2,
+        )}`,
+      );
+    }
+
+    const impersonationResponse = await fetch(
+      `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`,
+      {
+        body: JSON.stringify({
+          scope: [CLOUD_PLATFORM_SCOPE],
+        }),
+        headers: {
+          Authorization: `Bearer ${stsBody.access_token}`,
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+    );
+
+    const impersonationBody = (await impersonationResponse.json()) as
+      | {
+          accessToken?: string;
+          error?: {
+            code?: number;
+            message?: string;
+            status?: string;
+          };
+        }
+      | undefined;
+
+    if (!impersonationResponse.ok || !impersonationBody?.accessToken) {
+      throw new Error(
+        `IAM Credentials impersonation failed: ${impersonationResponse.status} ${impersonationResponse.statusText}\n${JSON.stringify(
+          impersonationBody,
+          null,
+          2,
+        )}`,
+      );
+    }
+
+    return impersonationBody.accessToken;
+  };
+}
+
+export function getPromptInjectionMatchState(
+  response: ModelArmorSanitizationResponse,
+) {
+  return (
+    response.sanitizationResult.filterResults?.pi_and_jailbreak
+      ?.piAndJailbreakFilterResult?.matchState ?? null
+  );
+}
+
+export function isThreatDetected(response: ModelArmorSanitizationResponse) {
+  return response.sanitizationResult.filterMatchState === "MATCH_FOUND";
 }

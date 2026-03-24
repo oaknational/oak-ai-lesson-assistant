@@ -3,7 +3,10 @@ import type {
   ThreatDetectionResult,
   ThreatFinding,
 } from "../types";
-import type { ModelArmorSanitizeUserPromptResponse } from "./schema";
+import {
+  type ModelArmorSanitizationResponse,
+  isThreatDetected,
+} from "./ModelArmorClient";
 
 const PI_AND_JAILBREAK_CATEGORY_RULES: Array<{
   keywords: string[];
@@ -116,14 +119,26 @@ function getHighestThreat(findings: ThreatFinding[]): ThreatFinding | undefined 
 }
 
 function extractFindings(
-  data: ModelArmorSanitizeUserPromptResponse,
+  data: ModelArmorSanitizationResponse,
   prompt: string,
 ): ThreatFinding[] {
   const findings: ThreatFinding[] = [];
-  const { filterResults } = data.sanitizationResult;
+  const filterResults = data.sanitizationResult.filterResults ?? {};
 
   const piAndJailbreakResult =
-    filterResults.piAndJailbreak?.piAndJailbreakFilterResult;
+    filterResults.pi_and_jailbreak &&
+    typeof filterResults.pi_and_jailbreak === "object"
+      ? (
+          filterResults.pi_and_jailbreak as {
+            piAndJailbreakFilterResult?: {
+              matchState?: string;
+              confidenceLevel?: string;
+              executionState?: string;
+              messageItems?: Array<{ message: string }>;
+            };
+          }
+        ).piAndJailbreakFilterResult
+      : undefined;
   if (piAndJailbreakResult?.matchState === "MATCH_FOUND") {
     findings.push({
       category: mapPiAndJailbreakMessagesToCategory(
@@ -143,7 +158,24 @@ function extractFindings(
     });
   }
 
-  const sdpFindings = filterResults.sdp?.sdpFilterResult?.inspectResult?.findings;
+  const sdpFindings =
+    filterResults.sdp && typeof filterResults.sdp === "object"
+      ? (
+          filterResults.sdp as {
+            sdpFilterResult?: {
+              inspectResult?: {
+                findings?: Array<{
+                  infoType: string;
+                  likelihood?: string;
+                  location?: {
+                    codepointRange?: { start?: string; end?: string };
+                  };
+                }>;
+              };
+            };
+          }
+        ).sdpFilterResult?.inspectResult?.findings
+      : undefined;
   for (const finding of sdpFindings ?? []) {
     const codepointRange = finding.location?.codepointRange;
     const start = parseOffset(codepointRange?.start);
@@ -169,7 +201,19 @@ function extractFindings(
   }
 
   const maliciousUris =
-    filterResults.maliciousUri?.maliciousUriFilterResult?.maliciousUriMatchedItems;
+    filterResults.malicious_uris &&
+    typeof filterResults.malicious_uris === "object"
+      ? (
+          filterResults.malicious_uris as {
+            maliciousUriFilterResult?: {
+              maliciousUriMatchedItems?: Array<{
+                uri: string;
+                locations?: Array<{ start?: string; end?: string }>;
+              }>;
+            };
+          }
+        ).maliciousUriFilterResult?.maliciousUriMatchedItems
+      : undefined;
   for (const maliciousUri of maliciousUris ?? []) {
     const location = maliciousUri.locations?.[0];
     findings.push({
@@ -208,12 +252,12 @@ function extractFindings(
 }
 
 export function toModelArmorThreatDetectionResult(
-  data: ModelArmorSanitizeUserPromptResponse,
+  data: ModelArmorSanitizationResponse,
   prompt: string,
 ): ThreatDetectionResult {
   const findings = extractFindings(data, prompt);
   const highestThreat = getHighestThreat(findings);
-  const isThreat = data.sanitizationResult.filterMatchState === "MATCH_FOUND";
+  const isThreat = isThreatDetected(data);
   const detectedElements = findings
     .filter((finding) => finding.detected)
     .map((finding) => finding.snippet ?? finding.providerCode);
@@ -224,8 +268,8 @@ export function toModelArmorThreatDetectionResult(
     severity: highestThreat?.severity,
     category: highestThreat?.category,
     message: isThreat ? "Potential threat detected" : "No threats detected",
-    rawResponse: data.rawResponse,
-    requestId: data.requestId,
+    rawResponse: data,
+    requestId: undefined,
     findings,
     details: detectedElements.length > 0 ? { detectedElements } : {},
   };
