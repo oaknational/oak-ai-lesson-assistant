@@ -1,5 +1,6 @@
 import {
   ModelArmorClient,
+  createModelArmorAccessTokenProvider,
   toModelArmorThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/modelArmor";
 import type {
@@ -12,11 +13,9 @@ const log = aiLogger("teaching-materials-threat-detection");
 
 interface ModelArmorThreatCheckParams {
   messages: ThreatDetectionMessage[];
-  credentialsJson?: string;
   projectId?: string;
   location?: string;
-  templateId?: string;
-  apiBaseUrl?: string;
+  defaultTemplateId?: string;
 }
 
 function buildPrompt(messages: ThreatDetectionMessage[]): string {
@@ -27,17 +26,10 @@ function buildPrompt(messages: ThreatDetectionMessage[]): string {
 
 export async function performModelArmorThreatCheck({
   messages,
-  credentialsJson = process.env.GOOGLE_EXTERNAL_ACCOUNT_CREDENTIALS_JSON,
   projectId = process.env.MODEL_ARMOR_PROJECT_ID,
   location = process.env.MODEL_ARMOR_LOCATION,
-  templateId = process.env.MODEL_ARMOR_TEMPLATE_ID,
-  apiBaseUrl = process.env.MODEL_ARMOR_API_BASE_URL,
+  defaultTemplateId = process.env.MODEL_ARMOR_TEMPLATE_ID,
 }: ModelArmorThreatCheckParams): Promise<ThreatDetectionResult> {
-  if (!credentialsJson) {
-    log.error("Model Armor external account credentials not found");
-    throw new Error("GOOGLE_EXTERNAL_ACCOUNT_CREDENTIALS_JSON not found");
-  }
-
   if (!projectId) {
     throw new Error("MODEL_ARMOR_PROJECT_ID not found");
   }
@@ -46,16 +38,15 @@ export async function performModelArmorThreatCheck({
     throw new Error("MODEL_ARMOR_LOCATION not found");
   }
 
-  if (!templateId) {
+  if (!defaultTemplateId) {
     throw new Error("MODEL_ARMOR_TEMPLATE_ID not found");
   }
 
   const client = new ModelArmorClient({
-    credentialsJson,
+    defaultTemplateId,
+    getAccessToken: createModelArmorAccessTokenProvider(),
     projectId,
     location,
-    templateId,
-    apiBaseUrl,
   });
 
   const prompt = buildPrompt(messages);
@@ -63,7 +54,6 @@ export async function performModelArmorThreatCheck({
 
   log.info("Model Armor threat check completed", {
     flagged: response.sanitizationResult.filterMatchState === "MATCH_FOUND",
-    requestId: response.requestId,
   });
 
   return toModelArmorThreatDetectionResult(response, prompt);

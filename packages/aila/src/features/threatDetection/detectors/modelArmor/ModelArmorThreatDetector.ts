@@ -1,5 +1,6 @@
 import {
   ModelArmorClient,
+  createModelArmorAccessTokenProvider,
   toModelArmorThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/modelArmor";
 import { threatDetectionMessageSchema } from "@oakai/core/src/threatDetection/types";
@@ -23,17 +24,9 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
   constructor() {
     super();
 
-    const credentialsJson = process.env.GOOGLE_EXTERNAL_ACCOUNT_CREDENTIALS_JSON;
     const projectId = process.env.MODEL_ARMOR_PROJECT_ID;
     const location = process.env.MODEL_ARMOR_LOCATION;
     const templateId = process.env.MODEL_ARMOR_TEMPLATE_ID;
-    const apiBaseUrl = process.env.MODEL_ARMOR_API_BASE_URL;
-
-    if (!credentialsJson) {
-      throw new Error(
-        "GOOGLE_EXTERNAL_ACCOUNT_CREDENTIALS_JSON environment variable not set",
-      );
-    }
 
     if (!projectId) {
       throw new Error("MODEL_ARMOR_PROJECT_ID environment variable not set");
@@ -48,11 +41,10 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
     }
 
     this.modelArmorClient = new ModelArmorClient({
-      credentialsJson,
+      defaultTemplateId: templateId,
+      getAccessToken: createModelArmorAccessTokenProvider(),
       projectId,
       location,
-      templateId,
-      apiBaseUrl,
     });
   }
 

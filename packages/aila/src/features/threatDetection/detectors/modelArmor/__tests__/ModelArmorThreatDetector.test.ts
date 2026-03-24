@@ -4,6 +4,9 @@ const mockSanitizeUserPrompt = jest.fn();
 
 jest.mock("@oakai/core/src/threatDetection/modelArmor", () => ({
   ...jest.requireActual("@oakai/core/src/threatDetection/modelArmor"),
+  createModelArmorAccessTokenProvider: jest.fn(() =>
+    jest.fn().mockResolvedValue("test-access-token"),
+  ),
   ModelArmorClient: jest.fn().mockImplementation(() => ({
     sanitizeUserPrompt: mockSanitizeUserPrompt,
   })),
@@ -13,13 +16,15 @@ describe("ModelArmorThreatDetector", () => {
   let detector: ModelArmorThreatDetector;
 
   beforeEach(() => {
-    process.env.GOOGLE_EXTERNAL_ACCOUNT_CREDENTIALS_JSON = JSON.stringify({
-      type: "external_account",
-      audience: "audience",
-    });
+    process.env.MODEL_ARMOR_AUTH_MODE = "service_account";
     process.env.MODEL_ARMOR_PROJECT_ID = "test-project";
     process.env.MODEL_ARMOR_LOCATION = "europe-west4";
     process.env.MODEL_ARMOR_TEMPLATE_ID = "template-1";
+    process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON = JSON.stringify({
+      client_email: "svc@example.iam.gserviceaccount.com",
+      private_key: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
+      type: "service_account",
+    });
     mockSanitizeUserPrompt.mockReset();
     detector = new ModelArmorThreatDetector();
     (
@@ -37,14 +42,6 @@ describe("ModelArmorThreatDetector", () => {
 
   it("detects no threats in safe content", async () => {
     mockSanitizeUserPrompt.mockResolvedValue({
-      requestId: undefined,
-      rawResponse: {
-        sanitizationResult: {
-          filterMatchState: "NO_MATCH_FOUND",
-          filterResults: {},
-          invocationResult: "SUCCESS",
-        },
-      },
       sanitizationResult: {
         filterMatchState: "NO_MATCH_FOUND",
         filterResults: {},
@@ -74,30 +71,10 @@ describe("ModelArmorThreatDetector", () => {
 
   it("maps prompt-injection findings to a critical threat", async () => {
     mockSanitizeUserPrompt.mockResolvedValue({
-      requestId: undefined,
-      rawResponse: {
-        sanitizationResult: {
-          filterMatchState: "MATCH_FOUND",
-          filterResults: {
-            pi_and_jailbreak: {
-              piAndJailbreakFilterResult: {
-                matchState: "MATCH_FOUND",
-                confidenceLevel: "HIGH",
-                messageItems: [
-                  {
-                    message: "Prompt injection detected in user prompt",
-                  },
-                ],
-              },
-            },
-          },
-          invocationResult: "SUCCESS",
-        },
-      },
       sanitizationResult: {
         filterMatchState: "MATCH_FOUND",
         filterResults: {
-          piAndJailbreak: {
+          pi_and_jailbreak: {
             piAndJailbreakFilterResult: {
               matchState: "MATCH_FOUND",
               confidenceLevel: "HIGH",
@@ -144,34 +121,6 @@ describe("ModelArmorThreatDetector", () => {
     const end = start + "123-45-6789".length;
 
     mockSanitizeUserPrompt.mockResolvedValue({
-      requestId: undefined,
-      rawResponse: {
-        sanitizationResult: {
-          filterMatchState: "MATCH_FOUND",
-          filterResults: {
-            sdp: {
-              sdpFilterResult: {
-                inspectResult: {
-                  matchState: "MATCH_FOUND",
-                  findings: [
-                    {
-                      infoType: "US_SOCIAL_SECURITY_NUMBER",
-                      likelihood: "VERY_LIKELY",
-                      location: {
-                        codepointRange: {
-                          start: String(start),
-                          end: String(end),
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-          invocationResult: "SUCCESS",
-        },
-      },
       sanitizationResult: {
         filterMatchState: "MATCH_FOUND",
         filterResults: {
@@ -226,16 +175,6 @@ describe("ModelArmorThreatDetector", () => {
 
   it("maps unknown matches to other", async () => {
     mockSanitizeUserPrompt.mockResolvedValue({
-      requestId: undefined,
-      rawResponse: {
-        sanitizationResult: {
-          filterMatchState: "MATCH_FOUND",
-          filterResults: {
-            custom_filter: {},
-          },
-          invocationResult: "SUCCESS",
-        },
-      },
       sanitizationResult: {
         filterMatchState: "MATCH_FOUND",
         filterResults: {
