@@ -21,9 +21,9 @@ jest.mock("@/utils/serverSideFeatureFlag", () => ({
 }));
 
 jest.mock(
-  "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector",
+  "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector",
   () => ({
-    LakeraThreatDetector: jest.fn().mockImplementation(() => ({
+    ModelArmorThreatDetector: jest.fn().mockImplementation(() => ({
       detectThreat: jest.fn(),
       isThreatError: jest.fn().mockResolvedValue(false),
     })),

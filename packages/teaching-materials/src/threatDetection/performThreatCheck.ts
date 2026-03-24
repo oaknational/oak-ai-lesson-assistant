@@ -11,7 +11,7 @@ export interface ThreatCheckParams {
 
 type ThreatCheckProvider = "lakera" | "model_armor";
 
-const ACTIVE_THREAT_CHECK_PROVIDER: ThreatCheckProvider = "lakera";
+const ACTIVE_THREAT_CHECK_PROVIDER: ThreatCheckProvider = "model_armor";
 
 export async function performThreatCheck({
   messages,
