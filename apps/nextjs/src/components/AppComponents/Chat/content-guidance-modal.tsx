@@ -1,8 +1,10 @@
 import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import {
+  OakFlex,
+  OakHeading,
+  OakIcon,
   OakModalCenter,
-  OakModalCenterBody,
   OakP,
   OakPrimaryButton,
   OakSecondaryLink,
@@ -33,12 +35,14 @@ export function ContentGuidanceModalContent({
 }: ContentGuidanceModalContentProps) {
   return (
     <>
-      <OakP>{getBody(categories)}</OakP>
+      <OakP $font={"body-2"}>{getBody(categories)}</OakP>
       <OakSecondaryLink
         element="a"
         href="https://support.thenational.academy/ailas-safety-guardrails"
         target="_blank"
         rel="noopener noreferrer"
+        iconName="external"
+        isTrailingIcon
       >
         Learn more about Aila&apos;s safety guardrails.
       </OakSecondaryLink>
@@ -62,12 +66,23 @@ export function ContentGuidanceModal({
 
   return (
     <OakModalCenter isOpen={open} onClose={onClose}>
-      <OakModalCenterBody iconName="info" title={title}>
+      <OakIcon iconName={"info"} $width="spacing-48" $height="spacing-48" />
+      <OakFlex
+        $pb="spacing-56"
+        $width="100%"
+        $flexDirection="column"
+        $alignItems="flex-start "
+        $justifyContent="center"
+        $gap={"spacing-32"}
+      >
+        <OakHeading $font={["heading-5", "heading-5", "heading-4"]} tag="h1">
+          {title}
+        </OakHeading>
         <ContentGuidanceModalContent
           categories={categories}
           onClose={onClose}
         />
-      </OakModalCenterBody>
+      </OakFlex>
     </OakModalCenter>
   );
 }
