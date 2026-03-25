@@ -5,17 +5,9 @@ import { aiLogger } from "@oakai/logger";
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
 
-import thresholdsConfig from "../moderationThresholdsOakService.json";
 import { AilaModerationError, AilaModerator } from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
-
-const thresholds: Record<string, number> = thresholdsConfig.thresholds;
-
-function isCategoryFlagged(code: string, score: number): boolean {
-  const threshold = thresholds[code] ?? thresholdsConfig.defaultThreshold;
-  return score < threshold;
-}
 
 export interface OakModerationServiceModeratorConfig {
   baseUrl: string;
@@ -29,9 +21,9 @@ export interface OakModerationServiceModeratorConfig {
  * Moderator implementation that calls the Oak AI Moderation Service.
  * Uses Vercel OIDC tokens for authentication and openapi-fetch with
  * generated types from the OpenAPI spec.
- * Returns 24 sub-category scores (1-5 Likert, 5 = safe).
- * Categories are flagged when their score falls below a per-category
- * threshold defined in moderationThresholdsOakService.json.
+ * The service returns 24 sub-category scores (1-5 Likert, 5 = safe)
+ * and a flagged_categories array (categories whose score fell below
+ * the service's per-category thresholds).
  */
 export class OakModerationServiceModerator extends AilaModerator {
   private readonly baseUrl: string;
@@ -107,19 +99,15 @@ export class OakModerationServiceModerator extends AilaModerator {
         );
       }
 
-      const categories = Object.entries(data.scores)
-        .filter(([code, score]) => isCategoryFlagged(code, score))
-        .map(([code]) => code) as ModerationResult["categories"];
-
       log.info("Oak Moderation Service response received", {
-        categoriesCount: categories.length,
+        categoriesCount: data.flagged_categories.length,
         moderationId: data.moderation_id,
         promptVersion: data.prompt_version,
       });
 
       return {
         scores: data.scores,
-        categories,
+        categories: data.flagged_categories as ModerationResult["categories"],
       };
     } catch (err) {
       if (err instanceof AilaModerationError) {

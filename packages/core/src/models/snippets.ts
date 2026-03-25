@@ -18,7 +18,6 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { PrismaVectorStore } from "langchain/vectorstores/prisma";
 import { difference } from "remeda";
 
-import { inngest } from "../inngest";
 import { createOpenAILangchainClient } from "../llm/langchain";
 import { embedWithCache } from "../utils/embeddings";
 
@@ -41,20 +40,6 @@ interface FilterOptions {
 
 export class Snippets {
   constructor(private readonly prisma: PrismaClientWithAccelerate) {}
-
-  async embedAll(): Promise<void> {
-    const snippets = await this.prisma.snippet.findMany({
-      where: {
-        status: "PENDING",
-      },
-    });
-    for (const snippet of snippets) {
-      await inngest.send({
-        name: "app/snippet.embed",
-        data: { snippetId: snippet.id },
-      });
-    }
-  }
 
   async embed(id: string): Promise<number | undefined> {
     const snippet = await this.prisma.snippet.findUnique({ where: { id } });
@@ -312,11 +297,6 @@ If you don't know the answer, just respond with "None", don't try to make up an 
         keyStageId: lesson?.keyStage?.id,
         keyStageSlug: lesson?.keyStage?.slug,
       },
-    });
-
-    await inngest.send({
-      name: "app/snippet.embed",
-      data: { snippetId: snippet.id },
     });
   }
 

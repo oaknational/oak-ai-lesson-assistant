@@ -1,91 +1,121 @@
-import { getDisplayCategories, getSafetyResult, isToxic } from "./helpers";
+import {
+  getMockModerationResult,
+  getSafetyResult,
+  isHighlySensitive,
+  isSafe,
+  isToxic,
+  moderationGuidanceText,
+} from "./helpers";
 import type { ModerationBase } from "./moderationSchema";
 
-function modResult(categories: string[]): ModerationBase {
-  return { categories };
-}
+const mod = (categories: string[]): ModerationBase => ({ categories });
 
-describe("isToxic", () => {
-  it("returns true for t/ codes", () => {
-    expect(isToxic(modResult(["t/guides-self-harm-suicide"]))).toBe(true);
+describe("isHighlySensitive", () => {
+  it("returns true for n/ categories", () => {
+    expect(isHighlySensitive(mod(["n/self-harm-suicide"]))).toBe(true);
+    expect(isHighlySensitive(mod(["n/strangulation-suffocation"]))).toBe(true);
   });
 
-  it("returns true for n/ codes", () => {
-    expect(isToxic(modResult(["n/self-harm-suicide"]))).toBe(true);
-  });
-
-  it("returns false for soft-warning codes", () => {
-    expect(isToxic(modResult(["l/discriminatory-language"]))).toBe(false);
-  });
-
-  it("returns false for empty categories", () => {
-    expect(isToxic(modResult([]))).toBe(false);
+  it("returns false for other categories", () => {
+    expect(isHighlySensitive(mod(["t/encouragement-violence"]))).toBe(false);
+    expect(isHighlySensitive(mod(["l/strong-language"]))).toBe(false);
+    expect(isHighlySensitive(mod([]))).toBe(false);
   });
 });
 
 describe("getSafetyResult", () => {
-  it("returns safe for empty categories", () => {
-    expect(getSafetyResult(modResult([]))).toBe("safe");
+  it("returns safe for no categories", () => {
+    expect(getSafetyResult(mod([]))).toBe("safe");
   });
 
-  it("returns guidance-required for soft-warning codes", () => {
-    expect(getSafetyResult(modResult(["l/discriminatory-language"]))).toBe(
+  it("returns guidance-required for non-toxic, non-HS categories", () => {
+    expect(getSafetyResult(mod(["l/strong-language"]))).toBe(
       "guidance-required",
     );
   });
 
-  it("returns toxic for n/ codes", () => {
-    expect(getSafetyResult(modResult(["n/self-harm-suicide"]))).toBe("toxic");
+  it("returns highly-sensitive for n/ categories", () => {
+    expect(getSafetyResult(mod(["n/self-harm-suicide"]))).toBe(
+      "highly-sensitive",
+    );
   });
 
-  it("returns toxic for t/ codes", () => {
-    expect(getSafetyResult(modResult(["t/guides-self-harm-suicide"]))).toBe(
-      "toxic",
+  it("returns toxic for t/ categories", () => {
+    expect(getSafetyResult(mod(["t/encouragement-violence"]))).toBe("toxic");
+  });
+
+  it("toxic takes priority over highly-sensitive", () => {
+    expect(
+      getSafetyResult(mod(["n/self-harm-suicide", "t/encouragement-violence"])),
+    ).toBe("toxic");
+  });
+
+  it("highly-sensitive takes priority over guidance-required", () => {
+    expect(
+      getSafetyResult(mod(["l/strong-language", "n/self-harm-suicide"])),
+    ).toBe("highly-sensitive");
+  });
+});
+
+describe("isToxic", () => {
+  it("detects t/ prefix", () => {
+    expect(isToxic(mod(["t/encouragement-violence"]))).toBe(true);
+  });
+  it("rejects other prefixes", () => {
+    expect(isToxic(mod(["n/self-harm-suicide"]))).toBe(false);
+  });
+});
+
+describe("isSafe", () => {
+  it("returns true for empty categories", () => {
+    expect(isSafe(mod([]))).toBe(true);
+  });
+  it("returns false for any categories", () => {
+    expect(isSafe(mod(["l/strong-language"]))).toBe(false);
+  });
+});
+
+describe("moderationGuidanceText", () => {
+  it("returns longMessage for a single Oak Service category", () => {
+    expect(moderationGuidanceText(mod(["u/violence-or-suffering"]))).toBe(
+      "This lesson contains violence or suffering (e.g., war, famine, disasters, or animal cruelty). Some pupils may find this distressing. Please check this content carefully.",
+    );
+  });
+
+  it("returns semicolon-separated shortDescriptions for multiple categories", () => {
+    expect(
+      moderationGuidanceText(
+        mod(["u/violence-or-suffering", "l/discriminatory-language"]),
+      ),
+    ).toBe(
+      "This lesson has been flagged for: Violence or suffering; Discriminatory behaviour or language. Please review the content carefully and ensure it is age-appropriate and aligned with your school's policies.",
+    );
+  });
+
+  it("falls back to userDescription for legacy v0 categories", () => {
+    expect(moderationGuidanceText(mod(["l/strong-language"]))).toBe(
+      "Contains strong language. Check content carefully.",
     );
   });
 });
 
-describe("getDisplayCategories", () => {
-  it("returns structured data for a single Oak Service category", () => {
-    const result = getDisplayCategories(
-      modResult(["l/discriminatory-language"]),
-    );
-    expect(result).toEqual([
-      {
-        code: "l/discriminatory-language",
-        shortDescription: "Discriminatory behaviour or language",
-        longDescription: expect.stringContaining("discriminatory behaviour"),
-        severityLevel: "content-guidance",
-      },
-    ]);
+describe("getMockModerationResult", () => {
+  it("returns toxic for mod:tox", () => {
+    const result = getMockModerationResult("mod:tox");
+    expect(result?.categories).toContain("t/encouragement-violence");
   });
 
-  it("returns multiple categories with their severity levels", () => {
-    const result = getDisplayCategories(
-      modResult(["l/discriminatory-language", "r/recent-content"]),
-    );
-    expect(result).toHaveLength(2);
-    expect(result[0]?.severityLevel).toBe("content-guidance");
-    expect(result[1]?.severityLevel).toBe("enhanced-scrutiny");
+  it("returns highly-sensitive for mod:hs", () => {
+    const result = getMockModerationResult("mod:hs");
+    expect(result?.categories).toContain("n/self-harm-suicide");
   });
 
-  it("returns heightened-caution for e/ categories", () => {
-    const result = getDisplayCategories(modResult(["e/rshe-content"]));
-    expect(result).toEqual([
-      {
-        code: "e/rshe-content",
-        shortDescription: "RSHE content",
-        longDescription: expect.stringContaining("RSHE"),
-        severityLevel: "heightened-caution",
-      },
-    ]);
+  it("returns sensitive for mod:sen", () => {
+    const result = getMockModerationResult("mod:sen");
+    expect(result?.categories).toContain("l/strong-language");
   });
 
-  it("returns empty array for empty categories", () => {
-    expect(getDisplayCategories(modResult([]))).toEqual([]);
-  });
-
-  it("skips unknown category codes", () => {
-    expect(getDisplayCategories(modResult(["x/unknown"]))).toEqual([]);
+  it("returns null for no trigger", () => {
+    expect(getMockModerationResult("hello world")).toBeNull();
   });
 });

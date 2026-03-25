@@ -8,13 +8,13 @@ import type {
 } from "../interfaces";
 import type { Task } from "../reporting";
 import { CohereReranker } from "../services/CohereReranker";
-import { ElasticsearchQuizSearchService } from "../services/ElasticsearchQuizSearchService";
+import { PostgresQuizSearchService } from "../services/PostgresQuizSearchService";
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 import { SemanticQueryGenerator } from "../services/SemanticQueryGenerator";
 
 const log = aiLogger("aila:quiz");
 
-// Number of results to retrieve from Elasticsearch before reranking
+// Number of results to retrieve from Postgres before reranking
 const SEARCH_SIZE = 50;
 
 // Number of candidates to keep per pool after Cohere reranking
@@ -31,16 +31,15 @@ export class MultiQuerySemanticSource implements QuestionSource {
   readonly name = "multiQuerySemantic";
 
   protected queryGenerator: SemanticQueryGenerator;
-  protected searchService: ElasticsearchQuizSearchService;
+  protected searchService: PostgresQuizSearchService;
   protected rerankService: CohereReranker;
   protected retrievalService: QuizQuestionRetrievalService;
 
-  constructor(retrievalService?: QuizQuestionRetrievalService) {
+  constructor() {
     this.queryGenerator = new SemanticQueryGenerator();
-    this.searchService = new ElasticsearchQuizSearchService();
+    this.searchService = new PostgresQuizSearchService();
     this.rerankService = new CohereReranker();
-    this.retrievalService =
-      retrievalService ?? new QuizQuestionRetrievalService();
+    this.retrievalService = new QuizQuestionRetrievalService();
   }
 
   /**
@@ -59,25 +58,21 @@ export class MultiQuerySemanticSource implements QuestionSource {
   }
 
   /**
-   * Searches and retrieves questions for a single query
+   * Searches and retrieves questions for a single query.
+   * 1. Lightweight vector search returning UIDs + descriptions
+   * 2. Cohere rerank on description text
+   * 3. Retrieve full RagQuizQuestion objects for winning UIDs
    */
   private async searchAndRetrieveForQuery(
     query: string,
     topN: number,
     task: Task,
   ): Promise<RagQuizQuestion[]> {
-    const results = await task.child("elasticsearch", async (t) => {
-      const hits = await this.searchService.searchWithHybrid(
-        "oak-vector-2025-04-16",
-        query,
-        t,
-        SEARCH_SIZE,
-        0.5,
-      );
-      return hits;
+    const rows = await task.child("search", async (t) => {
+      return this.searchService.search(query, t, SEARCH_SIZE);
     });
 
-    const simplifiedResults = this.searchService.transformHits(results.hits);
+    const simplifiedResults = this.searchService.transformHits(rows);
 
     const rerankedResults = await task.child("cohere", async (t) => {
       return this.rerankService.rerankDocuments(
@@ -89,7 +84,6 @@ export class MultiQuerySemanticSource implements QuestionSource {
     });
 
     const questionUids = rerankedResults.map((result) => result.questionUid);
-
     const questions =
       await this.retrievalService.retrieveQuestionsByIds(questionUids);
 

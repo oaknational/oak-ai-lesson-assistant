@@ -3,6 +3,7 @@ import {
   getCategoryGroup,
   getMockModerationResult,
   getSafetyResult,
+  isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
@@ -128,6 +129,10 @@ export class AilaModeration implements AilaModerationFeature {
       if (isToxic(moderationResult)) {
         for (const plugin of this._aila.plugins ?? []) {
           await plugin.onToxicModeration?.(moderation, pluginContext);
+        }
+      } else if (isHighlySensitive(moderationResult)) {
+        for (const plugin of this._aila.plugins ?? []) {
+          await plugin.onHighlySensitiveModeration?.(moderation, pluginContext);
         }
       }
 

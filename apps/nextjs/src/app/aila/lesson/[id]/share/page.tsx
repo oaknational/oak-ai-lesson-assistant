@@ -1,6 +1,9 @@
 import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSessionModerations";
 import { demoUsers } from "@oakai/core/src/models/demoUsers";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import {
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { User } from "@clerk/nextjs/server";
@@ -57,7 +60,7 @@ export default async function SharePage({ params }: Readonly<SharePageProps>) {
 
   const moderations = await getSessionModerations(id);
 
-  if (moderations.some(isToxic)) {
+  if (moderations.some((m) => isToxic(m) || isHighlySensitive(m))) {
     return notFound();
   }
 
