@@ -264,4 +264,26 @@ describe("ModelArmorThreatDetector", () => {
 
     expect(mockSanitizeUserPrompt).toHaveBeenCalledWith("Latest user message");
   });
+
+  it("returns a non-threat without calling Model Armor when there is no user message", async () => {
+    const result = await detector.detectThreat([
+      {
+        role: "system",
+        content: "System guidance",
+      },
+      {
+        role: "assistant",
+        content: "Assistant response",
+      },
+    ]);
+
+    expect(mockSanitizeUserPrompt).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      provider: "model_armor",
+      isThreat: false,
+      message: "No threats detected",
+      findings: [],
+      details: {},
+    });
+  });
 });
