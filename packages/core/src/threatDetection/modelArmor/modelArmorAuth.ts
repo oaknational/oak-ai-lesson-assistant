@@ -23,6 +23,7 @@ type EnvLike = Record<string, string | undefined>;
 type ModelArmorAuthDependencies = {
   GoogleAuthCtor?: typeof GoogleAuth;
   createWorkloadIdentityAccessTokenProviderFn?: typeof createWorkloadIdentityAccessTokenProvider;
+  getRuntimeSubjectTokenFn?: () => Promise<string>;
 };
 
 function getRequiredEnvValue(env: EnvLike, name: string): string {
@@ -78,6 +79,11 @@ function createServiceAccountAccessTokenProvider(
   };
 }
 
+async function getVercelOidcSubjectToken(): Promise<string> {
+  const { getVercelOidcToken } = await import("@vercel/oidc");
+  return getVercelOidcToken();
+}
+
 export function createModelArmorAccessTokenProvider(
   env: EnvLike = process.env,
   dependencies: ModelArmorAuthDependencies = {},
@@ -86,6 +92,8 @@ export function createModelArmorAccessTokenProvider(
   const createWorkloadIdentityAccessTokenProviderFn =
     dependencies.createWorkloadIdentityAccessTokenProviderFn ??
     createWorkloadIdentityAccessTokenProvider;
+  const getRuntimeSubjectTokenFn =
+    dependencies.getRuntimeSubjectTokenFn ?? getVercelOidcSubjectToken;
   const authMode = getModelArmorAuthMode(env);
 
   switch (authMode) {
@@ -100,7 +108,7 @@ export function createModelArmorAccessTokenProvider(
     case "workload_identity":
       return createWorkloadIdentityAccessTokenProviderFn({
         getSubjectToken: async () =>
-          getRequiredEnvValue(env, "MODEL_ARMOR_SUBJECT_TOKEN"),
+          env.MODEL_ARMOR_SUBJECT_TOKEN ?? (await getRuntimeSubjectTokenFn()),
         projectNumber: getRequiredEnvValue(env, "MODEL_ARMOR_PROJECT_NUMBER"),
         serviceAccountEmail: getRequiredEnvValue(
           env,

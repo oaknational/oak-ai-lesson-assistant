@@ -5,6 +5,7 @@ describe("createModelArmorAccessTokenProvider", () => {
   let mockGoogleAuthGetClient: jest.Mock;
   let mockGoogleAuthCtor: jest.Mock;
   let mockCreateWorkloadIdentityAccessTokenProvider: jest.Mock;
+  let mockGetRuntimeSubjectToken: jest.Mock;
 
   beforeEach(() => {
     mockGoogleAuthGetAccessToken = jest
@@ -21,6 +22,7 @@ describe("createModelArmorAccessTokenProvider", () => {
     mockCreateWorkloadIdentityAccessTokenProvider.mockReturnValue(async () =>
       Promise.resolve("wif-token"),
     );
+    mockGetRuntimeSubjectToken = jest.fn().mockResolvedValue("runtime-token");
   });
 
   it("uses service-account auth when configured", async () => {
@@ -38,6 +40,7 @@ describe("createModelArmorAccessTokenProvider", () => {
         GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
         createWorkloadIdentityAccessTokenProviderFn:
           mockCreateWorkloadIdentityAccessTokenProvider,
+        getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
       },
     );
 
@@ -60,12 +63,12 @@ describe("createModelArmorAccessTokenProvider", () => {
           "svc@example.iam.gserviceaccount.com",
         MODEL_ARMOR_WORKLOAD_IDENTITY_POOL_ID: "pool-id",
         MODEL_ARMOR_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: "provider-id",
-        MODEL_ARMOR_SUBJECT_TOKEN: "subject-token",
       },
       {
         GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
         createWorkloadIdentityAccessTokenProviderFn:
           mockCreateWorkloadIdentityAccessTokenProvider,
+        getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
       },
     );
 
@@ -78,6 +81,35 @@ describe("createModelArmorAccessTokenProvider", () => {
       workloadIdentityPoolProviderId: "provider-id",
     });
     expect(mockGoogleAuthCtor).not.toHaveBeenCalled();
+  });
+
+  it("uses an explicit subject token override when present", async () => {
+    const getAccessToken = createModelArmorAccessTokenProvider(
+      {
+        MODEL_ARMOR_AUTH_MODE: "workload_identity",
+        MODEL_ARMOR_PROJECT_NUMBER: "123456789",
+        MODEL_ARMOR_SERVICE_ACCOUNT_EMAIL:
+          "svc@example.iam.gserviceaccount.com",
+        MODEL_ARMOR_WORKLOAD_IDENTITY_POOL_ID: "pool-id",
+        MODEL_ARMOR_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: "provider-id",
+        MODEL_ARMOR_SUBJECT_TOKEN: "subject-token",
+      },
+      {
+        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
+        createWorkloadIdentityAccessTokenProviderFn:
+          mockCreateWorkloadIdentityAccessTokenProvider,
+        getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
+      },
+    );
+
+    await expect(getAccessToken()).resolves.toBe("wif-token");
+    const workloadIdentityConfig =
+      mockCreateWorkloadIdentityAccessTokenProvider.mock.calls[0]?.[0];
+
+    await expect(workloadIdentityConfig.getSubjectToken()).resolves.toBe(
+      "subject-token",
+    );
+    expect(mockGetRuntimeSubjectToken).not.toHaveBeenCalled();
   });
 
   it("throws when MODEL_ARMOR_AUTH_MODE is missing", () => {
