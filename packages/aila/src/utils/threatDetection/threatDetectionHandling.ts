@@ -8,7 +8,6 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 
-import { threatDetectionResultSchema } from "../../features/threatDetection/detectors/AilaThreatDetector";
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
   ActionDocument,
@@ -25,31 +24,21 @@ function buildFallbackThreatDetection(
     return error.threatDetection;
   }
 
-  const parsedThreatData = threatDetectionResultSchema.safeParse(error.cause);
-
   return {
     provider: "unknown",
-    isThreat: parsedThreatData.data?.isThreat ?? true,
-    severity: parsedThreatData.data?.severity,
-    category: parsedThreatData.data?.category,
-    message: parsedThreatData.data?.message ?? "Potential threat detected",
-    rawResponse: parsedThreatData.data?.rawResponse,
-    findings:
-      parsedThreatData.data?.isThreat === false
-        ? []
-        : [
-            {
-              category: parsedThreatData.data?.category ?? "other",
-              severity: parsedThreatData.data?.severity ?? "high",
-              providerCode: "unknown",
-              detected: true,
-              snippet: parsedThreatData.data?.details?.detectedElements?.[0],
-              metadata: {
-                detectedElements:
-                  parsedThreatData.data?.details?.detectedElements,
-              },
-            },
-          ],
+    isThreat: true,
+    severity: "high",
+    category: "other",
+    message: error.message || "Potential threat detected",
+    rawResponse: undefined,
+    findings: [
+      {
+        category: "other",
+        severity: "high",
+        providerCode: "unknown",
+        detected: true,
+      },
+    ],
   };
 }
 

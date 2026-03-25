@@ -79,7 +79,6 @@ export class AilaStreamHandler {
           this._chat.userId ?? "unknown",
           "Potential threat detected",
           threatDetection,
-          { cause: threatDetection },
         );
       }
     }

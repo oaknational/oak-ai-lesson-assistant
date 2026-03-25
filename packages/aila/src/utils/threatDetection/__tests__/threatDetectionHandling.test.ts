@@ -105,4 +105,51 @@ describe("handleThreatDetectionError", () => {
         "I wasn't able to process your request because a potentially malicious input was detected.",
     });
   });
+
+  it("falls back to a synthetic threat payload when threatDetection is missing", async () => {
+    const recordViolation = jest.fn().mockResolvedValue(undefined);
+    const SafetyViolations = jest.fn().mockImplementation(() => ({
+      recordViolation,
+    }));
+
+    const error = new AilaThreatDetectionError("user-123", "Threat detected");
+
+    await handleThreatDetectionError(
+      {
+        userId: "user-123",
+        chatId: "chat-123",
+        error,
+        prisma: {} as never,
+      },
+      SafetyViolations,
+    );
+
+    expect(inngest.send).toHaveBeenCalledWith({
+      name: "app/slack.notifyThreatDetectionAila",
+      user: {
+        id: "user-123",
+      },
+      data: {
+        chatId: "chat-123",
+        userAction: "CHAT_SESSION",
+        threatDetection: {
+          provider: "unknown",
+          isThreat: true,
+          severity: "high",
+          category: "other",
+          message: "Threat detected",
+          rawResponse: undefined,
+          findings: [
+            {
+              category: "other",
+              severity: "high",
+              providerCode: "unknown",
+              detected: true,
+            },
+          ],
+        },
+        messages: [],
+      },
+    });
+  });
 });
