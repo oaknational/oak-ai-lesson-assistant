@@ -58,7 +58,7 @@ export class BasicThreatDetector extends AilaThreatDetector {
     },
   ];
 
-  async detectThreat(
+  detectThreat(
     content: ThreatDetectionMessage[],
   ): Promise<ThreatDetectionResult> {
     const stringContent = content.map((message) => message.content).join("\n");
@@ -71,14 +71,14 @@ export class BasicThreatDetector extends AilaThreatDetector {
       .filter((result) => result.isMatch);
 
     if (detectedThreats.length === 0) {
-      return {
+      return Promise.resolve({
         provider: "basic",
         isThreat: false,
         message: "No threats detected",
         findings: [],
         rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
-      };
+      });
     }
 
     // Get the highest severity threat
@@ -99,17 +99,17 @@ export class BasicThreatDetector extends AilaThreatDetector {
     }, detectedThreats[0]);
 
     if (!highestThreat) {
-      return {
+      return Promise.resolve({
         provider: "basic",
         isThreat: false,
         message: "No threats detected",
         findings: [],
         rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
-      };
+      });
     }
 
-    return {
+    return Promise.resolve({
       provider: "basic",
       isThreat: true,
       severity: highestThreat.pattern.severity,
@@ -135,6 +135,6 @@ export class BasicThreatDetector extends AilaThreatDetector {
         detectedElements: detectedThreats.map((t) => t.pattern.message),
         confidence: 1.0,
       },
-    };
+    });
   }
 }

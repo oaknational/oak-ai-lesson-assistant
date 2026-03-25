@@ -6,10 +6,10 @@ import type {
 import { AilaThreatDetector } from "../detectors/AilaThreatDetector";
 
 export class HeliconeThreatDetector extends AilaThreatDetector {
-  async detectThreat(
+  detectThreat(
     _content: ThreatDetectionMessage[],
   ): Promise<ThreatDetectionResult> {
-    return {
+    return Promise.resolve({
       provider: "helicone",
       isThreat: false,
       message: "Helicone threat detection not implemented",
@@ -17,7 +17,7 @@ export class HeliconeThreatDetector extends AilaThreatDetector {
       details: {
         confidence: 0,
       },
-    };
+    });
   }
 
   isThreatError(error: unknown): boolean {

@@ -12,14 +12,14 @@ export class MockThreatDetector extends AilaThreatDetector {
     this._response = response;
   }
 
-  async detectThreat(
+  detectThreat(
     _content: ThreatDetectionMessage[],
   ): Promise<ThreatDetectionResult> {
-    return {
+    return Promise.resolve({
       provider: "mock",
       isThreat: this._response,
       message: "Mocked response",
       findings: [],
-    };
+    });
   }
 }
