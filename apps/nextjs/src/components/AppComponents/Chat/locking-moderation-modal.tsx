@@ -19,19 +19,23 @@ import * as Sentry from "@sentry/nextjs";
 
 import { useModerationFeedbackSurvey } from "@/hooks/surveys/useModerationFeedbackSurvey";
 
-type ToxicContentModalProps = Readonly<{
+type LockingModerationModalProps = Readonly<{
   open: boolean;
   onClose: () => void;
   chatId: string;
+  heading: string;
+  body: string;
   moderation: PersistedModerationBase;
 }>;
 
-export function ToxicContentModal({
+export function LockingModerationModal({
   open,
   onClose,
+  heading,
+  body,
   chatId,
   moderation,
-}: ToxicContentModalProps) {
+}: LockingModerationModalProps) {
   const [showFeedback, setShowFeedback] = useState(false);
   const { onSubmit, comment, setComment, hasSubmitted, isValid } =
     useModerationFeedbackSurvey({ chatId, moderation });
@@ -55,16 +59,12 @@ export function ToxicContentModal({
         $gap="spacing-32"
       >
         <OakHeading $font={["heading-5", "heading-5", "heading-4"]} tag="h1">
-          Potential misuse of Aila detected
+          {heading}
         </OakHeading>
 
         {!showFeedback && !hasSubmitted && (
           <OakP $font="body-2">
-            Aila is designed to create classroom-appropriate content. This
-            lesson has been identified as potentially unsuitable, preventing you
-            from continuing to create this lesson. Continuing to generate
-            inappropriate content will result in your account being blocked. If
-            you believe this is an error, please{" "}
+            {body}{" "}
             <OakLink onClick={() => setShowFeedback(true)}>
               provide feedback
             </OakLink>

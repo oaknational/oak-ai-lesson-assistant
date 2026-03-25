@@ -1,10 +1,8 @@
 import React from "react";
 
-import { useRouter } from "next/navigation";
-
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 
-import { ToxicContentModal } from "../toxic-content-modal";
+import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
 export type ChatModerationProps = Readonly<{
   children: React.ReactNode;

@@ -5,11 +5,11 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
 
-import { ToxicContentModal } from "./toxic-content-modal";
+import { LockingModerationModal } from "./locking-moderation-modal";
 
 const meta = {
-  title: "Components/Dialogs/ToxicContentModal",
-  component: ToxicContentModal,
+  title: "Components/Dialogs/LockingModerationModal",
+  component: LockingModerationModal,
   tags: ["autodocs"],
   decorators: [StoreDecorator],
   parameters: {
@@ -24,9 +24,7 @@ const meta = {
       categories: ["l/discriminatory-behaviour"],
     } satisfies PersistedModerationBase,
   },
-} satisfies Meta<typeof ToxicContentModal>;
+} satisfies Meta<typeof LockingModerationModal>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
-export const Alert: Story = {};
