@@ -2,14 +2,14 @@ import {
   LakeraClient,
   toLakeraThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/lakera";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
 
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
-import {
-  AilaThreatDetector,
-  type ThreatDetectionMessage,
-  type ThreatDetectionResult,
-} from "../AilaThreatDetector";
+import { AilaThreatDetector } from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
 

@@ -1,5 +1,6 @@
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
+
 import { AilaError } from "../../core/AilaError";
-import type { ThreatDetectionResult } from "./detectors/AilaThreatDetector";
 
 export class AilaThreatDetectionError extends AilaError {
   public readonly userId: string;

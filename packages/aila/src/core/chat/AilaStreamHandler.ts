@@ -1,4 +1,5 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import type { ThreatDetectionMessage } from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
 import {
   getRagLessonPlansByIds,
@@ -9,7 +10,6 @@ import {
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
-import type { ThreatDetectionMessage } from "../../features/threatDetection/detectors/AilaThreatDetector";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";

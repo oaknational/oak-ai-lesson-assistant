@@ -1,8 +1,9 @@
-import {
-  AilaThreatDetector,
-  type ThreatDetectionMessage,
-  type ThreatDetectionResult,
-} from "./AilaThreatDetector";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
+
+import { AilaThreatDetector } from "./AilaThreatDetector";
 
 export class MockThreatDetector extends AilaThreatDetector {
   private readonly _response: boolean;

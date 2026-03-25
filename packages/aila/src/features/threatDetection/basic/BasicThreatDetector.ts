@@ -3,7 +3,8 @@ import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
   ThreatSeverity,
-} from "../detectors/AilaThreatDetector";
+} from "@oakai/core/src/threatDetection/types";
+
 import { AilaThreatDetector } from "../detectors/AilaThreatDetector";
 
 type ThreatPattern = {

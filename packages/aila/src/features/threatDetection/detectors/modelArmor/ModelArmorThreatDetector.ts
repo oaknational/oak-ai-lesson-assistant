@@ -3,16 +3,16 @@ import {
   createModelArmorAccessTokenProvider,
   toModelArmorThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/modelArmor";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
 import { AilaThreatDetector } from "../AilaThreatDetector";
-import type {
-  ThreatDetectionMessage,
-  ThreatDetectionResult,
-} from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
 

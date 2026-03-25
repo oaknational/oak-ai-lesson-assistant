@@ -1,7 +1,8 @@
 import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
-} from "../AilaThreatDetector";
+} from "@oakai/core/src/threatDetection/types";
+
 import { AilaThreatDetector } from "../AilaThreatDetector";
 
 export class HeliconeThreatDetector extends AilaThreatDetector {
