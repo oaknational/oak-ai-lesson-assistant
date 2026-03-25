@@ -126,8 +126,8 @@ describe("ModelArmorThreatDetector", () => {
   });
 
   it("maps SDP findings to pii", async () => {
-    const prompt = "user: my social security number is 123-45-6789";
-    const start = prompt.indexOf("123-45-6789");
+    const messageContent = "my social security number is 123-45-6789";
+    const start = messageContent.indexOf("123-45-6789");
     const end = start + "123-45-6789".length;
 
     mockSanitizeUserPrompt.mockResolvedValue({
@@ -161,7 +161,7 @@ describe("ModelArmorThreatDetector", () => {
     const messages = [
       {
         role: "user" as const,
-        content: "my social security number is 123-45-6789",
+        content: messageContent,
       },
     ];
 
@@ -216,5 +216,32 @@ describe("ModelArmorThreatDetector", () => {
         providerCode: "model_armor_match",
       }),
     );
+  });
+
+  it("sends only the latest user message to Model Armor", async () => {
+    mockSanitizeUserPrompt.mockResolvedValue({
+      sanitizationResult: {
+        filterMatchState: "NO_MATCH_FOUND",
+        filterResults: {},
+        invocationResult: "SUCCESS",
+      },
+    });
+
+    await detector.detectThreat([
+      {
+        role: "user",
+        content: "First user message",
+      },
+      {
+        role: "assistant",
+        content: "Assistant response",
+      },
+      {
+        role: "user",
+        content: "Latest user message",
+      },
+    ]);
+
+    expect(mockSanitizeUserPrompt).toHaveBeenCalledWith("Latest user message");
   });
 });

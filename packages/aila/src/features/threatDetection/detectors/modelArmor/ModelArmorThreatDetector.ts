@@ -68,7 +68,7 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
     }
 
     const extractedMessages = extractPromptTextFromMessages(content);
-    const prompt = this.buildPrompt(extractedMessages);
+    const prompt = this.getPromptToCheck(extractedMessages);
     const data = await this.modelArmorClient.sanitizeUserPrompt(prompt);
     return toModelArmorThreatDetectionResult(data, prompt);
   }
@@ -81,6 +81,14 @@ export class ModelArmorThreatDetector extends AilaThreatDetector {
     return messages
       .map((message) => `${message.role}: ${message.content}`)
       .join("\n");
+  }
+
+  private getPromptToCheck(messages: ThreatMessage[]): string {
+    const latestUserMessage = [...messages]
+      .reverse()
+      .find((message) => message.role === "user");
+
+    return latestUserMessage?.content ?? this.buildPrompt(messages);
   }
 
   private isThreatMessage(message: unknown): message is ThreatMessage {
