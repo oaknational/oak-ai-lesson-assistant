@@ -3,10 +3,13 @@ import type {
   ThreatDetectionResult,
   ThreatFinding,
 } from "../types";
+import { isThreatDetected } from "./ModelArmorClient";
 import {
   type ModelArmorSanitizationResponse,
-  isThreatDetected,
-} from "./ModelArmorClient";
+  maliciousUriFilterResultSchema,
+  piAndJailbreakFilterResultSchema,
+  sdpInspectResultSchema,
+} from "./schema";
 
 const PI_AND_JAILBREAK_CATEGORY_RULES: Array<{
   keywords: string[];
@@ -129,20 +132,9 @@ function extractFindings(
   const findings: ThreatFinding[] = [];
   const filterResults = data.sanitizationResult.filterResults ?? {};
 
-  const piAndJailbreakResult =
-    filterResults.pi_and_jailbreak &&
-    typeof filterResults.pi_and_jailbreak === "object"
-      ? (
-          filterResults.pi_and_jailbreak as {
-            piAndJailbreakFilterResult?: {
-              matchState?: string;
-              confidenceLevel?: string;
-              executionState?: string;
-              messageItems?: Array<{ message: string }>;
-            };
-          }
-        ).piAndJailbreakFilterResult
-      : undefined;
+  const piAndJailbreakResult = piAndJailbreakFilterResultSchema.safeParse(
+    filterResults.pi_and_jailbreak?.piAndJailbreakFilterResult,
+  ).data;
   if (piAndJailbreakResult?.matchState === "MATCH_FOUND") {
     findings.push({
       category: mapPiAndJailbreakMessagesToCategory(
@@ -162,25 +154,10 @@ function extractFindings(
     });
   }
 
-  const sdpFindings =
-    filterResults.sdp && typeof filterResults.sdp === "object"
-      ? (
-          filterResults.sdp as {
-            sdpFilterResult?: {
-              inspectResult?: {
-                findings?: Array<{
-                  infoType: string;
-                  likelihood?: string;
-                  location?: {
-                    codepointRange?: { start?: string; end?: string };
-                  };
-                }>;
-              };
-            };
-          }
-        ).sdpFilterResult?.inspectResult?.findings
-      : undefined;
-  for (const finding of sdpFindings ?? []) {
+  const sdpInspectResult = sdpInspectResultSchema.safeParse(
+    filterResults.sdp?.sdpFilterResult?.inspectResult,
+  ).data;
+  for (const finding of sdpInspectResult?.findings ?? []) {
     const codepointRange = finding.location?.codepointRange;
     const start = parseOffset(codepointRange?.start);
     const end = parseOffset(codepointRange?.end);
@@ -204,21 +181,11 @@ function extractFindings(
     });
   }
 
-  const maliciousUris =
-    filterResults.malicious_uris &&
-    typeof filterResults.malicious_uris === "object"
-      ? (
-          filterResults.malicious_uris as {
-            maliciousUriFilterResult?: {
-              maliciousUriMatchedItems?: Array<{
-                uri: string;
-                locations?: Array<{ start?: string; end?: string }>;
-              }>;
-            };
-          }
-        ).maliciousUriFilterResult?.maliciousUriMatchedItems
-      : undefined;
-  for (const maliciousUri of maliciousUris ?? []) {
+  const maliciousUriFilterResult = maliciousUriFilterResultSchema.safeParse(
+    filterResults.malicious_uris?.maliciousUriFilterResult,
+  ).data;
+  for (const maliciousUri of maliciousUriFilterResult?.maliciousUriMatchedItems ??
+    []) {
     const location = maliciousUri.locations?.[0];
     findings.push({
       category: "malicious_code",
