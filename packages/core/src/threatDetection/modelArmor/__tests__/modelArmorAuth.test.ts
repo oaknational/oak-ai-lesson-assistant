@@ -1,3 +1,7 @@
+// cspell:ignore ARMOR ModelArmor
+import type { GoogleAuth } from "google-auth-library";
+
+import type { WorkloadIdentityAccessTokenProviderConfig } from "../ModelArmorClient";
 import { createModelArmorAccessTokenProvider } from "../modelArmorAuth";
 
 describe("createModelArmorAccessTokenProvider", () => {
@@ -6,6 +10,9 @@ describe("createModelArmorAccessTokenProvider", () => {
   let mockGoogleAuthCtor: jest.Mock;
   let mockCreateWorkloadIdentityAccessTokenProvider: jest.Mock;
   let mockGetRuntimeSubjectToken: jest.Mock;
+  let workloadIdentityConfig:
+    | WorkloadIdentityAccessTokenProviderConfig
+    | undefined;
 
   beforeEach(() => {
     mockGoogleAuthGetAccessToken = jest
@@ -18,9 +25,12 @@ describe("createModelArmorAccessTokenProvider", () => {
       config,
       getClient: mockGoogleAuthGetClient,
     }));
-    mockCreateWorkloadIdentityAccessTokenProvider = jest.fn();
-    mockCreateWorkloadIdentityAccessTokenProvider.mockReturnValue(async () =>
-      Promise.resolve("wif-token"),
+    workloadIdentityConfig = undefined;
+    mockCreateWorkloadIdentityAccessTokenProvider = jest.fn().mockImplementation(
+      (config: WorkloadIdentityAccessTokenProviderConfig) => {
+        workloadIdentityConfig = config;
+        return async () => Promise.resolve("wif-token");
+      },
     );
     mockGetRuntimeSubjectToken = jest.fn().mockResolvedValue("runtime-token");
   });
@@ -37,7 +47,7 @@ describe("createModelArmorAccessTokenProvider", () => {
         }),
       },
       {
-        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
+        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof GoogleAuth,
         createWorkloadIdentityAccessTokenProviderFn:
           mockCreateWorkloadIdentityAccessTokenProvider,
         getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
@@ -65,7 +75,7 @@ describe("createModelArmorAccessTokenProvider", () => {
         MODEL_ARMOR_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: "provider-id",
       },
       {
-        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
+        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof GoogleAuth,
         createWorkloadIdentityAccessTokenProviderFn:
           mockCreateWorkloadIdentityAccessTokenProvider,
         getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
@@ -95,7 +105,7 @@ describe("createModelArmorAccessTokenProvider", () => {
         MODEL_ARMOR_SUBJECT_TOKEN: "subject-token",
       },
       {
-        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof import("google-auth-library").GoogleAuth,
+        GoogleAuthCtor: mockGoogleAuthCtor as unknown as typeof GoogleAuth,
         createWorkloadIdentityAccessTokenProviderFn:
           mockCreateWorkloadIdentityAccessTokenProvider,
         getRuntimeSubjectTokenFn: mockGetRuntimeSubjectToken,
@@ -103,8 +113,10 @@ describe("createModelArmorAccessTokenProvider", () => {
     );
 
     await expect(getAccessToken()).resolves.toBe("wif-token");
-    const workloadIdentityConfig =
-      mockCreateWorkloadIdentityAccessTokenProvider.mock.calls[0]?.[0];
+    expect(workloadIdentityConfig).toBeDefined();
+    if (!workloadIdentityConfig) {
+      throw new Error("Expected workload identity config to be defined");
+    }
 
     await expect(workloadIdentityConfig.getSubjectToken()).resolves.toBe(
       "subject-token",
