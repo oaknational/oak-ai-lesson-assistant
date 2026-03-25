@@ -38,7 +38,7 @@ export const notifyThreatDetectionAila = inngest.createFunction(
           chatId: args.chatId,
         });
 
-        const getSlackThreadDetectionsData =
+        const slackThreatDetectionSummary =
           formatThreatDetectionResultWithMessages(
             args.threatDetection,
             event.data.messages,
@@ -53,9 +53,9 @@ export const notifyThreatDetectionAila = inngest.createFunction(
             chatLinkBlock(args.chatId),
             createThreatSectionBlock({
               id: args.chatId,
-              userInput: getSlackThreadDetectionsData.userInput,
-              detectedThreats: getSlackThreadDetectionsData.detectedThreats,
-              requestId: getSlackThreadDetectionsData.requestId,
+              userInput: slackThreatDetectionSummary.userInput,
+              detectedThreats: slackThreatDetectionSummary.detectedThreats,
+              requestId: slackThreatDetectionSummary.requestId,
               userAction: args.userAction,
             }),
             actionsBlock({

@@ -42,7 +42,7 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
           },
         );
 
-        const getSlackThreadDetectionsData =
+        const slackThreatDetectionSummary =
           formatThreatDetectionResultWithMessages(
             args.threatDetection,
             event.data.messages,
@@ -59,9 +59,9 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
             userIdBlock(event.user.id),
             createThreatSectionBlock({
               id: args.id,
-              userInput: getSlackThreadDetectionsData.userInput,
-              detectedThreats: getSlackThreadDetectionsData.detectedThreats,
-              requestId: getSlackThreadDetectionsData.requestId,
+              userInput: slackThreatDetectionSummary.userInput,
+              detectedThreats: slackThreatDetectionSummary.detectedThreats,
+              requestId: slackThreatDetectionSummary.requestId,
               userAction: args.userAction,
             }),
             actionsBlock({

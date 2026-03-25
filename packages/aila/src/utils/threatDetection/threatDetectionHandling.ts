@@ -17,7 +17,7 @@ import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 const log = aiLogger("aila:threat");
 
-function buildFallbackThreatDetection(
+function getThreatDetectionOrDefault(
   error: AilaThreatDetectionError,
 ): ThreatDetectionResult {
   if (error.threatDetection) {
@@ -84,7 +84,7 @@ export async function handleThreatDetectionError(
       chatId,
     });
 
-    const threatDetection = buildFallbackThreatDetection(error);
+    const threatDetection = getThreatDetectionOrDefault(error);
 
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
