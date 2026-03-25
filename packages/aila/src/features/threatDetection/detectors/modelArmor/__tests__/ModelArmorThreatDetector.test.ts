@@ -1,4 +1,3 @@
-// cspell:ignore ARMOR ModelArmor armor
 import type * as ModelArmorModule from "@oakai/core/src/threatDetection/modelArmor";
 
 import { ModelArmorThreatDetector } from "../ModelArmorThreatDetector";

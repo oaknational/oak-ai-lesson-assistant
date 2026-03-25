@@ -1,4 +1,3 @@
-// cspell:ignore ARMOR ModelArmor
 import type { GoogleAuth } from "google-auth-library";
 
 import type { WorkloadIdentityAccessTokenProviderConfig } from "../ModelArmorClient";
