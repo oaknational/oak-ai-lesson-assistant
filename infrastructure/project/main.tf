@@ -26,6 +26,5 @@ module "vercel" {
   production_branch                = "production"
   protection_bypass_for_automation = true
 
-  # TODO: Add ["labs.thenational.academy"] after migrating from old Vercel project
-  domains = []
+  domains = ["labs.thenational.academy"]
 }
