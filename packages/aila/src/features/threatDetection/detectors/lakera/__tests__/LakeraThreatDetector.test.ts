@@ -5,6 +5,17 @@ import { LakeraThreatDetector } from "../LakeraThreatDetector";
 describe("LakeraThreatDetector", () => {
   let detector: LakeraThreatDetector;
   let fetchSpy: jest.SpyInstance;
+  const originalLakeraEnv = {
+    apiKey: process.env.LAKERA_GUARD_API_KEY,
+    projectId: process.env.LAKERA_GUARD_PROJECT_ID,
+    url: process.env.LAKERA_GUARD_URL,
+  };
+
+  afterAll(() => {
+    process.env.LAKERA_GUARD_API_KEY = originalLakeraEnv.apiKey;
+    process.env.LAKERA_GUARD_PROJECT_ID = originalLakeraEnv.projectId;
+    process.env.LAKERA_GUARD_URL = originalLakeraEnv.url;
+  });
 
   beforeEach(() => {
     process.env.LAKERA_GUARD_API_KEY = "test-api-key";

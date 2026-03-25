@@ -20,20 +20,41 @@ jest.mock("@oakai/core/src/threatDetection/modelArmor", () => {
   };
 });
 
+function setModelArmorTestEnv() {
+  process.env.MODEL_ARMOR_AUTH_MODE = "service_account";
+  process.env.MODEL_ARMOR_PROJECT_ID = "test-project";
+  process.env.MODEL_ARMOR_LOCATION = "europe-west4";
+  process.env.MODEL_ARMOR_TEMPLATE_ID = "template-1";
+  process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON = JSON.stringify({
+    client_email: "svc@example.iam.gserviceaccount.com",
+    private_key:
+      "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
+    type: "service_account",
+  });
+}
+
 describe("ModelArmorThreatDetector", () => {
   let detector: ModelArmorThreatDetector;
+  const originalModelArmorEnv = {
+    authMode: process.env.MODEL_ARMOR_AUTH_MODE,
+    projectId: process.env.MODEL_ARMOR_PROJECT_ID,
+    location: process.env.MODEL_ARMOR_LOCATION,
+    templateId: process.env.MODEL_ARMOR_TEMPLATE_ID,
+    serviceAccountCredentialsJson:
+      process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON,
+  };
+
+  afterAll(() => {
+    process.env.MODEL_ARMOR_AUTH_MODE = originalModelArmorEnv.authMode;
+    process.env.MODEL_ARMOR_PROJECT_ID = originalModelArmorEnv.projectId;
+    process.env.MODEL_ARMOR_LOCATION = originalModelArmorEnv.location;
+    process.env.MODEL_ARMOR_TEMPLATE_ID = originalModelArmorEnv.templateId;
+    process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON =
+      originalModelArmorEnv.serviceAccountCredentialsJson;
+  });
 
   beforeEach(() => {
-    process.env.MODEL_ARMOR_AUTH_MODE = "service_account";
-    process.env.MODEL_ARMOR_PROJECT_ID = "test-project";
-    process.env.MODEL_ARMOR_LOCATION = "europe-west4";
-    process.env.MODEL_ARMOR_TEMPLATE_ID = "template-1";
-    process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON = JSON.stringify({
-      client_email: "svc@example.iam.gserviceaccount.com",
-      private_key:
-        "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
-      type: "service_account",
-    });
+    setModelArmorTestEnv();
     mockSanitizeUserPrompt.mockReset();
     detector = new ModelArmorThreatDetector();
     (
