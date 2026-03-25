@@ -1,76 +1,9 @@
+import { modelArmorSanitizationResponseSchema } from "./schema";
+import type { ModelArmorSanitizationResponse } from "./schema";
+
 const CLOUD_PLATFORM_SCOPE = "https://www.googleapis.com/auth/cloud-platform";
 const DEFAULT_LOCATION = "europe-west1";
-
-interface RangeInfo {
-  start?: string;
-  end?: string;
-}
-
-interface MessageItem {
-  messageType?: string;
-  message: string;
-}
-
-interface SdpFinding {
-  infoType: string;
-  likelihood?: string;
-  location?: {
-    byteRange?: RangeInfo;
-    codepointRange?: RangeInfo;
-  };
-}
-
-export interface ModelArmorSanitizationResponse {
-  sanitizationResult: {
-    filterMatchState: string;
-    invocationResult: string;
-    filterResults?: Record<string, unknown> & {
-      csam?: {
-        csamFilterFilterResult?: {
-          executionState?: string;
-          matchState?: string;
-        };
-      };
-      pi_and_jailbreak?: {
-        piAndJailbreakFilterResult?: {
-          executionState?: string;
-          matchState?: string;
-          confidenceLevel?: string;
-          messageItems?: MessageItem[];
-        };
-      };
-      rai?: {
-        raiFilterResult?: {
-          executionState?: string;
-          matchState?: string;
-        };
-      };
-      sdp?: {
-        sdpFilterResult?: {
-          inspectResult?: {
-            executionState?: string;
-            messageItems?: MessageItem[];
-            matchState?: string;
-            findings?: SdpFinding[];
-            findingsTruncated?: boolean;
-          };
-        };
-      };
-      malicious_uris?: {
-        maliciousUriFilterResult?: {
-          executionState?: string;
-          messageItems?: MessageItem[];
-          matchState?: string;
-          maliciousUriMatchedItems?: Array<{
-            uri: string;
-            locations?: RangeInfo[];
-          }>;
-        };
-      };
-    };
-    sanitizationMetadata?: Record<string, unknown>;
-  };
-}
+export type { ModelArmorSanitizationResponse } from "./schema";
 
 export interface WorkloadIdentityAccessTokenProviderConfig {
   getSubjectToken: () => Promise<string>;
@@ -150,7 +83,7 @@ export class ModelArmorClient {
       );
     }
 
-    return responseBody as ModelArmorSanitizationResponse;
+    return modelArmorSanitizationResponseSchema.parse(responseBody);
   }
 
   private buildUrl(pathSuffix: string) {

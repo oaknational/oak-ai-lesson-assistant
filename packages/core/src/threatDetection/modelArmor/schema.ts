@@ -12,21 +12,21 @@ export const modelArmorRequestSchema = z.object({
   }),
 });
 
-const rangeInfoSchema = z
+export const rangeInfoSchema = z
   .object({
     start: z.string().optional(),
     end: z.string().optional(),
   })
   .passthrough();
 
-const messageItemSchema = z
+export const messageItemSchema = z
   .object({
     messageType: z.string().optional(),
     message: z.string(),
   })
   .passthrough();
 
-const piAndJailbreakFilterResultSchema = z
+export const piAndJailbreakFilterResultSchema = z
   .object({
     executionState: z.string().optional(),
     messageItems: z.array(messageItemSchema).optional(),
@@ -35,7 +35,7 @@ const piAndJailbreakFilterResultSchema = z
   })
   .passthrough();
 
-const sdpFindingSchema = z
+export const sdpFindingSchema = z
   .object({
     infoType: z.string(),
     likelihood: z.string().optional(),
@@ -49,7 +49,7 @@ const sdpFindingSchema = z
   })
   .passthrough();
 
-const sdpInspectResultSchema = z
+export const sdpInspectResultSchema = z
   .object({
     executionState: z.string().optional(),
     messageItems: z.array(messageItemSchema).optional(),
@@ -59,122 +59,95 @@ const sdpInspectResultSchema = z
   })
   .passthrough();
 
-const sdpFilterResultSchema = z
+export const sdpFilterResultSchema = z
   .object({
     inspectResult: sdpInspectResultSchema.optional(),
   })
   .passthrough();
 
-const maliciousUriFilterResultSchema = z
+export const maliciousUriMatchedItemSchema = z
+  .object({
+    uri: z.string(),
+    locations: z.array(rangeInfoSchema).optional(),
+  })
+  .passthrough();
+
+export const maliciousUriFilterResultSchema = z
   .object({
     executionState: z.string().optional(),
     messageItems: z.array(messageItemSchema).optional(),
     matchState: z.string().optional(),
-    maliciousUriMatchedItems: z
-      .array(
-        z
-          .object({
-            uri: z.string(),
-            locations: z.array(rangeInfoSchema).optional(),
-          })
-          .passthrough(),
-      )
-      .optional(),
+    maliciousUriMatchedItems: z.array(maliciousUriMatchedItemSchema).optional(),
   })
   .passthrough();
 
-export const modelArmorFilterResultSchema = z
+export const csamFilterResultSchema = z
   .object({
-    piAndJailbreakFilterResult: piAndJailbreakFilterResultSchema.optional(),
-    sdpFilterResult: sdpFilterResultSchema.optional(),
-    maliciousUriFilterResult: maliciousUriFilterResultSchema.optional(),
+    executionState: z.string().optional(),
+    matchState: z.string().optional(),
   })
   .passthrough();
 
-const rawFilterResultsSchema = z.union([
-  z.record(modelArmorFilterResultSchema),
-  z.array(modelArmorFilterResultSchema),
-]);
-
-const rawSanitizationResultSchema = z
+export const raiFilterResultSchema = z
   .object({
-    filterMatchState: z.string(),
-    filterResults: rawFilterResultsSchema.optional(),
-    invocationResult: z.string().optional(),
-    sanitizationMetadata: z
+    executionState: z.string().optional(),
+    matchState: z.string().optional(),
+  })
+  .passthrough();
+
+export const modelArmorFilterResultsSchema = z
+  .object({
+    csam: z
       .object({
-        errorCode: z.string().optional(),
-        errorMessage: z.string().optional(),
-        ignorePartialInvocationFailures: z.boolean().optional(),
+        csamFilterFilterResult: csamFilterResultSchema.optional(),
+      })
+      .passthrough()
+      .optional(),
+    pi_and_jailbreak: z
+      .object({
+        piAndJailbreakFilterResult: piAndJailbreakFilterResultSchema.optional(),
+      })
+      .passthrough()
+      .optional(),
+    rai: z
+      .object({
+        raiFilterResult: raiFilterResultSchema.optional(),
+      })
+      .passthrough()
+      .optional(),
+    sdp: z
+      .object({
+        sdpFilterResult: sdpFilterResultSchema.optional(),
+      })
+      .passthrough()
+      .optional(),
+    malicious_uris: z
+      .object({
+        maliciousUriFilterResult: maliciousUriFilterResultSchema.optional(),
       })
       .passthrough()
       .optional(),
   })
-  .passthrough();
+  .catchall(z.unknown());
 
-export const modelArmorSanitizeUserPromptResponseSchema = z
+export const modelArmorSanitizationResultSchema = z
   .object({
-    sanitizationResult: rawSanitizationResultSchema,
+    filterMatchState: z.string(),
+    invocationResult: z.string().optional(),
+    filterResults: modelArmorFilterResultsSchema.optional(),
+    sanitizationMetadata: z.record(z.unknown()).optional(),
   })
   .passthrough();
 
-export type ModelArmorFilterResult = z.infer<
-  typeof modelArmorFilterResultSchema
+export const modelArmorSanitizationResponseSchema = z
+  .object({
+    sanitizationResult: modelArmorSanitizationResultSchema,
+  })
+  .passthrough();
+
+export type RangeInfo = z.infer<typeof rangeInfoSchema>;
+export type MessageItem = z.infer<typeof messageItemSchema>;
+export type SdpFinding = z.infer<typeof sdpFindingSchema>;
+export type ModelArmorSanitizationResponse = z.infer<
+  typeof modelArmorSanitizationResponseSchema
 >;
-export type ModelArmorSanitizeUserPromptApiResponse = z.infer<
-  typeof modelArmorSanitizeUserPromptResponseSchema
->;
-
-export type ModelArmorSanitizationResult = Omit<
-  ModelArmorSanitizeUserPromptApiResponse["sanitizationResult"],
-  "filterResults"
-> & {
-  filterResults: Record<string, ModelArmorFilterResult>;
-};
-
-export type ModelArmorSanitizeUserPromptResponse = {
-  requestId?: string;
-  sanitizationResult: ModelArmorSanitizationResult;
-  rawResponse: ModelArmorSanitizeUserPromptApiResponse;
-};
-
-function normalizeFilterResultKey(key: string): string {
-  switch (key) {
-    case "pi_and_jailbreak":
-      return "piAndJailbreak";
-    case "malicious_uris":
-      return "maliciousUri";
-    default:
-      return key;
-  }
-}
-
-export function normalizeModelArmorFilterResults(
-  filterResults: ModelArmorSanitizeUserPromptApiResponse["sanitizationResult"]["filterResults"],
-): Record<string, ModelArmorFilterResult> {
-  if (!filterResults) return {};
-
-  if (!Array.isArray(filterResults)) {
-    return Object.entries(filterResults).reduce<
-      Record<string, ModelArmorFilterResult>
-    >((results, [key, value]) => {
-      results[normalizeFilterResultKey(key)] = value;
-      return results;
-    }, {});
-  }
-
-  return filterResults.reduce<Record<string, ModelArmorFilterResult>>(
-    (results, filterResult, index) => {
-      const key =
-        Object.entries(filterResult)
-          .find(([, value]) => value !== undefined)?.[0]
-          ?.replace(/FilterResult$/u, "")
-          ?.replace(/^([A-Z])/u, (match) => match.toLowerCase()) ??
-        `filter_${index}`;
-
-      results[normalizeFilterResultKey(key)] = filterResult;
-      return results;
-    },
-    {},
-  );
-}
