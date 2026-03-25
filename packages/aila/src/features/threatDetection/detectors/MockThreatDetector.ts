@@ -1,5 +1,6 @@
 import {
   AilaThreatDetector,
+  type ThreatDetectionMessage,
   type ThreatDetectionResult,
 } from "./AilaThreatDetector";
 
@@ -10,16 +11,14 @@ export class MockThreatDetector extends AilaThreatDetector {
     this._response = response;
   }
 
-  async authenticate(): Promise<void> {}
-  async detectThreat(): Promise<ThreatDetectionResult> {
+  async detectThreat(
+    _content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     return {
       provider: "mock",
       isThreat: this._response,
       message: "Mocked response",
       findings: [],
     };
-  }
-  async isThreatError(): Promise<boolean> {
-    return Promise.resolve(false);
   }
 }

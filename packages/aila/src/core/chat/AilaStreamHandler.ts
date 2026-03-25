@@ -9,6 +9,7 @@ import {
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
+import type { ThreatDetectionMessage } from "../../features/threatDetection/detectors/AilaThreatDetector";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
@@ -56,14 +57,16 @@ export class AilaStreamHandler {
       content: string;
     }[],
   ) {
-    const messagesToCheck = messages ?? this._chat.messages;
+    const messagesToCheck = (messages ?? this._chat.messages).filter(
+      (message): message is ThreatDetectionMessage => message.role !== "data",
+    );
     log.info("Starting threat check");
     if (!this._chat.aila.threatDetection?.detectors) {
       log.info("No threat detectors configured");
       return;
     }
 
-    const lastMessage = messagesToCheck[this._chat.messages.length - 1];
+    const lastMessage = messagesToCheck[messagesToCheck.length - 1];
     if (!lastMessage) {
       log.info("No messages to check for threats");
       return;
@@ -362,7 +365,7 @@ export class AilaStreamHandler {
 
       const detectors = this._chat.aila.threatDetection?.detectors ?? [];
       for (const detector of detectors) {
-        if (await detector.isThreatError(error)) {
+        if (detector.isThreatError(error)) {
           throw new AilaThreatDetectionError(
             this._chat.userId ?? "unknown",
             "Threat detected",

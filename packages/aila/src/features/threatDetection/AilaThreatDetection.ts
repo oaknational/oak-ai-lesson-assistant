@@ -1,6 +1,7 @@
 import type { AilaThreatDetectionFeature } from "../types";
 import type {
   AilaThreatDetector,
+  ThreatDetectionMessage,
   ThreatDetectionResult,
   ThreatSeverity,
 } from "./detectors/AilaThreatDetector";
@@ -16,7 +17,9 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
     return this._detectors;
   }
 
-  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
+  async detectThreat(
+    content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     const results = await Promise.all(
       this.detectors.map((detector) => detector.detectThreat(content)),
     );
@@ -49,9 +52,9 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
     }, threatResults[0]!);
   }
 
-  async isThreatError(error: unknown): Promise<boolean> {
-    const results = await Promise.all(
-      this.detectors.map((detector) => detector.isThreatError(error)),
+  isThreatError(error: unknown): boolean {
+    const results = this.detectors.map((detector) =>
+      detector.isThreatError(error),
     );
     return results.some((result) => result);
   }

@@ -1,5 +1,6 @@
 import type {
   ThreatCategory,
+  ThreatDetectionMessage,
   ThreatDetectionResult,
   ThreatSeverity,
 } from "../detectors/AilaThreatDetector";
@@ -56,14 +57,10 @@ export class BasicThreatDetector extends AilaThreatDetector {
     },
   ];
 
-  protected async authenticate(): Promise<void> {
-    // No authentication needed for basic detector
-    return Promise.resolve();
-  }
-
-  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
-    const stringContent =
-      typeof content === "string" ? content : JSON.stringify(content);
+  async detectThreat(
+    content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
+    const stringContent = content.map((message) => message.content).join("\n");
 
     const detectedThreats = this.patterns
       .map((pattern) => ({
@@ -138,10 +135,5 @@ export class BasicThreatDetector extends AilaThreatDetector {
         confidence: 1.0,
       },
     };
-  }
-
-  // Not implemented
-  async isThreatError(): Promise<boolean> {
-    return Promise.resolve(false);
   }
 }

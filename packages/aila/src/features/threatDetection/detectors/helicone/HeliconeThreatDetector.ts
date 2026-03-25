@@ -1,12 +1,13 @@
-import type { ThreatDetectionResult } from "../AilaThreatDetector";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "../AilaThreatDetector";
 import { AilaThreatDetector } from "../AilaThreatDetector";
 
 export class HeliconeThreatDetector extends AilaThreatDetector {
-  protected async authenticate(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  async detectThreat(): Promise<ThreatDetectionResult> {
+  async detectThreat(
+    _content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     return {
       provider: "helicone",
       isThreat: false,
@@ -18,11 +19,11 @@ export class HeliconeThreatDetector extends AilaThreatDetector {
     };
   }
 
-  async isThreatError(error: unknown): Promise<boolean> {
+  isThreatError(error: unknown): boolean {
     const isIt: boolean =
       error instanceof Error &&
       "code" in error &&
       error.code === "PROMPT_THREAT_DETECTED";
-    return Promise.resolve(isIt);
+    return isIt;
   }
 }

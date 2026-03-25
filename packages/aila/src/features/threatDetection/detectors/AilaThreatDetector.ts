@@ -1,9 +1,11 @@
 import {
   type ThreatCategory,
+  type ThreatDetectionMessage,
   type ThreatDetectionResult,
   type ThreatFinding,
   type ThreatSeverity,
   threatCategorySchema,
+  threatDetectionMessageSchema,
   threatDetectionResultSchema,
   threatFindingSchema,
   threatSeveritySchema,
@@ -11,9 +13,11 @@ import {
 
 export {
   threatFindingSchema,
+  threatDetectionMessageSchema,
   threatDetectionResultSchema,
   threatCategorySchema,
   threatSeveritySchema,
+  type ThreatDetectionMessage,
   type ThreatFinding,
   type ThreatDetectionResult,
   type ThreatCategory,
@@ -28,11 +32,13 @@ export abstract class AilaThreatDetector {
     "critical",
   ];
 
-  protected abstract authenticate(): Promise<void>;
+  abstract detectThreat(
+    content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult>;
 
-  abstract detectThreat(content: unknown): Promise<ThreatDetectionResult>;
-
-  abstract isThreatError(error: unknown): Promise<boolean>;
+  isThreatError(_error: unknown): boolean {
+    return false;
+  }
 
   protected compareSeverity(a: ThreatSeverity, b: ThreatSeverity): number {
     return this.severityOrder.indexOf(a) - this.severityOrder.indexOf(b);
