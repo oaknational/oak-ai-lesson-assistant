@@ -45,7 +45,8 @@ function buildFallbackThreatDetection(
               detected: true,
               snippet: parsedThreatData.data?.details?.detectedElements?.[0],
               metadata: {
-                detectedElements: parsedThreatData.data?.details?.detectedElements,
+                detectedElements:
+                  parsedThreatData.data?.details?.detectedElements,
               },
             },
           ],

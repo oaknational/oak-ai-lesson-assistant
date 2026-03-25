@@ -3,8 +3,8 @@ import { WebClient } from "@slack/web-api";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
 import type {
-  ThreatDetectionResult,
   ThreatDetectionMessage,
+  ThreatDetectionResult,
 } from "../threatDetection/types";
 import { generateFriendlyId } from "./friendlyId";
 

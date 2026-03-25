@@ -1,11 +1,11 @@
 import {
-  threatFindingSchema,
-  threatDetectionResultSchema,
-  threatCategorySchema,
-  type ThreatFinding,
-  type ThreatDetectionResult,
   type ThreatCategory,
+  type ThreatDetectionResult,
+  type ThreatFinding,
   type ThreatSeverity,
+  threatCategorySchema,
+  threatDetectionResultSchema,
+  threatFindingSchema,
   threatSeveritySchema,
 } from "@oakai/core/src/threatDetection/types";
 

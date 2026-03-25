@@ -1,6 +1,5 @@
-import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-
 import { inngest } from "@oakai/core/src/inngest";
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 
 import { AilaThreatDetectionError } from "../../../features/threatDetection/types";
 import { handleThreatDetectionError } from "../threatDetectionHandling";

@@ -2,6 +2,7 @@ import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
+
 import { performLakeraThreatCheck } from "./lakeraThreatCheck";
 import { performModelArmorThreatCheck } from "./modelArmorThreatCheck";
 

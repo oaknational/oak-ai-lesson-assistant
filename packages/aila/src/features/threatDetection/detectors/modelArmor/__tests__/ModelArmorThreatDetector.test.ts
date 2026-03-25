@@ -6,10 +6,9 @@ import { ModelArmorThreatDetector } from "../ModelArmorThreatDetector";
 const mockSanitizeUserPrompt = jest.fn();
 
 jest.mock("@oakai/core/src/threatDetection/modelArmor", () => {
-  const actualModelArmor =
-    jest.requireActual<typeof ModelArmorModule>(
-      "@oakai/core/src/threatDetection/modelArmor",
-    );
+  const actualModelArmor = jest.requireActual<typeof ModelArmorModule>(
+    "@oakai/core/src/threatDetection/modelArmor",
+  );
 
   return {
     ...actualModelArmor,
@@ -32,7 +31,8 @@ describe("ModelArmorThreatDetector", () => {
     process.env.MODEL_ARMOR_TEMPLATE_ID = "template-1";
     process.env.MODEL_ARMOR_SERVICE_ACCOUNT_CREDENTIALS_JSON = JSON.stringify({
       client_email: "svc@example.iam.gserviceaccount.com",
-      private_key: "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
+      private_key:
+        "-----BEGIN PRIVATE KEY-----\nabc\n-----END PRIVATE KEY-----\n",
       type: "service_account",
     });
     mockSanitizeUserPrompt.mockReset();

@@ -42,7 +42,9 @@ function matchThreatCategoryFromKeywords(
   return matchingRule?.category ?? fallbackCategory;
 }
 
-function mapPiAndJailbreakMessagesToCategory(messages: string[]): ThreatCategory {
+function mapPiAndJailbreakMessagesToCategory(
+  messages: string[],
+): ThreatCategory {
   return matchThreatCategoryFromKeywords(
     messages.join(" ").toLowerCase(),
     PI_AND_JAILBREAK_CATEGORY_RULES,
@@ -99,7 +101,9 @@ function parseOffset(value?: string): number | undefined {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-function getHighestThreat(findings: ThreatFinding[]): ThreatFinding | undefined {
+function getHighestThreat(
+  findings: ThreatFinding[],
+): ThreatFinding | undefined {
   const severityOrder = ["low", "medium", "high", "critical"];
 
   return findings.reduce<ThreatFinding | undefined>((highest, current) => {

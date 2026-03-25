@@ -118,7 +118,9 @@ export const modelArmorSanitizeUserPromptResponseSchema = z
   })
   .passthrough();
 
-export type ModelArmorFilterResult = z.infer<typeof modelArmorFilterResultSchema>;
+export type ModelArmorFilterResult = z.infer<
+  typeof modelArmorFilterResultSchema
+>;
 export type ModelArmorSanitizeUserPromptApiResponse = z.infer<
   typeof modelArmorSanitizeUserPromptResponseSchema
 >;
@@ -153,19 +155,19 @@ export function normalizeModelArmorFilterResults(
   if (!filterResults) return {};
 
   if (!Array.isArray(filterResults)) {
-    return Object.entries(filterResults).reduce<Record<string, ModelArmorFilterResult>>(
-      (results, [key, value]) => {
-        results[normalizeFilterResultKey(key)] = value;
-        return results;
-      },
-      {},
-    );
+    return Object.entries(filterResults).reduce<
+      Record<string, ModelArmorFilterResult>
+    >((results, [key, value]) => {
+      results[normalizeFilterResultKey(key)] = value;
+      return results;
+    }, {});
   }
 
   return filterResults.reduce<Record<string, ModelArmorFilterResult>>(
     (results, filterResult, index) => {
       const key =
-        Object.entries(filterResult).find(([, value]) => value !== undefined)?.[0]
+        Object.entries(filterResult)
+          .find(([, value]) => value !== undefined)?.[0]
           ?.replace(/FilterResult$/u, "")
           ?.replace(/^([A-Z])/u, (match) => match.toLowerCase()) ??
         `filter_${index}`;

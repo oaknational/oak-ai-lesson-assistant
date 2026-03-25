@@ -1,8 +1,8 @@
 import z from "zod";
 
 import {
-  threatDetectionResultSchema,
   threatDetectionMessageSchema,
+  threatDetectionResultSchema,
 } from "../../threatDetection/types";
 
 export const notifyThreatDetectionAilaSchema = {

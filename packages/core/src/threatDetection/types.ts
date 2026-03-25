@@ -26,7 +26,9 @@ export const threatDetectionMessageSchema = z.object({
   role: z.enum(["system", "user", "assistant"]),
   content: z.string(),
 });
-export type ThreatDetectionMessage = z.infer<typeof threatDetectionMessageSchema>;
+export type ThreatDetectionMessage = z.infer<
+  typeof threatDetectionMessageSchema
+>;
 
 export const threatFindingSchema = z.object({
   category: threatCategorySchema,

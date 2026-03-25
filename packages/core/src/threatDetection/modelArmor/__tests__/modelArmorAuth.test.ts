@@ -26,12 +26,14 @@ describe("createModelArmorAccessTokenProvider", () => {
       getClient: mockGoogleAuthGetClient,
     }));
     workloadIdentityConfig = undefined;
-    mockCreateWorkloadIdentityAccessTokenProvider = jest.fn().mockImplementation(
-      (config: WorkloadIdentityAccessTokenProviderConfig) => {
-        workloadIdentityConfig = config;
-        return async () => Promise.resolve("wif-token");
-      },
-    );
+    mockCreateWorkloadIdentityAccessTokenProvider = jest
+      .fn()
+      .mockImplementation(
+        (config: WorkloadIdentityAccessTokenProviderConfig) => {
+          workloadIdentityConfig = config;
+          return async () => Promise.resolve("wif-token");
+        },
+      );
     mockGetRuntimeSubjectToken = jest.fn().mockResolvedValue("runtime-token");
   });
 
@@ -61,7 +63,9 @@ describe("createModelArmorAccessTokenProvider", () => {
       }),
       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
     });
-    expect(mockCreateWorkloadIdentityAccessTokenProvider).not.toHaveBeenCalled();
+    expect(
+      mockCreateWorkloadIdentityAccessTokenProvider,
+    ).not.toHaveBeenCalled();
   });
 
   it("uses workload identity auth when configured", async () => {
