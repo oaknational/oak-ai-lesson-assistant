@@ -1,16 +1,26 @@
+// cspell:ignore ARMOR ModelArmor armor
+import type * as ModelArmorModule from "@oakai/core/src/threatDetection/modelArmor";
+
 import { ModelArmorThreatDetector } from "../ModelArmorThreatDetector";
 
 const mockSanitizeUserPrompt = jest.fn();
 
-jest.mock("@oakai/core/src/threatDetection/modelArmor", () => ({
-  ...jest.requireActual("@oakai/core/src/threatDetection/modelArmor"),
-  createModelArmorAccessTokenProvider: jest.fn(() =>
-    jest.fn().mockResolvedValue("test-access-token"),
-  ),
-  ModelArmorClient: jest.fn().mockImplementation(() => ({
-    sanitizeUserPrompt: mockSanitizeUserPrompt,
-  })),
-}));
+jest.mock("@oakai/core/src/threatDetection/modelArmor", () => {
+  const actualModelArmor =
+    jest.requireActual<typeof ModelArmorModule>(
+      "@oakai/core/src/threatDetection/modelArmor",
+    );
+
+  return {
+    ...actualModelArmor,
+    createModelArmorAccessTokenProvider: jest.fn(() =>
+      jest.fn().mockResolvedValue("test-access-token"),
+    ),
+    ModelArmorClient: jest.fn().mockImplementation(() => ({
+      sanitizeUserPrompt: mockSanitizeUserPrompt,
+    })),
+  };
+});
 
 describe("ModelArmorThreatDetector", () => {
   let detector: ModelArmorThreatDetector;
