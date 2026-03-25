@@ -33,6 +33,8 @@ const SDP_INFO_TYPE_CATEGORY_RULES: Array<{
   { keywords: ["sensitive"], category: "rag_exfiltration" },
 ];
 
+const THREAT_SEVERITY_ORDER = ["low", "medium", "high", "critical"];
+
 function matchThreatCategoryFromKeywords(
   value: string,
   rules: Array<{ keywords: string[]; category: ThreatCategory }>,
@@ -104,11 +106,37 @@ function parseOffset(value?: string): number | undefined {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
+function getSnippet(
+  prompt: string,
+  start?: number,
+  end?: number,
+): string | undefined {
+  if (start === undefined || end === undefined) {
+    return undefined;
+  }
+
+  return prompt.slice(start, end);
+}
+
+function createFallbackFinding(
+  data: ModelArmorSanitizationResponse,
+): ThreatFinding {
+  return {
+    category: "other",
+    severity: "high",
+    providerCode: "model_armor_match",
+    detected: true,
+    metadata: {
+      invocationResult: data.sanitizationResult.invocationResult,
+      filterResults: data.sanitizationResult.filterResults,
+      sanitizationMetadata: data.sanitizationResult.sanitizationMetadata,
+    },
+  };
+}
+
 function getHighestThreat(
   findings: ThreatFinding[],
 ): ThreatFinding | undefined {
-  const severityOrder = ["low", "medium", "high", "critical"];
-
   return findings.reduce<ThreatFinding | undefined>((highest, current) => {
     if (!current.detected) {
       return highest;
@@ -118,8 +146,8 @@ function getHighestThreat(
       return current;
     }
 
-    return severityOrder.indexOf(current.severity) >
-      severityOrder.indexOf(highest.severity)
+    return THREAT_SEVERITY_ORDER.indexOf(current.severity) >
+      THREAT_SEVERITY_ORDER.indexOf(highest.severity)
       ? current
       : highest;
   }, undefined);
@@ -136,10 +164,11 @@ function extractFindings(
     filterResults.pi_and_jailbreak?.piAndJailbreakFilterResult,
   ).data;
   if (piAndJailbreakResult?.matchState === "MATCH_FOUND") {
+    const messages =
+      piAndJailbreakResult.messageItems?.map((item) => item.message) ?? [];
+
     findings.push({
-      category: mapPiAndJailbreakMessagesToCategory(
-        piAndJailbreakResult.messageItems?.map((item) => item.message) ?? [],
-      ),
+      category: mapPiAndJailbreakMessagesToCategory(messages),
       severity: "critical",
       providerCode: "pi_and_jailbreak",
       detected: true,
@@ -157,7 +186,8 @@ function extractFindings(
   const sdpInspectResult = sdpInspectResultSchema.safeParse(
     filterResults.sdp?.sdpFilterResult?.inspectResult,
   ).data;
-  for (const finding of sdpInspectResult?.findings ?? []) {
+  const sdpFindings = sdpInspectResult?.findings ?? [];
+  for (const finding of sdpFindings) {
     const codepointRange = finding.location?.codepointRange;
     const start = parseOffset(codepointRange?.start);
     const end = parseOffset(codepointRange?.end);
@@ -167,10 +197,7 @@ function extractFindings(
       severity: "high",
       providerCode: finding.infoType,
       detected: true,
-      snippet:
-        start !== undefined && end !== undefined
-          ? prompt.slice(start, end)
-          : undefined,
+      snippet: getSnippet(prompt, start, end),
       start,
       end,
       confidence: mapSdpLikelihoodToConfidence(finding.likelihood),
@@ -184,8 +211,9 @@ function extractFindings(
   const maliciousUriFilterResult = maliciousUriFilterResultSchema.safeParse(
     filterResults.malicious_uris?.maliciousUriFilterResult,
   ).data;
-  for (const maliciousUri of maliciousUriFilterResult?.maliciousUriMatchedItems ??
-    []) {
+  const maliciousUriMatches =
+    maliciousUriFilterResult?.maliciousUriMatchedItems ?? [];
+  for (const maliciousUri of maliciousUriMatches) {
     const location = maliciousUri.locations?.[0];
     findings.push({
       category: "malicious_code",
@@ -206,17 +234,7 @@ function extractFindings(
     findings.length === 0 &&
     data.sanitizationResult.filterMatchState === "MATCH_FOUND"
   ) {
-    findings.push({
-      category: "other",
-      severity: "high",
-      providerCode: "model_armor_match",
-      detected: true,
-      metadata: {
-        invocationResult: data.sanitizationResult.invocationResult,
-        filterResults: data.sanitizationResult.filterResults,
-        sanitizationMetadata: data.sanitizationResult.sanitizationMetadata,
-      },
-    });
+    findings.push(createFallbackFinding(data));
   }
 
   return findings;

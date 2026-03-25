@@ -207,6 +207,34 @@ function createSlackThreatDetectionSummary(args: {
   };
 }
 
+function getDetectedThreatsSummary(
+  threatDetection: ThreatDetectionResult,
+): SlackThreatDetectionSummary["detectedThreats"] {
+  const detectedFindings = threatDetection.findings.filter(
+    (finding) => finding.detected,
+  );
+  const detectedThreatSummaries = detectedFindings.map((finding) => ({
+    detectorType: finding.category,
+    detectorId: finding.providerCode,
+  }));
+
+  if (detectedThreatSummaries.length > 0) {
+    return detectedThreatSummaries;
+  }
+
+  // Some fallback/synthetic threat results set `isThreat` without structured
+  // findings. Keep a single generic entry so Slack still shows what was flagged.
+  if (threatDetection.isThreat) {
+    return [
+      {
+        detectorType: threatDetection.category ?? "other",
+      },
+    ];
+  }
+
+  return [];
+}
+
 export function formatThreatDetectionResultWithMessages(
   threatDetection: ThreatDetectionResult,
   messages: ThreatDetectionMessage[],
@@ -214,21 +242,7 @@ export function formatThreatDetectionResultWithMessages(
   return createSlackThreatDetectionSummary({
     messages,
     flagged: threatDetection.isThreat,
-    detectedThreats:
-      threatDetection.findings.length > 0
-        ? threatDetection.findings
-            .filter((finding) => finding.detected)
-            .map((finding) => ({
-              detectorType: finding.category,
-              detectorId: finding.providerCode,
-            }))
-        : threatDetection.isThreat
-          ? [
-              {
-                detectorType: threatDetection.category ?? "other",
-              },
-            ]
-          : [],
+    detectedThreats: getDetectedThreatsSummary(threatDetection),
     requestId: threatDetection.requestId,
   });
 }
