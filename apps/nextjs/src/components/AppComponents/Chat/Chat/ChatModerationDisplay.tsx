@@ -33,10 +33,10 @@ export const ChatModerationDisplay: React.FC<ModerationDisplayProps> = ({
   lockingModeration,
   chatId,
 }) => {
+  const router = useRouter();
   if (!lockingModeration) return null;
 
   const safety = getSafetyResult(lockingModeration);
-  const router = useRouter();
 
   const handleClose = () => {
     router.push("/aila");
