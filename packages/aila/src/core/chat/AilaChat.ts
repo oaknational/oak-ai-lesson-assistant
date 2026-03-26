@@ -85,7 +85,7 @@ export class AilaChat implements AilaChatService {
 
     this.quizService = buildQuizService({
       sources: aila.options.quizSources,
-      enrichers: ["imageDescriptions"],
+      enrichers: [],
       composer: "llm",
     });
   }
@@ -160,7 +160,6 @@ export class AilaChat implements AilaChatService {
 
   public async generationFailed(error: unknown) {
     log.info("Marking generation as failed", { error });
-    invariant(this._generation, "Generation not initialised");
     this.aila.errorReporter?.reportError(
       error,
       "Error reading from the OpenAI stream",
@@ -175,9 +174,10 @@ export class AilaChat implements AilaChatService {
       });
       await this.enqueue(errorObject);
     } else if (error instanceof Error) {
+      invariant(this._generation, "Generation not initialised");
       await this.enqueueError({ message: error.message });
     }
-    if (!this._aila.options.useAgenticAila) {
+    if (!this._aila.options.useAgenticAila && this._generation) {
       await this.persistGeneration("FAILED");
       log.info("Generation marked as failed");
     }

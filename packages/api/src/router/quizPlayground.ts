@@ -167,9 +167,7 @@ export const quizPlaygroundRouter = router({
     });
 
     if (!basedOnLesson) {
-      throw new Error(
-        "RAG lesson 'problem-solving-with-circle-theorems' not found - ensure RAG data is loaded",
-      );
+      return EXAMPLE_LESSON_PLANS;
     }
 
     return [...EXAMPLE_LESSON_PLANS, createBasedOnExample(basedOnLesson.id)];
