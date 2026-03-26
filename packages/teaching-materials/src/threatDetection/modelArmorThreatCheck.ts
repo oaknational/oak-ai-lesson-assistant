@@ -18,10 +18,10 @@ interface ModelArmorThreatCheckParams {
   defaultTemplateId?: string;
 }
 
-function buildPrompt(messages: ThreatDetectionMessage[]): string {
-  return messages
-    .map((message) => `${message.role}: ${message.content}`)
-    .join("\n");
+function getPromptToCheck(
+  messages: ThreatDetectionMessage[],
+): string | undefined {
+  return messages.findLast((message) => message.role === "user")?.content;
 }
 
 export async function performModelArmorThreatCheck({
@@ -49,7 +49,17 @@ export async function performModelArmorThreatCheck({
     location,
   });
 
-  const prompt = buildPrompt(messages);
+  const prompt = getPromptToCheck(messages);
+  if (!prompt) {
+    return {
+      provider: "model_armor",
+      isThreat: false,
+      message: "No threats detected",
+      findings: [],
+      details: {},
+    };
+  }
+
   const response = await client.sanitizeUserPrompt(prompt);
 
   log.info("Model Armor threat check completed", {
