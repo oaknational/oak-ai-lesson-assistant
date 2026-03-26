@@ -7,6 +7,7 @@
   "types": "./index.ts",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
+    "db-apply-additions": "for f in prisma/additions/*.sql; do pnpm with-env prisma db execute --stdin < \"$f\"; done",
     "db-dump:prd": "docker exec oak-ai-beta pg_dump $(doppler secrets get -c prd --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required//g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
     "db-dump:stg": "docker exec oak-ai-beta pg_dump $(doppler secrets get -c stg --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required//g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
     "db-dump:stg:homebrew": "pg_dump $(doppler secrets get -c stg --plain DATABASE_ADMIN_URL | sed -e 's/?sslmode=required/?sslcert=./certs/db_stg.pem/g') --no-owner --exclude-table-data public.generations --exclude-table-data public.snippets --exclude-table-data public.downloads",
@@ -33,8 +34,8 @@
     "db-new-migration-create-only": "pnpm with-env prisma migrate dev --create-only --name",
     "db-publish:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_publish.sh",
     "db-publish:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_publish.sh",
-    "db-push": "pnpm with-env prisma db push",
-    "db-push-force": "pnpm with-env prisma db push -- --accept-data-loss",
+    "db-push": "pnpm with-env prisma db push && pnpm db-apply-additions",
+    "db-push-force": "pnpm with-env prisma db push -- --accept-data-loss && pnpm db-apply-additions",
     "db-restore-from:prd": "pnpm run --silent db-dump:prd | docker exec -i oak-ai-beta psql -U oai",
     "db-restore-from:stg": "pnpm run --silent db-dump:stg | docker exec -i oak-ai-beta psql -U oai",
     "db-restore-from:stg:homebrew": "pnpm run --silent db-dump:stg:homebrew | psql -U oai",

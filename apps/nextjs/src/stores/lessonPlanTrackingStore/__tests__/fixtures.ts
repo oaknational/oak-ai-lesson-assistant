@@ -6,7 +6,7 @@ export const messages = {
   user1RomansExample: {
     role: "user",
     content:
-      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+      "Create a lesson plan about the end of Roman Britain for key stage 2 history",
   },
   user1Inappropriate: {
     role: "User",
