@@ -1,5 +1,9 @@
 import invariant from "tiny-invariant";
 
+/**
+ * Lesson Plan
+ */
+
 invariant(
   process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID,
   "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID is required",
@@ -7,6 +11,20 @@ invariant(
 
 export function getDocsTemplateIdLessonPlan() {
   return process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID as string;
+}
+
+/**
+ * Lesson Plan With Content Guidance
+ */
+
+invariant(
+  process.env.GOOGLE_DOCS_LESSON_PLAN_WITH_CONTENT_GUIDANCE_TEMPLATE_ID,
+  "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID is required",
+);
+
+export function getDocsTemplateIdLessonPlanWithContentGuidance() {
+  return process.env
+    .GOOGLE_DOCS_LESSON_PLAN_WITH_CONTENT_GUIDANCE_TEMPLATE_ID as string;
 }
 
 /**
