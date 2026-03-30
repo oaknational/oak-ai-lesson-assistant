@@ -1,27 +1,30 @@
-import type { ThreatDetectionResult } from "../AilaThreatDetector";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
+
 import { AilaThreatDetector } from "../AilaThreatDetector";
 
 export class HeliconeThreatDetector extends AilaThreatDetector {
-  protected async authenticate(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  async detectThreat(): Promise<ThreatDetectionResult> {
-    // Stub implementation since Helicone doesn't have a direct threat detection API
+  detectThreat(
+    _content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     return Promise.resolve({
+      provider: "helicone",
       isThreat: false,
       message: "Helicone threat detection not implemented",
+      findings: [],
       details: {
         confidence: 0,
       },
     });
   }
 
-  async isThreatError(error: unknown): Promise<boolean> {
+  isThreatError(error: unknown): boolean {
     const isIt: boolean =
       error instanceof Error &&
       "code" in error &&
       error.code === "PROMPT_THREAT_DETECTED";
-    return Promise.resolve(isIt);
+    return isIt;
   }
 }

@@ -1,8 +1,10 @@
 import type {
   ThreatCategory,
+  ThreatDetectionMessage,
   ThreatDetectionResult,
   ThreatSeverity,
-} from "../AilaThreatDetector";
+} from "@oakai/core/src/threatDetection/types";
+
 import { AilaThreatDetector } from "../AilaThreatDetector";
 
 type ThreatPattern = {
@@ -56,14 +58,10 @@ export class BasicThreatDetector extends AilaThreatDetector {
     },
   ];
 
-  protected async authenticate(): Promise<void> {
-    // No authentication needed for basic detector
-    return Promise.resolve();
-  }
-
-  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
-    const stringContent =
-      typeof content === "string" ? content : JSON.stringify(content);
+  detectThreat(
+    content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
+    const stringContent = content.map((message) => message.content).join("\n");
 
     const detectedThreats = this.patterns
       .map((pattern) => ({
@@ -73,11 +71,14 @@ export class BasicThreatDetector extends AilaThreatDetector {
       .filter((result) => result.isMatch);
 
     if (detectedThreats.length === 0) {
-      return {
+      return Promise.resolve({
+        provider: "basic",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
+        rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
-      };
+      });
     }
 
     // Get the highest severity threat
@@ -99,26 +100,41 @@ export class BasicThreatDetector extends AilaThreatDetector {
 
     if (!highestThreat) {
       return Promise.resolve({
+        provider: "basic",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
+        rawResponse: { matchedPatterns: [] },
         details: { confidence: 1.0 },
       });
     }
 
     return Promise.resolve({
+      provider: "basic",
       isThreat: true,
       severity: highestThreat.pattern.severity,
       category: highestThreat.pattern.category,
       message: highestThreat.pattern.message,
+      findings: detectedThreats.map((threat) => ({
+        category: threat.pattern.category,
+        severity: threat.pattern.severity,
+        providerCode: threat.pattern.pattern.source,
+        detected: true,
+        snippet: threat.pattern.message,
+        confidence: 1,
+      })),
+      rawResponse: {
+        matchedPatterns: detectedThreats.map((threat) => ({
+          pattern: threat.pattern.pattern.source,
+          category: threat.pattern.category,
+          severity: threat.pattern.severity,
+          message: threat.pattern.message,
+        })),
+      },
       details: {
         detectedElements: detectedThreats.map((t) => t.pattern.message),
         confidence: 1.0,
       },
     });
-  }
-
-  // Not implemented
-  async isThreatError(): Promise<boolean> {
-    return Promise.resolve(false);
   }
 }

@@ -1,14 +1,13 @@
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import { lakeraGuardResponseSchema } from "@oakai/core/src/threatDetection/lakera";
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 
-import { threatDetectionResultSchema } from "../../features/threatDetection/detectors/AilaThreatDetector";
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
   ActionDocument,
@@ -17,6 +16,31 @@ import type {
 import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 const log = aiLogger("aila:threat");
+
+function getThreatDetectionOrDefault(
+  error: AilaThreatDetectionError,
+): ThreatDetectionResult {
+  if (error.threatDetection) {
+    return error.threatDetection;
+  }
+
+  return {
+    provider: "unknown",
+    isThreat: true,
+    severity: "high",
+    category: "other",
+    message: error.message || "Potential threat detected",
+    rawResponse: undefined,
+    findings: [
+      {
+        category: "other",
+        severity: "high",
+        providerCode: "unknown",
+        detected: true,
+      },
+    ],
+  };
+}
 
 export async function handleThreatDetectionError(
   {
@@ -60,17 +84,7 @@ export async function handleThreatDetectionError(
       chatId,
     });
 
-    const parsedThreatData = threatDetectionResultSchema.safeParse(error.cause);
-    const parsedRawThreatData = lakeraGuardResponseSchema.safeParse(
-      parsedThreatData.data?.rawResponse,
-    );
-
-    if (!parsedRawThreatData.success) {
-      log.warn("Failed to parse Lakera threat detection data, using fallback", {
-        error: parsedRawThreatData.error,
-        rawData: parsedThreatData.data?.rawResponse,
-      });
-    }
+    const threatDetection = getThreatDetectionOrDefault(error);
 
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
@@ -87,9 +101,7 @@ export async function handleThreatDetectionError(
       data: {
         chatId,
         userAction: "CHAT_SESSION",
-        threatDetection: parsedRawThreatData.success
-          ? parsedRawThreatData.data
-          : { flagged: true },
+        threatDetection,
         messages: userMessages,
       },
     };
@@ -99,7 +111,7 @@ export async function handleThreatDetectionError(
       userId,
       chatId,
       messageCount: userMessages.length,
-      threatDataSuccess: parsedRawThreatData.success,
+      threatDataProvider: threatDetection.provider,
     });
 
     await inngest.send(eventPayload);

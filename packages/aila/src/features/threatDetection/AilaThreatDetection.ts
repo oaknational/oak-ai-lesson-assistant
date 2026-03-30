@@ -1,9 +1,11 @@
-import type { AilaThreatDetectionFeature } from "../types";
 import type {
-  AilaThreatDetector,
+  ThreatDetectionMessage,
   ThreatDetectionResult,
   ThreatSeverity,
-} from "./detectors/AilaThreatDetector";
+} from "@oakai/core/src/threatDetection/types";
+
+import type { AilaThreatDetectionFeature } from "../types";
+import type { AilaThreatDetector } from "./detectors/AilaThreatDetector";
 
 export class AilaThreatDetection implements AilaThreatDetectionFeature {
   private readonly _detectors: AilaThreatDetector[];
@@ -16,7 +18,9 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
     return this._detectors;
   }
 
-  async detectThreat(content: unknown): Promise<ThreatDetectionResult> {
+  async detectThreat(
+    content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     const results = await Promise.all(
       this.detectors.map((detector) => detector.detectThreat(content)),
     );
@@ -25,8 +29,10 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
 
     if (threatResults.length === 0) {
       return {
+        provider: "aggregate",
         isThreat: false,
         message: "No threats detected",
+        findings: [],
         details: { confidence: 1.0 },
       };
     }
@@ -47,9 +53,9 @@ export class AilaThreatDetection implements AilaThreatDetectionFeature {
     }, threatResults[0]!);
   }
 
-  async isThreatError(error: unknown): Promise<boolean> {
-    const results = await Promise.all(
-      this.detectors.map((detector) => detector.isThreatError(error)),
+  isThreatError(error: unknown): boolean {
+    const results = this.detectors.map((detector) =>
+      detector.isThreatError(error),
     );
     return results.some((result) => result);
   }
