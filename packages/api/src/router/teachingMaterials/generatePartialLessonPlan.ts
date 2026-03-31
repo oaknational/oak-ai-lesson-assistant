@@ -1,4 +1,7 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import {
+  getMockModerationResult,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -11,7 +14,6 @@ import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDe
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
 import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
-import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("teaching-materials");

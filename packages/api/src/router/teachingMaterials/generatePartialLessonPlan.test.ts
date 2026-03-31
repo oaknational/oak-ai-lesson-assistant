@@ -1,5 +1,6 @@
 import type { LakeraGuardResponse } from "@oakai/core/src/threatDetection/lakera";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type {
   ModerationResult,
   moderationResponseSchema,
@@ -15,7 +16,6 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
-import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { recordSafetyViolation } from "./safetyUtils";
 
 // Mock fixture data
@@ -121,11 +121,16 @@ jest.mock(
   }),
 );
 
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
-  ...jest.requireActual("@oakai/core/src/utils/ailaModeration/helpers"),
-  isToxic: jest.fn(),
-  getMockModerationResult: jest.fn(),
-}));
+jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => {
+  const actual = jest.requireActual(
+    "@oakai/core/src/utils/ailaModeration/helpers",
+  ) as Record<string, unknown>;
+  return {
+    ...actual,
+    isToxic: jest.fn(),
+    getMockModerationResult: jest.fn(),
+  };
+});
 
 jest.mock("./safetyUtils", () => ({
   recordSafetyViolation: jest.fn(),
@@ -148,15 +153,14 @@ const mockAuth: SignedInAuthObject = {
   orgSlug: undefined,
   orgPermissions: undefined,
   __experimental_factorVerificationAge: null,
-  debug: () => ({}),
+  debug: (): Record<string, unknown> => ({}),
   getToken: jest.fn().mockResolvedValue("mock-token"),
   has: jest.fn().mockReturnValue(false),
 } as unknown as SignedInAuthObject;
 
 // Cast the mocked functions
-const mockModerateWithOakService = moderateWithOakService as jest.MockedFunction<
-  typeof moderateWithOakService
->;
+const mockModerateWithOakService =
+  moderateWithOakService as jest.MockedFunction<typeof moderateWithOakService>;
 const mockGeneratePartialLessonPlanObject =
   generatePartialLessonPlanObject as jest.MockedFunction<
     typeof generatePartialLessonPlanObject
