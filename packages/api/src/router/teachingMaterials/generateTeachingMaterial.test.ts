@@ -22,9 +22,8 @@ jest.mock("@oakai/core/src/utils/ailaModeration/oakModerationService", () => ({
 }));
 
 // Cast the mocked functions
-const mockModerateWithOakService = moderateWithOakService as jest.MockedFunction<
-  typeof moderateWithOakService
->;
+const mockModerateWithOakService =
+  moderateWithOakService as jest.MockedFunction<typeof moderateWithOakService>;
 const mockGenerateTeachingMaterialObject =
   generateTeachingMaterialObject as jest.MockedFunction<
     typeof generateTeachingMaterialObject
@@ -264,7 +263,7 @@ describe("generateTeachingMaterial", () => {
   });
 
   it("should use Oak Moderation Service when feature flag is enabled", async () => {
-    process.env.OAK_MODERATION_V1_TEACHING_MATERIALS = "true";
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY = "true";
     process.env.MODERATION_API_URL = "https://moderation.test";
 
     mockModerateWithOakService.mockResolvedValue(mockModerationResult);
@@ -298,7 +297,7 @@ describe("generateTeachingMaterial", () => {
     expect(mockGenerateTeachingMaterialModeration).not.toHaveBeenCalled();
     expect(result.moderation).toEqual(mockModerationResult);
 
-    delete process.env.OAK_MODERATION_V1_TEACHING_MATERIALS;
+    delete process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY;
     delete process.env.MODERATION_API_URL;
   });
 

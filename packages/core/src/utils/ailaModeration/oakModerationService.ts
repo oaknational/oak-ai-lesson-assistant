@@ -1,9 +1,10 @@
-import type { paths } from "../../generated/moderation-api";
-import type { ModerationResult } from "./moderationSchema";
-
 import { aiLogger } from "@oakai/logger";
+
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
+
+import type { paths } from "../../generated/moderation-api";
+import type { ModerationResult } from "./moderationSchema";
 
 const log = aiLogger("moderation");
 

@@ -403,7 +403,7 @@ describe("generatePartialLessonPlan", () => {
   });
 
   it("should use Oak Moderation Service when feature flag is enabled", async () => {
-    process.env.OAK_MODERATION_V1_TEACHING_MATERIALS = "true";
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY = "true";
     process.env.MODERATION_API_URL = "https://moderation.test";
 
     mockModerateWithOakService.mockResolvedValue(mockModerationResult);
@@ -424,7 +424,7 @@ describe("generatePartialLessonPlan", () => {
     expect(mockGenerateTeachingMaterialModeration).not.toHaveBeenCalled();
     expect(result.moderation).toEqual(mockModerationResult);
 
-    delete process.env.OAK_MODERATION_V1_TEACHING_MATERIALS;
+    delete process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY;
     delete process.env.MODERATION_API_URL;
   });
 

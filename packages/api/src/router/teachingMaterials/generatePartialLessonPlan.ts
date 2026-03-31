@@ -69,14 +69,14 @@ export async function generatePartialLessonPlan({
   }
 
   const useOakService =
-    process.env.OAK_MODERATION_V1_TEACHING_MATERIALS === "true";
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY === "true";
 
   let moderation: ModerationResult;
   if (useOakService) {
     const baseUrl = process.env.MODERATION_API_URL;
     if (!baseUrl) {
       throw new Error(
-        "MODERATION_API_URL is required when OAK_MODERATION_V1_TEACHING_MATERIALS is enabled",
+        "MODERATION_API_URL is required when OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY is enabled",
       );
     }
     moderation = await moderateWithOakService(JSON.stringify(lesson), {
