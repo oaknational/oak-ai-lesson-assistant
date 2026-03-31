@@ -11,7 +11,7 @@ import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDe
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
 import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
-import { getMockModerationResult } from "./moderationFixtures";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("teaching-materials");

@@ -15,7 +15,7 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
-import { getMockModerationResult } from "./moderationFixtures";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { recordSafetyViolation } from "./safetyUtils";
 
 // Mock fixture data
@@ -122,10 +122,8 @@ jest.mock(
 );
 
 jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+  ...jest.requireActual("@oakai/core/src/utils/ailaModeration/helpers"),
   isToxic: jest.fn(),
-}));
-
-jest.mock("./moderationFixtures", () => ({
   getMockModerationResult: jest.fn(),
 }));
 
