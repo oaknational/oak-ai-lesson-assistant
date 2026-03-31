@@ -53,7 +53,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const year = useTeachingMaterialsStore(yearSelector);
-  const moderation = useTeachingMaterialsStore((state) => state.moderation);
+
   const error = useTeachingMaterialsStore((state) => state.error);
   const lessonPlan = useTeachingMaterialsStore(
     (state) => state.pageData.lessonPlan,
