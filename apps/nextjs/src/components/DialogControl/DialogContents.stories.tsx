@@ -107,14 +107,6 @@ export const DemoInterstitialLimited: Story = {
   ],
 };
 
-export const TeachingMaterialsModeration: Story = {
-  args: {},
-  parameters: {
-    dialogWindow: "teaching-materials-moderation",
-  },
-  decorators: [TeachingMaterialsStoreDecorator],
-};
-
 export const TeachingMaterialsThreatDetected: Story = {
   args: {},
   parameters: {
@@ -152,14 +144,6 @@ export const TeachingMaterialsRateLimitDemo: Story = {
       </DemoProvider>
     ),
   ],
-};
-
-export const TeachingMaterialsInappropriateContent: Story = {
-  args: {},
-  parameters: {
-    dialogWindow: "teaching-materials-toxic-moderation",
-  },
-  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const TeachingMaterialsStartAgain: Story = {
