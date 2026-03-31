@@ -5,7 +5,7 @@ import {
   actionsBlock,
   createHeaderBlock,
   createThreatSectionBlock,
-  formatThreatDetectionWithMessages,
+  formatThreatDetectionResultWithMessages,
   slackNotificationChannelId,
   slackWebClient,
   userIdBlock,
@@ -42,10 +42,14 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
           },
         );
 
-        const getSlackThreadDetectionsData = formatThreatDetectionWithMessages(
-          args.threatDetection,
-          event.data.messages,
-        );
+        const slackThreatDetectionSummary =
+          formatThreatDetectionResultWithMessages(
+            args.threatDetection,
+            event.data.messages,
+          );
+
+        const showLakeraConsole =
+          args.threatDetection.provider === "lakera" ? new Date() : undefined;
 
         const response = await slackWebClient.chat.postMessage({
           channel: slackNotificationChannelId,
@@ -55,14 +59,14 @@ export const notifyThreatDetectionTeachingMaterials = inngest.createFunction(
             userIdBlock(event.user.id),
             createThreatSectionBlock({
               id: args.id,
-              userInput: getSlackThreadDetectionsData.userInput,
-              detectedThreats: getSlackThreadDetectionsData.detectedThreats,
-              requestId: getSlackThreadDetectionsData.requestId,
+              userInput: slackThreatDetectionSummary.userInput,
+              detectedThreats: slackThreatDetectionSummary.detectedThreats,
+              requestId: slackThreatDetectionSummary.requestId,
               userAction: args.userAction,
             }),
             actionsBlock({
               userActionsProps: { userId: event.user.id },
-              lakeraTimestamp: new Date(),
+              lakeraConsoleTimestamp: showLakeraConsole,
             }),
           ],
         });
