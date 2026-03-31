@@ -6,6 +6,8 @@ import React from "react";
 import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
+import { useRouter } from "next/router";
+
 import {
   DialogProvider,
   useDialog,
@@ -26,11 +28,14 @@ import {
 } from "@/stores/TeachingMaterialsStoreProvider";
 import {
   docTypeSelector,
+  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
   threatDetectionSelector,
   yearSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
+
+import { TeachingMaterialsLockingModerationModal } from "./TeachingMaterialsLockingModerationModal";
 
 export type TeachingMaterialsPageProps = {
   lesson?: LessonPlanSchemaTeachingMaterials;
@@ -50,6 +55,7 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const stepNumber = useTeachingMaterialsStore(stepNumberSelector);
   const pageData = useTeachingMaterialsStore(pageDataSelector);
   const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
+  const moderation = useTeachingMaterialsStore(moderationSelector);
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const year = useTeachingMaterialsStore(yearSelector);
@@ -107,14 +113,17 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
   const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
   return (
-    <ResourcesLayout
-      title={title}
-      subTitle={subTitle}
-      step={stepNumber + 1}
-      docTypeName={docTypeName}
-    >
-      {stepComponents[stepNumber]}
-    </ResourcesLayout>
+    <>
+      <TeachingMaterialsLockingModerationModal moderation={moderation} />
+      <ResourcesLayout
+        title={title}
+        subTitle={subTitle}
+        step={stepNumber + 1}
+        docTypeName={docTypeName}
+      >
+        {stepComponents[stepNumber]}
+      </ResourcesLayout>
+    </>
   );
 };
 

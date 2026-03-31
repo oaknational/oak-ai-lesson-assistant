@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 import { LockingModerationModal } from "../locking-moderation-modal";
 
-const getLockingModerationModalText = (safety: SafetyResult) => {
+export const getLockingModerationModalText = (safety: SafetyResult) => {
   if (safety === "highly-sensitive") {
     return {
       heading: "Highly sensitive topic",

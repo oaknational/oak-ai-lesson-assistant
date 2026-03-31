@@ -24,9 +24,6 @@ export const handleDialogSelection = ({
       case "rate_limit":
         setDialogWindow("teaching-materials-rate-limit");
         break;
-      case "toxic":
-        setDialogWindow("teaching-materials-toxic-moderation");
-        break;
       case "copyright":
       case "restrictedContentGuidance":
       default:
