@@ -7,7 +7,6 @@ import { OakFlex, OakIcon, OakLink, OakP } from "@oaknational/oak-components";
 
 import { Message } from "../Chat/chat-message/layout";
 import { ContentGuidanceModal } from "../Chat/content-guidance-modal";
-import { useDialog } from "../DialogContext";
 
 export function ModerationMessage({
   moderation,
