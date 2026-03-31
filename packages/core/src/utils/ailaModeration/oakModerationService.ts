@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import { getVercelOidcToken } from "@vercel/oidc";
 import createClient from "openapi-fetch";
 
-const log = aiLogger("moderation:oak-service");
+const log = aiLogger("moderation");
 
 export interface OakModerationServiceConfig {
   baseUrl: string;
