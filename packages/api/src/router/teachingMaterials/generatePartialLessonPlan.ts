@@ -1,5 +1,6 @@
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
@@ -67,10 +68,28 @@ export async function generatePartialLessonPlan({
     throw new Error("Failed to generate lesson plan");
   }
 
-  const moderation = await generateTeachingMaterialModeration({
-    input: JSON.stringify(lesson),
-    provider: "openai",
-  });
+  const useOakService =
+    process.env.OAK_MODERATION_V1_TEACHING_MATERIALS === "true";
+
+  let moderation: ModerationResult;
+  if (useOakService) {
+    const baseUrl = process.env.MODERATION_API_URL;
+    if (!baseUrl) {
+      throw new Error(
+        "MODERATION_API_URL is required when OAK_MODERATION_V1_TEACHING_MATERIALS is enabled",
+      );
+    }
+    moderation = await moderateWithOakService(JSON.stringify(lesson), {
+      baseUrl,
+      protectionBypassSecret:
+        process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
+    });
+  } else {
+    moderation = await generateTeachingMaterialModeration({
+      input: JSON.stringify(lesson),
+      provider: "openai",
+    });
+  }
 
   const interaction = await prisma.additionalMaterialInteraction.create({
     data: {

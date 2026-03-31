@@ -4,6 +4,7 @@ import type {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
@@ -91,6 +92,10 @@ const mockInput: PartialLessonContextSchemaType = {
   lessonParts: ["title", "learningOutcome", "learningCycles"],
 };
 
+jest.mock("@oakai/core/src/utils/ailaModeration/oakModerationService", () => ({
+  moderateWithOakService: jest.fn(),
+}));
+
 jest.mock("@oakai/logger", () => ({
   aiLogger: jest.fn(() => ({
     info: jest.fn(),
@@ -151,6 +156,9 @@ const mockAuth: SignedInAuthObject = {
 } as unknown as SignedInAuthObject;
 
 // Cast the mocked functions
+const mockModerateWithOakService = moderateWithOakService as jest.MockedFunction<
+  typeof moderateWithOakService
+>;
 const mockGeneratePartialLessonPlanObject =
   generatePartialLessonPlanObject as jest.MockedFunction<
     typeof generatePartialLessonPlanObject
@@ -392,6 +400,32 @@ describe("generatePartialLessonPlan", () => {
         },
       },
     });
+  });
+
+  it("should use Oak Moderation Service when feature flag is enabled", async () => {
+    process.env.OAK_MODERATION_V1_TEACHING_MATERIALS = "true";
+    process.env.MODERATION_API_URL = "https://moderation.test";
+
+    mockModerateWithOakService.mockResolvedValue(mockModerationResult);
+
+    const params = {
+      prisma: mockPrisma,
+      userId: "test-user",
+      input: mockInput,
+      auth: mockAuth,
+    };
+
+    const result = await generatePartialLessonPlan(params);
+
+    expect(mockModerateWithOakService).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ baseUrl: "https://moderation.test" }),
+    );
+    expect(mockGenerateTeachingMaterialModeration).not.toHaveBeenCalled();
+    expect(result.moderation).toEqual(mockModerationResult);
+
+    delete process.env.OAK_MODERATION_V1_TEACHING_MATERIALS;
+    delete process.env.MODERATION_API_URL;
   });
 
   it("should use mock moderation result when available", async () => {
