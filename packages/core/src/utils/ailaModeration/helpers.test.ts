@@ -95,8 +95,8 @@ describe("moderationGuidanceText", () => {
   });
 
   it("falls back to userDescription for legacy v0 categories", () => {
-    expect(moderationGuidanceText(mod(["l/discriminatory-language"]))).toBe(
-      "Contains discriminatory behaviour or language. Check content carefully.",
+    expect(moderationGuidanceText(mod(["l/strong-language"]))).toBe(
+      "Contains strong language. Check content carefully.",
     );
   });
 });
