@@ -8,7 +8,12 @@ import {
 } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
-import { OakIcon } from "@oaknational/oak-components";
+import {
+  OakFlex,
+  OakIcon,
+  OakLink,
+  OakSpan,
+} from "@oaknational/oak-components";
 
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 import type { ParsedMessage } from "@/stores/chatStore/types";
@@ -77,24 +82,24 @@ export function Moderation({
     <>
       <Message.Container roleType="moderation">
         <Message.Content>
-          <div className="flex items-center">
-            <span className="mr-6 flex-shrink-0">
-              <OakIcon iconName="info" alt="" />
-            </span>
-            <aside className="pt-3 text-sm">
+          <OakFlex $flexDirection="row" $gap="spacing-12">
+            <OakIcon iconName="info" alt="" />
+
+            <OakSpan $font="body-2">
               {banner}{" "}
-              <a
-                href="#"
-                onClick={(e) => {
+              <OakLink
+                style={{ color: "inherit" }}
+                element="button"
+                onClick={(e: React.MouseEvent) => {
                   e.preventDefault();
                   setModalOpen(true);
                 }}
                 className="underline"
               >
                 {link}
-              </a>
-            </aside>
-          </div>
+              </OakLink>
+            </OakSpan>
+          </OakFlex>
         </Message.Content>
       </Message.Container>
       <ContentGuidanceModal
