@@ -27,4 +27,12 @@ const meta = {
 } satisfies Meta<typeof LockingModerationModal>;
 
 export default meta;
+
 type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    heading: "Sorry, you can't continue this chat",
+    body: "This chat has been locked due to a violation of our content guidelines. If you think this is a mistake, you can provide feedback.",
+  },
+};
