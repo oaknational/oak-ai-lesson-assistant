@@ -18,7 +18,7 @@ describe("isHighlySensitive", () => {
 
   it("returns false for other categories", () => {
     expect(isHighlySensitive(mod(["t/encouragement-violence"]))).toBe(false);
-    expect(isHighlySensitive(mod(["l/strong-language"]))).toBe(false);
+    expect(isHighlySensitive(mod(["l/discriminatory-language"]))).toBe(false);
     expect(isHighlySensitive(mod([]))).toBe(false);
   });
 });
@@ -29,7 +29,7 @@ describe("getSafetyResult", () => {
   });
 
   it("returns guidance-required for non-toxic, non-HS categories", () => {
-    expect(getSafetyResult(mod(["l/strong-language"]))).toBe(
+    expect(getSafetyResult(mod(["l/discriminatory-language"]))).toBe(
       "guidance-required",
     );
   });
@@ -52,7 +52,9 @@ describe("getSafetyResult", () => {
 
   it("highly-sensitive takes priority over guidance-required", () => {
     expect(
-      getSafetyResult(mod(["l/strong-language", "n/self-harm-suicide"])),
+      getSafetyResult(
+        mod(["l/discriminatory-language", "n/self-harm-suicide"]),
+      ),
     ).toBe("highly-sensitive");
   });
 });
@@ -71,7 +73,7 @@ describe("isSafe", () => {
     expect(isSafe(mod([]))).toBe(true);
   });
   it("returns false for any categories", () => {
-    expect(isSafe(mod(["l/strong-language"]))).toBe(false);
+    expect(isSafe(mod(["l/discriminatory-language"]))).toBe(false);
   });
 });
 
@@ -93,8 +95,8 @@ describe("moderationGuidanceText", () => {
   });
 
   it("falls back to userDescription for legacy v0 categories", () => {
-    expect(moderationGuidanceText(mod(["l/strong-language"]))).toBe(
-      "Contains strong language. Check content carefully.",
+    expect(moderationGuidanceText(mod(["l/discriminatory-language"]))).toBe(
+      "Contains discriminatory behaviour or language. Check content carefully.",
     );
   });
 });
@@ -112,7 +114,7 @@ describe("getMockModerationResult", () => {
 
   it("returns sensitive for mod:sen", () => {
     const result = getMockModerationResult("mod:sen");
-    expect(result?.categories).toContain("l/strong-language");
+    expect(result?.categories).toContain("l/discriminatory-language");
   });
 
   it("returns null for no trigger", () => {
