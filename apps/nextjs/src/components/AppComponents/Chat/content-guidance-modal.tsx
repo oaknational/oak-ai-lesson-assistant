@@ -12,13 +12,6 @@ import {
   OakSpan,
 } from "@oaknational/oak-components";
 
-function getTitle(categories: DisplayCategory[]): string {
-  if (categories.length === 1) {
-    return categories[0]!.shortDescription;
-  }
-  return "Content guidance";
-}
-
 type ContentGuidanceModalContentProps = Readonly<{
   categories: DisplayCategory[];
   onClose: () => void;
