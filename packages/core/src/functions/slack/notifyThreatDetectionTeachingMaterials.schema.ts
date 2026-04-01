@@ -1,7 +1,9 @@
 import z from "zod";
 
-import { lakeraGuardResponseSchema } from "../../threatDetection/lakera";
-import { messageSchema } from "../../threatDetection/lakera/schema";
+import {
+  threatDetectionMessageSchema,
+  threatDetectionResultSchema,
+} from "../../threatDetection/types";
 
 /**
  * Schema for formatted threat detection data sent to Slack
@@ -25,7 +27,7 @@ export const notifyThreatDetectionTeachingMaterialsSchema = {
   data: z.object({
     id: z.string(),
     userAction: z.string(),
-    threatDetection: lakeraGuardResponseSchema,
-    messages: z.array(messageSchema),
+    threatDetection: threatDetectionResultSchema,
+    messages: z.array(threatDetectionMessageSchema),
   }),
 };
