@@ -74,7 +74,7 @@ export function Moderation({
   if (!moderation) {
     return null;
   }
-  console.log("Moderation component rendering with moderation:", moderation);
+
   const categories = getDisplayCategories(moderation);
   const { banner, link } = getSeverityDisplay(categories);
 
