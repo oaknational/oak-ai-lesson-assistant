@@ -1,6 +1,7 @@
 import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/helpers";
 
 import {
+  OakBox,
   OakFlex,
   OakHeading,
   OakIcon,
@@ -8,20 +9,14 @@ import {
   OakP,
   OakPrimaryButton,
   OakSecondaryLink,
+  OakSpan,
 } from "@oaknational/oak-components";
 
 function getTitle(categories: DisplayCategory[]): string {
   if (categories.length === 1) {
     return categories[0]!.shortDescription;
   }
-  return "Multiple Content Guidance Categories Identified";
-}
-
-function getBody(categories: DisplayCategory[]): string {
-  if (categories.length === 1) {
-    return categories[0]!.longDescription;
-  }
-  return `This lesson has been flagged under multiple content guidance categories: ${categories.map((c) => c.shortDescription).join("; ")}. These topics may be sensitive or require careful handling in the classroom. Please review the content thoroughly to ensure it is age-appropriate, factually accurate, and aligned with your school's policies.`;
+  return "Content guidance";
 }
 
 type ContentGuidanceModalContentProps = Readonly<{
@@ -35,7 +30,19 @@ export function ContentGuidanceModalContent({
 }: ContentGuidanceModalContentProps) {
   return (
     <>
-      <OakP $font={"body-2"}>{getBody(categories)}</OakP>
+      {categories.map((category) => (
+        <>
+          <OakBox key={category.shortDescription} $font="body-2">
+            <OakP $font="body-2">
+              <OakSpan $font="body-2-bold">
+                {category.shortDescription}
+                {": "}
+              </OakSpan>{" "}
+              {category.longDescription}
+            </OakP>
+          </OakBox>
+        </>
+      ))}
       <OakSecondaryLink
         element="a"
         href="https://support.thenational.academy/ailas-safety-guardrails"
@@ -62,8 +69,6 @@ export function ContentGuidanceModal({
   open,
   onClose,
 }: ContentGuidanceModalProps) {
-  const title = getTitle(categories);
-
   return (
     <OakModalCenter isOpen={open} onClose={onClose}>
       <OakIcon iconName={"info"} $width="spacing-48" $height="spacing-48" />
@@ -76,7 +81,7 @@ export function ContentGuidanceModal({
         $gap={"spacing-32"}
       >
         <OakHeading $font={["heading-5", "heading-5", "heading-4"]} tag="h1">
-          {title}
+          {"Content guidance"}
         </OakHeading>
         <ContentGuidanceModalContent
           categories={categories}

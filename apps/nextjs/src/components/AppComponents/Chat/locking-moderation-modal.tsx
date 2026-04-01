@@ -65,7 +65,10 @@ export function LockingModerationModal({
         {!showFeedback && !hasSubmitted && (
           <OakP $font="body-2">
             {body}{" "}
-            <OakLink onClick={() => setShowFeedback(true)}>
+            <OakLink
+              style={{ color: "inherit" }}
+              onClick={() => setShowFeedback(true)}
+            >
               provide feedback
             </OakLink>
             .

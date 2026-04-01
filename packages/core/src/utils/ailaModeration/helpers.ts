@@ -164,7 +164,7 @@ const MOCK_HIGHLY_SENSITIVE_RESULT: ModerationResult = {
 };
 
 const MOCK_SENSITIVE_RESULT: ModerationResult = {
-  categories: ["l/strong-language"],
+  categories: ["l/discriminatory-language"],
   justification: "Mock sensitive result",
 };
 
