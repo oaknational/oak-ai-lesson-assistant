@@ -31,17 +31,15 @@ export function ContentGuidanceModalContent({
   return (
     <>
       {categories.map((category) => (
-        <>
-          <OakBox key={category.shortDescription} $font="body-2">
-            <OakP $font="body-2">
-              <OakSpan $font="body-2-bold">
-                {category.shortDescription}
-                {": "}
-              </OakSpan>{" "}
-              {category.longDescription}
-            </OakP>
-          </OakBox>
-        </>
+        <OakBox key={category.shortDescription} $font="body-2">
+          <OakP $font="body-2">
+            <OakSpan $font="body-2-bold">
+              {category.shortDescription}
+              {": "}
+            </OakSpan>{" "}
+            {category.longDescription}
+          </OakP>
+        </OakBox>
       ))}
       <OakSecondaryLink
         element="a"
