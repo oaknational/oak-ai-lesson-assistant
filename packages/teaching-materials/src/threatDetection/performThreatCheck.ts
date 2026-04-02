@@ -1,3 +1,4 @@
+import { getThreatDetectionProvider } from "@oakai/core/src/threatDetection/provider";
 import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
@@ -10,14 +11,10 @@ export interface ThreatCheckParams {
   messages: ThreatDetectionMessage[];
 }
 
-type ThreatCheckProvider = "lakera" | "model_armor";
-
-const ACTIVE_THREAT_CHECK_PROVIDER: ThreatCheckProvider = "model_armor";
-
 export async function performThreatCheck({
   messages,
 }: ThreatCheckParams): Promise<ThreatDetectionResult> {
-  switch (ACTIVE_THREAT_CHECK_PROVIDER) {
+  switch (getThreatDetectionProvider()) {
     case "lakera":
       return performLakeraThreatCheck({ messages });
     case "model_armor":
