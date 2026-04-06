@@ -1,3 +1,4 @@
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
@@ -46,15 +47,25 @@ export async function exportLessonPlan({
     return exportData;
   }
 
-  /**
-   * User hasn't yet exported the lesson in this state, so we'll do it now
-   * and store the result in the database
-   */
+  const moderations = await ctx.prisma.moderation.findMany({
+    where: {
+      appSessionId: input.chatId,
+      invalidatedAt: null,
+    },
+  });
+
+  const contentGuidanceCategories = moderations.flatMap((m) =>
+    getDisplayCategories(m),
+  );
 
   const result = await exportDocLessonPlan({
     snapshotId: lessonSnapshot.id,
     lessonPlan: input.data,
     userEmail,
+    contentGuidanceCategories:
+      contentGuidanceCategories.length > 0
+        ? contentGuidanceCategories
+        : undefined,
     onStateChange: (state) => {
       log.info(state);
 
