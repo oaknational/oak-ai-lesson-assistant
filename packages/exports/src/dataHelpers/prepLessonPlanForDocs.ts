@@ -7,8 +7,14 @@ import {
   stringOrBullets,
 } from "../utils";
 
+export type ContentGuidanceCategory = {
+  shortDescription: string;
+  longDescription: string;
+};
+
 export async function prepLessonPlanForDocs(
   lessonPlan: LessonPlanDocInputData,
+  contentGuidanceCategories?: ContentGuidanceCategory[],
 ): Promise<LessonPlanDocsTemplateData> {
   const starterQuestions = lessonPlan.starterQuiz.questions;
   const exitQuestions = lessonPlan.exitQuiz.questions;
@@ -176,5 +182,20 @@ export async function prepLessonPlanForDocs(
       : "",
     cycle_3_practice: lessonPlan.cycle3?.practice ?? " ",
     cycle_3_feedback: lessonPlan.cycle3?.feedback ?? " ",
+
+    ...contentGuidancePlaceholders(contentGuidanceCategories),
   });
+}
+
+function contentGuidancePlaceholders(
+  categories?: ContentGuidanceCategory[],
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (let i = 1; i <= 8; i++) {
+    const category = categories?.[i - 1];
+    result[`content_guidance_title_${i}`] = category?.shortDescription ?? "";
+    result[`content_guidance_description_${i}`] =
+      category?.longDescription ?? "";
+  }
+  return result;
 }
