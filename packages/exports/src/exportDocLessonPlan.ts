@@ -45,7 +45,8 @@ export const exportDocLessonPlan = async ({
     const result = await exportGeneric({
       newFileName: `${title} - ${snapshotId} - Lesson plan`,
       data: lessonPlan,
-      prepData: (data) => prepLessonPlanForDocs(data, contentGuidanceCategories),
+      prepData: (data) =>
+        prepLessonPlanForDocs(data, contentGuidanceCategories),
       templateId,
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();
