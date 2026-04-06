@@ -19,7 +19,7 @@ export function getDocsTemplateIdLessonPlan() {
 
 invariant(
   process.env.GOOGLE_DOCS_LESSON_PLAN_WITH_CONTENT_GUIDANCE_TEMPLATE_ID,
-  "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID is required",
+  "GOOGLE_DOCS_LESSON_PLAN_WITH_CONTENT_GUIDANCE_TEMPLATE_ID is required",
 );
 
 export function getDocsTemplateIdLessonPlanWithContentGuidance() {
