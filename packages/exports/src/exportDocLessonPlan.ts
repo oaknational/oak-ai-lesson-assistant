@@ -1,10 +1,14 @@
+import type { ContentGuidanceCategory } from "./dataHelpers/prepLessonPlanForDocs";
 import { prepLessonPlanForDocs } from "./dataHelpers/prepLessonPlanForDocs";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
 import { populateDoc } from "./gSuite/docs/populate/populateDoc";
 import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import type { LessonPlanDocInputData } from "./schema/input.schema";
-import { getDocsTemplateIdLessonPlan } from "./templates";
+import {
+  getDocsTemplateIdLessonPlan,
+  getDocsTemplateIdLessonPlanWithContentGuidance,
+} from "./templates";
 import type { OutputData, Result, State } from "./types";
 
 export const exportDocLessonPlan = async ({
@@ -12,15 +16,21 @@ export const exportDocLessonPlan = async ({
   lessonPlan,
   userEmail,
   onStateChange,
+  contentGuidanceCategories,
 }: {
   snapshotId: string;
   lessonPlan: LessonPlanDocInputData;
   userEmail: string;
   onStateChange: (state: State<OutputData>) => void;
+  contentGuidanceCategories?: ContentGuidanceCategory[];
 }): Promise<Result<OutputData>> => {
   try {
     onStateChange({ status: "loading", message: "Starting..." });
-    const templateId = getDocsTemplateIdLessonPlan();
+    const isFlagged =
+      contentGuidanceCategories && contentGuidanceCategories.length > 0;
+    const templateId = isFlagged
+      ? getDocsTemplateIdLessonPlanWithContentGuidance()
+      : getDocsTemplateIdLessonPlan();
     if (!templateId) {
       throw new Error("Template ID not found");
     }
@@ -35,7 +45,7 @@ export const exportDocLessonPlan = async ({
     const result = await exportGeneric({
       newFileName: `${title} - ${snapshotId} - Lesson plan`,
       data: lessonPlan,
-      prepData: prepLessonPlanForDocs,
+      prepData: (data) => prepLessonPlanForDocs(data, contentGuidanceCategories),
       templateId,
       populateTemplate: async ({ data, templateCopyId }) => {
         const client = await getDocsClient();
@@ -44,6 +54,7 @@ export const exportDocLessonPlan = async ({
           documentId: templateCopyId,
           data,
           tablePlaceholdersToRemove,
+          enablePlaceholderCleanup: !!isFlagged,
           latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
         });
       },
