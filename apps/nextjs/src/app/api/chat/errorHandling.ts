@@ -5,7 +5,7 @@ import type {
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError } from "@oakai/core";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 

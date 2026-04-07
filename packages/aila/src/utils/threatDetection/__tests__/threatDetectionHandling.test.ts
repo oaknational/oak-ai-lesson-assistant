@@ -1,14 +1,18 @@
-import { inngest } from "@oakai/core/src/inngest";
+import { scheduleThreatDetectionAilaNotification } from "@oakai/core";
+import type * as OakCore from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 
 import { AilaThreatDetectionError } from "../../../features/threatDetection/types";
 import { handleThreatDetectionError } from "../threatDetectionHandling";
 
-jest.mock("@oakai/core/src/inngest", () => ({
-  inngest: {
-    send: jest.fn(),
-  },
-}));
+jest.mock("@oakai/core", () => {
+  const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
+
+  return {
+    ...actualCore,
+    scheduleThreatDetectionAilaNotification: jest.fn(),
+  };
+});
 
 jest.mock("@oakai/db", () => ({
   prisma: {},
@@ -19,7 +23,7 @@ jest.mock("../../reportAnalyticsEvent", () => ({
 }));
 
 describe("handleThreatDetectionError", () => {
-  it("sends the normalized threat payload to Inngest", async () => {
+  it("schedules the normalized threat payload", async () => {
     const recordViolation = jest.fn().mockResolvedValue(undefined);
     const SafetyViolations = jest.fn().mockImplementation(() => ({
       recordViolation,
@@ -74,8 +78,7 @@ describe("handleThreatDetectionError", () => {
       SafetyViolations,
     );
 
-    expect(inngest.send).toHaveBeenCalledWith({
-      name: "app/slack.notifyThreatDetectionAila",
+    expect(scheduleThreatDetectionAilaNotification).toHaveBeenCalledWith({
       user: {
         id: "user-123",
       },
@@ -124,8 +127,7 @@ describe("handleThreatDetectionError", () => {
       SafetyViolations,
     );
 
-    expect(inngest.send).toHaveBeenCalledWith({
-      name: "app/slack.notifyThreatDetectionAila",
+    expect(scheduleThreatDetectionAilaNotification).toHaveBeenCalledWith({
       user: {
         id: "user-123",
       },

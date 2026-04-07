@@ -1,5 +1,4 @@
-import { demoUsers } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError, demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";

@@ -709,9 +709,6 @@ importers:
       google-auth-library:
         specifier: ^9.7.0
         version: 9.7.0
-      inngest:
-        specifier: ^3.27.0
-        version: 3.48.0(@opentelemetry/core@2.2.0)(express@5.1.0)(next@16.0.10)(typescript@5.9.2)(zod@3.25.76)
       json-stringify-safe:
         specifier: ^5.0.1
         version: 5.0.1
@@ -761,9 +758,6 @@ importers:
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
-      inngest-cli:
-        specifier: ^0.29.0
-        version: 0.29.0
       jest:
         specifier: ^30.0.0
         version: 30.0.0(@types/node@20.17.9)(ts-node@10.9.2)
