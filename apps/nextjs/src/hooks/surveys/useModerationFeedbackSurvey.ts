@@ -60,5 +60,6 @@ export const useModerationFeedbackSurvey = ({
     setComment,
     hasSubmitted,
     setHasSubmitted,
+    isLoading: moderationRecord.isLoading,
   };
 };

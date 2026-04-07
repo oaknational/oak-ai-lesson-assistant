@@ -37,7 +37,7 @@ export function LockingModerationModal({
   moderation,
 }: LockingModerationModalProps) {
   const [showFeedback, setShowFeedback] = useState(false);
-  const { onSubmit, comment, setComment, hasSubmitted, isValid } =
+  const { onSubmit, comment, setComment, hasSubmitted, isValid, isLoading } =
     useModerationFeedbackSurvey({ chatId, moderation });
 
   const handleSubmit = useCallback(() => {
@@ -75,7 +75,7 @@ export function LockingModerationModal({
           </OakP>
         )}
 
-        {showFeedback && !hasSubmitted && (
+        {showFeedback && !hasSubmitted && !isLoading && (
           <OakMultilineText
             $height={"spacing-120"}
             charLimit={500}
