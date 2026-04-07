@@ -3,7 +3,7 @@ import { demoUsers } from "@oakai/core/src/models/demoUsers";
 import {
   isHighlySensitive,
   isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import type { User } from "@clerk/nextjs/server";

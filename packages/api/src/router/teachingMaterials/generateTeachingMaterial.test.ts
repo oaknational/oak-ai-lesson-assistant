@@ -1,4 +1,4 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generateTeachingMaterialObject } from "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
 

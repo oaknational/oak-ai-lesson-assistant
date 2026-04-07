@@ -1,4 +1,4 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import * as Sentry from "@sentry/nextjs";
 import { TRPCClientError } from "@trpc/client";

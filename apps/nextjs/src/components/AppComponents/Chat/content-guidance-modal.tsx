@@ -1,4 +1,4 @@
-import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/helpers";
+import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 
 import {
   OakBox,

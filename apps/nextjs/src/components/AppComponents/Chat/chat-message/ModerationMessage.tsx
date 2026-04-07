@@ -1,11 +1,11 @@
 import { useState } from "react";
 
+import { isSafe } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import {
   type SeverityLevel,
   getDisplayCategories,
   getHighestSeverity,
-  isSafe,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+} from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import {

@@ -1,5 +1,5 @@
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type {
   ModerationResult,
   moderationResponseSchema,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import { trpc } from "@/utils/trpc";

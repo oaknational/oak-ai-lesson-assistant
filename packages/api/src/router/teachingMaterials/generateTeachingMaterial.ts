@@ -1,4 +1,4 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
