@@ -11,12 +11,8 @@ import {
 import {
   OakBox,
   type OakBoxProps,
-  OakFlex,
-  OakIcon,
   OakInlineBanner,
-  OakLink,
   OakSecondaryLink,
-  OakSpan,
 } from "@oaknational/oak-components";
 
 import { useModerationStore } from "@/stores/AilaStoresProvider";
@@ -94,16 +90,14 @@ export function Moderation({
         message={bannerText}
         title="Content guidance"
         cta={
-          <>
-            <OakSecondaryLink
-              element="button"
-              onClick={() => setModalOpen(true)}
-              iconName="chevron-right"
-              isTrailingIcon
-            >
-              {linkText}
-            </OakSecondaryLink>
-          </>
+          <OakSecondaryLink
+            element="button"
+            onClick={() => setModalOpen(true)}
+            iconName="chevron-right"
+            isTrailingIcon
+          >
+            {linkText}
+          </OakSecondaryLink>
         }
       />
       <ContentGuidanceModal
