@@ -31,7 +31,7 @@ jest.mock("../../utils/errorHandling", () => ({
   handleStoreError: jest.fn(),
 }));
 
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 

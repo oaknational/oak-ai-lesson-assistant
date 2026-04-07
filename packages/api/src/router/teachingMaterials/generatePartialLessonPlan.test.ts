@@ -1,9 +1,9 @@
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
@@ -116,7 +116,7 @@ jest.mock(
   }),
 );
 
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 
