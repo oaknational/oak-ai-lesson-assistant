@@ -1,5 +1,4 @@
 import type { ModerationBase } from "./moderationSchema";
-
 import {
   getSafetyResult,
   isHighlySensitive,

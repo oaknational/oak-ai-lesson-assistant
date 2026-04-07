@@ -1,12 +1,12 @@
 import { Moderations } from "@oakai/core/src/models/moderations";
 import { getCategoryGroup } from "@oakai/core/src/utils/ailaModeration/guidanceText";
 import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import {
   getSafetyResult,
   isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/safetyResult";
-import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";

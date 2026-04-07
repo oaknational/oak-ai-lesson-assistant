@@ -1,6 +1,5 @@
-import type { ModerationBase } from "./moderationSchema";
-
 import { moderationGuidanceText } from "./guidanceText";
+import type { ModerationBase } from "./moderationSchema";
 
 const mod = (categories: string[]): ModerationBase => ({ categories });
 
