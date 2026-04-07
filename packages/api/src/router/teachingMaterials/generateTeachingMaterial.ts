@@ -1,6 +1,6 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";

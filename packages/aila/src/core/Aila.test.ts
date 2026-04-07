@@ -3,8 +3,12 @@ import type { Polly } from "@pollyjs/core";
 import { setupPolly } from "../../tests/mocks/setupPolly";
 import type { AilaCategorisation } from "../features/categorisation";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
+import { MockThreatDetector } from "../features/threatDetection/detectors/MockThreatDetector";
+import { AilaThreatDetectionError } from "../features/threatDetection/types";
+import * as threatDetectionHandling from "../utils/threatDetection/threatDetectionHandling";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
+import type { AilaChat } from "./chat/AilaChat";
 import { MockLLMService } from "./llm/MockLLMService";
 
 describe("Aila", () => {
@@ -341,6 +345,67 @@ describe("Aila", () => {
       expect(ailaInstance.document.content.subject).toBeDefined();
       expect(ailaInstance.document.content.keyStage).toBeDefined();
     }, 20000);
+  });
+
+  describe("agentic threat detection", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("handles a threat before generation is initialised", async () => {
+      const handledThreatMessage = {
+        type: "error" as const,
+        value: "Threat detected",
+        message: "Threat was detected",
+      };
+
+      const handleThreatDetectionErrorSpy = jest
+        .spyOn(threatDetectionHandling, "handleThreatDetectionError")
+        .mockResolvedValue(handledThreatMessage);
+
+      const ailaInstance = new Aila({
+        document: {
+          content: {},
+        },
+        chat: { id: "123", userId: "user123" },
+        options: {
+          usePersistence: false,
+          useRag: false,
+          useAnalytics: false,
+          useModeration: false,
+          useAgenticAila: true,
+        },
+        plugins: [],
+        services: {
+          chatLlmService: new MockLLMService(),
+          threatDetectors: () => [new MockThreatDetector({ response: true })],
+        },
+      });
+
+      await ailaInstance.initialise();
+
+      const enqueueSpy = jest
+        .spyOn(ailaInstance.chat as AilaChat, "enqueue")
+        .mockResolvedValue(undefined);
+
+      const stream = await ailaInstance.generate({
+        input: "Trigger threat detection",
+      });
+      const reader = stream.getReader();
+
+      await expect(reader.read()).resolves.toEqual({
+        done: true,
+        value: undefined,
+      });
+
+      expect(handleThreatDetectionErrorSpy).toHaveBeenCalledWith({
+        userId: "user123",
+        chatId: "123",
+        error: expect.any(AilaThreatDetectionError),
+        messages: ailaInstance.chat.messages,
+      });
+      expect(enqueueSpy).toHaveBeenCalledWith(handledThreatMessage);
+    });
   });
 
   describe("shutdown", () => {

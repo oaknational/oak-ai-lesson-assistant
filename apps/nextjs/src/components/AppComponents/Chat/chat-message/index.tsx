@@ -37,7 +37,7 @@ export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
 
   return (
     <>
-      <Moderation forMessage={message} />
+      <Moderation forMessage={message} $mt="spacing-48" />
       {normalParts.length > 0 && (
         <Message.Container roleType={message.role === "user" ? "user" : "aila"}>
           <button

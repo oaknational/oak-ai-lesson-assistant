@@ -1,16 +1,15 @@
-import type { LakeraGuardResponse } from "@oakai/core/src/threatDetection/lakera";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
-import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
-import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
+import { performThreatCheck } from "@oakai/teaching-materials/src/threatDetection/performThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
@@ -115,22 +114,19 @@ jest.mock("@oakai/teaching-materials", () => ({
 }));
 
 jest.mock(
-  "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck",
+  "@oakai/teaching-materials/src/threatDetection/performThreatCheck",
   () => ({
-    performLakeraThreatCheck: jest.fn(),
+    performThreatCheck: jest.fn(),
   }),
 );
 
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => {
-  const actual = jest.requireActual(
-    "@oakai/core/src/utils/ailaModeration/helpers",
-  ) as Record<string, unknown>;
-  return {
-    ...actual,
-    isToxic: jest.fn(),
-    getMockModerationResult: jest.fn(),
-  };
-});
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
+  isToxic: jest.fn(),
+}));
+
+jest.mock("./moderationFixtures", () => ({
+  getMockModerationResult: jest.fn(),
+}));
 
 jest.mock("./safetyUtils", () => ({
   recordSafetyViolation: jest.fn(),
@@ -169,10 +165,9 @@ const mockGenerateTeachingMaterialModeration =
   generateTeachingMaterialModeration as jest.MockedFunction<
     typeof generateTeachingMaterialModeration
   >;
-const mockPerformLakeraThreatCheck =
-  performLakeraThreatCheck as jest.MockedFunction<
-    typeof performLakeraThreatCheck
-  >;
+const mockPerformThreatCheck = performThreatCheck as jest.MockedFunction<
+  typeof performThreatCheck
+>;
 const mockIsToxic = isToxic as jest.MockedFunction<typeof isToxic>;
 const mockGetMockModerationResult =
   getMockModerationResult as jest.MockedFunction<
@@ -192,19 +187,17 @@ describe("generatePartialLessonPlan", () => {
       mockModerationResult,
     );
     mockIsToxic.mockReturnValue(false);
-    mockPerformLakeraThreatCheck.mockResolvedValue({
-      flagged: false,
-      metadata: { request_uuid: "123" },
-      payload: [],
-      breakdown: [
-        {
-          project_id: "proj-1",
-          policy_id: "policy-1",
-          detector_id: "detector-1",
-          detector_type: "type-1",
-          detected: true,
+    mockPerformThreatCheck.mockResolvedValue({
+      provider: "model_armor",
+      isThreat: false,
+      message: "No threats detected",
+      findings: [],
+      rawResponse: {
+        sanitizationResult: {
+          filterMatchState: "NO_MATCH_FOUND",
+          filterResults: {},
         },
-      ],
+      },
     });
     mockGetMockModerationResult.mockReturnValue(null);
 
@@ -243,19 +236,12 @@ describe("generatePartialLessonPlan", () => {
         outputModeration: mockModerationResult,
         inputThreatDetection: {
           flagged: false,
+          provider: "model_armor",
           metadata: {
-            flagged: false,
-            metadata: { request_uuid: "123" },
-            payload: [],
-            breakdown: [
-              {
-                project_id: "proj-1",
-                policy_id: "policy-1",
-                detector_id: "detector-1",
-                detector_type: "type-1",
-                detected: true,
-              },
-            ],
+            sanitizationResult: {
+              filterMatchState: "NO_MATCH_FOUND",
+              filterResults: {},
+            },
           },
         },
       },
@@ -338,22 +324,29 @@ describe("generatePartialLessonPlan", () => {
   });
 
   it("should handle threat detection and return null lesson", async () => {
-    const threatResult: LakeraGuardResponse = {
-      flagged: true,
-      metadata: { request_uuid: "123" },
-      payload: [],
-      breakdown: [
+    const threatResult: ThreatDetectionResult = {
+      provider: "model_armor",
+      isThreat: true,
+      severity: "critical",
+      category: "prompt_injection",
+      message: "Potential threat detected",
+      findings: [
         {
-          project_id: "proj-1",
-          policy_id: "policy-1",
-          detector_id: "detector-1",
-          detector_type: "type-1",
+          category: "prompt_injection",
+          severity: "critical",
+          providerCode: "pi_and_jailbreak",
           detected: true,
         },
       ],
+      rawResponse: {
+        sanitizationResult: {
+          filterMatchState: "MATCH_FOUND",
+          filterResults: {},
+        },
+      },
     };
 
-    mockPerformLakeraThreatCheck.mockResolvedValueOnce(threatResult);
+    mockPerformThreatCheck.mockResolvedValueOnce(threatResult);
 
     const params = {
       prisma: mockPrisma,
@@ -398,7 +391,8 @@ describe("generatePartialLessonPlan", () => {
         outputModeration: mockModerationResult,
         inputThreatDetection: {
           flagged: true,
-          metadata: threatResult,
+          provider: "model_armor",
+          metadata: threatResult.rawResponse,
         },
       },
     });

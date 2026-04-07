@@ -16,7 +16,7 @@ import {
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
-import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
+import { ModelArmorThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
@@ -113,7 +113,7 @@ async function setupChatHandler(req: NextRequest) {
 
       const threatDetectors = [
         new HeliconeThreatDetector(),
-        new LakeraThreatDetector(),
+        new ModelArmorThreatDetector(),
       ];
 
       return {

@@ -1,5 +1,5 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generateTeachingMaterialObject } from "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
 
@@ -50,7 +50,7 @@ jest.mock(
 jest.mock("@oakai/teaching-materials", () => ({
   generateTeachingMaterialModeration: jest.fn(),
 }));
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 jest.mock("./safetyUtils", () => ({

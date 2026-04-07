@@ -44,7 +44,7 @@ export const teachingMaterialsRouter = router({
         userId: ctx.auth.userId,
       });
 
-      const { authKey, authType, graphqlEndpoint } = validateCurriculumApiEnv();
+      const { authKey, graphqlEndpoint } = validateCurriculumApiEnv();
 
       if (!ctx.auth.userId) {
         throw new TRPCError({
@@ -60,7 +60,6 @@ export const teachingMaterialsRouter = router({
             lessonSlug: input.lessonSlug,
             programmeSlug: input.programmeSlug,
             authKey,
-            authType,
             graphqlEndpoint: String(graphqlEndpoint),
           });
 
