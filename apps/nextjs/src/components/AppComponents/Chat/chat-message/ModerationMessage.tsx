@@ -1,17 +1,21 @@
 import { useState } from "react";
 
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { isSafe } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import {
   type SeverityLevel,
   getDisplayCategories,
   getHighestSeverity,
 } from "@oakai/core/src/utils/ailaModeration/severityLevel";
-import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import {
+  OakBox,
+  type OakBoxProps,
   OakFlex,
   OakIcon,
+  OakInlineBanner,
   OakLink,
+  OakSecondaryLink,
   OakSpan,
 } from "@oaknational/oak-components";
 
@@ -42,23 +46,25 @@ export function getModeration(
   return null;
 }
 
-const severityDisplay: Record<SeverityLevel, { banner: string; link: string }> =
-  {
-    "content-guidance": {
-      banner:
-        "The content in this lesson may require additional consideration before delivery.",
-      link: "View content guidance.",
-    },
-    "enhanced-scrutiny": {
-      banner: "This lesson includes content that requires enhanced scrutiny.",
-      link: "View details.",
-    },
-    "heightened-caution": {
-      banner:
-        "This lesson includes content that requires heightened professional caution.",
-      link: "View details.",
-    },
-  };
+const severityDisplay: Record<
+  SeverityLevel,
+  { bannerText: string; linkText: string }
+> = {
+  "content-guidance": {
+    bannerText:
+      "The content in this lesson may require additional consideration before delivery.",
+    linkText: "View content guidance.",
+  },
+  "enhanced-scrutiny": {
+    bannerText: "This lesson includes content that requires enhanced scrutiny.",
+    linkText: "View details.",
+  },
+  "heightened-caution": {
+    bannerText:
+      "This lesson includes content that requires heightened professional caution.",
+    linkText: "View details.",
+  },
+};
 
 function getSeverityDisplay(categories: { severityLevel: string }[]) {
   return severityDisplay[getHighestSeverity(categories)];
@@ -66,7 +72,8 @@ function getSeverityDisplay(categories: { severityLevel: string }[]) {
 
 export function Moderation({
   forMessage,
-}: Readonly<{ forMessage: ParsedMessage }>) {
+  ...boxProps
+}: Readonly<{ forMessage: ParsedMessage } & OakBoxProps>) {
   const persistedModerations = useModerationStore((state) => state.moderations);
   const moderation = getModeration(forMessage, persistedModerations);
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,37 +83,34 @@ export function Moderation({
   }
 
   const categories = getDisplayCategories(moderation);
-  const { banner, link } = getSeverityDisplay(categories);
+  const { bannerText, linkText } = getSeverityDisplay(categories);
 
   return (
-    <>
-      <Message.Container roleType="moderation">
-        <Message.Content>
-          <OakFlex $flexDirection="row" $gap="spacing-12">
-            <OakIcon iconName="info" alt="" />
-
-            <OakSpan $font="body-2">
-              {banner}{" "}
-              <OakLink
-                style={{ color: "inherit" }}
-                element="button"
-                onClick={(e: React.MouseEvent) => {
-                  e.preventDefault();
-                  setModalOpen(true);
-                }}
-                className="underline"
-              >
-                {link}
-              </OakLink>
-            </OakSpan>
-          </OakFlex>
-        </Message.Content>
-      </Message.Container>
+    <OakBox {...boxProps}>
+      <OakInlineBanner
+        isOpen
+        type="alert"
+        icon="info"
+        message={bannerText}
+        title="Content guidance"
+        cta={
+          <>
+            <OakSecondaryLink
+              element="button"
+              onClick={() => setModalOpen(true)}
+              iconName="chevron-right"
+              isTrailingIcon
+            >
+              {linkText}
+            </OakSecondaryLink>
+          </>
+        }
+      />
       <ContentGuidanceModal
         categories={categories}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
       />
-    </>
+    </OakBox>
   );
 }
