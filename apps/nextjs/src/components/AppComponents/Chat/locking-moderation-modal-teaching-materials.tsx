@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import { OakModalCenter } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
@@ -82,6 +82,7 @@ export function LockingModerationModalTeachingMaterials({
         hasSubmitted={hasSubmitted}
         isValid={isValid}
         handleSubmit={handleSubmit}
+        isLoading={false}
       />
     </OakModalCenter>
   );

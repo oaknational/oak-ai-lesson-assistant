@@ -1,13 +1,16 @@
 import {
+  OakBox,
   OakFlex,
   OakHeading,
   OakIcon,
   OakInlineBanner,
   OakLink,
+  OakLoadingSpinner,
   OakMultilineText,
   OakP,
   OakPrimaryButton,
   OakSecondaryLink,
+  OakSpan,
 } from "@oaknational/oak-components";
 
 export type LockingModerationModalContentProps = Readonly<{
@@ -21,6 +24,7 @@ export type LockingModerationModalContentProps = Readonly<{
   hasSubmitted: boolean;
   isValid: boolean;
   handleSubmit: () => void;
+  isLoading: boolean;
 }>;
 
 export function LockingModerationModalContent({
@@ -34,6 +38,7 @@ export function LockingModerationModalContent({
   hasSubmitted,
   isValid,
   handleSubmit,
+  isLoading,
 }: LockingModerationModalContentProps) {
   return (
     <>
@@ -46,21 +51,24 @@ export function LockingModerationModalContent({
         $justifyContent="center"
         $gap="spacing-32"
       >
-        <OakHeading $font={["heading-5", "heading-5", "heading-4"]} tag="h1">
+        <OakHeading $font={"heading-5"} tag="h1">
           {heading}
         </OakHeading>
 
-        {!showFeedback && !hasSubmitted && (
+        {showFeedback && !hasSubmitted && !isLoading && (
           <OakP $font="body-2">
             {body}{" "}
-            <OakLink onClick={() => setShowFeedback(true)}>
+            <OakLink
+              style={{ color: "inherit" }}
+              onClick={() => setShowFeedback(true)}
+            >
               provide feedback
             </OakLink>
             .
           </OakP>
         )}
-
-        {showFeedback && !hasSubmitted && (
+        {isLoading && <OakLoadingSpinner />}
+        {showFeedback && !hasSubmitted && !isLoading && (
           <OakMultilineText
             $height={"spacing-120"}
             charLimit={500}
@@ -81,16 +89,21 @@ export function LockingModerationModalContent({
           />
         )}
 
-        <OakSecondaryLink
-          element="a"
-          href="https://support.thenational.academy/ailas-safety-guardrails"
-          target="_blank"
-          rel="noopener noreferrer"
-          iconName="external"
-          isTrailingIcon
-        >
-          Learn more about our safety guardrails.
-        </OakSecondaryLink>
+        <OakBox>
+          <OakSpan $font="body-2" $mb="spacing-16">
+            {`Please check content carefully. Learn more about `}
+            <OakSecondaryLink
+              element="a"
+              href="https://support.thenational.academy/ailas-safety-guardrails"
+              target="_blank"
+              rel="noopener noreferrer"
+              iconName="external"
+              isTrailingIcon
+            >
+              Aila's safety guardrails.
+            </OakSecondaryLink>
+          </OakSpan>
+        </OakBox>
 
         {showFeedback && !hasSubmitted ? (
           <OakPrimaryButton onClick={handleSubmit} disabled={!isValid}>
