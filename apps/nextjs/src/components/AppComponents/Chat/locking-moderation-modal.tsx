@@ -6,9 +6,8 @@ import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModerati
 import { OakModalCenter } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 
+import { LockingModerationModalContent } from "@/components/AppComponents/Moderation/LockingModerationModalContent";
 import { useModerationFeedbackSurvey } from "@/hooks/surveys/useModerationFeedbackSurvey";
-
-import { LockingModerationModalContent } from "./locking-moderation-modal-content";
 
 type LockingModerationModalProps = Readonly<{
   open: boolean;
@@ -30,8 +29,6 @@ export function LockingModerationModal({
   const [showFeedback, setShowFeedback] = useState(false);
   const { onSubmit, comment, setComment, hasSubmitted, isValid, isLoading } =
     useModerationFeedbackSurvey({ chatId, moderation });
-
-  const shouldShowFeedbackForm = showFeedback && !hasSubmitted;
 
   const handleSubmit = useCallback(() => {
     onSubmit().catch((error) => {

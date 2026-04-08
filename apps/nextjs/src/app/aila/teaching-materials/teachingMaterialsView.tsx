@@ -17,6 +17,7 @@ import StepOne from "@/components/AppComponents/TeachingMaterials/StepLayouts/St
 import StepThree from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepTwo";
 import { handleDialogSelection } from "@/components/AppComponents/TeachingMaterials/StepLayouts/helpers";
+import { TeachingMaterialsLockingModerationModal } from "@/components/AppComponents/TeachingMaterials/TeachingMaterialsLockingModeration";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { OakMathJaxContext } from "@/components/MathJax";
@@ -34,8 +35,6 @@ import {
   threatDetectionSelector,
   yearSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
-
-import { TeachingMaterialsLockingModerationModal } from "./TeachingMaterialsLockingModerationModal";
 
 export type TeachingMaterialsPageProps = {
   lesson?: LessonPlanSchemaTeachingMaterials;

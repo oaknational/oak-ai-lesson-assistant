@@ -55,7 +55,7 @@ export function LockingModerationModalContent({
           {heading}
         </OakHeading>
 
-        {showFeedback && !hasSubmitted && !isLoading && (
+        {!showFeedback && !hasSubmitted && (
           <OakP $font="body-2">
             {body}{" "}
             <OakLink

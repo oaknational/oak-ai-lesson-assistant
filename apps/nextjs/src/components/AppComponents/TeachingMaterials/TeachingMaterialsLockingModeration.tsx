@@ -1,12 +1,20 @@
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
+import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import {
+  getSafetyResult,
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import { OakModalCenter } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
+import { useRouter } from "next/navigation";
 import invariant from "tiny-invariant";
 
+import { lockingModerationModalTextMap } from "@/components/AppComponents/Chat/Chat/ChatModerationDisplay";
+import { LockingModerationModalContent } from "@/components/AppComponents/Moderation/LockingModerationModalContent";
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 import {
   useTeachingMaterialsActions,
@@ -17,26 +25,62 @@ import {
   pageDataSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
 
-import { LockingModerationModalContent } from "./locking-moderation-modal-content";
+type TeachingMaterialsLockingModerationModalProps = {
+  moderation: ModerationResult | undefined;
+};
 
-type LockingModerationModalTeachingMaterialsProps = Readonly<{
+export function TeachingMaterialsLockingModerationModal({
+  moderation,
+}: TeachingMaterialsLockingModerationModalProps) {
+  const router = useRouter();
+  const { resetToDefault } = useTeachingMaterialsActions();
+  const storeModeration = useTeachingMaterialsStore(moderationSelector);
+  const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
+
+  if (!moderation || (!isToxic(moderation) && !isHighlySensitive(moderation))) {
+    return null;
+  }
+
+  invariant(storeModeration, "Moderation data is required for this component");
+
+  const modalText = lockingModerationModalTextMap[getSafetyResult(moderation)];
+  console.log(modalText, "modalText");
+  const { heading, body } = modalText;
+
+  const handleClose = () => {
+    resetToDefault();
+    router.push("/aila");
+  };
+
+  return (
+    <TeachingMaterialsLockingModerationModalInner
+      open
+      onClose={handleClose}
+      heading={heading}
+      body={body}
+      moderation={storeModeration}
+      id={id}
+    />
+  );
+}
+
+type InnerProps = Readonly<{
   open: boolean;
   onClose: () => void;
   heading: string;
   body: string;
+  moderation: ModerationResult;
+  id: string | undefined;
 }>;
 
-export function LockingModerationModalTeachingMaterials({
+function TeachingMaterialsLockingModerationModalInner({
   open,
   onClose,
   heading,
   body,
-}: LockingModerationModalTeachingMaterialsProps) {
-  const { resetToDefault } = useTeachingMaterialsActions();
-  const moderation = useTeachingMaterialsStore(moderationSelector);
-  const id = useTeachingMaterialsStore(pageDataSelector).lessonPlan.lessonId;
-  invariant(moderation, "Moderation data is required for this component");
-
+  moderation,
+  id,
+}: InnerProps) {
   const { submitSurveyWithOutClosing } = usePosthogFeedbackSurvey({
     surveyName: "Moderation feedback",
   });
@@ -64,15 +108,10 @@ export function LockingModerationModalTeachingMaterials({
     }
   }, [submitSurveyWithOutClosing, moderation, id, comment]);
 
-  const handleClose = useCallback(() => {
-    resetToDefault();
-    onClose();
-  }, [resetToDefault, onClose]);
-
   return (
-    <OakModalCenter isOpen={open} onClose={handleClose}>
+    <OakModalCenter isOpen={open} onClose={onClose}>
       <LockingModerationModalContent
-        onClose={handleClose}
+        onClose={onClose}
         heading={heading}
         body={body}
         showFeedback={showFeedback}

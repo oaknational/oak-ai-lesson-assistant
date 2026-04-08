@@ -12,7 +12,7 @@ import invariant from "tiny-invariant";
 
 import { LockingModerationModal } from "../locking-moderation-modal";
 
-const lockingModerationModalTextMap: Record<
+export const lockingModerationModalTextMap: Record<
   LockingSafetyResult,
   { heading: string; body: string }
 > = {
@@ -44,6 +44,7 @@ export const ChatModerationDisplay: React.FC<ModerationDisplayProps> = ({
   );
 
   const modalText = lockingModerationModalTextMap[safety];
+  console.log(modalText, "modalText");
 
   const handleClose = () => {
     router.push("/aila");

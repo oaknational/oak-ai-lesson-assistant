@@ -47,7 +47,7 @@ import InlineButton from "../InlineButton";
 import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
-import { ModerationMessage } from "../TeachingMaterialMessage";
+import { ModerationMessage } from "../TeachingMaterialsModerationMessage";
 
 const log = aiLogger("teaching-materials");
 

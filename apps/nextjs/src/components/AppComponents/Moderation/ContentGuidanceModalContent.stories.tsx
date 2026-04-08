@@ -4,13 +4,13 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
 
-import { ContentGuidanceModalContent } from "./content-guidance-modal";
+import { ContentGuidanceModalContent } from "./ContentGuidanceModalContent";
 
 const categoriesFor = (...codes: string[]) =>
   getDisplayCategories({ categories: codes });
 
 const meta = {
-  title: "Components/Chat/ContentGuidanceModal",
+  title: "Components/Moderation/ContentGuidanceModalContent",
   component: ContentGuidanceModalContent,
   tags: ["autodocs"],
   args: {
