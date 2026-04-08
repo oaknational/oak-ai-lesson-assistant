@@ -1,15 +1,13 @@
-import {
-  getMockModerationResult,
-  isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import { type PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
-import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
+import { performThreatCheck } from "@oakai/teaching-materials/src/threatDetection/performThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
@@ -57,7 +55,7 @@ export async function generatePartialLessonPlan({
     { role: "user" as const, content: `${input.subject} - ${input.title}` },
   ];
 
-  const lakeraResult = await performLakeraThreatCheck({
+  const threatDetection = await performThreatCheck({
     messages,
   });
 
@@ -104,8 +102,9 @@ export async function generatePartialLessonPlan({
       output: lesson,
       outputModeration: moderation,
       inputThreatDetection: {
-        flagged: lakeraResult.flagged,
-        metadata: lakeraResult,
+        flagged: threatDetection.isThreat,
+        provider: threatDetection.provider,
+        metadata: threatDetection.rawResponse,
       },
     },
   });
@@ -128,7 +127,7 @@ export async function generatePartialLessonPlan({
     };
   }
 
-  if (lakeraResult.flagged) {
+  if (threatDetection.isThreat) {
     await recordSafetyViolation({
       prisma,
       auth,
@@ -136,7 +135,7 @@ export async function generatePartialLessonPlan({
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
       messages: messages,
-      threatDetection: lakeraResult,
+      threatDetection,
     });
 
     return {

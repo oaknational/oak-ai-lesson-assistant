@@ -1,4 +1,4 @@
-import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 
 import type { Meta, StoryObj } from "@storybook/nextjs";
 

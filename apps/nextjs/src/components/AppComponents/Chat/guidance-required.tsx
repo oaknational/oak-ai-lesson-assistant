@@ -1,8 +1,6 @@
-import {
-  isSafe,
-  moderationGuidanceText,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { moderationGuidanceText } from "@oakai/core/src/utils/ailaModeration/guidanceText";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { isSafe } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";

@@ -1,16 +1,14 @@
 import {
-  moderateWithOakService,
   OakModerationServiceError,
+  moderateWithOakService,
 } from "./oakModerationService";
 
-// Mock openapi-fetch — replaces the real HTTP client factory
 const mockPost = jest.fn();
 jest.mock("openapi-fetch", () => ({
   __esModule: true,
   default: () => ({ POST: mockPost }),
 }));
 
-// Mock Vercel OIDC — simulates no token available (local/test environment)
 jest.mock("@vercel/oidc", () => ({
   getVercelOidcToken: jest.fn().mockRejectedValue(new Error("no token")),
 }));
@@ -66,12 +64,12 @@ describe("moderateWithOakService", () => {
       response: { status: 401 },
     });
 
-    await expect(
-      moderateWithOakService("test", baseConfig),
-    ).rejects.toThrow(OakModerationServiceError);
-    await expect(
-      moderateWithOakService("test", baseConfig),
-    ).rejects.toThrow("Authentication failed");
+    await expect(moderateWithOakService("test", baseConfig)).rejects.toThrow(
+      OakModerationServiceError,
+    );
+    await expect(moderateWithOakService("test", baseConfig)).rejects.toThrow(
+      "Authentication failed",
+    );
   });
 
   it("throws OakModerationServiceError on 403", async () => {
@@ -81,9 +79,9 @@ describe("moderateWithOakService", () => {
       response: { status: 403 },
     });
 
-    await expect(
-      moderateWithOakService("test", baseConfig),
-    ).rejects.toThrow("Project not authorized");
+    await expect(moderateWithOakService("test", baseConfig)).rejects.toThrow(
+      "Project not authorized",
+    );
   });
 
   it("throws on generic API errors", async () => {
@@ -93,9 +91,9 @@ describe("moderateWithOakService", () => {
       response: { status: 500 },
     });
 
-    await expect(
-      moderateWithOakService("test", baseConfig),
-    ).rejects.toThrow("Oak Moderation Service returned 500");
+    await expect(moderateWithOakService("test", baseConfig)).rejects.toThrow(
+      "Oak Moderation Service returned 500",
+    );
   });
 
   it("passes protectionBypassSecret as header", async () => {

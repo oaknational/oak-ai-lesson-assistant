@@ -1,7 +1,5 @@
-import {
-  getSafetyResult,
-  moderationGuidanceText,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { moderationGuidanceText } from "@oakai/core/src/utils/ailaModeration/guidanceText";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import invariant from "tiny-invariant";
 
