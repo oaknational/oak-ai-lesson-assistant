@@ -20,16 +20,16 @@ const MOCK_SENSITIVE_RESULT: ModerationResult = {
 };
 
 export function getMockModerationResult(message?: string) {
-  if (message?.includes("mod:tox")) {
-    log.info("mod:tox detected, returning mock toxic result");
+  if (message?.includes("oak-tox")) {
+    log.info("oak-tox detected, returning mock toxic result");
     return MOCK_TOXIC_RESULT;
   }
-  if (message?.includes("mod:hs")) {
-    log.info("mod:hs detected, returning mock highly sensitive result");
+  if (message?.includes("oak-hs")) {
+    log.info("oak-hs detected, returning mock highly sensitive result");
     return MOCK_HIGHLY_SENSITIVE_RESULT;
   }
-  if (message?.includes("mod:sen")) {
-    log.info("mod:sen detected, returning mock sensitive result");
+  if (message?.includes("oak-sen")) {
+    log.info("oak-sen detected, returning mock sensitive result");
     return MOCK_SENSITIVE_RESULT;
   }
   return null;

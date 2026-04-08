@@ -35,7 +35,7 @@ export function getMockModerationResult(
     return toxicModerationResultFixture;
   }
 
-  if (title.includes("mod:sen")) {
+  if (title.includes("oak-sen")) {
     return mockSensitiveResult;
   }
 
