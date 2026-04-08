@@ -8,8 +8,6 @@ export type DialogTypes =
   | "demo-share-locked"
   | "clear-history"
   | "clear-single-chat"
-  | "teaching-materials-moderation"
-  | "teaching-materials-toxic-moderation"
   | "teaching-materials-threat-detected"
   | "teaching-materials-rate-limit"
   | "teaching-materials-error"

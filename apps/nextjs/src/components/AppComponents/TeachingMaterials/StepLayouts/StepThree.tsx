@@ -61,9 +61,6 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
     setDialogWindow("teaching-materials-threat-detected");
   }
 
-  const hasModeration =
-    moderation?.categories && moderation.categories.length > 0;
-
   return (
     <>
       <OakFlex $flexDirection="column">
@@ -89,7 +86,7 @@ const StepThree = ({ handleSubmit }: { handleSubmit: () => Promise<void> }) => {
             ))}
           </OakOL>
 
-          {hasModeration && <ModerationMessage />}
+          <ModerationMessage moderation={moderation} />
         </OakFlex>
 
         <OakP $font="body-2">
