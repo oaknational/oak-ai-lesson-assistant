@@ -1,3 +1,4 @@
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";

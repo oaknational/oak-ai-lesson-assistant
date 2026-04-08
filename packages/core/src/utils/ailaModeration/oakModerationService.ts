@@ -42,6 +42,8 @@ export async function moderateWithOakService(
   } catch {
     log.info("No Vercel OIDC token available, calling without auth");
   }
+  // Bypass Vercel Deployment Protection for server-to-server calls
+  // so requests aren't blocked by Vercel's auth wall in preview/staging environments.
   if (protectionBypassSecret) {
     headers["x-vercel-protection-bypass"] = protectionBypassSecret;
   }
@@ -88,6 +90,6 @@ export async function moderateWithOakService(
       cause: err,
     });
   } finally {
-    clearTimeout(timeout); // always cancel the timeout timer
+    clearTimeout(timeout);
   }
 }

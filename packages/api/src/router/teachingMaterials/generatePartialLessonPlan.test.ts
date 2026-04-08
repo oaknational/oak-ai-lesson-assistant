@@ -1,4 +1,5 @@
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type {
   ModerationResult,
   moderationResponseSchema,
