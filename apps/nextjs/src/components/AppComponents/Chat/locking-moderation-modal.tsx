@@ -39,9 +39,12 @@ export function LockingModerationModal({
   chatId,
   moderation,
 }: LockingModerationModalProps) {
+
   const [showFeedback, setShowFeedback] = useState(false);
   const { onSubmit, comment, setComment, hasSubmitted, isValid, isLoading } =
     useModerationFeedbackSurvey({ chatId, moderation });
+
+  const shouldShowFeedbackForm = showFeedback && !hasSubmitted;
 
   const handleSubmit = useCallback(() => {
     onSubmit().catch((error) => {
@@ -77,8 +80,8 @@ export function LockingModerationModal({
             .
           </OakP>
         )}
-        {isLoading && <OakLoadingSpinner />}
-        {showFeedback && !hasSubmitted && !isLoading && (
+        {shouldShowFeedbackForm && isLoading && <OakLoadingSpinner />}
+        {shouldShowFeedbackForm && !isLoading && (
           <OakMultilineText
             $height={"spacing-120"}
             charLimit={500}
