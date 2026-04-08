@@ -39,7 +39,6 @@ export function LockingModerationModal({
   chatId,
   moderation,
 }: LockingModerationModalProps) {
-
   const [showFeedback, setShowFeedback] = useState(false);
   const { onSubmit, comment, setComment, hasSubmitted, isValid, isLoading } =
     useModerationFeedbackSurvey({ chatId, moderation });
