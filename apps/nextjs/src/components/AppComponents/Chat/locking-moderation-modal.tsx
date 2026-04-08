@@ -10,6 +10,7 @@ import {
   OakIcon,
   OakInlineBanner,
   OakLink,
+  OakLoadingSpinner,
   OakModalCenter,
   OakMultilineText,
   OakP,
@@ -76,7 +77,7 @@ export function LockingModerationModal({
             .
           </OakP>
         )}
-
+        {isLoading && <OakLoadingSpinner />}
         {showFeedback && !hasSubmitted && !isLoading && (
           <OakMultilineText
             $height={"spacing-120"}
