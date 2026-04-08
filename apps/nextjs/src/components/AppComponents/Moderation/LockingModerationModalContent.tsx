@@ -40,6 +40,7 @@ export function LockingModerationModalContent({
   handleSubmit,
   isLoading,
 }: LockingModerationModalContentProps) {
+  const shouldShowFeedbackForm = showFeedback && !hasSubmitted;
   return (
     <>
       <OakIcon iconName="warning" $width="spacing-48" $height="spacing-48" />
@@ -67,8 +68,8 @@ export function LockingModerationModalContent({
             .
           </OakP>
         )}
-        {isLoading && <OakLoadingSpinner />}
-        {showFeedback && !hasSubmitted && !isLoading && (
+        {shouldShowFeedbackForm && isLoading && <OakLoadingSpinner />}
+        {shouldShowFeedbackForm && !isLoading && (
           <OakMultilineText
             $height={"spacing-120"}
             charLimit={500}
