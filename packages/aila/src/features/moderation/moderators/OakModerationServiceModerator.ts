@@ -1,7 +1,7 @@
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import {
-  moderateWithOakService,
   OakModerationServiceError,
+  moderateWithOakService,
 } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { aiLogger } from "@oakai/logger";
 

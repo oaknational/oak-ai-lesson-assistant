@@ -125,7 +125,7 @@ jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 
-jest.mock("./moderationFixtures", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/mockModeration", () => ({
   getMockModerationResult: jest.fn(),
 }));
 
