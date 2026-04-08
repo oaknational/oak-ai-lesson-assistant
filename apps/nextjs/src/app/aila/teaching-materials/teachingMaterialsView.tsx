@@ -6,8 +6,6 @@ import React from "react";
 import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
-import { useRouter } from "next/router";
-
 import {
   DialogProvider,
   useDialog,

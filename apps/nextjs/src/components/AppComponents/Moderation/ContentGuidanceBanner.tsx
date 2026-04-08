@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import {
+  type DisplayCategory,
   type SeverityLevel,
   getHighestSeverity,
 } from "@oakai/core/src/utils/ailaModeration/severityLevel";

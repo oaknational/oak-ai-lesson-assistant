@@ -44,7 +44,7 @@ export function TeachingMaterialsLockingModerationModal({
   invariant(storeModeration, "Moderation data is required for this component");
 
   const modalText = lockingModerationModalTextMap[getSafetyResult(moderation)];
-  console.log(modalText, "modalText");
+
   const { heading, body } = modalText;
 
   const handleClose = () => {
