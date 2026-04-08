@@ -303,7 +303,7 @@ describe("generatePartialLessonPlan", () => {
     const params = {
       prisma: mockPrisma,
       userId: "test-user",
-      input: { ...mockInput, title: "Test Lesson mod:tox" },
+      input: { ...mockInput, title: "Test Lesson oak-tox" },
       auth: mockAuth,
     };
 
@@ -437,7 +437,7 @@ describe("generatePartialLessonPlan", () => {
     const params = {
       prisma: mockPrisma,
       userId: "test-user",
-      input: { ...mockInput, title: "Test Lesson mod:sen" },
+      input: { ...mockInput, title: "Test Lesson oak-sen" },
       auth: mockAuth,
     };
 

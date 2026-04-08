@@ -138,7 +138,7 @@ describe("AilaModeration", () => {
     });
 
     it("should simulate a highly sensitive input with a special code from the user", async () => {
-      const specialCode = "mod:hs";
+      const specialCode = "oak-hs";
 
       const messages: Message[] = [
         { id: "1", role: "user", content: specialCode },
@@ -171,7 +171,7 @@ describe("AilaModeration", () => {
     });
 
     it("should simulate a toxic input with a special code from the user", async () => {
-      const specialCode = "mod:tox";
+      const specialCode = "oak-tox";
 
       const messages: Message[] = [
         { id: "1", role: "user", content: specialCode },

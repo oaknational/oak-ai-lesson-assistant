@@ -14,13 +14,6 @@ function isActionMessage(message: ParsedMessage) {
   return message.parts.every((part) => part.document.type === "action");
 }
 
-function roleType(message: ParsedMessage) {
-  if (message.hasError) {
-    return "error";
-  }
-  return message.role === "user" ? "user" : "aila";
-}
-
 export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
   const [inspect, setInspect] = useState(false);
 
