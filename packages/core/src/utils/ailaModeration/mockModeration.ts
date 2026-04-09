@@ -5,7 +5,7 @@ import type { ModerationResult } from "./moderationSchema";
 const log = aiLogger("aila:moderation");
 
 const MOCK_TOXIC_RESULT: ModerationResult = {
-  categories: ["t/encouragement-violence"],
+  categories: ["t/encourages-violence-harm-others"],
   justification: "Mock toxic result",
 };
 

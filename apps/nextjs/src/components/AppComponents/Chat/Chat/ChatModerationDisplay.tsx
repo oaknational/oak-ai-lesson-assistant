@@ -44,7 +44,6 @@ export const ChatModerationDisplay: React.FC<ModerationDisplayProps> = ({
   );
 
   const modalText = lockingModerationModalTextMap[safety];
-  console.log(modalText, "modalText");
 
   const handleClose = () => {
     router.push("/aila");

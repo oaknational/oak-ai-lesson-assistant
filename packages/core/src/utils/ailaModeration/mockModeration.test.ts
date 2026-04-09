@@ -3,7 +3,7 @@ import { getMockModerationResult } from "./mockModeration";
 describe("getMockModerationResult", () => {
   it("returns toxic for oak-tox", () => {
     const result = getMockModerationResult("oak-tox");
-    expect(result?.categories).toContain("t/encouragement-violence");
+    expect(result?.categories).toContain("t/encourages-violence-harm-others");
   });
 
   it("returns highly-sensitive for oak-hs", () => {
