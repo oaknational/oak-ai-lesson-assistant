@@ -25,6 +25,8 @@ export const handleDialogSelection = ({
         setDialogWindow("teaching-materials-rate-limit");
         break;
       case "copyright":
+      case "toxic":
+        break; // this is now handled by TeachingMaterialsLockingModerationModal, first step in removing dialog modals for TM.
       case "restrictedContentGuidance":
       default:
         setDialogWindow("teaching-materials-error");

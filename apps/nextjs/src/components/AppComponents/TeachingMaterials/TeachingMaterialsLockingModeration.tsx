@@ -7,13 +7,13 @@ import {
   isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/safetyResult";
+import type { LockingSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import { OakModalCenter } from "@oaknational/oak-components";
 import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";
 import invariant from "tiny-invariant";
 
-import { lockingModerationModalTextMap } from "@/components/AppComponents/Chat/Chat/ChatModerationDisplay";
 import { LockingModerationModalContent } from "@/components/AppComponents/Moderation/LockingModerationModalContent";
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
 import {
@@ -24,6 +24,20 @@ import {
   moderationSelector,
   pageDataSelector,
 } from "@/stores/teachingMaterialsStore/selectors";
+
+const lockingModerationModalTextMap: Record<
+  LockingSafetyResult,
+  { heading: string; body: string }
+> = {
+  "highly-sensitive": {
+    heading: "Highly sensitive topic",
+    body: "Aila is not able to plan teaching materials on this topic. While important and potentially suitable for the classroom, some topics are too complex or sensitive for AI to reliably generate content on at the moment. Please consider planning teaching materials on a different topic or title. If you believe this is an error, please ",
+  },
+  toxic: {
+    heading: "Potential misuse of Aila detected",
+    body: "Aila is designed to create classroom-appropriate content. This teaching material has been identified as potentially unsuitable, preventing you from continuing to create this teaching material. Continuing to generate inappropriate content will result in your account being blocked. If you believe this is an error, please ",
+  },
+};
 
 type TeachingMaterialsLockingModerationModalProps = {
   moderation: ModerationResult | undefined;
