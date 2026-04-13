@@ -15,8 +15,6 @@ import {
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
-import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
-import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
@@ -41,6 +39,7 @@ import {
   getFixtureModerationOpenAiClient,
   getFixtureOakModerator,
 } from "./fixtures";
+import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
 const log = aiLogger("chat");
@@ -110,11 +109,7 @@ async function setupChatHandler(req: NextRequest) {
         chatId,
       );
       const oakModerator = getFixtureOakModerator(req.headers);
-
-      const threatDetectors = [
-        new HeliconeThreatDetector(),
-        new LakeraThreatDetector(),
-      ];
+      const threatDetectors = getThreatDetectors();
 
       return {
         chatId,

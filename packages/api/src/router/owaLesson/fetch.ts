@@ -15,7 +15,6 @@ type FetchArgs = {
   lessonSlug: string;
   programmeSlug?: string | null;
   authKey: string;
-  authType: string;
   graphqlEndpoint: string;
 };
 
@@ -29,7 +28,7 @@ export async function fetchOwaLessonAndTcp({
   lessonSlug,
   programmeSlug,
   authKey,
-  authType,
+
   graphqlEndpoint,
 }: FetchArgs): Promise<FetchResult> {
   const isCanonicalLesson = !programmeSlug;
@@ -38,8 +37,7 @@ export async function fetchOwaLessonAndTcp({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-oak-auth-key": authKey,
-      "x-oak-auth-type": authType,
+      authorization: `Bearer ${authKey}`,
     },
     body: JSON.stringify({
       query: isCanonicalLesson
@@ -69,8 +67,7 @@ export async function fetchOwaLessonAndTcp({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-oak-auth-key": authKey,
-      "x-oak-auth-type": authType,
+      authorization: `Bearer ${authKey}`,
     },
     body: JSON.stringify({
       query: tcpWorksByLessonSlugQuery,
