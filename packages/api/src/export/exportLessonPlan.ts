@@ -43,10 +43,6 @@ export async function exportLessonPlan({
     exportType,
   });
 
-  if (exportData) {
-    return exportData;
-  }
-
   const moderations = await ctx.prisma.moderation.findMany({
     where: {
       appSessionId: input.chatId,
@@ -57,6 +53,25 @@ export async function exportLessonPlan({
   const contentGuidanceCategories = moderations.flatMap((m) =>
     getDisplayCategories(m),
   );
+
+  const hasContentGuidance = contentGuidanceCategories.length > 0;
+
+  if (exportData && !hasContentGuidance) {
+    return exportData;
+  }
+
+  if (exportData && hasContentGuidance) {
+    await ctx.prisma.lessonExport.updateMany({
+      where: {
+        lessonSnapshotId: lessonSnapshot.id,
+        exportType,
+        expiredAt: null,
+      },
+      data: {
+        expiredAt: new Date(),
+      },
+    });
+  }
 
   const result = await exportDocLessonPlan({
     snapshotId: lessonSnapshot.id,
