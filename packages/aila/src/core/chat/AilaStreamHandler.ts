@@ -106,6 +106,10 @@ export class AilaStreamHandler {
         });
       }
 
+      await this.span("persist-chat-before-threat-check", async () => {
+        await this._chat.persistChat();
+      });
+
       await this.span("check-threats", async () => {
         await this.checkForThreats();
       });

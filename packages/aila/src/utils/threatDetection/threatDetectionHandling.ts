@@ -1,11 +1,13 @@
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { ThreatDetections as defaultThreatDetections } from "@oakai/core/src/models/threatDetections";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
+import type { InputJsonValue } from "@prisma/client/runtime/library";
 import * as Sentry from "@sentry/nextjs";
 
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
@@ -48,19 +50,28 @@ export async function handleThreatDetectionError(
     chatId,
     error,
     messages,
-    prisma = globalPrisma,
+    prisma,
   }: {
     userId: string;
     chatId: string;
     error: AilaThreatDetectionError;
     messages?: Array<{
+      id?: string;
       role: "system" | "user" | "assistant" | "data";
       content: string;
     }>;
     prisma?: PrismaClientWithAccelerate;
   },
-  SafetyViolations = defaultSafetyViolations,
+  {
+    SafetyViolations = defaultSafetyViolations,
+    ThreatDetections = defaultThreatDetections,
+  }: {
+    SafetyViolations?: typeof defaultSafetyViolations;
+    ThreatDetections?: typeof defaultThreatDetections;
+  } = {},
 ): Promise<ErrorDocument | ActionDocument> {
+  const prismaClient = prisma ?? globalPrisma;
+  const threatDetection = getThreatDetectionOrDefault(error);
   if (!error.isAnalyticsEventReported) {
     await safelyReportAnalyticsEvent({
       eventName: "threat_detected",
@@ -83,8 +94,6 @@ export async function handleThreatDetectionError(
       userId,
       chatId,
     });
-
-    const threatDetection = getThreatDetectionOrDefault(error);
 
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
@@ -128,15 +137,32 @@ export async function handleThreatDetectionError(
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma, console);
+    const safetyViolations = new SafetyViolations(prismaClient, console);
+    const threatDetections = new ThreatDetections(prismaClient);
+    const threateningMessage = getThreateningMessage(messages);
+
     try {
-      await safetyViolations.recordViolation(
+      const safetyViolation = await safetyViolations.createViolation(
         userId,
         "CHAT_MESSAGE",
         "THREAT",
         "CHAT_SESSION",
         chatId,
       );
+      error.isSafetyViolationRecorded = true;
+      await threatDetections.create({
+        appSessionId: chatId,
+        messageId: threateningMessage?.id,
+        userId,
+        threateningMessage:
+          threateningMessage?.content ?? threatDetection.message,
+        provider: threatDetection.provider,
+        category: threatDetection.category,
+        severity: threatDetection.severity,
+        providerResponse: getProviderResponse(threatDetection.rawResponse),
+        safetyViolationId: safetyViolation.id,
+      });
+      await safetyViolations.enforceThreshold(userId);
     } catch (e) {
       if (e instanceof UserBannedError) {
         return {
@@ -158,4 +184,38 @@ export async function handleThreatDetectionError(
     message:
       "I wasn't able to process your request because a potentially malicious input was detected.",
   };
+}
+
+function getThreateningMessage(
+  messages?: Array<{
+    id?: string;
+    role: "system" | "user" | "assistant" | "data";
+    content: string;
+  }>,
+): { id?: string; content: string } | null {
+  const lastUserMessage = messages?.findLast(
+    (message) => message.role === "user",
+  );
+  if (lastUserMessage) {
+    return {
+      id: lastUserMessage.id,
+      content: lastUserMessage.content,
+    };
+  }
+
+  const lastNonDataMessage = messages?.findLast(
+    (message) => message.role !== "data",
+  );
+  if (lastNonDataMessage) {
+    return {
+      id: lastNonDataMessage.id,
+      content: lastNonDataMessage.content,
+    };
+  }
+
+  return null;
+}
+
+function getProviderResponse(rawResponse: unknown): InputJsonValue | undefined {
+  return rawResponse as InputJsonValue | undefined;
 }

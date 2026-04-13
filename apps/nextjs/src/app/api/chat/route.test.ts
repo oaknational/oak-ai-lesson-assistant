@@ -78,8 +78,12 @@ describe("Chat API Route", () => {
             return ailaInstance;
           },
         ),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      prisma: {} as any,
+      prisma: {
+        appSession: {
+          findUnique: jest.fn().mockResolvedValue(null),
+          update: jest.fn(),
+        },
+      } as unknown as Config["prisma"],
     };
   });
 

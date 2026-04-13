@@ -6,6 +6,7 @@ import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetecti
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { inngest } from "@oakai/core/src/inngest";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { ThreatDetections as defaultThreatDetections } from "@oakai/core/src/models/threatDetections";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -18,11 +19,13 @@ const log = aiLogger("chat");
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
   SafetyViolations?: typeof defaultSafetyViolations,
+  ThreatDetections?: typeof defaultThreatDetections,
 ) => AilaPlugin;
 
 export const createWebActionsPlugin: PluginCreator = (
   prisma,
   SafetyViolations = defaultSafetyViolations,
+  ThreatDetections = defaultThreatDetections,
 ) => {
   const onStreamError: AilaPlugin["onStreamError"] = async (
     error,
@@ -39,7 +42,10 @@ export const createWebActionsPlugin: PluginCreator = (
           messages: aila.messages,
           prisma,
         },
-        SafetyViolations,
+        {
+          SafetyViolations,
+          ThreatDetections,
+        },
       );
       await enqueue(threatError);
     }
