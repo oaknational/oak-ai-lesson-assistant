@@ -1,7 +1,7 @@
 import {
   isHighlySensitive,
   isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import type { Moderation } from "@prisma/client";
 
