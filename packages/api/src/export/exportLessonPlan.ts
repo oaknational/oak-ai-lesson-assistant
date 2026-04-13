@@ -1,4 +1,4 @@
-import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
