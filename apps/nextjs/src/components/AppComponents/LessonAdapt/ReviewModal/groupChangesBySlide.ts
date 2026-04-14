@@ -84,9 +84,13 @@ export function groupChangesBySlide(
 
     const { typeLabel, description } = getSlideTypeAndDescription(slideType);
 
+    const cyclesSuffix = slide?.learningCycles?.length
+      ? "- " + slide.learningCycles.join(", ")
+      : "";
+
     return {
       slideNumber,
-      title: `${slideNumber}. ${formatSlideType(slideType || "Slide")} ${slide?.learningCycles?.length ? `- ${slide.learningCycles.join(", ")}` : ""}`,
+      title: slideNumber + ". " + formatSlideType(slideType || "Slide") + " " + cyclesSuffix,
       typeLabel,
       description,
       klps: slide?.keyLearningPoints ?? [],

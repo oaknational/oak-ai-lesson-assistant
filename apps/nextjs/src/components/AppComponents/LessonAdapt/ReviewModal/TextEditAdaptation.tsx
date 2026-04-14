@@ -22,7 +22,7 @@ export function TextEditAdaptation({
   newText,
   isApproved,
   onToggle,
-}: TextEditAdaptationProps) {
+}: Readonly<TextEditAdaptationProps>) {
   return (
     <OakFlex
       $borderRadius="border-radius-s"

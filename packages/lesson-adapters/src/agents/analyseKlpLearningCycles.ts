@@ -176,7 +176,13 @@ export async function analyseKlpLearningCycles(
         includeElementIds: false,
       });
       console.log("formatted slides for prompt", formattedSlides);
-      const promptContent = `# Key Learning Points\n${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}\n\n# Learning Cycles\n${parsed.learningCycles.map((lc, i) => `${i + 1}. ${lc}`).join("\n")}\n\n# Slides to Analyse\n${formattedSlides}\n\n---\n\nAnalyse each slide above and map which key learning points, learning cycles, slide type and diversity content it covers.`;
+      const klpList = parsed.keyLearningPoints
+        .map((klp, i) => (i + 1) + ". " + klp)
+        .join("\n");
+      const lcList = parsed.learningCycles
+        .map((lc, i) => (i + 1) + ". " + lc)
+        .join("\n");
+      const promptContent = `# Key Learning Points\n${klpList}\n\n# Learning Cycles\n${lcList}\n\n# Slides to Analyse\n${formattedSlides}\n\n---\n\nAnalyse each slide above and map which key learning points, learning cycles, slide type and diversity content it covers.`;
       console.log(`Prompt for batch ${batchIdx + 1}:\n`, promptContent);
       const { output } = await generateText({
         model: openai("gpt-4o"),

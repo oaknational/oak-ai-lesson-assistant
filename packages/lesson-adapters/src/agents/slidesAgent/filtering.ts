@@ -6,6 +6,14 @@ import type { SlideField } from "./intents";
 // Slide Content Filtering
 // ---------------------------------------------------------------------------
 
+function simplifyTableCells(
+  cells: SlideContent["tables"][number]["cells"],
+): { id: string; content: string }[][] {
+  return cells.map((row) =>
+    row.map((cell) => ({ id: cell.id, content: cell.content })),
+  );
+}
+
 /**
  * Filters slide content based on the intent's slideFields config.
  */
@@ -33,9 +41,7 @@ export function filterSlideContent(
         id: table.id,
         rows: table.rows,
         columns: table.columns,
-        cells: table.cells.map((row) =>
-          row.map((cell) => ({ id: cell.id, content: cell.content })),
-        ),
+        cells: simplifyTableCells(table.cells),
       }));
     }
     if (fields.includes("images")) {

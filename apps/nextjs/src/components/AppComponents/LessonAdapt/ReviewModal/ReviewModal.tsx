@@ -100,7 +100,7 @@ export function ReviewModal({
                   key={slide.slideNumber}
                   title={slide.title}
                   isDeleted={
-                    slide.slideDeletion !== null ? isDeleted : undefined
+                    slide.slideDeletion === null ? undefined : isDeleted
                   }
                   thumbnailUrl={slide.thumbnailUrl}
                   thumbnailsLoading={thumbnails === null}
@@ -119,7 +119,7 @@ export function ReviewModal({
                     >
                       <OakFlex $flexDirection="column" $gap="spacing-8">
                         {slide.klps.map((klp, index) => (
-                          <OakP key={index} $font="body-3">
+                          <OakP key={klp} $font="body-3">
                             {index + 1}. {klp}
                           </OakP>
                         ))}

@@ -12,7 +12,7 @@ interface KeywordsProps {
   keywords: Array<{ keyword: string; definition: string }>;
 }
 
-export function Keywords({ keywords }: KeywordsProps) {
+export function Keywords({ keywords }: Readonly<KeywordsProps>) {
   return (
     <OakBox $mb="spacing-48">
       <OakHeading tag="h3" $font="heading-6" $mb="spacing-16">
@@ -20,7 +20,7 @@ export function Keywords({ keywords }: KeywordsProps) {
       </OakHeading>
       <OakFlex $flexDirection="column" $gap="spacing-4">
         {keywords.map((kw, index) => (
-          <OakP key={index} $font="body-3">
+          <OakP key={kw.keyword} $font="body-3">
             <OakSpan $font="body-3-bold">{kw.keyword}</OakSpan> -{" "}
             {kw.definition}
           </OakP>

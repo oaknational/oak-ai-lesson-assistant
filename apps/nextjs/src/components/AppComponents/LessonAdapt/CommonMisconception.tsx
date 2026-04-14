@@ -8,7 +8,7 @@ interface CommonMisconceptionProps {
 
 export function CommonMisconception({
   misconception,
-}: CommonMisconceptionProps) {
+}: Readonly<CommonMisconceptionProps>) {
   if (!misconception) return null;
 
   return (

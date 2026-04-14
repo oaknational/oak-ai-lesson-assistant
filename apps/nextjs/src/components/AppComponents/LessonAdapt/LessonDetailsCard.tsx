@@ -18,7 +18,7 @@ export function LessonDetailsCard({
   keywords,
   misconceptions,
   selectedKlps,
-}: LessonDetailsCardProps) {
+}: Readonly<LessonDetailsCardProps>) {
   return (
     <OakFlex
       $borderRadius="border-radius-m"

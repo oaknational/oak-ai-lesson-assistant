@@ -1,6 +1,6 @@
 import type { AdaptationPlan, SlideContent } from "@oakai/lesson-adapters";
 
-export type { SlideContent };
+export type { SlideContent } from "@oakai/lesson-adapters";
 
 export interface Thumbnail {
   objectId: string;

@@ -33,6 +33,38 @@ export interface FormatSlidesOptions {
   includeElementIds?: boolean;
 }
 
+function formatTableForPrompt(
+  table: NonNullable<SimplifiedSlideContent["tables"]>[number],
+  tableIdx: number,
+  includeElementIds: boolean,
+): string[] {
+  const lines: string[] = [];
+  if (includeElementIds) {
+    lines.push(
+      `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
+      `| Cell ID & Content |`,
+      `| --- | --- | --- |`,
+    );
+    for (const row of table.cells) {
+      const rowContent = row
+        .map((cell) => `[${cell.id}]${cell.content}`)
+        .join(" | ");
+      lines.push(`| ${rowContent} |`);
+    }
+  } else {
+    lines.push(
+      `\nTable ${tableIdx + 1} (${table.rows}×${table.columns}):`,
+      `| ${table.cells[0]?.map(() => "").join(" | ") ?? ""} |`,
+      `| --- |`,
+    );
+    for (const row of table.cells) {
+      const rowContent = row.map((cell) => cell.content).join(" | ");
+      lines.push(`| ${rowContent} |`);
+    }
+  }
+  return lines;
+}
+
 /**
  * Format slides in a readable structure for LLM prompts
  * @param slides - Array of slide content to format
@@ -94,29 +126,9 @@ export function formatSlidesForPrompt(
       if (tables.length > 0) {
         parts.push(`\n### Tables:`);
         tables.forEach((table, tableIdx) => {
-          if (includeElementIds) {
-            parts.push(
-              `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
-              `| Cell ID & Content |`,
-              `| --- | --- | --- |`,
-            );
-            table.cells.forEach((row) => {
-              const rowContent = row
-                .map((cell) => `[${cell.id}]${cell.content}`)
-                .join(" | ");
-              parts.push(`| ${rowContent} |`);
-            });
-          } else {
-            parts.push(
-              `\nTable ${tableIdx + 1} (${table.rows}×${table.columns}):`,
-              `| ${table.cells[0]?.map(() => "").join(" | ") ?? ""} |`,
-              `| --- |`,
-            );
-            table.cells.forEach((row) => {
-              const rowContent = row.map((cell) => cell.content).join(" | ");
-              parts.push(`| ${rowContent} |`);
-            });
-          }
+          parts.push(
+            ...formatTableForPrompt(table, tableIdx, includeElementIds),
+          );
         });
       }
 

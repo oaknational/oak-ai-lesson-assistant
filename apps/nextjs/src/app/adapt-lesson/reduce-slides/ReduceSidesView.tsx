@@ -72,23 +72,14 @@ function LessonAdaptContent() {
   const error = useLessonAdaptStore((state) => state.error);
   const lessonData = useLessonAdaptStore((state) => state.lessonData);
   const slideContent = useLessonAdaptStore((state) => state.slideContent);
-  const sessionId = useLessonAdaptStore((state) => state.sessionId);
-  const duplicatedPresentationId = useLessonAdaptStore(
-    (state) => state.duplicatedPresentationId,
-  );
-  const duplicatedPresentationUrl = useLessonAdaptStore(
-    (state) => state.duplicatedPresentationUrl,
-  );
   const thumbnails = useLessonAdaptStore((state) => state.thumbnails);
   const thumbnailsLoading = useLessonAdaptStore(
     (state) => state.thumbnailsLoading,
   );
-  const thumbnailsError = useLessonAdaptStore((state) => state.thumbnailsError);
   const currentPlan = useLessonAdaptStore((state) => state.currentPlan);
   const previousPlanResponse = useLessonAdaptStore(
     (state) => state.previousPlanResponse,
   );
-  const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
   const userSlideDeletions = useLessonAdaptStore(
     (state) => state.userSlideDeletions,
   );
@@ -176,13 +167,15 @@ function LessonAdaptContent() {
                       console.log(
                         "Rejecting all changes and keeping all slides",
                       );
-                      void actions.rejectAllChanges();
-                      void actions.clearPlan();
+                      actions.rejectAllChanges();
+                      actions.clearPlan();
                     } else {
                       console.log(
                         "Generating plan to remove non essential slides",
                       );
-                      void actions.generatePlan(`Remove non essential slides`);
+                      actions
+                        .generatePlan(`Remove non essential slides`)
+                        .catch(console.error);
                     }
                   }}
                   disabled={status === "generating-plan"}
@@ -212,7 +205,7 @@ function LessonAdaptContent() {
                     );
                     return (
                       <AdaptSlideCard
-                        key={`slide-${slide.slideId}-${index}`}
+                        key={slide.slideId}
                         title={`${slide.slideNumber}: ${formatSlideType(slide.slideType)}`}
                         isDeleted={slidePlan?.isDeleted}
                         thumbnailsLoading={thumbnailsLoading}
@@ -239,8 +232,8 @@ function LessonAdaptContent() {
                                 </OakSpan>
                               </OakP>
                               <OakOL $ml="spacing-16">
-                                {slide.keyLearningPoints.map((point, i) => (
-                                  <OakLI key={i} $font="body-3">
+                                {slide.keyLearningPoints.map((point) => (
+                                  <OakLI key={point} $font="body-3">
                                     {point}
                                   </OakLI>
                                 ))}
@@ -254,7 +247,7 @@ function LessonAdaptContent() {
               )}
             </OakFlex>
             {/* Debug info - collapsible */}
-            {isReady && slideContent && (
+            {slideContent && (
               <details className="border-t border-gray-300 bg-gray-50 p-4">
                 <summary className="cursor-pointer text-sm font-semibold">
                   Debug Info (Click to expand)

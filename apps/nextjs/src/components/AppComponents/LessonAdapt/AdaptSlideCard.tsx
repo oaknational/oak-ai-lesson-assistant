@@ -29,18 +29,8 @@ export const SLIDE_TYPE_SUMMARIES: Record<string, string> = {
 };
 
 export function formatSlideType(slideType: string): string {
-  return (
-    slideType
-      .replace(/([A-Z])/g, " $1")
-      .toLowerCase()
-      .slice(0, 1)
-      .toUpperCase() +
-    slideType
-      .replace(/([A-Z])/g, " $1")
-      .toLowerCase()
-      .slice(1)
-  );
-  // .replace(/^./, (s) => s.toUpperCase());
+  const spaced = slideType.replaceAll(/([A-Z])/g, " $1").toLowerCase();
+  return spaced.slice(0, 1).toUpperCase() + spaced.slice(1);
 }
 
 export type SlidePlan = {
@@ -81,13 +71,13 @@ export function AdaptSlideCard({
   thumbnailUrl,
   thumbnailsLoading,
   children,
-}: AdaptSlideCardProps) {
+}: Readonly<AdaptSlideCardProps>) {
   return (
     <OakBox
       $borderRadius="border-radius-m"
-      $background={!isDeleted ? "white" : "grey20"}
+      $background={isDeleted ? "grey20" : "white"}
       $ba="border-solid-m"
-      $borderColor={!isDeleted ? "border-primary" : "border-neutral-lighter"}
+      $borderColor={isDeleted ? "border-neutral-lighter" : "border-primary"}
     >
       <OakBox $pa="spacing-16">
         <OakFlex
@@ -102,7 +92,7 @@ export function AdaptSlideCard({
             {isDeleted !== undefined && (
               <OakTagFunctional
                 $color={"black"}
-                $background={!isDeleted ? "mint" : "grey30"}
+                $background={isDeleted ? "grey30" : "mint"}
                 label={isDeleted ? "Excluded" : "Included"}
                 $font={"body-4"}
               />

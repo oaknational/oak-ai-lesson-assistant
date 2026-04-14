@@ -20,7 +20,7 @@ export function SlideDeleteAdaptation({
   reasoning,
   isApproved,
   onToggle,
-}: SlideDeleteAdaptationProps) {
+}: Readonly<SlideDeleteAdaptationProps>) {
   return (
     <OakFlex
       $borderRadius="border-radius-s"

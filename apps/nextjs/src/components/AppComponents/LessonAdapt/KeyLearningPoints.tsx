@@ -10,7 +10,7 @@ interface KeyLearningPointsProps {
 export function KeyLearningPoints({
   keyLearningPoints,
   selectedKlps,
-}: KeyLearningPointsProps) {
+}: Readonly<KeyLearningPointsProps>) {
   return (
     <OakBox $mb="spacing-48">
       <OakHeading tag="h3" $font="heading-6" $mb="spacing-8">
@@ -24,7 +24,7 @@ export function KeyLearningPoints({
         $background={"grey10"}
       >
         {keyLearningPoints.map((point, index) => (
-          <OakP key={index}>
+          <OakP key={point}>
             {index + 1}. {point}
           </OakP>
         ))}

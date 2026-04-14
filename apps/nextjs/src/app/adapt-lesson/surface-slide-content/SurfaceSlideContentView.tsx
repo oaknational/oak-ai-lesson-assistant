@@ -15,7 +15,6 @@ import {
   OakP,
   OakSmallPrimaryButton,
   OakSpan,
-  OakTagFunctional,
 } from "@oaknational/oak-components";
 
 import type { SlidePlan } from "@/components/AppComponents/LessonAdapt/AdaptSlideCard";
@@ -73,23 +72,11 @@ function SurfaceSlideContent() {
   const error = useLessonAdaptStore((state) => state.error);
   const lessonData = useLessonAdaptStore((state) => state.lessonData);
   const slideContent = useLessonAdaptStore((state) => state.slideContent);
-  const sessionId = useLessonAdaptStore((state) => state.sessionId);
-  const duplicatedPresentationId = useLessonAdaptStore(
-    (state) => state.duplicatedPresentationId,
-  );
-  const duplicatedPresentationUrl = useLessonAdaptStore(
-    (state) => state.duplicatedPresentationUrl,
-  );
   const thumbnails = useLessonAdaptStore((state) => state.thumbnails);
   const thumbnailsLoading = useLessonAdaptStore(
     (state) => state.thumbnailsLoading,
   );
-  const thumbnailsError = useLessonAdaptStore((state) => state.thumbnailsError);
   const currentPlan = useLessonAdaptStore((state) => state.currentPlan);
-  const previousPlanResponse = useLessonAdaptStore(
-    (state) => state.previousPlanResponse,
-  );
-  const showReviewModal = useLessonAdaptStore((state) => state.showReviewModal);
   const userSlideDeletions = useLessonAdaptStore(
     (state) => state.userSlideDeletions,
   );
@@ -187,16 +174,19 @@ function SurfaceSlideContent() {
                   $gap="spacing-24"
                   $justifyContent={"center"}
                 >
-                  {slideContent.slides?.map((slide, index) => {
+                  {slideContent.slides?.map((slide) => {
                     const slidePlan = getSlideCardPlan(
                       slide.slideId,
                       currentPlan,
                       userSlideDeletions,
                     );
+                    const cyclesSuffix = slide.learningCycles?.length
+                      ? "- " + slide.learningCycles.join(", ")
+                      : "";
                     return (
                       <AdaptSlideCard
-                        key={`slide-${slide.slideId}-${index}`}
-                        title={`${formatSlideType(slide.slideType)} ${slide.learningCycles?.length ? `- ${slide.learningCycles.join(", ")}` : ""}`}
+                        key={slide.slideId}
+                        title={formatSlideType(slide.slideType) + " " + cyclesSuffix}
                         thumbnailsLoading={thumbnailsLoading}
                         thumbnailUrl={
                           thumbnails?.find(
@@ -221,9 +211,9 @@ function SurfaceSlideContent() {
                                 </OakSpan>
                               </OakP>
                               <OakOL $ml="spacing-16">
-                                {slide.keyLearningPoints.map((point, i) => (
+                                {slide.keyLearningPoints.map((point) => (
                                   <OakLI
-                                    key={i}
+                                    key={point}
                                     $font="body-3"
                                     style={{ lineHeight: "1.5" }}
                                   >
