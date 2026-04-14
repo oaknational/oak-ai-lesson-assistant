@@ -1,9 +1,11 @@
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type {
   ModerationResult,
   moderationResponseSchema,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
@@ -14,7 +16,6 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
-import { getMockModerationResult } from "./moderationFixtures";
 import { recordSafetyViolation } from "./safetyUtils";
 
 // Mock fixture data
@@ -91,6 +92,10 @@ const mockInput: PartialLessonContextSchemaType = {
   lessonParts: ["title", "learningOutcome", "learningCycles"],
 };
 
+jest.mock("@oakai/core/src/utils/ailaModeration/oakModerationService", () => ({
+  moderateWithOakService: jest.fn(),
+}));
+
 jest.mock("@oakai/logger", () => ({
   aiLogger: jest.fn(() => ({
     info: jest.fn(),
@@ -116,11 +121,11 @@ jest.mock(
   }),
 );
 
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 
-jest.mock("./moderationFixtures", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/mockModeration", () => ({
   getMockModerationResult: jest.fn(),
 }));
 
@@ -145,12 +150,14 @@ const mockAuth: SignedInAuthObject = {
   orgSlug: undefined,
   orgPermissions: undefined,
   __experimental_factorVerificationAge: null,
-  debug: () => ({}),
+  debug: (): Record<string, unknown> => ({}),
   getToken: jest.fn().mockResolvedValue("mock-token"),
   has: jest.fn().mockReturnValue(false),
 } as unknown as SignedInAuthObject;
 
 // Cast the mocked functions
+const mockModerateWithOakService =
+  moderateWithOakService as jest.MockedFunction<typeof moderateWithOakService>;
 const mockGeneratePartialLessonPlanObject =
   generatePartialLessonPlanObject as jest.MockedFunction<
     typeof generatePartialLessonPlanObject
@@ -296,7 +303,7 @@ describe("generatePartialLessonPlan", () => {
     const params = {
       prisma: mockPrisma,
       userId: "test-user",
-      input: { ...mockInput, title: "Test Lesson mod:tox" },
+      input: { ...mockInput, title: "Test Lesson oak-tox" },
       auth: mockAuth,
     };
 
@@ -392,6 +399,32 @@ describe("generatePartialLessonPlan", () => {
     });
   });
 
+  it("should use Oak Moderation Service when feature flag is enabled", async () => {
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY = "true";
+    process.env.MODERATION_API_URL = "https://moderation.test";
+
+    mockModerateWithOakService.mockResolvedValue(mockModerationResult);
+
+    const params = {
+      prisma: mockPrisma,
+      userId: "test-user",
+      input: mockInput,
+      auth: mockAuth,
+    };
+
+    const result = await generatePartialLessonPlan(params);
+
+    expect(mockModerateWithOakService).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ baseUrl: "https://moderation.test" }),
+    );
+    expect(mockGenerateTeachingMaterialModeration).not.toHaveBeenCalled();
+    expect(result.moderation).toEqual(mockModerationResult);
+
+    delete process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY;
+    delete process.env.MODERATION_API_URL;
+  });
+
   it("should use mock moderation result when available", async () => {
     const mockSensitiveResult: ModerationResult = {
       justification: "Content contains sensitive topics",
@@ -404,7 +437,7 @@ describe("generatePartialLessonPlan", () => {
     const params = {
       prisma: mockPrisma,
       userId: "test-user",
-      input: { ...mockInput, title: "Test Lesson mod:sen" },
+      input: { ...mockInput, title: "Test Lesson oak-sen" },
       auth: mockAuth,
     };
 

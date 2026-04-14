@@ -9,10 +9,9 @@ import type { StructuredLogger } from "@oakai/logger";
 import { structuredLogger } from "@oakai/logger";
 
 import { clerkClient } from "@clerk/nextjs/server";
-import type { Logger as InngestLogger } from "inngest";
 
 import { posthogAiBetaServerClient } from "../analytics/posthogAiBetaServerClient";
-import { inngest } from "../inngest";
+import { scheduleUserBanNotification } from "../backgroundTasks";
 import { UserBannedError } from "./userBannedError";
 
 const ALLOWED_VIOLATIONS = parseInt(
@@ -37,11 +36,7 @@ const checkWindowMs = 1000 * 60 * 60 * 24 * CHECK_WINDOW_DAYS;
 export class SafetyViolations {
   constructor(
     private readonly prisma: PrismaClientWithAccelerate,
-    // inngest's logger doesn't allow child logger creation, so make
-    // sure we accept instances of that too
-    private readonly logger:
-      | StructuredLogger
-      | InngestLogger = structuredLogger,
+    private readonly logger: StructuredLogger = structuredLogger,
   ) {}
 
   async recordViolation(
@@ -140,8 +135,7 @@ export class SafetyViolations {
       distinctId: userId,
       properties: { banned: true },
     });
-    await inngest.send({
-      name: "app/slack.notifyUserBan",
+    await scheduleUserBanNotification({
       user: { id: userId },
       data: {},
     });

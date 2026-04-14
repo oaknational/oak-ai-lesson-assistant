@@ -13,4 +13,5 @@ export {
   ThreatDetections,
   type ThreatDetectionWithSafetyViolation,
 } from "./threatDetections";
+export { UserBannedError } from "./userBannedError";
 export { demoUsers } from "./demoUsers";

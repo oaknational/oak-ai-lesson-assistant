@@ -50,10 +50,3 @@ export const WithHighlySensitiveModeration: Story = {
     chatId: "mock-chat-id",
   },
 };
-
-export const WithoutModeration: Story = {
-  args: {
-    lockingModeration: null,
-    chatId: "mock-chat-id",
-  },
-};

@@ -1,14 +1,13 @@
-import { inngest } from "@oakai/core/src/inngest";
-import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
-import { ThreatDetections as defaultThreatDetections } from "@oakai/core/src/models/threatDetections";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import {
+  SafetyViolations as defaultSafetyViolations,
+  ThreatDetections as defaultThreatDetections,
+  UserBannedError,
+  scheduleThreatDetectionAilaNotification,
+} from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
+import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-
-import type { InputJsonValue } from "@prisma/client/runtime/library";
-import * as Sentry from "@sentry/nextjs";
 
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
@@ -50,7 +49,7 @@ export async function handleThreatDetectionError(
     chatId,
     error,
     messages,
-    prisma,
+    prisma = globalPrisma,
   }: {
     userId: string;
     chatId: string;
@@ -70,8 +69,8 @@ export async function handleThreatDetectionError(
     ThreatDetections?: typeof defaultThreatDetections;
   } = {},
 ): Promise<ErrorDocument | ActionDocument> {
-  const prismaClient = prisma ?? globalPrisma;
   const threatDetection = getThreatDetectionOrDefault(error);
+
   if (!error.isAnalyticsEventReported) {
     await safelyReportAnalyticsEvent({
       eventName: "threat_detected",
@@ -90,11 +89,6 @@ export async function handleThreatDetectionError(
   }
 
   try {
-    log.info("Sending slack notification for threat detection", {
-      userId,
-      chatId,
-    });
-
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
       .map((msg) => ({
@@ -102,8 +96,7 @@ export async function handleThreatDetectionError(
         content: msg.content,
       }));
 
-    const eventPayload = {
-      name: "app/slack.notifyThreatDetectionAila" as const,
+    await scheduleThreatDetectionAilaNotification({
       user: {
         id: userId,
       },
@@ -113,32 +106,14 @@ export async function handleThreatDetectionError(
         threatDetection,
         messages: userMessages,
       },
-    };
-
-    log.info("Sending Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-      messageCount: userMessages.length,
-      threatDataProvider: threatDetection.provider,
     });
-
-    await inngest.send(eventPayload);
-
-    log.info("Successfully sent Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-    });
-  } catch (e) {
-    log.error("Error scheduling slack notification", e);
-    Sentry.captureException(e);
+  } catch {
     // NOTE: don't throw as it will prevent threat detection from being handled
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prismaClient, console);
-    const threatDetections = new ThreatDetections(prismaClient);
+    const safetyViolations = new SafetyViolations(prisma, console);
+    const threatDetections = new ThreatDetections(prisma);
     const threateningMessage = getThreateningMessage(messages);
 
     try {
@@ -150,6 +125,7 @@ export async function handleThreatDetectionError(
         chatId,
       );
       error.isSafetyViolationRecorded = true;
+
       await threatDetections.create({
         appSessionId: chatId,
         messageId: threateningMessage?.id,
@@ -162,6 +138,7 @@ export async function handleThreatDetectionError(
         providerResponse: getProviderResponse(threatDetection.rawResponse),
         safetyViolationId: safetyViolation.id,
       });
+
       await safetyViolations.enforceThreshold(userId);
     } catch (e) {
       if (e instanceof UserBannedError) {
@@ -216,6 +193,8 @@ function getThreateningMessage(
   return null;
 }
 
-function getProviderResponse(rawResponse: unknown): InputJsonValue | undefined {
-  return rawResponse as InputJsonValue | undefined;
+function getProviderResponse(
+  rawResponse: unknown,
+): Prisma.InputJsonValue | undefined {
+  return rawResponse as Prisma.InputJsonValue | undefined;
 }
