@@ -20,7 +20,7 @@ export const threatDetectionForSlackSchema = z.object({
   requestId: z.string().optional(),
 });
 
-export const notifyThreatDetectionTeachingMaterialsSchema = {
+export const notifyThreatDetectionTeachingMaterialsSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
@@ -30,4 +30,8 @@ export const notifyThreatDetectionTeachingMaterialsSchema = {
     threatDetection: threatDetectionResultSchema,
     messages: z.array(threatDetectionMessageSchema),
   }),
-};
+});
+
+export type NotifyThreatDetectionTeachingMaterialsInput = z.infer<
+  typeof notifyThreatDetectionTeachingMaterialsSchema
+>;

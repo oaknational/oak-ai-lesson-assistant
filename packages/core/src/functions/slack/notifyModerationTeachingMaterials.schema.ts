@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const notifyModerationTeachingMaterialsSchema = {
+export const notifyModerationTeachingMaterialsSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
@@ -10,4 +10,8 @@ export const notifyModerationTeachingMaterialsSchema = {
     categories: z.array(z.string()),
     userAction: z.string(),
   }),
-};
+});
+
+export type NotifyModerationTeachingMaterialsInput = z.infer<
+  typeof notifyModerationTeachingMaterialsSchema
+>;
