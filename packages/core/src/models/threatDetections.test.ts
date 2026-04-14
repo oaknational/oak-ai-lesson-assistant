@@ -22,15 +22,17 @@ describe("ThreatDetections", () => {
     deleteMany: jest.Mock;
   }) =>
     jest.fn().mockImplementation(
-      <T,>(callback: (tx: {
-        threatDetection: {
-          findUniqueOrThrow: jest.Mock;
-          update: jest.Mock;
-        };
-        safetyViolation: {
-          deleteMany: jest.Mock;
-        };
-      }) => Promise<T>) =>
+      <T>(
+        callback: (tx: {
+          threatDetection: {
+            findUniqueOrThrow: jest.Mock;
+            update: jest.Mock;
+          };
+          safetyViolation: {
+            deleteMany: jest.Mock;
+          };
+        }) => Promise<T>,
+      ) =>
         callback({
           threatDetection: {
             findUniqueOrThrow,
