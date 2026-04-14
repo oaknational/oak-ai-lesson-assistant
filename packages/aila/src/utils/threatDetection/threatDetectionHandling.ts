@@ -1,14 +1,13 @@
-import { inngest } from "@oakai/core/src/inngest";
-import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import { lakeraGuardResponseSchema } from "@oakai/core/src/threatDetection/lakera";
+import {
+  UserBannedError,
+  SafetyViolations as defaultSafetyViolations,
+  scheduleThreatDetectionAilaNotification,
+} from "@oakai/core";
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
-
-import { threatDetectionResultSchema } from "../../features/threatDetection/detectors/AilaThreatDetector";
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
   ActionDocument,
@@ -17,6 +16,31 @@ import type {
 import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 const log = aiLogger("aila:threat");
+
+function getThreatDetectionOrDefault(
+  error: AilaThreatDetectionError,
+): ThreatDetectionResult {
+  if (error.threatDetection) {
+    return error.threatDetection;
+  }
+
+  return {
+    provider: "unknown",
+    isThreat: true,
+    severity: "high",
+    category: "other",
+    message: error.message || "Potential threat detected",
+    rawResponse: undefined,
+    findings: [
+      {
+        category: "other",
+        severity: "high",
+        providerCode: "unknown",
+        detected: true,
+      },
+    ],
+  };
+}
 
 export async function handleThreatDetectionError(
   {
@@ -55,22 +79,7 @@ export async function handleThreatDetectionError(
   }
 
   try {
-    log.info("Sending slack notification for threat detection", {
-      userId,
-      chatId,
-    });
-
-    const parsedThreatData = threatDetectionResultSchema.safeParse(error.cause);
-    const parsedRawThreatData = lakeraGuardResponseSchema.safeParse(
-      parsedThreatData.data?.rawResponse,
-    );
-
-    if (!parsedRawThreatData.success) {
-      log.warn("Failed to parse Lakera threat detection data, using fallback", {
-        error: parsedRawThreatData.error,
-        rawData: parsedThreatData.data?.rawResponse,
-      });
-    }
+    const threatDetection = getThreatDetectionOrDefault(error);
 
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
@@ -79,44 +88,25 @@ export async function handleThreatDetectionError(
         content: msg.content,
       }));
 
-    const eventPayload = {
-      name: "app/slack.notifyThreatDetectionAila" as const,
+    const notification = {
       user: {
         id: userId,
       },
       data: {
         chatId,
         userAction: "CHAT_SESSION",
-        threatDetection: parsedRawThreatData.success
-          ? parsedRawThreatData.data
-          : { flagged: true },
+        threatDetection,
         messages: userMessages,
       },
     };
 
-    log.info("Sending Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-      messageCount: userMessages.length,
-      threatDataSuccess: parsedRawThreatData.success,
-    });
-
-    await inngest.send(eventPayload);
-
-    log.info("Successfully sent Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-    });
-  } catch (e) {
-    log.error("Error scheduling slack notification", e);
-    Sentry.captureException(e);
+    await scheduleThreatDetectionAilaNotification(notification);
+  } catch {
     // NOTE: don't throw as it will prevent threat detection from being handled
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma, console);
+    const safetyViolations = new SafetyViolations(prisma);
     try {
       await safetyViolations.recordViolation(
         userId,

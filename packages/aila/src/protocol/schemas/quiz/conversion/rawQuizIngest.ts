@@ -90,6 +90,7 @@ function buildMarkdownFromContent(
           attribution: getImageAttribution(item),
           width,
           height,
+          aiDescription: "",
         };
 
         // Push to the list of metadata

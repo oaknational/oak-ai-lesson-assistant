@@ -88,6 +88,7 @@ describe("convertHasuraQuizToV3", () => {
         attribution: "Photo by Photographer",
         width: 800,
         height: 600,
+        aiDescription: "",
       },
     ]);
   });

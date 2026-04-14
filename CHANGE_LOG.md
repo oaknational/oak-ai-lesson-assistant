@@ -1,3 +1,47 @@
+# [1.67.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.66.0...v1.67.0) (2026-03-31)
+
+
+### Bug Fixes
+
+* handle agentic threat detection before generation init ([#991](https://github.com/oaknational/oak-ai-lesson-assistant/issues/991)) ([126ea57](https://github.com/oaknational/oak-ai-lesson-assistant/commit/126ea57053b428e45d66f7a4d696bd2a8f905369))
+* update example lesson key stage from 3 to 2 (AI-2093) ([#992](https://github.com/oaknational/oak-ai-lesson-assistant/issues/992)) ([225b214](https://github.com/oaknational/oak-ai-lesson-assistant/commit/225b2148294b7ad100c833d598067d0b88040803))
+
+
+### Features
+
+* [AI-2081] switch to Model Armor threat detection ([#995](https://github.com/oaknational/oak-ai-lesson-assistant/issues/995)) ([40642f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/40642f4500c7eeaee8d611898bcf68cd4c8edc3d))
+* add production domain to Terraform Vercel project ([#994](https://github.com/oaknational/oak-ai-lesson-assistant/issues/994)) ([a0d5d72](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0d5d72f095a5b2581d6038272a19ddb9232ae1b))
+* add Terraform config for Vercel project ([#926](https://github.com/oaknational/oak-ai-lesson-assistant/issues/926)) ([0554575](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0554575ae563c8280a4bf825fcc2e3be93f41f01))
+* disable runtime image description enricher ([#972](https://github.com/oaknational/oak-ai-lesson-assistant/issues/972)) ([a664017](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a664017d493752883a2e7eaa57f505660aca6905))
+* quiz retrieval from Postgres with V3 format ([#971](https://github.com/oaknational/oak-ai-lesson-assistant/issues/971)) ([561ebf7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/561ebf7abe9cb3dd68ab240ac283f0290dcead4a))
+
+# [1.66.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.65.0...v1.66.0) (2026-03-19)
+
+
+### Bug Fixes
+
+* reduce sentry trace sampling to 0.05 ([#979](https://github.com/oaknational/oak-ai-lesson-assistant/issues/979)) ([7c4d3cc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c4d3cc35566f0cbc36d54c3de1b102199ef8225))
+* surface stream errors to frontend and handle controller double-close ([#975](https://github.com/oaknational/oak-ai-lesson-assistant/issues/975)) ([4cb2c33](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4cb2c33d4fac973c5328db84c459795b28ac5759))
+
+
+### Features
+
+* add highly-sensitive moderation category ([#973](https://github.com/oaknational/oak-ai-lesson-assistant/issues/973)) ([673d638](https://github.com/oaknational/oak-ai-lesson-assistant/commit/673d638a233f6c9e5661adc52de97c9a46721391))
+* use flagged_categories from Oak Moderation Service ([#976](https://github.com/oaknational/oak-ai-lesson-assistant/issues/976)) ([314b2c0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/314b2c01a4489cb9f2506a0659194949bd4b0919))
+
+# [1.65.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.2...v1.65.0) (2026-03-10)
+
+
+### Bug Fixes
+
+* show info message when RAG quiz bails ([#964](https://github.com/oaknational/oak-ai-lesson-assistant/issues/964)) ([cf881e6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cf881e6a88967f2353f08987ac7ac6674dd0c997))
+
+
+### Features
+
+* adopt Oak Moderation Service v1 with feature flag ([#967](https://github.com/oaknational/oak-ai-lesson-assistant/issues/967)) ([4c6bd53](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4c6bd538a8381b704db78a994e60848018ba97a7))
+* removing non essential slides ([#951](https://github.com/oaknational/oak-ai-lesson-assistant/issues/951)) ([f34e02c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f34e02cc55205fbe00be049c37c13cc169e6ef59))
+
 ## [1.64.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.64.1...v1.64.2) (2026-02-24)
 
 

@@ -825,19 +825,6 @@ export const FAQPageContent = () => {
               teacher-generated content that we have been able to integrate into
               the lesson development process.
             </OakP>
-            <OakHeading
-              tag="h3"
-              $font="body-1-bold"
-              $mt="spacing-48"
-              $mb="spacing-16"
-            >
-              Why did you give it a human name?
-            </OakHeading>
-            <OakP $mb="spacing-16">
-              In Aila&apos;s initial testing phases, users reported being unsure
-              of how to &apos;talk&apos; to the assistant. Giving it a name
-              humanises the chatbot and encourages more natural conversation.
-            </OakP>
           </div>
         </OakBoxCustomMaxWidth>
       </OakFlex>

@@ -16,7 +16,6 @@ import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { z } from "zod";
 
-import { inngest } from "../inngest";
 import { createOpenAILangchainClient } from "../llm/langchain";
 import type { SnippetWithLesson } from "./snippets";
 import { Snippets } from "./snippets";
@@ -24,12 +23,6 @@ import type { Caption } from "./types/caption";
 import { CaptionsSchema } from "./types/caption";
 
 const log = aiLogger("lessons");
-
-const EMBED_AFTER_CREATION = false;
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 export interface LessonWithSnippets {
   lesson: Omit<
@@ -51,65 +44,6 @@ export class Lessons {
 
   content(lesson: Lesson) {
     return ZLesson.parse(lesson.content);
-  }
-
-  async summariseAll(): Promise<void> {
-    let page = 0;
-    const perPage = 10;
-    let atEnd = false;
-    while (!atEnd) {
-      const lessons = await this.prisma.lesson.findMany({
-        skip: perPage * page,
-        take: perPage,
-        include: {
-          summaries: true,
-        },
-      });
-      for (const unsummarisedLesson of lessons.filter(
-        (l) => l.summaries.length === 0,
-      )) {
-        void inngest.send({
-          name: "app/lesson.summarise",
-          data: { lessonId: unsummarisedLesson.id },
-        });
-      }
-      await delay(4000);
-      if (lessons.length === 0) {
-        atEnd = true;
-      }
-      page += 1;
-    }
-  }
-
-  async summariseLessonsWithOutSummary(): Promise<void> {
-    let page = 0;
-    const perPage = 10;
-    let atEnd = false;
-    while (!atEnd) {
-      const lessons = await this.prisma.lesson.findMany({
-        skip: perPage * page,
-        take: perPage,
-        include: {
-          summaries: true,
-        },
-        where: {
-          isNewLesson: true,
-        },
-      });
-      for (const unsummarisedLesson of lessons.filter(
-        (l) => l.summaries.length === 0,
-      )) {
-        void inngest.send({
-          name: "app/lesson.summarise",
-          data: { lessonId: unsummarisedLesson.id },
-        });
-      }
-      await delay(4000);
-      if (lessons.length === 0) {
-        atEnd = true;
-      }
-      page += 1;
-    }
   }
 
   async summarise(id: string): Promise<LessonSummary | undefined> {
@@ -260,10 +194,6 @@ export class Lessons {
     });
 
     log.info("Created quiz question", quizQuestion);
-    await inngest.send({
-      name: "app/quizQuestion.embed",
-      data: { quizQuestionId: quizQuestion.id },
-    });
     return quizQuestion;
   }
 
@@ -331,13 +261,6 @@ export class Lessons {
       } catch (e) {
         // For now, swallow the error until we can change the unique index
         log.error(e);
-      }
-
-      if (quizAnswerId && EMBED_AFTER_CREATION) {
-        await inngest.send({
-          name: "app/quizAnswer.embed",
-          data: { quizAnswerId },
-        });
       }
     }
   }
@@ -423,12 +346,6 @@ export class Lessons {
         log.error("Failed to create snippet", err);
       }
       log.info("Created snippet", snippet);
-      if (snippet && EMBED_AFTER_CREATION) {
-        await inngest.send({
-          name: "app/snippet.embed",
-          data: { snippetId: snippet.id },
-        });
-      }
       index++;
     }
 

@@ -7,5 +7,5 @@ export function getExternalFacingUrl() {
     return vercelProductionUrl;
   }
 
-  return vercelUrl;
+  return process.env.VERCEL_BRANCH_URL ?? vercelUrl;
 }

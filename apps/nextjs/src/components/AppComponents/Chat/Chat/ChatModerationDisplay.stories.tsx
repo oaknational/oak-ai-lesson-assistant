@@ -29,19 +29,24 @@ type Story = StoryObj<typeof meta>;
 
 const toxicModeration: PersistedModerationBase = {
   id: "mock-moderation-id",
-  categories: ["l/discriminatory-behaviour"],
+  categories: ["t/encouragement-violence"],
 };
 
-export const WithModeration: Story = {
+const highlySensitiveModeration: PersistedModerationBase = {
+  id: "mock-moderation-id",
+  categories: ["n/self-harm-suicide"],
+};
+
+export const WithToxicModeration: Story = {
   args: {
-    toxicModeration,
+    lockingModeration: toxicModeration,
     chatId: "mock-chat-id",
   },
 };
 
-export const WithoutModeration: Story = {
+export const WithHighlySensitiveModeration: Story = {
   args: {
-    toxicModeration: null,
+    lockingModeration: highlySensitiveModeration,
     chatId: "mock-chat-id",
   },
 };

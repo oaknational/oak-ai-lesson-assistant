@@ -7,7 +7,7 @@ import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
 import { applyLlmFixtures, expectStreamingStatus } from "./aila-chat/helpers";
 
-const TOXIC_TAG = "mod:tox";
+const TOXIC_TAG = "oak-tox";
 
 test("Users are banned after 3 toxic lessons", async ({ page }) => {
   await test.step("Setup", async () => {
