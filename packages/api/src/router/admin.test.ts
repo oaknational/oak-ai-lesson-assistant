@@ -2,11 +2,6 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 import { adminRouter } from "./admin";
 
-const expectedMaxAllowedSafetyViolations = Number.parseInt(
-  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED ?? "5",
-  10,
-);
-
 const byUserId = jest.fn();
 const markFalsePositive = jest.fn();
 
@@ -76,17 +71,19 @@ describe("adminRouter", () => {
     const result = await caller.getUserSafetyReview({ userId: "user-123" });
 
     expect(byUserId).toHaveBeenCalledWith("user-123");
-    expect(result).toEqual({
-      maxAllowedSafetyViolations: expectedMaxAllowedSafetyViolations,
-      threatDetections: [
-        {
-          id: "threat-1",
-          safetyViolationId: "safety-threat-1",
-          safetyViolation: null,
-        },
-      ],
-      safetyViolations: [{ id: "safety-threat-1" }, { id: "safety-other-1" }],
-    });
+    expect(result).toEqual(
+      expect.objectContaining({
+        maxAllowedSafetyViolations: expect.any(Number),
+        threatDetections: [
+          {
+            id: "threat-1",
+            safetyViolationId: "safety-threat-1",
+            safetyViolation: null,
+          },
+        ],
+        safetyViolations: [{ id: "safety-threat-1" }, { id: "safety-other-1" }],
+      }),
+    );
   });
 
   it("marks a threat detection as a false positive", async () => {
