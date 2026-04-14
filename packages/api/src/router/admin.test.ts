@@ -2,6 +2,11 @@ import { clerkClient } from "@clerk/nextjs/server";
 
 import { adminRouter } from "./admin";
 
+const expectedMaxAllowedSafetyViolations = Number.parseInt(
+  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED ?? "5",
+  10,
+);
+
 const byUserId = jest.fn();
 const markFalsePositive = jest.fn();
 
@@ -72,7 +77,7 @@ describe("adminRouter", () => {
 
     expect(byUserId).toHaveBeenCalledWith("user-123");
     expect(result).toEqual({
-      maxAllowedSafetyViolations: 5,
+      maxAllowedSafetyViolations: expectedMaxAllowedSafetyViolations,
       threatDetections: [
         {
           id: "threat-1",
