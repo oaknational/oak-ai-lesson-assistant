@@ -2,7 +2,10 @@ export const extractLessonSlugFromInput = (input: string): string | null => {
   const trimmed = input.trim();
   if (!trimmed) return null;
 
-  const normalized = trimmed.replace(/\/+$/, "");
+  let normalized = trimmed;
+  while (normalized.endsWith("/")) {
+    normalized = normalized.slice(0, -1);
+  }
   const lessonsPath = "/lessons/";
   const lessonsIndex = normalized.indexOf(lessonsPath);
 
