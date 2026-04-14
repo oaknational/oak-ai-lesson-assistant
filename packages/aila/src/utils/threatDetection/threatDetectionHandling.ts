@@ -115,6 +115,8 @@ export async function handleThreatDetectionError(
     const safetyViolations = new SafetyViolations(prisma, console);
     const threatDetections = new ThreatDetections(prisma);
     const threateningMessage = getThreateningMessage(messages);
+    let shouldCheckThreshold = false;
+    let thresholdChecked = false;
 
     try {
       const safetyViolation = await safetyViolations.createViolation(
@@ -125,6 +127,7 @@ export async function handleThreatDetectionError(
         chatId,
       );
       error.isSafetyViolationRecorded = true;
+      shouldCheckThreshold = true;
 
       await threatDetections.create({
         appSessionId: chatId,
@@ -140,6 +143,7 @@ export async function handleThreatDetectionError(
       });
 
       await safetyViolations.enforceThreshold(userId);
+      thresholdChecked = true;
     } catch (e) {
       if (e instanceof UserBannedError) {
         return {
@@ -147,6 +151,22 @@ export async function handleThreatDetectionError(
           action: "SHOW_ACCOUNT_LOCKED",
         };
       }
+
+      if (shouldCheckThreshold && !thresholdChecked) {
+        try {
+          await safetyViolations.enforceThreshold(userId);
+        } catch (thresholdError) {
+          if (thresholdError instanceof UserBannedError) {
+            return {
+              type: "action",
+              action: "SHOW_ACCOUNT_LOCKED",
+            };
+          }
+
+          throw thresholdError;
+        }
+      }
+
       throw e;
     }
   } else {

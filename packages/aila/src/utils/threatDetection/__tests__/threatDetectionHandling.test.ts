@@ -1,4 +1,7 @@
-import { scheduleThreatDetectionAilaNotification } from "@oakai/core";
+import {
+  scheduleThreatDetectionAilaNotification,
+  UserBannedError,
+} from "@oakai/core";
 import type * as OakCore from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 
@@ -250,6 +253,82 @@ describe("handleThreatDetectionError", () => {
 
     expect(createViolation).toHaveBeenCalledTimes(1);
     expect(createThreatDetection).toHaveBeenCalledTimes(1);
+    expect(enforceThreshold).toHaveBeenCalledTimes(1);
+  });
+
+  it("still enforces the threshold when threat detection persistence fails", async () => {
+    const createViolation = jest
+      .fn()
+      .mockResolvedValue({ id: "violation-999" });
+    const enforceThreshold = jest.fn().mockResolvedValue(undefined);
+    const SafetyViolations = jest.fn().mockImplementation(() => ({
+      createViolation,
+      enforceThreshold,
+    }));
+    const createThreatDetection = jest
+      .fn()
+      .mockRejectedValue(new Error("failed to persist threat detection"));
+    const ThreatDetections = jest.fn().mockImplementation(() => ({
+      create: createThreatDetection,
+    }));
+
+    const error = new AilaThreatDetectionError("user-123", "Threat detected");
+
+    await expect(
+      handleThreatDetectionError(
+        {
+          userId: "user-123",
+          chatId: "chat-123",
+          error,
+          prisma: {} as never,
+        },
+        {
+          SafetyViolations,
+          ThreatDetections,
+        },
+      ),
+    ).rejects.toThrow("failed to persist threat detection");
+
+    expect(enforceThreshold).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns an account lock action when threshold enforcement bans the user after threat detection persistence fails", async () => {
+    const createViolation = jest
+      .fn()
+      .mockResolvedValue({ id: "violation-ban" });
+    const enforceThreshold = jest
+      .fn()
+      .mockRejectedValue(new UserBannedError("user-123"));
+    const SafetyViolations = jest.fn().mockImplementation(() => ({
+      createViolation,
+      enforceThreshold,
+    }));
+    const createThreatDetection = jest
+      .fn()
+      .mockRejectedValue(new Error("failed to persist threat detection"));
+    const ThreatDetections = jest.fn().mockImplementation(() => ({
+      create: createThreatDetection,
+    }));
+
+    const error = new AilaThreatDetectionError("user-123", "Threat detected");
+
+    const result = await handleThreatDetectionError(
+      {
+        userId: "user-123",
+        chatId: "chat-123",
+        error,
+        prisma: {} as never,
+      },
+      {
+        SafetyViolations,
+        ThreatDetections,
+      },
+    );
+
+    expect(result).toEqual({
+      type: "action",
+      action: "SHOW_ACCOUNT_LOCKED",
+    });
     expect(enforceThreshold).toHaveBeenCalledTimes(1);
   });
 });
