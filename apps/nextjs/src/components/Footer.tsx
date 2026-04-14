@@ -213,7 +213,7 @@ const FooterButton = ({
   const element = href ? Link : "button";
   return (
     <StyledOakLink
-      href={href ?? ""}
+      href={href}
       onClick={onClick}
       element={element}
       target={target}

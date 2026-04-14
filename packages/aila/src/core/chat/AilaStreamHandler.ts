@@ -46,9 +46,7 @@ export class AilaStreamHandler {
   }
 
   private async span(step: string, handler: () => Promise<void>) {
-    log.info(`${step} started`);
     await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
-    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
@@ -60,7 +58,6 @@ export class AilaStreamHandler {
     const messagesToCheck = (messages ?? this._chat.messages).filter(
       (message): message is ThreatDetectionMessage => message.role !== "data",
     );
-    log.info("Starting threat check");
     if (!this._chat.aila.threatDetection?.detectors) {
       log.info("No threat detectors configured");
       return;
@@ -330,18 +327,14 @@ export class AilaStreamHandler {
     log.info("Starting to read from stream");
     try {
       while (abortController ? !abortController?.signal.aborted : true) {
-        log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {
           log.info("Stream reading complete");
           break;
         }
         if (value) {
-          log.info("Processing chunk", { valueLength: value.length });
           this._chat.appendChunk(value);
           this._controller?.enqueue(value);
-        } else {
-          log.info("Received empty chunk");
         }
       }
     } catch (e) {
