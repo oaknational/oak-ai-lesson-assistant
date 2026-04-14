@@ -19,7 +19,7 @@ export function Keywords({ keywords }: Readonly<KeywordsProps>) {
         Keywords
       </OakHeading>
       <OakFlex $flexDirection="column" $gap="spacing-4">
-        {keywords.map((kw, index) => (
+        {keywords.map((kw) => (
           <OakP key={kw.keyword} $font="body-3">
             <OakSpan $font="body-3-bold">{kw.keyword}</OakSpan> -{" "}
             {kw.definition}

@@ -38,8 +38,6 @@ interface AdaptLessonContentProps {
   presentationUrl: string;
   lessonData: LessonData;
   thumbnails: Thumbnail[] | undefined;
-  thumbnailsError: { message: string } | null;
-  thumbnailsLoading?: boolean;
   slideKlpMappings: SlideContent[];
 }
 
