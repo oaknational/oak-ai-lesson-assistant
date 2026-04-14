@@ -5,9 +5,9 @@ import type {
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import {
+  UserBannedError,
   SafetyViolations as defaultSafetyViolations,
   ThreatDetections as defaultThreatDetections,
-  UserBannedError,
   scheduleModerationNotification,
 } from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";

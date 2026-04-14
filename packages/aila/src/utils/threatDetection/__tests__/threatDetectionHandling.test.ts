@@ -1,6 +1,6 @@
 import {
-  scheduleThreatDetectionAilaNotification,
   UserBannedError,
+  scheduleThreatDetectionAilaNotification,
 } from "@oakai/core";
 import type * as OakCore from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";

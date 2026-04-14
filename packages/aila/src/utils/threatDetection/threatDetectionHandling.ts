@@ -1,7 +1,7 @@
 import {
+  UserBannedError,
   SafetyViolations as defaultSafetyViolations,
   ThreatDetections as defaultThreatDetections,
-  UserBannedError,
   scheduleThreatDetectionAilaNotification,
 } from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
@@ -112,7 +112,7 @@ export async function handleThreatDetectionError(
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma, console);
+    const safetyViolations = new SafetyViolations(prisma);
     const threatDetections = new ThreatDetections(prisma);
     const threateningMessage = getThreateningMessage(messages);
     let shouldCheckThreshold = false;
