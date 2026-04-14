@@ -26,10 +26,10 @@ const DetectEmailLinkBannedUser = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: signIn.identifier }),
         });
-        const data = await res.json();
+        const data: { banned: boolean } = await res.json();
 
         if (data.banned) {
-          signIn.create({});
+          await signIn.create({});
           window.location.href = "/legal/account-locked";
         }
       } catch (err) {
@@ -44,7 +44,7 @@ const DetectEmailLinkBannedUser = () => {
       signIn?.identifier
     ) {
       hasBanChecked.current = true;
-      checkBanStatus();
+      void checkBanStatus();
     }
   }, [clerkSignIn.isLoaded, clerkSignIn.signIn]);
 
