@@ -6,7 +6,9 @@ interface NoChangesAdaptationProps {
   reasoning?: string;
 }
 
-export function NoChangesAdaptation({ reasoning }: Readonly<NoChangesAdaptationProps>) {
+export function NoChangesAdaptation({
+  reasoning,
+}: Readonly<NoChangesAdaptationProps>) {
   return (
     <OakBox
       $borderRadius="border-radius-s"

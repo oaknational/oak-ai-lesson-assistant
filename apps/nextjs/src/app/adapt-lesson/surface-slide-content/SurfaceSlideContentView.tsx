@@ -186,7 +186,9 @@ function SurfaceSlideContent() {
                     return (
                       <AdaptSlideCard
                         key={slide.slideId}
-                        title={formatSlideType(slide.slideType) + " " + cyclesSuffix}
+                        title={
+                          formatSlideType(slide.slideType) + " " + cyclesSuffix
+                        }
                         thumbnailsLoading={thumbnailsLoading}
                         thumbnailUrl={
                           thumbnails?.find(

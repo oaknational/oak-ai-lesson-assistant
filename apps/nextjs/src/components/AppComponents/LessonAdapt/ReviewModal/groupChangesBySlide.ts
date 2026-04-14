@@ -90,7 +90,12 @@ export function groupChangesBySlide(
 
     return {
       slideNumber,
-      title: slideNumber + ". " + formatSlideType(slideType || "Slide") + " " + cyclesSuffix,
+      title:
+        slideNumber +
+        ". " +
+        formatSlideType(slideType || "Slide") +
+        " " +
+        cyclesSuffix,
       typeLabel,
       description,
       klps: slide?.keyLearningPoints ?? [],
