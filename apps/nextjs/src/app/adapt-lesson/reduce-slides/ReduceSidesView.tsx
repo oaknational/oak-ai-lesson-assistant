@@ -164,15 +164,9 @@ function LessonAdaptContent() {
                 <OakSmallPrimaryButton
                   onClick={() => {
                     if (currentPlan) {
-                      console.log(
-                        "Rejecting all changes and keeping all slides",
-                      );
                       actions.rejectAllChanges();
                       actions.clearPlan();
                     } else {
-                      console.log(
-                        "Generating plan to remove non essential slides",
-                      );
                       actions
                         .generatePlan(`Remove non essential slides`)
                         .catch(console.error);
