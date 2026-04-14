@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { toast } from "react-hot-toast";
 
 import type { SafetyViolation } from "@oakai/db";
@@ -45,6 +46,38 @@ export function SafetyViolationListItem({
     },
   });
 
+  let action: ReactNode;
+
+  if (isThreatViolation && hasLinkedThreatDetection) {
+    action = (
+      <OakTagFunctional useSpan label="Managed via threat detections above" />
+    );
+  } else if (recordType === "MODERATION") {
+    action = (
+      <OakSmallSecondaryButton
+        iconName="cross"
+        onClick={() =>
+          void invalidateModeration.mutateAsync({
+            moderationId: recordId,
+          })
+        }
+        isLoading={invalidateModeration.isPending}
+      >
+        Invalidate moderation
+      </OakSmallSecondaryButton>
+    );
+  } else {
+    action = (
+      <OakSmallSecondaryButton
+        iconName="cross"
+        onClick={() => void removeSafetyViolation.mutateAsync({ id })}
+        isLoading={removeSafetyViolation.isPending}
+      >
+        Delete violation
+      </OakSmallSecondaryButton>
+    );
+  }
+
   return (
     <li className="rounded-md border p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
@@ -63,34 +96,7 @@ export function SafetyViolationListItem({
           </div>
         </dl>
 
-        <div className="flex shrink-0 flex-col items-end gap-3">
-          {isThreatViolation && hasLinkedThreatDetection ? (
-            <OakTagFunctional
-              useSpan
-              label="Managed via threat detections above"
-            />
-          ) : recordType === "MODERATION" ? (
-            <OakSmallSecondaryButton
-              iconName="cross"
-              onClick={() =>
-                void invalidateModeration.mutateAsync({
-                  moderationId: recordId,
-                })
-              }
-              isLoading={invalidateModeration.isPending}
-            >
-              Invalidate moderation
-            </OakSmallSecondaryButton>
-          ) : (
-            <OakSmallSecondaryButton
-              iconName="cross"
-              onClick={() => void removeSafetyViolation.mutateAsync({ id })}
-              isLoading={removeSafetyViolation.isPending}
-            >
-              Delete violation
-            </OakSmallSecondaryButton>
-          )}
-        </div>
+        <div className="flex shrink-0 flex-col items-end gap-3">{action}</div>
       </div>
     </li>
   );

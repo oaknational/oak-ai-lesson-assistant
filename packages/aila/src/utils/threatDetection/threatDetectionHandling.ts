@@ -18,6 +18,24 @@ import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 const log = aiLogger("aila:threat");
 
+type ThreatDetectionHandlingMessage = {
+  id?: string;
+  role: "system" | "user" | "assistant" | "data";
+  content: string;
+};
+
+type ThreatDetectionHandlingDeps = {
+  SafetyViolations?: typeof defaultSafetyViolations;
+  ThreatDetections?: typeof defaultThreatDetections;
+};
+
+function showAccountLockedAction(): ActionDocument {
+  return {
+    type: "action",
+    action: "SHOW_ACCOUNT_LOCKED",
+  };
+}
+
 function getThreatDetectionOrDefault(
   error: AilaThreatDetectionError,
 ): ThreatDetectionResult {
@@ -54,20 +72,13 @@ export async function handleThreatDetectionError(
     userId: string;
     chatId: string;
     error: AilaThreatDetectionError;
-    messages?: Array<{
-      id?: string;
-      role: "system" | "user" | "assistant" | "data";
-      content: string;
-    }>;
+    messages?: ThreatDetectionHandlingMessage[];
     prisma?: PrismaClientWithAccelerate;
   },
   {
     SafetyViolations = defaultSafetyViolations,
     ThreatDetections = defaultThreatDetections,
-  }: {
-    SafetyViolations?: typeof defaultSafetyViolations;
-    ThreatDetections?: typeof defaultThreatDetections;
-  } = {},
+  }: ThreatDetectionHandlingDeps = {},
 ): Promise<ErrorDocument | ActionDocument> {
   const threatDetection = getThreatDetectionOrDefault(error);
 
@@ -112,62 +123,18 @@ export async function handleThreatDetectionError(
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma);
-    const threatDetections = new ThreatDetections(prisma);
-    const threateningMessage = getThreateningMessage(messages);
-    let shouldCheckThreshold = false;
-    let thresholdChecked = false;
-
-    try {
-      const safetyViolation = await safetyViolations.createViolation(
-        userId,
-        "CHAT_MESSAGE",
-        "THREAT",
-        "CHAT_SESSION",
-        chatId,
-      );
-      error.isSafetyViolationRecorded = true;
-      shouldCheckThreshold = true;
-
-      await threatDetections.create({
-        appSessionId: chatId,
-        messageId: threateningMessage?.id,
-        userId,
-        threateningMessage:
-          threateningMessage?.content ?? threatDetection.message,
-        provider: threatDetection.provider,
-        category: threatDetection.category,
-        severity: threatDetection.severity,
-        providerResponse: getProviderResponse(threatDetection.rawResponse),
-        safetyViolationId: safetyViolation.id,
-      });
-
-      await safetyViolations.enforceThreshold(userId);
-      thresholdChecked = true;
-    } catch (e) {
-      if (e instanceof UserBannedError) {
-        return {
-          type: "action",
-          action: "SHOW_ACCOUNT_LOCKED",
-        };
-      }
-
-      if (shouldCheckThreshold && !thresholdChecked) {
-        try {
-          await safetyViolations.enforceThreshold(userId);
-        } catch (thresholdError) {
-          if (thresholdError instanceof UserBannedError) {
-            return {
-              type: "action",
-              action: "SHOW_ACCOUNT_LOCKED",
-            };
-          }
-
-          throw thresholdError;
-        }
-      }
-
-      throw e;
+    const action = await recordThreatDetectionSafetyViolation({
+      userId,
+      chatId,
+      error,
+      messages,
+      prisma,
+      threatDetection,
+      SafetyViolations,
+      ThreatDetections,
+    });
+    if (action) {
+      return action;
     }
   } else {
     log.info(
@@ -184,11 +151,7 @@ export async function handleThreatDetectionError(
 }
 
 function getThreateningMessage(
-  messages?: Array<{
-    id?: string;
-    role: "system" | "user" | "assistant" | "data";
-    content: string;
-  }>,
+  messages?: ThreatDetectionHandlingMessage[],
 ): { id?: string; content: string } | null {
   const lastUserMessage = messages?.findLast(
     (message) => message.role === "user",
@@ -217,4 +180,78 @@ function getProviderResponse(
   rawResponse: unknown,
 ): Prisma.InputJsonValue | undefined {
   return rawResponse as Prisma.InputJsonValue | undefined;
+}
+
+async function recordThreatDetectionSafetyViolation({
+  userId,
+  chatId,
+  error,
+  messages,
+  prisma,
+  threatDetection,
+  SafetyViolations,
+  ThreatDetections,
+}: {
+  userId: string;
+  chatId: string;
+  error: AilaThreatDetectionError;
+  messages?: ThreatDetectionHandlingMessage[];
+  prisma: PrismaClientWithAccelerate;
+  threatDetection: ThreatDetectionResult;
+  SafetyViolations: typeof defaultSafetyViolations;
+  ThreatDetections: typeof defaultThreatDetections;
+}): Promise<ActionDocument | null> {
+  const safetyViolations = new SafetyViolations(prisma);
+  const threatDetections = new ThreatDetections(prisma);
+  const threateningMessage = getThreateningMessage(messages);
+  let shouldCheckThreshold = false;
+  let thresholdChecked = false;
+
+  try {
+    const safetyViolation = await safetyViolations.createViolation(
+      userId,
+      "CHAT_MESSAGE",
+      "THREAT",
+      "CHAT_SESSION",
+      chatId,
+    );
+    error.isSafetyViolationRecorded = true;
+    shouldCheckThreshold = true;
+
+    await threatDetections.create({
+      appSessionId: chatId,
+      messageId: threateningMessage?.id,
+      userId,
+      threateningMessage:
+        threateningMessage?.content ?? threatDetection.message,
+      provider: threatDetection.provider,
+      category: threatDetection.category,
+      severity: threatDetection.severity,
+      providerResponse: getProviderResponse(threatDetection.rawResponse),
+      safetyViolationId: safetyViolation.id,
+    });
+
+    await safetyViolations.enforceThreshold(userId);
+    thresholdChecked = true;
+  } catch (e) {
+    if (e instanceof UserBannedError) {
+      return showAccountLockedAction();
+    }
+
+    if (shouldCheckThreshold && !thresholdChecked) {
+      try {
+        await safetyViolations.enforceThreshold(userId);
+      } catch (thresholdError) {
+        if (thresholdError instanceof UserBannedError) {
+          return showAccountLockedAction();
+        }
+
+        throw thresholdError;
+      }
+    }
+
+    throw e;
+  }
+
+  return null;
 }

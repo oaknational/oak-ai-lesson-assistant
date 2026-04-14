@@ -30,6 +30,7 @@ export function ThreatDetectionListItem({
         Sentry.captureException(err);
       },
     });
+  const canMarkFalsePositive = !threatDetection.isFalsePositive;
 
   return (
     <li className="rounded-md border p-6 shadow-sm">
@@ -87,7 +88,7 @@ export function ThreatDetectionListItem({
 
         <div className="flex w-full flex-col gap-4 lg:max-w-xs lg:flex-none">
           <div className="flex items-center gap-4">
-            {!threatDetection.isFalsePositive ? (
+            {canMarkFalsePositive ? (
               <OakSmallSecondaryButton
                 iconName="tick"
                 onClick={() =>

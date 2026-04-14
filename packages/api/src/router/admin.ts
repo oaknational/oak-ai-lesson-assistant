@@ -22,7 +22,7 @@ type AdminUserSafetyReview = {
   maxAllowedSafetyViolations: number;
 };
 
-const MAX_ALLOWED_SAFETY_VIOLATIONS = parseInt(
+const MAX_ALLOWED_SAFETY_VIOLATIONS = Number.parseInt(
   process.env.SAFETY_VIOLATIONS_MAX_ALLOWED ?? "5",
   10,
 );
