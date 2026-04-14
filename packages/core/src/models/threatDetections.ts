@@ -83,24 +83,42 @@ export class ThreatDetections {
   }
 
   async markFalsePositive(id: string): Promise<void> {
-    const threatDetection = await this.prisma.threatDetection.update({
-      where: {
-        id,
-      },
-      data: {
-        isFalsePositive: true,
-      },
-      select: {
-        safetyViolationId: true,
-      },
+    const threatDetection = await this.prisma.$transaction(async (tx) => {
+      const detection = await tx.threatDetection.findUniqueOrThrow({
+        where: {
+          id,
+        },
+        select: {
+          safetyViolationId: true,
+          userId: true,
+        },
+      });
+
+      if (detection.safetyViolationId) {
+        await tx.safetyViolation.deleteMany({
+          where: {
+            id: detection.safetyViolationId,
+          },
+        });
+      }
+
+      await tx.threatDetection.update({
+        where: {
+          id,
+        },
+        data: {
+          isFalsePositive: true,
+          safetyViolationId: null,
+        },
+      });
+
+      return detection;
     });
 
     if (!threatDetection.safetyViolationId) {
       return;
     }
 
-    await this.safetyViolations.removeViolationById(
-      threatDetection.safetyViolationId,
-    );
+    await this.safetyViolations.conditionallyUnbanUser(threatDetection.userId);
   }
 }

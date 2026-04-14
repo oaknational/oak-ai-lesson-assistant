@@ -12,6 +12,36 @@ describe("ThreatDetections", () => {
     jest.clearAllMocks();
   });
 
+  const createTransactionMock = ({
+    findUniqueOrThrow,
+    update,
+    deleteMany,
+  }: {
+    findUniqueOrThrow: jest.Mock;
+    update: jest.Mock;
+    deleteMany: jest.Mock;
+  }) =>
+    jest.fn().mockImplementation(
+      <T,>(callback: (tx: {
+        threatDetection: {
+          findUniqueOrThrow: jest.Mock;
+          update: jest.Mock;
+        };
+        safetyViolation: {
+          deleteMany: jest.Mock;
+        };
+      }) => Promise<T>) =>
+        callback({
+          threatDetection: {
+            findUniqueOrThrow,
+            update,
+          },
+          safetyViolation: {
+            deleteMany,
+          },
+        }),
+    );
+
   it("creates a threat detection record", async () => {
     const create = jest.fn().mockResolvedValue({ id: "threat-123" });
     const prisma = {
@@ -85,15 +115,77 @@ describe("ThreatDetections", () => {
   });
 
   it("marks a threat detection as false positive and deletes the linked safety violation", async () => {
-    const update = jest.fn().mockResolvedValue({
+    const findUniqueOrThrow = jest.fn().mockResolvedValue({
       safetyViolationId: "violation-123",
+      userId: "user-123",
     });
-    const removeViolationById = jest.fn().mockResolvedValue(undefined);
+    const deleteMany = jest.fn().mockResolvedValue({ count: 1 });
+    const update = jest.fn().mockResolvedValue(undefined);
+    const conditionallyUnbanUser = jest.fn().mockResolvedValue(undefined);
     const mockSafetyViolations = {
-      removeViolationById,
+      conditionallyUnbanUser,
     } as unknown as SafetyViolations;
     const prisma = {
+      $transaction: createTransactionMock({
+        findUniqueOrThrow,
+        update,
+        deleteMany,
+      }),
       threatDetection: {
+        findUniqueOrThrow,
+        update,
+      },
+    } as unknown as PrismaClientWithAccelerate;
+
+    const threatDetections = new ThreatDetections(prisma, mockSafetyViolations);
+
+    await threatDetections.markFalsePositive("threat-123");
+
+    expect(findUniqueOrThrow).toHaveBeenCalledWith({
+      where: {
+        id: "threat-123",
+      },
+      select: {
+        safetyViolationId: true,
+        userId: true,
+      },
+    });
+    expect(deleteMany).toHaveBeenCalledWith({
+      where: {
+        id: "violation-123",
+      },
+    });
+    expect(update).toHaveBeenCalledWith({
+      where: {
+        id: "threat-123",
+      },
+      data: {
+        isFalsePositive: true,
+        safetyViolationId: null,
+      },
+    });
+    expect(conditionallyUnbanUser).toHaveBeenCalledWith("user-123");
+  });
+
+  it("marks a threat detection as false positive without deleting anything when there is no linked safety violation", async () => {
+    const findUniqueOrThrow = jest.fn().mockResolvedValue({
+      safetyViolationId: null,
+      userId: "user-123",
+    });
+    const deleteMany = jest.fn();
+    const update = jest.fn().mockResolvedValue(undefined);
+    const conditionallyUnbanUser = jest.fn();
+    const mockSafetyViolations = {
+      conditionallyUnbanUser,
+    } as unknown as SafetyViolations;
+    const prisma = {
+      $transaction: createTransactionMock({
+        findUniqueOrThrow,
+        update,
+        deleteMany,
+      }),
+      threatDetection: {
+        findUniqueOrThrow,
         update,
       },
     } as unknown as PrismaClientWithAccelerate;
@@ -108,33 +200,10 @@ describe("ThreatDetections", () => {
       },
       data: {
         isFalsePositive: true,
-      },
-      select: {
-        safetyViolationId: true,
+        safetyViolationId: null,
       },
     });
-    expect(removeViolationById).toHaveBeenCalledWith("violation-123");
-  });
-
-  it("marks a threat detection as false positive without deleting anything when there is no linked safety violation", async () => {
-    const update = jest.fn().mockResolvedValue({
-      safetyViolationId: null,
-    });
-    const removeViolationById = jest.fn();
-    const mockSafetyViolations = {
-      removeViolationById,
-    } as unknown as SafetyViolations;
-    const prisma = {
-      threatDetection: {
-        update,
-      },
-    } as unknown as PrismaClientWithAccelerate;
-
-    const threatDetections = new ThreatDetections(prisma, mockSafetyViolations);
-
-    await threatDetections.markFalsePositive("threat-123");
-
-    expect(update).toHaveBeenCalled();
-    expect(removeViolationById).not.toHaveBeenCalled();
+    expect(deleteMany).not.toHaveBeenCalled();
+    expect(conditionallyUnbanUser).not.toHaveBeenCalled();
   });
 });
