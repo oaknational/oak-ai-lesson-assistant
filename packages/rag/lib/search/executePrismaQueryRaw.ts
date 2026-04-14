@@ -26,8 +26,13 @@ export function executePrismaQueryRaw({
     subjectSlugs,
     limit,
   });
-  const queryVectorString = `[${queryVector.join(",")}]`;
-  return prisma.$queryRaw<DeepPartial<RagLessonPlanResult>[]>`
+
+  if (!queryVector.length) {
+    throw new Error("queryVector cannot be empty");
+  }
+
+  const queryVectorSql = Prisma.sql`ARRAY[${Prisma.join(queryVector)}]::vector`;
+  const query = Prisma.sql`
       SELECT
       rag_lesson_plan_id as "ragLessonPlanId",
       oak_lesson_id as "oakLessonId",
@@ -35,7 +40,7 @@ export function executePrismaQueryRaw({
       lesson_plan as "lessonPlan",
       key as "matchedKey",
       value_text as "matchedValue",
-      embedding <-> ${queryVectorString}::vector as distance
+      embedding <-> ${queryVectorSql} as distance
     FROM rag.rag_lesson_plan_parts JOIN rag.rag_lesson_plans ON rag_lesson_plan_id = rag_lesson_plans.id
     WHERE rag_lesson_plans.is_published = true
       AND key_stage_slug IN (${Prisma.join(keyStageSlugs)})
@@ -44,4 +49,6 @@ export function executePrismaQueryRaw({
     ORDER BY distance asc
     LIMIT ${limit};
   `;
+
+  return prisma.$queryRaw<DeepPartial<RagLessonPlanResult>[]>(query);
 }
