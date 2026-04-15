@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-
 import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 
 import { OakSmallPrimaryButton } from "@oaknational/oak-components";
@@ -100,19 +99,19 @@ export default function ShareChat({
       </div>
       <div className="px-9 py-14 pb-30">
         <div className="mx-auto max-w-2xl">
-        {moderation && (
-          <ContentGuidanceBanner
-            categories={getDisplayCategories(moderation)}
-          />
-        )}
-        <div
-          data-testid="lesson-plan-markdown"
-          className="mb-14 border-b pb-14"
-        >
-          <OakMathJaxContext>
-            <StaticLessonPlanRenderer lessonPlan={lessonPlan} />
-          </OakMathJaxContext>
-        </div>
+          {moderation && (
+            <ContentGuidanceBanner
+              categories={getDisplayCategories(moderation)}
+            />
+          )}
+          <div
+            data-testid="lesson-plan-markdown"
+            className="mb-14 border-b pb-14"
+          >
+            <OakMathJaxContext>
+              <StaticLessonPlanRenderer lessonPlan={lessonPlan} />
+            </OakMathJaxContext>
+          </div>
         </div>
       </div>
     </div>

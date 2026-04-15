@@ -28,7 +28,8 @@ export function ContentGuidanceModalContent({
           <OakP $font="body-2">
             <OakSpan $font="body-2-bold">
               {"References "}
-              {category.shortDescription.charAt(0).toLowerCase() + category.shortDescription.slice(1)}
+              {category.shortDescription.charAt(0).toLowerCase() +
+                category.shortDescription.slice(1)}
               {": "}
             </OakSpan>{" "}
             {category.longDescription}
