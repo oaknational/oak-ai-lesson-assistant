@@ -27,9 +27,7 @@ export function ContentGuidanceModalContent({
         <OakBox key={category.shortDescription} $font="body-2">
           <OakP $font="body-2">
             <OakSpan $font="body-2-bold">
-              {"References "}
-              {category.shortDescription.charAt(0).toLowerCase() +
-                category.shortDescription.slice(1)}
+              {category.shortDescription}
               {": "}
             </OakSpan>{" "}
             {category.longDescription}
