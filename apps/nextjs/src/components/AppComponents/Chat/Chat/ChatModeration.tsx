@@ -1,12 +1,7 @@
 import React from "react";
 
-import {
-  ChatModerationProvider,
-  useChatModeration,
-} from "@/components/ContextProviders/ChatModerationContext";
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 
-import ModerationFeedbackModal from "../../FeedbackForms/ModerationFeedbackModal";
 import { ChatModerationDisplay } from "./ChatModerationDisplay";
 
 export type ChatModerationProps = Readonly<{
@@ -29,28 +24,7 @@ const ChatModeration = ({ children }: ChatModerationProps) => {
     );
   }
 
-  return (
-    <ChatModerationProvider chatId={id}>
-      <ChatModerationContentWithModal>
-        {children}
-      </ChatModerationContentWithModal>
-    </ChatModerationProvider>
-  );
-};
-
-const ChatModerationContentWithModal = ({ children }: ChatModerationProps) => {
-  const { moderationModalHelpers } = useChatModeration();
-
-  return (
-    <>
-      <ModerationFeedbackModal
-        moderationFeedbackFormProps={
-          moderationModalHelpers.moderationFeedbackFormProps
-        }
-      />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };
 
 export default ChatModeration;

@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const notifyModerationSchema = {
+export const notifyModerationSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
@@ -10,4 +10,6 @@ export const notifyModerationSchema = {
     categories: z.array(z.string()),
     safetyLevel: z.enum(["toxic", "highly-sensitive"]).optional(),
   }),
-};
+});
+
+export type NotifyModerationInput = z.infer<typeof notifyModerationSchema>;

@@ -148,7 +148,7 @@ export function actionsBlock({
             type: "plain_text",
             text: "Aila admin user",
           },
-          url: `https://labs.thenational.academy/admin/users/${userActionsProps.userId}`,
+          url: `https://${getExternalFacingUrl()}/admin/users/${userActionsProps.userId}`,
         },
       ]
     : [];

@@ -1,5 +1,5 @@
 import type { GeneratePartialLessonPlanResponse } from "@oakai/api/src/router/teachingMaterials/generatePartialLessonPlan";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import { aiLogger } from "@oakai/logger";
 import { lessonFieldKeys } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
 import { PartialLessonPlanFieldKeyArraySchema } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
