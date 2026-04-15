@@ -4,14 +4,13 @@ import { useEffect, useRef } from "react";
 
 import { aiLogger } from "@oakai/logger";
 
-import { useClerk, useSignIn } from "@clerk/nextjs";
+import { useSignIn } from "@clerk/nextjs";
 import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("auth");
 
 const DetectEmailLinkBannedUser = () => {
   const clerkSignIn = useSignIn();
-  const clerk = useClerk();
 
   const hasBanChecked = useRef(false);
 
