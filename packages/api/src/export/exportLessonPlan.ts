@@ -50,9 +50,13 @@ export async function exportLessonPlan({
     },
   });
 
-  const contentGuidanceCategories = moderations.flatMap((m) =>
-    getDisplayCategories(m),
-  );
+  const contentGuidanceCategories = [
+    ...new Map(
+      moderations
+        .flatMap((m) => getDisplayCategories(m))
+        .map((c) => [c.code, c]),
+    ).values(),
+  ];
 
   const hasContentGuidance = contentGuidanceCategories.length > 0;
 
