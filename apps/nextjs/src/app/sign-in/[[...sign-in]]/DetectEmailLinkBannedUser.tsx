@@ -12,7 +12,6 @@ const log = aiLogger("auth");
 const DetectEmailLinkBannedUser = () => {
   const clerkSignIn = useSignIn();
   const clerk = useClerk();
-  const client = clerk.client;
 
   const hasBanChecked = useRef(false);
 

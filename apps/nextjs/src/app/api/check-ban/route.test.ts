@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { clerkClient } from "@clerk/nextjs/server";
 
 import { checkRateLimit } from "./rate-limit";
 import { POST } from "./route";
@@ -10,6 +10,7 @@ const mockCheckRateLimit = jest.mocked(checkRateLimit);
 jest.mock("@clerk/nextjs/server");
 
 const mockGetUserList = jest.fn();
+const mockClerkClient = jest.mocked(clerkClient);
 
 jest.mock("@sentry/node", () => ({
   captureException: jest.fn(),
@@ -33,12 +34,11 @@ describe("POST /api/check-ban", () => {
     jest.clearAllMocks();
     mockLimit.mockResolvedValue(true);
 
-    const { clerkClient } = require("@clerk/nextjs/server");
-    jest.mocked(clerkClient).mockResolvedValue({
+    mockClerkClient.mockResolvedValue({
       users: {
         getUserList: mockGetUserList,
       },
-    });
+    } as unknown as Awaited<ReturnType<typeof clerkClient>>);
 
     mockGetUserList.mockResolvedValue({ data: [] });
   });
