@@ -27,23 +27,25 @@ export function ContentGuidanceModalContent({
         <OakBox key={category.shortDescription} $font="body-2">
           <OakP $font="body-2">
             <OakSpan $font="body-2-bold">
-              {category.shortDescription}
+              {"References "}
+              {category.shortDescription.charAt(0).toLowerCase() + category.shortDescription.slice(1)}
               {": "}
             </OakSpan>{" "}
             {category.longDescription}
           </OakP>
         </OakBox>
       ))}
-      <OakSecondaryLink
-        element="a"
-        href="https://support.thenational.academy/ailas-safety-guardrails"
-        target="_blank"
-        rel="noopener noreferrer"
-        iconName="external"
-        isTrailingIcon
-      >
-        Learn more about Aila&apos;s safety guardrails.
-      </OakSecondaryLink>
+      <OakP $font="body-2">
+        Please check content carefully. Learn more about{" "}
+        <OakSecondaryLink
+          element="a"
+          href="https://support.thenational.academy/ailas-safety-guardrails"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Aila&apos;s safety guardrails.
+        </OakSecondaryLink>
+      </OakP>
       <OakPrimaryButton onClick={onClose}>Continue</OakPrimaryButton>
     </>
   );
@@ -61,16 +63,21 @@ export function ContentGuidanceModal({
   onClose,
 }: ContentGuidanceModalProps) {
   return (
-    <OakModalCenter isOpen={open} onClose={onClose}>
-      <OakIcon iconName={"info"} $width="spacing-48" $height="spacing-48" />
+    <OakModalCenter
+      isOpen={open}
+      onClose={onClose}
+      modalInnerFlexProps={{ $ph: "spacing-80", $pb: "spacing-56" }}
+    >
       <OakFlex
-        $pb="spacing-56"
         $width="100%"
         $flexDirection="column"
-        $alignItems="flex-start "
+        $alignItems="flex-start"
         $justifyContent="center"
         $gap={"spacing-32"}
       >
+        <OakBox className="hidden md:block">
+          <OakIcon iconName={"info"} $width="spacing-48" $height="spacing-48" />
+        </OakBox>
         <OakHeading $font={["heading-5", "heading-5", "heading-4"]} tag="h1">
           {"Content guidance"}
         </OakHeading>
