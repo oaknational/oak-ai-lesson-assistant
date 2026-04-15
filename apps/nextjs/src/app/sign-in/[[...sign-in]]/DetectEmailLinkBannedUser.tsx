@@ -4,13 +4,16 @@ import { useEffect, useRef } from "react";
 
 import { aiLogger } from "@oakai/logger";
 
-import { useSignIn } from "@clerk/nextjs";
+import { useClerk, useSignIn } from "@clerk/nextjs";
 import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("auth");
 
 const DetectEmailLinkBannedUser = () => {
   const clerkSignIn = useSignIn();
+  const clerk = useClerk();
+  const client = clerk.client;
+
   const hasBanChecked = useRef(false);
 
   useEffect(() => {
@@ -26,10 +29,19 @@ const DetectEmailLinkBannedUser = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: signIn.identifier }),
         });
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(`Ban check failed with status ${res.status}`, {
+            cause: errorData,
+          });
+        }
+
         const data: { banned: boolean } = await res.json();
 
         if (data.banned) {
           await signIn.create({});
+
           window.location.href = "/legal/account-locked";
         }
       } catch (err) {
@@ -43,8 +55,8 @@ const DetectEmailLinkBannedUser = () => {
       firstFactor?.strategy === "email_link" &&
       signIn?.identifier
     ) {
-      hasBanChecked.current = true;
       void checkBanStatus();
+      hasBanChecked.current = true;
     }
   }, [clerkSignIn.isLoaded, clerkSignIn.signIn]);
 
