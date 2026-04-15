@@ -1,3 +1,16 @@
+# [1.68.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.67.0...v1.68.0) (2026-04-15)
+
+
+### Bug Fixes
+
+* use environment-aware URL for Aila admin user Slack button ([#1006](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1006)) ([71bc675](https://github.com/oaknational/oak-ai-lesson-assistant/commit/71bc6753db5cf84ba377251974f158dc52446311))
+
+
+### Features
+
+* aila and teaching material moderation v1 - AI-2046 ([#1002](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1002)) ([d6d5b28](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d6d5b28fcb6ca6b0b4a6bb0be08877512f873d85))
+* **core:** [AI-2109] replace inngest with background tasks ([#1007](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1007)) ([c658d32](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c658d32d4e9792b64cbd5f5aeea7b4c75e794c6c))
+
 # [1.67.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.66.0...v1.67.0) (2026-03-31)
 
 

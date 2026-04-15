@@ -1,12 +1,12 @@
-import { inngest } from "@oakai/core/src/inngest";
-import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import {
+  UserBannedError,
+  SafetyViolations as defaultSafetyViolations,
+  scheduleThreatDetectionAilaNotification,
+} from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-
-import * as Sentry from "@sentry/nextjs";
 
 import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
@@ -79,11 +79,6 @@ export async function handleThreatDetectionError(
   }
 
   try {
-    log.info("Sending slack notification for threat detection", {
-      userId,
-      chatId,
-    });
-
     const threatDetection = getThreatDetectionOrDefault(error);
 
     const userMessages = (messages ?? [])
@@ -93,8 +88,7 @@ export async function handleThreatDetectionError(
         content: msg.content,
       }));
 
-    const eventPayload = {
-      name: "app/slack.notifyThreatDetectionAila" as const,
+    const notification = {
       user: {
         id: userId,
       },
@@ -106,29 +100,13 @@ export async function handleThreatDetectionError(
       },
     };
 
-    log.info("Sending Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-      messageCount: userMessages.length,
-      threatDataProvider: threatDetection.provider,
-    });
-
-    await inngest.send(eventPayload);
-
-    log.info("Successfully sent Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-    });
-  } catch (e) {
-    log.error("Error scheduling slack notification", e);
-    Sentry.captureException(e);
+    await scheduleThreatDetectionAilaNotification(notification);
+  } catch {
     // NOTE: don't throw as it will prevent threat detection from being handled
   }
 
   if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma, console);
+    const safetyViolations = new SafetyViolations(prisma);
     try {
       await safetyViolations.recordViolation(
         userId,

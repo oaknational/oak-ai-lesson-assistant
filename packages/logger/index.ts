@@ -61,7 +61,6 @@ export type LoggerKey =
   | "fixtures"
   | "generation"
   | "ingest"
-  | "inngest"
   | "judgements"
   | "lakera-client"
   | "lessons"

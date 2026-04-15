@@ -5,7 +5,7 @@ import {
   threatDetectionResultSchema,
 } from "../../threatDetection/types";
 
-export const notifyThreatDetectionAilaSchema = {
+export const notifyThreatDetectionAilaSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
@@ -15,4 +15,8 @@ export const notifyThreatDetectionAilaSchema = {
     threatDetection: threatDetectionResultSchema,
     messages: z.array(threatDetectionMessageSchema),
   }),
-};
+});
+
+export type NotifyThreatDetectionAilaInput = z.infer<
+  typeof notifyThreatDetectionAilaSchema
+>;

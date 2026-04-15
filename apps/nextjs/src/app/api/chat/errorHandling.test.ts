@@ -1,7 +1,7 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError } from "@oakai/core";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";

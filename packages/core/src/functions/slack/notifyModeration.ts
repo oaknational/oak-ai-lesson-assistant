@@ -1,4 +1,3 @@
-import { inngest } from "../../inngest";
 import {
   actionsBlock,
   slackNotificationChannelId,
@@ -6,68 +5,49 @@ import {
   userIdBlock,
 } from "../../utils/slack";
 import { getExternalFacingUrl } from "./getExternalFacingUrl";
-import { notifyModerationSchema } from "./notifyModeration.schema";
+import type { NotifyModerationInput } from "./notifyModeration.schema";
 
-// Example event data:
-// {
-//   "chatId": "chat_abc",
-//   "userId": "user_abc",
-//   "justification": "This is a justification",
-//   "categories": ["t/category1", "u/category2"]
-// }
+export async function notifyModeration(event: NotifyModerationInput) {
+  const args = event.data;
 
-export const notifyModeration = inngest.createFunction(
-  {
-    name: "Notify in slack when a user's input is flagged for moderation",
-    id: "app-slack-notify-moderation",
-  },
-  { event: "app/slack.notifyModeration" },
-  async ({ event, step }) => {
-    await step.run("Send message to slack", async () => {
-      const args = notifyModerationSchema.data.parse(event.data);
+  const heading =
+    args.safetyLevel === "highly-sensitive"
+      ? "Highly sensitive content detected"
+      : "Toxic user input detected";
 
-      const heading =
-        args.safetyLevel === "highly-sensitive"
-          ? "Highly sensitive content detected"
-          : "Toxic user input detected";
-
-      const response = await slackWebClient.chat.postMessage({
-        channel: slackNotificationChannelId,
-        text: heading,
-        blocks: [
+  await slackWebClient.chat.postMessage({
+    channel: slackNotificationChannelId,
+    text: heading,
+    blocks: [
+      {
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: heading,
+        },
+      },
+      userIdBlock(event.user.id),
+      {
+        type: "section",
+        fields: [
           {
-            type: "header",
-            text: {
-              type: "plain_text",
-              text: heading,
-            },
+            type: "mrkdwn",
+            text: `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
           },
-          userIdBlock(event.user.id),
           {
-            type: "section",
-            fields: [
-              {
-                type: "mrkdwn",
-                text: `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Justification*: ${args.justification}`,
-              },
-              {
-                type: "mrkdwn",
-                text: `*Categories*: \`${args.categories.join("`, `")}\``,
-              },
-            ],
+            type: "mrkdwn",
+            text: `*Justification*: ${args.justification}`,
           },
-          actionsBlock({
-            userActionsProps: { userId: event.user.id },
-            chatActionsProps: { chatId: args.chatId },
-          }),
+          {
+            type: "mrkdwn",
+            text: `*Categories*: \`${args.categories.join("`, `")}\``,
+          },
         ],
-      });
-
-      return response;
-    });
-  },
-);
+      },
+      actionsBlock({
+        userActionsProps: { userId: event.user.id },
+        chatActionsProps: { chatId: args.chatId },
+      }),
+    ],
+  });
+}
