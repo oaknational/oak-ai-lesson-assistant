@@ -357,7 +357,7 @@ export async function handleChatPostRequest(
         threatDetectors,
       } = await setupChatHandler(req);
 
-      let chatId = resolvedChatId;
+      chatId = resolvedChatId;
       userId = await fetchAndCheckUser(chatId);
       span.setAttributes({ chat_id: chatId });
 
