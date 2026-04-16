@@ -1,6 +1,7 @@
 import type {
   Prisma,
   PrismaClientWithAccelerate,
+  SafetyViolationRecordType,
   ThreatDetection,
 } from "@oakai/db";
 
@@ -9,7 +10,9 @@ import type { InputJsonValue } from "@prisma/client/runtime/library";
 import { SafetyViolations } from "./safetyViolations";
 
 export type ThreatDetectionCreateInput = {
-  appSessionId: string;
+  appSessionId?: string;
+  recordType: SafetyViolationRecordType;
+  recordId: string;
   messageId?: string;
   userId: string;
   threateningMessage: string;
@@ -40,6 +43,8 @@ export class ThreatDetections {
 
   async create({
     appSessionId,
+    recordType,
+    recordId,
     messageId,
     userId,
     threateningMessage,
@@ -53,6 +58,8 @@ export class ThreatDetections {
     return this.prisma.threatDetection.create({
       data: {
         appSessionId,
+        recordType,
+        recordId,
         messageId,
         userId,
         threateningMessage,

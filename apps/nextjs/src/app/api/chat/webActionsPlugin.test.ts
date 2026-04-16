@@ -228,6 +228,8 @@ describe("onStreamError", () => {
     );
     expect(createThreatDetection).toHaveBeenCalledWith({
       appSessionId: "chat_abc",
+      recordType: "CHAT_SESSION",
+      recordId: "chat_abc",
       messageId: "message_abc",
       userId: "user_abc",
       threateningMessage: "test threat",

@@ -716,7 +716,9 @@ model ThreatDetection {
   id                 String           @id @default(cuid())
   createdAt          DateTime         @default(now()) @map("created_at")
   updatedAt          DateTime         @updatedAt @map("updated_at")
-  appSessionId       String           @map("app_session_id")
+  appSessionId       String?          @map("app_session_id")
+  recordType         SafetyViolationRecordType @map("record_type")
+  recordId           String           @map("record_id")
   messageId          String?          @map("message_id")
   userId             String           @map("user_id")
   threateningMessage String           @map("threatening_message")
@@ -726,10 +728,11 @@ model ThreatDetection {
   providerResponse   Json?            @map("provider_response") @db.JsonB
   isFalsePositive    Boolean          @default(false) @map("is_false_positive")
   safetyViolationId  String?          @unique @map("safety_violation_id")
-  appSession         AppSession       @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
+  appSession         AppSession?      @relation(fields: [appSessionId], references: [id], onDelete: Cascade)
   safetyViolation    SafetyViolation? @relation(fields: [safetyViolationId], references: [id], onDelete: SetNull)
 
   @@index([appSessionId], name: "idx_threat_detections_app_session_id")
+  @@index([recordType, recordId], name: "idx_threat_detections_record")
   @@index([userId], name: "idx_threat_detections_user_id")
   @@map("threat_detections")
   @@schema("public")

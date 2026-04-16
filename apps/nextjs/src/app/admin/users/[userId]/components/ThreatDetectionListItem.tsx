@@ -66,8 +66,18 @@ export function ThreatDetectionListItem({
               <dd>{threatDetection.severity ?? "unknown"}</dd>
             </div>
             <div>
-              <dt className="font-semibold text-zinc-900">Chat ID</dt>
-              <dd className="break-all">{threatDetection.appSessionId}</dd>
+              <dt className="font-semibold text-zinc-900">Record type</dt>
+              <dd className="capitalize">
+                {threatDetection.recordType.toLowerCase().replaceAll("_", " ")}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-zinc-900">
+                {threatDetection.appSessionId ? "Chat ID" : "Record ID"}
+              </dt>
+              <dd className="break-all">
+                {threatDetection.appSessionId ?? threatDetection.recordId}
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-zinc-900">Message ID</dt>

@@ -220,6 +220,8 @@ async function recordThreatDetectionSafetyViolation({
 
     await threatDetections.create({
       appSessionId: chatId,
+      recordType: "CHAT_SESSION",
+      recordId: chatId,
       messageId: threateningMessage?.id,
       userId,
       threateningMessage:
