@@ -108,7 +108,7 @@ importers:
         version: 1.7.17(react-dom@19.2.1)(react@19.2.1)
       '@langchain/community':
         specifier: ^0.0.26
-        version: 0.0.26(cohere-ai@7.19.0)(lodash@4.17.21)
+        version: 0.0.26(cohere-ai@7.19.0)
       '@mux/mux-player-react':
         specifier: ^2.9.1
         version: 2.9.1(@types/react-dom@19.2.3)(@types/react@19.2.7)(react-dom@19.2.1)(react@19.2.1)
@@ -239,8 +239,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0
       cloudinary:
-        specifier: ^1.41.1
-        version: 1.41.1
+        specifier: ^2.7.0
+        version: 2.7.0
       cohere-ai:
         specifier: ^7.19.0
         version: 7.19.0
@@ -5629,7 +5629,7 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  /@langchain/community@0.0.26(cohere-ai@7.19.0)(lodash@4.17.21):
+  /@langchain/community@0.0.26(cohere-ai@7.19.0):
     resolution: {integrity: sha512-E5/lltEkkRCxA9WQ/IpdTWUBj5gaCOYuf6r2MX4ZNTR5gfaZkHdLQWF1rew6uG3Z7XjRMMtIxxT9jS7me6sRRA==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -5883,7 +5883,6 @@ packages:
       cohere-ai: 7.19.0
       flat: 5.0.2
       langsmith: 0.0.48
-      lodash: 4.17.21
       uuid: 9.0.1
       zod: 3.25.76
     transitivePeerDependencies:
@@ -13362,24 +13361,6 @@ packages:
     engines: {node: '>=0.8'}
     dev: true
 
-  /cloudinary-core@2.13.0(lodash@4.17.21):
-    resolution: {integrity: sha512-Nt0Q5I2FtenmJghtC4YZ3MZZbGg1wLm84SsxcuVwZ83OyJqG9CNIGp86CiI6iDv3QobaqBUpOT7vg+HqY5HxEA==}
-    peerDependencies:
-      lodash: '>=4.0'
-    dependencies:
-      lodash: 4.17.21
-    dev: false
-
-  /cloudinary@1.41.1:
-    resolution: {integrity: sha512-EBNEmhSNtES8d9dAd1tg9mKJk2jB5LvRxDcgNk7JiMDWNeHkSpwroJwnHZN4XdxKvjLnj9a9pbOgdPW90GkG1g==}
-    engines: {node: '>=0.6'}
-    dependencies:
-      cloudinary-core: 2.13.0(lodash@4.17.21)
-      core-js: 3.35.0
-      lodash: 4.17.21
-      q: 1.5.1
-    dev: false
-
   /cloudinary@2.7.0:
     resolution: {integrity: sha512-qrqDn31+qkMCzKu1GfRpzPNAO86jchcNwEHCUiqvPHNSFqu7FTNF9FuAkBUyvM1CFFgFPu64NT0DyeREwLwK0w==}
     engines: {node: '>=9'}
@@ -13704,11 +13685,6 @@ packages:
     resolution: {integrity: sha512-J/r5JTHSmzTxbiYYrzXg9w1VpqrYt+gexenBE9pugeyhwPZTAEJddyiReJWsLO6uNQ8xJZFbod6XC7KKwatCiA==}
     requiresBuild: true
     dev: true
-
-  /core-js@3.35.0:
-    resolution: {integrity: sha512-ntakECeqg81KqMueeGJ79Q5ZgQNR+6eaE8sxGCx62zMbAIj65q+uYvatToew3m6eAGdU4gNZwpZ34NMe4GYswg==}
-    requiresBuild: true
-    dev: false
 
   /core-js@3.39.0:
     resolution: {integrity: sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==}
