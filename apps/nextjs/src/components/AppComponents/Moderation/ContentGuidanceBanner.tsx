@@ -17,7 +17,7 @@ const severityDisplay: Record<
   "content-guidance": {
     bannerText:
       "The content in this lesson may require additional consideration before delivery.",
-    linkText: "View content guidance.",
+    linkText: "View content guidance",
   },
   "enhanced-scrutiny": {
     bannerText: "This lesson includes content that requires enhanced scrutiny.",
