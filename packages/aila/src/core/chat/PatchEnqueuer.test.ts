@@ -2,17 +2,17 @@
 import { PatchEnqueuer } from "./PatchEnqueuer";
 
 describe("PatchEnqueuer", () => {
-  // enqueuePatch should encode and enqueue a valid patch
+  // enqueueInitialField should encode and enqueue a valid patch
   it("should encode and enqueue a valid patch when value is provided", async () => {
     const controller = {
       enqueue: jest.fn(),
     } as unknown as ReadableStreamDefaultController;
 
     const patchEnqueuer = new PatchEnqueuer(controller);
-    const path = "/test/path";
-    const value = { key: "value" };
+    const path = "/title" as const;
+    const value = "Test Lesson";
 
-    await patchEnqueuer.enqueuePatch(path, value);
+    await patchEnqueuer.enqueueInitialField(path, value);
 
     expect(controller.enqueue).toHaveBeenCalled();
     const expectedPatch = `\n␞\n${JSON.stringify({

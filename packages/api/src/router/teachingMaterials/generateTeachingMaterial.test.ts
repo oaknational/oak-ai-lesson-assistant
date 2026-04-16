@@ -1,4 +1,5 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generateTeachingMaterialObject } from "@oakai/teaching-materials/src/documents/teachingMaterials/generateTeachingMaterialObject";
 
@@ -16,7 +17,13 @@ import {
   mockToxicModerationResult,
 } from "./testFixtures";
 
+jest.mock("@oakai/core/src/utils/ailaModeration/oakModerationService", () => ({
+  moderateWithOakService: jest.fn(),
+}));
+
 // Cast the mocked functions
+const mockModerateWithOakService =
+  moderateWithOakService as jest.MockedFunction<typeof moderateWithOakService>;
 const mockGenerateTeachingMaterialObject =
   generateTeachingMaterialObject as jest.MockedFunction<
     typeof generateTeachingMaterialObject
@@ -43,7 +50,7 @@ jest.mock(
 jest.mock("@oakai/teaching-materials", () => ({
   generateTeachingMaterialModeration: jest.fn(),
 }));
-jest.mock("@oakai/core/src/utils/ailaModeration/helpers", () => ({
+jest.mock("@oakai/core/src/utils/ailaModeration/safetyResult.ts", () => ({
   isToxic: jest.fn(),
 }));
 jest.mock("./safetyUtils", () => ({
@@ -253,6 +260,45 @@ describe("generateTeachingMaterial", () => {
     expect(result.moderation).toEqual(mockModerationResult);
     expect(result.resourceId).toBe("mock-interaction-id");
     expect(result.rateLimit).toEqual(mockRateLimit);
+  });
+
+  it("should use Oak Moderation Service when feature flag is enabled", async () => {
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY = "true";
+    process.env.MODERATION_API_URL = "https://moderation.test";
+
+    mockModerateWithOakService.mockResolvedValue(mockModerationResult);
+
+    const params: GenerateTeachingMaterialParams = {
+      prisma: mockPrisma,
+      userId: "test-user",
+      input: {
+        documentType: "additional-glossary" as const,
+        source: "aila",
+        context: {
+          lessonPlan: {
+            title: "Test Lesson",
+            topic: "Students will learn about mock terms",
+            keyStage: "ks3",
+            subject: "english",
+          },
+          refinement: [{ type: "custom" as const, payload: "test-refinement" }],
+        },
+      },
+      auth: mockAuth,
+      rateLimit: mockRateLimit,
+    };
+
+    const result = await generateTeachingMaterial(params);
+
+    expect(mockModerateWithOakService).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ baseUrl: "https://moderation.test" }),
+    );
+    expect(mockGenerateTeachingMaterialModeration).not.toHaveBeenCalled();
+    expect(result.moderation).toEqual(mockModerationResult);
+
+    delete process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY;
+    delete process.env.MODERATION_API_URL;
   });
 
   it("should handle null adaptsOutputId", async () => {

@@ -1,8 +1,8 @@
-import { DEFAULT_QUIZ_GENERATORS } from "@oakai/aila/src/constants";
+import { DEFAULT_QUIZ_SOURCES } from "@oakai/aila/src/constants";
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
-import type { QuizGeneratorType } from "@oakai/aila/src/core/quiz/schema";
+import type { QuestionSourceType } from "@oakai/aila/src/core/quiz/schema";
 import type {
   AilaInitializationOptions,
   AilaOptions,
@@ -15,8 +15,6 @@ import {
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
-import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
-import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
@@ -39,24 +37,31 @@ import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,
   getFixtureModerationOpenAiClient,
+  getFixtureOakModerator,
 } from "./fixtures";
+import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
 const log = aiLogger("chat");
 
-function getQuizGenerators(): QuizGeneratorType[] {
-  const envValue = process.env.AILA_QUIZ_GENERATORS;
+function getQuizSources(): QuestionSourceType[] {
+  const envValue = process.env.AILA_QUIZ_SOURCES;
   if (envValue) {
-    const generators = envValue.split(",").map((g) => g.trim());
-    const validGenerators = generators.filter((g): g is QuizGeneratorType =>
-      ["rag", "ml", "basedOnRag"].includes(g),
+    const sources = envValue.split(",").map((s) => s.trim());
+    const validSources = sources.filter((s): s is QuestionSourceType =>
+      [
+        "currentQuiz",
+        "similarLessons",
+        "basedOnLesson",
+        "multiQuerySemantic",
+      ].includes(s),
     );
-    if (validGenerators.length > 0) {
-      return validGenerators;
+    if (validSources.length > 0) {
+      return validSources;
     }
   }
   // Default fallback
-  return DEFAULT_QUIZ_GENERATORS;
+  return DEFAULT_QUIZ_SOURCES;
 }
 
 export const maxDuration = 300;
@@ -71,7 +76,7 @@ async function setupChatHandler(req: NextRequest) {
   return await startSpan(
     "chat-setup-chat-handler",
     {},
-    async (span: TracingSpan) => {
+    async (_span: TracingSpan) => {
       const json = await req.json();
       const {
         id: chatId,
@@ -83,20 +88,19 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-nov-25");
-      const useLegacyAgenticAila = await serverSideFeatureFlag(
-        "agentic-aila-may-25",
-      );
+      const useAgenticAila =
+        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
+          ? false
+          : await serverSideFeatureFlag("agentic-aila-nov-25");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
-        quizGenerators: getQuizGenerators(),
+        quizSources: getQuizSources(),
         usePersistence: true,
         useModeration: true,
         useAgenticAila,
-        useLegacyAgenticAila,
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);
@@ -104,11 +108,8 @@ async function setupChatHandler(req: NextRequest) {
         req.headers,
         chatId,
       );
-
-      const threatDetectors = [
-        new HeliconeThreatDetector(),
-        new LakeraThreatDetector(),
-      ];
+      const oakModerator = getFixtureOakModerator(req.headers);
+      const threatDetectors = getThreatDetectors();
 
       return {
         chatId,
@@ -116,6 +117,7 @@ async function setupChatHandler(req: NextRequest) {
         options,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       };
     },
@@ -286,6 +288,7 @@ type CreateAilaInstanceArguments = {
   lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
+  oakModerator: ReturnType<typeof getFixtureOakModerator>;
   threatDetectors: AilaThreatDetector[];
 };
 
@@ -298,6 +301,7 @@ async function createAilaInstance({
   lessonPlan,
   llmService,
   moderationAiClient,
+  oakModerator,
   threatDetectors,
 }: CreateAilaInstanceArguments): Promise<Aila> {
   return await startSpan(
@@ -314,6 +318,7 @@ async function createAilaInstance({
         services: {
           chatLlmService: llmService,
           moderationAiClient,
+          oakModerator,
           ragService: (aila: AilaServices) => new AilaRag({ aila }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
@@ -344,6 +349,7 @@ export async function handleChatPostRequest(
       options,
       llmService,
       moderationAiClient,
+      oakModerator,
       threatDetectors,
     } = await setupChatHandler(req);
     span.setAttributes({ chat_id: chatId });
@@ -368,6 +374,7 @@ export async function handleChatPostRequest(
         lessonPlan: dbLessonPlan,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       });
       invariant(aila, "Aila instance is required");

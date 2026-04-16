@@ -1,12 +1,10 @@
 import * as Sentry from "@sentry/nextjs";
 import type OpenAI from "openai";
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import type { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
-import type {
-  AgenticRagLessonPlanResult,
-  AilaExecutionContext,
-} from "../../types";
+import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
@@ -23,6 +21,7 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx,
   defaultVoice,
   voices,
+  modelParams,
 }: {
   responseSchema: z.ZodType<ResponseType>;
   instructions: string;
@@ -32,6 +31,10 @@ export function createSectionAgent<ResponseType>({
   ) => { role: "user" | "developer"; content: string }[];
   defaultVoice?: VoiceId;
   voices?: VoiceId[];
+  modelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  >;
 }) {
   return ({
     id,
@@ -55,19 +58,22 @@ export function createSectionAgent<ResponseType>({
           contentFromDocument,
         });
 
-      const genericPromptAgent = sectionToGenericPromptAgent({
-        responseSchema,
-        instructions,
-        messages: ctx.persistedState.messages,
-        contentToString,
-        basedOnContent,
-        exemplarContent,
-        currentValue,
-        ctx,
-        extraInputFromCtx,
-        defaultVoice,
-        voices,
-      });
+      const genericPromptAgent = sectionToGenericPromptAgent(
+        {
+          responseSchema,
+          instructions,
+          messages: ctx.persistedState.messages,
+          contentToString,
+          basedOnContent,
+          exemplarContent,
+          currentValue,
+          ctx,
+          extraInputFromCtx,
+          defaultVoice,
+          voices,
+        },
+        modelParams,
+      );
 
       return executeGenericPromptAgent({
         agent: genericPromptAgent,

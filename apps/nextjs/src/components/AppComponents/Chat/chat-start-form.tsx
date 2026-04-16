@@ -8,6 +8,7 @@ import {
 } from "@/components/AppComponents/Chat/ui/tooltip";
 import { Icon } from "@/components/Icon";
 import LoadingWheel from "@/components/LoadingWheel";
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 
 export function ChatStartForm({
@@ -23,6 +24,11 @@ export function ChatStartForm({
 }>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Disable submission until Clerk metadata has loaded. This prevents race
+  // conditions (particularly in E2E tests) where submitting before metadata
+  // loads would incorrectly show the demo interstitial modal to non-demo users.
+  const clerkMetadata = useClerkDemoMetadata();
+  const isDisabled = isSubmitting || !clerkMetadata.isSet;
 
   useEffect(() => {
     if (inputRef.current) {
@@ -65,7 +71,7 @@ export function ChatStartForm({
                 data-testid="send-message"
                 type="submit"
                 className={`${isSubmitting ? "hidden" : "inline-block"} rounded-full bg-black p-4`}
-                disabled={isSubmitting}
+                disabled={isDisabled}
               >
                 <Icon icon="chevron-right" color="white" size="sm" />
               </button>

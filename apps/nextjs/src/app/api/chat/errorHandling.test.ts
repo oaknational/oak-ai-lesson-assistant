@@ -1,7 +1,7 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError } from "@oakai/core";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -26,7 +26,7 @@ describe("handleChatException", () => {
           message: "Threat was detected",
         });
 
-      const span = { setTag: jest.fn() } as unknown as TracingSpan;
+      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaThreatDetectionError("user_abc", "test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
@@ -47,7 +47,7 @@ describe("handleChatException", () => {
 
   describe("AilaAuthenticationError", () => {
     it("should return an error chat message", async () => {
-      const span = { setTag: jest.fn() } as unknown as TracingSpan;
+      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaAuthenticationError("test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 
@@ -67,7 +67,7 @@ describe("handleChatException", () => {
 
   describe("RateLimitExceededError", () => {
     it("should return an error chat message", async () => {
-      const span = { setTag: jest.fn() } as unknown as TracingSpan;
+      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new RateLimitExceededError(
         "user_abc",
         100,
@@ -98,7 +98,7 @@ describe("handleChatException", () => {
 
   describe("UserBannedError", () => {
     it("should return an error chat message", async () => {
-      const span = { setTag: jest.fn() } as unknown as TracingSpan;
+      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new UserBannedError("test error");
       const prisma = {} as unknown as PrismaClientWithAccelerate;
 

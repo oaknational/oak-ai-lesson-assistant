@@ -69,7 +69,7 @@ describe.skip("RAG search", () => {
 
     expect(prismaResult).toMatchObject([
       {
-        lesson_plan_id: "cm23dy6hl05bjba3ufdd2scad",
+        lesson_plan_id: "cm23dy6hl05bjba3ufdd2scad", // cspell:disable-line -- cuid
         key: "title",
         content: "Inventions of the Industrial Revolution",
         key_stage_slug: "ks3",

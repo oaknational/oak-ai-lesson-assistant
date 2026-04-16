@@ -1,11 +1,5 @@
 import React from "react";
 
-import "@fontsource/lexend";
-import "@fontsource/lexend/500.css";
-import "@fontsource/lexend/600.css";
-import "@fontsource/lexend/700.css";
-import "@fontsource/lexend/800.css";
-import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Decorator, Preview } from "@storybook/nextjs";
 import {
@@ -13,6 +7,7 @@ import {
   initialize as initializeMsw,
   mswLoader,
 } from "msw-storybook-addon";
+import { Lexend } from "next/font/google";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { DialogProvider } from "../src/components/AppComponents/DialogContext";
@@ -23,6 +18,19 @@ import { ClerkDecorator } from "./decorators/ClerkDecorator";
 import { MathJaxDecorator } from "./decorators/MathJaxDecorator";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
+
+const lexend = Lexend({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-lexend",
+});
+
+/**
+ * Set the font CSS variable at :root level for portaled content (tooltips, modals).
+ */
+const GlobalFontStyle = () => (
+  <style>{`:root { --font-lexend: ${lexend.style.fontFamily}; }`}</style>
+);
 
 declare module "@storybook/nextjs" {
   interface Parameters {
@@ -73,6 +81,7 @@ export const decorators: Decorator[] = [
   ChromaticValidationDecorator,
   (Story) => (
     <>
+      <GlobalFontStyle />
       <TRPCReactProvider>
         <AnalyticsProvider>
           <DialogProvider>

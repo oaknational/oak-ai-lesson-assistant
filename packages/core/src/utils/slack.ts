@@ -2,8 +2,10 @@ import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
-import type { LakeraGuardResponse } from "../threatDetection/lakera";
-import type { Message } from "../threatDetection/lakera/schema";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "../threatDetection/types";
 import { generateFriendlyId } from "./friendlyId";
 
 if (
@@ -96,14 +98,31 @@ export function getLakeraDashboardUrl(timestamp?: Date): string {
   return `https://platform.lakera.ai/dashboard/requests/detections?${params.toString()}`;
 }
 
+function createLakeraConsoleAction(timestamp?: Date): ActionsBlock["elements"] {
+  if (!timestamp) {
+    return [];
+  }
+
+  return [
+    {
+      type: "button",
+      text: {
+        type: "plain_text",
+        text: "Lakera console",
+      },
+      url: getLakeraDashboardUrl(timestamp),
+    },
+  ];
+}
+
 export function actionsBlock({
   userActionsProps,
   chatActionsProps,
-  lakeraTimestamp,
+  lakeraConsoleTimestamp,
 }: {
   userActionsProps?: { userId: string };
   chatActionsProps?: { chatId: string };
-  lakeraTimestamp?: Date;
+  lakeraConsoleTimestamp?: Date;
 }): ActionsBlock {
   const userActions: ActionsBlock["elements"] = userActionsProps
     ? [
@@ -129,7 +148,7 @@ export function actionsBlock({
             type: "plain_text",
             text: "Aila admin user",
           },
-          url: `https://labs.thenational.academy/admin/users/${userActionsProps.userId}`,
+          url: `https://${getExternalFacingUrl()}/admin/users/${userActionsProps.userId}`,
         },
       ]
     : [];
@@ -147,73 +166,85 @@ export function actionsBlock({
       ]
     : [];
 
-  const lakeraActions: ActionsBlock["elements"] = lakeraTimestamp
-    ? [
-        {
-          type: "button",
-          text: {
-            type: "plain_text",
-            text: "Lakera console",
-          },
-          url: getLakeraDashboardUrl(lakeraTimestamp),
-        },
-      ]
-    : [];
-
   return {
     type: "actions",
-    elements: [...userActions, ...chatActions, ...lakeraActions],
+    elements: [
+      ...userActions,
+      ...chatActions,
+      ...createLakeraConsoleAction(lakeraConsoleTimestamp),
+    ],
   };
 }
 
 /**
  * Formatted threat detection data for Slack notifications
  */
-interface FormatThreatDetectionWithMessages {
+export interface SlackThreatDetectionSummary {
   flagged: boolean;
   userInput: string;
   detectedThreats: Array<{
     detectorType: string;
-    detectorId: string;
+    detectorId?: string;
   }>;
   requestId?: string;
 }
 
 /**
- * Format Lakera threat detection result for Slack notification
- *
- * Extracts only the useful information:
- * - User's input that triggered the threat
- * - List of detected threats (filtered to only those with detected: true)
- * - Request UUID for traceability
-
- *
- * @param lakeraResult - The Lakera Guard API response
- * @param messages - The messages that were checked for threats
- * @returns Formatted threat detection data for Slack
+ * Convert checked messages and detected threats into the compact shape
+ * used by Slack threat-notification blocks.
  */
-export function formatThreatDetectionWithMessages(
-  lakeraResult: LakeraGuardResponse,
-  messages: Message[],
-): FormatThreatDetectionWithMessages {
-  // Extract user input from messages (without role prefix for cleaner display)
-  const userInput = messages.map((msg) => msg.content).join("\n");
-
-  // Filter to only detected threats and extract relevant info
-  const detectedThreats =
-    lakeraResult.breakdown
-      ?.filter((item) => item.detected)
-      .map((item) => ({
-        detectorType: item.detector_type,
-        detectorId: item.detector_id,
-      })) ?? [];
-
+function createSlackThreatDetectionSummary(args: {
+  messages: Array<{ content: string }>;
+  flagged: boolean;
+  detectedThreats: SlackThreatDetectionSummary["detectedThreats"];
+  requestId?: string;
+}): SlackThreatDetectionSummary {
   return {
-    flagged: lakeraResult.flagged,
-    userInput,
-    detectedThreats,
-    requestId: lakeraResult.metadata?.request_uuid,
+    flagged: args.flagged,
+    userInput: args.messages.map((message) => message.content).join("\n"),
+    detectedThreats: args.detectedThreats,
+    requestId: args.requestId,
   };
+}
+
+function getDetectedThreatsSummary(
+  threatDetection: ThreatDetectionResult,
+): SlackThreatDetectionSummary["detectedThreats"] {
+  const detectedFindings = threatDetection.findings.filter(
+    (finding) => finding.detected,
+  );
+  const detectedThreatSummaries = detectedFindings.map((finding) => ({
+    detectorType: finding.category,
+    detectorId: finding.providerCode,
+  }));
+
+  if (detectedThreatSummaries.length > 0) {
+    return detectedThreatSummaries;
+  }
+
+  // Some fallback/synthetic threat results set `isThreat` without structured
+  // findings. Keep a single generic entry so Slack still shows what was flagged.
+  if (threatDetection.isThreat) {
+    return [
+      {
+        detectorType: threatDetection.category ?? "other",
+      },
+    ];
+  }
+
+  return [];
+}
+
+export function formatThreatDetectionResultWithMessages(
+  threatDetection: ThreatDetectionResult,
+  messages: ThreatDetectionMessage[],
+): SlackThreatDetectionSummary {
+  return createSlackThreatDetectionSummary({
+    messages,
+    flagged: threatDetection.isThreat,
+    detectedThreats: getDetectedThreatsSummary(threatDetection),
+    requestId: threatDetection.requestId,
+  });
 }
 
 /**
@@ -221,7 +252,7 @@ export function formatThreatDetectionWithMessages(
  */
 export function formatThreatAsMarkdown(
   userInput: string,
-  detectedThreats: Array<{ detectorType: string; detectorId: string }>,
+  detectedThreats: Array<{ detectorType: string; detectorId?: string }>,
   requestId?: string,
 ): string {
   let markdown = "🚨 *Threat Detected*\n\n";
@@ -235,7 +266,9 @@ export function formatThreatAsMarkdown(
     markdown += "*Detected Threats:*\n";
     for (const threat of detectedThreats) {
       markdown += `• *Type:* \`${threat.detectorType}\`\n`;
-      markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
+      if (threat.detectorId) {
+        markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
+      }
     }
     markdown += "\n";
   }
@@ -277,7 +310,7 @@ export function createMarkdownField(text: string) {
 export function createThreatSectionBlock(args: {
   id: string;
   userInput: string;
-  detectedThreats: Array<{ detectorType: string; detectorId: string }>;
+  detectedThreats: Array<{ detectorType: string; detectorId?: string }>;
   requestId?: string;
   userAction: string;
 }): SectionBlock {

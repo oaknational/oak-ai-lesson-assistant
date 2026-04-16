@@ -1,9 +1,13 @@
-import { SafetyViolations, inngest } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import {
+  SafetyViolations,
+  UserBannedError,
+  scheduleModerationTeachingMaterialsNotification,
+  scheduleThreatDetectionTeachingMaterialsNotification,
+} from "@oakai/core";
+import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-import type { LakeraGuardResponse } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
@@ -24,7 +28,7 @@ type ModerationViolationParams = BaseSafetyViolationParams & {
 
 type ThreatViolationParams = BaseSafetyViolationParams & {
   violationType: "THREAT";
-  threatDetection: LakeraGuardResponse;
+  threatDetection: ThreatDetectionResult;
   messages: Array<{
     role: "system" | "user" | "assistant";
     content: string;
@@ -35,13 +39,10 @@ type SafetyViolationParams = ModerationViolationParams | ThreatViolationParams;
 
 export async function recordSafetyViolation(params: SafetyViolationParams) {
   const { prisma, auth, interactionId, violationType, userAction } = params;
-  const safetyViolations = new SafetyViolations(prisma, console);
+  const safetyViolations = new SafetyViolations(prisma);
   try {
-    log.info("Sending slack notification");
-
     if (params.violationType === "THREAT") {
-      await inngest.send({
-        name: "app/slack.notifyThreatDetectionTeachingMaterials",
+      await scheduleThreatDetectionTeachingMaterialsNotification({
         user: {
           id: auth.userId,
         },
@@ -53,8 +54,7 @@ export async function recordSafetyViolation(params: SafetyViolationParams) {
         },
       });
     } else {
-      await inngest.send({
-        name: "app/slack.notifyModerationTeachingMaterials",
+      await scheduleModerationTeachingMaterialsNotification({
         user: {
           id: auth.userId,
         },

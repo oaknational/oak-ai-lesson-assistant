@@ -1,6 +1,7 @@
 import { structuredLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
+import { geolocation, ipAddress } from "@vercel/functions";
 import type { NextFetchEvent, NextRequest } from "next/server";
 
 export async function logError(
@@ -13,8 +14,8 @@ export async function logError(
     method: request.method,
     headers: Object.fromEntries(request.headers),
     cookies: Object.fromEntries(request.cookies),
-    geo: request.geo,
-    ip: request.ip,
+    geo: geolocation(request),
+    ip: ipAddress(request),
     nextUrl: {
       pathname: request.nextUrl.pathname,
       search: request.nextUrl.search,

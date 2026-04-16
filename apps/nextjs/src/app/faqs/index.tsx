@@ -19,16 +19,18 @@ import { OakBoxCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const FAQPageContent = () => {
-  const startingRef = useRef(null);
-  const featuresRef = useRef(null);
-  const supportRef = useRef(null);
-  const usageRef = useRef(null);
-  const accessibilityRef = useRef(null);
-  const technicalRef = useRef(null);
-  const updatesRef = useRef(null);
-  const concernsRef = useRef(null);
-  const dataRef = useRef(null);
-  const scrollToRefWithOffset = (ref: React.RefObject<HTMLElement>) => {
+  const startingRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const supportRef = useRef<HTMLDivElement>(null);
+  const usageRef = useRef<HTMLDivElement>(null);
+  const accessibilityRef = useRef<HTMLDivElement>(null);
+  const technicalRef = useRef<HTMLDivElement>(null);
+  const updatesRef = useRef<HTMLDivElement>(null);
+  const concernsRef = useRef<HTMLDivElement>(null);
+  const dataRef = useRef<HTMLDivElement>(null);
+  const scrollToRefWithOffset = (
+    ref: React.RefObject<HTMLDivElement | null>,
+  ) => {
     if (ref?.current) {
       const yOffset = -72; // Adjust this value as needed
       const y =
@@ -822,19 +824,6 @@ export const FAQPageContent = () => {
               Oak&apos;s strong curriculum principles and the high-quality,
               teacher-generated content that we have been able to integrate into
               the lesson development process.
-            </OakP>
-            <OakHeading
-              tag="h3"
-              $font="body-1-bold"
-              $mt="spacing-48"
-              $mb="spacing-16"
-            >
-              Why did you give it a human name?
-            </OakHeading>
-            <OakP $mb="spacing-16">
-              In Aila&apos;s initial testing phases, users reported being unsure
-              of how to &apos;talk&apos; to the assistant. Giving it a name
-              humanises the chatbot and encourages more natural conversation.
             </OakP>
           </div>
         </OakBoxCustomMaxWidth>

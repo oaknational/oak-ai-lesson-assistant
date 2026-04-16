@@ -1,5 +1,6 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
@@ -127,10 +128,28 @@ export async function generateTeachingMaterial({
     const quiz = baseQuizSchema.parse(result);
     result = shuffleQuizOptions(quiz);
   }
-  const moderation = await generateTeachingMaterialModeration({
-    input: JSON.stringify(result),
-    provider: "openai",
-  });
+  const useOakService =
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY === "true";
+
+  let moderation: ModerationResult;
+  if (useOakService) {
+    const baseUrl = process.env.MODERATION_API_URL;
+    if (!baseUrl) {
+      throw new Error(
+        "MODERATION_API_URL is required when OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY is enabled",
+      );
+    }
+    moderation = await moderateWithOakService(JSON.stringify(result), {
+      baseUrl,
+      protectionBypassSecret:
+        process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
+    });
+  } else {
+    moderation = await generateTeachingMaterialModeration({
+      input: JSON.stringify(result),
+      provider: "openai",
+    });
+  }
 
   if (!moderation) {
     const error = new Error(

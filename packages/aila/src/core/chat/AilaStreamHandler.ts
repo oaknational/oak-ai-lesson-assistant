@@ -1,6 +1,5 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
-import { RAG } from "@oakai/core/src/rag";
-import { prisma as globalPrisma } from "@oakai/db";
+import type { ThreatDetectionMessage } from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
 import {
   getRagLessonPlansByIds,
@@ -10,29 +9,16 @@ import {
 } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
-import invariant from "tiny-invariant";
-import z from "zod";
 
-import { DEFAULT_NUMBER_OF_RECORDS_IN_RAG } from "../../constants";
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
-import {
-  createInteractStreamHandler,
-  streamInteractResultToClient,
-} from "../../lib/agents/compatibility/streamHandling";
-import { interact } from "../../lib/agents/interact";
-import { fetchRelevantLessonPlans } from "../../lib/agents/rag/fetchReleventLessons.agent";
-import {
-  type CompletedLessonPlan,
-  CompletedLessonPlanSchemaWithoutLength,
-} from "../../protocol/schema";
-import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
+import { ReportStorage, createQuizTracker } from "../quiz/reporting";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
 
@@ -60,9 +46,7 @@ export class AilaStreamHandler {
   }
 
   private async span(step: string, handler: () => Promise<void>) {
-    log.info(`${step} started`);
     await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
-    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
@@ -71,14 +55,15 @@ export class AilaStreamHandler {
       content: string;
     }[],
   ) {
-    const messagesToCheck = messages ?? this._chat.messages;
-    log.info("Starting threat check");
+    const messagesToCheck = (messages ?? this._chat.messages).filter(
+      (message): message is ThreatDetectionMessage => message.role !== "data",
+    );
     if (!this._chat.aila.threatDetection?.detectors) {
       log.info("No threat detectors configured");
       return;
     }
 
-    const lastMessage = messagesToCheck[this._chat.messages.length - 1];
+    const lastMessage = messagesToCheck[messagesToCheck.length - 1];
     if (!lastMessage) {
       log.info("No messages to check for threats");
       return;
@@ -87,13 +72,13 @@ export class AilaStreamHandler {
     const detectors = this._chat.aila.threatDetection?.detectors ?? [];
     for (const detector of detectors) {
       log.info("Running detector", { detector: detector.constructor.name });
-      const result = await detector.detectThreat(messagesToCheck);
-      if (result.isThreat) {
-        log.info("Threat detected", { result });
+      const threatDetection = await detector.detectThreat(messagesToCheck);
+      if (threatDetection.isThreat) {
+        log.info("Threat detected", { threatDetection });
         throw new AilaThreatDetectionError(
           this._chat.userId ?? "unknown",
           "Potential threat detected",
-          { cause: result },
+          threatDetection,
         );
       }
     }
@@ -107,16 +92,14 @@ export class AilaStreamHandler {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     try {
-      if (
-        !this._chat.aila.options.useAgenticAila &&
-        !this._chat.aila.options.useLegacyAgenticAila
-      ) {
+      if (!this._chat.aila.options.useAgenticAila) {
         await this.span("set-up-generation", async () => {
           await this._chat.setupGeneration();
         });
       } else {
-        await this.span("initialise-chunks", async () => {
+        await this.span("initialise-chunks", () => {
           this._chat.initialiseChunks();
+          return Promise.resolve();
         });
       }
 
@@ -127,10 +110,6 @@ export class AilaStreamHandler {
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
           await this.startAgentStream();
-        });
-      } else if (this._chat.aila.options.useLegacyAgenticAila) {
-        await this.span("start-agent-stream-legacy", async () => {
-          await this.startAgentStreamLegacy();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -178,9 +157,11 @@ export class AilaStreamHandler {
         } catch (e) {
           log.error("Error in complete", e);
           this._chat.aila.errorReporter?.reportError(e);
-          controller.error(
-            new AilaChatError("Chat completion failed", { cause: e }),
-          );
+          await this._chat.enqueue({
+            type: "error",
+            value:
+              "Something went wrong. Please try sending your message again.",
+          });
         }
       }
       this.closeController();
@@ -191,133 +172,6 @@ export class AilaStreamHandler {
   private setupController(controller: ReadableStreamDefaultController) {
     this._controller = controller;
     this._patchEnqueuer.setController(controller);
-  }
-
-  private async startAgentStreamLegacy() {
-    await this._chat.enqueue({
-      type: "comment",
-      value: "CHAT_START",
-    });
-
-    const initialDocument = {
-      ...this._chat.aila.document.content,
-    };
-
-    // Create a stream handler
-    const streamHandler = createInteractStreamHandler(
-      this._chat,
-      this._controller!,
-    );
-
-    // Call interact with the stream handler
-    const interactResult = await interact({
-      userId: this._chat.userId ?? "anonymous",
-      chatId: this._chat.id,
-      initialDocument: initialDocument,
-      messageHistoryWithProtocol: this._chat.messages
-        .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => {
-          log.info(m);
-          return m;
-        }) as { role: "user" | "assistant"; content: string }[],
-      onUpdate: streamHandler, // This is the new part
-      customAgents: {
-        mathsStarterQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.buildQuiz(
-            "/starterQuiz",
-            document,
-            this._chat.relevantLessons ?? [],
-          );
-
-          return quiz;
-        },
-        mathsExitQuiz: async ({ document }) => {
-          const quiz = await this._chat.fullQuizService.buildQuiz(
-            "/exitQuiz",
-            document,
-            this._chat.relevantLessons ?? [],
-          );
-
-          return quiz;
-        },
-        fetchRagData: async ({ document }): Promise<CompletedLessonPlan[]> => {
-          const chatId = this._chat.id;
-          const userId = this._chat.userId ?? undefined;
-          const prisma = globalPrisma;
-          const { subject, keyStage, topic, title } = document;
-          invariant(title, "Document title is required to fetch RAG data");
-
-          const isMaths = subject?.toLowerCase().startsWith("math") ?? false;
-
-          if (!isMaths) {
-            const rag = new RAG(prisma, { chatId, userId });
-            const relevantLessonPlans = await rag.fetchLessonPlans({
-              chatId: this._chat.id,
-              title,
-              keyStage,
-              subject,
-              topic: topic ?? undefined,
-              k:
-                this._chat.aila?.options.numberOfRecordsInRag ??
-                DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-            });
-
-            const migratedLessonPlans: CompletedLessonPlan[] = [];
-
-            for (const lessonPlan of relevantLessonPlans) {
-              try {
-                const result = await migrateLessonPlan({
-                  lessonPlan: lessonPlan.content as Record<string, unknown>,
-                  outputSchema: CompletedLessonPlanSchemaWithoutLength,
-                  persistMigration: null,
-                });
-                migratedLessonPlans.push(result.lessonPlan);
-              } catch (error) {
-                log.error("Failed to migrate lesson plan", { error });
-              }
-            }
-
-            this._chat.relevantLessons = relevantLessonPlans.map((lesson) => ({
-              lessonPlanId: lesson.id,
-              title: z.object({ title: z.string() }).parse(lesson.content)
-                .title,
-            }));
-
-            return migratedLessonPlans;
-          }
-
-          if (this._chat.relevantLessons) {
-            const results = await getRagLessonPlansByIds({
-              lessonPlanIds: this._chat.relevantLessons.map(
-                (lesson) => lesson.lessonPlanId,
-              ),
-            });
-            return results.map((r) => r.lessonPlan);
-          }
-
-          const lessonPlanResults = await fetchRelevantLessonPlans({
-            document,
-          });
-
-          const relevantLessons = lessonPlanResults.map((result) => ({
-            lessonPlanId: result.ragLessonPlanId,
-            title: result.lessonPlan.title,
-          }));
-          this._chat.relevantLessons = relevantLessons;
-
-          return lessonPlanResults.map((l) => l.lessonPlan);
-        },
-      },
-      relevantLessons: this._chat.relevantLessons,
-    });
-
-    // Stream the final result to the client
-    await streamInteractResultToClient(
-      this._chat,
-      this._controller!,
-      initialDocument,
-      interactResult,
-    );
   }
 
   private async startAgentStream() {
@@ -368,12 +222,26 @@ export class AilaStreamHandler {
           customAgentHandlers: {
             "starterQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/starterQuiz",
-                  ctx.currentTurn.document,
+                const userInstructions =
+                  ctx.currentTurn.currentStep?.sectionInstructions;
+                const tracker = createQuizTracker();
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/starterQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
                 );
+                await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating starter quiz", { error });
                 return {
@@ -386,12 +254,26 @@ export class AilaStreamHandler {
             },
             "exitQuiz--maths": async (ctx) => {
               try {
-                const quiz = await this._chat.fullQuizService.buildQuiz(
-                  "/exitQuiz",
-                  ctx.currentTurn.document,
+                const userInstructions =
+                  ctx.currentTurn.currentStep?.sectionInstructions;
+                const tracker = createQuizTracker();
+                const { quiz, note } = await tracker.run(
+                  async (task, reportId) => {
+                    const result = await this._chat.quizService.buildQuiz(
+                      "/exitQuiz",
+                      ctx.currentTurn.document,
+                      this._chat.relevantLessons ?? [],
+                      task,
+                      reportId,
+                      userInstructions,
+                    );
+                    task.addData({ quiz: result.quiz, userInstructions });
+                    return result;
+                  },
                 );
+                await ReportStorage.store(tracker.getReport());
 
-                return { error: null, data: quiz };
+                return { error: null, data: quiz, note };
               } catch (error) {
                 log.error("Error generating exit quiz", { error });
                 return {
@@ -441,18 +323,14 @@ export class AilaStreamHandler {
     log.info("Starting to read from stream");
     try {
       while (abortController ? !abortController?.signal.aborted : true) {
-        log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {
           log.info("Stream reading complete");
           break;
         }
         if (value) {
-          log.info("Processing chunk", { valueLength: value.length });
           this._chat.appendChunk(value);
           this._controller?.enqueue(value);
-        } else {
-          log.info("Received empty chunk");
         }
       }
     } catch (e) {
@@ -480,10 +358,11 @@ export class AilaStreamHandler {
 
       const detectors = this._chat.aila.threatDetection?.detectors ?? [];
       for (const detector of detectors) {
-        if (await detector.isThreatError(error)) {
+        if (detector.isThreatError(error)) {
           throw new AilaThreatDetectionError(
             this._chat.userId ?? "unknown",
             "Threat detected",
+            undefined,
             { cause: error },
           );
         }
@@ -497,7 +376,20 @@ export class AilaStreamHandler {
 
   private closeController() {
     if (this._controller) {
-      this._controller.close();
+      try {
+        this._controller.close();
+      } catch (e) {
+        if (
+          e instanceof TypeError &&
+          (e as NodeJS.ErrnoException).code === "ERR_INVALID_STATE"
+        ) {
+          log.info(
+            "Controller already terminated (closed or errored), skipping close",
+          );
+        } else {
+          throw e;
+        }
+      }
     }
   }
 }

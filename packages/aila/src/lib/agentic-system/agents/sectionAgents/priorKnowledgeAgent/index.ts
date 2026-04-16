@@ -1,3 +1,4 @@
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
 import { priorKnowledgeInstructions } from "./priorKnowledge.instructions";
@@ -8,4 +9,5 @@ export const priorKnowledgeAgent = createSectionAgent({
   instructions: priorKnowledgeInstructions,
   contentToString: stringListToText(),
   defaultVoice: "EXPERT_TEACHER",
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

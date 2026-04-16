@@ -3,12 +3,6 @@ import { Toaster } from "react-hot-toast";
 import { Monitoring } from "react-scan/dist/core/monitor/params/next";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import "@fontsource/lexend";
-import "@fontsource/lexend/500.css";
-import "@fontsource/lexend/600.css";
-import "@fontsource/lexend/700.css";
-import "@fontsource/lexend/800.css";
-import "@fontsource/lexend/900.css";
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import * as Sentry from "@sentry/nextjs";
@@ -24,7 +18,6 @@ import { Providers } from "@/components/AppComponents/Chat//providers";
 import { AnalyticsProvider } from "@/components/ContextProviders/AnalyticsProvider";
 import { CookieConsentProvider } from "@/components/ContextProviders/CookieConsentProvider";
 import { FeatureFlagProvider } from "@/components/ContextProviders/FeatureFlagProvider";
-import FontProvider from "@/components/ContextProviders/FontProvider";
 import { GleapProvider } from "@/components/ContextProviders/GleapProvider";
 import { WebDebuggerPosition } from "@/lib/avo/Avo";
 import { getBootstrappedFeatures } from "@/lib/feature-flags/bootstrap";
@@ -86,7 +79,8 @@ interface RootLayoutProps {
 export default async function RootLayout({
   children,
 }: Readonly<RootLayoutProps>) {
-  const nonce = headers().get("x-nonce");
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce");
 
   if (!nonce) {
     // Our middleware path matching excludes static paths like /_next/static/...
@@ -95,7 +89,7 @@ export default async function RootLayout({
     return redirect("/not-found");
   }
 
-  const bootstrappedFeatures = await getBootstrappedFeatures(headers());
+  const bootstrappedFeatures = await getBootstrappedFeatures(headersList);
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
@@ -120,34 +114,32 @@ export default async function RootLayout({
               color="#22222"
             >
               <TRPCReactProvider>
-                <FontProvider>
-                  <Toaster />
-                  <Providers>
-                    <SentryIdentify />
-                    <CookieConsentProvider>
-                      <AnalyticsProvider
-                        avoOptions={{
-                          webDebugger: false,
-                          webDebuggerOptions: {
-                            position: WebDebuggerPosition.BottomRight({
-                              bottom: 0,
-                              right: 0,
-                            }),
-                          },
-                        }}
-                        bootstrappedFeatures={bootstrappedFeatures}
-                      >
-                        <GleapProvider>
-                          <FeatureFlagProvider
-                            bootstrappedFeatures={bootstrappedFeatures}
-                          >
-                            {children}
-                          </FeatureFlagProvider>
-                        </GleapProvider>
-                      </AnalyticsProvider>
-                    </CookieConsentProvider>
-                  </Providers>
-                </FontProvider>
+                <Toaster />
+                <Providers>
+                  <SentryIdentify />
+                  <CookieConsentProvider>
+                    <AnalyticsProvider
+                      avoOptions={{
+                        webDebugger: false,
+                        webDebuggerOptions: {
+                          position: WebDebuggerPosition.BottomRight({
+                            bottom: 0,
+                            right: 0,
+                          }),
+                        },
+                      }}
+                      bootstrappedFeatures={bootstrappedFeatures}
+                    >
+                      <GleapProvider>
+                        <FeatureFlagProvider
+                          bootstrappedFeatures={bootstrappedFeatures}
+                        >
+                          {children}
+                        </FeatureFlagProvider>
+                      </GleapProvider>
+                    </AnalyticsProvider>
+                  </CookieConsentProvider>
+                </Providers>
               </TRPCReactProvider>
             </Theme>
 

@@ -17,7 +17,7 @@ export const voices = {
     speaker: "Aila",
     audience: "User",
     description:
-      "Supportive expert guiding the teacher. Polite and clear. You can ask for clarification from the teacher if required.",
+      "Supportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed.",
   },
   PUPIL: {
     id: "PUPIL",

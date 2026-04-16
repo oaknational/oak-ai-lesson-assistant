@@ -20,6 +20,9 @@ export const ImageMetadataSchema = z.object({
   attribution: z.string().nullable().describe("Attribution text for the image"),
   width: z.number().describe("Width of the image in pixels"),
   height: z.number().describe("Height of the image in pixels"),
+  aiDescription: z
+    .string()
+    .describe("AI-generated description of the image content for LLM context"),
 });
 
 // Base question schema with common fields
@@ -80,6 +83,8 @@ export const QuizV3Schema = z.object({
   imageMetadata: z
     .array(ImageMetadataSchema)
     .describe(QUIZ_V3_DESCRIPTIONS.imageMetadata),
+  /** Links to the generation report in KV storage (key: quiz:generation-report:{reportId}) */
+  reportId: z.string().optional(),
 });
 
 export const QuizV3SchemaWithoutLength = QuizV3Schema;

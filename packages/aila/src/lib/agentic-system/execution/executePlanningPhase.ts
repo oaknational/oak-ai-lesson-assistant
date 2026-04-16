@@ -15,6 +15,7 @@ export async function executePlanningPhase(
   });
 
   if (plannerResponse.error) {
+    context.callbacks.onPlannerComplete({ sectionKeys: [] });
     await terminateWithError(plannerResponse.error, context);
     return false;
   }
@@ -22,6 +23,7 @@ export async function executePlanningPhase(
   context.currentTurn.plannerOutput = plannerResponse.data;
 
   if (context.currentTurn.plannerOutput.decision === "exit") {
+    context.callbacks.onPlannerComplete({ sectionKeys: [] });
     await terminateWithResponse(context);
     return false;
   }

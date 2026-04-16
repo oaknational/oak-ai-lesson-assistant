@@ -1,0 +1,29 @@
+{
+  "name": "@oakai/gsuite",
+  "version": "1.0.0",
+  "description": "Google API integrations for Oak AI",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.ts",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest --config jest.config.mjs"
+  },
+  "dependencies": {
+    "@googleapis/drive": "^8.7.0",
+    "@googleapis/slides": "^1.0.5",
+    "dotenv-cli": "^6.0.0",
+    "google-auth-library": "^9.7.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@oakai/eslint-config": "workspace:*",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "5.9.2"
+  }
+}

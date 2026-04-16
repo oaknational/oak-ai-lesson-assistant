@@ -72,14 +72,12 @@ export class LessonSnapshots {
         createdAt: "desc",
       },
     });
-    if (!lessonSchema) {
-      lessonSchema = await this.prisma.lessonSchema.create({
-        data: {
-          hash: LESSON_JSON_SCHEMA_HASH,
-          jsonSchema: JSON.parse(JsonSchemaString),
-        },
-      });
-    }
+    lessonSchema ??= await this.prisma.lessonSchema.create({
+      data: {
+        hash: LESSON_JSON_SCHEMA_HASH,
+        jsonSchema: JSON.parse(JsonSchemaString),
+      },
+    });
 
     return this.prisma.lessonSnapshot.create({
       data: {
@@ -121,15 +119,13 @@ export class LessonSnapshots {
       },
     });
 
-    if (!lessonSchema) {
-      // create lesson schema if not found
-      lessonSchema = await this.prisma.lessonSchema.create({
-        data: {
-          hash: LESSON_JSON_SCHEMA_HASH,
-          jsonSchema,
-        },
-      });
-    }
+    // create lesson schema if not found
+    lessonSchema ??= await this.prisma.lessonSchema.create({
+      data: {
+        hash: LESSON_JSON_SCHEMA_HASH,
+        jsonSchema,
+      },
+    });
 
     const hash = getSnapshotHash(snapshot);
 

@@ -1,7 +1,10 @@
 import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSessionModerations";
 import { demoUsers } from "@oakai/core/src/models/demoUsers";
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import {
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import type { User } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -13,15 +16,16 @@ import { getSharedChatById } from "@/app/actions";
 import ShareChat from ".";
 
 interface SharePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: SharePageProps): Promise<Metadata> {
-  const chat = await getSharedChatById(params.id);
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
   return {
     title: chat?.title?.slice(0, 50) ?? "Aila",
   };
@@ -39,11 +43,13 @@ function userCanShare(user: User) {
 }
 
 export default async function SharePage({ params }: Readonly<SharePageProps>) {
-  const chat = await getSharedChatById(params.id);
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
   if (!chat?.lessonPlan) {
     return notFound();
   }
-  const user = await clerkClient.users.getUser(chat.userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(chat.userId);
 
   if (!userCanShare(user)) {
     return notFound();
@@ -52,25 +58,36 @@ export default async function SharePage({ params }: Readonly<SharePageProps>) {
   const { firstName, lastName } = user;
   const creatorsName = firstName && lastName && `${firstName + " " + lastName}`;
 
-  const moderations = await getSessionModerations(params.id);
+  const moderations = await getSessionModerations(id);
 
-  if (moderations.some(isToxic)) {
+  if (moderations.some((m) => isToxic(m) || isHighlySensitive(m))) {
     return notFound();
   }
-
-  const lastModeration = moderations[moderations.length - 1];
 
   /**
    * We don't want to expose the whole persisted moderation object, as it contains
    * both the justification, which isn't used, and the userComment which is a user
    * input and should not be exposed to the client.
+   *
+   * Unlike the chat (where each message shows its own moderation), the share
+   * page aggregates distinct categories across all session moderations to
+   * give a summary view of the lesson's content guidance.
    */
-  const moderation: PersistedModerationBase | null = lastModeration
-    ? {
-        id: lastModeration.id,
-        categories: lastModeration.categories,
-      }
-    : null;
+  const allCategories = [
+    ...new Set(
+      moderations
+        .flatMap((m) => m.categories)
+        .filter((c): c is string => typeof c === "string"),
+    ),
+  ];
+
+  const moderation: PersistedModerationBase | null =
+    allCategories.length > 0
+      ? {
+          id: moderations[0]!.id,
+          categories: allCategories,
+        }
+      : null;
 
   return (
     <ShareChat

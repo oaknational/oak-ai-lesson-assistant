@@ -1,8 +1,5 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import type { StructuredLogger } from "@oakai/logger";
-import { structuredLogger } from "@oakai/logger";
 
-import type { Logger as InngestLogger } from "inngest/middleware/logger";
 import { PromptTemplate } from "langchain/prompts";
 
 // When we add structured parsing we can find a better type than this
@@ -16,14 +13,7 @@ export type JsonValue =
 export type Json = { [key: string]: JsonValue };
 
 export class Prompts {
-  constructor(
-    private readonly prisma: PrismaClientWithAccelerate,
-    // inngest's logger doesn't allow child logger creation, so make
-    // sure we accept instances of that too
-    private readonly logger:
-      | StructuredLogger
-      | InngestLogger = structuredLogger,
-  ) {}
+  constructor(private readonly prisma: PrismaClientWithAccelerate) {}
 
   async get(promptId: string, appId: string) {
     return this.prisma.prompt.findFirst({

@@ -33,8 +33,8 @@ const runTurn = async (
   const callbacks: AilaTurnCallbacks = {
     onPlannerComplete: () => void 0,
     onSectionComplete: () => void 0,
-    onTurnComplete: ({ nextDoc, ailaMessage }) => {
-      nextDocCapture = nextDoc;
+    onTurnComplete: ({ document, ailaMessage }) => {
+      nextDocCapture = document;
       messageCapture = ailaMessage;
       return Promise.resolve();
     },

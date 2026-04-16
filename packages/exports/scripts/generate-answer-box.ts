@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /**
  * Generate answer box image and upload to GCS
  *
@@ -8,8 +10,6 @@
  * - Changing the design/appearance of answer boxes
  * - Setting up a new environment (populating the GCS bucket)
  */
-import { aiLogger } from "@oakai/logger";
-
 import { Storage } from "@google-cloud/storage";
 import { Resvg } from "@resvg/resvg-js";
 import fs from "fs/promises";
@@ -20,7 +20,6 @@ import {
   gcsLatexCredentials,
 } from "../src/images/gcsCredentials";
 
-const log = aiLogger("exports");
 const ZOOM_SCALE = 3;
 
 async function generateAnswerBox() {

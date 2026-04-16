@@ -36,7 +36,7 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
     transcript_sentences
     starter_quiz
     exit_quiz
- 
+    slide_deck_asset_object_url
   }
 }
 `;
@@ -78,7 +78,7 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
     transcript_sentences
     starter_quiz
     exit_quiz
- 
+    slide_deck_asset_object_url
   }
 }
 `;

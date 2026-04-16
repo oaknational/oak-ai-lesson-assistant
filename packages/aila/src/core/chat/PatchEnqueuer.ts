@@ -4,6 +4,14 @@ import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol
 
 const log = aiLogger("aila:protocol");
 
+// Paths that PatchString schema accepts
+type StringPatchPath =
+  | "/title"
+  | "/keyStage"
+  | "/topic"
+  | "/subject"
+  | "/learningOutcome";
+
 export class PatchEnqueuer {
   private controller?: ReadableStreamDefaultController;
 
@@ -26,9 +34,9 @@ export class PatchEnqueuer {
     return this.enqueuePromise;
   }
 
-  public enqueuePatch(
-    path: string,
-    value: string | number | string[] | object,
+  public enqueueInitialField(
+    path: StringPatchPath,
+    value: string,
   ): Promise<void> {
     return this.enqueueOperation(() => {
       if (!this.controller) {
@@ -56,13 +64,13 @@ export class PatchEnqueuer {
   }
 
   private createPatch(
-    path: string,
-    value: string | number | string[] | object,
+    path: StringPatchPath,
+    value: string,
   ): JsonPatchDocumentOptional {
     return {
       type: "patch",
       reasoning: "generated",
-      value: { op: "add", path, value },
+      value: { op: "add" as const, path, value },
       status: "complete",
     };
   }

@@ -92,6 +92,14 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
 - **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
 - **User intent**: Respect explicit user directions about specific sections
 
+### 🔹 SECTION INSTRUCTIONS
+
+When creating plan steps, extract any user-provided instructions specific to that section into the \`sectionInstructions\` field:
+- For quizzes: preferences about difficulty, question types, images, specific changes (e.g., "focus on questions with images", "make it harder", "avoid decimals")
+- For other sections: specific guidance about content, style, or approach
+- Set \`sectionInstructions\` to \`null\` if no specific preferences are mentioned
+- Keep instructions concise but preserve user intent
+
 ---
 
 ### 🔹 FINAL NOTES

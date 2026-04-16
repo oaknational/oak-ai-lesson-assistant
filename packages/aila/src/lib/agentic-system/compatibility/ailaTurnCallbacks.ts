@@ -26,11 +26,10 @@ export function createAilaTurnCallbacks({
     onSectionComplete,
     onTurnComplete: async (args) => {
       onTurnComplete(args);
-      // Handle turn completion
       await chat.enqueue({
         type: "state",
         reasoning: "final",
-        value: args.nextDoc,
+        value: args.document,
       });
     },
   };

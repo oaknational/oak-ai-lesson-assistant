@@ -47,7 +47,7 @@ import InlineButton from "../InlineButton";
 import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
-import { ModerationMessage } from "../TeachingMaterialMessage";
+import { ModerationMessage } from "../TeachingMaterialsModerationMessage";
 
 const log = aiLogger("teaching-materials");
 
@@ -63,7 +63,7 @@ const MockOakSecondaryButtonWithJustIcon = styled.button<{
   text-align: left;
   font-family: unset;
   outline: none;
-  font-family: --var(google-font), Lexend, sans-serif;
+  font-family: var(--font-lexend), Lexend, sans-serif;
 
   background: #222222;
 
@@ -199,9 +199,9 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     <>
       {isMaterialLoading || (!generation && <OakP>Loading...</OakP>)}
       <OakFlex $mt={"spacing-24"}>{renderGeneratedMaterial()}</OakFlex>
-      {moderation?.categories && moderation.categories.length > 0 && (
-        <ModerationMessage />
-      )}
+
+      <ModerationMessage moderation={moderation} />
+
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
           {refinementHistory.length > 0 && !isMaterialRefining && (
@@ -241,7 +241,9 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
                       {refinementOptions.map(
                         (refinement: RefinementOption, index) => (
                           <InlineButton
-                            ref={(el) => (refinementRefs.current[index] = el)}
+                            ref={(el) => {
+                              refinementRefs.current[index] = el;
+                            }}
                             key={refinement.id}
                             onClick={() =>
                               void handleRefineMaterial(refinement)

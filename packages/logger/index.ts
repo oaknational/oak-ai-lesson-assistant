@@ -1,9 +1,8 @@
 import debug from "debug";
 import invariant from "tiny-invariant";
 
-import browserLogger from "./browser";
-import type { StructuredLogger } from "./structuredLogger";
-import structuredLogger from "./structuredLogger";
+import type { StructuredLogger } from "./structuredLogger.ts";
+import structuredLogger from "./structuredLogger.ts";
 
 if (typeof window !== "undefined") {
   invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
@@ -36,11 +35,13 @@ export type LoggerKey =
   | "aila:prompt"
   | "aila:protocol"
   | "aila:quiz"
+  | "aila:quiz:reporting"
   | "aila:rag"
   | "aila:schema"
   | "aila:stream"
   | "aila:testing"
   | "aila:threat"
+  | "adaptations"
   | "analytics"
   | "analytics:lesson:store"
   | "app"
@@ -60,7 +61,6 @@ export type LoggerKey =
   | "fixtures"
   | "generation"
   | "ingest"
-  | "inngest"
   | "judgements"
   | "lakera-client"
   | "lessons"

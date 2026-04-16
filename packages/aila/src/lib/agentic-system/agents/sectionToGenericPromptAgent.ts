@@ -1,3 +1,4 @@
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
@@ -12,21 +13,28 @@ import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.p
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
 import { exemplarContentPromptPart } from "./sharedPromptParts/exemplarContent.part";
 import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.part";
+import { sectionInstructionsPromptPart } from "./sharedPromptParts/sectionInstructions.part";
 import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 
-export function sectionToGenericPromptAgent<SectionValueType>({
-  responseSchema,
-  instructions,
-  messages,
-  exemplarContent,
-  basedOnContent,
-  currentValue,
-  contentToString,
-  ctx,
-  extraInputFromCtx,
-  defaultVoice = "AILA_TO_TEACHER",
-  voices = [],
-}: SectionPromptAgentProps<SectionValueType>): GenericPromptAgent<SectionValueType> {
+export function sectionToGenericPromptAgent<SectionValueType>(
+  {
+    responseSchema,
+    instructions,
+    messages,
+    exemplarContent,
+    basedOnContent,
+    currentValue,
+    contentToString,
+    ctx,
+    extraInputFromCtx,
+    defaultVoice = "AILA_TO_TEACHER",
+    voices = [],
+  }: SectionPromptAgentProps<SectionValueType>,
+  modelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  >,
+): GenericPromptAgent<SectionValueType> {
   voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
 
   return {
@@ -68,6 +76,12 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         content: basedOnContentPromptPart(basedOnContent, contentToString),
       },
       ...(extraInputFromCtx ? extraInputFromCtx(ctx) : []),
+      ctx.currentTurn.currentStep?.sectionInstructions && {
+        role: "developer" as const,
+        content: sectionInstructionsPromptPart(
+          ctx.currentTurn.currentStep.sectionInstructions,
+        ),
+      },
       {
         role: "developer" as const,
         content: messageHistoryPromptPart(messages),
@@ -77,5 +91,6 @@ export function sectionToGenericPromptAgent<SectionValueType>({
         content: userMessagePromptPart(messages),
       },
     ].filter(isTruthy),
+    modelParams,
   };
 }

@@ -1,7 +1,9 @@
 import z from "zod";
 
-import { lakeraGuardResponseSchema } from "../../threatDetection/lakera";
-import { messageSchema } from "../../threatDetection/lakera/schema";
+import {
+  threatDetectionMessageSchema,
+  threatDetectionResultSchema,
+} from "../../threatDetection/types";
 
 /**
  * Schema for formatted threat detection data sent to Slack
@@ -18,14 +20,18 @@ export const threatDetectionForSlackSchema = z.object({
   requestId: z.string().optional(),
 });
 
-export const notifyThreatDetectionTeachingMaterialsSchema = {
+export const notifyThreatDetectionTeachingMaterialsSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
   data: z.object({
     id: z.string(),
     userAction: z.string(),
-    threatDetection: lakeraGuardResponseSchema,
-    messages: z.array(messageSchema),
+    threatDetection: threatDetectionResultSchema,
+    messages: z.array(threatDetectionMessageSchema),
   }),
-};
+});
+
+export type NotifyThreatDetectionTeachingMaterialsInput = z.infer<
+  typeof notifyThreatDetectionTeachingMaterialsSchema
+>;

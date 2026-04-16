@@ -33,10 +33,6 @@ test("User is restricted after message rate limit is reached", async ({
     await textbox.fill(message);
     await expect(textbox).toContainText(message);
 
-    // Temporary fix: The test goes quicker than a real user and submits before the demo status has loaded
-    // This means that a demo modal would be shown when submitting
-    await page.waitForTimeout(500);
-
     setFixture("roman-britain-1");
     await sendMessage.click();
   });

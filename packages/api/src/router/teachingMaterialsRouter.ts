@@ -1,5 +1,4 @@
-import { demoUsers } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError, demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
@@ -44,7 +43,7 @@ export const teachingMaterialsRouter = router({
         userId: ctx.auth.userId,
       });
 
-      const { authKey, authType, graphqlEndpoint } = validateCurriculumApiEnv();
+      const { authKey, graphqlEndpoint } = validateCurriculumApiEnv();
 
       if (!ctx.auth.userId) {
         throw new TRPCError({
@@ -60,7 +59,6 @@ export const teachingMaterialsRouter = router({
             lessonSlug: input.lessonSlug,
             programmeSlug: input.programmeSlug,
             authKey,
-            authType,
             graphqlEndpoint: String(graphqlEndpoint),
           });
 
@@ -137,7 +135,8 @@ export const teachingMaterialsRouter = router({
           throw new Error("No user id");
         }
 
-        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const clerkUser = await client.users.getUser(ctx.auth.userId);
         if (clerkUser.banned) {
           throw new UserBannedError(ctx.auth.userId);
         }
@@ -192,7 +191,8 @@ export const teachingMaterialsRouter = router({
           throw new Error("No user id");
         }
 
-        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const clerkUser = await client.users.getUser(ctx.auth.userId);
         if (clerkUser.banned) {
           throw new UserBannedError(ctx.auth.userId);
         }
@@ -237,7 +237,8 @@ export const teachingMaterialsRouter = router({
         if (!ctx.auth.userId) {
           throw new Error("No user id");
         }
-        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const clerkUser = await client.users.getUser(ctx.auth.userId);
         const isDemoUser = demoUsers.isDemoUser(clerkUser);
         isDemoUser &&
           (await rateLimits.teachingMaterialSessions.demo.check(
@@ -310,7 +311,8 @@ export const teachingMaterialsRouter = router({
         if (!ctx.auth.userId) {
           throw new Error("No user id");
         }
-        const clerkUser = await clerkClient.users.getUser(ctx.auth.userId);
+        const client = await clerkClient();
+        const clerkUser = await client.users.getUser(ctx.auth.userId);
         const isDemoUser = demoUsers.isDemoUser(clerkUser);
         isDemoUser &&
           (await rateLimits.teachingMaterialSessions.demo.check(
@@ -396,7 +398,8 @@ export const teachingMaterialsRouter = router({
     }),
   remainingLimit: protectedProcedure.query(async ({ ctx }) => {
     const { userId } = ctx.auth;
-    const clerkUser = await clerkClient.users.getUser(userId);
+    const client = await clerkClient();
+    const clerkUser = await client.users.getUser(userId);
 
     const isDemoUser = demoUsers.isDemoUser(clerkUser);
 

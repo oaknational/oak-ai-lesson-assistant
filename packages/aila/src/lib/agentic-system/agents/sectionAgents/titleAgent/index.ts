@@ -1,3 +1,4 @@
+import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { stringListToText } from "../../../utils/stringListToText";
 import { createSectionAgent } from "../createSectionAgent";
 import { titleInstructions } from "./title.instructions";
@@ -7,6 +8,7 @@ import { titlesBySubjectKeyStage } from "./titlesBySubjectKeyStage";
 export const titleAgent = createSectionAgent({
   responseSchema: LessonTitleSchema,
   instructions: titleInstructions,
+  modelParams: DEFAULT_AGENT_MODEL_PARAMS,
   extraInputFromCtx: (ctx) => {
     const { subject, keyStage } = ctx.currentTurn.document;
     if (!subject || !keyStage) {

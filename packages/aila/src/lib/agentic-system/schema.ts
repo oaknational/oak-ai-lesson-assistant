@@ -1,3 +1,4 @@
+import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
 import { z } from "zod";
 
 const sectionKeysSchema = z.enum([
@@ -36,6 +37,14 @@ const sectionStepSchema = z
       "Target section key for this operation.",
     ),
     action: z.enum(["generate", "delete"]),
+    sectionInstructions: z
+      .string()
+      .nullable()
+      .describe(
+        "User-provided instructions specific to generating this section. " +
+          "Extract from conversation if user has preferences (e.g., 'focus on images', " +
+          "'make it harder', 'replace question 3'). Null if no specific instructions.",
+      ),
   })
   .describe("Section plan step.");
 
@@ -94,6 +103,11 @@ export type GenericPromptAgent<ResponseType> = {
     | { role: "developer"; content: string }
     | { role: "user"; content: string }
   )[];
+  // OpenAI Responses API model params to use for this agent
+  modelParams: Omit<
+    ResponseCreateParamsNonStreaming,
+    "input" | "text" | "stream"
+  >;
 };
 
 /**

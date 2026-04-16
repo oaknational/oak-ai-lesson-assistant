@@ -1,79 +1,74 @@
 # Quiz Module
 
-The quiz module generates, evaluates, and selects quiz questions for AI-generated lesson plans using a three-stage configurable pipeline architecture.
+The quiz module generates, enriches, and composes quiz questions for AI-generated lesson plans using a three-stage configurable pipeline architecture.
 
 ## Architecture Overview
 
 The quiz generation system follows a three-stage pipeline where each stage is independently configurable:
 
 ```
-Lesson Plan → [Generators (1+)] → [Reranker (1)] → [Selector (1)] → Final Quiz
+Lesson Plan → [Sources (1+)] → [Enrichers (0+)] → [Composer (1)] → Final Quiz
 ```
 
 Each stage can be configured with different strategies to experiment with quiz quality and generation approaches.
 
-### 1. Generators (`generators/`)
+### 1. Sources (`question-sources/`)
 
-Generate candidate question pools from various sources. **Multiple generators run in parallel**, each producing a pool of candidate questions:
+Retrieve candidate question pools from various origins. **Multiple sources run in parallel**, each producing a pool of candidate questions:
 
-- **AilaRagQuizGenerator** (`rag`): Questions from AILA RAG-retrieved lesson content
-- **BasedOnRagQuizGenerator** (`basedOnRag`): Retrieves quiz from user-specified source lesson (high signal when available)
-- **MLQuizGenerator** (`ml`): Single-term semantic search with Cohere reranking (older approach)
-- **MLQuizGeneratorMultiTerm** (`ml-multi-term`): **NEW** - Multiple semantic searches based on multiple search terms with Cohere reranking (current recommended ML approach)
+- **BasedOnLessonSource** (`basedOnLesson`): Questions from user-specified "based on" lesson (high signal when available)
+- **SimilarLessonsSource** (`similarLessons`): Questions from lessons matching title/subject/key stage
+- **MultiQuerySemanticSource** (`multiQuerySemantic`): Multiple semantic searches with Cohere reranking
 
-Each generator returns a `QuizQuestionPool[]` with source metadata (e.g., which lesson, which search term).
+Each source returns a `QuizQuestionPool[]` with source metadata (e.g., which lesson, which search term).
 
-### 2. Rerankers (`rerankers/`)
+### 2. Enrichers (`enrichers/`)
 
-Evaluate and rank the question pools from generators:
+Process question pools to add metadata. **Enrichers run sequentially**, each transforming the pools:
 
-- **AiEvaluatorQuizReranker** (`ai-evaluator`): Uses AI to score each pool's quality (older approach)
-- **ReturnFirstReranker** (`return-first`): Rates first pool=1, others=0 (simple fallback)
-- **NoOpReranker** (`no-op`): Returns empty ratings array (used with LLM composer selector)
+- **ImageDescriptionEnricher** (`imageDescriptions`): Generates text descriptions of images for LLM context
 
-Returns a `RatingResponse[]` parallel to the question pools.
+Returns enriched `QuizQuestionPool[]` without modifying the originals.
 
-### 3. Selectors (`selectors/`)
+### 3. Composers (`composers/`)
 
-Select final questions from the candidate pools using the rankings:
+Select final questions from the enriched candidate pools:
 
-- **SimpleQuizSelector** (`simple`): Picks top-ranked questions from highest-rated pool
-- **LLMQuizComposer** (`llm-quiz-composer`): **NEW** - Uses AI to intelligently mix the best questions from each generator pool, ignoring rankings and making holistic decisions
+- **LLMComposer** (`llm`): Uses AI to intelligently select the best questions across all pools
 
 ### Full Services (`fullservices/`)
 
 Orchestrate the complete quiz generation pipeline:
 
-- **BaseFullQuizService**: Concrete implementation that runs generators→reranker→selector pipeline
-- **buildFullQuizService**: Factory function that builds a `FullQuizService` from configuration
+- **buildQuizService**: Factory function that builds a `QuizService` from configuration
 
 ## Key Interfaces
 
-- **FullQuizService**: Main interface for complete quiz generation services
-- **AilaQuizCandidateGenerator**: Interface for quiz generators that produce candidate pools
-- **AilaQuizReranker**: Interface for quiz rerankers that score pools
-- **QuizSelector**: Interface for quiz selectors that choose final questions
-- **AilaQuizComposer**: Interface for composers that actively construct quizzes (newer approach)
+- **QuizService**: Main interface for complete quiz generation services
+- **QuestionSource**: Interface for sources that retrieve candidate pools
+- **QuestionEnricher**: Interface for enrichers that process pools
+- **QuizComposer**: Interface for composers that select final questions
 - **QuizQuestionPool**: Structure containing questions + source metadata (lesson/search term)
-- **QuizQuestionWithRawJson**: Core quiz question type with raw JSON data
+- **RagQuizQuestion**: Core quiz question type with raw JSON data
 
 ## Usage Example
 
 ```typescript
-import { buildFullQuizService } from "./fullservices/buildFullQuizService";
+import { buildQuizService } from "./fullservices/buildQuizService";
 
-// Build a quiz service with the new recommended pipeline
-const quizService = buildFullQuizService({
-  quizGenerators: ["basedOnRag", "rag", "ml-multi-term"],
-  quizReranker: "no-op",
-  quizSelector: "llm-quiz-composer",
+// Build a quiz service with the recommended pipeline
+const quizService = buildQuizService({
+  sources: ["basedOnLesson", "similarLessons", "multiQuerySemantic"],
+  enrichers: ["imageDescriptions"],
+  composer: "llm",
 });
 
 // Generate a quiz for a lesson plan
 const quiz = await quizService.buildQuiz(
   "/starterQuiz",
   lessonPlan,
-  relevantLessons,
+  similarLessons,
+  task,
 );
 ```
 
@@ -81,25 +76,25 @@ const quiz = await quizService.buildQuiz(
 
 ```typescript
 {
-  quizGenerators: ["basedOnRag", "rag", "ml-multi-term"],  // Mix all sources
-  quizReranker: "no-op",                                   // Skip reranking
-  quizSelector: "llm-quiz-composer"                        // Let AI pick best from each pool
+  sources: ["basedOnLesson", "similarLessons", "multiQuerySemantic"],
+  enrichers: ["imageDescriptions"],
+  composer: "llm"
 }
 ```
 
 This pipeline:
 
-1. Generates candidates from user's source lesson (if specified), RAG lessons, and ML semantic search
-2. Skips the reranking step (no-op)
-3. Uses AI to intelligently select the best questions from all pools, mixing results rather than picking a single best generator
+1. Retrieves candidates from user's source lesson (if specified), similar lessons, and semantic search
+2. Enriches pools with image descriptions for better LLM context
+3. Uses AI to intelligently select the best questions from all pools
 
 ## External Dependencies
 
 - **Elasticsearch**: For retrieving existing quiz questions
   - Requires: `I_DOT_AI_ELASTIC_CLOUD_ID`, `I_DOT_AI_ELASTIC_KEY`
-- **Cohere API**: For reranking documents
+- **Cohere API**: For reranking documents in semantic search
   - Requires: `COHERE_API_KEY`
-- **OpenAI**: For LLM-based quiz evaluation
+- **OpenAI**: For LLM-based quiz composition and image descriptions
 - **Prisma**: For database access to lesson plans
 
 ## Testing
@@ -111,83 +106,66 @@ Tests follow the pattern `<FileName>.test.ts` and use Jest:
 pnpm test quiz
 
 # Run specific test file
-pnpm test BaseQuizGenerator.test.ts
+pnpm test LLMQuizComposer.test.ts
 ```
 
 Key test patterns:
 
 - Mock external services (Elasticsearch, Cohere, OpenAI)
 - Test quiz validation against schemas
-- Verify quiz generation, reranking, and selection logic
+- Verify source retrieval, enrichment, and composition logic
 
 ## Development Notes
 
-### Current Architecture Issues
+### Adding New Sources
 
-The module has some architectural challenges that should be considered when making changes:
+To add a new question source:
 
-1. **Large Interface Files**: `interfaces.ts` contains many interfaces - consider splitting by domain
-2. **Error Handling**: Inconsistent error handling patterns - some methods throw, others return null/empty arrays
-3. **Type Safety**: Some areas use loose typing (`PartialLessonPlan`) and type assertions
-4. **Code Duplication**: Similar logic exists for starter vs exit quiz generation
-
-### Best Practices
-
-- Use the existing logging infrastructure (`aiLogger`)
-- Follow schema validation patterns with Zod
-- Mock external dependencies in tests
-- Use the factory pattern for service configuration
-
-### Adding New Generators
-
-To add a new quiz generator:
-
-1. Implement `AilaQuizCandidateGenerator` interface (return `QuizQuestionPool[]`)
-2. Add generator type to `QuizGeneratorTypeSchema` in `schema.ts`
-3. Wire it up in `createGenerator()` function in `buildFullQuizService.ts`
+1. Implement `QuestionSource` interface (return `QuizQuestionPool[]`)
+2. Add source type to `QuestionSourceTypeSchema` in `schema.ts`
+3. Wire it up in `createSource()` function in `buildQuizService.ts`
 4. Add comprehensive tests with mocked dependencies
 
-### Adding New Rerankers
+### Adding New Enrichers
 
-To add a new reranker:
+To add a new enricher:
 
-1. Implement the `AilaQuizReranker` interface (return `RatingResponse[]`)
-2. Add reranker type to `QuizRerankerTypeSchema` in `schema.ts`
-3. Wire it up in `createReranker()` function in `buildFullQuizService.ts`
-4. Ensure it handles edge cases (empty arrays, API failures)
-5. Add tests covering various input scenarios
+1. Implement the `QuestionEnricher` interface (return `QuizQuestionPool[]`)
+2. Add enricher type to `QuestionEnricherTypeSchema` in `schema.ts`
+3. Wire it up in `createEnricher()` function in `buildQuizService.ts`
+4. Add tests covering various input scenarios
 
-### Adding New Selectors
+### Adding New Composers
 
-To add a new selector:
+To add a new composer:
 
-1. Implement `QuizSelector` or `AilaQuizComposer` interface
-2. Add selector type to `QuizSelectorTypeSchema` in `schema.ts`
-3. Wire it up in `createSelector()` function in `buildFullQuizService.ts`
+1. Implement `QuizComposer` interface
+2. Add composer type to `QuizComposerTypeSchema` in `schema.ts`
+3. Wire it up in `createComposer()` function in `buildQuizService.ts`
 4. Add tests covering various input scenarios
 
 ## Configuration
 
-Quiz services are configured through the `buildFullQuizService()` factory with options for:
+Quiz services are configured through the `buildQuizService()` factory with options for:
 
-- **quizGenerators**: Array of generator types (`'rag'`, `'basedOnRag'`, `'ml'`, `'ml-multi-term'`)
-- **quizReranker**: Reranker type (`'ai-evaluator'`, `'return-first'`, `'no-op'`)
-- **quizSelector**: Selector type (`'simple'`, `'llm-quiz-composer'`)
+- **sources**: Array of source types (`'basedOnLesson'`, `'similarLessons'`, `'multiQuerySemantic'`)
+- **enrichers**: Array of enricher types (`'imageDescriptions'`)
+- **composer**: Composer type (`'llm'`)
 
 The factory pattern allows for flexible service composition and easy experimentation with different pipeline configurations.
 
 ## Question Pool Structure
 
-Generators now return structured pools with source metadata:
+Sources return structured pools with source metadata:
 
 ```typescript
 interface QuizQuestionPool {
-  questions: QuizQuestionWithRawJson[];
+  questions: RagQuizQuestion[];
   source:
-    | { type: "basedOn"; lessonPlanId: string; lessonTitle: string }
-    | { type: "ailaRag"; lessonPlanId: string; lessonTitle: string }
-    | { type: "mlSemanticSearch"; semanticQuery: string };
+    | { type: "basedOnLesson"; lessonPlanId: string; lessonTitle: string }
+    | { type: "similarLessons"; lessonPlanId: string; lessonTitle: string }
+    | { type: "semanticSearch"; semanticQuery: string };
 }
 ```
 
-This structure allows selectors (especially `LLMQuizComposer`) to understand where each question came from and make intelligent mixing decisions.
+This structure allows composers to understand where each question came from and make intelligent selection decisions.

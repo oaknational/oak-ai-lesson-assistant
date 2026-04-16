@@ -28,9 +28,9 @@ const log = aiLogger("chat");
 
 export const exampleMessages = [
   {
-    heading: "History • Key stage 3 • The end of Roman Britain ",
+    heading: "History • Key stage 2 • The end of Roman Britain ",
     message:
-      "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+      "Create a lesson plan about the end of Roman Britain for key stage 2 history",
   },
 ];
 
