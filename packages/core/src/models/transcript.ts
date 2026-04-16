@@ -81,9 +81,8 @@ export class Transcripts {
         snippetId: createdSnippet.id,
       });
 
-      // await inngest.send({
-      //   name: "app/snippet.embed",
-      //   data: { snippetId: createdSnippet.id },
+      // await scheduleSnippetEmbedding({
+      //   snippetId: createdSnippet.id,
       // });
     }
   }

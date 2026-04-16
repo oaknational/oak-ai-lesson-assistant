@@ -1,4 +1,5 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import type { ThreatDetectionMessage } from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
 import {
   getRagLessonPlansByIds,
@@ -45,9 +46,7 @@ export class AilaStreamHandler {
   }
 
   private async span(step: string, handler: () => Promise<void>) {
-    log.info(`${step} started`);
     await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
-    log.info(`${step} finished`);
   }
 
   private async checkForThreats(
@@ -56,14 +55,15 @@ export class AilaStreamHandler {
       content: string;
     }[],
   ) {
-    const messagesToCheck = messages ?? this._chat.messages;
-    log.info("Starting threat check");
+    const messagesToCheck = (messages ?? this._chat.messages).filter(
+      (message): message is ThreatDetectionMessage => message.role !== "data",
+    );
     if (!this._chat.aila.threatDetection?.detectors) {
       log.info("No threat detectors configured");
       return;
     }
 
-    const lastMessage = messagesToCheck[this._chat.messages.length - 1];
+    const lastMessage = messagesToCheck[messagesToCheck.length - 1];
     if (!lastMessage) {
       log.info("No messages to check for threats");
       return;
@@ -72,13 +72,13 @@ export class AilaStreamHandler {
     const detectors = this._chat.aila.threatDetection?.detectors ?? [];
     for (const detector of detectors) {
       log.info("Running detector", { detector: detector.constructor.name });
-      const result = await detector.detectThreat(messagesToCheck);
-      if (result.isThreat) {
-        log.info("Threat detected", { result });
+      const threatDetection = await detector.detectThreat(messagesToCheck);
+      if (threatDetection.isThreat) {
+        log.info("Threat detected", { threatDetection });
         throw new AilaThreatDetectionError(
           this._chat.userId ?? "unknown",
           "Potential threat detected",
-          { cause: result },
+          threatDetection,
         );
       }
     }
@@ -97,8 +97,9 @@ export class AilaStreamHandler {
           await this._chat.setupGeneration();
         });
       } else {
-        await this.span("initialise-chunks", async () => {
+        await this.span("initialise-chunks", () => {
           this._chat.initialiseChunks();
+          return Promise.resolve();
         });
       }
 
@@ -156,9 +157,11 @@ export class AilaStreamHandler {
         } catch (e) {
           log.error("Error in complete", e);
           this._chat.aila.errorReporter?.reportError(e);
-          controller.error(
-            new AilaChatError("Chat completion failed", { cause: e }),
-          );
+          await this._chat.enqueue({
+            type: "error",
+            value:
+              "Something went wrong. Please try sending your message again.",
+          });
         }
       }
       this.closeController();
@@ -320,18 +323,14 @@ export class AilaStreamHandler {
     log.info("Starting to read from stream");
     try {
       while (abortController ? !abortController?.signal.aborted : true) {
-        log.info("Reading next chunk");
         const { done, value } = await this._streamReader.read();
         if (done) {
           log.info("Stream reading complete");
           break;
         }
         if (value) {
-          log.info("Processing chunk", { valueLength: value.length });
           this._chat.appendChunk(value);
           this._controller?.enqueue(value);
-        } else {
-          log.info("Received empty chunk");
         }
       }
     } catch (e) {
@@ -359,10 +358,11 @@ export class AilaStreamHandler {
 
       const detectors = this._chat.aila.threatDetection?.detectors ?? [];
       for (const detector of detectors) {
-        if (await detector.isThreatError(error)) {
+        if (detector.isThreatError(error)) {
           throw new AilaThreatDetectionError(
             this._chat.userId ?? "unknown",
             "Threat detected",
+            undefined,
             { cause: error },
           );
         }
@@ -376,7 +376,20 @@ export class AilaStreamHandler {
 
   private closeController() {
     if (this._controller) {
-      this._controller.close();
+      try {
+        this._controller.close();
+      } catch (e) {
+        if (
+          e instanceof TypeError &&
+          (e as NodeJS.ErrnoException).code === "ERR_INVALID_STATE"
+        ) {
+          log.info(
+            "Controller already terminated (closed or errored), skipping close",
+          );
+        } else {
+          throw e;
+        }
+      }
     }
   }
 }

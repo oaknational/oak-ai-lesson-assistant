@@ -1,15 +1,18 @@
+import { scheduleRateLimitNotification } from "@oakai/core";
+import type * as OakCore from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
-import { inngest } from "@oakai/core/src/inngest";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 
 import { reportRateLimitError } from "./user";
 
-jest.mock("@oakai/core/src/inngest", () => ({
-  inngest: {
-    createFunction: jest.fn(),
-    send: jest.fn(),
-  },
-}));
+jest.mock("@oakai/core", () => {
+  const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
+
+  return {
+    ...actualCore,
+    scheduleRateLimitNotification: jest.fn(),
+  };
+});
 
 describe("chat route user functions", () => {
   describe("reportRateLimitError", () => {
@@ -56,9 +59,8 @@ describe("chat route user functions", () => {
       const chatId = "testChatId";
 
       await reportRateLimitError(error, userId, chatId);
-      expect(inngest.send).toHaveBeenCalledTimes(1);
-      expect(inngest.send).toHaveBeenCalledWith({
-        name: "app/slack.notifyRateLimit",
+      expect(scheduleRateLimitNotification).toHaveBeenCalledTimes(1);
+      expect(scheduleRateLimitNotification).toHaveBeenCalledWith({
         user: {
           id: userId,
         },

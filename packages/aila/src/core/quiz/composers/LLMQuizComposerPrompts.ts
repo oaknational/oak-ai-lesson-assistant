@@ -2,26 +2,29 @@ import dedent from "dedent";
 import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
-import type {
-  EnrichedImageMetadata,
-  QuizQuestionPool,
-  RagQuizQuestion,
-} from "../interfaces";
+import type { ImageMetadata } from "../../../protocol/schemas/quiz";
+import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 /**
  * Replace markdown images with text descriptions for LLM context.
- * Uses aiDescription from imageMetadata when available.
+ * Throws if an image doesn't have an aiDescription — ingest guarantees
+ * every image has one, so missing descriptions indicate a data integrity issue.
  */
 function replaceImagesWithDescriptions(
   text: string,
-  imageMetadata: EnrichedImageMetadata[],
+  imageMetadata: ImageMetadata[],
 ): string {
   return text.replaceAll(
     /!\[([^\]]*)\]\(([^)]{1,2000})\)/g,
-    (match, _alt, url: string) => {
+    (_match, _alt, url: string) => {
       const meta = imageMetadata.find((m) => m.imageUrl === url);
-      return meta?.aiDescription ? `[IMAGE: ${meta.aiDescription}]` : match;
+      if (!meta?.aiDescription) {
+        throw new Error(
+          `Missing aiDescription for image: ${url.slice(0, 100)}`,
+        );
+      }
+      return `[IMAGE: ${meta.aiDescription}]`;
     },
   );
 }
@@ -205,7 +208,7 @@ function buildQuizTypeInstructions(
 }
 
 function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const priorKnowledge = lessonPlan.priorKnowledge || [];
+  const priorKnowledge = lessonPlan.priorKnowledge ?? [];
   const priorKnowledgeList =
     priorKnowledge.length > 0
       ? `\n\nPrior knowledge to assess:\n${priorKnowledge.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
@@ -224,7 +227,7 @@ function buildStarterQuizInstructions(lessonPlan: PartialLessonPlan): string {
 }
 
 function buildExitQuizInstructions(lessonPlan: PartialLessonPlan): string {
-  const keyLearningPoints = lessonPlan.keyLearningPoints || [];
+  const keyLearningPoints = lessonPlan.keyLearningPoints ?? [];
   const learningPointsList =
     keyLearningPoints.length > 0
       ? `\n\nKey learning points to assess:\n${keyLearningPoints.map((item, i) => `${i + 1}. ${item}`).join("\n")}`

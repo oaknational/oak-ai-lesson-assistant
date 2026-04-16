@@ -65,7 +65,7 @@ describe("lessonPlanTracking tracking", () => {
       const actions = store.getState().actions;
 
       actions.clickedStart(
-        "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+        "Create a lesson plan about the end of Roman Britain for key stage 2 history",
       );
 
       chatStoreMock.getState.mockReturnValue({
@@ -79,7 +79,7 @@ describe("lessonPlanTracking tracking", () => {
 
       expect(createArgs.track.lessonPlanInitiated).toHaveBeenCalledWith({
         componentType: "example_lesson_button",
-        text: "Create a lesson plan about the end of Roman Britain for key stage 3 history",
+        text: "Create a lesson plan about the end of Roman Britain for key stage 2 history",
         moderatedContentType: null,
         ...ragTrackingFields,
         ...commonTrackingFields,

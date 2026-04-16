@@ -16,8 +16,6 @@
  *
  * Pipeline flow: Sources → Enrichers → Composer → Final Quiz
  */
-import { aiLogger } from "@oakai/logger";
-
 import type {
   AilaRagRelevantLesson,
   PartialLessonPlan,
@@ -25,7 +23,6 @@ import type {
 } from "../../../protocol/schema";
 import { buildQuizFromQuestions } from "../buildQuizObject";
 import { LLMComposer } from "../composers/LLMQuizComposer";
-import { ImageDescriptionEnricher } from "../enrichers/ImageDescriptionEnricher";
 import type {
   QuestionEnricher,
   QuestionSource,
@@ -44,8 +41,6 @@ import type {
   QuizComposerType,
 } from "../schema";
 
-const log = aiLogger("quiz");
-
 function createSource(type: QuestionSourceType): QuestionSource {
   switch (type) {
     case "similarLessons":
@@ -60,10 +55,7 @@ function createSource(type: QuestionSourceType): QuestionSource {
 }
 
 function createEnricher(type: QuestionEnricherType): QuestionEnricher {
-  switch (type) {
-    case "imageDescriptions":
-      return new ImageDescriptionEnricher();
-  }
+  throw new Error(`Unknown enricher type: ${type}`);
 }
 
 function createComposer(type: QuizComposerType): QuizComposer {
@@ -148,12 +140,6 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
   const sources = settings.sources.map(createSource);
   const enrichers = settings.enrichers.map(createEnricher);
   const composer = createComposer(settings.composer);
-
-  log.info("Building quiz service with settings:", {
-    sources: settings.sources,
-    enrichers: settings.enrichers,
-    composer: settings.composer,
-  });
 
   return {
     sources,

@@ -4,7 +4,7 @@ import type {
 } from "../types";
 
 export const handleSetSubject =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (subject: string | null) => {
     set((state) => ({
       formState: {
@@ -15,7 +15,7 @@ export const handleSetSubject =
   };
 
 export const handleSetTitle =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (title: string | null) => {
     set((state) => ({
       formState: {
@@ -26,7 +26,7 @@ export const handleSetTitle =
   };
 
 export const handleSetYear =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (year: string | null) => {
     set((state) => ({
       formState: {
@@ -37,7 +37,7 @@ export const handleSetYear =
   };
 
 export const handleSetActiveDropdown =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (activeDropdown: string | null) => {
     set((state) => ({
       formState: {
@@ -48,7 +48,7 @@ export const handleSetActiveDropdown =
   };
 
 export const handleResetFormState =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) => () => {
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) => () => {
     set({
       formState: {
         subject: null,

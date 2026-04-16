@@ -1,55 +1,29 @@
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import { Client } from "@elastic/elasticsearch";
-import type { SearchHit } from "@elastic/elasticsearch/lib/api/types";
-import { z } from "zod";
+import type { PrismaClient } from "@prisma/client";
 
 import type { QuizPath } from "../../../protocol/schema";
-import { convertHasuraQuizToV3 } from "../../../protocol/schemas/quiz/conversion/rawQuizIngest";
-import { hasuraQuizQuestionSchema } from "../../../protocol/schemas/quiz/rawQuiz";
 import type {
-  QuizIDSource,
-  QuizQuestionTextOnlySource,
-  QuizSet,
-  RagQuizQuestion,
-} from "../interfaces";
+  ImageMetadata,
+  QuizV3Question,
+} from "../../../protocol/schemas/quiz/quizV3";
+import type { RagQuizQuestion } from "../interfaces";
 
 const log = aiLogger("aila:quiz");
 
 /**
- * Service for retrieving quiz questions in the RAG pipeline.
+ * Service for retrieving quiz questions from Postgres (rag.quiz_questions).
  * Handles lookups by lesson slug, question IDs, or plan ID.
  */
 export class QuizQuestionRetrievalService {
-  private readonly client: Client;
+  private readonly db: PrismaClient;
 
-  constructor(client?: Client) {
-    if (client) {
-      this.client = client;
-      return;
-    }
-
-    if (
-      !process.env.I_DOT_AI_ELASTIC_CLOUD_ID ||
-      !process.env.I_DOT_AI_ELASTIC_KEY
-    ) {
-      throw new Error(
-        "Environment variables for Elastic Cloud ID and API Key must be set",
-      );
-    }
-
-    this.client = new Client({
-      cloud: {
-        id: process.env.I_DOT_AI_ELASTIC_CLOUD_ID,
-      },
-      auth: {
-        apiKey: process.env.I_DOT_AI_ELASTIC_KEY,
-      },
-    });
+  constructor(db?: PrismaClient) {
+    this.db = db ?? (prisma as unknown as PrismaClient);
   }
 
-  // === Plan ID lookups (Prisma + ES) ===
+  // === Plan ID lookups ===
 
   /**
    * Get quiz questions for a lesson plan by its ID.
@@ -59,7 +33,7 @@ export class QuizQuestionRetrievalService {
     planId: string,
     quizType: QuizPath,
   ): Promise<RagQuizQuestion[]> {
-    const lessonPlan = await prisma.ragLessonPlan.findUnique({
+    const lessonPlan = await this.db.ragLessonPlan.findUnique({
       where: { id: planId },
       select: { oakLessonSlug: true },
     });
@@ -76,7 +50,7 @@ export class QuizQuestionRetrievalService {
     return this.retrieveQuestionsByIds(questionIds);
   }
 
-  // === Lesson slug lookups (ES) ===
+  // === Lesson slug lookups ===
 
   async getStarterQuizIds(lessonSlug: string): Promise<string[]> {
     return this.getQuizQuestionIds(lessonSlug, "/starterQuiz");
@@ -108,40 +82,22 @@ export class QuizQuestionRetrievalService {
     lessonSlug: string,
     quizType: QuizPath,
   ): Promise<string[]> {
+    // QuizPath comes in as "/starterQuiz" or "/exitQuiz" — strip the leading slash
+    const dbQuizType = quizType.replace(/^\//, "");
+
     try {
-      const response = await this.client.search<QuizIDSource>({
-        index: "lesson-slug-lookup-2025-04-16",
-        query: {
-          bool: {
-            must: [{ term: { "metadata.lessonSlug.keyword": lessonSlug } }],
-          },
-        },
+      const rows = await this.db.ragQuizQuestion.findMany({
+        where: { lessonSlug, quizType: dbQuizType },
+        select: { questionUid: true },
+        orderBy: { questionPosition: "asc" },
       });
 
-      if (!response.hits.hits[0]?._source) {
+      if (rows.length === 0) {
         log.error(`No ${quizType} found for lesson slug: ${lessonSlug}.`);
         return [];
       }
 
-      const source = response.hits.hits[0]._source;
-      log.info(`Source: ${JSON.stringify(source)}`);
-
-      const quizData: QuizSet =
-        typeof source.text === "string" ? JSON.parse(source.text) : source.text;
-
-      const quizIds =
-        quizType === "/starterQuiz" ? quizData.starterQuiz : quizData.exitQuiz;
-
-      if (!quizIds || !z.array(z.string()).safeParse(quizIds).success) {
-        log.error(
-          `Got invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
-        );
-        throw new Error(
-          `Invalid ${quizType} data for lesson slug: ${lessonSlug}. Data: ${JSON.stringify(quizData)}`,
-        );
-      }
-
-      return quizIds;
+      return rows.map((r) => r.questionUid);
     } catch (error) {
       log.error(
         `Error fetching ${quizType} for lesson slug ${lessonSlug}:`,
@@ -151,43 +107,38 @@ export class QuizQuestionRetrievalService {
     }
   }
 
-  // === Question ID lookups (ES) ===
+  // === Question ID lookups ===
 
   /**
-   * Retrieves quiz questions by their UIDs from Elasticsearch.
-   * Converts to V3 format immediately (supporting all question types).
+   * Retrieves quiz questions by their UIDs from Postgres.
    * Preserves the order of the input questionUids array.
    */
   async retrieveQuestionsByIds(
     questionUids: string[],
   ): Promise<RagQuizQuestion[]> {
-    const response = await this.client.search<QuizQuestionTextOnlySource>({
-      index: "quiz-questions-text-only-2025-04-16",
-      body: {
-        query: {
-          bool: {
-            must: [
-              {
-                terms: {
-                  "metadata.questionUid.keyword": questionUids,
-                },
-              },
-            ],
-          },
-        },
+    if (questionUids.length === 0) {
+      return [];
+    }
+
+    const rows = await this.db.ragQuizQuestion.findMany({
+      where: { questionUid: { in: questionUids } },
+      select: {
+        questionUid: true,
+        quizQuestion: true,
+        imageMetadata: true,
       },
     });
 
-    if (!response.hits.hits[0]?._source) {
+    if (rows.length === 0) {
       log.error("No questions found for questionUids: ", questionUids);
       return [];
     }
 
-    const parsedQuestions: RagQuizQuestion[] = response.hits.hits
-      .map((hit) => this.parseRagQuizQuestion(hit))
+    const parsedQuestions: RagQuizQuestion[] = rows
+      .map((row) => this.parseRagQuizQuestion(row))
       .filter((item): item is RagQuizQuestion => item !== null);
 
-    // Sort to match input order - Elasticsearch terms query doesn't preserve order
+    // Sort to match input order — Prisma IN doesn't guarantee order
     const orderedQuestions = questionUids
       .map((uid) => parsedQuestions.find((q) => q.sourceUid === uid))
       .filter((q): q is RagQuizQuestion => Boolean(q));
@@ -195,52 +146,20 @@ export class QuizQuestionRetrievalService {
     return orderedQuestions;
   }
 
-  private parseRagQuizQuestion(
-    hit: SearchHit<QuizQuestionTextOnlySource>,
-  ): RagQuizQuestion | null {
-    if (!hit._source) {
-      log.error("Hit source is undefined");
+  private parseRagQuizQuestion(row: {
+    questionUid: string;
+    quizQuestion: unknown;
+    imageMetadata: unknown;
+  }): RagQuizQuestion | null {
+    if (!row.quizQuestion) {
+      log.warn("Missing quizQuestion for questionUid:", row.questionUid);
       return null;
     }
 
-    const rawQuizString = hit._source.metadata.raw_json;
-
-    if (!rawQuizString) {
-      return null;
-    }
-
-    try {
-      const sourceData = JSON.parse(rawQuizString);
-      const source = hasuraQuizQuestionSchema.parse(sourceData);
-      const quizV3 = convertHasuraQuizToV3([source]);
-
-      if (!quizV3.questions[0]) {
-        log.error("No question returned from V3 conversion", {
-          sourceUid: source.questionUid,
-        });
-        return null;
-      }
-
-      return {
-        question: quizV3.questions[0],
-        sourceUid: source.questionUid,
-        source,
-        imageMetadata: quizV3.imageMetadata,
-      };
-    } catch (error) {
-      // TODO: Should we throw here instead of returning null?
-      // Current behavior silently filters out invalid questions
-      if (error instanceof z.ZodError) {
-        log.error("Validation error:", {
-          errors: error.errors,
-          rawJsonPreview: rawQuizString.substring(0, 300),
-        });
-      } else if (error instanceof SyntaxError) {
-        log.error("JSON parsing error:", error.message);
-      } else {
-        log.error("An unexpected error occurred:", error);
-      }
-      return null;
-    }
+    return {
+      question: row.quizQuestion as QuizV3Question,
+      sourceUid: row.questionUid,
+      imageMetadata: (row.imageMetadata as ImageMetadata[]) ?? [],
+    };
   }
 }

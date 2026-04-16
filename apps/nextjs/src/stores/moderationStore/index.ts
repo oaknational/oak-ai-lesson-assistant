@@ -6,7 +6,7 @@ import type { TrpcUtils } from "@/utils/trpc";
 import { logStoreUpdates } from "../zustandHelpers";
 import { handleAilaStreamingStatusUpdated } from "./actionFunctions/handleAilaStreamingStatus";
 import { handleFetchModerations } from "./actionFunctions/handleFetchModeration";
-import { handleToxicModeration } from "./actionFunctions/handleToxicModeration";
+import { handleLockingModeration } from "./actionFunctions/handleLockingModeration";
 import { handleUpdateModerationState } from "./actionFunctions/handleUpdateModerationState";
 import type { ModerationState } from "./types";
 
@@ -27,8 +27,7 @@ export const createModerationStore = ({
     id,
     moderations: [],
     isModerationsLoading: null,
-    toxicInitialModeration: null,
-    toxicModeration: null,
+    lockingModeration: null,
     lastModeration: null,
 
     actions: {
@@ -36,7 +35,7 @@ export const createModerationStore = ({
       setIsModerationsLoading: (isModerationsLoading) =>
         set({ isModerationsLoading }),
 
-      updateToxicModeration: handleToxicModeration(getStore, set, get),
+      updateLockingModeration: handleLockingModeration(getStore, set, get),
       updateModerationState: handleUpdateModerationState(set, get),
 
       fetchModerations: handleFetchModerations(set, get, trpcUtils),
@@ -45,8 +44,7 @@ export const createModerationStore = ({
         set({
           moderations: [],
           isModerationsLoading: null,
-          toxicInitialModeration: null,
-          toxicModeration: null,
+          lockingModeration: null,
           lastModeration: null,
         });
       },

@@ -2,6 +2,8 @@
  * Typed extractors for ReportNode data.
  * These only return data for complete nodes, validated with Zod schemas.
  */
+import { aiLogger } from "@oakai/logger";
+
 import type { ReportNode } from "./Report";
 import {
   type CohereData,
@@ -17,6 +19,8 @@ import {
   type ImageDescriptionsData,
   ImageDescriptionsDataSchema,
 } from "./schemas";
+
+const logger = aiLogger("quiz");
 
 /**
  * Get a child node by name
@@ -51,7 +55,7 @@ export function extractGeneratorData(
   if (node?.status !== "complete") return undefined;
   const result = GeneratorDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid generator data:", result.error);
+    logger.error("Invalid generator data:", result.error);
     return undefined;
   }
   // Cast pools to proper type (validated as array above)
@@ -67,7 +71,7 @@ export function extractElasticsearchData(
   if (node?.status !== "complete") return undefined;
   const result = ElasticsearchDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid elasticsearch data:", result.error);
+    logger.error("Invalid elasticsearch data:", result.error);
     return undefined;
   }
   return result.data;
@@ -82,7 +86,7 @@ export function extractCohereData(
   if (node?.status !== "complete") return undefined;
   const result = CohereDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid cohere data:", result.error);
+    logger.error("Invalid cohere data:", result.error);
     return undefined;
   }
   return result.data;
@@ -97,7 +101,7 @@ export function extractImageDescriptionsData(
   if (node?.status !== "complete") return undefined;
   const result = ImageDescriptionsDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid image descriptions data:", result.error);
+    logger.error("Invalid image descriptions data:", result.error);
     return undefined;
   }
   return result.data;
@@ -112,7 +116,7 @@ export function extractComposerPromptData(
   if (node?.status !== "complete") return undefined;
   const result = ComposerPromptDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid composer prompt data:", result.error);
+    logger.error("Invalid composer prompt data:", result.error);
     return undefined;
   }
   return result.data;
@@ -127,7 +131,7 @@ export function extractComposerLlmData(
   if (node?.status !== "complete") return undefined;
   const result = ComposerLlmDataSchema.safeParse(node.data);
   if (!result.success) {
-    console.error("Invalid composer LLM data:", result.error);
+    logger.error("Invalid composer LLM data:", result.error);
     return undefined;
   }
   return result.data;

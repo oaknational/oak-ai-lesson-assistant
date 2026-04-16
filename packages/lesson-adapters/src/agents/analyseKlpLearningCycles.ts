@@ -2,7 +2,9 @@ import { openai } from "@ai-sdk/openai";
 import { Output, generateText } from "ai";
 import { z } from "zod";
 
+import { slideTypeSchema } from "../slides/extraction/schemas";
 import type { SlideContent } from "../slides/extraction/types";
+import { formatSlidesForPrompt, simplifySlideContent } from "./utils";
 
 // ---------------------------------------------------------------------------
 // Schemas
@@ -14,6 +16,9 @@ import type { SlideContent } from "../slides/extraction/types";
 export const slideKlpLcMappingSchema = z.object({
   slideNumber: z.number(),
   slideId: z.string(),
+  slideType: slideTypeSchema.describe(
+    "Classification of the slide's purpose/type",
+  ),
   keyLearningPoints: z
     .array(z.string())
     .describe(
@@ -24,9 +29,16 @@ export const slideKlpLcMappingSchema = z.object({
     .describe(
       "Array of learning cycle texts covered on this slide (from the lesson learning cycles)",
     ),
+  coversDiversity: z
+    .boolean()
+    .describe(
+      "Whether this slide contains diversity content - content that provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own",
+    ),
   reasoning: z
     .string()
-    .describe("Brief explanation of why these KLPs and cycles apply"),
+    .describe(
+      "Brief explanation of why these KLPs and cycles apply, and if coversDiversity is true, explain the diversity content",
+    ),
 });
 
 /**
@@ -73,8 +85,25 @@ const SYSTEM_PROMPT = `You are an educational expert and content analysis agent 
 
 ## Your Task
 Analyse each slide in the presentation and determine:
-1. Which key learning points (from the provided lesson KLPs) are covered on this slide
-2. Which learning cycles (from the provided lesson outline) are covered on this slide
+1. The slide's type (see Slide Type Classification below)
+2. Which key learning points (from the provided lesson KLPs) are covered on this slide
+3. Which learning cycles (from the provided lesson outline) are covered on this slide
+
+## Slide Type Classification
+Classify every slide as exactly one of these types:
+- **title**: The lesson title slide, usually the first slide
+- **keywords**: A slide that introduces or defines key vocabulary/terminology for the lesson
+- **lessonOutcome**: A slide stating what pupils will learn or achieve by the end of the lesson
+- **lessonOutline**: A slide showing the structure or outline of the lesson (e.g. listing learning cycles)
+- **summary**: A slide summarising what has been covered in the lesson
+- **endOfLesson**: The final slide, typically a closing or "end of lesson" slide
+- **teacher**: A slide with instructions or notes for the teacher (not pupil-facing content)
+- **copyright**: A slide containing copyright, licensing, or attribution information
+- **checkForUnderstanding**: A quiz or comprehension check slide (multiple choice, true/false, short answer)
+- **explanation**: A slide that explains a concept, provides information, or teaches new content
+- **practice**: A slide with exercises, activities, or tasks for pupils to complete
+- **feedback**: A slide that provides answers, model responses, or feedback on a practice activity
+- **content**: A general content slide that does not fit the above categories
 
 ## Input
 You receive:
@@ -87,13 +116,29 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
 
 ## Rules
 - A slide may cover multiple KLPs and/or multiple learning cycles
-- A slide will always cover a key learning point unless is it a title slide, keyword slide, outcome slide or teacher note slide
-- Match based on content, not just exact text - look for concepts and themes
+- A KLP or multiple KLPs may be covered across multiple learning cycles
+- Title slide, teacher note slide, outcome slide, lesson outline slides and end slide will never cover a key learning point
+- Practice and feedback slides may cover multiple KLPs - check these carefully for multiple key learning points
+- Include the keyword slide if one of the keywords is included in the key learning point or conceptually relates to it
+  - Example: KLP "Techniques such as strokes and flourishes can help you create calligraphic letters and words" relates to keyword "stroke"
+  - Example: KLP "At Salamis, the Persians were defeated, preventing Persia from conquering Greece" relates to keyword "Conquer"
+- Match based on content, not just exact text - look for concepts, themes, and tier 2 or 3 vocabulary
+  - Example: KLP "Techniques such as strokes and flourishes can help you create calligraphic letters and words" matches slide content "Strokes can be combined to form letters. Can you see how each these letters is created using the same downstroke as the letter 'C'?"
+- Do NOT include slides that do not match a key learning point in content, concept, theme, or provide important knowledge pupils need to learn a key learning point
+  - Example: Given key learning points: "Calligraphy involves creating letters with artistic flair to make beautiful handwriting"; "Learning and practising foundational calligraphic strokes builds the skills needed to create decorative letters"; "Techniques such as strokes and flourishes can help you create calligraphic letters and words"; "Practising calligraphy improves fine motor skills"
+  - A slide with content "Here you can see a representation of an older calligraphy style, often used during the Middle Ages in Western Europe, and is referred to as 'gothic'" does NOT match any of these KLPs - it provides historical context but does not match the content, concept or theme of a key learning point or relate to important knowledge pupils need to learn a key learning point
+- For EVERY slide, check if it contains diversity content and set coversDiversity accordingly — this applies whether or not the slide matches a KLP
+  - Diversity content provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own
+  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds (e.g. Henry Ossawa Tanner, Berthe Morisot)
+  - Content that contextualises knowledge geographically or historically
+  - Content that includes multiple perspectives and world-views
+  - A slide can both cover a KLP AND contain diversity content — these are not mutually exclusive
+  - Set coversDiversity to true and explain the diversity content in the reasoning field
 - Consider text in both textElements and tables when making determinations
 - Do not invent new KLPs or learning cycles - only use the ones provided
 - Provide clear reasoning for each slide's mappings
 - Every slide in the input must have a corresponding entry in slideMappings
-- For title slides, teacher notes, keywords, outcome slides, return empty arrays
+- For title slides, teacher notes, outcome slides, lesson outline slides, and end slides, return empty arrays
 
 ## Examples
 - A slide about photosynthesis basics might cover KLP "Plants use light to make food" and learning cycle "Introduction to plant biology"
@@ -115,57 +160,10 @@ export async function analyseKlpLearningCycles(
     const parsed = analyseKlpLcInputSchema.parse(input);
 
     // Prepare simplified slide content for the LLM (text and tables only)
-    const slidesForPrompt = parsed.slides.map((slide) => ({
-      slideNumber: slide.slideNumber,
-      slideId: slide.slideId,
-      slideTitle: slide.slideTitle,
-      textElements: slide.textElements,
-      tables: slide.tables,
-    }));
+    const slidesForPrompt = simplifySlideContent(parsed.slides);
 
     // Format slides in a more readable structure for the LLM
-    const formattedSlides = slidesForPrompt
-      .map((slide) => {
-        const parts = [
-          `## Slide ${slide.slideNumber}`,
-          `- Slide ID: ${slide.slideId}`,
-        ];
-
-        if (slide.slideTitle) {
-          parts.push(`- Title: ${slide.slideTitle}`);
-        }
-
-        if (slide.textElements.length > 0) {
-          parts.push(
-            `\n### Text Content:`,
-            ...slide.textElements.map(
-              (te, idx) => `${idx + 1}. ${te.content.trim()}`,
-            ),
-          );
-        }
-
-        if (slide.tables.length > 0) {
-          parts.push(`\n### Tables:`);
-          slide.tables.forEach((table, tableIdx) => {
-            parts.push(
-              `\nTable ${tableIdx + 1} (${table.rows}x${table.columns}):`,
-            );
-            table.cells.forEach((row, rowIdx) => {
-              const rowContent = row
-                .map((cell) => cell.content.trim())
-                .join(" | ");
-              parts.push(`  Row ${rowIdx + 1}: ${rowContent}`);
-            });
-          });
-        }
-
-        if (slide.textElements.length === 0 && slide.tables.length === 0) {
-          parts.push(`- No text content`);
-        }
-
-        return parts.join("\n");
-      })
-      .join("\n\n---\n\n");
+    const formattedSlides = formatSlidesForPrompt(slidesForPrompt);
 
     const promptContent = `# Key Learning Points
 ${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}

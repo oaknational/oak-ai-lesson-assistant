@@ -9,4 +9,5 @@ export { Snippets } from "./snippets";
 export { LessonSnapshots } from "./lessonSnapshots";
 export { Moderations } from "./moderations";
 export { SafetyViolations } from "./safetyViolations";
+export { UserBannedError } from "./userBannedError";
 export { demoUsers } from "./demoUsers";

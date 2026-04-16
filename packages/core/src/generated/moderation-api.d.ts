@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v0/moderate": {
+    "/v1/moderate": {
         parameters: {
             query?: never;
             header?: never;
@@ -44,6 +44,11 @@ export interface operations {
             content: {
                 "application/json": {
                     content: string;
+                    context?: {
+                        user_id?: string;
+                        session_id?: string;
+                        message_id?: string;
+                    };
                 };
             };
         };
@@ -55,27 +60,52 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        message: string;
                         scores: {
-                            /** @description Language and discrimination score */
-                            l: number;
-                            /** @description Violence and crime score */
-                            v: number;
-                            /** @description Upsetting, disturbing and sensitive score */
-                            u: number;
-                            /** @description Nudity and sex score */
-                            s: number;
-                            /** @description Physical activity and safety score */
-                            p: number;
-                            /** @description Toxic score */
-                            t: number;
+                            "l/discriminatory-language": number;
+                            "l/offensive-language": number;
+                            "u/sensitive-content": number;
+                            "u/violence-or-suffering": number;
+                            "u/mental-health-challenges": number;
+                            "u/crime-or-illegal-activities": number;
+                            "u/sexual-violence": number;
+                            "s/nudity-or-sexual-content": number;
+                            "p/practical-activities": number;
+                            "p/outdoor-learning": number;
+                            "p/additional-qualifications": number;
+                            "r/recent-content": number;
+                            "r/recent-conflicts": number;
+                            "n/self-harm-suicide": number;
+                            "n/potentially-offensive-language": number;
+                            "n/strangulation-suffocation": number;
+                            "t/guides-self-harm-suicide": number;
+                            "t/encourages-harmful-behaviour": number;
+                            "t/encourages-illegal-activity": number;
+                            "t/encourages-violence-harm-others": number;
+                            "t/using-creating-weapons": number;
+                            "t/using-creating-harmful-substances": number;
+                            "t/extreme-offensive-language": number;
+                            "e/rshe-content": number;
                         };
-                        categories: ("l/discriminatory-behaviour" | "l/language-may-offend" | "l/strong-language" | "v/conflict-or-violence" | "v/serious-conflict-or-violence" | "v/sexual-violence" | "u/upsetting-content" | "u/sensitive-content" | "u/distressing-content" | "s/nudity" | "s/sexual-content" | "p/exploration-of-objects" | "p/equipment-safe-usage" | "p/imitable-behaviour" | "p/external-content" | "p/physical-activity" | "t/guides-self-harm" | "t/guides-harming-others" | "t/creating-chemical-weapons" | "t/creating-radioactive-weapons" | "t/creating-biological-weapons" | "t/creating-harmful-substances" | "t/encouragement-harmful-behaviour" | "t/encouragement-illegal-activity" | "t/encouragement-violence" | "t/encouragement-violence")[];
+                        flagged_categories: ("l/discriminatory-language" | "l/offensive-language" | "u/sensitive-content" | "u/violence-or-suffering" | "u/mental-health-challenges" | "u/crime-or-illegal-activities" | "u/sexual-violence" | "s/nudity-or-sexual-content" | "p/practical-activities" | "p/outdoor-learning" | "p/additional-qualifications" | "r/recent-content" | "r/recent-conflicts" | "n/self-harm-suicide" | "n/potentially-offensive-language" | "n/strangulation-suffocation" | "t/guides-self-harm-suicide" | "t/encourages-harmful-behaviour" | "t/encourages-illegal-activity" | "t/encourages-violence-harm-others" | "t/using-creating-weapons" | "t/using-creating-harmful-substances" | "t/extreme-offensive-language" | "e/rshe-content")[];
+                        prompt_version: string;
+                        /** Format: uuid */
+                        moderation_id?: string;
                     };
                 };
             };
             /** @description 401 */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error: string;
+                    };
+                };
+            };
+            /** @description 403 */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
