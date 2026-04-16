@@ -2,11 +2,19 @@ import { OakBox, OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
 import Link from "next/link";
 import styled from "styled-components";
 
+import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
+
+import { DemoBanner } from "./AppComponents/Chat/demo-banner";
+import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderAuth from "./HeaderAuth";
 import { Logo } from "./Logo";
 import OakIconLogo from "./OakIconLogo";
 
-type HeaderProps = { menuOpen: boolean; setMenuOpen: (open: boolean) => void };
+type HeaderProps = {
+  menuOpen: boolean;
+  page?: "teachingMaterials" | "aila";
+  setMenuOpen: (open: boolean) => void;
+};
 
 const HamburgerButton = styled.button`
   display: inline-block;
@@ -14,28 +22,44 @@ const HamburgerButton = styled.button`
   height: 28px;
 `;
 
-const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
+const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
+  const { isDemoUser, demo } = useDemoUser();
+
+  // Check whether clerk metadata has loaded to prevent the banner from flashing
+  const clerkMetadata = useClerkDemoMetadata();
   return (
     <OakBox
       $position="absolute"
-      $top="all-spacing-0"
-      $left="all-spacing-0"
-      $right="all-spacing-0"
+      $top="spacing-0"
+      $left="spacing-0"
+      $right="spacing-0"
       $zIndex="fixed-header"
       $bb={"border-solid-m"}
     >
+      {clerkMetadata.isSet && isDemoUser && page && (
+        <DemoBanner
+          page={page}
+          monthlyLimit={demo.appSessionsPerMonth}
+          remaining={
+            page == "teachingMaterials"
+              ? demo.additionalMaterialsSessionsRemaining
+              : demo.appSessionsRemaining
+          }
+          contactHref={demo.contactHref}
+        />
+      )}
       <OakFlex
         as="header"
-        $height="all-spacing-12"
+        $height="spacing-72"
         $width="100%"
-        $background="white"
-        $ph="inner-padding-m"
+        $background="bg-primary"
+        $ph="spacing-16"
         $justifyContent="space-between"
       >
         <OakFlex
           $flexDirection="row"
           $alignItems={"center"}
-          $gap={["all-spacing-5", "all-spacing-7"]}
+          $gap={["spacing-20", "spacing-32"]}
         >
           <Link href="/" aria-label="go to home page">
             <OakBox $display={["none", "block"]}>
@@ -49,10 +73,7 @@ const Header = ({ menuOpen, setMenuOpen }: Readonly<HeaderProps>) => {
             <OakP $font={["body-2", "heading-6"]}>AI experiments</OakP>
           </OakBox>
         </OakFlex>
-        <OakFlex
-          $alignItems={"center"}
-          $gap={["all-spacing-4", "all-spacing-8"]}
-        >
+        <OakFlex $alignItems={"center"} $gap={["spacing-16", "spacing-40"]}>
           <OakBox $display={["none", "block"]}>
             <Link href="/faqs">
               <OakP $font="body-2">FAQs</OakP>

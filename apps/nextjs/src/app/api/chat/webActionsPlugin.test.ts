@@ -1,21 +1,22 @@
 import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
-import { inngest } from "@oakai/core/src/inngest";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError, scheduleModerationNotification } from "@oakai/core";
+import type * as OakCore from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
-jest.mock("@oakai/core/src/inngest", () => ({
-  __esModule: true,
+jest.mock("@oakai/core", () => {
+  const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
 
-  inngest: {
-    createFunction: jest.fn(),
-    send: jest.fn(),
-  },
-}));
+  return {
+    ...actualCore,
+    scheduleModerationNotification: jest.fn(),
+    scheduleThreatDetectionAilaNotification: jest.fn(),
+  };
+});
 
 describe("webActionsPlugin", () => {
   describe("onToxicModeration", () => {
@@ -73,8 +74,7 @@ describe("webActionsPlugin", () => {
       const plugin = createWebActionsPlugin(prisma, safetyViolations);
       await plugin.onToxicModeration(moderation, pluginContext);
 
-      expect(inngest.send).toHaveBeenCalledWith({
-        name: "app/slack.notifyModeration",
+      expect(scheduleModerationNotification).toHaveBeenCalledWith({
         user: {
           id: "user_abc",
         },
@@ -82,8 +82,66 @@ describe("webActionsPlugin", () => {
           chatId: "chat_abc",
           justification: "Test justification",
           categories: ["t/encouragement-illegal-activity"],
+          safetyLevel: "toxic",
         },
       });
+    });
+  });
+
+  describe("onHighlySensitiveModeration", () => {
+    it("should notify slack with highly-sensitive safetyLevel", async () => {
+      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const moderation = {
+        id: "ABC",
+        categories: ["n/self-harm-suicide"],
+        justification: "Test justification",
+      } as Moderation;
+      const mockEnqueue = jest.fn();
+      const pluginContext = {
+        aila: {
+          userId: "user_abc",
+          chatId: "chat_abc",
+        } as unknown as AilaPluginContext["aila"],
+        enqueue: mockEnqueue,
+      };
+
+      const plugin = createWebActionsPlugin(prisma);
+      await plugin.onHighlySensitiveModeration!(moderation, pluginContext);
+
+      expect(scheduleModerationNotification).toHaveBeenCalledWith({
+        user: {
+          id: "user_abc",
+        },
+        data: {
+          chatId: "chat_abc",
+          justification: "Test justification",
+          categories: ["n/self-harm-suicide"],
+          safetyLevel: "highly-sensitive",
+        },
+      });
+    });
+
+    it("should not record a safety violation", async () => {
+      const recordViolation = jest.fn();
+      const safetyViolations = jest.fn().mockImplementation(() => ({
+        recordViolation,
+      }));
+
+      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const moderation = {
+        id: "ABC",
+        categories: ["n/self-harm-suicide"],
+        justification: "Test justification",
+      } as Moderation;
+      const pluginContext = {
+        aila: { userId: "user_abc" } as unknown as AilaPluginContext["aila"],
+        enqueue: jest.fn(),
+      };
+
+      const plugin = createWebActionsPlugin(prisma, safetyViolations);
+      await plugin.onHighlySensitiveModeration!(moderation, pluginContext);
+
+      expect(recordViolation).not.toHaveBeenCalled();
     });
   });
 

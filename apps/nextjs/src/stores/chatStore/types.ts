@@ -1,5 +1,5 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import type { Message as AiMessage } from "ai";
 import type { ChatRequestOptions, CreateMessage } from "ai";
@@ -26,19 +26,19 @@ export type AilaStreamingStatus =
   | "RequestMade"
   | "StreamingLessonPlan"
   | "StreamingChatResponse"
-  | "StreamingExperimentalPatches"
   | "Moderating"
   | "Idle";
 
 export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
+  streamingError: boolean;
 
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: ChatAction | null;
-  lessonPlan: LooseLessonPlan | null;
+  lessonPlan: PartialLessonPlan | null;
   input: string;
   chatAreaRef: React.RefObject<HTMLDivElement> | null;
 
@@ -47,7 +47,7 @@ export type ChatState = {
 
   actions: {
     // Setters
-    setLessonPlan: (lessonPlan: LooseLessonPlan) => void;
+    setLessonPlan: (lessonPlan: PartialLessonPlan) => void;
     setAiSdkActions: (actions: AiSdkActions) => void;
     setMessages: (messages: AiMessage[], isLoading: boolean) => void;
     setInput: (input: string) => void;
@@ -58,13 +58,14 @@ export type ChatState = {
     append: (action: ChatAction) => void;
     stop: () => void;
     streamingFinished: () => void;
+    streamingFailed: () => void;
     scrollToBottom: () => void;
     fetchInitialMessages: () => Promise<void>;
     ailaStreamingStatusUpdated: (streamingStatus: AilaStreamingStatus) => void;
   };
 };
 
-export type ParsedMessage = AiMessage & {
+export type ParsedMessage = Omit<AiMessage, "parts"> & {
   parts: MessagePart[];
   hasError: boolean;
   isEditing: boolean;

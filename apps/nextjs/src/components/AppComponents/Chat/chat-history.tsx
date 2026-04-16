@@ -6,14 +6,14 @@ import { useEffect } from "react";
 import {
   OakBox,
   OakIcon,
-  OakLink,
-  OakModal,
-  OakModalFooter,
-  OakSpan,
+  OakInformativeModal,
+  OakInformativeModalFooter,
 } from "@oaknational/oak-components";
 import { usePathname } from "next/navigation";
 
 import { SidebarList } from "@/components/AppComponents/Chat/sidebar-list";
+import OakIconLogo from "@/components/OakIconLogo";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../DialogContext";
 import { ClearHistory } from "./clear-history";
@@ -39,46 +39,43 @@ export function ChatHistory() {
     }
   }, [openSidebar]);
   return (
-    <OakModal
+    <OakInformativeModal
       data-testid="sidebar"
       isLeftHandSide={false}
       zIndex={0}
       isOpen={openSidebar}
       onClose={() => setOpenSidebar(false)}
       footerSlot={
-        <OakModalFooter>
+        <OakInformativeModalFooter>
           <ClearHistory isEnabled={true} />
-        </OakModalFooter>
+        </OakInformativeModalFooter>
       }
     >
+      {/*NOTE: Oak icon added after replacing OakModal with OakInformativeModal to match previous design*/}
       <OakBox
         $position="absolute"
-        $top="all-spacing-6"
-        $right="all-spacing-3"
+        $top="spacing-16"
+        $left="spacing-16"
         $borderRadius="border-radius-circle"
-        $height="space-between-xxl"
       >
-        <OakLink element="button" onClick={() => setOpenSidebar(false)}>
-          <OakSpan $opacity="transparent" $font="body-3">
-            Close
-          </OakSpan>
-        </OakLink>
+        <OakIconLogo width={32} height={40} />
       </OakBox>
-      <div className="flex h-full flex-col">
+      {/*NOTE: mt-10 added to match previous design after replacing OakModal with OakInformativeModal*/}
+      <div className="mt-10 flex h-full flex-col">
         <div className="my-10 flex flex-col px-7">
           <ChatButton
-            href="/aila"
+            href={getAilaUrl("start")}
             variant="text-link"
             onClick={() => setOpenSidebar(false)}
           >
             <span className="rotate-45">
               <OakIcon
                 iconName="cross"
-                $width="all-spacing-6"
-                $height="all-spacing-6"
+                $width="spacing-24"
+                $height="spacing-24"
               />
             </span>
-            <span>Create new lesson</span>
+            <span>Create with AI</span>
           </ChatButton>
 
           <ChatButton href="/" variant="text-link">
@@ -101,6 +98,6 @@ export function ChatHistory() {
           <SidebarList />
         </React.Suspense>
       </div>
-    </OakModal>
+    </OakInformativeModal>
   );
 }

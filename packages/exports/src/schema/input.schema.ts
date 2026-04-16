@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import type { DeepPartial } from "../types";
 
+// V1 format (legacy)
 export const quizQADSchema = z.object({
   question: z.string(),
   answers: z.array(z.string()),
@@ -9,9 +10,74 @@ export const quizQADSchema = z.object({
 });
 export type QuizQAD = z.infer<typeof quizQADSchema>;
 
-export const quizSchema = z.array(quizQADSchema);
-export type Quiz = z.infer<typeof quizSchema>;
+export const quizV1Schema = z.array(quizQADSchema);
+export type QuizV1 = z.infer<typeof quizV1Schema>;
 
+// Modern quiz format - supports all question types for import flexibility
+const quizQuestionMultipleChoiceSchema = z.object({
+  questionType: z.literal("multiple-choice"),
+  question: z.string(),
+  answers: z.array(z.string()),
+  distractors: z.array(z.string()),
+  hint: z.string().nullable(),
+});
+
+const quizQuestionShortAnswerSchema = z.object({
+  questionType: z.literal("short-answer"),
+  question: z.string(),
+  answers: z.array(z.string()),
+  hint: z.string().nullable(),
+});
+
+const quizQuestionMatchSchema = z.object({
+  questionType: z.literal("match"),
+  question: z.string(),
+  pairs: z.array(
+    z.object({
+      left: z.string(),
+      right: z.string(),
+    }),
+  ),
+  hint: z.string().nullable(),
+});
+
+const quizQuestionOrderSchema = z.object({
+  questionType: z.literal("order"),
+  question: z.string(),
+  items: z.array(z.string()),
+  hint: z.string().nullable(),
+});
+
+export const quizQuestionSchema = z.discriminatedUnion("questionType", [
+  quizQuestionMultipleChoiceSchema,
+  quizQuestionShortAnswerSchema,
+  quizQuestionMatchSchema,
+  quizQuestionOrderSchema,
+]);
+
+const imageMetadataSchema = z.object({
+  imageUrl: z.string(),
+  attribution: z.string().nullable(),
+  width: z.number(),
+  height: z.number(),
+});
+
+export const quizSchema = z.object({
+  version: z.literal("v3"),
+  questions: z.array(quizQuestionSchema).min(1),
+  imageMetadata: z.array(imageMetadataSchema),
+});
+export type ImageMetadata = z.infer<typeof imageMetadataSchema>;
+export type Quiz = z.infer<typeof quizSchema>;
+export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
+export type QuizQuestionMultipleChoice = z.infer<
+  typeof quizQuestionMultipleChoiceSchema
+>;
+export type QuizQuestionShortAnswer = z.infer<
+  typeof quizQuestionShortAnswerSchema
+>;
+export type QuizQuestionMatch = z.infer<typeof quizQuestionMatchSchema>;
+export type QuizQuestionOrder = z.infer<typeof quizQuestionOrderSchema>;
 export const cycleSchema = z.object({
   title: z.string(),
   durationInMinutes: z.number(),
@@ -48,14 +114,14 @@ export const lessonInputSchema = z.object({
   keyLearningPoints: z.array(z.string()).min(1),
   misconceptions: z.array(misconceptionSchema).nullish(),
   keywords: z.array(keywordSchema).nullish(),
-  starterQuiz: quizSchema.min(1),
-  exitQuiz: quizSchema.min(1),
+  starterQuiz: quizSchema,
+  exitQuiz: quizSchema,
   cycle1: cycleSchema,
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
   additionalMaterials: z.string().nullish(),
-  _experimental_starterQuizMathsV0: quizSchema.nullish(),
-  _experimental_exitQuizMathsV0: quizSchema.nullish(),
+  _experimental_starterQuizMathsV0: quizV1Schema.nullish(),
+  _experimental_exitQuizMathsV0: quizV1Schema.nullish(),
 });
 
 export type LessonInputData = z.infer<typeof lessonInputSchema>;
@@ -77,8 +143,8 @@ export const lessonPlanSectionsSchema = z.object({
   keyLearningPoints: z.array(z.string()).min(1),
   misconceptions: z.array(misconceptionSchema),
   keywords: z.array(keywordSchema),
-  starterQuiz: quizSchema.min(1),
-  exitQuiz: quizSchema.min(1),
+  starterQuiz: quizSchema,
+  exitQuiz: quizSchema,
   cycle1: cycleSchema,
   cycle2: cycleSchema.nullish(),
   cycle3: cycleSchema.nullish(),
@@ -108,36 +174,3 @@ export const quizDocInputSchema = z.object({
 export type QuizDocInputData = z.infer<typeof quizDocInputSchema>;
 
 export type LessonDeepPartial = DeepPartial<LessonSlidesInputData>;
-
-export enum QuizAppStatus {
-  Initial = "Initial",
-  EditingSubjectAndKS = "EditingSubjectAndKS",
-  ResettingQuiz = "ResettingQuiz",
-  EditingQuestions = "EditingQuestions",
-  NonRecoverableError = "NonRecoverableError",
-}
-
-export const quizAppStatusSchema = z.nativeEnum(QuizAppStatus);
-
-export const exportableQuizQuestionSchema = z.object({
-  question: z.string(),
-  answers: z.array(z.string()),
-  distractors: z.array(z.string()),
-  allOptions: z.array(z.string()),
-});
-
-export const exportableQuizAppStateSchema = z.object({
-  status: quizAppStatusSchema,
-  keyStage: z.string(),
-  subject: z.string(),
-  topic: z.string().optional(),
-  questions: z.array(exportableQuizQuestionSchema),
-});
-
-export type ExportableQuizQuestion = z.infer<
-  typeof exportableQuizQuestionSchema
->;
-
-export type ExportableQuizAppState = z.infer<
-  typeof exportableQuizAppStateSchema
->;

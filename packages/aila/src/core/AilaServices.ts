@@ -10,17 +10,19 @@ import type {
   AilaThreatDetectionFeature,
 } from "../features/types";
 import type {
+  JsonPatchDocument,
   MessagePart,
   ValidPatchDocument,
 } from "../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
+  PartialLessonPlan,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
 import type { AilaPlugin } from "./plugins";
-import type { FullQuizService } from "./quiz/interfaces";
+import type { QuizService } from "./quiz/interfaces";
 import type { AilaOptionsWithDefaultFallbackValues } from "./types";
 
 // This provides a set of interfaces between the Aila core and the features that use it.
@@ -50,10 +52,16 @@ export interface AilaChatService {
   set relevantLessons(lessons: AilaRagRelevantLesson[] | null);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
-  readonly fullQuizService: FullQuizService;
+  readonly quizService: QuizService;
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
   startStreaming(abortController?: AbortController): ReadableStream;
+}
+
+export interface AilaQuizService {
+  generateMathsExitQuizPatch(
+    lessonPlan: PartialLessonPlan,
+  ): Promise<JsonPatchDocument>;
 }
 
 export interface AilaServices {

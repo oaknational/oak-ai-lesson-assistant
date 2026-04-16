@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import { useChatStore } from "@/stores/AilaStoresProvider";
 
 export const useMobileLessonPullOutControl = ({
   lessonPlan,
 }: {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
 }) => {
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,

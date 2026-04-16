@@ -31,6 +31,7 @@ export const createChatStore = (
     id,
     moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
+    streamingError: false,
     initialMessages: [],
     stableMessages: [],
     streamingMessage: null,
@@ -59,6 +60,7 @@ export const createChatStore = (
       stop: handleStop(set, get),
       setMessages: handleSetMessages(getStore, set, get),
       streamingFinished: handleStreamingFinished(set, get),
+      streamingFailed: () => set({ streamingError: true }),
       scrollToBottom: handleScrollToBottom(set, get),
       fetchInitialMessages: handleFetchInitialMessages(
         set,

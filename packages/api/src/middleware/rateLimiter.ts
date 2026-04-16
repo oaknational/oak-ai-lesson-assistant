@@ -1,12 +1,16 @@
-import { inngest } from "@oakai/core/src/inngest";
+import { scheduleRateLimitNotification } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { RateLimiter } from "@oakai/core/src/utils/rateLimiting/types";
+import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/node";
 import { TRPCError } from "@trpc/server";
 
 import { publicProcedure, t } from "../trpc";
 import { isAuthedMiddleware } from "./auth";
+
+const log = aiLogger("rate-limiting");
 
 /**
  * Adapter to use userBasedRateLimiter as tRPC middleware
@@ -35,19 +39,29 @@ function createRateLimiterMiddleware(rateLimiter: RateLimiter) {
       });
     } catch (e) {
       if (e instanceof RateLimitExceededError) {
-        await inngest.send({
-          name: "app/slack.notifyRateLimit",
-          user: {
-            id: userId,
-          },
-          data: {
+        try {
+          await scheduleRateLimitNotification({
+            user: {
+              id: userId,
+            },
+            data: {
+              limit: e.limit,
+              reset: new Date(e.reset),
+            },
+          });
+        } catch (notifyErr) {
+          log.error("Failed to notify Slack about rate limit", {
+            userId,
             limit: e.limit,
-            reset: new Date(e.reset),
-          },
-        });
+            reset: e.reset,
+            error: notifyErr,
+          });
+          Sentry.captureException(notifyErr);
+        }
         throw new TRPCError({
           code: "TOO_MANY_REQUESTS",
-          message: "Too many requests, please try again later.",
+          message:
+            "RateLimitExceededError: Too many requests, please try again later.",
           cause: e,
         });
       }
@@ -62,8 +76,8 @@ export const userBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
   .use(createRateLimiterMiddleware(rateLimiter));
 
-const additionalMaterialRateLimiter = rateLimits.additionalMaterial.standard;
+const teachingMaterialRateLimiter = rateLimits.teachingMaterial.standard;
 
-export const additionalMaterialUserBasedRateLimitProcedure = publicProcedure
+export const teachingMaterialUserBasedRateLimitProcedure = publicProcedure
   .use(isAuthedMiddleware)
-  .use(createRateLimiterMiddleware(additionalMaterialRateLimiter));
+  .use(createRateLimiterMiddleware(teachingMaterialRateLimiter));

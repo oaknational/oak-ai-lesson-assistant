@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 import type { Message } from "ai/react";
@@ -42,7 +42,7 @@ export function findMessageIdFromContent({
 
 interface StatePart {
   type: "state";
-  value: LooseLessonPlan;
+  value: PartialLessonPlan;
 }
 
 const statePartSchema = z.object({
@@ -52,7 +52,7 @@ const statePartSchema = z.object({
 
 export function findLatestServerSideState(
   workingMessages: Message[],
-): LooseLessonPlan | undefined {
+): PartialLessonPlan | undefined {
   log.info("Finding latest server-side state", { workingMessages });
   const lastMessage = workingMessages[workingMessages.length - 1];
   if (!lastMessage?.content.includes('"type":"state"')) {

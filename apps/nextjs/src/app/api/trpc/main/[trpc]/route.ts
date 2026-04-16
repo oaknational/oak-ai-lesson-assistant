@@ -1,22 +1,19 @@
 import { createContext } from "@oakai/api/src/context";
 import { oakAppRouter } from "@oakai/api/src/router";
-import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import type { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { withSentry } from "@/lib/sentry/withSentry";
 
-const log = aiLogger("trpc");
-
-const handler = (req: NextRequest, res: NextResponse) =>
+const handler = (req: NextRequest) =>
   fetchRequestHandler({
     endpoint: "/api/trpc/main",
     req,
     router: oakAppRouter,
     createContext: () => {
-      return createContext({ req, res });
+      return createContext({ req });
     },
     onError: (e) => {
       Sentry.captureException(e.error);

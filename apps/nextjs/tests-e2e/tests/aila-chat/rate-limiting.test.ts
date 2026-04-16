@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../../config/config";
 import { prepareUser } from "../../helpers/auth";
 import { bypassVercelProtection } from "../../helpers/vercel";
@@ -16,7 +18,7 @@ test("User is restricted after message rate limit is reached", async ({
     await bypassVercelProtection(page);
     await prepareUser(page, "nearly-rate-limited");
 
-    await page.goto(`${TEST_BASE_URL}/aila`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
@@ -30,10 +32,6 @@ test("User is restricted after message rate limit is reached", async ({
       "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
     await textbox.fill(message);
     await expect(textbox).toContainText(message);
-
-    // Temporary fix: The test goes quicker than a real user and submits before the demo status has loaded
-    // This means that a demo modal would be shown when submitting
-    await page.waitForTimeout(500);
 
     setFixture("roman-britain-1");
     await sendMessage.click();

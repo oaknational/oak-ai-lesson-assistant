@@ -1,0 +1,16 @@
+# Notion Database Configuration
+
+Copy this file to `config.local.md` and fill in your database IDs.
+
+## Database IDs
+
+- **Tasks Database ID**: `your-tasks-database-id-here`
+- **Sprints Database ID**: `your-sprints-database-id-here`
+
+## How to Find Database IDs
+
+1. Open the database in Notion
+2. Click "..." menu → "Copy link"
+3. The ID is the part after the last slash and before the `?`
+   - Example: `https://notion.so/workspace/14024f50e0674ba5bbd4d83a42d650dc?v=...`
+   - Database ID: `14024f50e0674ba5bbd4d83a42d650dc`

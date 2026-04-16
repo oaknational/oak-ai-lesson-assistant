@@ -18,8 +18,8 @@ const ModalFooterButtons = ({
       $width="100%"
       $justifyContent="center"
       $alignItems="center"
-      $gap="all-spacing-3"
-      $pb="inner-padding-m"
+      $gap="spacing-12"
+      $pb="spacing-16"
     >
       {actionButtonStates()}
       <OakLinkNoUnderline
@@ -27,7 +27,11 @@ const ModalFooterButtons = ({
         element="button"
         tabIndex={1}
       >
-        <OakSpan $font="body-2-bold" $color="black" $textDecoration="none">
+        <OakSpan
+          $font="body-2-bold"
+          $color="text-primary"
+          $textDecoration="none"
+        >
           Cancel
         </OakSpan>
       </OakLinkNoUnderline>

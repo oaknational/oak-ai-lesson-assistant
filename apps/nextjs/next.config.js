@@ -7,9 +7,8 @@ const {
 } = require("./scripts/build_config_helpers.cjs");
 const path = require("path");
 
-const { PHASE_PRODUCTION_BUILD, PHASE_TEST } = require("next/constants");
+const { PHASE_TEST } = require("next/constants");
 
-const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
 const { withSentryConfig } = require("@sentry/nextjs");
 
 /**
@@ -25,7 +24,6 @@ const getConfig = async (phase) => {
   /** @type string */
   let appVersion;
   let isProductionBuild = false;
-  const isNextjsProductionBuildPhase = phase === PHASE_PRODUCTION_BUILD;
   const isTestBuild = phase === PHASE_TEST || process.env.NODE_ENV === "test";
 
   if (isTestBuild) {
@@ -35,9 +33,7 @@ const getConfig = async (phase) => {
     releaseStage = getReleaseStage(
       process.env.OVERRIDE_RELEASE_STAGE ||
         process.env.VERCEL_ENV ||
-        process.env.NEXT_PUBLIC_ENVIRONMENT ||
-        // Netlify
-        process.env.CONTEXT,
+        process.env.NEXT_PUBLIC_ENVIRONMENT,
     );
 
     isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
@@ -46,36 +42,39 @@ const getConfig = async (phase) => {
 
   /** @type {import('next').NextConfig} */
   const config = {
-    experimental: {
-      /**
-       * For instrumentation.ts
-       * @see https://docs.sentry.io/platforms/javascript/guides/nextjs/migration/v7-to-v8/#updated-sdk-initialization
-       */
-      instrumentationHook: true,
-      serverComponentsExternalPackages: [`require-in-the-middle`],
-      turbo: {
-        resolveAlias: {
-          "next/navigation": {
-            storybook: path.join(
-              __dirname,
-              "src",
-              "mocks",
-              "next",
-              "navigation",
-            ),
-            default: "next/navigation",
-          },
-          "@clerk/nextjs": {
-            storybook: path.join(__dirname, "src", "mocks", "clerk", "nextjs"),
-            default: "@clerk/nextjs",
-          },
+    serverExternalPackages: [
+      `require-in-the-middle`,
+      `@resvg/resvg-js`,
+      // Pino uses dynamic requires that Turbopack can't statically analyze
+      // See: https://github.com/vercel/next.js/issues/86099
+      `pino`,
+      `thread-stream`,
+    ],
+    turbopack: {
+      resolveAlias: {
+        "next/navigation": {
+          storybook: path.join(__dirname, "src", "mocks", "next", "navigation"),
+          default: "next/navigation",
+        },
+        "@clerk/nextjs": {
+          storybook: path.join(__dirname, "src", "mocks", "clerk", "nextjs"),
+          default: "@clerk/nextjs",
         },
       },
     },
     reactStrictMode: true,
     swcMinify: true,
     images: {
-      domains: ["oaknationalacademy-res.cloudinary.com"],
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "oaknationalacademy-res.cloudinary.com",
+        },
+        {
+          protocol: "https",
+          hostname: "*.googleusercontent.com",
+        },
+      ],
     },
     transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
     compiler: {
@@ -84,10 +83,6 @@ const getConfig = async (phase) => {
     // We already do linting on GH actions
     eslint: {
       ignoreDuringBuilds: !!process.env.CI,
-    },
-    publicRuntimeConfig: {
-      appVersion,
-      releaseStage,
     },
     env: {
       NEXT_PUBLIC_APP_VERSION: appVersion,
@@ -99,6 +94,11 @@ const getConfig = async (phase) => {
     async redirects() {
       return [
         {
+          source: "/lesson-planner",
+          destination: "/",
+          permanent: true,
+        },
+        {
           source: "/chat/:path*",
           destination: "/aila/:path",
           permanent: true,
@@ -109,48 +109,42 @@ const getConfig = async (phase) => {
           permanent: true,
         },
         {
+          source: "/aila/:id/share",
+          destination: "/aila/lesson/:id/share",
+          permanent: true,
+        },
+        {
           source: "/aila/download/:id",
           destination: "/aila/:id/download",
           permanent: true,
         },
+        {
+          source: "/aila/:id/download",
+          destination: "/aila/lesson/:id/download",
+          permanent: true,
+        },
+
+        // // This is for the link from OWA search results to AILA lessons, can be removed when we update the OWA link
+        // // Redirect /aila to /aila/lesson if ANY of keyStage, subject, or searchExpression are present as query params
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "keyStage" }],
+        },
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "subject" }],
+        },
+        {
+          source: "/aila",
+          destination: "/aila/lesson",
+          permanent: true,
+          has: [{ type: "query", key: "searchExpression" }],
+        },
       ];
-    },
-    serverRuntimeConfig: {
-      // These netlify env variables are only available at build-time
-      // unless we explicitly copy them to serverRuntimeConfig, unlike
-      // those which come from the env we configure ourselves
-      BRANCH: process.env.BRANCH,
-      DEPLOY_CONTEXT: process.env.CONTEXT,
-    },
-    webpack: (config, { dev, isServer }) => {
-      if (!dev && isProductionBuild && isNextjsProductionBuildPhase) {
-        config.devtool = "source-map";
-        config.plugins.push(
-          sentryWebpackPlugin({
-            release: appVersion,
-            org: "oak-national-academy",
-            project: "ai-experiments",
-            authToken: process.env.SENTRY_AUTH_TOKEN,
-          }),
-        );
-      }
-
-      // dd-trace outputs the following warning in the browser console:
-      // Critical dependency: the request of a dependency is an expression
-      // This is due to the use of `require` in the dd-trace codebase.
-      // This can be safely ignored.
-      // Start of dd-trace fix
-      if (!isServer) {
-        config.resolve.fallback = {
-          ...config.resolve.fallback,
-          "dd-trace": false,
-        };
-      }
-      config.module = config.module || {};
-      config.module.exprContextCritical = false;
-      // End of dd-trace fix
-
-      return config;
     },
   };
 

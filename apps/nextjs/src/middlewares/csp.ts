@@ -11,10 +11,9 @@ export type VercelEnvironment = "development" | "preview" | "production";
 export interface CspConfig {
   strictCsp: boolean;
   environment: CspEnvironment;
-  sentryEnv: string;
-  sentryRelease: string;
-  sentryReportUri: string;
   cspReportSampleRate: string;
+  posthogApiKey: string;
+  posthogHost: string;
   vercelEnv: VercelEnvironment;
   enabledPolicies: {
     clerk: boolean;
@@ -29,10 +28,7 @@ export interface CspConfig {
 
 const getReportUri = (config: CspConfig) => {
   const rate = Number.parseFloat(config.cspReportSampleRate);
-  if (config.environment === "production" && Math.random() > rate) {
-    return "";
-  }
-  return `${config.sentryReportUri}&sentry_environment=${config.sentryEnv}&sentry_release=${config.sentryRelease}`;
+  return `${config.posthogHost}/report/?token=${config.posthogApiKey}&sample_rate=${rate}&v=1`;
 };
 
 const clerkPolicies: Record<string, string[]> = {
@@ -145,6 +141,8 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       "*.thenational.academy",
       "https://challenges.cloudflare.com",
       "https://*.mux.com",
+      "https://docs.google.com",
+      "https://drive.google.com",
     ],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],

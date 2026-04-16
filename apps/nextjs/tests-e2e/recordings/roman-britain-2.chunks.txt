@@ -21,19 +21,20 @@ keywords
 type":"
 patch
 ","reasoning":"
-Ident
-ified
+Added
  prior
  knowledge
- that
- KS
-1
+ to
+ ensure
  pupils
- should
  have
+ the
+ foundational
+ understanding
+ needed
  before
- starting
- this
+ beginning
+ the
  lesson
  on
  the
@@ -56,47 +57,41 @@ The
  Romans
  invaded
  Britain
- and
- ruled
- for
- several
- centuries
+ in
+ AD
+ 
+43
 .","
 Roman
- roads
- and
- towns
- were
- built
- during
- their
- occupation
-.","
-Brit
-ain
+ Britain
  was
  part
  of
  the
  Roman
  Empire
+ for
+ nearly
+ 
+400
+ years
 .","
 The
- concept
- of
- an
- empire
+ Romans
+ built
+ roads
  and
- its
- importance
+ towns
+ in
+ Britain
 .","
-Basic
- understanding
- of
- what
- archae
-ologists
- do
+Roman
+ soldiers
+ lived
+ in
+ forts
+ throughout
+ Britain
 .
 "]},"status":"
 complete
@@ -104,24 +99,23 @@ complete
 type":"
 patch
 ","reasoning":"
-Outlined
- key
+Key
  learning
  points
- that
- pupils
- should
- take
- away
- from
- the
- lesson
+ are
+ added
+ to
+ focus
  on
  the
- end
- of
- Roman
- Britain
+ essential
+ knowledge
+ pupils
+ should
+ acquire
+ during
+ the
+ lesson
 .","
 value":{"
 type":"
@@ -145,9 +139,11 @@ The
  due
  to
  pressures
- on
- their
- empire
+ elsewhere
+ in
+ the
+ Roman
+ Empire
 .","
 After
  the
@@ -155,41 +151,59 @@ After
  left
 ,
  Britain
- faced
+ was
+ more
+ vulnerable
+ to
  invas
 ions
- from
- other
+ by
  groups
- like
+ such
+ as
  the
  Sax
 ons
 .","
-Many
+The
  Roman
- buildings
+ departure
+ led
+ to
+ changes
+ in
+ Britain's
+ infrastructure
  and
- roads
- influenced
+ society
+,
+ such
+ as
  the
- landscape
- of
- Britain
-.","
-Ar
-chae
-ologists
- help
- uncover
- the
- history
+ decline
  of
  Roman
+ towns
+.","
+Different
+ groups
+ in
  Britain
- through
- excav
-ations
+ adapted
+ in
+ various
+ ways
+ after
+ the
+ Romans
+ left
+,
+ leading
+ to
+ new
+ cultures
+ and
+ societies
 .
 "]},"status":"
 complete
@@ -197,24 +211,22 @@ complete
 type":"
 patch
 ","reasoning":"
-Address
-ed
- common
+Ident
+ified
  misconceptions
+ to
+ address
+ common
+ errors
+ or
+ misunderstand
+ings
+ pupils
+ might
+ have
  about
  the
- end
- of
- Roman
- Britain
- to
- help
- teachers
- correct
- them
- during
- the
- lesson
+ topic
 .","
 value":{"
 type":"
@@ -232,69 +244,100 @@ ceptions
 misconception":"
 The
  Romans
- left
- Britain
- because
- they
  were
- defeated
+ forced
+ to
+ leave
+ Britain
  by
  the
- Brit
+ Sax
 ons
 ","description":"
-The
+Explain
+ that
+ the
  Romans
  left
  due
  to
- internal
- problems
- within
- the
+ pressures
+ in
+ other
+ parts
+ of
+ their
  empire
- and
- threats
- elsewhere
 ,
  not
+ directly
  because
- they
- were
- defeated
- by
+ of
  the
- Brit
+ Sax
 ons
 ."
 },{"
 misconception":"
 Roman
- Britain
- ended
- suddenly
- without
- any
- lasting
- impact
-","description":"
-Roman
- influence
- persisted
- in
- Britain's
- infrastructure
-,
- such
- as
  roads
  and
  towns
-,
- even
+ disappeared
+ immediately
  after
- their
+ they
+ left
+","description":"
+Clar
+ify
+ that
+ while
+ some
+ Roman
+ infrastructure
+ declined
+,
+ much
+ of
+ it
+ remained
+ and
+ influenced
+ later
+ developments
+."
+},{"
+misconception":"
+All
+ Brit
+ons
+ were
+ sad
+ to
+ see
+ the
+ Romans
+ leave
+","description":"
+Discuss
+ how
+ some
+ groups
+ may
+ have
+ seen
+ the
+ Roman
  departure
+ as
+ an
+ opportunity
+ to
+ gain
+ power
+ or
+ independence
 ."
 }]},"status":"
 complete
@@ -302,22 +345,21 @@ complete
 type":"
 patch
 ","reasoning":"
-Provided
+Added
  keywords
- that
- will
- be
- used
- throughout
- the
- lesson
  to
- ensure
+ help
  pupils
  understand
+ and
+ use
+ essential
+ vocabulary
+ related
+ to
  the
- key
- concepts
+ lesson
+ topic
 .","
 value":{"
 type":"
@@ -329,106 +371,87 @@ keywords
 ","value":[
 {"
 keyword":"
-Romans
-","definition":"
-People
- from
- the
- ancient
- city
- of
- Rome
- who
- ruled
- over
- Britain
- for
- several
- centuries
-."
-},{"
-keyword":"
 Empire
 ","definition":"
 A
- large
  group
  of
- territories
- and
- people
- ruled
- over
+ countries
+ or
+ regions
+ that
+ are
+ controlled
  by
- a
- single
- authority
-,
- like
- the
- Roman
- Empire
-."
-},{"
-keyword":"
-Ar
-chae
-ologist
-","definition":"
-A
- person
- who
- studies
- human
- history
- by
- digging
- up
- and
- examining
- ancient
- sites
- and
- objects
+ one
+ ruler
+ or
+ one
+ government
 ."
 },{"
 keyword":"
 In
 vasion
 ","definition":"
-An
- instance
+The
+ act
  of
- invading
+ entering
+ a
+ place
+ by
+ force
+,
+ in
+ order
+ to
+ take
+ control
+ of
+ it
+."
+},{"
+keyword":"
+Infrastructure
+","definition":"
+The
+ basic
+ physical
+ systems
+ of
  a
  country
- or
- region
- with
- an
- armed
- force
+,
+ such
+ as
+ roads
+ and
+ bridges
 ."
 },{"
 keyword":"
 S
-ax
-ons
+axon
 ","definition":"
 A
- group
+ member
  of
- tribes
- from
- northern
- Europe
+ a
+ German
+ic
+ people
  who
  invaded
+ and
+ settled
+ in
  Britain
- after
+ in
  the
- Romans
- left
+ early
+ Middle
+ Ages
 ."
 }]},"status":"
 complete

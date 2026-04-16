@@ -8,6 +8,8 @@ test("/ loads", async ({ page }) => {
 
   await page.goto(`${TEST_BASE_URL}/`);
   await expect(
-    page.getByRole("heading", { name: "Introducing Aila" }),
+    page.getByRole("heading", {
+      name: "Build tailor-made lessons and teaching materials with AI",
+    }),
   ).toBeInViewport();
 });

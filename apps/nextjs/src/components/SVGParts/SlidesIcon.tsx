@@ -1,9 +1,9 @@
-import { OakBox, type OakColorToken } from "@oaknational/oak-components";
+import { OakBox, type OakUiRoleToken } from "@oaknational/oak-components";
 
 const SlidesIcon = ({
   backgroundColor,
 }: {
-  backgroundColor?: OakColorToken;
+  backgroundColor?: OakUiRoleToken;
 }) => {
   return (
     <OakBox

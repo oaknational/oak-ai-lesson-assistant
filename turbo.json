@@ -91,10 +91,23 @@
     },
     "storybook": {
       "cache": false
+    },
+
+    "generate-posthog-survey-types": {
+      "cache": false,
+      "env": [
+        "NEXT_PUBLIC_POSTHOG_HOST",
+        "POSTHOG_PERSONAL_API_KEY",
+        "NEXT_PUBLIC_POSTHOG_PROJECT"
+      ],
+      "outputs": [
+        "apps/nextjs/src/lib/posthog/surveys/surveysTypes.generated.ts"
+      ]
     }
   },
   "globalEnv": [
     "AILA_FIXTURES_ENABLED",
+    "AILA_QUIZ_GENERATORS",
     "CLERK_*",
     "CLERK_WEBHOOK_SECRET",
     "CLOUDINARY_*",
@@ -109,6 +122,9 @@
     "DEMO_ACCOUNTS_ENABLED",
     "DEVELOPMENT_USER_REGION",
     "DIRECT_DATABASE_URL",
+    "GCS_LATEX_BUCKET_NAME",
+    "GCS_LATEX_SERVICE_ACCOUNT_EMAIL",
+    "GCS_LATEX_SERVICE_ACCOUNT_PRIVATE_KEY",
     "GLEAP_FEEDBACK_EMAIL_ADDR",
     "GOOGLE_DOCS_*",
     "GOOGLE_DRIVE_OUTPUT_FOLDER_ID",
@@ -118,16 +134,18 @@
     "HUBSPOT_ACCESS_TOKEN",
     "I_DOT_AI_ELASTIC_*",
     "INGEST_OPENAI_API_KEY",
-    "INNGEST_*",
     "KV_*",
     "LAKERA_GUARD_API_KEY",
     "LAKERA_GUARD_PROJECT_ID",
     "LESSON_QUERY_BATCH_SIZE",
+    "MODEL_ARMOR_*",
+    "MODERATION_API_URL",
     "OAI_API_USER_ID",
     "OAI_INTERNAL_API_KEY",
     "OAK_GRAPHQL_SECRET",
+    "OAK_MODERATION_V1_PRIMARY",
     "OPENAI_*",
-    "POSTHOG_PERSONAL_KEY_FLAGS",
+    "POSTHOG_FEATURE_FLAGS_API_KEY",
     "POSTMARK_SERVER_TOKEN",
     "PRISMA_ACCELERATE_DATABASE_URL",
     "PROMPT_PLAYBACK_ENABLED",
@@ -142,6 +160,9 @@
     "STRICT_CSP",
     "TELEMETRY_ENABLED",
     "UPSTASH_*",
-    "WOLFRAM_CLIENT_SECRET"
+    "WOLFRAM_CLIENT_SECRET",
+    "CURRICULUM_API_AUTH_KEY",
+    "CURRICULUM_API_URL",
+    "CURRIC_DB_HASURA_AUTH_AILA_API_KEY"
   ]
 }

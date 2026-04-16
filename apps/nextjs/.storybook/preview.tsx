@@ -1,30 +1,38 @@
 import React from "react";
 
-import "@fontsource/lexend";
-import "@fontsource/lexend/500.css";
-import "@fontsource/lexend/600.css";
-import "@fontsource/lexend/700.css";
-import "@fontsource/lexend/800.css";
-import "@fontsource/lexend/900.css";
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
-import type { Decorator, Preview } from "@storybook/react";
+import type { Decorator, Preview } from "@storybook/nextjs";
 import {
   MswParameters,
   initialize as initializeMsw,
   mswLoader,
 } from "msw-storybook-addon";
+import { Lexend } from "next/font/google";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
 import { DialogProvider } from "../src/components/AppComponents/DialogContext";
 import { AnalyticsProvider } from "../src/mocks/analytics/provider";
-import { ClerkDecorator } from "../src/mocks/clerk/ClerkDecorator";
 import { TRPCReactProvider } from "../src/utils/trpc";
 import { ChromaticValidationDecorator } from "./decorators/ChromaticValidationDecorator";
+import { ClerkDecorator } from "./decorators/ClerkDecorator";
 import { MathJaxDecorator } from "./decorators/MathJaxDecorator";
 import { RadixThemeDecorator } from "./decorators/RadixThemeDecorator";
 import "./preview.css";
 
-declare module "@storybook/csf" {
+const lexend = Lexend({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-lexend",
+});
+
+/**
+ * Set the font CSS variable at :root level for portaled content (tooltips, modals).
+ */
+const GlobalFontStyle = () => (
+  <style>{`:root { --font-lexend: ${lexend.style.fontFamily}; }`}</style>
+);
+
+declare module "@storybook/nextjs" {
   interface Parameters {
     msw?: MswParameters["msw"];
   }
@@ -41,7 +49,7 @@ const preview: Preview = {
       },
     },
     viewport: {
-      viewports: {
+      options: {
         mobile: {
           name: "Mobile",
           styles: { width: "375px", height: "800px" },
@@ -73,6 +81,7 @@ export const decorators: Decorator[] = [
   ChromaticValidationDecorator,
   (Story) => (
     <>
+      <GlobalFontStyle />
       <TRPCReactProvider>
         <AnalyticsProvider>
           <DialogProvider>

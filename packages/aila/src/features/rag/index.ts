@@ -1,8 +1,8 @@
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 
 export interface AilaRagFeature {
   fetchRagContent(params: {
     numberOfRecordsInRag?: number;
-    lessonPlan?: LooseLessonPlan;
+    lessonPlan?: PartialLessonPlan;
   }): Promise<string>;
 }

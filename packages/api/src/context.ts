@@ -6,8 +6,6 @@ import type {
 } from "@clerk/backend/internal";
 import { getAuth } from "@clerk/nextjs/server";
 import type { inferAsyncReturnType } from "@trpc/server";
-import type { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
-import type { NextRequest, NextResponse } from "next/server";
 
 import type { RateLimitInfo } from "./types";
 
@@ -21,6 +19,8 @@ export type APIKeyAuthObject = { userId: string };
 type AuthContextProps = {
   auth: SignedInAuthObject | SignedOutAuthObject | APIKeyAuthObject;
 };
+
+type ContextRequest = Pick<Request, "headers" | "url">;
 
 /** Use this helper for:
  *  - testing, where we don't have to Mock Next.js' req/res
@@ -36,25 +36,26 @@ export const createContextInner = async ({
   });
 };
 
-type GetAuth = (req: NextRequest) => Promise<APIKeyAuthObject>;
+type GetAuth = (req: ContextRequest) => Promise<APIKeyAuthObject>;
+type AuthResolver = GetAuth | ClerkAuthSig;
 
-type CreateNextAppRouterContextOptions = NodeHTTPCreateContextFnOptions<
-  NextRequest,
-  NextResponse
->;
+type CreateNextAppRouterContextOptions = {
+  req: ContextRequest;
+};
 
 export const createContextWithAuth = async (
   opts: CreateNextAppRouterContextOptions,
-  getAuth: GetAuth | ((req: NextRequest) => ClerkAuthReturn),
+  getAuth: AuthResolver,
 ) => {
-  const auth = await getAuth(opts.req);
+  const auth = await (
+    getAuth as (req: unknown) => ClerkAuthReturn | Promise<APIKeyAuthObject>
+  )(opts.req);
   const contextInner = await createContextInner({
     auth,
   } as AuthContextProps);
   return {
     ...contextInner,
     req: opts.req,
-    res: opts.res,
     rateLimit: undefined as RateLimitInfo | undefined,
   };
 };

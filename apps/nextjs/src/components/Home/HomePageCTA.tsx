@@ -5,16 +5,17 @@ import { OakBox, OakPrimaryButton } from "@oaknational/oak-components";
 import Link from "next/link";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const HomePageCTA = () => {
   const user = useUser();
   const { track } = useAnalytics();
 
   return (
-    <OakBox $mt="space-between-s">
+    <OakBox $mt="spacing-16">
       <OakPrimaryButton
         element={Link}
-        href="/aila"
+        href={getAilaUrl("start")}
         iconName="arrow-right"
         isTrailingIcon={true}
         onClick={() => {
@@ -25,7 +26,7 @@ export const HomePageCTA = () => {
           });
         }}
       >
-        Get started
+        Start creating with AI
       </OakPrimaryButton>
     </OakBox>
   );

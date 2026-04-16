@@ -1,11 +1,11 @@
 import type {
   Cycle,
   Keyword,
+  LatestQuiz,
   Misconception,
-  Quiz,
 } from "@oakai/aila/src/protocol/schema";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
@@ -175,12 +175,18 @@ function sampleKeyword(): Keyword {
   };
 }
 
-function sampleQuiz(): Quiz {
-  return [
-    {
-      question: "Sample question",
-      answers: ["Sample answer"],
-      distractors: ["Sample distractor"],
-    },
-  ];
+function sampleQuiz(): LatestQuiz {
+  return {
+    version: "v3" as const,
+    imageMetadata: [],
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question: "Sample question",
+        answers: ["Sample answer"],
+        distractors: ["Sample distractor"],
+        hint: null,
+      },
+    ],
+  };
 }

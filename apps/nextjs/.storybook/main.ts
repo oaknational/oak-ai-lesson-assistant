@@ -1,6 +1,13 @@
+// This file has been automatically migrated to valid ESM format by Storybook.
 import type { StorybookConfig } from "@storybook/nextjs";
+import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "path";
 import webpack from "webpack";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const require = createRequire(import.meta.url);
 
 process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 
@@ -16,9 +23,8 @@ const config: StorybookConfig = {
   addons: [
     getAbsolutePath("@storybook/addon-onboarding"),
     getAbsolutePath("@storybook/addon-links"),
-    getAbsolutePath("@storybook/addon-essentials"),
     getAbsolutePath("@chromatic-com/storybook"),
-    getAbsolutePath("@storybook/addon-interactions"),
+    getAbsolutePath("@storybook/addon-docs"),
   ],
   framework: {
     name: getAbsolutePath("@storybook/nextjs"),

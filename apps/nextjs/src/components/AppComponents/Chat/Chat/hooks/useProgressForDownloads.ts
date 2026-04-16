@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import type {
   LessonPlanKey,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 
@@ -39,7 +39,7 @@ export function useProgressForDownloads({
   lessonPlan,
   isStreaming,
 }: {
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   isStreaming: boolean;
 }): ProgressForDownloads {
   return useMemo(() => {

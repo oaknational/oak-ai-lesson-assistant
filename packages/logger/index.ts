@@ -1,9 +1,8 @@
 import debug from "debug";
 import invariant from "tiny-invariant";
 
-import browserLogger from "./browser";
-import type { StructuredLogger } from "./structuredLogger";
-import structuredLogger from "./structuredLogger";
+import type { StructuredLogger } from "./structuredLogger.ts";
+import structuredLogger from "./structuredLogger.ts";
 
 if (typeof window !== "undefined") {
   invariant(process.env.NEXT_PUBLIC_DEBUG, "NEXT_PUBLIC_DEBUG is not set");
@@ -15,13 +14,14 @@ const debugBase = debug("ai");
 debugBase.log = console.log.bind(console);
 
 export type LoggerKey =
+  | "teaching-materials"
+  | "teaching-materials:testing"
+  | "teaching-materials-threat-detection"
   | "admin"
-  | "additional-materials"
-  | "additional-materials-threat-detection"
   | "aila"
   | "aila:agents"
-  | "aila:agents:stream"
   | "aila:agents:prompts"
+  | "aila:agents:stream"
   | "aila:analytics"
   | "aila:categorisation"
   | "aila:chat"
@@ -35,13 +35,17 @@ export type LoggerKey =
   | "aila:prompt"
   | "aila:protocol"
   | "aila:quiz"
+  | "aila:quiz:reporting"
   | "aila:rag"
+  | "aila:schema"
   | "aila:stream"
   | "aila:testing"
   | "aila:threat"
+  | "adaptations"
   | "analytics"
   | "analytics:lesson:store"
   | "app"
+  | "appSessions"
   | "auth"
   | "chat"
   | "chat:store"
@@ -57,14 +61,15 @@ export type LoggerKey =
   | "fixtures"
   | "generation"
   | "ingest"
-  | "inngest"
   | "judgements"
+  | "lakera-client"
   | "lessons"
   | "lessons:scrolling"
   | "lessons:store"
   | "middleware:auth"
   | "moderation"
   | "moderation:store"
+  | "posthog-surveys"
   | "prompts"
   | "qd"
   | "quiz"
@@ -73,6 +78,7 @@ export type LoggerKey =
   | "scrolling"
   | "snippets"
   | "testing"
+  | "teaching-materials"
   | "tracing"
   | "transcripts"
   | "trpc"

@@ -22,7 +22,7 @@ import { DemoBanner } from "./demo-banner";
 import { OpenSideBarButton } from "./open-side-bar-button";
 import { UserOrLogin } from "./user-or-login";
 
-export function Header() {
+export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
   const { isDemoUser, demo } = useDemoUser();
 
   // Check whether clerk metadata has loaded to prevent the banner from flashing
@@ -37,28 +37,31 @@ export function Header() {
       $zIndex={"banner"}
       $width={"100%"}
     >
-      {clerkMetadata.isSet && isDemoUser && (
+      {clerkMetadata.isSet && isDemoUser && page && (
         <DemoBanner
-          resourceType="lessons"
+          page={page}
           monthlyLimit={demo.appSessionsPerMonth}
-          remaining={demo.appSessionsRemaining}
+          remaining={
+            page == "teachingMaterials"
+              ? demo.additionalMaterialsSessionsRemaining
+              : demo.appSessionsRemaining
+          }
           contactHref={demo.contactHref}
         />
       )}
-
       <OakFlex
-        $background="white"
+        $background="bg-primary"
         $bb="border-solid-m"
-        $pa={"inner-padding-l"}
+        $pa={"spacing-20"}
         $alignItems="center"
         $justifyContent="space-between"
-        $gap={"all-spacing-3"}
+        $gap={"spacing-12"}
       >
-        <OakFlex $gap={"all-spacing-3"} $alignItems={"center"}>
+        <OakFlex $gap={"spacing-12"} $alignItems={"center"}>
           <OakFlex
             $alignItems={"center"}
             $justifyContent={"center"}
-            $gap={"all-spacing-3"}
+            $gap={"spacing-12"}
           >
             <OakLink href="/" aria-label="go to home page">
               <OakIconLogo />
@@ -73,21 +76,18 @@ export function Header() {
         <OakFlex
           $alignItems="center"
           $justifyContent="flex-end"
-          $gap="all-spacing-6"
+          $gap="spacing-24"
         >
           <OakBox $display={["none", "flex"]}>
             <OakLink
-              color="black"
+              color="text-primary"
               href={ailaId ? `/aila/help/?ailaId=${ailaId}` : "/aila/help"}
               target="_blank"
               style={{ textDecoration: "none" }}
             >
               <OakFlex $alignItems={"center"} $alignContent={"center"}>
-                <OakIcon
-                  $mr={"space-between-sssx"}
-                  iconName={"question-mark"}
-                />
-                <OakSpan $font="body-2" $color={"black"}>
+                <OakIcon $mr={"spacing-4"} iconName={"question-mark"} />
+                <OakSpan $font="body-2" $color={"text-primary"}>
                   Help
                 </OakSpan>
               </OakFlex>

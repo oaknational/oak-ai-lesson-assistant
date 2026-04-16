@@ -20,7 +20,6 @@ const components = {
    * Patches do not get rendered, they get applied to the lesson plan
    * state, which is then rendered in the right hand side.
    */
-  experimentalPatch: NonRenderedPart,
   state: NonRenderedPart,
   text: TextMessagePart,
   action: NonRenderedPart,

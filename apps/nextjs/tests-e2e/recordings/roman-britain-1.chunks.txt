@@ -14,28 +14,25 @@ Cycles
 type":"
 patch
 ","reasoning":"
-I
- have
- created
- new
- learning
- outcomes
- and
- learning
- cycles
- from
- scratch
- as
- there
- are
- no
+No
  existing
  Oak
  lessons
+ are
  available
  for
  this
  topic
+,
+ so
+ a
+ new
+ lesson
+ is
+ being
+ created
+ from
+ scratch
 .","
 value":{"
 type":"
@@ -49,15 +46,21 @@ Outcome
 I
  can
  describe
- why
+ what
+ happened
+ when
  the
  Romans
  left
  Britain
  and
- what
- happened
- afterwards
+ how
+ it
+ affected
+ the
+ people
+ living
+ there
 ."
 },"status":"
 complete
@@ -65,29 +68,24 @@ complete
 type":"
 patch
 ","reasoning":"
-This
- patch
- adds
+Added
  learning
  cycles
- which
+ to
+ structure
+ the
+ lesson
+ and
  break
  down
  the
- lesson
+ learning
+ outcome
  into
- achievable
- tasks
-,
- focusing
- on
- Roman
- departure
- and
- its
- impact
- on
- Britain
+ manageable
+ parts
+ for
+ pupils
 .","
 value":{"
 type":"
@@ -99,20 +97,18 @@ add
 learning
 Cycles
 ","value":["
-Explain
+Identify
  the
  reasons
- for
+ why
  the
  Romans
- leaving
+ left
  Britain
 .","
 Describe
  the
  changes
- that
- occurred
  in
  Britain
  after
@@ -120,17 +116,18 @@ Describe
  Romans
  left
 .","
-Identify
+Explain
+ how
  the
- role
+ end
  of
- archae
-ologists
- in
- uncover
-ing
  Roman
- history
+ rule
+ affected
+ different
+ people
+ in
+ Britain
 .
 "]},"status":"
 complete

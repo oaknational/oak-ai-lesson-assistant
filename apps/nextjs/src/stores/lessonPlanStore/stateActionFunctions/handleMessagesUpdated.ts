@@ -71,7 +71,7 @@ export const handleMessagesUpdated = (
         if (updatedLessonPlan) {
           log.info("Applying patch", patch.value.path);
           const patchPath = LessonPlanKeySchema.parse(
-            patch.value.path.replace("/", ""),
+            patch.value.path.split("/")[1],
           );
           set((state) => ({
             lessonPlan: updatedLessonPlan,

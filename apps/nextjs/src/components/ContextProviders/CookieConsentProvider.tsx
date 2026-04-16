@@ -51,7 +51,7 @@ const CookieConsentUIProvider = ({ children }: PropsWithChildren) => {
     >
       {children}
       <OakCookieConsent
-        policyURL={"/legal/cookies"}
+        policyURL={"https://www.thenational.academy/legal/cookie-policy"}
         isFixed={true}
         zIndex={99999}
       />

@@ -21,6 +21,7 @@ import type { AilaDocumentContent } from "./document/types";
 import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
 import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
+import type { QuestionSourceType } from "./quiz/schema";
 
 export type AilaGenerateDocumentMode = "interactive" | "generate";
 
@@ -38,6 +39,7 @@ export type AilaPublicChatOptions = {
   useRag?: boolean;
   temperature?: number;
   numberOfRecordsInRag?: number;
+  quizSources?: QuestionSourceType[];
 };
 
 export type AilaOptions = AilaPublicChatOptions & {
@@ -80,6 +82,7 @@ export type AilaInitializationOptions = {
     chatCategoriser?: AilaCategorisationFeature;
     chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
+    oakModerator?: AilaModerator;
     ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];

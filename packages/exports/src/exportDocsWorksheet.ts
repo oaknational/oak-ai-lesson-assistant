@@ -3,7 +3,8 @@ import { aiLogger } from "@oakai/logger";
 import { prepWorksheetForSlides } from "./dataHelpers/prepWorksheetForSlides";
 import { exportGeneric } from "./exportGeneric";
 import { getDocsClient } from "./gSuite/docs/client";
-import { populateDoc } from "./gSuite/docs/populateDoc";
+import { populateDoc } from "./gSuite/docs/populate/populateDoc";
+import { LATEX_VISUAL_SCALE_LESSON_PLAN } from "./images/constants";
 import type { WorksheetSlidesInputData } from "./schema/input.schema";
 import { getDocsTemplateIdWorksheet } from "./templates";
 import type { OutputData, Result, State } from "./types";
@@ -35,6 +36,7 @@ export const exportDocsWorksheet = async ({
           googleDocs: client,
           documentId: templateCopyId,
           data,
+          latexVisualScale: LATEX_VISUAL_SCALE_LESSON_PLAN,
         });
       },
       userEmail,

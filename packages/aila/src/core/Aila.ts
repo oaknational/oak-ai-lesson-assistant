@@ -5,6 +5,7 @@ import { aiLogger } from "@oakai/logger";
 import {
   DEFAULT_MODEL,
   DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
+  DEFAULT_QUIZ_SOURCES,
   DEFAULT_TEMPERATURE,
 } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
@@ -98,6 +99,7 @@ export class Aila implements AilaServices {
       this,
       this._options,
       options.services?.moderationAiClient,
+      options.services?.oakModerator,
     );
     this._snapshotStore = AilaFeatureFactory.createSnapshotStore(this);
     this._persistence = AilaFeatureFactory.createPersistence(
@@ -148,7 +150,9 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._document.content = persistedLessonPlan;
     }
-    await this._document.initialiseContentFromMessages(this._chat.messages);
+    if (!this.options.useAgenticAila) {
+      await this._document.initialiseContentFromMessages(this._chat.messages);
+    }
 
     this._initialised = true;
   }
@@ -161,6 +165,7 @@ export class Aila implements AilaServices {
       temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
       numberOfRecordsInRag:
         options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
+      quizSources: options?.quizSources ?? DEFAULT_QUIZ_SOURCES,
       usePersistence: options?.usePersistence ?? true,
       useAnalytics: options?.useAnalytics ?? true,
       useModeration: options?.useModeration ?? true,

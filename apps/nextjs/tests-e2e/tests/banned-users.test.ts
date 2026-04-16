@@ -1,18 +1,20 @@
 import { expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
 import { applyLlmFixtures, expectStreamingStatus } from "./aila-chat/helpers";
 
-const TOXIC_TAG = "mod:tox";
+const TOXIC_TAG = "oak-tox";
 
 test("Users are banned after 3 toxic lessons", async ({ page }) => {
   await test.step("Setup", async () => {
     await bypassVercelProtection(page);
     await prepareUser(page, "nearly-banned");
 
-    await page.goto(`${TEST_BASE_URL}/aila`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 

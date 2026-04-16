@@ -102,10 +102,7 @@ function getAppVersion({ isProductionBuild }) {
 
 const RELEASE_STAGE_TESTING = "test";
 const RELEASE_STAGE_DEVELOPMENT = "development";
-const RELEASE_STAGE_DEVELOPMENT_NETLIFY = "dev";
-const RELEASE_STAGE_BRANCH_DEPLOY_NETLIFY = "branch-deploy";
 const RELEASE_STAGE_PREVIEW = "preview";
-const RELEASE_STAGE_PREVIEW_NETLIFY = "deploy-preview";
 const RELEASE_STAGE_PRODUCTION = "production";
 const RELEASE_STAGE_NOT_DEFINED = "NOT_DEFINED";
 /**
@@ -120,11 +117,8 @@ const RELEASE_STAGE_NOT_DEFINED = "NOT_DEFINED";
 function getReleaseStage(candidateReleaseStage = RELEASE_STAGE_NOT_DEFINED) {
   switch (candidateReleaseStage) {
     case RELEASE_STAGE_DEVELOPMENT:
-    case RELEASE_STAGE_DEVELOPMENT_NETLIFY:
-    case RELEASE_STAGE_BRANCH_DEPLOY_NETLIFY:
       return RELEASE_STAGE_DEVELOPMENT;
     case RELEASE_STAGE_PREVIEW:
-    case RELEASE_STAGE_PREVIEW_NETLIFY:
       return RELEASE_STAGE_PREVIEW;
     case RELEASE_STAGE_PRODUCTION:
       return RELEASE_STAGE_PRODUCTION;

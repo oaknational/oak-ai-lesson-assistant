@@ -12,6 +12,8 @@ The service account needs 'viewer' permissions on the template files, and 'edito
 
 > ⚠️ If the change doesn't require a parallel code change, and in your judgement it is minor enough, you can edit the template directly in the Google Drive. This is the quickest way to make changes. Otherwise, follow the steps below.
 
+Templates are found in the shared folder aila_exports
+
 1. In order to change a template, starting in local development.
 
 1. Find the template you need to update, in the `_playground/templates` folder in Google Drive.

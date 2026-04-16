@@ -1,13 +1,14 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
-import type { LooseLessonPlan } from "../../protocol/schema";
-import { LessonPlanSchemaWhilstStreaming } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../protocol/schema";
+import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLessonPlan";
 
 export async function fetchLessonPlanContentById(
   id: string,
   prisma: PrismaClientWithAccelerate,
-): Promise<LooseLessonPlan | null> {
+): Promise<PartialLessonPlan | null> {
   const lessonPlanRecord = await prisma.lessonPlan.findFirst({
     where: {
       id,
@@ -15,12 +16,18 @@ export async function fetchLessonPlanContentById(
     cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
-  if (!lessonPlanRecord) {
+  if (!lessonPlanRecord?.content) {
     return null;
   }
-  const parsedPlan = tryWithErrorReporting(
-    () => LessonPlanSchemaWhilstStreaming.parse(lessonPlanRecord.content),
-    "Failed to parse lesson plan content",
+
+  const migrationResult = await tryWithErrorReporting(
+    () =>
+      migrateLessonPlan({
+        lessonPlan: lessonPlanRecord.content as Record<string, unknown>,
+        persistMigration: null,
+        outputSchema: CompletedLessonPlanSchemaWithoutLength,
+      }),
+    "Failed to migrate and parse lesson plan content",
     undefined,
     undefined,
     {
@@ -28,5 +35,5 @@ export async function fetchLessonPlanContentById(
     },
   );
 
-  return parsedPlan;
+  return migrationResult?.lessonPlan ?? null;
 }

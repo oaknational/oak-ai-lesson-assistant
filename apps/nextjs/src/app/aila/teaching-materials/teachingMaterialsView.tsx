@@ -1,0 +1,142 @@
+"use client";
+
+import type { FC } from "react";
+import React from "react";
+
+import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
+import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
+
+import {
+  DialogProvider,
+  useDialog,
+} from "@/components/AppComponents/DialogContext";
+import StepFour from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepFour";
+import StepOne from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepOne";
+import StepThree from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepThree";
+import StepTwo from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepTwo";
+import { handleDialogSelection } from "@/components/AppComponents/TeachingMaterials/StepLayouts/helpers";
+import { TeachingMaterialsLockingModerationModal } from "@/components/AppComponents/TeachingMaterials/TeachingMaterialsLockingModeration";
+import DialogContents from "@/components/DialogControl/DialogContents";
+import { DialogRoot } from "@/components/DialogControl/DialogRoot";
+import { OakMathJaxContext } from "@/components/MathJax";
+import ResourcesLayout from "@/components/ResourcesLayout";
+import {
+  TeachingMaterialsStoresProvider,
+  useTeachingMaterialsActions,
+  useTeachingMaterialsStore,
+} from "@/stores/TeachingMaterialsStoreProvider";
+import {
+  docTypeSelector,
+  moderationSelector,
+  pageDataSelector,
+  stepNumberSelector,
+  threatDetectionSelector,
+  yearSelector,
+} from "@/stores/teachingMaterialsStore/selectors";
+
+export type TeachingMaterialsPageProps = {
+  lesson?: LessonPlanSchemaTeachingMaterials;
+  initialStep?: number;
+  id?: string;
+  source?: "aila" | "owa";
+  error?: Error;
+  lessonId?: string;
+  queryParams?: {
+    lessonSlug: string;
+    programmeSlug?: string;
+    docType: string;
+  };
+};
+
+const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
+  const stepNumber = useTeachingMaterialsStore(stepNumberSelector);
+  const pageData = useTeachingMaterialsStore(pageDataSelector);
+  const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
+  const moderation = useTeachingMaterialsStore(moderationSelector);
+
+  const docType = useTeachingMaterialsStore(docTypeSelector);
+  const year = useTeachingMaterialsStore(yearSelector);
+
+  const error = useTeachingMaterialsStore((state) => state.error);
+  const lessonPlan = useTeachingMaterialsStore(
+    (state) => state.pageData.lessonPlan,
+  );
+
+  const materialType = docType ? getMaterialType(docType) : null;
+  const docTypeName = materialType?.displayName ?? null;
+  const {
+    createMaterialSession,
+    submitLessonPlan,
+    generateMaterial,
+    refineMaterial,
+  } = useTeachingMaterialsActions();
+  const { setDialogWindow } = useDialog();
+
+  handleDialogSelection({
+    threatDetected,
+    error,
+    setDialogWindow,
+  });
+
+  const titleAreaContent = {
+    0: {
+      title: "Select teaching material",
+      subTitle: lessonPlan.title
+        ? `Choose the downloadable resource you'd like to create for the lesson: ${lessonPlan.title}.`
+        : "Choose the downloadable resource you'd like to create with Aila for your lesson.",
+    },
+    1: {
+      title: "What are you teaching?",
+      subTitle:
+        "The more detail you give, the better suited your resource will be for your lesson.",
+    },
+    2: {
+      title: pageData.lessonPlan.title,
+      subTitle: `${year} • ${pageData.lessonPlan.subject}`,
+    },
+    3: {
+      title: pageData.lessonPlan.title,
+      subTitle: `${year} • ${pageData.lessonPlan.subject}`,
+    },
+  };
+
+  const stepComponents = {
+    0: <StepOne handleCreateSession={createMaterialSession} />,
+    1: <StepTwo handleSubmitLessonPlan={submitLessonPlan} />,
+    2: <StepThree handleSubmit={generateMaterial} />,
+    3: <StepFour handleRefineMaterial={refineMaterial} />,
+  };
+  const stepNumberParsed = stepNumber as keyof typeof titleAreaContent;
+  const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
+  const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
+  return (
+    <>
+      <TeachingMaterialsLockingModerationModal moderation={moderation} />
+      <ResourcesLayout
+        title={title}
+        subTitle={subTitle}
+        step={stepNumber + 1}
+        docTypeName={docTypeName}
+      >
+        {stepComponents[stepNumber]}
+      </ResourcesLayout>
+    </>
+  );
+};
+
+const TeachingMaterialsView: FC<TeachingMaterialsPageProps> = (props) => {
+  return (
+    <TeachingMaterialsStoresProvider {...props}>
+      <DialogProvider>
+        <DialogRoot>
+          <DialogContents chatId={undefined} lesson={{}} />
+          <OakMathJaxContext>
+            <TeachingMaterialsViewInner {...props} />
+          </OakMathJaxContext>
+        </DialogRoot>
+      </DialogProvider>
+    </TeachingMaterialsStoresProvider>
+  );
+};
+
+export default TeachingMaterialsView;

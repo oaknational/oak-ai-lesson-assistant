@@ -1,15 +1,17 @@
 import { Moderations } from "@oakai/core/src/models/moderations";
-import {
-  getCategoryGroup,
-  getMockModerationResult,
-  getSafetyResult,
-  isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getCategoryGroup } from "@oakai/core/src/utils/ailaModeration/guidanceText";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import {
+  getSafetyResult,
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
+import { waitUntil } from "@vercel/functions";
 import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";
@@ -28,6 +30,7 @@ export class AilaModeration implements AilaModerationFeature {
   private readonly _prisma: PrismaClientWithAccelerate;
   private readonly _moderations: Moderations;
   private readonly _moderator: AilaModerator;
+  private readonly _shadowModerator?: AilaModerator;
   private readonly _aila: AilaServices;
   private readonly _shouldPersist: boolean = true;
 
@@ -35,12 +38,14 @@ export class AilaModeration implements AilaModerationFeature {
     aila,
     prisma,
     moderator,
+    shadowModerator,
     moderations,
     shouldPersist = true,
   }: {
     aila: AilaServices;
     prisma?: PrismaClientWithAccelerate;
     moderator?: AilaModerator;
+    shadowModerator?: AilaModerator;
     moderations?: Moderations;
     shouldPersist?: boolean;
   }) {
@@ -54,6 +59,7 @@ export class AilaModeration implements AilaModerationFeature {
         chatId: aila.chatId,
         userId: aila.chat.userId,
       });
+    this._shadowModerator = shadowModerator;
     this._moderations = moderations ?? new Moderations(this._prisma);
     this._shouldPersist = shouldPersist;
   }
@@ -118,11 +124,15 @@ export class AilaModeration implements AilaModerationFeature {
         lastAssistantMessage,
         content,
       );
-      this.reportModerationToAnalytics(moderationResult, moderation);
+      await this.reportModerationToAnalytics(moderationResult, moderation);
 
       if (isToxic(moderationResult)) {
         for (const plugin of this._aila.plugins ?? []) {
           await plugin.onToxicModeration?.(moderation, pluginContext);
+        }
+      } else if (isHighlySensitive(moderationResult)) {
+        for (const plugin of this._aila.plugins ?? []) {
+          await plugin.onHighlySensitiveModeration?.(moderation, pluginContext);
         }
       }
 
@@ -141,11 +151,11 @@ export class AilaModeration implements AilaModerationFeature {
     return messageWithoutPersistence;
   }
 
-  public reportModerationToAnalytics(
+  public async reportModerationToAnalytics(
     moderationResult: ModerationResult,
     moderation: Moderation,
   ) {
-    this._aila.analytics?.reportModerationResult({
+    await this._aila.analytics?.reportModerationResult({
       distinctId: this._aila.userId,
       event: "moderation_result",
       properties: {
@@ -191,7 +201,36 @@ export class AilaModeration implements AilaModerationFeature {
     } else {
       log.info("No mocked response found. Continuing to moderate");
     }
-    const response = await this._moderator.moderate(JSON.stringify(content));
+
+    const contentString = JSON.stringify(content);
+
+    // Fire off shadow moderation call (non-blocking, errors caught)
+    if (this._shadowModerator) {
+      const shadowPromise = this._shadowModerator
+        .moderate(contentString)
+        .then((result) => {
+          if (result) {
+            log.info("Shadow moderation result", {
+              categories: result.categories,
+              scores: result.scores,
+              safety: getSafetyResult(result),
+            });
+          }
+        })
+        .catch((err) => {
+          log.error("Shadow moderation failed (non-fatal)", { err });
+        });
+
+      // Use waitUntil to prevent serverless function from terminating
+      // before the shadow moderation completes.
+      // Disable in test mode to avoid issues with Vercel's request context.
+      if (process.env.AILA_FIXTURES_ENABLED !== "true") {
+        waitUntil(shadowPromise);
+      }
+    }
+
+    // Production moderation call
+    const response = await this._moderator.moderate(contentString);
     return (
       response ?? (await this.retryModeration({ messages, content, retries }))
     );

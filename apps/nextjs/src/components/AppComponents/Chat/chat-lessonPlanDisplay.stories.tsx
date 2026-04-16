@@ -1,6 +1,6 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { StoreDecorator } from "@/storybook/decorators/StoreDecorator";
@@ -15,7 +15,7 @@ const lessonPlan = {
   basedOn: { title: "Frogs in Modern Britain", id: "123" },
   learningOutcome:
     "To understand the importance of frogs in British society and culture",
-} satisfies LooseLessonPlan;
+} satisfies PartialLessonPlan;
 
 const meta = {
   title: "Components/LessonPlan/LessonPlanDisplay",

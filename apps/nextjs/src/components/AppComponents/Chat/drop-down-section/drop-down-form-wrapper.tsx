@@ -15,6 +15,7 @@ export type FeedbackOption<T> = {
   label: string;
   enumValue: T;
   chatMessage?: string;
+  textPrompt?: string;
 };
 
 export const DropDownFormWrapper = <
@@ -36,7 +37,7 @@ export const DropDownFormWrapper = <
   title: string;
   buttonText: string;
   isOpen: boolean;
-  dropdownRef: React.RefObject<HTMLDivElement>;
+  dropdownRef: React.RefObject<HTMLDivElement | null>;
 }>) => {
   const isStreaming = useChatStore(
     (state) => state.ailaStreamingStatus !== "Idle",
@@ -84,14 +85,14 @@ export const DropDownFormWrapper = <
       <OakFlex
         $ba="border-solid-m"
         $borderRadius="border-radius-m"
-        $pa="inner-padding-l"
+        $pa="spacing-20"
         $flexDirection="column"
         $position={["fixed", "absolute"]}
-        $top={["all-spacing-7"]}
-        $background="white"
-        $width={["unset", "all-spacing-19", "all-spacing-21"]}
+        $top={["spacing-32"]}
+        $background="bg-primary"
+        $width={["unset", "spacing-240", "spacing-480"]}
         $zIndex={100}
-        $gap="space-between-m"
+        $gap="spacing-24"
         $borderColor="border-neutral-lighter"
         $dropShadow="drop-shadow-standard"
       >

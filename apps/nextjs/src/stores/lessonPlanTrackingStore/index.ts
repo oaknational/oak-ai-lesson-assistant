@@ -1,5 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
+import * as Sentry from "@sentry/nextjs";
 import { create } from "zustand";
 
 import { exampleMessages } from "@/components/AppComponents/Chat/chat-start";
@@ -14,7 +15,6 @@ import type { LessonPlanTrackingState } from "./types";
 
 export * from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("analytics:lesson:store");
 
 export const createLessonPlanTrackingStore = ({
@@ -117,11 +117,18 @@ export const createLessonPlanTrackingStore = ({
           }
           // Request ended
           if (streamingStatus === "Idle") {
-            try {
-              get().actions.trackCompletion();
-            } finally {
-              get().actions.popQueuedIntent();
+            const chatStore = getStore("chat");
+
+            if (!chatStore.streamingError) {
+              try {
+                get().actions.trackCompletion();
+              } catch (error) {
+                log.error("Failed to track completion", error);
+                Sentry.captureException(error);
+              }
             }
+
+            get().actions.popQueuedIntent();
           }
         },
       },

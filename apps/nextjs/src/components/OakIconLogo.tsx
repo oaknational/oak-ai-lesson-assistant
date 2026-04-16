@@ -1,8 +1,16 @@
-const OakIconLogo = () => {
+type OakIconLogoProps = {
+  width?: number;
+  height?: number;
+};
+
+const OakIconLogo = ({
+  width = 24,
+  height = 32,
+}: Readonly<OakIconLogoProps>) => {
   return (
     <svg
-      width="24"
-      height="32"
+      width={width}
+      height={height}
       viewBox="0 0 24 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -1,0 +1,99 @@
+import React, { useMemo } from "react";
+
+import type { Decorator } from "@storybook/nextjs";
+import { fn } from "storybook/test";
+
+import useAnalytics from "@/lib/analytics/useAnalytics";
+import { TeachingMaterialsStoresContext } from "@/stores/TeachingMaterialsStoreProvider";
+import { createTeachingMaterialsStore } from "@/stores/teachingMaterialsStore";
+import type { TeachingMaterialsState } from "@/stores/teachingMaterialsStore/types";
+import type { TrpcUtils } from "@/utils/trpc";
+
+declare module "@storybook/nextjs" {
+  interface Parameters {
+    resourcesStoreState?: Partial<TeachingMaterialsState>;
+  }
+}
+
+const trackEvents = {
+  teachingMaterialsSelected: fn(),
+  teachingMaterialsRefined: fn(),
+  teachingMaterialDownloaded: fn(),
+} as unknown as ReturnType<typeof useAnalytics>["track"];
+
+const mockTrpc: TrpcUtils = {
+  client: {
+    runtime: {} as any,
+    query: fn(),
+    mutation: fn(),
+    subscription: fn(),
+    teachingMaterials: {
+      generateTeachingMaterial: {
+        mutate: fn(),
+      },
+      createMaterialSession: {
+        mutate: fn(),
+      },
+      updateMaterialSession: {
+        mutate: fn(),
+      },
+      generatePartialLessonPlanObject: {
+        mutate: fn(),
+      },
+      remainingLimit: {
+        query: fn(),
+      },
+    },
+  },
+} as unknown as TrpcUtils;
+
+export const TeachingMaterialsStoreDecorator: Decorator = (
+  Story,
+  { parameters },
+) => {
+  const stores = useMemo(() => {
+    // Default values for the store
+    const defaultState: Partial<TeachingMaterialsState> = {
+      stepNumber: 0,
+      docType: "additional-glossary",
+      source: "aila",
+      isMaterialLoading: false,
+      isMaterialRefining: false,
+      pageData: {
+        lessonPlan: {
+          lessonId: "mock-lesson-id",
+          title: "Mock Lesson",
+        },
+      },
+      threatDetection: true,
+      moderation: {
+        justification: "This contains content that requires guidance.",
+        categories: ["l/strong-language", "u/sensitive-content"],
+      },
+    };
+
+    // Merge the states
+    const finalState = {
+      ...defaultState,
+      ...parameters.resourcesStoreState,
+    };
+
+    // Create the store with merged initial values from parameters
+    const resourcesStore = createTeachingMaterialsStore(
+      {},
+      trackEvents,
+      mockTrpc,
+      finalState,
+    );
+
+    return {
+      teachingMaterials: resourcesStore,
+    };
+  }, [parameters.resourcesStoreState]);
+
+  return (
+    <TeachingMaterialsStoresContext.Provider value={stores}>
+      <Story />
+    </TeachingMaterialsStoresContext.Provider>
+  );
+};

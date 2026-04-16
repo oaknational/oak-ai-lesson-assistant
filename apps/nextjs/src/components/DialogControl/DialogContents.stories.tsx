@@ -1,12 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { HttpResponse, http } from "msw";
 import { SurveyQuestionType, SurveyType } from "posthog-js";
 import type { PostHog } from "posthog-js";
+import { fn } from "storybook/test";
 
 import { chromaticParams } from "@/storybook/chromatic";
 import { AnalyticsDecorator } from "@/storybook/decorators/AnalyticsDecorator";
 import { DialogContentDecorator } from "@/storybook/decorators/DialogContentDecorator";
+import { TeachingMaterialsStoreDecorator } from "@/storybook/decorators/TeachingMaterialsStoreDecorator";
 
 import { DemoProvider } from "../ContextProviders/Demo";
 import DialogContents from "./DialogContents";
@@ -104,6 +105,61 @@ export const DemoInterstitialLimited: Story = {
       </DemoProvider>
     ),
   ],
+};
+
+export const TeachingMaterialsThreatDetected: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "teaching-materials-threat-detected",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const TeachingMaterialsRateLimit: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "teaching-materials-rate-limit",
+  },
+  decorators: [
+    TeachingMaterialsStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const TeachingMaterialsRateLimitDemo: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "teaching-materials-rate-limit",
+    auth: "signedInDemo",
+  },
+  decorators: [
+    TeachingMaterialsStoreDecorator,
+    (Story) => (
+      <DemoProvider>
+        <Story />
+      </DemoProvider>
+    ),
+  ],
+};
+
+export const TeachingMaterialsStartAgain: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "teaching-materials-start-again",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
+};
+
+export const TeachingMaterialsError: Story = {
+  args: {},
+  parameters: {
+    dialogWindow: "teaching-materials-error",
+  },
+  decorators: [TeachingMaterialsStoreDecorator],
 };
 
 export const Feedback: Story = {

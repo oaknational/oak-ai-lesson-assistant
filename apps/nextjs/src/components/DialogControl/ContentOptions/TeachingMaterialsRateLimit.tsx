@@ -1,0 +1,85 @@
+import {
+  OakFlex,
+  OakHeading,
+  OakLink,
+  OakP,
+  OakPrimaryButton,
+  OakTertiaryInvertedButton,
+} from "@oaknational/oak-components";
+
+import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { useTeachingMaterialsActions } from "@/stores/TeachingMaterialsStoreProvider";
+
+const RATELIMIT_FORM_URL = process.env.RATELIMIT_FORM_URL;
+
+type TeachingMaterialsRateLimitProps = {
+  closeDialog: () => void;
+};
+
+const TeachingMaterialsRateLimit = ({
+  closeDialog,
+}: Readonly<TeachingMaterialsRateLimitProps>) => {
+  const { resetToDefault } = useTeachingMaterialsActions();
+  const { isDemoUser, demo } = useDemoUser();
+
+  if (!isDemoUser) {
+    return (
+      <>
+        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
+          <OakHeading $font={"heading-5"} tag="h1">
+            Daily usage limit
+          </OakHeading>
+          <OakP>
+            You've reached your daily usage limit. Please return tomorrow or{" "}
+            <OakLink href={RATELIMIT_FORM_URL}>contact us</OakLink> if you need
+            a higher limit.
+          </OakP>
+          <OakFlex $width={"100%"} $justifyContent={"end"} $mb={"spacing-24"}>
+            <OakPrimaryButton
+              onClick={() => {
+                resetToDefault();
+                closeDialog();
+              }}
+            >
+              Ok
+            </OakPrimaryButton>
+          </OakFlex>
+        </OakFlex>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
+        <OakHeading $font={"heading-5"} tag="h1">
+          Demo limit reached
+        </OakHeading>
+        <OakP $font="body-2">
+          You have {demo.additionalMaterialsSessionsRemaining} of your{" "}
+          {demo.appSessionsPerMonth} teaching materials available this month. If
+          you are a teacher in the UK, please{" "}
+          <OakLink href={demo.contactHref}>contact us for full access.</OakLink>
+        </OakP>
+
+        <OakFlex
+          $width={"100%"}
+          $justifyContent={"space-between"}
+          $alignItems={"center"}
+          $mb={"spacing-24"}
+        >
+          <OakTertiaryInvertedButton
+            onClick={() => {
+              resetToDefault();
+              closeDialog();
+            }}
+          >
+            Back
+          </OakTertiaryInvertedButton>
+        </OakFlex>
+      </OakFlex>
+    </>
+  );
+};
+
+export default TeachingMaterialsRateLimit;

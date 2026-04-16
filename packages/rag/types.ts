@@ -11,8 +11,10 @@ export type RagLessonPlanResult = {
 };
 
 export type RagLogger = {
-  info: (...args: string[]) => void;
-  error: (...args: string[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  info: (...args: any[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: (...args: any[]) => void;
 };
 
 export type DeepPartial<T> = T extends object

@@ -134,7 +134,7 @@ export abstract class AilaPersistence {
 export type ChatPersistencePayload = AilaPersistedChat & {
   subject: string;
   keyStage: string;
-  topic: string;
+  topic: string | null;
   options: AilaOptionsWithDefaultFallbackValues;
 };
 

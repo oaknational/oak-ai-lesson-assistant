@@ -1,27 +1,14 @@
 import type {
   LessonPlanKey,
-  LooseLessonPlan,
+  PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
 
 import type { LessonPlanState } from "./index";
 
-const sectionKeyOverrides = {
-  starterQuiz: "_experimental_starterQuizMathsV0",
-  exitQuiz: "_experimental_exitQuizMathsV0",
-} as const;
-
 export const lessonPlanSectionSelector = (sectionKey: LessonPlanKey) => {
   return (
     state: LessonPlanState,
-  ): LooseLessonPlan[LessonPlanKey] | undefined => {
-    if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
-      const overriddenSection =
-        state.lessonPlan[sectionKeyOverrides[sectionKey]];
-      if (overriddenSection) {
-        return overriddenSection;
-      }
-    }
-
+  ): PartialLessonPlan[LessonPlanKey] | undefined => {
     return state.lessonPlan[sectionKey];
   };
 };

@@ -1,16 +1,17 @@
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 export const aiTools: {
   title: string;
   href: string;
-  id: "lesson-planner" | "quiz-designer";
+  id: "lesson-planner";
   image: string;
   behindFeatureFlag: boolean;
   description: string;
 }[] = [
   {
-    title: "Aila - AI lesson assistant",
-    href: "/aila",
+    title: "Create with AI",
+    href: getAilaUrl("start"),
     id: "lesson-planner",
     image: oakSupporting,
     behindFeatureFlag: true,

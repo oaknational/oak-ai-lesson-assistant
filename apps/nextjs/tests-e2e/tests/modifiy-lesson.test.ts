@@ -1,5 +1,7 @@
 import { type Page, expect, test } from "@playwright/test";
 
+import { getAilaUrl } from "@/utils/getAilaUrl";
+
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
@@ -16,7 +18,9 @@ test.describe("Modify a lesson plan", () => {
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       const login = await prepareUser(page, "modify-lesson-plan");
-      await page.goto(`${TEST_BASE_URL}/aila/${login.chatId}`);
+      await page.goto(
+        `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
+      );
       await isFinished(page);
     });
   });
@@ -66,7 +70,10 @@ test.describe("Modify a lesson plan", () => {
   async function selectOtherModification(page: Page) {
     const modifyButtons = page.locator("text=Modify");
     await modifyButtons.first().click();
-    const radioButtonOther = page.locator('input[type="radio"][value="OTHER"]');
+
+    const radioButtonOther = page
+      .getByTestId("modify-radio-button")
+      .filter({ hasText: "Other" });
     await radioButtonOther.click();
     const otherInput = page.getByTestId("modify-other-text-area");
     await expect(otherInput).toBeVisible();

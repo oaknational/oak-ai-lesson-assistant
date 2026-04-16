@@ -14,7 +14,7 @@ import {
 } from "@/stores/lessonPlanStore/selectors";
 
 import Skeleton from "../../common/Skeleton";
-import { LessonPlanSectionContent } from "../drop-down-section/lesson-plan-section-content";
+import { DropDownSectionContent } from "../drop-down-section/drop-down-section-content";
 import { sectionTitle } from "../drop-down-section/sectionTitle";
 
 export type LessonPlanSectionProps = Readonly<{
@@ -64,10 +64,10 @@ export const LessonPlanSection = ({
     <DropDownSectionWrapper
       $borderColor="black"
       $bb="border-solid-m"
-      $pv="inner-padding-xl"
+      $pv="spacing-24"
       ref={sectionRef}
     >
-      <OakFlex $gap="all-spacing-2">
+      <OakFlex $gap="spacing-8">
         <OakBox>
           {status === "streaming" && <LoadingWheel />}
           {status === "loaded" && <Icon icon="tick" size="sm" />}
@@ -84,7 +84,7 @@ export const LessonPlanSection = ({
       {isOpen && (
         <div className="mt-12 w-full">
           {status === "loaded" && section ? (
-            <LessonPlanSectionContent sectionKey={sectionKey} value={section} />
+            <DropDownSectionContent sectionKey={sectionKey} value={section} />
           ) : (
             <Skeleton loaded={false} numberOfRows={1}>
               <p>Loading</p>

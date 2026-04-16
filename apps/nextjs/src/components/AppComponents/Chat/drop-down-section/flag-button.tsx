@@ -108,7 +108,6 @@ const FlagButton = ({
       >
         Flag
       </ActionButton>
-
       {isOpen && (
         <DropDownFormWrapper
           onClickActions={flagSectionContent}
@@ -122,8 +121,8 @@ const FlagButton = ({
           <OakRadioGroup
             name={`drop-down-${flagOptions[0].enumValue}`}
             $flexDirection="column"
-            $gap="space-between-s"
-            $background="white"
+            $gap="spacing-16"
+            $background="bg-primary"
           >
             {flagOptions.map((option) => (
               <FlagButtonFormItem

@@ -1,37 +1,40 @@
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { prisma } from "@oakai/db/client";
 
-import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
 import { z } from "zod";
 
-import { chatSchema } from "../../../aila/src/protocol/schema";
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
 
-function parseChatAndReportError({
+async function parseChatAndReportError({
   chat,
   id,
   caller,
+  userId,
 }: {
   caller: string;
   chat: unknown;
   id: string;
+  userId: string;
 }) {
-  const parseResult = chatSchema.safeParse(chat);
+  const parsedChat = await migrateChatData(
+    chat,
+    async (upgradedData) => {
+      await prisma.appSession.update({
+        where: { id },
+        data: { output: upgradedData },
+      });
+    },
+    {
+      id,
+      userId,
+      caller,
+    },
+  );
 
-  if (!parseResult.success) {
-    const error = new Error(`${caller} :: Failed to parse chat`);
-    Sentry.captureException(error, {
-      extra: {
-        id,
-        chat,
-        zodError: parseResult.error.flatten(),
-      },
-    });
-  }
-
-  return parseResult.data;
+  return parsedChat;
 }
 
 export const chatsRouter = router({
@@ -58,10 +61,11 @@ export const chatsRouter = router({
         return null;
       }
 
-      const parsedChat = parseChatAndReportError({
+      const parsedChat = await parseChatAndReportError({
         id,
         caller: "chats.getById",
         chat: session.output,
+        userId: session.userId,
       });
 
       return parsedChat;
@@ -77,17 +81,20 @@ export const chatsRouter = router({
       },
     });
 
-    return sessions
-      ?.map((session) => {
-        const parsedChat = parseChatAndReportError({
+    const parsedChats = await Promise.all(
+      sessions?.map((session) => {
+        const parsedChatPromise = parseChatAndReportError({
           id: session.id,
           caller: "chats.getAll",
           chat: session.output,
-        });
+          userId: session.userId,
+        }).catch(() => null); // Errors already reported
 
-        return parsedChat;
-      })
-      .filter(isTruthy);
+        return parsedChatPromise;
+      }),
+    );
+
+    return parsedChats.filter(isTruthy);
   }),
   deleteById: protectedProcedure
     .input(
@@ -142,10 +149,11 @@ export const chatsRouter = router({
         });
       }
 
-      const chat = parseChatAndReportError({
+      const chat = await parseChatAndReportError({
         id,
         caller: "chats.share",
         chat: session.output,
+        userId: session.userId,
       });
 
       const sharedChat = {
@@ -173,10 +181,11 @@ export const chatsRouter = router({
         where: { id, appId: "lesson-planner" },
       });
 
-      const chat = parseChatAndReportError({
+      const chat = await parseChatAndReportError({
         id,
         caller: "chats.getShared",
         chat: session?.output,
+        userId: session?.userId ?? "",
       });
 
       if (!chat?.isShared) {

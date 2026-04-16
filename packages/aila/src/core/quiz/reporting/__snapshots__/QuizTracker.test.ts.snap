@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`QuizTracker report tree structure builds nested children correctly 1`] = `
+{
+  "children": {
+    "generator": {
+      "children": {
+        "query-0": {
+          "data": {
+            "query": "test query",
+          },
+          "status": "complete",
+        },
+      },
+      "status": "complete",
+    },
+  },
+  "status": "complete",
+}
+`;

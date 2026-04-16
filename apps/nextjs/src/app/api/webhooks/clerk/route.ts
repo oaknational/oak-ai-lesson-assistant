@@ -32,17 +32,16 @@ function getPrimaryEmail(user: UserJSON): string {
 
 async function syncUserToPosthog(user: UserJSON) {
   const featureFlagGroup = user.public_metadata.labs?.featureFlagGroup ?? "";
-  posthogAiBetaServerClient.identify({
+  await posthogAiBetaServerClient.identifyImmediate({
     distinctId: getPrimaryEmail(user),
     properties: { featureFlagGroup },
   });
-  await posthogAiBetaServerClient.flush();
   log.info("featureFlagGroup synced:", user.id, featureFlagGroup);
 }
 
 export async function POST(req: Request) {
   try {
-    const headerPayload = headers();
+    const headerPayload = await headers();
     const svixId = headerPayload.get("svix-id");
     const svixTimestamp = headerPayload.get("svix-timestamp");
     const svixSignature = headerPayload.get("svix-signature");

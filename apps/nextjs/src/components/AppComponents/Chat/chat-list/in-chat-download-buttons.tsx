@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import { useChatStore, useLessonPlanStore } from "@/stores/AilaStoresProvider";
+import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { useDialog } from "../../DialogContext";
 import { useProgressForDownloads } from "../Chat/hooks/useProgressForDownloads";
@@ -35,10 +36,14 @@ export const InChatDownloadButtons = () => {
   const id = useLessonPlanStore((state) => state.id);
 
   return (
-    <OakFlex $flexDirection="column" $gap="all-spacing-7" $mv="space-between-l">
+    <OakFlex $flexDirection="column" $gap="spacing-32" $mv="spacing-48">
       {demo.isSharingEnabled && (
         <Link
-          href={demo.isSharingEnabled ? `/aila/download/${id}` : "#"}
+          href={
+            demo.isSharingEnabled
+              ? `${getAilaUrl("lesson")}/${id}/download/`
+              : "#"
+          }
           onClick={() => {
             if (!demo.isSharingEnabled) {
               setDialogWindow("demo-share-locked");
@@ -72,15 +77,15 @@ const InnerInChatButton = ({
 }) => {
   return (
     <OakFlex
-      $pa="inner-padding-m"
-      $gap="all-spacing-3"
-      $background="white"
+      $pa="spacing-16"
+      $gap="spacing-12"
+      $background="bg-primary"
       $borderRadius="border-radius-m"
       $alignItems="center"
       $dropShadow="drop-shadow-standard"
     >
       <OakBox $transform="scale">
-        <OakIcon iconName={iconName} $width="all-spacing-7" />
+        <OakIcon iconName={iconName} $width="spacing-32" />
       </OakBox>
       <OakSpan $font="body-2">{children}</OakSpan>
     </OakFlex>

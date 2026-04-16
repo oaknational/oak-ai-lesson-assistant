@@ -56,16 +56,16 @@ export const rateLimits = {
       window: "30 d",
     }),
   },
-  additionalMaterialSessions: {
+  teachingMaterialSessions: {
     demo: fixedWindowRateLimiter({
-      prefix: "rateLimit:additionalMaterial:demo",
+      prefix: "rateLimit:teachingMaterial:demo",
       limit: DEMO_APP_SESSIONS_PER_30D,
       window: "30 d",
     }),
   },
-  additionalMaterial: {
+  teachingMaterial: {
     standard: userBasedRateLimiter({
-      prefix: "rateLimit:additionalMaterial:standard",
+      prefix: "rateLimit:teachingMaterial:standard",
       limit: (isOakUser, privateMetadata) => {
         const customRateLimit = privateMetadata["customRateLimit"];
         if (typeof customRateLimit === "number") {
@@ -79,7 +79,7 @@ export const rateLimits = {
       window: "24 h",
     }),
     demo: fixedWindowRateLimiter({
-      prefix: "rateLimit:additionalMaterial:demo",
+      prefix: "rateLimit:teachingMaterial:demo",
       limit: DEMO_GENERATIONS_PER_30D,
       window: "30 d",
     }),

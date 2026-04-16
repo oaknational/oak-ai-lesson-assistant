@@ -1,30 +1,36 @@
 {
-  "id": "chatcmpl-ANdXfnfoZyYbX8821gnToLzVG2k6N",
+  "id": "chatcmpl-BtGGj1s8cLRhXT1wa6ZP7Chegu3K9",
   "object": "chat.completion",
-  "created": 1730196907,
+  "created": 1752510277,
   "model": "gpt-4o-2024-08-06",
   "choices": [
     {
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan titled 'End of Roman Britain' is fully compliant across all category groups for key-stage 1 history. It does not contain any discriminatory language, offensive content, or strong language. The content does not depict or discuss conflict, violence, or sensitive subjects, and there is no mention of nudity or sexual content. Physical activities, if any, are not hazardous or require special supervision. Furthermore, there are no guides or encouragements for harmful or illegal behavior. The content is appropriate for young learners, focusing on historical events and archaeological studies related to Roman Britain, presented in an educational and age-appropriate manner.\",\"categories\":[]}",
-        "refusal": null
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan is fully compliant across all categories. It does not contain any discriminatory language, offensive language, or strong language. There is no depiction or discussion of conflict, violence, serious violence, or sexual violence. The content does not include any upsetting, sensitive, or distressing topics. There is no discussion or depiction of nudity or sexual content. The lesson plan does not involve any physical activities, exploration of objects, or use of equipment that requires supervision. Finally, the lesson plan contains no toxic content such as guides or encouragement of harmful or illegal activities.\",\"categories\":[]}",
+        "refusal": null,
+        "annotations": []
       },
       "logprobs": null,
       "finish_reason": "stop"
     }
   ],
   "usage": {
-    "prompt_tokens": 3796,
-    "completion_tokens": 158,
-    "total_tokens": 3954,
+    "prompt_tokens": 4044,
+    "completion_tokens": 146,
+    "total_tokens": 4190,
     "prompt_tokens_details": {
-      "cached_tokens": 2432
+      "cached_tokens": 2560,
+      "audio_tokens": 0
     },
     "completion_tokens_details": {
-      "reasoning_tokens": 0
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
     }
   },
-  "system_fingerprint": "fp_90354628f2"
+  "service_tier": "default",
+  "system_fingerprint": null
 }

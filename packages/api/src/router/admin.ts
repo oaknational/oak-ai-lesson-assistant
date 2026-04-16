@@ -1,3 +1,4 @@
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { Moderations, SafetyViolations } from "@oakai/core";
 import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -5,7 +6,6 @@ import { aiLogger } from "@oakai/logger";
 import { z } from "zod";
 
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
-import { chatSchema } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
 
@@ -51,25 +51,27 @@ export const adminRouter = router({
           id: id,
         },
       });
+
       if (!chatRecord) {
         return null;
       }
 
-      const output = chatRecord.output;
-      if (typeof output !== "object") {
-        throw new Error("sessionOutput is not an object");
-      }
-      const parseResult = chatSchema.safeParse({
-        ...output,
-        userId: chatRecord.userId,
-        id,
-      });
+      const chat = await migrateChatData(
+        chatRecord.output,
+        async (upgradedData) => {
+          await prisma.appSession.update({
+            where: { id },
+            data: { output: upgradedData },
+          });
+        },
+        {
+          id: chatRecord.id,
+          userId: chatRecord.userId,
+          caller: "appSessions.getChat",
+        },
+      );
 
-      if (!parseResult.success) {
-        return null;
-      }
-
-      return parseResult.data;
+      return chat;
     }),
   invalidateModeration: adminProcedure
     .input(z.object({ moderationId: z.string() }))

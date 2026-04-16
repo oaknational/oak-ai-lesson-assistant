@@ -13,7 +13,7 @@ const EXPORTS_CONFIG: Record<
   ExportsType,
   {
     title: string;
-    analyticsResourceType: ResourceTypeValueType | ResourceTypeValueType[];
+    analyticsMaterialType: ResourceTypeValueType | ResourceTypeValueType[];
     icon: "slides" | "lesson" | "quiz";
     ext: "pptx" | "docx" | "all";
   }
@@ -22,7 +22,7 @@ const EXPORTS_CONFIG: Record<
     title: "All resources",
     icon: "lesson",
     ext: "all",
-    analyticsResourceType: [
+    analyticsMaterialType: [
       "slide deck",
       "lesson plan",
       "exit quiz",
@@ -35,37 +35,37 @@ const EXPORTS_CONFIG: Record<
     title: "Slide deck",
     icon: "slides",
     ext: "pptx",
-    analyticsResourceType: "slide deck",
+    analyticsMaterialType: "slide deck",
   },
   lessonPlanDoc: {
     title: "Lesson plan",
     icon: "lesson",
     ext: "docx",
-    analyticsResourceType: "lesson plan",
+    analyticsMaterialType: "lesson plan",
   },
   starterQuiz: {
     title: "Quiz",
     icon: "quiz",
     ext: "docx",
-    analyticsResourceType: "exit quiz",
+    analyticsMaterialType: "exit quiz",
   },
   exitQuiz: {
     title: "Quiz",
     icon: "quiz",
     ext: "docx",
-    analyticsResourceType: "starter quiz",
+    analyticsMaterialType: "starter quiz",
   },
   worksheet: {
     title: "Worksheet",
     icon: "slides",
     ext: "docx",
-    analyticsResourceType: "worksheet",
+    analyticsMaterialType: "worksheet",
   },
   additionalMaterials: {
     title: "Additional materials",
     icon: "lesson",
     ext: "docx",
-    analyticsResourceType: "additional materials",
+    analyticsMaterialType: "additional materials",
   },
 };
 

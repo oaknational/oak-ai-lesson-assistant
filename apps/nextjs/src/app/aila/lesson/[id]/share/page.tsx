@@ -1,0 +1,99 @@
+import { getSessionModerations } from "@oakai/aila/src/features/moderation/getSessionModerations";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import {
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
+
+import type { User } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { getSharedChatById } from "@/app/actions";
+
+import ShareChat from ".";
+
+interface SharePageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export async function generateMetadata({
+  params,
+}: SharePageProps): Promise<Metadata> {
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
+  return {
+    title: chat?.title?.slice(0, 50) ?? "Aila",
+  };
+}
+
+function userCanShare(user: User) {
+  if (!demoUsers.isDemoStatusSet(user)) {
+    return false;
+  }
+  const isDemoUser = Boolean(user.publicMetadata.labs.isDemoUser ?? "true");
+  if (!isDemoUser) {
+    return true;
+  }
+  return process.env.NEXT_PUBLIC_DEMO_SHARING_ENABLED === "true";
+}
+
+export default async function SharePage({ params }: Readonly<SharePageProps>) {
+  const { id } = await params;
+  const chat = await getSharedChatById(id);
+  if (!chat?.lessonPlan) {
+    return notFound();
+  }
+  const client = await clerkClient();
+  const user = await client.users.getUser(chat.userId);
+
+  if (!userCanShare(user)) {
+    return notFound();
+  }
+
+  const { firstName, lastName } = user;
+  const creatorsName = firstName && lastName && `${firstName + " " + lastName}`;
+
+  const moderations = await getSessionModerations(id);
+
+  if (moderations.some((m) => isToxic(m) || isHighlySensitive(m))) {
+    return notFound();
+  }
+
+  /**
+   * We don't want to expose the whole persisted moderation object, as it contains
+   * both the justification, which isn't used, and the userComment which is a user
+   * input and should not be exposed to the client.
+   *
+   * Unlike the chat (where each message shows its own moderation), the share
+   * page aggregates distinct categories across all session moderations to
+   * give a summary view of the lesson's content guidance.
+   */
+  const allCategories = [
+    ...new Set(
+      moderations
+        .flatMap((m) => m.categories)
+        .filter((c): c is string => typeof c === "string"),
+    ),
+  ];
+
+  const moderation: PersistedModerationBase | null =
+    allCategories.length > 0
+      ? {
+          id: moderations[0]!.id,
+          categories: allCategories,
+        }
+      : null;
+
+  return (
+    <ShareChat
+      lessonPlan={chat.lessonPlan}
+      creatorsName={creatorsName}
+      moderation={moderation}
+    />
+  );
+}

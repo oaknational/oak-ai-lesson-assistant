@@ -39,7 +39,7 @@ export function DemoProvider({ children }: Readonly<DemoProviderProps>) {
   );
 
   const remainingAdditionalMaterialsSessions =
-    trpc.additionalMaterials.remainingLimit.useQuery(undefined, {
+    trpc.teachingMaterials.remainingLimit.useQuery(undefined, {
       enabled: clerkMetadata.isSet && isDemoUser,
     });
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { aiLogger } from "@oakai/logger";
 
 import { Box } from "@radix-ui/themes";
@@ -42,7 +42,7 @@ type Data = {
 
 type DownloadAllButtonProps = {
   onClick: () => void;
-  lesson: LooseLessonPlan;
+  lesson: PartialLessonPlan;
   title: string;
   subTitle: string;
   downloadAvailable: boolean;
@@ -93,8 +93,8 @@ export const DownloadAllButton = ({
   const errorMessage = data && "message" in data ? data.message : "";
 
   const [zipStatus, setZipStatus] = useState<zipDownloadStatus>("idle");
-  const { icon, ext, analyticsResourceType } = getExportsConfig("all");
-  const { isSuccess, isError, mutateAsync, isLoading } =
+  const { icon, ext, analyticsMaterialType } = getExportsConfig("all");
+  const { isSuccess, isError, mutateAsync, isPending } =
     trpc.exports.sendUserAllAssetsEmail.useMutation();
   const { track } = useAnalytics();
   const { mutateAsync: zipStatusMutateAsync } =
@@ -154,7 +154,7 @@ export const DownloadAllButton = ({
       >
         <Link
           onClick={() => {
-            trackDownload(ext, analyticsResourceType, lesson, track, chatId);
+            trackDownload(ext, analyticsMaterialType, lesson, track, chatId);
             handleZipDownloadStatus();
           }}
           className="flex w-full items-center justify-start gap-15 hover:underline"
@@ -186,7 +186,7 @@ export const DownloadAllButton = ({
           <SendEmailIcon
             isSuccess={isSuccess}
             isError={isError}
-            isLoading={isLoading}
+            isLoading={isPending}
           />
           <div className="flex flex-col gap-6">
             <span className="text-left font-bold">

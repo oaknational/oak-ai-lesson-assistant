@@ -37,9 +37,11 @@ export class AilaAnalytics {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public reportModerationResult(moderationResultEvent: any) {
-    this._adapters.forEach((adapter) =>
-      adapter.reportModerationResult(moderationResultEvent),
+  public async reportModerationResult(moderationResultEvent: any) {
+    await Promise.all(
+      this._adapters.map((adapter) =>
+        adapter.reportModerationResult(moderationResultEvent),
+      ),
     );
   }
 

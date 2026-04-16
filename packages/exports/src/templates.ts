@@ -1,34 +1,11 @@
 import invariant from "tiny-invariant";
 
-import type { LessonPlanDocInputData } from "./schema/input.schema";
-
 invariant(
   process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID,
   "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID is required",
 );
-invariant(
-  process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_1_LEARNING_CYCLE_ID,
-  "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_1_LEARNING_CYCLE_ID is required",
-);
-invariant(
-  process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_2_LEARNING_CYCLES_ID,
-  "GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_2_LEARNING_CYCLES_ID is required",
-);
 
-export function getDocsTemplateIdLessonPlan({
-  cycle2,
-  cycle3,
-}: Pick<LessonPlanDocInputData, "cycle2" | "cycle3">) {
-  if (!cycle2) {
-    return process.env
-      .GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_1_LEARNING_CYCLE_ID as string;
-  }
-
-  if (!cycle3) {
-    return process.env
-      .GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_2_LEARNING_CYCLES_ID as string;
-  }
-
+export function getDocsTemplateIdLessonPlan() {
   return process.env.GOOGLE_DOCS_LESSON_PLAN_TEMPLATE_ID as string;
 }
 
@@ -87,17 +64,6 @@ export function getDocsTemplateIdWorksheet() {
   return process.env.GOOGLE_DOCS_WORKSHEET_TEMPLATE_ID as string;
 }
 
-/*
- * Quiz Designer Slides
- */
-invariant(
-  process.env.GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID,
-  "GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID is required",
-);
-export function getQuizDesignerSlidesTemplateIdWorksheet() {
-  return process.env.GOOGLE_SLIDES_QUIZ_DESIGNER_TEMPLATE_ID as string;
-}
-
 /**
  * Additional Resources
  */
@@ -118,7 +84,7 @@ invariant(
   "GOOGLE_DOCS_ADDITIONAL_QUIZ_ID is required",
 );
 
-export const getAdditionalResourcesTemplateId = ({
+export const getTeachingMaterialsTemplateId = ({
   docType,
   withAnswers = false,
 }: {
@@ -157,5 +123,5 @@ export const getAllTemplateIdsForDocType = (docType: string): string[] => {
   }
 
   // For other document types, just return the single template ID
-  return [getAdditionalResourcesTemplateId({ docType: docType })];
+  return [getTeachingMaterialsTemplateId({ docType: docType })];
 };

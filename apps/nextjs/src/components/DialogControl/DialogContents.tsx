@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
 import {
   type OakIconName,
@@ -10,8 +10,6 @@ import styled from "styled-components";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
-import AdditionalMaterialsModeration from "./ContentOptions/AdditionalMaterialsModeration";
-import AdditionalMaterialsThreatDetected from "./ContentOptions/AdditionalMaterialsThreatDetected";
 import ClearChatHistory from "./ContentOptions/ClearChatHistory";
 import ClearSingleChatFromChatHistory from "./ContentOptions/ClearSingleChatFromChatHistory";
 import DemoInterstitialDialog from "./ContentOptions/DemoInterstitialDialog";
@@ -19,10 +17,15 @@ import DemoShareLockedDialog from "./ContentOptions/DemoShareLockedDialog";
 import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
+import AdditionalMaterialsError from "./ContentOptions/TeachingMaterialsError";
+import AdditionalMaterialsRateLimit from "./ContentOptions/TeachingMaterialsRateLimit";
+import AdditionalMaterialsStartAgain from "./ContentOptions/TeachingMaterialsStartAgain";
+import AdditionalMaterialsThreatDetected from "./ContentOptions/TeachingMaterialsThreatDetected";
+import AdditionalMaterialsUserFeedback from "./ContentOptions/TeachingMaterialsUserFeedback";
 
 const dialogTitlesAndIcons: Record<
   Exclude<DialogTypes, "">,
-  { title: string; iconName: OakIconName | null }
+  { title: string; iconName: OakIconName | null; hideClosedButton?: boolean }
 > = {
   "share-chat": {
     title: "Share lesson",
@@ -56,21 +59,26 @@ const dialogTitlesAndIcons: Record<
     title: "Are you absolutely sure?",
     iconName: null,
   },
-  "additional-materials-moderation": {
-    title: "Guidance",
-    iconName: "warning",
+  "teaching-materials-threat-detected": {
+    title: "",
+    iconName: null,
   },
-  "additional-materials-threat-detected": {
-    title: "Threat detected",
-    iconName: "warning",
+  "teaching-materials-rate-limit": {
+    title: "",
+    iconName: null,
   },
-  "additional-materials-rate-limit": {
-    title: "Rate limit",
+  "teaching-materials-error": {
+    title: "An error occurred",
     iconName: "warning",
+    hideClosedButton: true,
   },
-  "additional-materials-user-account-locked": {
-    title: "Account locked",
-    iconName: "warning",
+  "teaching-materials-start-again": {
+    title: "",
+    iconName: null,
+  },
+  "teaching-materials-user-feedback": {
+    title: "",
+    iconName: null,
   },
 };
 
@@ -87,7 +95,7 @@ const DialogContents = ({
   isShared,
 }: {
   readonly chatId: string | undefined;
-  readonly lesson: LooseLessonPlan;
+  readonly lesson: PartialLessonPlan;
   readonly children?: React.ReactNode;
   readonly messages?: Message[];
   readonly submit?: () => void;
@@ -105,7 +113,13 @@ const DialogContents = ({
   return (
     <>
       {dialogWindow !== "" && (
-        <OakModalAtTheFront isOpen={!!dialogWindow} onClose={closeDialog}>
+        <OakModalAtTheFront
+          hideCloseButton={
+            dialogTitlesAndIcons[dialogWindow].hideClosedButton ?? false
+          }
+          isOpen={!!dialogWindow}
+          onClose={closeDialog}
+        >
           <OakModalCenterBody
             title={dialogTitlesAndIcons[dialogWindow].title}
             iconName={dialogTitlesAndIcons[dialogWindow].iconName ?? "warning"}
@@ -145,29 +159,20 @@ const DialogContents = ({
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
             )}
-            {dialogWindow === "additional-materials-moderation" && (
-              <AdditionalMaterialsModeration closeDialog={closeDialog} />
+            {dialogWindow === "teaching-materials-threat-detected" && (
+              <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
-            {dialogWindow === "additional-materials-threat-detected" && (
-              <AdditionalMaterialsThreatDetected
-                body={"threat detected"}
-                closeDialog={closeDialog}
-              />
+            {dialogWindow === "teaching-materials-rate-limit" && (
+              <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
-            {dialogWindow === "additional-materials-rate-limit" && (
-              <AdditionalMaterialsThreatDetected
-                body={"rate-limit"}
-                closeDialog={closeDialog}
-              />
+            {dialogWindow === "teaching-materials-start-again" && (
+              <AdditionalMaterialsStartAgain closeDialog={closeDialog} />
             )}
-            {/* // awaiting designs - placeholder */}
-            {dialogWindow === "additional-materials-user-account-locked" && (
-              <AdditionalMaterialsThreatDetected
-                body={"banned"}
-                closeDialog={closeDialog}
-              />
+            {dialogWindow === "teaching-materials-error" && (
+              <AdditionalMaterialsError closeDialog={closeDialog} />
+            )}
+            {dialogWindow === "teaching-materials-user-feedback" && (
+              <AdditionalMaterialsUserFeedback closeDialog={closeDialog} />
             )}
           </OakModalCenterBody>
         </OakModalAtTheFront>

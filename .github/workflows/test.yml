@@ -23,12 +23,10 @@ jobs:
         with:
           version: 8
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          # NOTE: We're fixing at 20.18 as 20.19 changes require(esm) logic https://nodejs.org/en/blog/release/v20.19.0
-          #       That change is incompatible with jest v29. jest v30 is still in alpha https://github.com/jestjs/jest/pull/15447
-          node-version: 20.18
+          node-version: 22.18
           cache: "pnpm"
 
       - name: Install deps (with cache)
@@ -47,10 +45,18 @@ jobs:
       - name: Run tests
         run: pnpm turbo test --cache-dir=".turbo" -- --maxWorkers=33% --coverage
 
+      - name: Upload test outputs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-outputs
+          path: test-outputs/
+          if-no-files-found: ignore
+
       # Run only on production branch
       - name: Report coverage to SonarCloud
         if: ${{ github.event.pull_request.merged == true && github.base_ref == 'production' }}
-        uses: SonarSource/sonarqube-scan-action@v4.2.1
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

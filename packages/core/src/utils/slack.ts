@@ -1,13 +1,12 @@
 import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
-import {
-  adjectives,
-  animals,
-  colors,
-  uniqueNamesGenerator,
-} from "unique-names-generator";
 
 import { getExternalFacingUrl } from "../functions/slack/getExternalFacingUrl";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "../threatDetection/types";
+import { generateFriendlyId } from "./friendlyId";
 
 if (
   !process.env.SLACK_NOTIFICATION_CHANNEL_ID ||
@@ -40,11 +39,7 @@ if (!clerkAppId) {
 }
 
 export function userIdBlock(userId: string): SectionBlock {
-  const friendlyId = uniqueNamesGenerator({
-    dictionaries: [adjectives, colors, animals],
-    separator: "-",
-    seed: userId,
-  });
+  const friendlyId = generateFriendlyId(userId);
 
   return {
     type: "section",
@@ -61,12 +56,73 @@ export function userIdBlock(userId: string): SectionBlock {
   };
 }
 
+/**
+ * Create a section block with a link to an Aila chat
+ */
+export function chatLinkBlock(chatId: string): SectionBlock {
+  const externalUrl = getExternalFacingUrl();
+  return {
+    type: "section",
+    fields: [
+      {
+        type: "mrkdwn",
+        text: `*Chat*: <https://${externalUrl}/aila/${chatId}|aila/${chatId}>`,
+      },
+    ],
+  };
+}
+
+/**
+ * Generate a URL to the Lakera dashboard with a time range around the given timestamp
+ * Creates a ±10 minute window around the detection time
+ *
+ * @param timestamp - Optional timestamp (defaults to now)
+ * @returns URL to Lakera dashboard filtered to the time range
+ */
+export function getLakeraDashboardUrl(timestamp?: Date): string {
+  const detectionTime = timestamp ?? new Date();
+  const startTime = new Date(detectionTime.getTime() - 10 * 60 * 1000); // -10 minutes
+  const endTime = new Date(detectionTime.getTime() + 10 * 60 * 1000); // +10 minutes
+
+  const params = new URLSearchParams({
+    page: "1",
+    pageSize: "100",
+    sortBy: "Timestamp",
+    sortDirection: "DESC",
+    timezone: "UTC",
+    start: startTime.toISOString(),
+    end: endTime.toISOString(),
+    period: "unset",
+  });
+
+  return `https://platform.lakera.ai/dashboard/requests/detections?${params.toString()}`;
+}
+
+function createLakeraConsoleAction(timestamp?: Date): ActionsBlock["elements"] {
+  if (!timestamp) {
+    return [];
+  }
+
+  return [
+    {
+      type: "button",
+      text: {
+        type: "plain_text",
+        text: "Lakera console",
+      },
+      url: getLakeraDashboardUrl(timestamp),
+    },
+  ];
+}
+
 export function actionsBlock({
   userActionsProps,
   chatActionsProps,
+  lakeraConsoleTimestamp,
 }: {
   userActionsProps?: { userId: string };
   chatActionsProps?: { chatId: string };
+  lakeraConsoleTimestamp?: Date;
 }): ActionsBlock {
   const userActions: ActionsBlock["elements"] = userActionsProps
     ? [
@@ -92,7 +148,7 @@ export function actionsBlock({
             type: "plain_text",
             text: "Aila admin user",
           },
-          url: `https://labs.thenational.academy/admin/users/${userActionsProps.userId}`,
+          url: `https://${getExternalFacingUrl()}/admin/users/${userActionsProps.userId}`,
         },
       ]
     : [];
@@ -112,6 +168,186 @@ export function actionsBlock({
 
   return {
     type: "actions",
-    elements: [...userActions, ...chatActions],
+    elements: [
+      ...userActions,
+      ...chatActions,
+      ...createLakeraConsoleAction(lakeraConsoleTimestamp),
+    ],
+  };
+}
+
+/**
+ * Formatted threat detection data for Slack notifications
+ */
+export interface SlackThreatDetectionSummary {
+  flagged: boolean;
+  userInput: string;
+  detectedThreats: Array<{
+    detectorType: string;
+    detectorId?: string;
+  }>;
+  requestId?: string;
+}
+
+/**
+ * Convert checked messages and detected threats into the compact shape
+ * used by Slack threat-notification blocks.
+ */
+function createSlackThreatDetectionSummary(args: {
+  messages: Array<{ content: string }>;
+  flagged: boolean;
+  detectedThreats: SlackThreatDetectionSummary["detectedThreats"];
+  requestId?: string;
+}): SlackThreatDetectionSummary {
+  return {
+    flagged: args.flagged,
+    userInput: args.messages.map((message) => message.content).join("\n"),
+    detectedThreats: args.detectedThreats,
+    requestId: args.requestId,
+  };
+}
+
+function getDetectedThreatsSummary(
+  threatDetection: ThreatDetectionResult,
+): SlackThreatDetectionSummary["detectedThreats"] {
+  const detectedFindings = threatDetection.findings.filter(
+    (finding) => finding.detected,
+  );
+  const detectedThreatSummaries = detectedFindings.map((finding) => ({
+    detectorType: finding.category,
+    detectorId: finding.providerCode,
+  }));
+
+  if (detectedThreatSummaries.length > 0) {
+    return detectedThreatSummaries;
+  }
+
+  // Some fallback/synthetic threat results set `isThreat` without structured
+  // findings. Keep a single generic entry so Slack still shows what was flagged.
+  if (threatDetection.isThreat) {
+    return [
+      {
+        detectorType: threatDetection.category ?? "other",
+      },
+    ];
+  }
+
+  return [];
+}
+
+export function formatThreatDetectionResultWithMessages(
+  threatDetection: ThreatDetectionResult,
+  messages: ThreatDetectionMessage[],
+): SlackThreatDetectionSummary {
+  return createSlackThreatDetectionSummary({
+    messages,
+    flagged: threatDetection.isThreat,
+    detectedThreats: getDetectedThreatsSummary(threatDetection),
+    requestId: threatDetection.requestId,
+  });
+}
+
+/**
+ * Format threat detection data as markdown for Slack
+ */
+export function formatThreatAsMarkdown(
+  userInput: string,
+  detectedThreats: Array<{ detectorType: string; detectorId?: string }>,
+  requestId?: string,
+): string {
+  let markdown = "🚨 *Threat Detected*\n\n";
+
+  // User input section
+  markdown += "*User Input:*\n";
+  markdown += `> ${userInput}\n\n`;
+
+  // Detected threats section
+  if (detectedThreats.length > 0) {
+    markdown += "*Detected Threats:*\n";
+    for (const threat of detectedThreats) {
+      markdown += `• *Type:* \`${threat.detectorType}\`\n`;
+      if (threat.detectorId) {
+        markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
+      }
+    }
+    markdown += "\n";
+  }
+
+  // Request ID for traceability
+  if (requestId) {
+    markdown += `*Request ID:* \`${requestId}\``;
+  }
+
+  return markdown;
+}
+
+/**
+ * Create a header block for Slack messages
+ */
+export function createHeaderBlock(text: string) {
+  return {
+    type: "header" as const,
+    text: {
+      type: "plain_text" as const,
+      text,
+    },
+  };
+}
+
+/**
+ * Create a simple markdown field block
+ */
+export function createMarkdownField(text: string) {
+  return {
+    type: "mrkdwn" as const,
+    text,
+  };
+}
+
+/**
+ * Create a section block for threat detection violations in teaching materials
+ */
+export function createThreatSectionBlock(args: {
+  id: string;
+  userInput: string;
+  detectedThreats: Array<{ detectorType: string; detectorId?: string }>;
+  requestId?: string;
+  userAction: string;
+}): SectionBlock {
+  return {
+    type: "section",
+    fields: [
+      createMarkdownField(`*Id*: ${args.id}`),
+      createMarkdownField(
+        formatThreatAsMarkdown(
+          args.userInput,
+          args.detectedThreats,
+          args.requestId,
+        ),
+      ),
+      createMarkdownField(`*User action*:  ${args.userAction}`),
+    ],
+  };
+}
+
+/**
+ * Create a section block for moderation violations in teaching materials
+ */
+export function createModerationSectionBlock(args: {
+  id: string;
+  justification: string;
+  categories: string[];
+  userAction: string;
+  violationType: string;
+}): SectionBlock {
+  return {
+    type: "section",
+    fields: [
+      createMarkdownField(`*Id*: ${args.id}`),
+      createMarkdownField(`*Justification*: ${args.justification}`),
+      createMarkdownField(`*Categories*: \`${args.categories.join("`, `")}\``),
+      createMarkdownField(`*User action*:  ${args.userAction}`),
+      createMarkdownField(`*Violation type*:  ${args.violationType}`),
+    ],
   };
 }

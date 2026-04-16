@@ -1,4 +1,4 @@
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 
 export type AilaDummyDocumentContent = {
   title: string;
@@ -12,4 +12,4 @@ export type AilaDummyDocumentContent = {
   };
 };
 
-export type AilaDocumentContent = LooseLessonPlan | AilaDummyDocumentContent;
+export type AilaDocumentContent = PartialLessonPlan | AilaDummyDocumentContent;

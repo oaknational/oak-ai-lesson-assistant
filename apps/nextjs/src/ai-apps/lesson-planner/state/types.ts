@@ -6,11 +6,21 @@ import {
 
 import { z } from "zod";
 
-import {
-  quizAppPlaceholderQuestionStateSchema,
+// Quiz question schemas for lesson planner quizzes
+const quizAppQuestionSchema = z.object({
+  question: z.string(),
+  answers: z.array(z.string()),
+  distractors: z.array(z.string()),
+});
+
+export type QuizAppQuestion = z.infer<typeof quizAppQuestionSchema>;
+
+const quizAppQuestionStateSchema = generationPartSchema(quizAppQuestionSchema);
+const quizAppPlaceholderQuestionStateSchema = generationPartPlaceholderSchema(
   quizAppQuestionSchema,
-  quizAppQuestionStateSchema,
-} from "@/ai-apps/quiz-designer/state/types";
+);
+
+export type QuizAppStateQuestion = z.infer<typeof quizAppQuestionStateSchema>;
 
 /**
  * LessonPlannerApp / lessonPlannerAppSchema:            The simplest way a quiz is represented

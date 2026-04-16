@@ -2,63 +2,13 @@ import type { slides_v1 } from "@googleapis/slides";
 
 import type { Result } from "../../types";
 
-export type CycleNumber = 1 | 2 | 3;
-
-export type QuestionNumber =
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | 13
-  | 14
-  | 15
-  | 16
-  | 17
-  | 18
-  | 19
-  | 20;
-
 // This type reflects the values available in the "speaker notes" of the template slides document
-export type SpeakerNotesTag =
-  | `cycle${CycleNumber}`
-  | `question${QuestionNumber}`;
+// eg: <!-- INTERNAL_TAG: starterQuiz -->
+export type SpeakerNotesTag = "starterQuiz" | "exitQuiz";
 
-export const QUESTION_TAGS = {
-  1: "question1",
-  2: "question2",
-  3: "question3",
-  4: "question4",
-  5: "question5",
-  6: "question6",
-  7: "question7",
-  8: "question8",
-  9: "question9",
-  10: "question10",
-  11: "question11",
-  12: "question12",
-  13: "question13",
-  14: "question14",
-  15: "question15",
-  16: "question16",
-  17: "question17",
-  18: "question18",
-  19: "question19",
-  20: "question20",
-} as const satisfies Record<QuestionNumber, SpeakerNotesTag>;
-
-export const CYCLE_TAGS = {
-  1: "cycle1",
-  2: "cycle2",
-  3: "cycle3",
-} as const satisfies Record<CycleNumber, SpeakerNotesTag>;
+function buildInternalTag(tag: SpeakerNotesTag): string {
+  return `<!-- INTERNAL_TAG: ${tag} -->`;
+}
 
 function getSpeakerNotes(slide: slides_v1.Schema$Page): string {
   const notesPage = slide.slideProperties?.notesPage;
@@ -96,7 +46,9 @@ export async function deleteSlides({
     }));
 
     const slidesToDelete = mappedSlides.filter((slide) =>
-      speakerNotesTagsToDelete.some((tag) => slide.speakerNotes.includes(tag)),
+      speakerNotesTagsToDelete.some((tag) =>
+        slide.speakerNotes.includes(buildInternalTag(tag)),
+      ),
     );
 
     const requests: slides_v1.Schema$Request[] = slidesToDelete.map(

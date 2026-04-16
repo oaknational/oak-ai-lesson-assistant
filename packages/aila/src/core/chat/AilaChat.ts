@@ -3,7 +3,6 @@ import {
   subjects,
   unsupportedSubjects,
 } from "@oakai/core/src/utils/subjects";
-// TODO: GCLOMAX This is a bodge. Fix as soon as possible due to the new prisma client set up.
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
@@ -14,29 +13,23 @@ import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
 import { AilaThreatDetectionError } from "../../features/threatDetection";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
-import type {
-  ExperimentalPatchDocument,
-  JsonPatchDocumentOptional,
-} from "../../protocol/jsonPatchProtocol";
+import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
   LLMMessageSchema,
-  extractPatches,
   parseMessageParts,
 } from "../../protocol/jsonPatchProtocol";
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { fetchExperimentalPatches } from "../../utils/experimentalPatches/fetchExperimentalPatches";
 import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
 import type { AilaPromptBuilder } from "../prompt/AilaPromptBuilder";
 import { AilaLessonPromptBuilder } from "../prompt/builders/AilaLessonPromptBuilder";
-import { CompositeFullQuizServiceBuilder } from "../quiz/fullservices/CompositeFullQuizServiceBuilder";
-import type { FullQuizService } from "../quiz/interfaces";
-import { testRatingSchema } from "../quiz/rerankers/RerankerStructuredOutputSchema";
+import { buildQuizService } from "../quiz/fullservices/buildQuizService";
+import type { QuizService } from "../quiz/interfaces";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
@@ -59,10 +52,7 @@ export class AilaChat implements AilaChatService {
   private _createdAt: Date | undefined;
   private _persistedChat: AilaPersistedChat | undefined;
 
-  private readonly _experimentalPatches: ExperimentalPatchDocument[];
-  public readonly fullQuizService: FullQuizService;
-
-  // private readonly _experimentalPatches: ExperimentalPatchDocument[];
+  public readonly quizService: QuizService;
 
   constructor({
     id,
@@ -92,13 +82,11 @@ export class AilaChat implements AilaChatService {
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
-    this._experimentalPatches = [];
 
-    this.fullQuizService = new CompositeFullQuizServiceBuilder().build({
-      quizRatingSchema: testRatingSchema,
-      quizSelector: "simple",
-      quizReranker: "return-first",
-      quizGenerators: ["basedOnRag"],
+    this.quizService = buildQuizService({
+      sources: aila.options.quizSources,
+      enrichers: [],
+      composer: "llm",
     });
   }
 
@@ -170,13 +158,8 @@ export class AilaChat implements AilaChatService {
     this._chunks.push(value);
   }
 
-  public appendExperimentalPatch(patch: ExperimentalPatchDocument) {
-    this._experimentalPatches.push(patch);
-  }
-
   public async generationFailed(error: unknown) {
     log.info("Marking generation as failed", { error });
-    invariant(this._generation, "Generation not initialised");
     this.aila.errorReporter?.reportError(
       error,
       "Error reading from the OpenAI stream",
@@ -187,12 +170,14 @@ export class AilaChat implements AilaChatService {
         userId: this.userId ?? "anonymous",
         chatId: this.id,
         error,
+        messages: this.messages,
       });
       await this.enqueue(errorObject);
     } else if (error instanceof Error) {
+      invariant(this._generation, "Generation not initialised");
       await this.enqueueError({ message: error.message });
     }
-    if (!this._aila.options.useAgenticAila) {
+    if (!this._aila.options.useAgenticAila && this._generation) {
       await this.persistGeneration("FAILED");
       log.info("Generation marked as failed");
     }
@@ -239,13 +224,13 @@ export class AilaChat implements AilaChatService {
   // chats so that we can generate different types of document
   async handleSettingInitialState() {
     if (this._aila.document.hasInitialisedContentFromMessages) {
-      // #TODO sending these events in a different place to where they are set seems like a bad idea
+      // Only these fields are set by initialise() from categorisation
       const plan = this._aila.document.content;
-      const keys = Object.keys(plan) as Array<keyof typeof plan>;
+      const keys = ["title", "subject", "keyStage", "topic"] as const;
       for (const key of keys) {
         const value = plan[key];
         if (value) {
-          await this.enqueuePatch(`/${key}`, value);
+          await this.enqueueInitialField(`/${key}`, value);
         }
       }
     }
@@ -285,13 +270,13 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  public async enqueuePatch(
-    path: string,
-    value: string | string[] | number | object,
+  public async enqueueInitialField(
+    path: "/title" | "/keyStage" | "/topic" | "/subject" | "/learningOutcome",
+    value: string,
   ) {
     // Optional "?" necessary to avoid a "terminated" error
     if (this?._patchEnqueuer) {
-      await this._patchEnqueuer.enqueuePatch(path, value);
+      await this._patchEnqueuer.enqueueInitialField(path, value);
     }
   }
 
@@ -395,19 +380,6 @@ export class AilaChat implements AilaChatService {
     });
   }
 
-  private async fetchExperimentalPatches() {
-    await fetchExperimentalPatches({
-      fullQuizService: this.fullQuizService,
-      lessonPlan: this._aila.document.content,
-      llmPatches: extractPatches(this.accumulatedText()).validPatches,
-      handlePatch: async (patch) => {
-        await this.enqueue(patch);
-        this.appendExperimentalPatch(patch);
-      },
-      userId: this._userId,
-    });
-  }
-
   public async createChatCompletionStream(messages: Message[]) {
     return this._llmService.createChatCompletionStream({
       model: this._aila.options.model ?? DEFAULT_MODEL,
@@ -431,11 +403,9 @@ export class AilaChat implements AilaChatService {
     await this.span("reportUsageMetrics", async () => {
       await this.reportUsageMetrics();
     });
-    await this.span("fetchExperimentalPatches", async () => {
-      await this.fetchExperimentalPatches();
-    });
-    await this.span("applyEdits", async () => {
+    await this.span("applyEdits", () => {
       this.applyEdits();
+      return Promise.resolve();
     });
     await this.span("appendAssistantMessage", async () => {
       const assistantMessage = this.appendAssistantMessage();

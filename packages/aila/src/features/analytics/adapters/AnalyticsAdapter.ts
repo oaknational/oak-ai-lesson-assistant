@@ -13,6 +13,6 @@ export abstract class AnalyticsAdapter {
     startedAt?: number,
   ): Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  abstract reportModerationResult(moderationResultEvent: any): void;
+  abstract reportModerationResult(moderationResultEvent: any): Promise<void>;
   abstract shutdown(): Promise<void>;
 }

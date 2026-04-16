@@ -1,30 +1,36 @@
 {
-  "id": "chatcmpl-ANdX7W6LJidRv2NxImpbuB49osq2h",
+  "id": "chatcmpl-BtGEpX4HhwCiVpoFM1pDhmGA31Iiy",
   "object": "chat.completion",
-  "created": 1730196873,
+  "created": 1752510159,
   "model": "gpt-4o-2024-08-06",
   "choices": [
     {
       "index": 0,
       "message": {
         "role": "assistant",
-        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan on the 'End of Roman Britain' is fully compliant across all categories. It is designed for Key Stage 1 (ages 5-7) and focuses on historical facts about the Romans leaving Britain, without any inclusion of discriminatory language, offensive or strong language. There is no mention of violence, crime, or any upsetting, sensitive, or distressing content. The lesson does not include any depiction or discussion of nudity or sexual content. Additionally, there is no physical activity or safety concern involved, and no external content or use of equipment requiring supervision is mentioned. Finally, the lesson plan does not contain any toxic elements like encouragement of harmful behavior or instructions on creating weapons. All content is appropriate for the intended young audience and is presented in an educational and age-appropriate manner.\",\"categories\":[]}",
-        "refusal": null
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan on 'End of Roman Britain' for key-stage-1 is fully compliant with all moderation categories. It does not contain any discriminatory language, offensive language, or strong language. There are no depictions or discussions of conflict, violence, or sexual violence. The content does not include any upsetting, sensitive, or distressing material, and there are no discussions of nudity or sexual content. The lesson plan does not involve any physical activities or the use of equipment that would require supervision. Finally, there are no guides or encouragements for harmful or illegal behavior. The content is age-appropriate and focused on historical facts and events, making it suitable for the intended young audience.\",\"categories\":[]}",
+        "refusal": null,
+        "annotations": []
       },
       "logprobs": null,
       "finish_reason": "stop"
     }
   ],
   "usage": {
-    "prompt_tokens": 2600,
-    "completion_tokens": 193,
-    "total_tokens": 2793,
+    "prompt_tokens": 2620,
+    "completion_tokens": 171,
+    "total_tokens": 2791,
     "prompt_tokens_details": {
-      "cached_tokens": 2048
+      "cached_tokens": 2176,
+      "audio_tokens": 0
     },
     "completion_tokens_details": {
-      "reasoning_tokens": 0
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
     }
   },
-  "system_fingerprint": "fp_90354628f2"
+  "service_tier": "default",
+  "system_fingerprint": null
 }

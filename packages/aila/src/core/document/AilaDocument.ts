@@ -9,7 +9,7 @@ import {
   applyLessonPlanPatch,
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
-import type { LooseLessonPlan } from "../../protocol/schema";
+import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaDocumentService, AilaServices } from "../AilaServices";
 import type { Message } from "../chat";
 import type { AilaDocumentContent } from "./types";
@@ -30,7 +30,7 @@ export class AilaDocument implements AilaDocumentService {
     categoriser,
   }: {
     aila: AilaServices;
-    content?: LooseLessonPlan;
+    content?: PartialLessonPlan;
     categoriser?: AilaCategorisationFeature;
   }) {
     log.info("Creating AilaDocument");
@@ -55,7 +55,7 @@ export class AilaDocument implements AilaDocumentService {
     return this._hasInitialisedContentFromMessages;
   }
 
-  public initialise(plan: LooseLessonPlan) {
+  public initialise(plan: PartialLessonPlan) {
     const shouldSetInitialState = Boolean(
       plan.title && plan.keyStage && plan.subject,
     );
@@ -71,7 +71,7 @@ export class AilaDocument implements AilaDocumentService {
   }
 
   public applyValidPatches(validPatches: ValidPatchDocument[]) {
-    let workingLessonPlan = deepClone(this._content) as LooseLessonPlan;
+    let workingLessonPlan = deepClone(this._content) as PartialLessonPlan;
     const beforeKeys = Object.entries(workingLessonPlan)
       .filter(([, v]) => v)
       .map(([k]) => k);

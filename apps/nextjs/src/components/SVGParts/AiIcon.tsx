@@ -1,6 +1,6 @@
-import { OakBox, type OakColorToken } from "@oaknational/oak-components";
+import { OakBox, type OakUiRoleToken } from "@oaknational/oak-components";
 
-const AiIcon = ({ backgroundColor }: { backgroundColor?: OakColorToken }) => {
+const AiIcon = ({ backgroundColor }: { backgroundColor?: OakUiRoleToken }) => {
   return (
     <OakBox
       $background={backgroundColor ?? "transparent"}

@@ -1,0 +1,39 @@
+{
+  "name": "@oakai/lesson-adapters",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest --config jest.config.mjs",
+    "type-check": "tsc --noEmit"
+  },
+  "prettier": "@oakai/prettier-config",
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": "@oakai/eslint-config"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "npm:@ai-sdk/openai@^3.0.0",
+    "@oakai/core": "*",
+    "@oakai/db": "*",
+    "@oakai/gsuite": "*",
+    "@oakai/logger": "*",
+    "ai": "npm:ai@^6.0.48",
+    "openai": "npm:openai@^4.96.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@oakai/eslint-config": "*",
+    "@oakai/prettier-config": "*",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "5.9.2"
+  }
+}

@@ -43,7 +43,7 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
     await this.reportMetrics(metrics);
   }
 
-  public reportModerationResult() {
+  public async reportModerationResult() {
     // Implement Datadog-specific moderation result reporting if needed
   }
 

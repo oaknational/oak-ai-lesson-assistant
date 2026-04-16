@@ -16,19 +16,19 @@ const TempBanner = () => {
   return (
     <OakBox role="banner" $bt="border-solid-m" $bb="border-solid-m">
       <OakFlex
-        $background={"lemon"}
+        $background={"bg-decorative5-main"}
         $justifyContent={["center"]}
         $alignItems={"center"}
-        $pv={"inner-padding-s"}
-        $ph={["inner-padding-s", "inner-padding-m"]}
+        $pv={"spacing-12"}
+        $ph={["spacing-12", "spacing-16"]}
       >
         <OakFlex
           $alignItems={"center"}
           $flexWrap={"wrap"}
-          $gap={["all-spacing-4", "all-spacing-8"]}
+          $gap={["spacing-16", "spacing-40"]}
           $flexDirection={["column", "row"]}
           $justifyContent={"center"}
-          $pv={"inner-padding-none"}
+          $pv={"spacing-0"}
         >
           <OakTypography $font={["body-3", "body-2"]} $textAlign={"center"}>
             Want to learn more about integrating AI into your teaching

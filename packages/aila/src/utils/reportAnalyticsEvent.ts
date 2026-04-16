@@ -17,15 +17,11 @@ export async function safelyReportAnalyticsEvent({
     if (!process.env.NEXT_PUBLIC_POSTHOG_API_KEY) {
       return;
     }
-    posthogAiBetaServerClient.identify({
-      distinctId: userId ?? BOT_USER_ID,
-    });
-    posthogAiBetaServerClient.capture({
+    await posthogAiBetaServerClient.captureImmediate({
       distinctId: userId ?? BOT_USER_ID,
       event: eventName,
       properties: payload,
     });
-    await posthogAiBetaServerClient.shutdown();
   } catch (error) {
     Sentry.captureException(error);
   }

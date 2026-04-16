@@ -56,11 +56,7 @@ const ClearChatHistory = ({
     );
   };
   return (
-    <OakFlex
-      $flexDirection="column"
-      $justifyContent="center"
-      $gap="space-between-m"
-    >
+    <OakFlex $flexDirection="column" $justifyContent="center" $gap="spacing-24">
       <OakP $textAlign="center">
         This will permanently delete all of your lesson history.
       </OakP>

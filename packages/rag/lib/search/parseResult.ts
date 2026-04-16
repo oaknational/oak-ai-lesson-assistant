@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-import { CompletedLessonPlanSchema } from "../../../aila/src/protocol/schema";
+import { CompletedLessonPlanSchemaWithoutLength } from "../../../aila/src/protocol/schema";
 import type { DeepPartial, RagLessonPlanResult } from "../../types";
 
 const databaseResponseSchema = z.object({
   ragLessonPlanId: z.string(),
   oakLessonId: z.number().nullable(),
   oakLessonSlug: z.string(),
-  lessonPlan: CompletedLessonPlanSchema,
+  lessonPlan: CompletedLessonPlanSchemaWithoutLength,
   matchedKey: z.string(),
   matchedValue: z.string(),
   distance: z.number(),

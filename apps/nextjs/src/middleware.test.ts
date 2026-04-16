@@ -73,11 +73,10 @@ describe("addCspHeaders", () => {
     defaultConfig = {
       strictCsp: true,
       environment: "production",
-      sentryEnv: "test",
-      sentryRelease: "1.0.0",
-      sentryReportUri: "https://sentry.io/report",
       cspReportSampleRate: "1",
       vercelEnv: "production",
+      posthogApiKey: "",
+      posthogHost: "",
       enabledPolicies: {
         clerk: false,
         avo: false,
@@ -227,9 +226,8 @@ describe("buildCspHeaders", () => {
   const mockConfig: CspConfig = {
     strictCsp: true,
     environment: "production",
-    sentryEnv: "test",
-    sentryRelease: "1.0.0",
-    sentryReportUri: "https://sentry.io/report",
+    posthogApiKey: "",
+    posthogHost: "",
     cspReportSampleRate: "1",
     vercelEnv: "production",
     enabledPolicies: {

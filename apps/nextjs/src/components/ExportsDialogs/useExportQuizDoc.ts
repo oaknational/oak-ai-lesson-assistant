@@ -21,9 +21,9 @@ function extractQuizFromLesson(
 ) {
   switch (quizType) {
     case "starter":
-      return lesson._experimental_starterQuizMathsV0 ?? lesson.starterQuiz;
+      return lesson.starterQuiz;
     case "exit":
-      return lesson._experimental_exitQuizMathsV0 ?? lesson.exitQuiz;
+      return lesson.exitQuiz;
   }
 }
 

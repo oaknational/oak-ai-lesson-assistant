@@ -1,6 +1,8 @@
+import { DEFAULT_QUIZ_SOURCES } from "@oakai/aila/src/constants";
 import type { Aila } from "@oakai/aila/src/core/Aila";
 import type { AilaServices } from "@oakai/aila/src/core/AilaServices";
 import type { Message } from "@oakai/aila/src/core/chat";
+import type { QuestionSourceType } from "@oakai/aila/src/core/quiz/schema";
 import type {
   AilaInitializationOptions,
   AilaOptions,
@@ -13,10 +15,9 @@ import {
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
-import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
-import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
-import type { LooseLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -27,6 +28,7 @@ import { captureException } from "@sentry/nextjs";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
+import { z } from "zod";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
@@ -35,10 +37,32 @@ import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,
   getFixtureModerationOpenAiClient,
+  getFixtureOakModerator,
 } from "./fixtures";
+import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
 const log = aiLogger("chat");
+
+function getQuizSources(): QuestionSourceType[] {
+  const envValue = process.env.AILA_QUIZ_SOURCES;
+  if (envValue) {
+    const sources = envValue.split(",").map((s) => s.trim());
+    const validSources = sources.filter((s): s is QuestionSourceType =>
+      [
+        "currentQuiz",
+        "similarLessons",
+        "basedOnLesson",
+        "multiQuerySemantic",
+      ].includes(s),
+    );
+    if (validSources.length > 0) {
+      return validSources;
+    }
+  }
+  // Default fallback
+  return DEFAULT_QUIZ_SOURCES;
+}
 
 export const maxDuration = 300;
 
@@ -52,7 +76,7 @@ async function setupChatHandler(req: NextRequest) {
   return await startSpan(
     "chat-setup-chat-handler",
     {},
-    async (span: TracingSpan) => {
+    async (_span: TracingSpan) => {
       const json = await req.json();
       const {
         id: chatId,
@@ -64,12 +88,16 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-may-25");
+      const useAgenticAila =
+        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
+          ? false
+          : await serverSideFeatureFlag("agentic-aila-nov-25");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
         numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
+        quizSources: getQuizSources(),
         usePersistence: true,
         useModeration: true,
         useAgenticAila,
@@ -80,11 +108,8 @@ async function setupChatHandler(req: NextRequest) {
         req.headers,
         chatId,
       );
-
-      const threatDetectors = [
-        new HeliconeThreatDetector(),
-        new LakeraThreatDetector(),
-      ];
+      const oakModerator = getFixtureOakModerator(req.headers);
+      const threatDetectors = getThreatDetectors();
 
       return {
         chatId,
@@ -92,6 +117,7 @@ async function setupChatHandler(req: NextRequest) {
         options,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       };
     },
@@ -160,22 +186,6 @@ async function generateChatStream(
   );
 }
 
-function hasLessonPlan(obj: unknown): obj is { lessonPlan: unknown } {
-  return obj !== null && typeof obj === "object" && "lessonPlan" in obj;
-}
-
-function isValidLessonPlan(lessonPlan: unknown): boolean {
-  return lessonPlan !== null && typeof lessonPlan === "object";
-}
-
-function hasMessages(obj: unknown): obj is { messages: unknown } {
-  return obj !== null && typeof obj === "object" && "messages" in obj;
-}
-
-function isValidMessages(messages: unknown): boolean {
-  return Array.isArray(messages);
-}
-
 function verifyChatOwnership(
   chat: { userId: string },
   requestUserId: string,
@@ -189,42 +199,10 @@ function verifyChatOwnership(
   }
 }
 
-function parseChatOutput(
-  output: unknown,
-  chatId: string,
-): { messages: Message[]; lessonPlan: LooseLessonPlan } {
-  let messages: Message[] = [];
-  let lessonPlan: LooseLessonPlan = {};
-
-  try {
-    const parsedOutput =
-      typeof output === "string" ? JSON.parse(output) : output;
-
-    if (hasMessages(parsedOutput) && isValidMessages(parsedOutput.messages)) {
-      messages = parsedOutput.messages as Message[];
-    }
-
-    if (
-      hasLessonPlan(parsedOutput) &&
-      isValidLessonPlan(parsedOutput.lessonPlan)
-    ) {
-      lessonPlan = parsedOutput.lessonPlan as LooseLessonPlan;
-    }
-  } catch (error) {
-    log.error(`Error parsing output for chat ${chatId}`, error);
-    captureException(error, {
-      extra: { chatId, output },
-      tags: { context: "parseChatOutput" },
-    });
-  }
-
-  return { messages, lessonPlan };
-}
-
 async function loadChatDataFromDatabase(
   chatId: string,
   userId: string,
-): Promise<{ messages: Message[]; lessonPlan: LooseLessonPlan }> {
+): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
       where: { id: chatId },
@@ -242,7 +220,27 @@ async function loadChatDataFromDatabase(
 
     verifyChatOwnership(chat, userId, chatId);
 
-    const { messages, lessonPlan } = parseChatOutput(chat.output, chatId);
+    const output = z
+      .object({ lessonPlan: z.record(z.unknown()) })
+      .passthrough()
+      .parse(chat.output ?? {});
+
+    output.lessonPlan = output.lessonPlan ?? {};
+
+    const { messages, lessonPlan } = await migrateChatData(
+      output,
+      async (upgradedData) => {
+        await prisma.appSession.update({
+          where: { id: chat.id },
+          data: { output: upgradedData },
+        });
+      },
+      {
+        id: chat.id,
+        userId,
+        caller: "chatHandler.loadChatDataFromDatabase",
+      },
+    );
 
     log.info(
       `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
@@ -287,9 +285,10 @@ type CreateAilaInstanceArguments = {
   chatId: string;
   userId: string | undefined;
   messages: Message[];
-  lessonPlan: LooseLessonPlan;
+  lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
+  oakModerator: ReturnType<typeof getFixtureOakModerator>;
   threatDetectors: AilaThreatDetector[];
 };
 
@@ -302,6 +301,7 @@ async function createAilaInstance({
   lessonPlan,
   llmService,
   moderationAiClient,
+  oakModerator,
   threatDetectors,
 }: CreateAilaInstanceArguments): Promise<Aila> {
   return await startSpan(
@@ -318,6 +318,7 @@ async function createAilaInstance({
         services: {
           chatLlmService: llmService,
           moderationAiClient,
+          oakModerator,
           ragService: (aila: AilaServices) => new AilaRag({ aila }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
@@ -348,6 +349,7 @@ export async function handleChatPostRequest(
       options,
       llmService,
       moderationAiClient,
+      oakModerator,
       threatDetectors,
     } = await setupChatHandler(req);
     span.setAttributes({ chat_id: chatId });
@@ -372,6 +374,7 @@ export async function handleChatPostRequest(
         lessonPlan: dbLessonPlan,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       });
       invariant(aila, "Aila instance is required");

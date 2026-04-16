@@ -1,8 +1,6 @@
-import {
-  isSafe,
-  moderationSlugToDescription,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { moderationGuidanceText } from "@oakai/core/src/utils/ailaModeration/guidanceText";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { isSafe } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import { Icon } from "@/components/Icon";
 import { cn } from "@/lib/utils";
@@ -18,7 +16,6 @@ export function GuidanceRequired({
   if (isSafe(moderation)) {
     return null;
   }
-  const { categories } = moderation;
 
   return (
     <div className={cn("flex rounded-md bg-videoBlue p-14", className)}>
@@ -27,10 +24,7 @@ export function GuidanceRequired({
       </div>
       <div>
         <h2 className="text-base font-bold">Guidance required</h2>
-        <p className="text-sm">
-          Contains {categories.map(moderationSlugToDescription).join(", ")}.
-          Check content carefully.
-        </p>
+        <p className="text-sm">{moderationGuidanceText(moderation)}</p>
       </div>
     </div>
   );

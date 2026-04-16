@@ -41,6 +41,7 @@ const mockAnalyticsContext: AnalyticsContext = {
   },
   posthogAiBetaClient: {
     isFeatureEnabled: () => true,
+    onFeatureFlags: () => () => {},
     identify: () => {},
     get_distinct_id: () => "mock-distinct-id",
     getSurveys: () => [],
