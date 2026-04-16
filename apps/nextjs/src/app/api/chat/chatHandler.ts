@@ -343,22 +343,23 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await startSpan("chat-api", {}, async (span: TracingSpan) => {
-    const {
-      chatId,
-      messages: frontendMessages,
-      options,
-      llmService,
-      moderationAiClient,
-      oakModerator,
-      threatDetectors,
-    } = await setupChatHandler(req);
-    span.setAttributes({ chat_id: chatId });
-
-    let userId: string | undefined;
+    let chatId = "unknown";
     let aila: Aila | undefined;
-
+    let userId: string | undefined;
     try {
+      const {
+        chatId: resolvedChatId,
+        messages: frontendMessages,
+        options,
+        llmService,
+        moderationAiClient,
+        oakModerator,
+        threatDetectors,
+      } = await setupChatHandler(req);
+
+      let chatId = resolvedChatId;
       userId = await fetchAndCheckUser(chatId);
+      span.setAttributes({ chat_id: chatId });
 
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
         await loadChatDataFromDatabase(chatId, userId);
