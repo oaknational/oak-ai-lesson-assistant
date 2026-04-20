@@ -96,6 +96,31 @@ describe("handleChatException", () => {
     });
   });
 
+  describe("generic Error", () => {
+    it("should return a generic error message without leaking internal details", async () => {
+      const error = new Error("Missing environment variable OPENAI_API_KEY");
+      const prisma = {} as unknown as PrismaClientWithAccelerate;
+
+      const response = await handleChatException(error, "test-chat-id", prisma);
+
+      expect(response.status).toBe(200);
+
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const consumed = await consumeStream(response.body);
+      const message = extractStreamMessage(consumed);
+
+      expect(message).toEqual({
+        type: "error",
+        message: "An unexpected error occurred",
+        value: "Sorry, an unexpected error occurred. Please try again later.",
+      });
+    });
+  });
+
   describe("UserBannedError", () => {
     it("should return an error chat message", async () => {
       const _span = { setTag: jest.fn() } as unknown as TracingSpan;
