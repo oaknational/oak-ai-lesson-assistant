@@ -2,18 +2,11 @@
 
 import { useState } from "react";
 
-import {
-  OakBox,
-  OakFlex,
-  OakHeading,
-  OakP,
-  OakPrimaryButton,
-} from "@oaknational/oak-components";
+import { OakBox, OakFlex, OakHeading, OakP } from "@oaknational/oak-components";
 
 import { LessonDetailsTab } from "./LessonDetailsTab";
-import { type SlideKlpMapping, ThumbnailsWithKlpTab } from "./ReviewModal";
+import { type SlideContent, ThumbnailsWithKlpTab } from "./ReviewModal";
 import { SlidesTab } from "./SlidesTab";
-import { ThumbnailsTab } from "./ThumbnailsTab";
 
 interface LessonData {
   keyStage: string;
@@ -47,7 +40,7 @@ interface AdaptLessonContentProps {
   thumbnails: Thumbnail[] | undefined;
   thumbnailsError: { message: string } | null;
   thumbnailsLoading?: boolean;
-  slideKlpMappings: SlideKlpMapping[];
+  slideKlpMappings: SlideContent[];
 }
 
 const tabs = ["Lesson details", "Slides", "Thumbnails"];
@@ -57,8 +50,6 @@ export function AdaptLessonContent({
   presentationUrl,
   lessonData,
   thumbnails,
-  thumbnailsLoading = false,
-  thumbnailsError = null,
   slideKlpMappings,
 }: AdaptLessonContentProps) {
   const [activeTab, setActiveTab] = useState<string>("Lesson details");

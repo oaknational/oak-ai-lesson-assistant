@@ -4,7 +4,7 @@ import {
   adaptationPlanSchema,
   coordinateAdaptation,
   executeSlideChanges,
-  extractPresentationContent,
+  extractPresentationContentWithImageDescriptions,
   slideDeckContentSchema,
 } from "@oakai/lesson-adapters";
 import { aiLogger } from "@oakai/logger";
@@ -101,8 +101,14 @@ const generatePlanOutput = z.object({
 const executeAdaptationsInput = z.object({
   sessionId: z.string(),
   planData: adaptationPlanSchema,
-  /** Reserved for future granular approval. Currently ignored (all changes are executed). */
   approvedChangeIds: z.array(z.string()).optional(),
+  additionalChanges: z
+    .object({
+      slideDeletions: z.array(
+        z.object({ slideId: z.string(), slideNumber: z.number() }),
+      ),
+    })
+    .optional(),
 });
 
 const executeAdaptationsOutput = z.object({
@@ -195,7 +201,8 @@ export const lessonAdaptRouter = router({
         });
       }
 
-      const { sessionId, planData } = input;
+      const { sessionId, planData, approvedChangeIds, additionalChanges } =
+        input;
 
       // Retrieve session to get the presentationId securely
       const session = await LessonAdaptSessionStorage.get(sessionId);
@@ -219,6 +226,8 @@ export const lessonAdaptRouter = router({
       const result = await executeSlideChanges(
         session.duplicatedPresentationId,
         planData,
+        approvedChangeIds,
+        additionalChanges,
       );
 
       log.info("Adaptations executed", {
@@ -284,7 +293,8 @@ export const lessonAdaptRouter = router({
           await duplicateLessonSlideDeck(lessonData, lessonSlug);
 
         const presentation = await getPresentation(duplicatedPresentationId);
-        const slideDeck = extractPresentationContent(presentation);
+        const slideDeck =
+          await extractPresentationContentWithImageDescriptions(presentation);
 
         // Extract and transform into useful lesson data from google api json
         const extractedLessonData = extractLessonDataForAdaptPage(lessonData);

@@ -34,6 +34,8 @@ export const handleFetchLessonContent = (
         slideContent: result.slideContent,
         duplicatedPresentationId: result.duplicatedPresentationId,
         duplicatedPresentationUrl: result.duplicatedPresentationUrl,
+        selectedKlps: result.lessonData.keyLearningPoints,
+        selectedSlideIds: result.slideContent.slides.map((s) => s.slideId),
         status: "ready",
       });
 

@@ -1,4 +1,6 @@
-import type { AdaptationPlan } from "@oakai/lesson-adapters";
+import type { AdaptationPlan, SlideContent } from "@oakai/lesson-adapters";
+
+export type { SlideContent } from "@oakai/lesson-adapters";
 
 export interface Thumbnail {
   objectId: string;
@@ -8,15 +10,6 @@ export interface Thumbnail {
   height: number;
 }
 
-export interface SlideKlpMapping {
-  slideNumber: number;
-  slideId: string;
-  keyLearningPoints: string[];
-  learningCycles: string[];
-  coversDiversity: boolean;
-  slideType: string;
-}
-
 export interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,7 +17,7 @@ export interface ReviewModalProps {
   presentationId: string;
   presentationUrl: string;
   thumbnails: Thumbnail[] | null;
-  slideKlpMappings: SlideKlpMapping[];
+  slideKlpMappings: SlideContent[];
   approvedChangeIds: string[];
   onToggleChange: (changeId: string) => void;
   onApproveAll: () => void;

@@ -32,7 +32,7 @@ export const slideKlpLcMappingSchema = z.object({
   coversDiversity: z
     .boolean()
     .describe(
-      "Whether this slide contains diversity content - content that provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own",
+      "Whether this slide contains human cultural diversity content - references to people, cultures, or lived experiences from a range of backgrounds. This is about human representation and social diversity, NOT scientific, ecological, or geographic variety.",
     ),
   reasoning: z
     .string()
@@ -90,7 +90,7 @@ Analyse each slide in the presentation and determine:
 3. Which learning cycles (from the provided lesson outline) are covered on this slide
 
 ## Slide Type Classification
-Classify every slide as exactly one of these types:
+Classify every slide as exactly one of these types: replace - unclassified with one of these types
 - **title**: The lesson title slide, usually the first slide
 - **keywords**: A slide that introduces or defines key vocabulary/terminology for the lesson
 - **lessonOutcome**: A slide stating what pupils will learn or achieve by the end of the lesson
@@ -116,7 +116,9 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
 
 ## Rules
 - A slide may cover multiple KLPs and/or multiple learning cycles
+- Not every slide will be associated to a KLP
 - A KLP or multiple KLPs may be covered across multiple learning cycles
+- If a slide contains a keyword or piece of technical language that forms part of a key learning point, assign that key learning point to the slide
 - Title slide, teacher note slide, outcome slide, lesson outline slides and end slide will never cover a key learning point
 - Practice and feedback slides may cover multiple KLPs - check these carefully for multiple key learning points
 - Include the keyword slide if one of the keywords is included in the key learning point or conceptually relates to it
@@ -128,12 +130,12 @@ Return a structured analysis mapping KLPs and learning cycles to each slide.
   - Example: Given key learning points: "Calligraphy involves creating letters with artistic flair to make beautiful handwriting"; "Learning and practising foundational calligraphic strokes builds the skills needed to create decorative letters"; "Techniques such as strokes and flourishes can help you create calligraphic letters and words"; "Practising calligraphy improves fine motor skills"
   - A slide with content "Here you can see a representation of an older calligraphy style, often used during the Middle Ages in Western Europe, and is referred to as 'gothic'" does NOT match any of these KLPs - it provides historical context but does not match the content, concept or theme of a key learning point or relate to important knowledge pupils need to learn a key learning point
 - For EVERY slide, check if it contains diversity content and set coversDiversity accordingly — this applies whether or not the slide matches a KLP
-  - Diversity content provides opportunities for pupils to see themselves reflected in it, or to learn about experiences beyond their own
-  - This includes references or examples of people, artists, scientists, or historical figures from a range of backgrounds (e.g. Henry Ossawa Tanner, Berthe Morisot)
-  - Content that contextualises knowledge geographically or historically
-  - Content that includes multiple perspectives and world-views
+  - Diversity content is specifically about **human cultural and social diversity** — it is NOT about scientific, ecological, or geographic variety
+  - This includes references or examples of people, artists, scientists, athletes, or historical figures from a range of cultural, ethnic, or social backgrounds (e.g. Henry Ossawa Tanner, Berthe Morisot)
+  - Content that presents multiple human cultural perspectives or world-views
+  - Content that highlights the contributions of underrepresented groups in history, science, art, or society
+  - Do NOT mark a slide as covering diversity simply because it mentions different habitats, species, geographic regions, or scientific classifications — those are not cultural diversity
   - A slide can both cover a KLP AND contain diversity content — these are not mutually exclusive
-  - Set coversDiversity to true and explain the diversity content in the reasoning field
 - Consider text in both textElements and tables when making determinations
 - Do not invent new KLPs or learning cycles - only use the ones provided
 - Provide clear reasoning for each slide's mappings
@@ -159,40 +161,60 @@ export async function analyseKlpLearningCycles(
 
     const parsed = analyseKlpLcInputSchema.parse(input);
 
-    // Prepare simplified slide content for the LLM (text and tables only)
-    const slidesForPrompt = simplifySlideContent(parsed.slides);
+    // Batch slides for LLM calls
+    const batchSize = 20;
+    const slideBatches: SlideContent[][] = [];
+    for (let i = 0; i < parsed.slides.length; i += batchSize) {
+      slideBatches.push(parsed.slides.slice(i, i + batchSize));
+    }
 
-    // Format slides in a more readable structure for the LLM
-    const formattedSlides = formatSlidesForPrompt(slidesForPrompt);
-
-    const promptContent = `# Key Learning Points
-${parsed.keyLearningPoints.map((klp, i) => `${i + 1}. ${klp}`).join("\n")}
-
-# Learning Cycles
-${parsed.learningCycles.map((lc, i) => `${i + 1}. ${lc}`).join("\n")}
-
-# Slides to Analyse
-${formattedSlides}
-
----
-
-Analyse each slide above and map which key learning points and learning cycles it covers.`;
-
-    const { output } = await generateText({
-      model: openai("gpt-4o"),
-      output: Output.object({ schema: klpLcAgentResponseSchema }),
-      system: SYSTEM_PROMPT,
-      prompt: promptContent,
-      temperature: 0.3, // Lower temperature for more consistent analysis
+    // Prepare prompts for each batch
+    const batchPromises = slideBatches.map(async (batchSlides, batchIdx) => {
+      const slidesForPrompt = simplifySlideContent(batchSlides);
+      console.log("slide for prompt", slidesForPrompt);
+      const formattedSlides = formatSlidesForPrompt(slidesForPrompt, {
+        includeElementIds: false,
+      });
+      console.log("formatted slides for prompt", formattedSlides);
+      const klpList = parsed.keyLearningPoints
+        .map((klp, i) => i + 1 + ". " + klp)
+        .join("\n");
+      const lcList = parsed.learningCycles
+        .map((lc, i) => i + 1 + ". " + lc)
+        .join("\n");
+      const promptContent = `# Key Learning Points\n${klpList}\n\n# Learning Cycles\n${lcList}\n\n# Slides to Analyse\n${formattedSlides}\n\n---\n\nAnalyse each slide above and map which key learning points, learning cycles, slide type and diversity content it covers.`;
+      console.log(`Prompt for batch ${batchIdx + 1}:\n`, promptContent);
+      const { output } = await generateText({
+        model: openai("gpt-4o"),
+        output: Output.object({ schema: klpLcAgentResponseSchema }),
+        system: SYSTEM_PROMPT,
+        prompt: promptContent,
+        temperature: 0.3,
+      });
+      return output;
     });
 
-    console.log(
-      `[klpLcAgent] Analysis complete: mapped ${output.slideMappings.length} slides`,
-    );
-    console.log("Prompt used:", promptContent);
-    console.log("Output:", JSON.stringify(output, null, 2));
+    // Run all batches in parallel
+    const batchResults = await Promise.all(batchPromises);
 
-    return output;
+    // Consolidate results
+    const allSlideMappings = batchResults.flatMap((r) => r.slideMappings);
+    const allAnalyses = batchResults.map(
+      (r, i) => `Batch ${i + 1}: ${r.analysis}`,
+    );
+    const consolidatedAnalysis = allAnalyses.join("\n\n");
+
+    console.log(
+      `[klpLcAgent] Analysis complete: mapped ${allSlideMappings.length} slides`,
+    );
+    console.log(
+      `[klpLcAgent] Sample mapping:`,
+      JSON.stringify(allSlideMappings, null, 2),
+    );
+    return {
+      analysis: consolidatedAnalysis,
+      slideMappings: allSlideMappings,
+    };
   } catch (error) {
     console.error("[klpLcAgent] Analysis failed:", error);
     throw error;

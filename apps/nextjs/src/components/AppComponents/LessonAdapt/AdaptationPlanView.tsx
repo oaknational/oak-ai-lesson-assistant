@@ -28,20 +28,6 @@ interface TableCellEditItem {
   reasoning?: string;
 }
 
-interface TextElementDeletionItem {
-  changeId: string;
-  slideNumber: number;
-  elementId: string;
-  originalText: string;
-  reasoning?: string;
-}
-
-interface SlideDeletionItem {
-  changeId: string;
-  slideNumber: number;
-  reasoning?: string;
-}
-
 interface AdaptationPlanViewProps {
   plan: AdaptationPlan;
   handleAcceptedChanges: () => void;
