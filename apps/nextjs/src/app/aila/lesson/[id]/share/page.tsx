@@ -64,19 +64,30 @@ export default async function SharePage({ params }: Readonly<SharePageProps>) {
     return notFound();
   }
 
-  const lastModeration = moderations[moderations.length - 1];
-
   /**
    * We don't want to expose the whole persisted moderation object, as it contains
    * both the justification, which isn't used, and the userComment which is a user
    * input and should not be exposed to the client.
+   *
+   * Unlike the chat (where each message shows its own moderation), the share
+   * page aggregates distinct categories across all session moderations to
+   * give a summary view of the lesson's content guidance.
    */
-  const moderation: PersistedModerationBase | null = lastModeration
-    ? {
-        id: lastModeration.id,
-        categories: lastModeration.categories,
-      }
-    : null;
+  const allCategories = [
+    ...new Set(
+      moderations
+        .flatMap((m) => m.categories)
+        .filter((c): c is string => typeof c === "string"),
+    ),
+  ];
+
+  const moderation: PersistedModerationBase | null =
+    allCategories.length > 0
+      ? {
+          id: moderations[0]!.id,
+          categories: allCategories,
+        }
+      : null;
 
   return (
     <ShareChat
