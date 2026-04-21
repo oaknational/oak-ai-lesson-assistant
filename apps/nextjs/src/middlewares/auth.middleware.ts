@@ -54,6 +54,7 @@ const publicRoutes = [
   "/sign-up(.*)",
   "/api/webhooks/clerk",
   "/api/fetch-owa-lesson",
+  "/api/check-ban",
 ];
 if (
   process.env.NODE_ENV === "development" ||
