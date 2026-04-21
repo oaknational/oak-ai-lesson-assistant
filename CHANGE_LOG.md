@@ -1,3 +1,18 @@
+# [1.69.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.68.0...v1.69.0) (2026-04-21)
+
+
+### Bug Fixes
+
+* silent error in set up chat handler - AI-2124 ([#1017](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1017)) ([3e774f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e774f204c985aa0df2ecae5f4fb9e947e52503e))
+* undefined in lesson plan exports - AI-2138 ([#1016](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1016)) ([c007d4a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c007d4aca0216c4fa1cc4ec57f54f9f9ef528091))
+
+
+### Features
+
+* add content guidance to lesson exports ([#1010](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1010)) ([7780fdf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7780fdfc7a00d1d8e2ae490a0089981c2ac04757))
+* add new moderation banner to share page ([#1014](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1014)) ([5f0cda4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5f0cda421c2157c95e8511c1f4a20d5696c5fb03))
+* check banned status on login AI-2113 ([#1013](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1013)) ([ffa3a8f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ffa3a8f38ea02f5e314d84e88681ebafb2239849))
+
 # [1.68.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.67.0...v1.68.0) (2026-04-15)
 
 
