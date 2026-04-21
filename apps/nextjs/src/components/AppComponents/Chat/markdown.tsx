@@ -88,15 +88,17 @@ const createComponents = (className?: string): Partial<Components> => ({
       </a>
     );
   },
-  img: ({ src, alt, title }) => (
+  img: ({ src, alt, title }) => {
     // Apply fixed max dimensions to all images
-    <img
-      src={src}
-      alt={alt}
-      title={title}
-      className="h-auto max-h-[200px] w-auto max-w-[250px] object-contain"
-    />
-  ),
+    return (
+      <img
+        src={src}
+        alt={alt}
+        title={title}
+        className="h-auto max-h-[200px] w-auto max-w-[250px] object-contain"
+      />
+    );
+  },
 });
 
 export const MemoizedReactMarkdownWithStyles = ({

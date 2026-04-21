@@ -7,7 +7,9 @@ export function wrapWithUrlSafety(
   components: Partial<Components>,
 ): Partial<Components> {
   const A = components.a as ComponentType<ComponentProps<"a">> | undefined;
-  const Img = components.img as ComponentType<ComponentProps<"img">> | undefined;
+  const Img = components.img as
+    | ComponentType<ComponentProps<"img">>
+    | undefined;
 
   return {
     ...components,

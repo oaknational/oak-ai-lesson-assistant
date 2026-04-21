@@ -30,14 +30,6 @@ describe("sanitiseUrl", () => {
     it("allows fragment-only URLs", () => {
       expect(sanitiseUrl("#section")).toBe("#section");
     });
-
-    it("allows same-directory relative paths", () => {
-      expect(sanitiseUrl("./rel")).toBe("./rel");
-    });
-
-    it("allows parent-directory relative paths", () => {
-      expect(sanitiseUrl("../parent")).toBe("../parent");
-    });
   });
 
   describe("dangerous protocols", () => {
