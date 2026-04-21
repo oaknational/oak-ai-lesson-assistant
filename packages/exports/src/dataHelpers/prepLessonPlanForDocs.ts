@@ -7,8 +7,14 @@ import {
   stringOrBullets,
 } from "../utils";
 
+export type ContentGuidanceCategory = {
+  shortDescription: string;
+  longDescription: string;
+};
+
 export async function prepLessonPlanForDocs(
   lessonPlan: LessonPlanDocInputData,
+  contentGuidanceCategories?: ContentGuidanceCategory[],
 ): Promise<LessonPlanDocsTemplateData> {
   const starterQuestions = lessonPlan.starterQuiz.questions;
   const exitQuestions = lessonPlan.exitQuiz.questions;
@@ -19,25 +25,25 @@ export async function prepLessonPlanForDocs(
     key_stage: camelCaseToTitleCase(lessonPlan.keyStage) ?? "",
     topic: lessonPlan.topic ?? " ",
     learning_outcome: lessonPlan.learningOutcome ?? " ",
-    learning_cycle_outcome_1: lessonPlan.learningCycles
+    learning_cycle_outcome_1: lessonPlan.learningCycles?.[0]
       ? "1.     " + lessonPlan.learningCycles[0]
       : " ",
-    learning_cycle_outcome_2: lessonPlan.learningCycles
+    learning_cycle_outcome_2: lessonPlan.learningCycles?.[1]
       ? "2.     " + lessonPlan.learningCycles[1]
       : " ",
-    learning_cycle_outcome_3: lessonPlan.learningCycles
+    learning_cycle_outcome_3: lessonPlan.learningCycles?.[2]
       ? "3.     " + lessonPlan.learningCycles[2]
       : " ",
     prior_knowledge: lessonPlan.priorKnowledge?.map((pk) => "•  " + pk) ?? [
       " ",
     ],
-    misconception_1: lessonPlan.misconceptions
+    misconception_1: lessonPlan.misconceptions?.[0]
       ? "1.     " + lessonPlan.misconceptions[0]?.description
       : "",
-    misconception_2: lessonPlan.misconceptions
+    misconception_2: lessonPlan.misconceptions?.[1]
       ? "2.     " + lessonPlan.misconceptions[1]?.description
       : "",
-    misconception_3: lessonPlan.misconceptions
+    misconception_3: lessonPlan.misconceptions?.[2]
       ? "3.     " + lessonPlan.misconceptions[2]?.description
       : "",
     keyword_1: lessonPlan.keywords?.[0]?.keyword ?? " ",
@@ -50,16 +56,16 @@ export async function prepLessonPlanForDocs(
     keyword_definition_3: lessonPlan.keywords?.[2]?.definition ?? " ",
     keyword_definition_4: lessonPlan.keywords?.[3]?.definition ?? " ",
     keyword_definition_5: lessonPlan.keywords?.[4]?.definition ?? " ",
-    key_learning_point_1: lessonPlan.keyLearningPoints
+    key_learning_point_1: lessonPlan.keyLearningPoints?.[0]
       ? "1.     " + lessonPlan.keyLearningPoints[0]
       : " ",
-    key_learning_point_2: lessonPlan.keyLearningPoints
+    key_learning_point_2: lessonPlan.keyLearningPoints?.[1]
       ? "2.     " + lessonPlan.keyLearningPoints[1]
       : " ",
-    key_learning_point_3: lessonPlan.keyLearningPoints
+    key_learning_point_3: lessonPlan.keyLearningPoints?.[2]
       ? "3.     " + lessonPlan.keyLearningPoints[2]
       : " ",
-    key_learning_point_4: lessonPlan.keyLearningPoints
+    key_learning_point_4: lessonPlan.keyLearningPoints?.[3]
       ? "4.     " + lessonPlan.keyLearningPoints[3]
       : " ",
 
@@ -176,5 +182,20 @@ export async function prepLessonPlanForDocs(
       : "",
     cycle_3_practice: lessonPlan.cycle3?.practice ?? " ",
     cycle_3_feedback: lessonPlan.cycle3?.feedback ?? " ",
+
+    ...contentGuidancePlaceholders(contentGuidanceCategories),
   });
+}
+
+function contentGuidancePlaceholders(
+  categories?: ContentGuidanceCategory[],
+): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (let i = 1; i <= 8; i++) {
+    const category = categories?.[i - 1];
+    result[`content_guidance_title_${i}`] = category?.shortDescription ?? "";
+    result[`content_guidance_description_${i}`] =
+      category?.longDescription ?? "";
+  }
+  return result;
 }
