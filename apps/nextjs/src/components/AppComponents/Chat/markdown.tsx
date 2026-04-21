@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
 
+import { wrapWithUrlSafety } from "./markdown-url-safety";
 import { CodeBlock } from "./ui/codeblock";
 
 const MemoizedReactMarkdown: FC<Options> = memo(
@@ -87,17 +88,15 @@ const createComponents = (className?: string): Partial<Components> => ({
       </a>
     );
   },
-  img: ({ src, alt, title }) => {
+  img: ({ src, alt, title }) => (
     // Apply fixed max dimensions to all images
-    return (
-      <img
-        src={src}
-        alt={alt}
-        title={title}
-        className="h-auto max-h-[200px] w-auto max-w-[250px] object-contain"
-      />
-    );
-  },
+    <img
+      src={src}
+      alt={alt}
+      title={title}
+      className="h-auto max-h-[200px] w-auto max-w-[250px] object-contain"
+    />
+  ),
 });
 
 export const MemoizedReactMarkdownWithStyles = ({
@@ -107,9 +106,10 @@ export const MemoizedReactMarkdownWithStyles = ({
 }: ReactMarkdownWithStylesProps) => {
   const components: Partial<Components> = useMemo(() => {
     const defaultComponents = createComponents(className);
-    return customComponents
+    const merged = customComponents
       ? { ...defaultComponents, ...customComponents }
       : defaultComponents;
+    return wrapWithUrlSafety(merged);
   }, [className, customComponents]);
   return (
     <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
