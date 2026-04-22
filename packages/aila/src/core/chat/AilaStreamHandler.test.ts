@@ -1,3 +1,14 @@
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
+import {
+  getRagLessonPlansByIds,
+  getRelevantLessonPlans,
+  parseKeyStagesForRagSearch,
+  parseSubjectsForRagSearch,
+} from "@oakai/rag";
+
+import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
+import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
+import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import type { Message } from "./types";
@@ -37,6 +48,20 @@ type MockChatOptions = {
 };
 
 const mockedAilaTurn = jest.mocked(ailaTurn);
+const mockedCreateOpenAIClient = jest.mocked(createOpenAIClient);
+const mockedGetRagLessonPlansByIds = jest.mocked(getRagLessonPlansByIds);
+const mockedGetRelevantLessonPlans = jest.mocked(getRelevantLessonPlans);
+const mockedParseKeyStagesForRagSearch = jest.mocked(
+  parseKeyStagesForRagSearch,
+);
+const mockedParseSubjectsForRagSearch = jest.mocked(parseSubjectsForRagSearch);
+const mockedCreateOpenAIMessageToUserAgent = jest.mocked(
+  createOpenAIMessageToUserAgent,
+);
+const mockedCreateOpenAIPlannerAgent = jest.mocked(createOpenAIPlannerAgent);
+const mockedCreateSectionAgentRegistry = jest.mocked(
+  createSectionAgentRegistry,
+);
 
 function createObjectStreamReader(chunks: string[] = ["stream chunk"]) {
   return new ReadableStream<string>({
@@ -119,8 +144,16 @@ async function consumeStream(stream: ReadableStream) {
 }
 
 describe("AilaStreamHandler", () => {
-  afterEach(() => {
-    jest.resetAllMocks();
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockedCreateOpenAIClient.mockReturnValue({});
+    mockedGetRagLessonPlansByIds.mockResolvedValue([]);
+    mockedGetRelevantLessonPlans.mockResolvedValue([]);
+    mockedParseKeyStagesForRagSearch.mockReturnValue([]);
+    mockedParseSubjectsForRagSearch.mockReturnValue([]);
+    mockedCreateOpenAIMessageToUserAgent.mockReturnValue(jest.fn());
+    mockedCreateOpenAIPlannerAgent.mockReturnValue(jest.fn());
+    mockedCreateSectionAgentRegistry.mockReturnValue({});
   });
 
   it("skips completion for failed agentic turns", async () => {
