@@ -1,14 +1,51 @@
+import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { AilaStreamHandler } from "./AilaStreamHandler";
+import type { Message } from "./types";
+
+jest.mock("@oakai/core/src/llm/openai", () => ({
+  createOpenAIClient: jest.fn(() => ({})),
+}));
+
+jest.mock("@oakai/rag", () => ({
+  getRagLessonPlansByIds: jest.fn().mockResolvedValue([]),
+  getRelevantLessonPlans: jest.fn().mockResolvedValue([]),
+  parseKeyStagesForRagSearch: jest.fn().mockReturnValue([]),
+  parseSubjectsForRagSearch: jest.fn().mockReturnValue([]),
+}));
+
+jest.mock("../../lib/agentic-system/ailaTurn", () => ({
+  ailaTurn: jest.fn(),
+}));
+
+jest.mock("../../lib/agentic-system/agents/messageToUserAgent", () => ({
+  createOpenAIMessageToUserAgent: jest.fn(() => jest.fn()),
+}));
+
+jest.mock("../../lib/agentic-system/agents/plannerAgent", () => ({
+  createOpenAIPlannerAgent: jest.fn(() => jest.fn()),
+}));
+
+jest.mock(
+  "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry",
+  () => ({
+    createSectionAgentRegistry: jest.fn(() => ({})),
+  }),
+);
 
 type MockChatOptions = {
   useAgenticAila: boolean;
 };
 
-type StreamHandlerTestHarness = {
-  startAgentStream: () => Promise<{ status: "success" | "failed" }>;
-  startLLMStream: () => Promise<void>;
-  readFromStream: () => Promise<void>;
-};
+const mockedAilaTurn = jest.mocked(ailaTurn);
+
+function createObjectStreamReader(chunks: string[] = ["stream chunk"]) {
+  return new ReadableStream<string>({
+    start(controller) {
+      chunks.forEach((chunk) => controller.enqueue(chunk));
+      controller.close();
+    },
+  }).getReader();
+}
 
 function createMockChat({ useAgenticAila }: MockChatOptions) {
   const enqueue = jest.fn().mockResolvedValue(undefined);
@@ -23,7 +60,8 @@ function createMockChat({ useAgenticAila }: MockChatOptions) {
     id: "chat_123",
     userId: "user_123",
     iteration: 1,
-    messages: [{ id: "u1", role: "user", content: "test prompt" }],
+    messages: [{ id: "u1", role: "user", content: "test prompt" }] as Message[],
+    relevantLessons: null,
     generation: useAgenticAila ? undefined : { status: "REQUESTED" },
     aila: {
       options: {
@@ -42,17 +80,28 @@ function createMockChat({ useAgenticAila }: MockChatOptions) {
       errorReporter: {
         reportError: jest.fn(),
       },
+      document: {
+        content: {},
+      },
+      plugins: [],
     },
     getPatchEnqueuer: () => ({
       setController: jest.fn(),
     }),
     initialiseChunks: jest.fn(),
+    appendChunk: jest.fn(),
     setupGeneration: jest.fn().mockImplementation(() => {
       chat.generation = { status: "REQUESTED" };
       return Promise.resolve();
     }),
     handleSettingInitialState: jest.fn().mockResolvedValue(undefined),
     handleSubjectWarning: jest.fn().mockResolvedValue(undefined),
+    completionMessages: jest
+      .fn()
+      .mockReturnValue([{ id: "u1", role: "user", content: "test prompt" }]),
+    createChatCompletionObjectStream: jest
+      .fn()
+      .mockResolvedValue(createObjectStreamReader()),
     complete,
     enqueue,
   };
@@ -71,20 +120,14 @@ async function consumeStream(stream: ReadableStream) {
 
 describe("AilaStreamHandler", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
   });
 
-  function getHarness(handler: AilaStreamHandler): StreamHandlerTestHarness {
-    return handler as unknown as StreamHandlerTestHarness;
-  }
-
   it("skips completion for failed agentic turns", async () => {
+    mockedAilaTurn.mockResolvedValue({ status: "failed" });
+
     const chat = createMockChat({ useAgenticAila: true });
     const handler = new AilaStreamHandler(chat as never);
-
-    jest
-      .spyOn(getHarness(handler), "startAgentStream")
-      .mockResolvedValue({ status: "failed" });
 
     await consumeStream(handler.startStreaming());
 
@@ -96,16 +139,36 @@ describe("AilaStreamHandler", () => {
   });
 
   it("completes successful agentic turns", async () => {
+    mockedAilaTurn.mockImplementationOnce(async ({ callbacks }) => {
+      await callbacks.onTurnComplete({
+        stepsExecuted: [],
+        document: {},
+        ailaMessage:
+          "Here's the updated lesson plan. Do you want to make any more changes?",
+      });
+      return { status: "success" };
+    });
+
     const chat = createMockChat({ useAgenticAila: true });
     const handler = new AilaStreamHandler(chat as never);
 
-    jest
-      .spyOn(getHarness(handler), "startAgentStream")
-      .mockResolvedValue({ status: "success" });
-
     await consumeStream(handler.startStreaming());
 
+    expect(mockedAilaTurn).toHaveBeenCalledTimes(1);
     expect(chat.complete).toHaveBeenCalledTimes(1);
+    expect(chat.enqueue).toHaveBeenCalledWith({
+      type: "state",
+      reasoning: "final",
+      value: {},
+    });
+    expect(chat.appendChunk).toHaveBeenCalledWith(
+      expect.stringContaining('"sectionsEdited":[]'),
+    );
+    expect(chat.appendChunk).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `"value":"Here's the updated lesson plan. Do you want to make any more changes?"`,
+      ),
+    );
     expect(chat.enqueue).toHaveBeenCalledWith({
       type: "comment",
       value: "CHAT_COMPLETE",
@@ -113,16 +176,43 @@ describe("AilaStreamHandler", () => {
   });
 
   it("completes partial-success agentic turns", async () => {
+    mockedAilaTurn.mockImplementationOnce(async ({ callbacks }) => {
+      await callbacks.onTurnComplete({
+        stepsExecuted: [
+          {
+            type: "section",
+            sectionKey: "subject",
+            action: "generate",
+            sectionInstructions: null,
+          },
+        ],
+        document: { subject: "art" },
+        ailaMessage:
+          "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      });
+      return { status: "success" };
+    });
+
     const chat = createMockChat({ useAgenticAila: true });
     const handler = new AilaStreamHandler(chat as never);
 
-    jest
-      .spyOn(getHarness(handler), "startAgentStream")
-      .mockResolvedValue({ status: "success" });
-
     await consumeStream(handler.startStreaming());
 
+    expect(mockedAilaTurn).toHaveBeenCalledTimes(1);
     expect(chat.complete).toHaveBeenCalledTimes(1);
+    expect(chat.enqueue).toHaveBeenCalledWith({
+      type: "state",
+      reasoning: "final",
+      value: { subject: "art" },
+    });
+    expect(chat.appendChunk).toHaveBeenCalledWith(
+      expect.stringContaining('"sectionsEdited":["subject"]'),
+    );
+    expect(chat.appendChunk).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `"value":"The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next."`,
+      ),
+    );
     expect(chat.enqueue).toHaveBeenCalledWith({
       type: "comment",
       value: "CHAT_COMPLETE",
@@ -133,16 +223,11 @@ describe("AilaStreamHandler", () => {
     const chat = createMockChat({ useAgenticAila: false });
     const handler = new AilaStreamHandler(chat as never);
 
-    jest
-      .spyOn(getHarness(handler), "startLLMStream")
-      .mockResolvedValue(undefined);
-    jest
-      .spyOn(getHarness(handler), "readFromStream")
-      .mockResolvedValue(undefined);
-
     await consumeStream(handler.startStreaming());
 
     expect(chat.setupGeneration).toHaveBeenCalledTimes(1);
+    expect(chat.createChatCompletionObjectStream).toHaveBeenCalledTimes(1);
+    expect(chat.appendChunk).toHaveBeenCalledWith("stream chunk");
     expect(chat.complete).toHaveBeenCalledTimes(1);
     expect(chat.enqueue).toHaveBeenCalledWith({
       type: "comment",

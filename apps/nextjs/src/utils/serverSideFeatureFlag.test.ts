@@ -73,7 +73,7 @@ describe("serverSideFeatureFlag", () => {
           emailAddresses: [{ emailAddress: "test@example.com" }],
         }),
       },
-    } as Awaited<ReturnType<typeof clerkClient>>);
+    } as unknown as Awaited<ReturnType<typeof clerkClient>>);
 
     await expect(serverSideFeatureFlag("agentic-aila-nov-25")).resolves.toBe(
       true,

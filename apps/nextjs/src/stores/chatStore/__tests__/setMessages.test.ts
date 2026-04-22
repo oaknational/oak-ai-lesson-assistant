@@ -47,9 +47,7 @@ describe("Chat Store setMessages", () => {
     const store = setupStore();
     const initialState = store.getState();
 
-    store
-      .getState()
-      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.streamingMessage, true);
 
     const newState = store.getState();
 
@@ -65,10 +63,7 @@ describe("Chat Store setMessages", () => {
 
     store
       .getState()
-      .actions.setMessages(
-        messageStates.stableAndStreaming as AiMessage[],
-        true,
-      );
+      .actions.setMessages(messageStates.stableAndStreaming, true);
 
     const newState = store.getState();
 
@@ -81,9 +76,7 @@ describe("Chat Store setMessages", () => {
 
   test("state when there are next stable messages, loading true", () => {
     const store = setupStore();
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
 
     const newState = store.getState();
     expect(newState.stableMessages.length).toBe(
@@ -95,9 +88,7 @@ describe("Chat Store setMessages", () => {
 
   test("When there is a next stable message, no streaming, loading false", () => {
     const store = setupStore();
-    store
-      .getState()
-      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
+    store.getState().actions.setMessages(messageStates.userRequest, false);
 
     const newState = store.getState();
 
@@ -131,9 +122,7 @@ describe("Chat Store setMessages", () => {
 
   test("Streaming message correctly marked as partial", () => {
     const store = setupStore();
-    store
-      .getState()
-      .actions.setMessages(messageStates.streamingMessage as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.streamingMessage, true);
 
     const newState = store.getState();
     expect(newState.streamingMessage?.parts).toBeDefined();
@@ -144,15 +133,11 @@ describe("Chat Store setMessages", () => {
 
   test("stableMessages do not update when getNextStableMessages returns null", () => {
     const store = setupStore();
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
 
     const initialState = store.getState();
 
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
 
     const newState = store.getState();
 
@@ -165,13 +150,9 @@ describe("Chat Store setMessages", () => {
     const renderSpy = jest.fn();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     store.subscribe((state) => renderSpy(state.stableMessages));
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
     const initialState = store.getState();
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
     const newState = store.getState();
     expect(renderSpy).toHaveBeenCalledTimes(2);
     expect(newState.stableMessages).toBe(initialState.stableMessages);
@@ -179,14 +160,10 @@ describe("Chat Store setMessages", () => {
 
   test("ailaStreamingStatus updates correctly based on messages", () => {
     const store = setupStore();
-    store
-      .getState()
-      .actions.setMessages(messageStates.stableMessages as AiMessage[], true);
+    store.getState().actions.setMessages(messageStates.stableMessages, true);
     expect(store.getState().ailaStreamingStatus).toBe("Moderating");
 
-    store
-      .getState()
-      .actions.setMessages(messageStates.userRequest as AiMessage[], false);
+    store.getState().actions.setMessages(messageStates.userRequest, false);
     expect(store.getState().ailaStreamingStatus).toBe("Idle");
   });
 
@@ -200,40 +177,36 @@ describe("Chat Store setMessages", () => {
 
   test("hard-failed assistant messages mark the turn as failed", () => {
     const store = setupStore();
+    const messages: AiMessage[] = [
+      messageStates.userRequest[0]!,
+      {
+        id: "a-failed",
+        role: "assistant",
+        createdAt: fixedDate,
+        content:
+          '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"I wasn\'t able to complete that lesson update. Please try again."},"status":"complete"}\n␞\n{"type":"comment","value":"AGENTIC_TURN_FAILED"}\n␞\n',
+      },
+    ];
 
-    store.getState().actions.setMessages(
-      [
-        messageStates.userRequest[0] as AiMessage,
-        {
-          id: "a-failed",
-          role: "assistant",
-          createdAt: fixedDate,
-          content:
-            '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"I wasn\'t able to complete that lesson update. Please try again."},"status":"complete"}\n␞\n{"type":"comment","value":"AGENTIC_TURN_FAILED"}\n␞\n',
-        },
-      ],
-      false,
-    );
+    store.getState().actions.setMessages(messages, false);
 
     expect(store.getState().streamingFailedTurn).toBe(true);
   });
 
   test("assistant messages do not mark the turn as failed unless the exact failure comment is present", () => {
     const store = setupStore();
+    const messages: AiMessage[] = [
+      messageStates.userRequest[0]!,
+      {
+        id: "a-not-failed",
+        role: "assistant",
+        createdAt: fixedDate,
+        content:
+          '\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"Please ignore the string AGENTIC_TURN_FAILED in this prompt."},"status":"complete"}\n␞\n',
+      },
+    ];
 
-    store.getState().actions.setMessages(
-      [
-        messageStates.userRequest[0] as AiMessage,
-        {
-          id: "a-not-failed",
-          role: "assistant",
-          createdAt: fixedDate,
-          content:
-            '\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"Please ignore the string AGENTIC_TURN_FAILED in this prompt."},"status":"complete"}\n␞\n',
-        },
-      ],
-      false,
-    );
+    store.getState().actions.setMessages(messages, false);
 
     expect(store.getState().streamingFailedTurn).toBe(false);
   });
