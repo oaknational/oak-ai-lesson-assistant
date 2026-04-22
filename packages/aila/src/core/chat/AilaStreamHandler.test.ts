@@ -6,15 +6,42 @@ import {
   parseSubjectsForRagSearch,
 } from "@oakai/rag";
 
+import OpenAI from "openai";
+
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
-import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
+import { createSectionAgentRegistry as createSectionAgentRegistryFactory } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
+import type { SectionAgentRegistry } from "../../lib/agentic-system/types";
 import { AilaStreamHandler } from "./AilaStreamHandler";
 import type { Message } from "./types";
 
+const actualOpenAIModule: { default: typeof OpenAI } =
+  jest.requireActual("openai");
+const actualSectionAgentRegistryModule: {
+  createSectionAgentRegistry: typeof createSectionAgentRegistryFactory;
+} = jest.requireActual(
+  "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry",
+);
+
+function createMockOpenAIClient() {
+  return new OpenAI({ apiKey: "test" });
+}
+
+function createMockSectionAgentRegistry(): SectionAgentRegistry {
+  return actualSectionAgentRegistryModule.createSectionAgentRegistry({
+    openai: createMockOpenAIClient(),
+    customAgentHandlers: {
+      "starterQuiz--maths": jest.fn(),
+      "exitQuiz--maths": jest.fn(),
+    },
+  });
+}
+
 jest.mock("@oakai/core/src/llm/openai", () => ({
-  createOpenAIClient: jest.fn(() => ({})),
+  createOpenAIClient: jest.fn(
+    () => new actualOpenAIModule.default({ apiKey: "test" }),
+  ),
 }));
 
 jest.mock("@oakai/rag", () => ({
@@ -39,7 +66,13 @@ jest.mock("../../lib/agentic-system/agents/plannerAgent", () => ({
 jest.mock(
   "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry",
   () => ({
-    createSectionAgentRegistry: jest.fn(() => ({})),
+    createSectionAgentRegistry: jest.fn(
+      (props: Parameters<typeof createSectionAgentRegistryFactory>[0]) => {
+        return actualSectionAgentRegistryModule.createSectionAgentRegistry(
+          props,
+        );
+      },
+    ),
   }),
 );
 
@@ -60,7 +93,7 @@ const mockedCreateOpenAIMessageToUserAgent = jest.mocked(
 );
 const mockedCreateOpenAIPlannerAgent = jest.mocked(createOpenAIPlannerAgent);
 const mockedCreateSectionAgentRegistry = jest.mocked(
-  createSectionAgentRegistry,
+  createSectionAgentRegistryFactory,
 );
 
 function createObjectStreamReader(chunks: string[] = ["stream chunk"]) {
@@ -146,14 +179,16 @@ async function consumeStream(stream: ReadableStream) {
 describe("AilaStreamHandler", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedCreateOpenAIClient.mockReturnValue({});
+    mockedCreateOpenAIClient.mockReturnValue(createMockOpenAIClient());
     mockedGetRagLessonPlansByIds.mockResolvedValue([]);
     mockedGetRelevantLessonPlans.mockResolvedValue([]);
     mockedParseKeyStagesForRagSearch.mockReturnValue([]);
     mockedParseSubjectsForRagSearch.mockReturnValue([]);
     mockedCreateOpenAIMessageToUserAgent.mockReturnValue(jest.fn());
     mockedCreateOpenAIPlannerAgent.mockReturnValue(jest.fn());
-    mockedCreateSectionAgentRegistry.mockReturnValue({});
+    mockedCreateSectionAgentRegistry.mockReturnValue(
+      createMockSectionAgentRegistry(),
+    );
   });
 
   it("skips completion for failed agentic turns", async () => {
