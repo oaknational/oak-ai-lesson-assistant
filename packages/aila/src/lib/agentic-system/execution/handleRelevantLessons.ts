@@ -1,23 +1,23 @@
-import type { AilaExecutionContext } from "../types";
+import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
 import { terminateWithResponse } from "./termination";
 
 /**
  * Handle fetching relevant lessons if document metadata has changed
- * @returns false if the turn should end to show lessons, true if it should continue
+ * @returns `continue` to keep going, otherwise a terminal turn outcome
  */
 export async function handleRelevantLessons(
   context: AilaExecutionContext,
-): Promise<boolean> {
+): Promise<AilaTurnPhaseOutcome> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
 
   if (!title || !subject || !keyStage) {
     // if any of the above sections are missing, do not refetch RAG lessons
-    return true;
+    return { status: "continue" };
   }
 
   if (basedOn) {
     // if the user has already chosen a lesson to adapt, do not refetch RAG lessons
-    return true;
+    return { status: "continue" };
   }
 
   const hasDocumentMetadataChanged =
@@ -27,16 +27,15 @@ export async function handleRelevantLessons(
 
   if (!hasDocumentMetadataChanged) {
     // if above sections remain unchanged, do not refetch RAG lessons
-    return true;
+    return { status: "continue" };
   }
   context.currentTurn.relevantLessons =
     await context.runtime.fetchRelevantLessons({ title, subject, keyStage });
   context.currentTurn.relevantLessonsFetched = true;
 
   if (context.currentTurn.relevantLessons.length > 0) {
-    await terminateWithResponse(context);
-    return false;
+    return await terminateWithResponse(context);
   }
 
-  return true;
+  return { status: "continue" };
 }

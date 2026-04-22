@@ -33,6 +33,7 @@ export type ChatState = {
   id: string;
   ailaStreamingStatus: AilaStreamingStatus;
   streamingError: boolean;
+  streamingFailedTurn: boolean;
 
   initialMessages: AiMessage[];
   stableMessages: ParsedMessage[];

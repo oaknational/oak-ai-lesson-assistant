@@ -81,6 +81,7 @@ describe("sectionToGenericPromptAgent", () => {
       onPlannerComplete: jest.fn(),
       onSectionComplete: jest.fn(),
       onTurnComplete: jest.fn(),
+      onTurnFailed: jest.fn(),
     },
   };
 

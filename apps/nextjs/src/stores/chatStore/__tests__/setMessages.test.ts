@@ -189,4 +189,52 @@ describe("Chat Store setMessages", () => {
       .actions.setMessages(messageStates.userRequest as AiMessage[], false);
     expect(store.getState().ailaStreamingStatus).toBe("Idle");
   });
+
+  test("persisted partial-success assistant messages do not mark the turn as failed", () => {
+    const store = setupStore();
+
+    store.getState().actions.setMessages(messageStates.stableMessages, false);
+
+    expect(store.getState().streamingFailedTurn).toBe(false);
+  });
+
+  test("hard-failed assistant messages mark the turn as failed", () => {
+    const store = setupStore();
+
+    store.getState().actions.setMessages(
+      [
+        messageStates.userRequest[0] as AiMessage,
+        {
+          id: "a-failed",
+          role: "assistant",
+          createdAt: fixedDate,
+          content:
+            '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"I wasn\'t able to complete that lesson update. Please try again."},"status":"complete"}\n␞\n{"type":"comment","value":"AGENTIC_TURN_FAILED"}\n␞\n',
+        },
+      ],
+      false,
+    );
+
+    expect(store.getState().streamingFailedTurn).toBe(true);
+  });
+
+  test("assistant messages do not mark the turn as failed unless the exact failure comment is present", () => {
+    const store = setupStore();
+
+    store.getState().actions.setMessages(
+      [
+        messageStates.userRequest[0] as AiMessage,
+        {
+          id: "a-not-failed",
+          role: "assistant",
+          createdAt: fixedDate,
+          content:
+            '\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"Please ignore the string AGENTIC_TURN_FAILED in this prompt."},"status":"complete"}\n␞\n',
+        },
+      ],
+      false,
+    );
+
+    expect(store.getState().streamingFailedTurn).toBe(false);
+  });
 });
