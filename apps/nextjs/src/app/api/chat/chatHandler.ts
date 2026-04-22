@@ -21,7 +21,6 @@ import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/mig
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
@@ -65,8 +64,6 @@ function getQuizSources(): QuestionSourceType[] {
 }
 
 export const maxDuration = 300;
-
-const prisma: PrismaClientWithAccelerate = globalPrisma;
 
 export async function GET() {
   return Promise.resolve(new Response("Chat API is working", { status: 200 }));
@@ -202,6 +199,7 @@ function verifyChatOwnership(
 async function loadChatDataFromDatabase(
   chatId: string,
   userId: string,
+  prisma: PrismaClientWithAccelerate,
 ): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
@@ -362,7 +360,7 @@ export async function handleChatPostRequest(
       span.setAttributes({ chat_id: chatId });
 
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
-        await loadChatDataFromDatabase(chatId, userId);
+        await loadChatDataFromDatabase(chatId, userId, config.prisma);
 
       const messages = prepareMessages(dbMessages, frontendMessages, chatId);
 
@@ -384,7 +382,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
-      return handleChatException(e, chatId, prisma);
+      return handleChatException(e, chatId, config.prisma);
     } finally {
       if (aila) {
         await aila.ensureShutdown();

@@ -2,6 +2,10 @@ import { AilaThreatDetectionError } from "../../features/threatDetection";
 import * as threatDetectionHandling from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChat } from "./AilaChat";
 
+jest.mock("../../utils/threatDetection/threatDetectionHandling", () => ({
+  handleThreatDetectionError: jest.fn(),
+}));
+
 describe("AilaChat.generationFailed", () => {
   afterEach(() => {
     jest.restoreAllMocks();

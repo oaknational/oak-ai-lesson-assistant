@@ -1,107 +1,71 @@
-import { toast } from "react-hot-toast";
-
+import type { ThreatDetectionWithSafetyViolation } from "@oakai/core";
 import type { SafetyViolation } from "@oakai/db";
 
-import { OakPrimaryButton } from "@oaknational/oak-components";
-import * as Sentry from "@sentry/nextjs";
-
-import { trpc } from "@/utils/trpc";
-
-function SafetyViolationsListItem({
-  safetyViolation,
-  refetch,
-}: {
-  readonly safetyViolation: SafetyViolation;
-  refetch: () => void;
-}) {
-  const { id, detectionSource, recordId, recordType } = safetyViolation;
-  const removeSafetyViolation =
-    trpc.admin.removeSafetyViolationById.useMutation({
-      onSuccess: () => {
-        toast.success("Safety violation removed");
-        refetch();
-      },
-      onError: (err) => {
-        toast.error("Error invalidating moderation");
-        Sentry.captureException(err);
-      },
-    });
-
-  const invalidateModeration = trpc.admin.invalidateModeration.useMutation({
-    onSuccess: () => {
-      toast.success("Moderation invalidated");
-      refetch();
-    },
-    onError: (err) => {
-      toast.error("Error invalidating moderation");
-      Sentry.captureException(err);
-    },
-  });
-
-  return (
-    <li className={`rounded-md border p-8 shadow-sm`}>
-      <div className="flex w-full items-start justify-between">
-        <div className="flex w-full items-start space-y-8">
-          <p className="font-medium capitalize">
-            Source: {detectionSource}
-            <br />
-            Record type: {recordType}
-            <br />
-            Record ID: {recordId}
-          </p>
-          {recordType === "MODERATION" ? (
-            <OakPrimaryButton
-              iconName="cross"
-              className="ml-auto"
-              onClick={() =>
-                void invalidateModeration.mutateAsync({
-                  moderationId: recordId,
-                })
-              }
-              isLoading={invalidateModeration.isPending}
-            >
-              Invalidate moderation
-            </OakPrimaryButton>
-          ) : (
-            <OakPrimaryButton
-              iconName="cross"
-              className="ml-auto"
-              onClick={() => void removeSafetyViolation.mutateAsync({ id })}
-              isLoading={removeSafetyViolation.isPending}
-            >
-              Delete safety violation
-            </OakPrimaryButton>
-          )}
-        </div>
-      </div>
-    </li>
-  );
-}
+import { SafetyViolationListItem } from "./components/SafetyViolationListItem";
+import { ThreatDetectionListItem } from "./components/ThreatDetectionListItem";
 
 export function AdminUserView({
   userId,
   safetyViolations,
-  refetchSafetyViolations,
+  maxAllowedSafetyViolations,
+  threatDetections,
+  refetchUserSafetyReview,
 }: {
   readonly userId: string;
   readonly safetyViolations: SafetyViolation[];
-  readonly refetchSafetyViolations: () => void;
+  readonly maxAllowedSafetyViolations: number;
+  readonly threatDetections: ThreatDetectionWithSafetyViolation[];
+  readonly refetchUserSafetyReview: () => void;
 }) {
+  const linkedViolationIds = new Set(
+    threatDetections.flatMap((td) =>
+      td.safetyViolationId ? [td.safetyViolationId] : [],
+    ),
+  );
+
   return (
     <>
       <h1 className="mb-18">User: {userId}</h1>
-      <h2 className="mb-4 text-2xl font-bold">Safety violations</h2>
-      <ul className="mb-18 space-y-4">
-        {safetyViolations.map((safetyViolation) => {
-          return (
-            <SafetyViolationsListItem
-              key={safetyViolation.id}
-              safetyViolation={safetyViolation}
-              refetch={refetchSafetyViolations}
-            />
-          );
-        })}
-      </ul>
+
+      <h2 className="mb-4 text-2xl font-bold">Threat detections</h2>
+      {threatDetections.length === 0 ? (
+        <p className="mb-18 text-zinc-700">No threat detections found.</p>
+      ) : (
+        <ul className="mb-18 space-y-8">
+          {threatDetections.map((threatDetection) => {
+            return (
+              <ThreatDetectionListItem
+                key={threatDetection.id}
+                threatDetection={threatDetection}
+                refetch={refetchUserSafetyReview}
+              />
+            );
+          })}
+        </ul>
+      )}
+
+      <h2 className="mb-4 text-2xl font-bold">
+        Total Safety Violations ({safetyViolations.length}/
+        {maxAllowedSafetyViolations})
+      </h2>
+      {safetyViolations.length === 0 ? (
+        <p className="text-zinc-700">No active safety violations.</p>
+      ) : (
+        <ul className="mb-18 space-y-4">
+          {safetyViolations.map((safetyViolation) => {
+            return (
+              <SafetyViolationListItem
+                key={safetyViolation.id}
+                safetyViolation={safetyViolation}
+                hasLinkedThreatDetection={linkedViolationIds.has(
+                  safetyViolation.id,
+                )}
+                refetch={refetchUserSafetyReview}
+              />
+            );
+          })}
+        </ul>
+      )}
     </>
   );
 }
