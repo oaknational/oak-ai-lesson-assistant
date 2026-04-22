@@ -160,6 +160,7 @@ function createMockChat({ useAgenticAila }: MockChatOptions) {
     createChatCompletionObjectStream: jest
       .fn()
       .mockResolvedValue(createObjectStreamReader()),
+    persistChat: jest.fn().mockResolvedValue(undefined),
     complete,
     enqueue,
   };
