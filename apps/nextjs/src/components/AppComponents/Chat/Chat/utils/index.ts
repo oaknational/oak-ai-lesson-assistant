@@ -1,5 +1,3 @@
-import type { Message } from "ai/react";
-
 interface IdPart {
   type: "id";
   value: string;
