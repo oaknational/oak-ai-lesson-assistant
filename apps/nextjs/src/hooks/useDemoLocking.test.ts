@@ -1,11 +1,30 @@
+/**
+ * @jest-environment jsdom
+ */
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
+import { renderHook } from "@testing-library/react";
+
+import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { isLessonComplete } from "@/lib/analytics/helpers";
+import { useChatStore } from "@/stores/AilaStoresProvider";
 import type { AiMessage } from "@/stores/chatStore";
 
 import {
   findFirstCompleteAssistantMessage,
   replayLessonPlanFromMessages,
+  useDemoLocking,
 } from "./useDemoLocking";
+
+jest.mock("@/components/ContextProviders/Demo", () => ({
+  useDemoUser: jest.fn(),
+}));
+jest.mock("@/lib/analytics/helpers", () => ({
+  isLessonComplete: jest.fn(),
+}));
+jest.mock("@/stores/AilaStoresProvider", () => ({
+  useChatStore: jest.fn(),
+}));
 
 const fixedDate = new Date("2023-01-01T12:00:00.000Z");
 
@@ -40,7 +59,7 @@ const createUserMessage = (id: string, content: string): AiMessage => {
 };
 
 const isLessonCompleteMock = (lesson: PartialLessonPlan): boolean => {
-  // A lesson is complete when it has title and subject
+  // A lesson is complete when it has title and subject for the tests
   return !!(lesson.title && lesson.subject);
 };
 
@@ -262,8 +281,190 @@ describe("useDemoLocking helpers", () => {
       );
 
       expect(result?.id).toBe("a1");
-      // Verify that a2 is ignored
-      expect(result?.id).not.toBe("a2");
+    });
+  });
+
+  describe("useDemoLocking hook", () => {
+    const mockUseDemoUser = jest.mocked(useDemoUser);
+    const mockUseChatStore = jest.mocked(useChatStore);
+    const mockIsLessonComplete = jest.mocked(isLessonComplete);
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      // Set up default mocks
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: false,
+        demo: undefined,
+        isSharingEnabled: true,
+      });
+      mockUseChatStore.mockReturnValue([]);
+      mockIsLessonComplete.mockReturnValue(false);
+    });
+
+    it("returns false when user is not a demo user", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: false,
+        demo: undefined,
+        isSharingEnabled: true,
+      });
+      mockUseChatStore.mockReturnValue([]);
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      expect(result.current).toBe(false);
+    });
+
+    it("returns false when demo user has no complete lesson", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: true,
+        demo: {
+          appSessionsRemaining: 1,
+          additionalMaterialsSessionsRemaining: 1,
+          appSessionsPerMonth: 5,
+          contactHref: "https://example.com",
+        },
+        isSharingEnabled: true,
+      });
+      const incompleteMessages: AiMessage[] = [
+        createAssistantMessageWithPatches("a1", [
+          { op: "add", path: "/title", value: "Just a title" },
+        ]),
+      ];
+      mockUseChatStore.mockReturnValue(incompleteMessages);
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      expect(result.current).toBe(false);
+    });
+
+    it("returns false when demo user has complete lesson but fewer user messages than threshold", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: true,
+        demo: {
+          appSessionsRemaining: 1,
+          additionalMaterialsSessionsRemaining: 1,
+          appSessionsPerMonth: 5,
+          contactHref: "https://example.com",
+        },
+        isSharingEnabled: true,
+      });
+      const messages: AiMessage[] = [
+        createAssistantMessageWithPatches("a1", [
+          { op: "add", path: "/title", value: "Complete" },
+          { op: "add", path: "/subject", value: "Math" },
+        ]),
+        createUserMessage("u1", "Edit 1"),
+      ];
+      mockUseChatStore.mockReturnValue(messages);
+      mockIsLessonComplete.mockImplementation((lesson: PartialLessonPlan) => {
+        return !!(lesson.title && lesson.subject);
+      });
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      // With NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE = 3, 1 user message should be false
+      expect(result.current).toBe(false);
+    });
+
+    it("returns true when demo user reaches the message threshold after completion", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: true,
+        demo: {
+          appSessionsRemaining: 1,
+          additionalMaterialsSessionsRemaining: 1,
+          appSessionsPerMonth: 5,
+          contactHref: "https://example.com",
+        },
+        isSharingEnabled: true,
+      });
+      // Simulate exactly NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE user messages after complete
+      const messages: AiMessage[] = [
+        createAssistantMessageWithPatches("a1", [
+          { op: "add", path: "/title", value: "Complete" },
+          { op: "add", path: "/subject", value: "Math" },
+        ]),
+        createUserMessage("u1", "Edit 1"),
+        createUserMessage("u2", "Edit 2"),
+        createUserMessage("u3", "Edit 3"),
+      ];
+      mockUseChatStore.mockReturnValue(messages);
+      mockIsLessonComplete.mockImplementation((lesson: PartialLessonPlan) => {
+        return !!(lesson.title && lesson.subject);
+      });
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      // With NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE = 3, exactly 3 user messages should be true
+      expect(result.current).toBe(true);
+    });
+
+    it("returns true when demo user exceeds threshold after completion", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: true,
+        demo: {
+          appSessionsRemaining: 1,
+          additionalMaterialsSessionsRemaining: 1,
+          appSessionsPerMonth: 5,
+          contactHref: "https://example.com",
+        },
+        isSharingEnabled: true,
+      });
+      // Simulate more than NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE user messages
+      const messages: AiMessage[] = [
+        createAssistantMessageWithPatches("a1", [
+          { op: "add", path: "/title", value: "Complete" },
+          { op: "add", path: "/subject", value: "Math" },
+        ]),
+        createUserMessage("u1", "Edit 1"),
+        createUserMessage("u2", "Edit 2"),
+        createUserMessage("u3", "Edit 3"),
+        createUserMessage("u4", "Edit 4"),
+      ];
+      mockUseChatStore.mockReturnValue(messages);
+      mockIsLessonComplete.mockImplementation((lesson: PartialLessonPlan) => {
+        return !!(lesson.title && lesson.subject);
+      });
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      // With NEXT_PUBLIC_DEMO_MESSAGES_AFTER_COMPLETE = 3, more than 3 should still be true (>= comparison)
+      expect(result.current).toBe(true);
+    });
+
+    it("counts only user messages after the first complete message", () => {
+      mockUseDemoUser.mockReturnValue({
+        isDemoUser: true,
+        demo: {
+          appSessionsRemaining: 1,
+          additionalMaterialsSessionsRemaining: 1,
+          appSessionsPerMonth: 5,
+          contactHref: "https://example.com",
+        },
+        isSharingEnabled: true,
+      });
+      const messages: AiMessage[] = [
+        createUserMessage("u1", "Start"),
+        createAssistantMessageWithPatches("a1", [
+          { op: "add", path: "/title", value: "Lesson" },
+        ]),
+        createUserMessage("u2", "Edit before complete"),
+        createAssistantMessageWithPatches("a2", [
+          { op: "add", path: "/subject", value: "Math" },
+        ]),
+        // First complete message is a2, count user messages after this
+        createUserMessage("u3", "Edit 1 after complete"),
+        createUserMessage("u4", "Edit 2 after complete"),
+      ];
+      mockUseChatStore.mockReturnValue(messages);
+      mockIsLessonComplete.mockImplementation((lesson: PartialLessonPlan) => {
+        return !!(lesson.title && lesson.subject);
+      });
+
+      const { result } = renderHook(() => useDemoLocking());
+
+      // Only u3 and u4 should be counted (2 messages), which is less than threshold (3)
+      expect(result.current).toBe(false);
     });
   });
 });

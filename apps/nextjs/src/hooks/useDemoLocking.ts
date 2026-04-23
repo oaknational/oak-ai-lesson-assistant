@@ -103,15 +103,14 @@ export function useDemoLocking() {
   const demo = useDemoUser();
   const stableMessages = useChatStore((state) => state.stableMessages);
 
-  if (!demo.isDemoUser) {
-    return false;
-  }
-
-  // Find the first assistant message where completeness flips from false to true
   const firstCompleteMessage = useMemo(
     () => findFirstCompleteAssistantMessage(stableMessages, isLessonComplete),
     [stableMessages],
   );
+
+  if (!demo.isDemoUser) {
+    return false;
+  }
 
   if (!firstCompleteMessage) {
     return false;
