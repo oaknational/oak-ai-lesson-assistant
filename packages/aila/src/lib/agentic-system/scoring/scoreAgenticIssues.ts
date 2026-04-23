@@ -557,7 +557,7 @@ describe("Agentic Issue Scoring", () => {
       const scorerTotals: Record<string, Record<string, number>> = {};
       for (const run of scenario.runs) {
         for (const { scorerId, result } of run.scores) {
-          if (!scorerTotals[scorerId]) scorerTotals[scorerId] = {};
+          scorerTotals[scorerId] ??= {};
           const counts = scorerTotals[scorerId];
           counts[result.heuristic] = (counts[result.heuristic] ?? 0) + 1;
         }
