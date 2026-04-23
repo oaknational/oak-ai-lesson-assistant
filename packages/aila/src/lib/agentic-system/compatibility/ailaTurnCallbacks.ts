@@ -24,13 +24,6 @@ export function createAilaTurnCallbacks({
   return {
     onPlannerComplete,
     onSectionComplete,
-    onTurnComplete: async (args) => {
-      onTurnComplete(args);
-      await chat.enqueue({
-        type: "state",
-        reasoning: "final",
-        value: args.document,
-      });
-    },
+    onTurnComplete,
   };
 }
