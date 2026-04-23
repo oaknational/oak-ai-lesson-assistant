@@ -44,7 +44,7 @@ export const QuizSection = ({ quizSection, quizType }: QuizSectionProps) => {
         $borderRadius="border-radius-s"
       >
         <OakFlex $gap="spacing-4" $alignItems="flex-start">
-          <OakIcon $colorFilter="black" iconName="info" alt="" />
+          <OakIcon $colorFilter="icon-primary" iconName="info" alt="" />
           <OakP $font="body-3">
             We weren&apos;t able to generate {quizLabel} for this lesson —
             Oak&apos;s question bank didn&apos;t have {reason}. You can ask me

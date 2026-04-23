@@ -74,7 +74,7 @@ export function LockingModerationModalContent({
             $height={"spacing-120"}
             charLimit={500}
             initialValue={comment}
-            onTextAreaChange={setComment}
+            onChange={(e) => setComment(e.target.value)}
             placeholder="Your feedback"
           />
         )}
