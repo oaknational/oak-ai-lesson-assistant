@@ -285,7 +285,7 @@ If you don't know the answer, just respond with "None", don't try to make up an 
 
     const content = `Question: ${question.question} – Correct Answer: ${correctAnswer.answer}`;
 
-    const snippet = await this.prisma.snippet.create({
+    await this.prisma.snippet.create({
       data: {
         content,
         sourceContent: content,
