@@ -1,3 +1,11 @@
+# [1.70.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.69.0...v1.70.0) (2026-04-23)
+
+
+### Features
+
+* **chat:** sanitise URLs in Aila markdown renderer ([#1020](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1020)) ([aacf77f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/aacf77f437e13b866759f1c9006fd7c4b3c85000))
+* **threat-detection:** [AI-2070] [migration] persist threat detections and add admin review flow ([#1011](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1011)) ([3d7fe8c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3d7fe8c442c020ac9c520efe2922ea2dfe60e983))
+
 # [1.69.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.68.0...v1.69.0) (2026-04-21)
 
 
