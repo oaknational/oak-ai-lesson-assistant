@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import {
   applyLessonPlanPatchImmutable,
   extractPatches,
@@ -106,9 +108,9 @@ export function useDemoLocking() {
   }
 
   // Find the first assistant message where completeness flips from false to true
-  const firstCompleteMessage = findFirstCompleteAssistantMessage(
-    stableMessages,
-    isLessonComplete,
+  const firstCompleteMessage = useMemo(
+    () => findFirstCompleteAssistantMessage(stableMessages, isLessonComplete),
+    [stableMessages],
   );
 
   if (!firstCompleteMessage) {
