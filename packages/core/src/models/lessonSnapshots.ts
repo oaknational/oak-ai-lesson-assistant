@@ -20,13 +20,15 @@ const LESSON_JSON_SCHEMA_HASH = crypto
   .update(JsonSchemaString)
   .digest("hex");
 
-function getSnapshotHash(snapshot: Snapshot) {
-  const hash = crypto
-    .createHash("sha256")
-    .update(JSON.stringify(snapshot))
-    .digest("hex");
+function getSnapshotHash(snapshot: Snapshot, cacheKeyInput?: string) {
+  const hasher = crypto.createHash("sha256").update(JSON.stringify(snapshot));
 
-  return hash;
+  if (cacheKeyInput) {
+    hasher.update("\0");
+    hasher.update(cacheKeyInput);
+  }
+
+  return hasher.digest("hex");
 }
 
 /**
@@ -98,12 +100,20 @@ export class LessonSnapshots {
     messageId,
     snapshot,
     trigger,
+    cacheKeyInput,
   }: {
     userId: string;
     chatId: string;
     messageId: string;
     snapshot: Snapshot;
     trigger: LessonSnapshotTrigger;
+    /**
+     * Extra input folded into the lesson snapshot hash alongside the lesson
+     * content — e.g. the lesson-plan exporter mixes in active content guidance
+     * derived from moderations. Omit unless your artefact depends on more than
+     * lesson content.
+     */
+    cacheKeyInput?: string;
   }): Promise<LessonSnapshot> {
     /**
      * Prisma types complained when passing the JSON schema directly to the Prisma
@@ -127,7 +137,7 @@ export class LessonSnapshots {
       },
     });
 
-    const hash = getSnapshotHash(snapshot);
+    const hash = getSnapshotHash(snapshot, cacheKeyInput);
 
     // attempt to find existing snapshot
     const existingSnapshot = await this.prisma.lessonSnapshot.findFirst({
