@@ -20,7 +20,7 @@ const LESSON_JSON_SCHEMA_HASH = crypto
   .update(JsonSchemaString)
   .digest("hex");
 
-function getSnapshotHash(snapshot: Snapshot, cacheKeyInput?: string) {
+export function getSnapshotHash(snapshot: Snapshot, cacheKeyInput?: string) {
   const hasher = crypto.createHash("sha256").update(JSON.stringify(snapshot));
 
   if (cacheKeyInput) {

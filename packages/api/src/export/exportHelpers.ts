@@ -1,4 +1,4 @@
-import { LessonSnapshots } from "@oakai/core";
+import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
 import type { Snapshot } from "@oakai/core/src/models/lessonSnapshots";
 import { Moderations } from "@oakai/core/src/models/moderations";
 import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/severityLevel";
