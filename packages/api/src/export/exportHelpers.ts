@@ -25,9 +25,11 @@ function contentGuidanceCacheKey(
     return undefined;
   }
 
+  // Don't swap this for localeCompare — the output is hashed, and the sort
+  // needs to be the same on every machine.
   return categories
     .map((c) => `${c.code}:${c.severityLevel}`)
-    .sort()
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
     .join("|");
 }
 
