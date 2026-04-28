@@ -1,12 +1,37 @@
-import { OakFlex, OakIcon, OakP } from "@oaknational/oak-components";
+import {
+  type OakAllSpacingToken,
+  type OakBoxProps,
+  OakFlex,
+  type OakFontToken,
+  OakIcon,
+  OakSpan,
+} from "@oaknational/oak-components";
 
-const FormValidationWarning = ({ errorMessage }: { errorMessage: string }) => {
+type FormValidationWarningProps = {
+  errorMessage: string;
+  iconWidth?: OakAllSpacingToken;
+  $font?: OakFontToken;
+  $gap?: OakAllSpacingToken;
+  $mt?: OakBoxProps["$mt"];
+};
+
+const FormValidationWarning = ({
+  errorMessage,
+  iconWidth = "spacing-40",
+  $font = "body-2",
+  $gap = "spacing-4",
+  $mt,
+}: FormValidationWarningProps) => {
   return (
-    <OakFlex $flexDirection="row" $gap="spacing-4" $alignItems="center">
-      <OakIcon iconName="warning" iconWidth="spacing-40" $colorFilter="red" />
-      <OakP $font="body-2" $color="icon-error">
+    <OakFlex $flexDirection="row" $gap={$gap} $alignItems="center" $mt={$mt}>
+      <OakIcon
+        iconName="warning"
+        iconWidth={iconWidth}
+        $colorFilter="icon-error"
+      />
+      <OakSpan $font={$font} $color="text-error">
         {errorMessage}
-      </OakP>
+      </OakSpan>
     </OakFlex>
   );
 };
