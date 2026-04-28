@@ -7,7 +7,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { Icon } from "@/components/Icon";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 import type { ChatAction } from "@/stores/chatStore";
