@@ -1,7 +1,4 @@
-import {
-  OakInlineBanner,
-  OakPrimaryButton,
-} from "@oaknational/oak-components";
+import { OakInlineBanner, OakPrimaryButton } from "@oaknational/oak-components";
 import { useRouter } from "next/navigation";
 
 import { getAilaUrl } from "@/utils/getAilaUrl";
