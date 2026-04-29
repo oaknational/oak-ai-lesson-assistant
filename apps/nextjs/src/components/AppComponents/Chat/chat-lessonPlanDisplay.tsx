@@ -175,11 +175,7 @@ export const LessonPlanDisplay = ({
 
   if (Object.keys(lessonPlan).length === 0) {
     if (ailaStreamingStatus === "Idle" && hasResponses) {
-      return (
-        <div className="w-full px-14 pb-14 pt-9 sm:px-22 sm:pb-22 sm:pt-7">
-          <LessonNotCreatedBanner />
-        </div>
-      );
+      return <LessonNotCreatedBanner />;
     }
     return (
       <div className="w-full gap-5 px-23 pt-26">
