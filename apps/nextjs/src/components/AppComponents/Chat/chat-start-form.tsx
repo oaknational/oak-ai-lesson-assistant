@@ -44,10 +44,7 @@ export function ChatStartForm({
     if (e) {
       e.preventDefault();
     }
-    if (!input?.trim()) {
-      return;
-    }
-    if (formError) {
+    if (!input?.trim() || formError) {
       return;
     }
     submit(input);

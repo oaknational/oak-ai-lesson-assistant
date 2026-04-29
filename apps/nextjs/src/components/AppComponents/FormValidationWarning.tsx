@@ -1,7 +1,7 @@
 import {
   type OakAllSpacingToken,
-  type OakBoxProps,
   OakFlex,
+  type OakFlexProps,
   type OakFontToken,
   OakIcon,
   OakSpan,
@@ -11,19 +11,22 @@ type FormValidationWarningProps = {
   errorMessage: string;
   iconWidth?: OakAllSpacingToken;
   $font?: OakFontToken;
-  $gap?: OakAllSpacingToken;
-  $mt?: OakBoxProps["$mt"];
+  containerProps?: OakFlexProps;
 };
 
 const FormValidationWarning = ({
   errorMessage,
   iconWidth = "spacing-40",
   $font = "body-2",
-  $gap = "spacing-4",
-  $mt,
+  containerProps,
 }: FormValidationWarningProps) => {
   return (
-    <OakFlex $flexDirection="row" $gap={$gap} $alignItems="center" $mt={$mt}>
+    <OakFlex
+      $flexDirection="row"
+      $gap="spacing-4"
+      $alignItems="center"
+      {...containerProps}
+    >
       <OakIcon
         iconName="warning"
         iconWidth={iconWidth}
