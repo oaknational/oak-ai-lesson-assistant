@@ -9,7 +9,6 @@ import {
   useTeachingMaterialsActions,
   useTeachingMaterialsStore,
 } from "@/stores/TeachingMaterialsStoreProvider";
-import { containsLink } from "@/utils/link-validation";
 import {
   activeDropdownSelector,
   subjectSelector,
