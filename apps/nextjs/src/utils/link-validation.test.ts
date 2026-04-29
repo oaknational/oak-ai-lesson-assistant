@@ -19,6 +19,14 @@ describe("containsLink", () => {
     expect(containsLink("Visit example.com")).toBe(false);
   });
 
+  it("detects www. URL without protocol", () => {
+    expect(containsLink("Visit www.example.com")).toBe(true);
+  });
+
+  it("does not match bare www. without a valid domain", () => {
+    expect(containsLink("www.")).toBe(false);
+  });
+
   it("returns false for empty or whitespace input", () => {
     expect(containsLink("")).toBe(false);
     expect(containsLink("   ")).toBe(false);
