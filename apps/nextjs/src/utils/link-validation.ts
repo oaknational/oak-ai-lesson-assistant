@@ -1,10 +1,10 @@
 export function containsLink(text: string): boolean {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const urls = text.match(urlRegex) ?? [];
+  const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+  const matches = text.match(urlRegex) ?? [];
 
-  return urls.some((url) => {
+  return matches.some((match) => {
     try {
-      new URL(url);
+      new URL(match.startsWith("www.") ? `https://${match}` : match);
       return true;
     } catch {
       return false;
