@@ -72,9 +72,6 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
           />
         )}
         {isDemoLocked && <LockedPromptForm />}
-        <span className="hidden w-full sm:block">
-          <ChatPanelDisclaimer size="sm" />
-        </span>
       </div>
     </div>
   );

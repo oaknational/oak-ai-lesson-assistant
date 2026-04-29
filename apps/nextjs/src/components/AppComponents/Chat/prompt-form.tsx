@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { OakTertiaryButton } from "@oaknational/oak-components";
+import { OakBox, OakTertiaryButton } from "@oaknational/oak-components";
 
 import {
   Tooltip,
@@ -13,6 +13,7 @@ import type { ChatAction } from "@/stores/chatStore";
 import { containsLink } from "@/utils/link-validation";
 
 import FormValidationWarning from "../FormValidationWarning";
+import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
 export interface PromptFormProps {
   input: string;
@@ -107,6 +108,12 @@ export function PromptForm({
           $font="body-3"
         />
       )}
+      <OakBox
+        $mt={`${formError ? "spacing-0" : "spacing-24"}`}
+        $display={["none", "block"]}
+      >
+        <ChatPanelDisclaimer size="sm" />
+      </OakBox>
     </form>
   );
 }
