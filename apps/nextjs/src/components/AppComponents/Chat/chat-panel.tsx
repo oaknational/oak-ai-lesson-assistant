@@ -13,8 +13,6 @@ import {
 } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
-import ChatPanelDisclaimer from "./chat-panel-disclaimer";
-
 interface ChatPanelProps {
   isDemoLocked: boolean;
 }
