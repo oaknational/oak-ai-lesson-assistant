@@ -1,15 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Textarea from "react-textarea-autosize";
+
+import { OakTertiaryButton } from "@oaknational/oak-components";
 
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { Icon } from "@/components/Icon";
-import LoadingWheel from "@/components/LoadingWheel";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
+import { containsLink } from "@/utils/link-validation";
+
+import FormValidationWarning from "../FormValidationWarning";
 
 export function ChatStartForm({
   input,
@@ -24,11 +27,12 @@ export function ChatStartForm({
 }>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   // Disable submission until Clerk metadata has loaded. This prevents race
   // conditions (particularly in E2E tests) where submitting before metadata
   // loads would incorrectly show the demo interstitial modal to non-demo users.
   const clerkMetadata = useClerkDemoMetadata();
-  const isDisabled = isSubmitting || !clerkMetadata.isSet;
+  const isDisabled = isSubmitting || !clerkMetadata.isSet || formError !== null;
 
   useEffect(() => {
     if (inputRef.current) {
@@ -40,10 +44,20 @@ export function ChatStartForm({
     if (e) {
       e.preventDefault();
     }
-    if (!input?.trim()) {
+    if (!input?.trim() || formError) {
       return;
     }
     submit(input);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setInput(newValue);
+    if (containsLink(newValue)) {
+      setFormError("Aila doesn't currently support links");
+    } else {
+      setFormError(null);
+    }
   };
 
   return (
@@ -57,7 +71,7 @@ export function ChatStartForm({
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder={"Subject, key stage and title"}
           spellCheck={false}
           className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"
@@ -65,21 +79,27 @@ export function ChatStartForm({
         />
         <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center">
           <Tooltip>
-            <LoadingWheel visible={isSubmitting} />
             <TooltipTrigger asChild>
-              <button
-                data-testid="send-message"
-                type="submit"
-                className={`${isSubmitting ? "hidden" : "inline-block"} rounded-full bg-black p-4`}
+              <OakTertiaryButton
                 disabled={isDisabled}
-              >
-                <Icon icon="chevron-right" color="white" size="sm" />
-              </button>
+                iconName="chevron-right"
+                isLoading={isSubmitting}
+                onClick={handleSubmit}
+                data-testid="send-message"
+              />
             </TooltipTrigger>
             <TooltipContent>Send message</TooltipContent>
           </Tooltip>
         </div>
       </div>
+
+      {formError && (
+        <FormValidationWarning
+          errorMessage={formError}
+          iconWidth="spacing-20"
+          $font="body-3"
+        />
+      )}
     </form>
   );
 }
