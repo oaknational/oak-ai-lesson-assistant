@@ -13,8 +13,6 @@
  * Configure runs per scenario with SCORE_RUNS env var (default 3).
  * Output: packages/aila/src/lib/agentic-system/scoring/scores.yaml
  */
-import { textify } from "@oakai/core/src/utils/textify";
-
 import { execSync } from "child_process";
 import fs from "fs";
 import OpenAI from "openai";
@@ -38,6 +36,10 @@ import type {
   AilaTurnCallbacks,
   ChatMessage,
 } from "../types";
+import {
+  collectMeaningOccurrences,
+  formatMeaningEvidence,
+} from "./scoreAgenticIssues.helpers";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -81,66 +83,6 @@ type RunCapture = ScorerInput & { error?: string; durationSec: number };
 
 function wordCount(text: string): number {
   return text.split(/\s+/).filter(Boolean).length;
-}
-
-type MeaningOccurrence = { section: string; snippet: string };
-type MeaningEntry = { occurrences: MeaningOccurrence[]; meaning: string };
-
-function extractAmericanMeaning(details: Record<string, string>): string {
-  return details["American English"] ?? "";
-}
-
-function extractSnippet(text: string, phrase: string): string {
-  const pattern = new RegExp(
-    String.raw`[^.!?\n]*\b${phrase}\b[^.!?\n]*[.!?]?`,
-    "i",
-  );
-  const match = pattern.exec(text);
-  return match ? match[0].trim() : "";
-}
-
-function collectMeaningOccurrences(
-  issues: Array<{
-    section: string;
-    phrase: string;
-    details: Record<string, string>;
-  }>,
-  finalDocument: PartialLessonPlan,
-): Map<string, MeaningEntry> {
-  const byPhrase = new Map<string, MeaningEntry>();
-  for (const { section, phrase, details } of issues) {
-    const sectionText = textify(
-      finalDocument[section as keyof typeof finalDocument],
-    );
-    const snippet = extractSnippet(sectionText, phrase);
-    const entry = byPhrase.get(phrase);
-    if (entry) {
-      entry.occurrences.push({ section, snippet });
-    } else {
-      byPhrase.set(phrase, {
-        occurrences: [{ section, snippet }],
-        meaning: extractAmericanMeaning(details),
-      });
-    }
-  }
-  return byPhrase;
-}
-
-function formatMeaningEvidence(byPhrase: Map<string, MeaningEntry>): string {
-  const lines: string[] = [];
-  for (const [phrase, { occurrences, meaning }] of byPhrase) {
-    const sections = occurrences.map((o) => o.section);
-    lines.push(`- "${phrase}" [${sections.join(", ")}]`);
-    if (meaning) lines.push(`  US: ${meaning.replaceAll("\n", " ").trim()}`);
-    const seen = new Set<string>();
-    for (const { section, snippet } of occurrences) {
-      if (snippet && !seen.has(snippet)) {
-        seen.add(snippet);
-        lines.push(`  ${section}: "...${snippet}..."`);
-      }
-    }
-  }
-  return lines.join("\n");
 }
 
 const SCORERS: Scorer[] = [
