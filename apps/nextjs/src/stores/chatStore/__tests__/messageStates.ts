@@ -1,5 +1,14 @@
 /* eslint-disable @cspell/spellchecker */
-export const createMessageStates = (fixedDate: Date) => ({
+import type { AiMessage } from "../types";
+
+type MessageStates = {
+  userRequest: AiMessage[];
+  stableMessages: AiMessage[];
+  stableAndStreaming: AiMessage[];
+  streamingMessage: AiMessage[];
+};
+
+export const createMessageStates = (fixedDate: Date): MessageStates => ({
   userRequest: [
     {
       content:
