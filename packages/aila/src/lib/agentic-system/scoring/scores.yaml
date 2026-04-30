@@ -1,5 +1,5 @@
-codeHash: 5499b3383906dd052cbc174e2a515face573d7cd591457cf8aaaf7546244dd19
-generated: 2026-02-24T12:45:22.745Z
+codeHash: 1f4e1d2bbcc9baf26dee99550828b73422989b1a59dec54f0561bd460b7acc22
+generated: 2026-04-22T15:07:48.958Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -19,7 +19,8 @@ summary:
       pass: 3
   no-rag-lesson:
     plan-groupings:
-      flag: 3
+      pass: 1
+      flag: 2
     additional-materials-tone:
       skip: 3
     cycle-verbosity:

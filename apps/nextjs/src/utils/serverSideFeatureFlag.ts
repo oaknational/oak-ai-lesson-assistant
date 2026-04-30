@@ -6,6 +6,18 @@ import { kv } from "@vercel/kv";
 
 const log = aiLogger("feature-flags");
 
+function parseCachedFeatureFlagValue(value: unknown): boolean | null {
+  if (value === true || value === "true") {
+    return true;
+  }
+
+  if (value === false || value === "false") {
+    return false;
+  }
+
+  return null;
+}
+
 /**
  * Evaluate a feature flag server-side with full user context.
  *
@@ -19,15 +31,17 @@ export async function serverSideFeatureFlag(
   featureFlagId: string,
 ): Promise<boolean> {
   const { userId } = await auth();
+
   if (!userId) {
     return false;
   }
 
   const cacheKey = `feature_flag:${featureFlagId}:${userId}`;
   const cachedResult = await kv.get(cacheKey);
+  const parsedCachedResult = parseCachedFeatureFlagValue(cachedResult);
 
-  if (cachedResult !== null) {
-    return cachedResult === "true";
+  if (parsedCachedResult !== null) {
+    return parsedCachedResult;
   }
 
   try {
@@ -40,7 +54,7 @@ export async function serverSideFeatureFlag(
         personProperties: { ...(email && { email }) },
       })) ?? false;
 
-    await kv.set(cacheKey, isFeatureFlagEnabled.toString(), { ex: 60 });
+    await kv.set(cacheKey, isFeatureFlagEnabled, { ex: 60 });
 
     return isFeatureFlagEnabled;
   } catch (e) {

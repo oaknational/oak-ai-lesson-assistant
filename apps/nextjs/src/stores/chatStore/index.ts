@@ -31,7 +31,6 @@ export const createChatStore = (
     id,
     moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
-    streamingError: false,
     initialMessages: [],
     stableMessages: [],
     streamingMessage: null,
@@ -72,6 +71,8 @@ export const createChatStore = (
     },
 
     ...initialValues,
+    streamingError: initialValues.streamingError ?? false,
+    streamingFailedTurn: initialValues.streamingFailedTurn ?? false,
   }));
 
   logStoreUpdates(chatStore, "chat:store");
