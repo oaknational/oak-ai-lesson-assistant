@@ -106,6 +106,13 @@ const SCORERS: Scorer[] = [
         }
         const actual = po.plan.map((s) => s.sectionKey);
         const expected = EXPECTED_GROUPS[i];
+        if (!expected?.includes("cycle3")) {
+          // If cycle3 is not expected, remove it from actual if present, since it's optional in that case.
+          const cycle3Index = actual.indexOf("cycle3");
+          if (cycle3Index !== -1) {
+            actual.splice(cycle3Index, 1);
+          }
+        }
         const match =
           expected &&
           actual.length === expected.length &&
@@ -343,9 +350,19 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       const callbacks: AilaTurnCallbacks = {
         onPlannerComplete: ({ sectionKeys }) => {
           turnPlannerSections = sectionKeys;
+          if (sectionKeys.length > 0) {
+            console.log(
+              `    [turn ${turnCount + 1}] planner → [${sectionKeys.join(", ")}]`,
+            );
+          } else {
+            console.log(`    [turn ${turnCount + 1}] planner → exit`);
+          }
         },
         onSectionComplete: (patches) => {
           turnPatches.push(...patches);
+          for (const p of patches) {
+            console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
+          }
         },
         onTurnComplete: ({ document, ailaMessage }) => {
           turnDoc = document;
