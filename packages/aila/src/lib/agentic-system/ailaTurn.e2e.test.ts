@@ -38,9 +38,13 @@ const runTurn = async (
       messageCapture = ailaMessage;
       return Promise.resolve();
     },
+    onTurnFailed: () => Promise.resolve(),
   };
 
-  await ailaTurn({ persistedState, runtime, callbacks });
+  const outcome = await ailaTurn({ persistedState, runtime, callbacks });
+  if (outcome.status !== "success") {
+    throw new Error("Turn did not complete successfully.");
+  }
   if (!nextDocCapture)
     throw new Error("Turn did not complete with a next document.");
 
