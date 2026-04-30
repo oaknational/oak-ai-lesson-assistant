@@ -369,6 +369,10 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
           turnMessage = ailaMessage;
           return Promise.resolve();
         },
+        onTurnFailed: ({ ailaMessage }) => {
+          turnMessage = ailaMessage;
+          return Promise.resolve();
+        },
       };
 
       await ailaTurn({ persistedState: persisted, runtime, callbacks });
