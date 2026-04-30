@@ -1,5 +1,6 @@
 import { textify } from "@oakai/core/src/utils/textify";
 
+import type { AmericanismIssue } from "../../../features/americanisms";
 import type { PartialLessonPlan } from "../../../protocol/schema";
 
 export type MeaningOccurrence = { section: string; snippet: string };
@@ -7,6 +8,9 @@ export type MeaningEntry = {
   occurrences: MeaningOccurrence[];
   meaning: string;
 };
+
+type MeaningIssue = Extract<AmericanismIssue, { issue: "Different meanings" }>;
+export type MeaningIssueWithSection = MeaningIssue & { section: string };
 
 export function extractAmericanMeaning(
   details: Record<string, string>,
@@ -24,11 +28,7 @@ export function extractSnippet(text: string, phrase: string): string {
 }
 
 export function collectMeaningOccurrences(
-  issues: Array<{
-    section: string;
-    phrase: string;
-    details: Record<string, string>;
-  }>,
+  issues: MeaningIssueWithSection[],
   finalDocument: PartialLessonPlan,
 ): Map<string, MeaningEntry> {
   const byPhrase = new Map<string, MeaningEntry>();

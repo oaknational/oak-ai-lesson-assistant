@@ -19,6 +19,7 @@ import OpenAI from "openai";
 import path from "path";
 import YAML from "yaml";
 
+import { AMERICANISM_ISSUE_KIND } from "../../../features/americanisms";
 import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";
 import {
   CompletedLessonPlanSchema,
@@ -237,7 +238,7 @@ const SCORERS: Scorer[] = [
 
       const spellingIssues = issuesBySection.flatMap(({ section, issues }) =>
         issues
-          .filter((i) => i.issue === "American English Spelling")
+          .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.SPELLING)
           .map((i) => ({ section, ...i })),
       );
 
@@ -264,7 +265,7 @@ const SCORERS: Scorer[] = [
 
       const phrasingIssues = issuesBySection.flatMap(({ section, issues }) =>
         issues
-          .filter((i) => i.issue === "American English")
+          .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.PHRASING)
           .map((i) => ({ section, ...i })),
       );
 
@@ -291,7 +292,7 @@ const SCORERS: Scorer[] = [
 
       const meaningIssues = issuesBySection.flatMap(({ section, issues }) =>
         issues
-          .filter((i) => i.issue === "Different meanings")
+          .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.MEANING)
           .map((i) => ({ section, ...i })),
       );
 

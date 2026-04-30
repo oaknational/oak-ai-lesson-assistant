@@ -2,21 +2,27 @@ import { z } from "zod";
 
 import type { AilaDocumentContent } from "./AilaAmericanisms";
 
+export const AMERICANISM_ISSUE_KIND = {
+  SPELLING: "American English Spelling",
+  PHRASING: "American English",
+  MEANING: "Different meanings",
+} as const;
+
 const spellingIssueSchema = z.object({
   phrase: z.string(),
-  issue: z.literal("American English Spelling"),
+  issue: z.literal(AMERICANISM_ISSUE_KIND.SPELLING),
   details: z.string(),
 });
 
 const phrasingIssueSchema = z.object({
   phrase: z.string(),
-  issue: z.literal("American English"),
+  issue: z.literal(AMERICANISM_ISSUE_KIND.PHRASING),
   details: z.string(),
 });
 
 const meaningIssueSchema = z.object({
   phrase: z.string(),
-  issue: z.literal("Different meanings"),
+  issue: z.literal(AMERICANISM_ISSUE_KIND.MEANING),
   details: z.record(z.string()),
 });
 
