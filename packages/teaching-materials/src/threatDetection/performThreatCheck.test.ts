@@ -48,24 +48,18 @@ describe("performThreatCheck", () => {
     expect(mockPerformModelArmorThreatCheck).not.toHaveBeenCalled();
   });
 
-  it("dispatches to Model Armor when selected", async () => {
-    const modelArmorResult = {
+  it("returns a no-threat result when Model Armor is selected (QA-disabled on this branch)", async () => {
+    mockGetThreatDetectionProvider.mockReturnValue("model_armor");
+
+    await expect(performThreatCheck({ messages })).resolves.toEqual({
       provider: "model_armor",
       isThreat: false,
       message: "No threats detected",
       findings: [],
       details: {},
-    };
-    mockGetThreatDetectionProvider.mockReturnValue("model_armor");
-    mockPerformModelArmorThreatCheck.mockResolvedValue(modelArmorResult);
-
-    await expect(performThreatCheck({ messages })).resolves.toEqual(
-      modelArmorResult,
-    );
-
-    expect(mockPerformModelArmorThreatCheck).toHaveBeenCalledWith({
-      messages,
     });
+
+    expect(mockPerformModelArmorThreatCheck).not.toHaveBeenCalled();
     expect(mockPerformLakeraThreatCheck).not.toHaveBeenCalled();
   });
 });

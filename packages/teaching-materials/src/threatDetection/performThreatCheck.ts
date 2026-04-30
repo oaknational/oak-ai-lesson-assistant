@@ -5,7 +5,6 @@ import type {
 } from "@oakai/core/src/threatDetection/types";
 
 import { performLakeraThreatCheck } from "./lakeraThreatCheck";
-import { performModelArmorThreatCheck } from "./modelArmorThreatCheck";
 
 export interface ThreatCheckParams {
   messages: ThreatDetectionMessage[];
@@ -18,6 +17,14 @@ export async function performThreatCheck({
     case "lakera":
       return performLakeraThreatCheck({ messages });
     case "model_armor":
-      return performModelArmorThreatCheck({ messages });
+      // QA-only: Model Armor disabled on this branch so moderation can be
+      // verified without G-MA catching the outgoing prompt first.
+      return {
+        provider: "model_armor",
+        isThreat: false,
+        message: "No threats detected",
+        findings: [],
+        details: {},
+      };
   }
 }
