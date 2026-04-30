@@ -1,7 +1,7 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError } from "@oakai/core";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -14,6 +14,13 @@ import {
 } from "@/utils/testHelpers/consumeStream";
 
 import { handleChatException } from "./errorHandling";
+
+jest.mock(
+  "@oakai/aila/src/utils/threatDetection/threatDetectionHandling",
+  () => ({
+    handleThreatDetectionError: jest.fn(),
+  }),
+);
 
 describe("handleChatException", () => {
   describe("AilaThreatDetectionError", () => {
@@ -92,6 +99,31 @@ describe("handleChatException", () => {
         value: "Rate limit exceeded",
         message:
           "**Unfortunately you’ve exceeded your fair usage limit for today.** Please come back in 1 hour. If you require a higher limit, please [make a request](https://share.hsforms.com/118hyngR-QSS0J7vZEVlRSgbvumd).",
+      });
+    });
+  });
+
+  describe("generic Error", () => {
+    it("should return a generic error message without leaking internal details", async () => {
+      const error = new Error("Missing environment variable OPENAI_API_KEY");
+      const prisma = {} as unknown as PrismaClientWithAccelerate;
+
+      const response = await handleChatException(error, "test-chat-id", prisma);
+
+      expect(response.status).toBe(200);
+
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const consumed = await consumeStream(response.body);
+      const message = extractStreamMessage(consumed);
+
+      expect(message).toEqual({
+        type: "error",
+        message: "An unexpected error occurred",
+        value: "Sorry, an unexpected error occurred. Please try again later.",
       });
     });
   });

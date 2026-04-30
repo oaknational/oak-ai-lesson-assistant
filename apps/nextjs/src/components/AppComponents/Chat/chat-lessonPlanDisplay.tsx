@@ -15,12 +15,11 @@ import {
   useChatStore,
   useLessonPlanActions,
   useLessonPlanStore,
-  useModerationStore,
 } from "@/stores/AilaStoresProvider";
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
-import { GuidanceRequired } from "./guidance-required";
+import { LessonNotCreatedBanner } from "./LessonNotCreatedBanner";
 import { LessonPlanSection } from "./lesson-plan-section";
 
 const scrollingLog = aiLogger("lessons:scrolling");
@@ -144,7 +143,10 @@ export const LessonPlanDisplay = ({
   showLessonMobile,
 }: LessonPlanDisplayProps) => {
   const lessonPlan = useLessonPlanStore((state) => state.lessonPlan);
-  const lastModeration = useModerationStore((state) => state.lastModeration);
+  const ailaStreamingStatus = useChatStore(
+    (state) => state.ailaStreamingStatus,
+  );
+  const hasResponses = useChatStore((state) => state.stableMessages.length > 1);
 
   const { userHasCancelledAutoScroll } =
     useDetectScrollOverride(documentContainerRef);
@@ -172,6 +174,9 @@ export const LessonPlanDisplay = ({
   });
 
   if (Object.keys(lessonPlan).length === 0) {
+    if (ailaStreamingStatus === "Idle" && hasResponses) {
+      return <LessonNotCreatedBanner />;
+    }
     return (
       <div className="w-full gap-5 px-23 pt-26">
         <Skeleton loaded={false} numberOfRows={2}>
@@ -215,7 +220,6 @@ export const LessonPlanDisplay = ({
           )}
         </Flex>
       )}
-      {lastModeration && <GuidanceRequired moderation={lastModeration} />}
 
       {notEmpty(lessonPlan.basedOn) && (
         <Flex direction="row" gap="2" className="pb-12">

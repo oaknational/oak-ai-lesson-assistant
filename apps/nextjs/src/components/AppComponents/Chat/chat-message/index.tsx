@@ -14,13 +14,6 @@ function isActionMessage(message: ParsedMessage) {
   return message.parts.every((part) => part.document.type === "action");
 }
 
-function roleType(message: ParsedMessage) {
-  if (message.hasError) {
-    return "error";
-  }
-  return message.role === "user" ? "user" : "aila";
-}
-
 export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
   const [inspect, setInspect] = useState(false);
 
@@ -37,7 +30,7 @@ export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
 
   return (
     <>
-      <Moderation forMessage={message} />
+      <Moderation forMessage={message} $mt="spacing-48" />
       {normalParts.length > 0 && (
         <Message.Container roleType={message.role === "user" ? "user" : "aila"}>
           <button

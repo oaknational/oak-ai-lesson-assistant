@@ -1,3 +1,56 @@
+# [1.70.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.69.0...v1.70.0) (2026-04-23)
+
+
+### Features
+
+* **chat:** sanitise URLs in Aila markdown renderer ([#1020](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1020)) ([aacf77f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/aacf77f437e13b866759f1c9006fd7c4b3c85000))
+* **threat-detection:** [AI-2070] [migration] persist threat detections and add admin review flow ([#1011](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1011)) ([3d7fe8c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3d7fe8c442c020ac9c520efe2922ea2dfe60e983))
+
+# [1.69.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.68.0...v1.69.0) (2026-04-21)
+
+
+### Bug Fixes
+
+* silent error in set up chat handler - AI-2124 ([#1017](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1017)) ([3e774f2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e774f204c985aa0df2ecae5f4fb9e947e52503e))
+* undefined in lesson plan exports - AI-2138 ([#1016](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1016)) ([c007d4a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c007d4aca0216c4fa1cc4ec57f54f9f9ef528091))
+
+
+### Features
+
+* add content guidance to lesson exports ([#1010](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1010)) ([7780fdf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7780fdfc7a00d1d8e2ae490a0089981c2ac04757))
+* add new moderation banner to share page ([#1014](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1014)) ([5f0cda4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5f0cda421c2157c95e8511c1f4a20d5696c5fb03))
+* check banned status on login AI-2113 ([#1013](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1013)) ([ffa3a8f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ffa3a8f38ea02f5e314d84e88681ebafb2239849))
+
+# [1.68.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.67.0...v1.68.0) (2026-04-15)
+
+
+### Bug Fixes
+
+* use environment-aware URL for Aila admin user Slack button ([#1006](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1006)) ([71bc675](https://github.com/oaknational/oak-ai-lesson-assistant/commit/71bc6753db5cf84ba377251974f158dc52446311))
+
+
+### Features
+
+* aila and teaching material moderation v1 - AI-2046 ([#1002](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1002)) ([d6d5b28](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d6d5b28fcb6ca6b0b4a6bb0be08877512f873d85))
+* **core:** [AI-2109] replace inngest with background tasks ([#1007](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1007)) ([c658d32](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c658d32d4e9792b64cbd5f5aeea7b4c75e794c6c))
+
+# [1.67.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.66.0...v1.67.0) (2026-03-31)
+
+
+### Bug Fixes
+
+* handle agentic threat detection before generation init ([#991](https://github.com/oaknational/oak-ai-lesson-assistant/issues/991)) ([126ea57](https://github.com/oaknational/oak-ai-lesson-assistant/commit/126ea57053b428e45d66f7a4d696bd2a8f905369))
+* update example lesson key stage from 3 to 2 (AI-2093) ([#992](https://github.com/oaknational/oak-ai-lesson-assistant/issues/992)) ([225b214](https://github.com/oaknational/oak-ai-lesson-assistant/commit/225b2148294b7ad100c833d598067d0b88040803))
+
+
+### Features
+
+* [AI-2081] switch to Model Armor threat detection ([#995](https://github.com/oaknational/oak-ai-lesson-assistant/issues/995)) ([40642f4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/40642f4500c7eeaee8d611898bcf68cd4c8edc3d))
+* add production domain to Terraform Vercel project ([#994](https://github.com/oaknational/oak-ai-lesson-assistant/issues/994)) ([a0d5d72](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a0d5d72f095a5b2581d6038272a19ddb9232ae1b))
+* add Terraform config for Vercel project ([#926](https://github.com/oaknational/oak-ai-lesson-assistant/issues/926)) ([0554575](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0554575ae563c8280a4bf825fcc2e3be93f41f01))
+* disable runtime image description enricher ([#972](https://github.com/oaknational/oak-ai-lesson-assistant/issues/972)) ([a664017](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a664017d493752883a2e7eaa57f505660aca6905))
+* quiz retrieval from Postgres with V3 format ([#971](https://github.com/oaknational/oak-ai-lesson-assistant/issues/971)) ([561ebf7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/561ebf7abe9cb3dd68ab240ac283f0290dcead4a))
+
 # [1.66.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.65.0...v1.66.0) (2026-03-19)
 
 

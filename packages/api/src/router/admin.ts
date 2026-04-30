@@ -1,5 +1,10 @@
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
-import { Moderations, SafetyViolations } from "@oakai/core";
+import {
+  Moderations,
+  SafetyViolations,
+  type ThreatDetectionWithSafetyViolation,
+  ThreatDetections,
+} from "@oakai/core";
 import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -10,6 +15,17 @@ import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
 
 const log = aiLogger("admin");
+
+type AdminUserSafetyReview = {
+  safetyViolations: SafetyViolation[];
+  threatDetections: ThreatDetectionWithSafetyViolation[];
+  maxAllowedSafetyViolations: number;
+};
+
+const MAX_ALLOWED_SAFETY_VIOLATIONS = Number.parseInt(
+  process.env.SAFETY_VIOLATIONS_MAX_ALLOWED ?? "5",
+  10,
+);
 
 export const adminRouter = router({
   getModerations: adminProcedure.input(z.object({ id: z.string() })).query(
@@ -114,17 +130,34 @@ export const adminRouter = router({
       await safetyViolations.removeViolationById(id);
     }),
 
-  getSafetyViolationsForUser: adminProcedure
+  markThreatDetectionFalsePositive: adminProcedure
+    .input(z.object({ threatDetectionId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const threatDetections = new ThreatDetections(ctx.prisma);
+      await threatDetections.markFalsePositive(input.threatDetectionId);
+    }),
+
+  getUserSafetyReview: adminProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }): Promise<SafetyViolation[]> => {
+    .query(async ({ ctx, input }): Promise<AdminUserSafetyReview> => {
       const { userId } = input;
+      const threatDetections = new ThreatDetections(ctx.prisma);
+      const [safetyViolations, userThreatDetections] = await Promise.all([
+        ctx.prisma.safetyViolation.findMany({
+          where: {
+            userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        }),
+        threatDetections.byUserId(userId),
+      ]);
 
-      const safetyViolations = await ctx.prisma.safetyViolation.findMany({
-        where: {
-          userId,
-        },
-      });
-
-      return safetyViolations;
+      return {
+        maxAllowedSafetyViolations: MAX_ALLOWED_SAFETY_VIOLATIONS,
+        threatDetections: userThreatDetections,
+        safetyViolations,
+      };
     }),
 });

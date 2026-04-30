@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
 
+import { wrapWithUrlSafety } from "./markdown-url-safety";
 import { CodeBlock } from "./ui/codeblock";
 
 const MemoizedReactMarkdown: FC<Options> = memo(
@@ -107,9 +108,10 @@ export const MemoizedReactMarkdownWithStyles = ({
 }: ReactMarkdownWithStylesProps) => {
   const components: Partial<Components> = useMemo(() => {
     const defaultComponents = createComponents(className);
-    return customComponents
+    const merged = customComponents
       ? { ...defaultComponents, ...customComponents }
       : defaultComponents;
+    return wrapWithUrlSafety(merged);
   }, [className, customComponents]);
   return (
     <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">

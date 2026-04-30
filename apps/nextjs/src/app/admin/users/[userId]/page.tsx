@@ -2,8 +2,6 @@
 
 import { use } from "react";
 
-import { aiLogger } from "@oakai/logger";
-
 import LoadingWheel from "@/components/LoadingWheel";
 import { trpc } from "@/utils/trpc";
 
@@ -15,33 +13,31 @@ interface AdminUserProps {
   }>;
 }
 
-const log = aiLogger("admin");
-
 export default function AdminUser({ params }: Readonly<AdminUserProps>) {
   const { userId } = use(params);
   const {
-    data: safetyViolations,
-    isLoading: isSafetyViolationsLoading,
+    data: userSafetyReview,
+    isLoading: isUserSafetyReviewLoading,
     refetch,
-  } = trpc.admin.getSafetyViolationsForUser.useQuery({
+  } = trpc.admin.getUserSafetyReview.useQuery({
     userId,
   });
 
-  if (isSafetyViolationsLoading) {
+  if (isUserSafetyReviewLoading) {
     return <LoadingWheel />;
   }
 
-  log.info("chat", safetyViolations);
-
-  if (!safetyViolations) {
-    return <div>No safety violations found</div>;
+  if (!userSafetyReview) {
+    return <div>No user safety data found</div>;
   }
 
   return (
     <AdminUserView
       userId={userId}
-      safetyViolations={safetyViolations}
-      refetchSafetyViolations={() => void refetch()}
+      safetyViolations={userSafetyReview.safetyViolations}
+      maxAllowedSafetyViolations={userSafetyReview.maxAllowedSafetyViolations}
+      threatDetections={userSafetyReview.threatDetections}
+      refetchUserSafetyReview={() => void refetch()}
     />
   );
 }

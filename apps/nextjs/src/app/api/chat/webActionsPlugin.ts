@@ -4,13 +4,15 @@ import type {
 } from "@oakai/aila/src/core/plugins";
 import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { inngest } from "@oakai/core/src/inngest";
-import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import {
+  UserBannedError,
+  SafetyViolations as defaultSafetyViolations,
+  ThreatDetections as defaultThreatDetections,
+  scheduleModerationNotification,
+} from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
 import { waitUntil } from "@vercel/functions";
 
 const log = aiLogger("chat");
@@ -18,28 +20,28 @@ const log = aiLogger("chat");
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
   SafetyViolations?: typeof defaultSafetyViolations,
+  ThreatDetections?: typeof defaultThreatDetections,
 ) => AilaPlugin;
 
 export const createWebActionsPlugin: PluginCreator = (
   prisma,
   SafetyViolations = defaultSafetyViolations,
+  ThreatDetections = defaultThreatDetections,
 ) => {
   const onStreamError: AilaPlugin["onStreamError"] = async (
     error,
     { aila, enqueue },
   ) => {
     if (error instanceof AilaThreatDetectionError) {
-      // #TODO change this to handleThreatDetectionError and move
-      // the logic elsewhere. Stop passing Prisma
       const threatError = await handleThreatDetectionError(
         {
-          userId: aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
+          userId: aila.userId ?? "anonymous",
           chatId: aila.chatId ?? "unknown",
           error,
           messages: aila.messages,
           prisma,
         },
-        SafetyViolations,
+        { SafetyViolations, ThreatDetections },
       );
       await enqueue(threatError);
     }
@@ -65,22 +67,15 @@ export const createWebActionsPlugin: PluginCreator = (
       throw new Error("User ID not set");
     }
 
-    try {
-      log.info("Sending slack notification for moderation");
-      await inngest.send({
-        name: "app/slack.notifyModeration",
-        user: { id: userId },
-        data: {
-          chatId: aila.chatId || "Unknown",
-          categories: moderation.categories as string[],
-          justification: moderation.justification ?? "Unknown",
-          safetyLevel,
-        },
-      });
-    } catch (e) {
-      log.error("Error scheduling slack notification", e);
-      Sentry.captureException(e);
-    }
+    await scheduleModerationNotification({
+      user: { id: userId },
+      data: {
+        chatId: aila.chatId || "Unknown",
+        categories: moderation.categories as string[],
+        justification: moderation.justification ?? "Unknown",
+        safetyLevel,
+      },
+    });
   };
 
   const onToxicModeration: AilaPlugin["onToxicModeration"] = async (

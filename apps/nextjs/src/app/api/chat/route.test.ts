@@ -20,6 +20,16 @@ jest.mock("@/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
 }));
 
+jest.mock(
+  "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector",
+  () => ({
+    ModelArmorThreatDetector: jest.fn().mockImplementation(() => ({
+      detectThreat: jest.fn(),
+      isThreatError: jest.fn().mockResolvedValue(false),
+    })),
+  }),
+);
+
 describe("Chat API Route", () => {
   let testConfig: Config;
   let mockLLMService: MockLLMService;
@@ -68,8 +78,12 @@ describe("Chat API Route", () => {
             return ailaInstance;
           },
         ),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      prisma: {} as any,
+      prisma: {
+        appSession: {
+          findUnique: jest.fn().mockResolvedValue(null),
+          update: jest.fn(),
+        },
+      } as unknown as Config["prisma"],
     };
   });
 

@@ -2,7 +2,7 @@ import { getLastAssistantMessage } from "@oakai/aila/src/helpers/chat/getLastAss
 import {
   isHighlySensitive,
   isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";

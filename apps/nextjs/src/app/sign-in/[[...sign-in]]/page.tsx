@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import SignUpSignInLayout from "@/components/SignUpSignInLayout";
 
+import DetectEmailLinkBannedUser from "./DetectEmailLinkBannedUser";
 import DetectStuckBannedUser from "./DetectStuckBannedUser";
 
 const SignInPage = () => {
@@ -20,8 +21,8 @@ const SignInPage = () => {
           <RedirectToHome />
         </SignedIn>
       </SignUpSignInLayout>
-
       <DetectStuckBannedUser />
+      <DetectEmailLinkBannedUser />
     </>
   );
 };

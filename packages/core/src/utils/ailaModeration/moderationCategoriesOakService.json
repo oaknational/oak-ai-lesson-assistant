@@ -2,6 +2,7 @@
   {
     "title": "Language and discrimination",
     "codePrefix": "l",
+    "severityLevel": "content-guidance",
     "categories": [
       {
         "code": "l/discriminatory-language",
@@ -18,6 +19,7 @@
   {
     "title": "Upsetting, disturbing and sensitive",
     "codePrefix": "u",
+    "severityLevel": "content-guidance",
     "categories": [
       {
         "code": "u/sensitive-content",
@@ -49,6 +51,7 @@
   {
     "title": "Nudity and sex",
     "codePrefix": "s",
+    "severityLevel": "content-guidance",
     "categories": [
       {
         "code": "s/nudity-or-sexual-content",
@@ -60,6 +63,7 @@
   {
     "title": "Physical activity and equipment requiring safe use",
     "codePrefix": "p",
+    "severityLevel": "content-guidance",
     "categories": [
       {
         "code": "p/practical-activities",
@@ -81,6 +85,7 @@
   {
     "title": "RSHE",
     "codePrefix": "e",
+    "severityLevel": "heightened-caution",
     "categories": [
       {
         "code": "e/rshe-content",
@@ -92,6 +97,7 @@
   {
     "title": "Recent and time-sensitive content",
     "codePrefix": "r",
+    "severityLevel": "enhanced-scrutiny",
     "categories": [
       {
         "code": "r/recent-content",
@@ -108,6 +114,7 @@
   {
     "title": "Nuanced content requiring care",
     "codePrefix": "n",
+    "severityLevel": "highly-sensitive",
     "categories": [
       {
         "code": "n/self-harm-suicide",
@@ -129,6 +136,7 @@
   {
     "title": "Toxic",
     "codePrefix": "t",
+    "severityLevel": "toxic",
     "categories": [
       {
         "code": "t/guides-self-harm-suicide",

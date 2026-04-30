@@ -5,13 +5,16 @@ import type {
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError } from "@oakai/core";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/node";
 
 import { streamingJSON } from "./protocol";
+
+const log = aiLogger("chat");
 
 async function handleThreatError(
   e: AilaThreatDetectionError,
@@ -58,11 +61,12 @@ async function handleUserBannedError(): Promise<Response> {
 }
 
 async function handleGenericError(e: Error): Promise<Response> {
+  log.error("Unhandled chat error", e);
   return Promise.resolve(
     streamingJSON({
       type: "error",
-      message: e.message,
-      value: `Sorry, an error occurred: ${e.message}`,
+      message: "An unexpected error occurred",
+      value: "Sorry, an unexpected error occurred. Please try again later.",
     } as ErrorDocument),
   );
 }

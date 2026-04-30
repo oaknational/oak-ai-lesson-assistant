@@ -5,6 +5,7 @@ import { chromaticParams } from "@/storybook/chromatic";
 import {
   mockRefetchSafetyViolations,
   mockSafetyViolations,
+  mockThreatDetections,
   userIds,
 } from "../../fixtures/safetyViolations.fixture";
 import { AdminUserView } from "./view";
@@ -24,7 +25,9 @@ export const Default: Story = {
   args: {
     userId: userIds.withViolations,
     safetyViolations: mockSafetyViolations,
-    refetchSafetyViolations: mockRefetchSafetyViolations,
+    maxAllowedSafetyViolations: 5,
+    threatDetections: mockThreatDetections,
+    refetchUserSafetyReview: mockRefetchSafetyViolations,
   },
 };
 
@@ -32,6 +35,33 @@ export const WithNoViolations: Story = {
   args: {
     userId: userIds.clean,
     safetyViolations: [],
-    refetchSafetyViolations: mockRefetchSafetyViolations,
+    maxAllowedSafetyViolations: 5,
+    threatDetections: [],
+    refetchUserSafetyReview: mockRefetchSafetyViolations,
+  },
+};
+
+export const ThreatDetectionsOnly: Story = {
+  args: {
+    userId: userIds.withViolations,
+    safetyViolations: [],
+    maxAllowedSafetyViolations: 5,
+    threatDetections: mockThreatDetections.map((td) => ({
+      ...td,
+      isFalsePositive: true,
+      safetyViolationId: null,
+      safetyViolation: null,
+    })),
+    refetchUserSafetyReview: mockRefetchSafetyViolations,
+  },
+};
+
+export const SafetyViolationsOnly: Story = {
+  args: {
+    userId: userIds.withViolations,
+    safetyViolations: mockSafetyViolations,
+    maxAllowedSafetyViolations: 5,
+    threatDetections: [],
+    refetchUserSafetyReview: mockRefetchSafetyViolations,
   },
 };

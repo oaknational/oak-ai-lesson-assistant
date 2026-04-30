@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const notifyRateLimitSchema = {
+export const notifyRateLimitSchema = z.object({
   user: z.object({
     id: z.string(),
   }),
@@ -8,4 +8,6 @@ export const notifyRateLimitSchema = {
     limit: z.number(),
     reset: z.coerce.date(),
   }),
-};
+});
+
+export type NotifyRateLimitInput = z.infer<typeof notifyRateLimitSchema>;

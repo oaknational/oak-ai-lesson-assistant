@@ -1,5 +1,4 @@
-import { demoUsers } from "@oakai/core";
-import { UserBannedError } from "@oakai/core/src/models/userBannedError";
+import { UserBannedError, demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import { aiLogger } from "@oakai/logger";
@@ -44,7 +43,7 @@ export const teachingMaterialsRouter = router({
         userId: ctx.auth.userId,
       });
 
-      const { authKey, authType, graphqlEndpoint } = validateCurriculumApiEnv();
+      const { authKey, graphqlEndpoint } = validateCurriculumApiEnv();
 
       if (!ctx.auth.userId) {
         throw new TRPCError({
@@ -60,7 +59,6 @@ export const teachingMaterialsRouter = router({
             lessonSlug: input.lessonSlug,
             programmeSlug: input.programmeSlug,
             authKey,
-            authType,
             graphqlEndpoint: String(graphqlEndpoint),
           });
 

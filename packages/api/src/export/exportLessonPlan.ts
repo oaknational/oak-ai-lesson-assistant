@@ -1,3 +1,4 @@
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
@@ -42,19 +43,48 @@ export async function exportLessonPlan({
     exportType,
   });
 
-  if (exportData) {
+  const moderations = await ctx.prisma.moderation.findMany({
+    where: {
+      appSessionId: input.chatId,
+      invalidatedAt: null,
+    },
+  });
+
+  const contentGuidanceCategories = [
+    ...new Map(
+      moderations
+        .flatMap((m) => getDisplayCategories(m))
+        .map((c) => [c.code, c]),
+    ).values(),
+  ];
+
+  const hasContentGuidance = contentGuidanceCategories.length > 0;
+
+  if (exportData && !hasContentGuidance) {
     return exportData;
   }
 
-  /**
-   * User hasn't yet exported the lesson in this state, so we'll do it now
-   * and store the result in the database
-   */
+  if (exportData && hasContentGuidance) {
+    await ctx.prisma.lessonExport.updateMany({
+      where: {
+        lessonSnapshotId: lessonSnapshot.id,
+        exportType,
+        expiredAt: null,
+      },
+      data: {
+        expiredAt: new Date(),
+      },
+    });
+  }
 
   const result = await exportDocLessonPlan({
     snapshotId: lessonSnapshot.id,
     lessonPlan: input.data,
     userEmail,
+    contentGuidanceCategories:
+      contentGuidanceCategories.length > 0
+        ? contentGuidanceCategories
+        : undefined,
     onStateChange: (state) => {
       log.info(state);
 
