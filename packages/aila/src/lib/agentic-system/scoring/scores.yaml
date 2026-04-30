@@ -1,5 +1,5 @@
 codeHash: c829f5eeca94117fa2b0ebec8a7799c27c55158d70492520234f317533b0a7ff
-generated: 2026-04-30T11:54:50.548Z
+generated: 2026-04-30T13:37:43.991Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -10,8 +10,7 @@ summary:
     cycle-verbosity:
       pass: 3
     keyword-casing:
-      skip: 1
-      pass: 2
+      pass: 3
     title-no-gerund:
       pass: 3
     quiz-question-count:

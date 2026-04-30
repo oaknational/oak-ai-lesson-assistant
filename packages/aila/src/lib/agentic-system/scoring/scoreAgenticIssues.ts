@@ -106,22 +106,21 @@ const SCORERS: Scorer[] = [
         }
         const actual = po.plan.map((s) => s.sectionKey);
         const expected = EXPECTED_GROUPS[i];
-        if (!expected?.includes("cycle3")) {
-          // If cycle3 is not expected, remove it from actual if present, since it's optional in that case.
-          const cycle3Index = actual.indexOf("cycle3");
-          if (cycle3Index !== -1) {
-            actual.splice(cycle3Index, 1);
-          }
-        }
+        // cycle3 is optional in the actual output — strip it from expected
+        // only when both sides agree it's absent.
+        const expectedAdjusted =
+          expected && !actual.includes("cycle3")
+            ? expected.filter((s) => s !== "cycle3")
+            : expected;
         const match =
-          expected &&
-          actual.length === expected.length &&
-          actual.every((k, j) => k === expected[j]);
+          expectedAdjusted &&
+          actual.length === expectedAdjusted.length &&
+          actual.every((k, j) => k === expectedAdjusted[j]);
         const icon = match ? "✓" : "✗";
         if (!match) anyMismatch = true;
         lines.push(`Turn ${i + 1}: ${icon} [${actual.join(", ")}]`);
-        if (!match && expected) {
-          lines.push(`  expected: [${expected.join(", ")}]`);
+        if (!match && expectedAdjusted) {
+          lines.push(`  expected: [${expectedAdjusted.join(", ")}]`);
         }
       }
       lines.push(`Total: ${turnCount} turns`);
