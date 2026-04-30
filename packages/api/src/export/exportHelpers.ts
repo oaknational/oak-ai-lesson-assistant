@@ -1,5 +1,8 @@
-import { LessonSnapshots } from "@oakai/core";
+import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
 import type { Snapshot } from "@oakai/core/src/models/lessonSnapshots";
+import { Moderations } from "@oakai/core/src/models/moderations";
+import type { DisplayCategory } from "@oakai/core/src/utils/ailaModeration/severityLevel";
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import type {
   LessonExportType,
   LessonSnapshot,
@@ -14,6 +17,53 @@ import {
   type OutputSchema,
   ailaGetExportBySnapshotId,
 } from "../router/exports";
+
+function contentGuidanceCacheKey(
+  categories: DisplayCategory[],
+): string | undefined {
+  if (categories.length === 0) {
+    return undefined;
+  }
+
+  // Don't swap this for localeCompare — the output is hashed, and the sort
+  // needs to be the same on every machine.
+  return categories
+    .map((c) => `${c.code}:${c.severityLevel}`)
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+    .join("|");
+}
+
+/**
+ * Producers and consumers of the lesson-plan export cache must derive the
+ * cache key identically otherwise the UI surfaces a stale URL.
+ */
+export const getLessonPlanCacheKeyInput = async ({
+  prisma,
+  chatId,
+}: {
+  prisma: PrismaClientWithAccelerate;
+  chatId: string;
+}): Promise<{
+  cacheKeyInput: string | undefined;
+  contentGuidanceCategories: DisplayCategory[];
+}> => {
+  const moderations = await new Moderations(prisma).byAppSessionId(chatId, {
+    includeInvalidated: false,
+  });
+
+  const contentGuidanceCategories = [
+    ...new Map(
+      moderations
+        .flatMap((m) => getDisplayCategories(m))
+        .map((c) => [c.code, c]),
+    ).values(),
+  ];
+
+  return {
+    cacheKeyInput: contentGuidanceCacheKey(contentGuidanceCategories),
+    contentGuidanceCategories,
+  };
+};
 
 export const getUserEmail = async (ctx: {
   auth: SignedInAuthObject;
@@ -39,6 +89,7 @@ export const getLessonSnapshot = async <T>({
   input,
   ctx,
   exportType,
+  cacheKeyInput,
 }: {
   input: {
     data: T;
@@ -50,6 +101,7 @@ export const getLessonSnapshot = async <T>({
     prisma: PrismaClientWithAccelerate;
   };
   exportType: LessonExportType;
+  cacheKeyInput?: string;
 }): Promise<LessonSnapshot> => {
   const lessonSnapshots = new LessonSnapshots(ctx.prisma);
 
@@ -59,6 +111,7 @@ export const getLessonSnapshot = async <T>({
     messageId: input.messageId,
     snapshot: input.data as Snapshot,
     trigger: "EXPORT_BY_USER",
+    cacheKeyInput,
   });
 
   const category = categoryMap[exportType] ?? "exportLessonDoc";
@@ -106,6 +159,7 @@ export const getExistingExportData = async <T>({
   input,
   ctx,
   exportType,
+  cacheKeyInput,
 }: {
   input: {
     data: T;
@@ -117,11 +171,13 @@ export const getExistingExportData = async <T>({
     prisma: PrismaClientWithAccelerate;
   };
   exportType: LessonExportType;
+  cacheKeyInput?: string;
 }) => {
   const lessonSnapshot = await getLessonSnapshot<T>({
     ctx,
     input,
     exportType,
+    cacheKeyInput,
   });
 
   const exportData = await getExportData({
