@@ -288,40 +288,61 @@ const SCORERS: Scorer[] = [
   },
   {
     id: "americanisms-spelling",
-    description:
-      "American English spellings and phrasing (should use British English)",
+    description: "American English spellings (should use British English)",
     fn: ({ finalDocument }) => {
       const detector = new AilaAmericanisms();
       const issuesBySection = detector.findAmericanisms(finalDocument);
 
-      const americanIssues = issuesBySection.flatMap(({ section, issues }) =>
+      const spellingIssues = issuesBySection.flatMap(({ section, issues }) =>
         issues
-          .filter(
-            (i) =>
-              i.issue === "American English Spelling" ||
-              i.issue === "American English",
-          )
+          .filter((i) => i.issue === "American English Spelling")
           .map((i) => ({ section, ...i })),
       );
 
-      if (americanIssues.length === 0)
+      if (spellingIssues.length === 0)
         return {
           heuristic: "pass",
-          evidence: "No American English detected",
+          evidence: "No American English spellings detected",
         };
       return {
         heuristic: "flag",
-        evidence: americanIssues
-          .map(
-            (i) => `- [${i.section}] (${i.issue}) "${i.phrase}" → ${i.details}`,
-          )
+        evidence: spellingIssues
+          .map((i) => `- [${i.section}] "${i.phrase}" → ${i.details}`)
+          .join("\n"),
+      };
+    },
+  },
+  {
+    id: "americanisms-phrasing",
+    description:
+      "American English phrasing/vocabulary (should use British English phraseology)",
+    fn: ({ finalDocument }) => {
+      const detector = new AilaAmericanisms();
+      const issuesBySection = detector.findAmericanisms(finalDocument);
+
+      const phrasingIssues = issuesBySection.flatMap(({ section, issues }) =>
+        issues
+          .filter((i) => i.issue === "American English")
+          .map((i) => ({ section, ...i })),
+      );
+
+      if (phrasingIssues.length === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No American English phrasing detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: phrasingIssues
+          .map((i) => `- [${i.section}] "${i.phrase}" → ${i.details}`)
           .join("\n"),
       };
     },
   },
   {
     id: "americanisms-meanings",
-    description: "Words with different US/UK meanings (needs human review)",
+    description:
+      "Words with different US/UK meanings (these need human review)",
     fn: ({ finalDocument }) => {
       const detector = new AilaAmericanisms();
       const issuesBySection = detector.findAmericanisms(finalDocument);
