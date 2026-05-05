@@ -58,11 +58,13 @@ describe("collectMeaningOccurrences", () => {
     const result = collectMeaningOccurrences(
       [
         {
+          issue: "Different meanings",
           section: "learningOutcome",
           phrase: "line",
           details: { "American English": "queue" },
         },
         {
+          issue: "Different meanings",
           section: "priorKnowledge",
           phrase: "line",
           details: { "American English": "queue" },
@@ -83,11 +85,17 @@ describe("collectMeaningOccurrences", () => {
     const result = collectMeaningOccurrences(
       [
         {
+          issue: "Different meanings",
           section: "learningOutcome",
           phrase: "line",
           details: { "American English": "queue" },
         },
-        { section: "priorKnowledge", phrase: "line", details: {} },
+        {
+          issue: "Different meanings",
+          section: "priorKnowledge",
+          phrase: "line",
+          details: {},
+        },
       ],
       finalDocument,
     );
@@ -98,11 +106,13 @@ describe("collectMeaningOccurrences", () => {
     const result = collectMeaningOccurrences(
       [
         {
+          issue: "Different meanings",
           section: "learningOutcome",
           phrase: "line",
           details: { "American English": "queue" },
         },
         {
+          issue: "Different meanings",
           section: "priorKnowledge",
           phrase: "line",
           details: { "American English": "queue" },
