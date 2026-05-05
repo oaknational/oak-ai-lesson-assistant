@@ -45,9 +45,11 @@ export class AilaAmericanisms<T extends AilaDocumentContent>
         const [phrase, issueDefinition] = Object.entries(lineIssue)[0] ?? [];
         if (phrase && issueDefinition && !filterOutPhrases.has(phrase)) {
           if (!issues.some((issue) => issue.phrase === phrase)) {
-            issues.push(
-              americanismIssueSchema.parse({ phrase, ...issueDefinition }),
-            );
+            const parsed = americanismIssueSchema.safeParse({
+              phrase,
+              ...issueDefinition,
+            });
+            if (parsed.success) issues.push(parsed.data);
           }
         }
       });
