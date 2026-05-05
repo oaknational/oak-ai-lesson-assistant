@@ -3,14 +3,14 @@ import { textify } from "@oakai/core/src/utils/textify";
 import type { AmericanismIssue } from "../../../features/americanisms";
 import type { PartialLessonPlan } from "../../../protocol/schema";
 
-export type MeaningOccurrence = { section: string; snippet: string };
+type MeaningOccurrence = { section: string; snippet: string };
 export type MeaningEntry = {
   occurrences: MeaningOccurrence[];
   meaning: string;
 };
 
 type MeaningIssue = Extract<AmericanismIssue, { issue: "Different meanings" }>;
-export type MeaningIssueWithSection = MeaningIssue & { section: string };
+type MeaningIssueWithSection = MeaningIssue & { section: string };
 
 export function extractAmericanMeaning(
   details: Record<string, string>,
