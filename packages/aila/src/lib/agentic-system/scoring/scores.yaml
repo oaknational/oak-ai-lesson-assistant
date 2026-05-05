@@ -1,5 +1,5 @@
 codeHash: 1f4e1d2bbcc9baf26dee99550828b73422989b1a59dec54f0561bd460b7acc22
-generated: 2026-04-30T15:31:56.476Z
+generated: 2026-05-05T14:27:14.661Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -14,7 +14,8 @@ summary:
     title-no-gerund:
       pass: 3
     americanisms-spelling:
-      pass: 3
+      flag: 1
+      pass: 2
     americanisms-phrasing:
       pass: 3
     americanisms-meanings:
@@ -23,11 +24,10 @@ summary:
       pass: 3
   no-rag-lesson:
     plan-groupings:
-      flag: 2
-      pass: 1
+      flag: 3
     additional-materials-tone:
-      skip: 2
-      pass: 1
+      pass: 2
+      skip: 1
     cycle-verbosity:
       pass: 3
     keyword-casing:
@@ -40,7 +40,8 @@ summary:
       pass: 2
       flag: 1
     americanisms-phrasing:
-      pass: 3
+      flag: 1
+      pass: 2
     americanisms-meanings:
       flag: 3
     quiz-question-count:
