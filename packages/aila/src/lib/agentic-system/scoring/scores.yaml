@@ -1,10 +1,11 @@
 codeHash: 1f4e1d2bbcc9baf26dee99550828b73422989b1a59dec54f0561bd460b7acc22
-generated: 2026-05-05T14:27:14.661Z
+generated: 2026-05-06T14:41:36.486Z
 runsPerScenario: 3
 summary:
   full-lesson:
     plan-groupings:
-      flag: 3
+      flag: 2
+      pass: 1
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
@@ -14,8 +15,8 @@ summary:
     title-no-gerund:
       pass: 3
     americanisms-spelling:
-      flag: 1
-      pass: 2
+      flag: 2
+      pass: 1
     americanisms-phrasing:
       pass: 3
     americanisms-meanings:
@@ -26,8 +27,7 @@ summary:
     plan-groupings:
       flag: 3
     additional-materials-tone:
-      pass: 2
-      skip: 1
+      pass: 3
     cycle-verbosity:
       pass: 3
     keyword-casing:
@@ -37,11 +37,9 @@ summary:
     no-basedOn-without-rag:
       pass: 3
     americanisms-spelling:
-      pass: 2
-      flag: 1
+      pass: 3
     americanisms-phrasing:
-      flag: 1
-      pass: 2
+      pass: 3
     americanisms-meanings:
       flag: 3
     quiz-question-count:
