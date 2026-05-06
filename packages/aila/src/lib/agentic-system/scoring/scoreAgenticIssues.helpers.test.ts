@@ -51,6 +51,12 @@ describe("extractSnippet", () => {
       "the co.uk domain is here",
     );
   });
+
+  it("matches phrases that end in non-word characters", () => {
+    expect(extractSnippet("we cover math(s) in school.", "math(s)")).toBe(
+      "we cover math(s) in school.",
+    );
+  });
 });
 
 describe("collectMeaningOccurrences", () => {
