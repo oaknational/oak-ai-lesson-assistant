@@ -96,6 +96,9 @@ describe("collectMeaningOccurrences", () => {
     expect(entry?.meaning).toBe("queue");
   });
 
+  // Guards against a later empty meaning overwriting an earlier good one.
+  // e.g. "line" in learningOutcome with { "American English": "queue" },
+  // then "line" in priorKnowledge with {}. Keep "queue", don't overwrite with "".
   it("preserves the first-seen meaning when later issues lack one", () => {
     const result = collectMeaningOccurrences(
       [
@@ -117,6 +120,9 @@ describe("collectMeaningOccurrences", () => {
     expect(result.get("line")?.meaning).toBe("queue");
   });
 
+  // Guards that an empty first-seen meaning gets updated by a later good one.
+  // e.g. "line" in learningOutcome with {}, then "line" in priorKnowledge
+  // with { "American English": "queue" }. Backfill "queue" onto the empty entry.
   it("backfills the meaning when the first-seen issue lacks one", () => {
     const result = collectMeaningOccurrences(
       [
@@ -235,6 +241,8 @@ describe("formatMeaningEvidence", () => {
     );
   });
 
+  // Empty snippet = library matched the phrase but extractSnippet's stricter
+  // regex (word boundaries, sentence terminators) couldn't relocate it.
   it("skips occurrences with empty snippets but keeps them in the section list", () => {
     const map = new Map<string, MeaningEntry>([
       [
