@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
 const log = aiLogger("db");
+const shouldLogQueries = process.env.LOG_DB_QUERIES === "true";
 
 const createPrismaClient = () => {
   const client = new PrismaClient({
@@ -11,14 +12,18 @@ const createPrismaClient = () => {
       { emit: "stdout", level: "error" },
       // Prisma supports DEBUG strings (eg: prisma*, prisma:client), but they're noisy debug messages.
       // Instead, we forward the typical logs based on ai:db
-      { emit: "event", level: "query" },
       { emit: "event", level: "warn" },
+      ...(shouldLogQueries
+        ? [{ emit: "event" as const, level: "query" as const }]
+        : []),
     ],
   });
 
-  client.$on("query", (e) => {
-    log.info(e.query);
-  });
+  if (shouldLogQueries) {
+    client.$on("query", (e) => {
+      log.info(e.query);
+    });
+  }
   client.$on("warn", (e) => {
     log.info(e.message);
   });

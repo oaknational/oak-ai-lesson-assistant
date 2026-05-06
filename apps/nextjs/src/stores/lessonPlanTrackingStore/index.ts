@@ -119,7 +119,7 @@ export const createLessonPlanTrackingStore = ({
           if (streamingStatus === "Idle") {
             const chatStore = getStore("chat");
 
-            if (!chatStore.streamingError) {
+            if (!chatStore.streamingError && !chatStore.streamingFailedTurn) {
               try {
                 get().actions.trackCompletion();
               } catch (error) {

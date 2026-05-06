@@ -127,7 +127,7 @@ describe("createWorkloadIdentityAccessTokenProvider", () => {
       );
 
     const getAccessToken = createWorkloadIdentityAccessTokenProvider({
-      getSubjectToken: async () => "subject-token",
+      getSubjectToken: () => Promise.resolve("subject-token"),
       projectNumber: "123456789",
       serviceAccountEmail: "svc@example.iam.gserviceaccount.com",
       workloadIdentityPoolId: "pool-id",

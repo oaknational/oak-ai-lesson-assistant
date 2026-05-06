@@ -133,7 +133,7 @@ export function AilaStart() {
           $ph={["spacing-12", "spacing-12", "spacing-0"]}
           $justifyContent={"center"}
         >
-          <OakBox $mt="spacing-48">
+          <OakBox $mb={"spacing-24"} $mt="spacing-48">
             <ChatPanelDisclaimer size="sm" />
           </OakBox>
         </OakFlex>

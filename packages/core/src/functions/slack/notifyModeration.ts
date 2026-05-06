@@ -1,5 +1,8 @@
 import {
   actionsBlock,
+  createHeaderBlock,
+  createLabeledMarkdownField,
+  createMarkdownField,
   slackNotificationChannelId,
   slackWebClient,
   userIdBlock,
@@ -19,29 +22,24 @@ export async function notifyModeration(event: NotifyModerationInput) {
     channel: slackNotificationChannelId,
     text: heading,
     blocks: [
-      {
-        type: "header",
-        text: {
-          type: "plain_text",
-          text: heading,
-        },
-      },
+      createHeaderBlock(heading),
       userIdBlock(event.user.id),
       {
         type: "section",
         fields: [
-          {
-            type: "mrkdwn",
-            text: `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
-          },
-          {
-            type: "mrkdwn",
-            text: `*Justification*: ${args.justification}`,
-          },
-          {
-            type: "mrkdwn",
-            text: `*Categories*: \`${args.categories.join("`, `")}\``,
-          },
+          createMarkdownField(
+            `*Chat*: <https://${getExternalFacingUrl()}/aila/${args.chatId}|aila/${args.chatId}>`,
+            "moderation.chat",
+          ),
+          createLabeledMarkdownField(
+            "*Justification*: ",
+            args.justification,
+            "moderation.justification",
+          ),
+          createMarkdownField(
+            `*Categories*: \`${args.categories.join("`, `")}\``,
+            "moderation.categories",
+          ),
         ],
       },
       actionsBlock({

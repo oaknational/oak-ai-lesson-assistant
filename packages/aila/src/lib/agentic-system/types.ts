@@ -69,6 +69,10 @@ export type AilaTurnCallbacks = {
     document: PartialLessonPlan;
     ailaMessage: string;
   }) => void | Promise<void>;
+  onTurnFailed: (props: {
+    stepsExecuted: PlanStep[];
+    ailaMessage: string;
+  }) => void | Promise<void>;
 };
 
 export type AilaTurnArgs = {
@@ -77,10 +81,9 @@ export type AilaTurnArgs = {
   callbacks: AilaTurnCallbacks;
 };
 
-export type AilaTurnResult = {
-  persistedState: AilaPersistedState;
-  currentTurn: AilaCurrentTurn;
-};
+export type AilaTurnOutcome = { status: "success" } | { status: "failed" };
+
+export type AilaTurnPhaseOutcome = { status: "continue" } | AilaTurnOutcome;
 
 export type AilaExecutionContext = {
   persistedState: AilaPersistedState;

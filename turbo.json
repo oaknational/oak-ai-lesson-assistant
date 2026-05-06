@@ -106,6 +106,7 @@
     }
   },
   "globalEnv": [
+    "AILA_AGENTIC_FORCE_FAIL",
     "AILA_FIXTURES_ENABLED",
     "AILA_QUIZ_GENERATORS",
     "CLERK_*",
