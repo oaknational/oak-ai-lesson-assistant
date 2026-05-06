@@ -20,6 +20,11 @@ import path from "path";
 import YAML from "yaml";
 
 import {
+  AMERICANISM_ISSUE_KIND,
+  type AmericanismIssueBySection,
+} from "../../../features/americanisms";
+import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";
+import {
   CompletedLessonPlanSchema,
   type PartialLessonPlan,
 } from "../../../protocol/schema";
@@ -35,6 +40,10 @@ import type {
   AilaTurnCallbacks,
   ChatMessage,
 } from "../types";
+import {
+  collectMeaningOccurrences,
+  formatMeaningEvidence,
+} from "./scoreAgenticIssues.helpers";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -46,6 +55,7 @@ type ScorerInput = {
   allPatches: JsonPatchOperation[];
   finalMessage: string;
   turnCount: number;
+  americanismsBySection: AmericanismIssueBySection[];
 };
 
 type ScorerResult = {
@@ -220,6 +230,79 @@ const SCORERS: Scorer[] = [
       return {
         heuristic: "flag",
         evidence: `basedOn present: ${JSON.stringify(basedOn)}`,
+      };
+    },
+  },
+  {
+    id: "americanisms-spelling",
+    description: "American English spellings (should use British English)",
+    fn: ({ americanismsBySection }) => {
+      const spellingIssues = americanismsBySection.flatMap(
+        ({ section, issues }) =>
+          issues
+            .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.SPELLING)
+            .map((i) => ({ section, ...i })),
+      );
+
+      if (spellingIssues.length === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No American English spellings detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: spellingIssues
+          .map((i) => `- [${i.section}] "${i.phrase}" → ${i.details}`)
+          .join("\n"),
+      };
+    },
+  },
+  {
+    id: "americanisms-phrasing",
+    description:
+      "American English phrasing/vocabulary (should use British English phraseology)",
+    fn: ({ americanismsBySection }) => {
+      const phrasingIssues = americanismsBySection.flatMap(
+        ({ section, issues }) =>
+          issues
+            .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.PHRASING)
+            .map((i) => ({ section, ...i })),
+      );
+
+      if (phrasingIssues.length === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No American English phrasing detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: phrasingIssues
+          .map((i) => `- [${i.section}] "${i.phrase}" → ${i.details}`)
+          .join("\n"),
+      };
+    },
+  },
+  {
+    id: "americanisms-meanings",
+    description:
+      "Words with different US/UK meanings (these need human review)",
+    fn: ({ americanismsBySection, finalDocument }) => {
+      const meaningIssues = americanismsBySection.flatMap(
+        ({ section, issues }) =>
+          issues
+            .filter((i) => i.issue === AMERICANISM_ISSUE_KIND.MEANING)
+            .map((i) => ({ section, ...i })),
+      );
+
+      const byPhrase = collectMeaningOccurrences(meaningIssues, finalDocument);
+      if (byPhrase.size === 0)
+        return {
+          heuristic: "pass",
+          evidence: "No different-meaning words detected",
+        };
+      return {
+        heuristic: "flag",
+        evidence: formatMeaningEvidence(byPhrase),
       };
     },
   },
@@ -409,6 +492,9 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       allPatches,
       finalMessage,
       turnCount,
+      americanismsBySection: new AilaAmericanisms().findAmericanisms(
+        finalDocument,
+      ),
       error: String(error),
       durationSec,
     };
@@ -420,6 +506,9 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
     allPatches,
     finalMessage,
     turnCount,
+    americanismsBySection: new AilaAmericanisms().findAmericanisms(
+      finalDocument,
+    ),
     durationSec: (Date.now() - startTime) / 1000,
   };
 }
