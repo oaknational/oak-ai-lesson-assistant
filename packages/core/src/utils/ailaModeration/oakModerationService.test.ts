@@ -148,8 +148,15 @@ describe("moderateWithOakService", () => {
         },
       }),
     );
-    expect(mockPost.mock.calls[0]?.[1].body.context).not.toHaveProperty(
-      "user_id",
+    expect(mockPost).not.toHaveBeenCalledWith(
+      "/v1/moderate",
+      expect.objectContaining({
+        body: expect.objectContaining({
+          context: expect.objectContaining({
+            user_id: expect.anything(),
+          }),
+        }),
+      }),
     );
   });
 });
