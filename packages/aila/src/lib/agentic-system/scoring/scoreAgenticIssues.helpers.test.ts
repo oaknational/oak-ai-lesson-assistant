@@ -26,8 +26,8 @@ describe("extractSnippet", () => {
   });
 
   it("matches case-insensitively", () => {
-    expect(extractSnippet("Look at the LINE here.", "line")).toBe(
-      "Look at the LINE here.",
+    expect(extractSnippet("Stand in LINE for the bus.", "line")).toBe(
+      "Stand in LINE for the bus.",
     );
   });
 
@@ -55,8 +55,8 @@ describe("extractSnippet", () => {
 
 describe("collectMeaningOccurrences", () => {
   const finalDocument = {
-    learningOutcome: "Draw a line on the page.",
-    priorKnowledge: "The line on the chart slopes up.",
+    learningOutcome: "Stand in line for the bus.",
+    priorKnowledge: "There was a long line at the canteen.",
   } as unknown as PartialLessonPlan;
 
   it("returns an empty map for empty input", () => {
@@ -130,8 +130,8 @@ describe("collectMeaningOccurrences", () => {
       finalDocument,
     );
     const occurrences = result.get("line")?.occurrences ?? [];
-    expect(occurrences[0]?.snippet).toBe("Draw a line on the page.");
-    expect(occurrences[1]?.snippet).toBe("The line on the chart slopes up.");
+    expect(occurrences[0]?.snippet).toBe("Stand in line for the bus.");
+    expect(occurrences[1]?.snippet).toBe("There was a long line at the canteen.");
   });
 });
 
@@ -146,14 +146,14 @@ describe("formatMeaningEvidence", () => {
         "line",
         {
           occurrences: [
-            { section: "learningOutcome", snippet: "Draw a line on the page" },
+            { section: "learningOutcome", snippet: "Stand in line for the bus" },
           ],
           meaning: "queue",
         },
       ],
     ]);
     expect(formatMeaningEvidence(map)).toBe(
-      `- "line" [learningOutcome]\n  US: queue\n  learningOutcome: "...Draw a line on the page..."`,
+      `- "line" [learningOutcome]\n  US: queue\n  learningOutcome: "...Stand in line for the bus..."`,
     );
   });
 
@@ -163,8 +163,8 @@ describe("formatMeaningEvidence", () => {
         "line",
         {
           occurrences: [
-            { section: "learningOutcome", snippet: "Same sentence" },
-            { section: "priorKnowledge", snippet: "Same sentence" },
+            { section: "learningOutcome", snippet: "Wait in line" },
+            { section: "priorKnowledge", snippet: "Wait in line" },
           ],
           meaning: "queue",
         },
@@ -172,7 +172,7 @@ describe("formatMeaningEvidence", () => {
     ]);
     const out = formatMeaningEvidence(map);
     expect(out).toContain(`- "line" [learningOutcome, priorKnowledge]`);
-    expect(out.match(/Same sentence/g)?.length).toBe(1);
+    expect(out.match(/Wait in line/g)?.length).toBe(1);
   });
 
   it("omits the US line when meaning is empty", () => {
@@ -194,11 +194,13 @@ describe("formatMeaningEvidence", () => {
         "x",
         {
           occurrences: [{ section: "s", snippet: "snip" }],
-          meaning: "first line\nsecond line",
+          meaning: "a queue of people\nwaiting patiently\nfor the bus",
         },
       ],
     ]);
-    expect(formatMeaningEvidence(map)).toContain("US: first line second line");
+    expect(formatMeaningEvidence(map)).toContain(
+      "US: a queue of people waiting patiently for the bus",
+    );
   });
 
   it("skips occurrences with empty snippets but keeps them in the section list", () => {
