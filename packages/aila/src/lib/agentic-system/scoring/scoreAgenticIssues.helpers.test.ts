@@ -152,7 +152,9 @@ describe("collectMeaningOccurrences", () => {
     );
     const occurrences = result.get("line")?.occurrences ?? [];
     expect(occurrences[0]?.snippet).toBe("Stand in line for the bus.");
-    expect(occurrences[1]?.snippet).toBe("There was a long line at the canteen.");
+    expect(occurrences[1]?.snippet).toBe(
+      "There was a long line at the canteen.",
+    );
   });
 });
 
@@ -167,7 +169,10 @@ describe("formatMeaningEvidence", () => {
         "line",
         {
           occurrences: [
-            { section: "learningOutcome", snippet: "Stand in line for the bus" },
+            {
+              section: "learningOutcome",
+              snippet: "Stand in line for the bus",
+            },
           ],
           meaning: "queue",
         },
