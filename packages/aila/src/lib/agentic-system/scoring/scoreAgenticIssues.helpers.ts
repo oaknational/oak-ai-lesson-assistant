@@ -19,8 +19,9 @@ export function extractAmericanMeaning(
 }
 
 export function extractSnippet(text: string, phrase: string): string {
+  const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const pattern = new RegExp(
-    String.raw`[^.!?\n]*\b${phrase}\b[^.!?\n]*[.!?]?`,
+    String.raw`[^.!?\n]*\b${escapedPhrase}\b[^.!?\n]*[.!?]?`,
     "i",
   );
   const match = pattern.exec(text);

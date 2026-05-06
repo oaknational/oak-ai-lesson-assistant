@@ -42,6 +42,15 @@ describe("extractSnippet", () => {
   it("handles text without terminal punctuation", () => {
     expect(extractSnippet("trailing line", "line")).toBe("trailing line");
   });
+
+  it("escapes regex metacharacters in the phrase", () => {
+    // Without escaping, "co.uk" as a regex would match any 5-char sequence
+    // such as "coAuk". With escaping, only the literal string matches.
+    expect(extractSnippet("the coAuk domain is here", "co.uk")).toBe("");
+    expect(extractSnippet("the co.uk domain is here", "co.uk")).toBe(
+      "the co.uk domain is here",
+    );
+  });
 });
 
 describe("collectMeaningOccurrences", () => {
