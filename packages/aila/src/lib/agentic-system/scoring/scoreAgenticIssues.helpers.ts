@@ -41,6 +41,7 @@ export function collectMeaningOccurrences(
     const entry = byPhrase.get(phrase);
     if (entry) {
       entry.occurrences.push({ section, snippet });
+      if (!entry.meaning) entry.meaning = extractAmericanMeaning(details);
     } else {
       byPhrase.set(phrase, {
         occurrences: [{ section, snippet }],

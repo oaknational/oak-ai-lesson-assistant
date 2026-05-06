@@ -111,6 +111,27 @@ describe("collectMeaningOccurrences", () => {
     expect(result.get("line")?.meaning).toBe("queue");
   });
 
+  it("backfills the meaning when the first-seen issue lacks one", () => {
+    const result = collectMeaningOccurrences(
+      [
+        {
+          issue: "Different meanings",
+          section: "learningOutcome",
+          phrase: "line",
+          details: {},
+        },
+        {
+          issue: "Different meanings",
+          section: "priorKnowledge",
+          phrase: "line",
+          details: { "American English": "queue" },
+        },
+      ],
+      finalDocument,
+    );
+    expect(result.get("line")?.meaning).toBe("queue");
+  });
+
   it("populates each occurrence's snippet from the matching section", () => {
     const result = collectMeaningOccurrences(
       [
