@@ -29,11 +29,7 @@ export class OakModerationServiceModerator extends AilaModerator {
     this.config = config;
   }
 
-  async moderate(input: string): Promise<ModerationResult> {
-    log.info("Calling Oak Moderation Service", {
-      contentLength: input.length,
-    });
-
+  private async _moderate(input: string): Promise<ModerationResult> {
     try {
       return await moderateWithOakService(input, {
         baseUrl: this.config.baseUrl,
@@ -47,6 +43,20 @@ export class OakModerationServiceModerator extends AilaModerator {
       throw new AilaModerationError("Oak Moderation Service failed", {
         cause: err,
       });
+    }
+  }
+
+  async moderate(input: string): Promise<ModerationResult> {
+    log.info("Calling Oak Moderation Service", {
+      contentLength: input.length,
+    });
+
+    try {
+      return await this._moderate(input);
+    } catch (error) {
+      log.error("Oak Moderation Service moderation error: ", error);
+      log.warn("Retrying Oak Moderation Service call");
+      return await this._moderate(input);
     }
   }
 }
