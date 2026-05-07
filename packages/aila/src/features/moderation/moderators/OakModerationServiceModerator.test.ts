@@ -9,7 +9,7 @@ jest.mock("@oakai/core/src/utils/ailaModeration/oakModerationService", () => ({
 }));
 
 jest.mock("@oakai/logger", () => ({
-  aiLogger: () => ({ info: jest.fn(), error: jest.fn() }),
+  aiLogger: () => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn() }),
 }));
 
 const mockedModerateWithOakService = jest.mocked(moderateWithOakService);
