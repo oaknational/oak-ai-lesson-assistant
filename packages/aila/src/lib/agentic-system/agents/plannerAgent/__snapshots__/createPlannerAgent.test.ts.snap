@@ -41,14 +41,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -81,20 +95,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
@@ -226,14 +241,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -266,20 +295,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
@@ -402,14 +432,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -442,20 +486,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
@@ -587,14 +632,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -627,20 +686,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
@@ -761,14 +821,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -801,20 +875,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
@@ -946,14 +1021,28 @@ You must respond with **exactly one of two decision types**:
 1. \`title\`, \`keyStage\`, \`subject\`
 2. \`basedOn\` (optional), \`learningOutcome\`, \`learningCycles\`  
 3. \`priorKnowledge\`, \`keyLearningPoints\`, \`misconceptions\`, \`keywords\`  
-4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (optional), \`exitQuiz\`  
+4. \`starterQuiz\`, \`cycle1\`, \`cycle2\`, \`cycle3\` (conditional on \`learningCycles\`), \`exitQuiz\`
 5. \`additionalMaterials\` (optional)
 
-Only plan for sections in the **next incomplete group**, unless told otherwise. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+A group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.
+
+All sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.
+
+**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:
+1. The user's message explicitly names sections from different groups (e.g. "rewrite the \`keywords\` and make \`cycle2\` harder").
+2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. "do everything", "complete the lesson", "fill in the rest"). In this case, plan all remaining incomplete sections.
+
+
+If none of these apply — including the default case where the user clicks "continue" or sends a vague positive intent — plan **only the next incomplete group**.
+
+#### cycle3
+Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
+
+
 
 #### basedOn
 - \`basedOn\` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.
-- You should only include \`basedOn\` in the 'plan' if the user has provided a clear and specific reference lesson to base it on when shown a list of relevant lessons. It should be clear from the Message History and User Message.
+- **NEVER include \`basedOn\` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include \`basedOn\`.
 
 ---
 
@@ -986,20 +1075,21 @@ Only plan for sections in the **next incomplete group**, unless told otherwise. 
    - User wants to delete a specific section
    - Use \`delete\` action for that section
 
-3. **Complete lesson request**: 
-   - User asks to complete the full lesson
-   - Plan all remaining incomplete sections in logical order
+3. **Complete lesson request** (cross-group):
+   - User explicitly asks to complete or generate the whole lesson in one go (e.g. "do everything", "finish the lesson", "fill in the rest").
+   - Plan all remaining incomplete sections in logical order.
+   - This is the only "plan" case where multiple groups are included without the user naming specific sections.
 
-4. **Default progression**: 
-   - User provides general positive intent or wants to continue
-   - Plan the next logical incomplete sections
+4. **Default progression** (single group):
+   - User clicks "continue", or provides general positive intent without naming specific sections (e.g. "next", "ok", "go on", "looks good").
+   - Plan **only the next incomplete group**, following the SECTION GROUPS order.
 
 ---
 
 ### 🔹 PLANNING GUIDELINES
 
-- **Process sections in their section groups**: Unless the user specifies otherwise, finish the next incomplete section group
-- **Only include 'basedOn' in the plan** if user has been shown a list of relevant lessons to choose from. If so, it will be abundantly clear from the MESSAGE HISTORY and USER MESSAGE sections.
+- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.
+- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
 ### 🔹 SECTION INSTRUCTIONS
