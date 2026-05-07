@@ -65,7 +65,10 @@ export function ContentGuidanceModal({
     <OakModalCenter
       isOpen={open}
       onClose={onClose}
-      modalInnerFlexProps={{ $ph: "spacing-80", $pb: "spacing-56" }}
+      modalInnerFlexProps={{
+        $ph: ["spacing-48", "spacing-80"],
+        $pb: ["spacing-32", "spacing-56"],
+      }}
     >
       <OakFlex
         $width="100%"
