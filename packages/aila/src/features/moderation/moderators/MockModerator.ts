@@ -1,7 +1,11 @@
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { aiLogger } from "@oakai/logger";
 
-import { AilaModerationError, AilaModerator } from ".";
+import {
+  AilaModerationError,
+  AilaModerator,
+  type AilaModeratorContext,
+} from "./AilaModerator";
 
 const log = aiLogger("aila:testing");
 
@@ -13,7 +17,10 @@ export class MockModerator extends AilaModerator {
     this._mockedResults = results;
   }
 
-  async moderate(input: string, _context?: unknown): Promise<ModerationResult> {
+  async moderate(
+    input: string,
+    _context?: AilaModeratorContext,
+  ): Promise<ModerationResult> {
     const result = this._mockedResults.shift();
     log.info("Mock moderation: ", input, result);
 
