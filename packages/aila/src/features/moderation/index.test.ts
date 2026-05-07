@@ -43,7 +43,7 @@ const setUpModeration = ({
     document,
     chat,
     options: {
-      useModeration: false,
+      useModeration: true,
       usePersistence: false,
       useAnalytics: false,
     },
