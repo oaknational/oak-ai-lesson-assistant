@@ -5,7 +5,11 @@ import {
 } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { aiLogger } from "@oakai/logger";
 
-import { AilaModerationError, AilaModerator } from "./AilaModerator";
+import {
+  AilaModerationError,
+  AilaModerator,
+  type AilaModeratorContext,
+} from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
 
@@ -29,7 +33,10 @@ export class OakModerationServiceModerator extends AilaModerator {
     this.config = config;
   }
 
-  async moderate(input: string): Promise<ModerationResult> {
+  async moderate(
+    input: string,
+    context?: AilaModeratorContext,
+  ): Promise<ModerationResult> {
     log.info("Calling Oak Moderation Service", {
       contentLength: input.length,
     });
@@ -39,6 +46,7 @@ export class OakModerationServiceModerator extends AilaModerator {
         baseUrl: this.config.baseUrl,
         timeoutMs: this.config.timeoutMs,
         protectionBypassSecret: this.config.protectionBypassSecret,
+        context,
       });
     } catch (err) {
       if (err instanceof OakModerationServiceError) {

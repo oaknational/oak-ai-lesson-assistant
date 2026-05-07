@@ -12,6 +12,10 @@ export interface OakModerationServiceConfig {
   baseUrl: string;
   timeoutMs?: number;
   protectionBypassSecret?: string;
+  context?: {
+    sessionId?: string;
+    messageId?: string;
+  };
 }
 
 export class OakModerationServiceError extends Error {
@@ -55,7 +59,7 @@ export async function moderateWithOakService(
 
   try {
     const { data, error, response } = await client.POST("/v1/moderate", {
-      body: { content },
+      body: createRequestBody(content, config.context),
       signal: controller.signal,
     });
 
@@ -92,4 +96,23 @@ export async function moderateWithOakService(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function createRequestBody(
+  content: string,
+  context: OakModerationServiceConfig["context"],
+) {
+  const requestContext = {
+    ...(context?.sessionId ? { session_id: context.sessionId } : {}),
+    ...(context?.messageId ? { message_id: context.messageId } : {}),
+  };
+
+  if (Object.keys(requestContext).length === 0) {
+    return { content };
+  }
+
+  return {
+    content,
+    context: requestContext,
+  };
 }

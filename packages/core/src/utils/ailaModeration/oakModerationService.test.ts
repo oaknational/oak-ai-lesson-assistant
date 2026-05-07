@@ -115,4 +115,48 @@ describe("moderateWithOakService", () => {
 
     expect(mockPost).toHaveBeenCalledTimes(1);
   });
+
+  it("passes session and message identifiers without user identifiers", async () => {
+    mockPost.mockResolvedValue({
+      data: {
+        flagged_categories: [],
+        scores: {},
+        moderation_id: "mod-4",
+        prompt_version: "v1",
+      },
+      error: undefined,
+      response: { status: 200 },
+    });
+
+    await moderateWithOakService("test", {
+      ...baseConfig,
+      context: {
+        sessionId: "session-1",
+        messageId: "message-1",
+      },
+    });
+
+    expect(mockPost).toHaveBeenCalledWith(
+      "/v1/moderate",
+      expect.objectContaining({
+        body: {
+          content: "test",
+          context: {
+            session_id: "session-1",
+            message_id: "message-1",
+          },
+        },
+      }),
+    );
+    expect(mockPost).not.toHaveBeenCalledWith(
+      "/v1/moderate",
+      expect.objectContaining({
+        body: expect.objectContaining({
+          context: expect.objectContaining({
+            user_id: expect.anything(),
+          }),
+        }),
+      }),
+    );
+  });
 });

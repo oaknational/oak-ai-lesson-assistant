@@ -115,6 +115,7 @@ export class AilaModeration implements AilaModerationFeature {
     const moderationResult: ModerationResult = await this.performModeration({
       messages,
       content,
+      messageId: lastAssistantMessage.id,
       retries: 3,
     });
 
@@ -187,10 +188,12 @@ export class AilaModeration implements AilaModerationFeature {
   public async performModeration({
     messages,
     content,
+    messageId,
     retries = 0,
   }: {
     messages: Message[];
     content: AilaDocumentContent;
+    messageId?: string;
     retries?: number;
   }): Promise<ModerationResult> {
     log.info("Performing moderation");
@@ -203,11 +206,15 @@ export class AilaModeration implements AilaModerationFeature {
     }
 
     const contentString = JSON.stringify(content);
+    const moderationContext = {
+      sessionId: this._aila.chatId,
+      messageId,
+    };
 
     // Fire off shadow moderation call (non-blocking, errors caught)
     if (this._shadowModerator) {
       const shadowPromise = this._shadowModerator
-        .moderate(contentString)
+        .moderate(contentString, moderationContext)
         .then((result) => {
           if (result) {
             log.info("Shadow moderation result", {
@@ -230,19 +237,25 @@ export class AilaModeration implements AilaModerationFeature {
     }
 
     // Production moderation call
-    const response = await this._moderator.moderate(contentString);
+    const response = await this._moderator.moderate(
+      contentString,
+      moderationContext,
+    );
     return (
-      response ?? (await this.retryModeration({ messages, content, retries }))
+      response ??
+      (await this.retryModeration({ messages, content, messageId, retries }))
     );
   }
 
   public async retryModeration({
     messages,
     content,
+    messageId,
     retries,
   }: {
     messages: Message[];
     content: AilaDocumentContent;
+    messageId?: string;
     retries: number;
   }): Promise<ModerationResult> {
     if (retries < 1) {
@@ -260,6 +273,7 @@ export class AilaModeration implements AilaModerationFeature {
     return this.performModeration({
       messages,
       content,
+      messageId,
       retries: retries - 1,
     });
   }
