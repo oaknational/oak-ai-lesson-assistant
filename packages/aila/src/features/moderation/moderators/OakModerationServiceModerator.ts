@@ -66,6 +66,7 @@ export class OakModerationServiceModerator extends AilaModerator {
       return await this._moderate(input, context);
     } catch (error) {
       log.error("Oak Moderation Service moderation error: ", error);
+      log.warn("Retrying Oak Moderation Service call");
       return await this._moderate(input, context);
     }
   }
