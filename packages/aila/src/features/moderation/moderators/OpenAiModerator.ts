@@ -12,15 +12,15 @@ import type {
 import zodToJsonSchema from "zod-to-json-schema";
 
 import {
-  AilaModerationError,
-  AilaModerator,
-  type AilaModeratorContext,
-} from "./AilaModerator";
-import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
+import {
+  AilaModerationError,
+  AilaModerator,
+  type AilaModeratorContext,
+} from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
 
