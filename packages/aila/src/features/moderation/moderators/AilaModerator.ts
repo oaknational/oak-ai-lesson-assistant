@@ -1,5 +1,10 @@
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
+export type AilaModeratorContext = {
+  sessionId?: string;
+  messageId?: string;
+};
+
 export abstract class AilaModerator {
   protected _userId: string | undefined;
   protected _chatId: string | undefined;
@@ -8,7 +13,10 @@ export abstract class AilaModerator {
     this._userId = userId;
     this._chatId = chatId;
   }
-  abstract moderate(input: string): Promise<ModerationResult | undefined>;
+  abstract moderate(
+    input: string,
+    context?: AilaModeratorContext,
+  ): Promise<ModerationResult | undefined>;
 }
 
 export class AilaModerationError extends Error {
