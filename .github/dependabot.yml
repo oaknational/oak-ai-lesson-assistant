@@ -1,7 +1,6 @@
 version: 2
 updates:
-
-# Track updates for Github Actions workflows from oak-terraform-actions repository.
+  # Track updates for Github Actions workflows from oak-terraform-actions repository.
   - package-ecosystem: "github-actions"
     directory: "/"
     allow:
@@ -10,7 +9,7 @@ updates:
     schedule:
       interval: "daily"
 
-# Track updates for Terraform modules from oak-terraform-modules repository.
+  # Track updates for Terraform modules from oak-terraform-modules repository.
   - package-ecosystem: "terraform"
     directories: ["infrastructure/**/*"]
     allow:
