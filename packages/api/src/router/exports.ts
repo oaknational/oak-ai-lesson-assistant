@@ -16,7 +16,10 @@ import { kv } from "@vercel/kv";
 import { z } from "zod";
 
 import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";
-import { getExistingExportData } from "../export/exportHelpers";
+import {
+  getExistingExportData,
+  getLessonPlanCacheKeyInput,
+} from "../export/exportHelpers";
 import { exportLessonPlan } from "../export/exportLessonPlan";
 import { exportLessonSlides } from "../export/exportLessonSlides";
 import { exportQuizDoc } from "../export/exportQuizDoc";
@@ -157,10 +160,15 @@ export const exportsRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const exportType = "LESSON_PLAN_DOC";
+        const { cacheKeyInput } = await getLessonPlanCacheKeyInput({
+          prisma: ctx.prisma,
+          chatId: input.chatId,
+        });
         const { exportData } = await getExistingExportData({
           ctx,
           input,
           exportType,
+          cacheKeyInput,
         });
 
         if (exportData) {

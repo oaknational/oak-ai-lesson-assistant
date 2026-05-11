@@ -16,6 +16,7 @@ import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/planne
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
+import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
 import { ReportStorage, createQuizTracker } from "../quiz/reporting";
@@ -23,6 +24,11 @@ import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 const log = aiLogger("aila:stream");
+
+function agenticTurnSucceeded(outcome: AilaTurnOutcome | null): boolean {
+  return outcome?.status === "success";
+}
+
 export class AilaStreamHandler {
   private readonly _chat: AilaChat;
   private _controller?: ReadableStreamDefaultController;
@@ -91,6 +97,7 @@ export class AilaStreamHandler {
   ) {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
+    let agenticTurnOutcome: AilaTurnOutcome | null = null;
     try {
       if (!this._chat.aila.options.useAgenticAila) {
         await this.span("set-up-generation", async () => {
@@ -113,7 +120,7 @@ export class AilaStreamHandler {
 
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
-          await this.startAgentStream();
+          agenticTurnOutcome = await this.startAgentStream();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -137,6 +144,9 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
+      if (this._chat.aila.options.useAgenticAila) {
+        agenticTurnOutcome = { status: "failed" };
+      }
       log.info("Caught error in stream", {
         error: e,
         type: e?.constructor?.name,
@@ -151,8 +161,15 @@ export class AilaStreamHandler {
       log.info("Stream error", e, this._chat.iteration, this._chat.id);
     } finally {
       const status = this._chat.generation?.status;
-      log.info("In finally block", { status, chatId: this._chat.id });
-      if (status !== "FAILED") {
+      const shouldComplete = this._chat.aila.options.useAgenticAila
+        ? agenticTurnSucceeded(agenticTurnOutcome)
+        : status !== "FAILED";
+      log.info("In finally block", {
+        status,
+        agenticTurnOutcome,
+        chatId: this._chat.id,
+      });
+      if (shouldComplete) {
         try {
           await this.span("chat-completion", async () => {
             await this._chat.complete();
@@ -178,7 +195,7 @@ export class AilaStreamHandler {
     this._patchEnqueuer.setController(controller);
   }
 
-  private async startAgentStream() {
+  private async startAgentStream(): Promise<AilaTurnOutcome> {
     await this._chat.enqueue({
       type: "comment",
       value: "CHAT_START",
@@ -209,7 +226,7 @@ export class AilaStreamHandler {
         })
       : [];
 
-    await ailaTurn({
+    return await ailaTurn({
       callbacks: ailaTurnCallbacks,
       persistedState: {
         messages: extractPromptTextFromMessages(this._chat.messages),

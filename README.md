@@ -164,6 +164,8 @@ The `apps/nextjs` and `packages/aila` projects have Jest tests. Run all tests us
 pnpm test
 ```
 
+For local agentic failure-injection commands, see [packages/aila/src/lib/agentic-system/MANUAL_TESTING.md](packages/aila/src/lib/agentic-system/MANUAL_TESTING.md).
+
 ### End-to-end tests
 
 Ensure the dev server is running with `pnpm dev`. Use the Playwright UI to select and run individual tests interactively.

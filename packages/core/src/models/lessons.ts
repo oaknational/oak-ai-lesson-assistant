@@ -246,7 +246,6 @@ export class Lessons {
       where: { answer, lessonId, questionId: quizQuestionId },
     });
     if (!existingAnswer) {
-      let quizAnswerId: string | undefined;
       try {
         const quizAnswer = await this.prisma.quizAnswer.create({
           data: {
@@ -256,7 +255,6 @@ export class Lessons {
             distractor: answer !== question.answer,
           },
         });
-        quizAnswerId = quizAnswer.id;
         log.info("Created quiz question answer", quizAnswer);
       } catch (e) {
         // For now, swallow the error until we can change the unique index

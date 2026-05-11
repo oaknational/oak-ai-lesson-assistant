@@ -44,12 +44,13 @@ describe("ailaTurnCallbacks", () => {
   });
   test("onTurnComplete", async () => {
     let chunks = "";
+    const enqueue = jest.fn().mockResolvedValue(undefined);
     const { onTurnComplete } = createAilaTurnCallbacks({
       chat: {
         appendChunk: (chunk) => {
           chunks = chunks + chunk;
         },
-        enqueue: jest.fn().mockResolvedValue(undefined),
+        enqueue,
       },
       controller: {
         enqueue: jest.fn(),
@@ -64,6 +65,41 @@ describe("ailaTurnCallbacks", () => {
     expect(chunks).toEqual(
       `],"sectionsEdited":[],"prompt":{"type":"text","value":"We've updated the subject, title, and key learning points"},"status":"complete"}`,
     );
+    expect(enqueue).toHaveBeenCalledWith({
+      type: "state",
+      reasoning: "final",
+      value: { subject: "art" },
+    });
+  });
+
+  test("onTurnFailed does not enqueue final state", async () => {
+    let chunks = "";
+    const enqueue = jest.fn().mockResolvedValue(undefined);
+    const { onTurnFailed } = createAilaTurnCallbacks({
+      chat: {
+        appendChunk: (chunk) => {
+          chunks = chunks + chunk;
+        },
+        enqueue,
+      },
+      controller: {
+        enqueue: jest.fn(),
+      } as unknown as ReadableStreamDefaultController,
+    });
+
+    await onTurnFailed({
+      stepsExecuted: [],
+      ailaMessage:
+        "I wasn't able to complete that lesson update. Please try again.",
+    });
+
+    expect(chunks).toEqual(
+      `],"sectionsEdited":[],"prompt":{"type":"text","value":"I wasn't able to complete that lesson update. Please try again."},"status":"complete"}`,
+    );
+    expect(enqueue).toHaveBeenCalledWith({
+      type: "comment",
+      value: "AGENTIC_TURN_FAILED",
+    });
   });
 
   test("onSectionComplete with multiple patches", () => {

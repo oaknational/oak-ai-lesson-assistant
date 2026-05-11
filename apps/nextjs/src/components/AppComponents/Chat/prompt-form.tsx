@@ -1,14 +1,19 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { OakBox, OakTertiaryButton } from "@oaknational/oak-components";
 
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/AppComponents/Chat/ui/tooltip";
-import { Icon } from "@/components/Icon";
 import { useEnterSubmit } from "@/lib/hooks/use-enter-submit";
 import { useChatStore } from "@/stores/AilaStoresProvider";
 import type { ChatAction } from "@/stores/chatStore";
+import { containsLink } from "@/utils/link-validation";
+
+import FormValidationWarning from "../FormValidationWarning";
+import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 
 export interface PromptFormProps {
   input: string;
@@ -27,6 +32,7 @@ export function PromptForm({
 }: Readonly<PromptFormProps>) {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const queuedUserAction = useChatStore((state) => state.queuedUserAction);
 
   useEffect(() => {
@@ -35,17 +41,30 @@ export function PromptForm({
     }
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setInput(newValue);
+    if (containsLink(newValue)) {
+      setFormError("Aila doesn't currently support links");
+    } else {
+      setFormError(null);
+    }
+  };
+
+  const isSubmitDisabled = isDisabled || formError !== null;
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (!input?.trim() || formError) {
+      return;
+    }
+    onSubmit(input);
+  };
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!input?.trim()) {
-          return;
-        }
-        onSubmit(input);
-      }}
-      ref={formRef}
-    >
+    <form onSubmit={handleSubmit} ref={formRef}>
       <div
         className={`${isDisabled ? "block" : "hidden"} h-[60px] w-full rounded-md border-2 border-oakGrey3 sm:hidden`}
       />
@@ -60,7 +79,7 @@ export function PromptForm({
           onKeyDown={onKeyDown}
           rows={1}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder={handlePlaceholder(
             hasMessages,
             queuedUserAction ?? undefined,
@@ -71,19 +90,30 @@ export function PromptForm({
         <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center">
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
+              <OakTertiaryButton
+                disabled={isSubmitDisabled}
+                iconName="chevron-right"
+                onClick={handleSubmit}
                 data-testid="send-message"
-                type="submit"
-                className={`rounded-full bg-black p-4 ${isDisabled ? "cursor-not-allowed opacity-50" : ""}`}
-                disabled={isDisabled}
-              >
-                <Icon icon="chevron-right" color="white" size="sm" />
-              </button>
+              />
             </TooltipTrigger>
             <TooltipContent>Send message</TooltipContent>
           </Tooltip>
         </div>
       </div>
+      {formError && (
+        <FormValidationWarning
+          errorMessage={formError}
+          iconWidth="spacing-20"
+          $font="body-3"
+        />
+      )}
+      <OakBox
+        $mt={`${formError ? "spacing-0" : "spacing-24"}`}
+        $display={["none", "block"]}
+      >
+        <ChatPanelDisclaimer size="sm" />
+      </OakBox>
     </form>
   );
 }

@@ -5,7 +5,11 @@ import {
 } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { aiLogger } from "@oakai/logger";
 
-import { AilaModerationError, AilaModerator } from "./AilaModerator";
+import {
+  AilaModerationError,
+  AilaModerator,
+  type AilaModeratorContext,
+} from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
 
@@ -29,16 +33,16 @@ export class OakModerationServiceModerator extends AilaModerator {
     this.config = config;
   }
 
-  async moderate(input: string): Promise<ModerationResult> {
-    log.info("Calling Oak Moderation Service", {
-      contentLength: input.length,
-    });
-
+  private async _moderate(
+    input: string,
+    context?: AilaModeratorContext,
+  ): Promise<ModerationResult> {
     try {
       return await moderateWithOakService(input, {
         baseUrl: this.config.baseUrl,
         timeoutMs: this.config.timeoutMs,
         protectionBypassSecret: this.config.protectionBypassSecret,
+        context,
       });
     } catch (err) {
       if (err instanceof OakModerationServiceError) {
@@ -47,6 +51,23 @@ export class OakModerationServiceModerator extends AilaModerator {
       throw new AilaModerationError("Oak Moderation Service failed", {
         cause: err,
       });
+    }
+  }
+
+  async moderate(
+    input: string,
+    context?: AilaModeratorContext,
+  ): Promise<ModerationResult> {
+    log.info("Calling Oak Moderation Service", {
+      contentLength: input.length,
+    });
+
+    try {
+      return await this._moderate(input, context);
+    } catch (error) {
+      log.error("Oak Moderation Service moderation error: ", error);
+      log.warn("Retrying Oak Moderation Service call");
+      return await this._moderate(input, context);
     }
   }
 }

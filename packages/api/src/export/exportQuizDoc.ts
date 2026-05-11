@@ -65,7 +65,7 @@ export async function exportQuizDoc({
       log.info(state);
 
       Sentry.addBreadcrumb({
-        category: "exportWorksheetDocs",
+        category: "exportQuizDoc",
         message: "Export state change",
         data: state,
       });
