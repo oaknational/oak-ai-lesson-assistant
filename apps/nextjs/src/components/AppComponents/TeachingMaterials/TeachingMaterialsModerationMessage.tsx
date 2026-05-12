@@ -15,7 +15,7 @@ export function ModerationMessage({
   moderation,
   ...boxProps
 }: ModerationMessageProps) {
-  if (!moderation) {
+  if (!moderation?.categories.length) {
     return null;
   }
 

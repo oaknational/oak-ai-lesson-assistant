@@ -1,4 +1,3 @@
-import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
@@ -9,7 +8,11 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";
-import { getExistingExportData, getUserEmail } from "./exportHelpers";
+import {
+  getExistingExportData,
+  getLessonPlanCacheKeyInput,
+  getUserEmail,
+} from "./exportHelpers";
 
 const log = aiLogger("exports");
 
@@ -27,7 +30,15 @@ export async function exportLessonPlan({
     prisma: PrismaClientWithAccelerate;
   };
 }) {
-  const userEmail = await getUserEmail(ctx);
+  const [userEmail, { cacheKeyInput, contentGuidanceCategories }] =
+    await Promise.all([
+      getUserEmail(ctx),
+      getLessonPlanCacheKeyInput({
+        prisma: ctx.prisma,
+        chatId: input.chatId,
+      }),
+    ]);
+
   if (!userEmail) {
     return {
       error: new Error("User email not found"),
@@ -41,40 +52,11 @@ export async function exportLessonPlan({
     ctx,
     input,
     exportType,
+    cacheKeyInput,
   });
 
-  const moderations = await ctx.prisma.moderation.findMany({
-    where: {
-      appSessionId: input.chatId,
-      invalidatedAt: null,
-    },
-  });
-
-  const contentGuidanceCategories = [
-    ...new Map(
-      moderations
-        .flatMap((m) => getDisplayCategories(m))
-        .map((c) => [c.code, c]),
-    ).values(),
-  ];
-
-  const hasContentGuidance = contentGuidanceCategories.length > 0;
-
-  if (exportData && !hasContentGuidance) {
+  if (exportData) {
     return exportData;
-  }
-
-  if (exportData && hasContentGuidance) {
-    await ctx.prisma.lessonExport.updateMany({
-      where: {
-        lessonSnapshotId: lessonSnapshot.id,
-        exportType,
-        expiredAt: null,
-      },
-      data: {
-        expiredAt: new Date(),
-      },
-    });
   }
 
   const result = await exportDocLessonPlan({
@@ -89,7 +71,7 @@ export async function exportLessonPlan({
       log.info(state);
 
       Sentry.addBreadcrumb({
-        category: "exportWorksheetDocs",
+        category: "exportLessonPlanDoc",
         message: "Export state change",
         data: state,
       });

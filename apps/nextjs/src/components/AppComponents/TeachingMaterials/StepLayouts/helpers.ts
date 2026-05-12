@@ -1,5 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 
+import { containsLink } from "@/utils/link-validation";
+
 import type { DialogTypes } from "../../Chat/Chat/types";
 
 export const handleDialogSelection = ({
@@ -51,6 +53,8 @@ export const getValidationError = (
     return `Please select a subject, so that Aila has the right context for your ${docTypeName}.`;
   } else if (!titleToCheck) {
     return `Please provide your lesson details, so that Aila has the right context for your ${docTypeName}.`;
+  } else if (containsLink(titleToCheck)) {
+    return "Aila doesn't currently support links";
   } else if (titleToCheck.length < 4) {
     return `Please provide a longer lesson title.`;
   }

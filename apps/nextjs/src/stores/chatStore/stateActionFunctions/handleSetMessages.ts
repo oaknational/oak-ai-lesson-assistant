@@ -4,7 +4,12 @@ import type { GetStore } from "@/stores/AilaStoresProvider";
 
 import { calculateStreamingStatus } from "../actions/calculateStreamingStatus";
 import { getNextStableMessages, parseStreamingMessage } from "../parsing";
-import type { AiMessage, ChatGetter, ChatSetter } from "../types";
+import type {
+  AiMessage,
+  ChatGetter,
+  ChatSetter,
+  ParsedMessage,
+} from "../types";
 
 export function handleSetMessages(
   getStore: GetStore,
@@ -15,6 +20,17 @@ export function handleSetMessages(
     return messages[messages.length - 1]?.role === "user";
   }
 
+  function messageHasFailedTurnComment(message?: ParsedMessage) {
+    return (
+      message?.role === "assistant" &&
+      message.parts.some(
+        (part) =>
+          part.document.type === "comment" &&
+          part.document.value === "AGENTIC_TURN_FAILED",
+      )
+    );
+  }
+
   return (messages: AiMessage[], isLoading: boolean) => {
     if (!isLoading) {
       // The AI SDK isn't loading: we're idle and all messages are stable
@@ -23,6 +39,10 @@ export function handleSetMessages(
         messages,
         get().stableMessages,
       );
+      const stableMessages = nextStableMessages ?? get().stableMessages;
+      const lastStableMessage = stableMessages[stableMessages.length - 1];
+      const streamingFailedTurn =
+        messageHasFailedTurnComment(lastStableMessage);
       // NOTE: currently will update the store even if no value needs changing
       set({
         ...(nextStableMessages && {
@@ -30,6 +50,7 @@ export function handleSetMessages(
         }),
         streamingMessage: null,
         ailaStreamingStatus: "Idle",
+        streamingFailedTurn,
       });
     } else if (lastMessageIsUser(messages)) {
       // AI SDK is loading without a message from the API: we're waiting for a response
@@ -45,6 +66,7 @@ export function handleSetMessages(
         streamingMessage: null,
         ailaStreamingStatus: "RequestMade",
         streamingError: false,
+        streamingFailedTurn: false,
       });
     } else {
       // AI SDK is loading with a message from the API: we're streaming

@@ -501,4 +501,48 @@ describe("lessonPlanTracking tracking", () => {
     // NOTE: in the payload but not applicable as a threat doesn't terminate the chat
     it.todo("tracks when a threat is detected");
   });
+
+  describe("ailaStreamingStatusUpdated", () => {
+    it("tracks completion for persisted partial successes", () => {
+      const store = createLessonPlanTrackingStore(createArgs);
+      const trackCompletion = jest.fn();
+
+      store.setState((state) => ({
+        actions: {
+          ...state.actions,
+          trackCompletion,
+        },
+      }));
+
+      chatStoreMock.getState.mockReturnValue({
+        streamingError: false,
+        streamingFailedTurn: false,
+      });
+
+      store.getState().actions.ailaStreamingStatusUpdated("Idle");
+
+      expect(trackCompletion).toHaveBeenCalledTimes(1);
+    });
+
+    it("suppresses completion tracking for true failed turns", () => {
+      const store = createLessonPlanTrackingStore(createArgs);
+      const trackCompletion = jest.fn();
+
+      store.setState((state) => ({
+        actions: {
+          ...state.actions,
+          trackCompletion,
+        },
+      }));
+
+      chatStoreMock.getState.mockReturnValue({
+        streamingError: false,
+        streamingFailedTurn: true,
+      });
+
+      store.getState().actions.ailaStreamingStatusUpdated("Idle");
+
+      expect(trackCompletion).not.toHaveBeenCalled();
+    });
+  });
 });

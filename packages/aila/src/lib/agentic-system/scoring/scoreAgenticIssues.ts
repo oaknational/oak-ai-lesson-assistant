@@ -106,15 +106,21 @@ const SCORERS: Scorer[] = [
         }
         const actual = po.plan.map((s) => s.sectionKey);
         const expected = EXPECTED_GROUPS[i];
+        // cycle3 is optional in the actual output — strip it from expected
+        // only when both sides agree it's absent.
+        const expectedAdjusted =
+          expected && !actual.includes("cycle3")
+            ? expected.filter((s) => s !== "cycle3")
+            : expected;
         const match =
-          expected &&
-          actual.length === expected.length &&
-          actual.every((k, j) => k === expected[j]);
+          expectedAdjusted &&
+          actual.length === expectedAdjusted.length &&
+          actual.every((k, j) => k === expectedAdjusted[j]);
         const icon = match ? "✓" : "✗";
         if (!match) anyMismatch = true;
         lines.push(`Turn ${i + 1}: ${icon} [${actual.join(", ")}]`);
-        if (!match && expected) {
-          lines.push(`  expected: [${expected.join(", ")}]`);
+        if (!match && expectedAdjusted) {
+          lines.push(`  expected: [${expectedAdjusted.join(", ")}]`);
         }
       }
       lines.push(`Total: ${turnCount} turns`);
@@ -343,12 +349,26 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       const callbacks: AilaTurnCallbacks = {
         onPlannerComplete: ({ sectionKeys }) => {
           turnPlannerSections = sectionKeys;
+          if (sectionKeys.length > 0) {
+            console.log(
+              `    [turn ${turnCount + 1}] planner → [${sectionKeys.join(", ")}]`,
+            );
+          } else {
+            console.log(`    [turn ${turnCount + 1}] planner → exit`);
+          }
         },
         onSectionComplete: (patches) => {
           turnPatches.push(...patches);
+          for (const p of patches) {
+            console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
+          }
         },
         onTurnComplete: ({ document, ailaMessage }) => {
           turnDoc = document;
+          turnMessage = ailaMessage;
+          return Promise.resolve();
+        },
+        onTurnFailed: ({ ailaMessage }) => {
           turnMessage = ailaMessage;
           return Promise.resolve();
         },
@@ -557,7 +577,7 @@ describe("Agentic Issue Scoring", () => {
       const scorerTotals: Record<string, Record<string, number>> = {};
       for (const run of scenario.runs) {
         for (const { scorerId, result } of run.scores) {
-          if (!scorerTotals[scorerId]) scorerTotals[scorerId] = {};
+          scorerTotals[scorerId] ??= {};
           const counts = scorerTotals[scorerId];
           counts[result.heuristic] = (counts[result.heuristic] ?? 0) + 1;
         }

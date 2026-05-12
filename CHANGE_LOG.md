@@ -1,3 +1,26 @@
+# [1.71.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.70.0...v1.71.0) (2026-05-06)
+
+
+### Bug Fixes
+
+* [AI-2148] tighten Agentic-mode error handling ([#1021](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1021)) ([2aac5eb](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2aac5eb165f06791c768573809ca504ab4ebb49a))
+* cache lesson plan exports per content guidance ([#1026](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1026)) ([e527ab2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e527ab253ff83874881807d44d4d84bb6193317b))
+* **core:** [AI-2156] enforce Slack field length limits for notifications ([#1025](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1025)) ([cce46a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/cce46a2b4328fe89e856f3da4e652874d4c06b32))
+
+
+### Features
+
+* **chat:** show banner when lesson can't be created from first prompt ([#1027](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1027)) ([f4a55c0](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f4a55c062932dc8e8e39bc256e438d26312f7a34))
+* check chat for unknown links -AI-2097 ([#1028](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1028)) ([ca93dee](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ca93dee167f70a22013e7b0aebace23367b3b539))
+
+# [1.70.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.69.0...v1.70.0) (2026-04-23)
+
+
+### Features
+
+* **chat:** sanitise URLs in Aila markdown renderer ([#1020](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1020)) ([aacf77f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/aacf77f437e13b866759f1c9006fd7c4b3c85000))
+* **threat-detection:** [AI-2070] [migration] persist threat detections and add admin review flow ([#1011](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1011)) ([3d7fe8c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3d7fe8c442c020ac9c520efe2922ea2dfe60e983))
+
 # [1.69.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.68.0...v1.69.0) (2026-04-21)
 
 

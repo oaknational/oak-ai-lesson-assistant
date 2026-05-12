@@ -8,16 +8,20 @@ import { executePlanSteps } from "./execution/executePlanSteps";
 import { executePlanningPhase } from "./execution/executePlanningPhase";
 import { handleRelevantLessons } from "./execution/handleRelevantLessons";
 import {
-  terminateWithGenericError,
+  terminateWithFailure,
   terminateWithResponse,
 } from "./execution/termination";
-import type { AilaExecutionContext, AilaTurnArgs } from "./types";
+import type {
+  AilaExecutionContext,
+  AilaTurnArgs,
+  AilaTurnOutcome,
+} from "./types";
 
 export async function ailaTurn({
   persistedState,
   runtime,
   callbacks,
-}: AilaTurnArgs): Promise<void> {
+}: AilaTurnArgs): Promise<AilaTurnOutcome> {
   const context: AilaExecutionContext = {
     persistedState,
     runtime,
@@ -38,38 +42,36 @@ export async function ailaTurn({
 
   try {
     /**
-     * 1. Execute the planning phase
+     * 1. Decide what the turn should do next.
      */
-    const shouldContinue = await executePlanningPhase(context);
-    if (!shouldContinue) return;
+    const planningOutcome = await executePlanningPhase(context);
+    if (planningOutcome.status !== "continue") return planningOutcome;
 
     /**
-     * 2. Execute the planned steps sequentially
+     * 2. Apply any section changes.
      */
-    const planExecuted = await executePlanSteps(context);
-    if (!planExecuted) return;
+    const planOutcome = await executePlanSteps(context);
+    if (planOutcome.status !== "continue") return planOutcome;
 
     /**
-     * 3. Handle relevant lessons fetching if needed
+     * 3. Refresh relevant lessons if the document metadata changed.
      */
-    const lessonsHandled = await handleRelevantLessons(context);
-    if (!lessonsHandled) return;
+    const lessonsOutcome = await handleRelevantLessons(context);
+    if (lessonsOutcome.status !== "continue") return lessonsOutcome;
 
     /**
-     * 4. Generate and deliver the final response
+     * 4. Send the final user-facing message for the turn.
      */
-    await terminateWithResponse(context);
+    return await terminateWithResponse(context);
   } catch (error) {
     const errorContext = {
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
     };
-    context.currentTurn.errors.push(errorContext);
-    // Ensure llmMessage was opened if error occurred before planning completed
+    // Open the llmMessage wrapper before shared failure handling.
     if (!context.currentTurn.plannerOutput) {
       context.callbacks.onPlannerComplete({ sectionKeys: [] });
     }
-    // Handle unexpected errors
-    await terminateWithGenericError(context);
+    return await terminateWithFailure(errorContext, context);
   }
 }

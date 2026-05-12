@@ -7,6 +7,7 @@ import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetectio
 import {
   UserBannedError,
   SafetyViolations as defaultSafetyViolations,
+  ThreatDetections as defaultThreatDetections,
   scheduleModerationNotification,
 } from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -19,28 +20,28 @@ const log = aiLogger("chat");
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
   SafetyViolations?: typeof defaultSafetyViolations,
+  ThreatDetections?: typeof defaultThreatDetections,
 ) => AilaPlugin;
 
 export const createWebActionsPlugin: PluginCreator = (
   prisma,
   SafetyViolations = defaultSafetyViolations,
+  ThreatDetections = defaultThreatDetections,
 ) => {
   const onStreamError: AilaPlugin["onStreamError"] = async (
     error,
     { aila, enqueue },
   ) => {
     if (error instanceof AilaThreatDetectionError) {
-      // #TODO change this to handleThreatDetectionError and move
-      // the logic elsewhere. Stop passing Prisma
       const threatError = await handleThreatDetectionError(
         {
-          userId: aila.userId ?? "anonymous", // This should never be "anonymous" because we would get an authentication error
+          userId: aila.userId ?? "anonymous",
           chatId: aila.chatId ?? "unknown",
           error,
           messages: aila.messages,
           prisma,
         },
-        SafetyViolations,
+        { SafetyViolations, ThreatDetections },
       );
       await enqueue(threatError);
     }

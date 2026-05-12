@@ -13,8 +13,6 @@ import {
 } from "@/stores/AilaStoresProvider";
 import { canAppendSelector } from "@/stores/chatStore/selectors";
 
-import ChatPanelDisclaimer from "./chat-panel-disclaimer";
-
 interface ChatPanelProps {
   isDemoLocked: boolean;
 }
@@ -72,9 +70,6 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
           />
         )}
         {isDemoLocked && <LockedPromptForm />}
-        <span className="hidden w-full sm:block">
-          <ChatPanelDisclaimer size="sm" />
-        </span>
       </div>
     </div>
   );

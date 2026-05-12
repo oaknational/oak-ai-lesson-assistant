@@ -15,6 +15,13 @@ import {
 
 import { handleChatException } from "./errorHandling";
 
+jest.mock(
+  "@oakai/aila/src/utils/threatDetection/threatDetectionHandling",
+  () => ({
+    handleThreatDetectionError: jest.fn(),
+  }),
+);
+
 describe("handleChatException", () => {
   describe("AilaThreatDetectionError", () => {
     it("should forward the message from handleThreatDetectionError", async () => {

@@ -11,6 +11,10 @@ import { AilaAuthenticationError } from "./AilaError";
 import type { AilaChat } from "./chat/AilaChat";
 import { MockLLMService } from "./llm/MockLLMService";
 
+jest.mock("../utils/threatDetection/threatDetectionHandling", () => ({
+  handleThreatDetectionError: jest.fn(),
+}));
+
 describe("Aila", () => {
   let polly: Polly;
 

@@ -24,6 +24,20 @@ export function createAilaTurnCallbacks({
   return {
     onPlannerComplete,
     onSectionComplete,
-    onTurnComplete,
+    onTurnComplete: async (args) => {
+      onTurnComplete(args);
+      await chat.enqueue({
+        type: "state",
+        reasoning: "final",
+        value: args.document,
+      });
+    },
+    onTurnFailed: async (args) => {
+      onTurnComplete(args);
+      await chat.enqueue({
+        type: "comment",
+        value: "AGENTIC_TURN_FAILED",
+      });
+    },
   };
 }

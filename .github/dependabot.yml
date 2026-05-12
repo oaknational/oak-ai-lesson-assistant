@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Track updates for Github Actions workflows from oak-terraform-actions repository.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    allow:
+      - dependency-name: "oaknational/oak-terraform-actions"
+      - dependency-name: "oaknational/oak-release-actions"
+    schedule:
+      interval: "daily"
+
+  # Track updates for Terraform modules from oak-terraform-modules repository.
+  - package-ecosystem: "terraform"
+    directories: ["infrastructure/**/*"]
+    allow:
+      - dependency-name: "*::github::oaknational/oak-terraform-modules::*"
+    schedule:
+      interval: "daily"

@@ -26,6 +26,7 @@ export type {
   SafetyViolation,
   Snippet,
   Subject,
+  ThreatDetection,
   Transcript,
 } from "@prisma/client";
 export * from "./prisma/zod-schemas";

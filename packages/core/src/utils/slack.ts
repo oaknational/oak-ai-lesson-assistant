@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { ActionsBlock, SectionBlock } from "@slack/web-api";
 import { WebClient } from "@slack/web-api";
 
@@ -7,6 +9,56 @@ import type {
   ThreatDetectionResult,
 } from "../threatDetection/types";
 import { generateFriendlyId } from "./friendlyId";
+
+const log = aiLogger("core");
+
+export const slackTextLimits = {
+  headerText: 150,
+  sectionFieldText: 2000,
+} as const;
+
+const SLACK_TRUNCATION_SUFFIX = "... [truncated]";
+
+function truncateSlackText(
+  text: string,
+  maxLength: number,
+  fieldName: string,
+): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  const suffix =
+    maxLength > SLACK_TRUNCATION_SUFFIX.length
+      ? SLACK_TRUNCATION_SUFFIX
+      : SLACK_TRUNCATION_SUFFIX.slice(0, maxLength);
+  const truncatedText = `${text.slice(0, maxLength - suffix.length)}${suffix}`;
+
+  log.info("Truncated Slack text", {
+    fieldName,
+    originalLength: text.length,
+    truncatedLength: truncatedText.length,
+    maxLength,
+  });
+
+  return truncatedText;
+}
+
+function truncateSlackFieldText(text: string, fieldName: string): string {
+  return truncateSlackText(text, slackTextLimits.sectionFieldText, fieldName);
+}
+
+function truncateSlackLabeledField(
+  label: string,
+  value: string,
+  fieldName: string,
+): string {
+  return `${label}${truncateSlackText(
+    value,
+    Math.max(0, slackTextLimits.sectionFieldText - label.length),
+    fieldName,
+  )}`;
+}
 
 if (
   !process.env.SLACK_NOTIFICATION_CHANNEL_ID ||
@@ -44,14 +96,8 @@ export function userIdBlock(userId: string): SectionBlock {
   return {
     type: "section",
     fields: [
-      {
-        type: "mrkdwn",
-        text: `*User*: \`${userId}\``,
-      },
-      {
-        type: "mrkdwn",
-        text: `(*_${friendlyId}_*)`,
-      },
+      createMarkdownField(`*User*: \`${userId}\``, "user.id"),
+      createMarkdownField(`(*_${friendlyId}_*)`, "user.friendlyId"),
     ],
   };
 }
@@ -64,10 +110,10 @@ export function chatLinkBlock(chatId: string): SectionBlock {
   return {
     type: "section",
     fields: [
-      {
-        type: "mrkdwn",
-        text: `*Chat*: <https://${externalUrl}/aila/${chatId}|aila/${chatId}>`,
-      },
+      createMarkdownField(
+        `*Chat*: <https://${externalUrl}/aila/${chatId}|aila/${chatId}>`,
+        "chat.link",
+      ),
     ],
   };
 }
@@ -180,7 +226,6 @@ export function actionsBlock({
  * Formatted threat detection data for Slack notifications
  */
 export interface SlackThreatDetectionSummary {
-  flagged: boolean;
   userInput: string;
   detectedThreats: Array<{
     detectorType: string;
@@ -195,12 +240,10 @@ export interface SlackThreatDetectionSummary {
  */
 function createSlackThreatDetectionSummary(args: {
   messages: Array<{ content: string }>;
-  flagged: boolean;
   detectedThreats: SlackThreatDetectionSummary["detectedThreats"];
   requestId?: string;
 }): SlackThreatDetectionSummary {
   return {
-    flagged: args.flagged,
     userInput: args.messages.map((message) => message.content).join("\n"),
     detectedThreats: args.detectedThreats,
     requestId: args.requestId,
@@ -241,44 +284,50 @@ export function formatThreatDetectionResultWithMessages(
 ): SlackThreatDetectionSummary {
   return createSlackThreatDetectionSummary({
     messages,
-    flagged: threatDetection.isThreat,
     detectedThreats: getDetectedThreatsSummary(threatDetection),
     requestId: threatDetection.requestId,
   });
 }
 
 /**
- * Format threat detection data as markdown for Slack
+ * Format threat detection data into a Slack section field-safe markdown string
  */
-export function formatThreatAsMarkdown(
+export function formatThreatFieldMarkdown(
   userInput: string,
   detectedThreats: Array<{ detectorType: string; detectorId?: string }>,
   requestId?: string,
 ): string {
-  let markdown = "🚨 *Threat Detected*\n\n";
+  let detailsMarkdown = "";
 
-  // User input section
-  markdown += "*User Input:*\n";
-  markdown += `> ${userInput}\n\n`;
-
-  // Detected threats section
   if (detectedThreats.length > 0) {
-    markdown += "*Detected Threats:*\n";
+    detailsMarkdown += "*Detected Threats:*\n";
     for (const threat of detectedThreats) {
-      markdown += `• *Type:* \`${threat.detectorType}\`\n`;
+      detailsMarkdown += `• *Type:* \`${threat.detectorType}\`\n`;
       if (threat.detectorId) {
-        markdown += `  *Detector:* \`${threat.detectorId}\`\n`;
+        detailsMarkdown += `  *Detector:* \`${threat.detectorId}\`\n`;
       }
     }
-    markdown += "\n";
+    detailsMarkdown += "\n";
   }
 
-  // Request ID for traceability
   if (requestId) {
-    markdown += `*Request ID:* \`${requestId}\``;
+    detailsMarkdown += `*Request ID:* \`${requestId}\``;
   }
 
-  return markdown;
+  const prefix = "🚨 *Threat Detected*\n\n*User Input:*\n> ";
+  const suffix = detailsMarkdown ? `\n\n${detailsMarkdown}` : "";
+  const availableUserInputLength =
+    slackTextLimits.sectionFieldText - prefix.length - suffix.length;
+  const truncatedUserInput = truncateSlackText(
+    userInput,
+    Math.max(0, availableUserInputLength),
+    "threat.userInput",
+  );
+
+  return truncateSlackFieldText(
+    `${prefix}${truncatedUserInput}${suffix}`,
+    "threat.summary",
+  );
 }
 
 /**
@@ -289,7 +338,7 @@ export function createHeaderBlock(text: string) {
     type: "header" as const,
     text: {
       type: "plain_text" as const,
-      text,
+      text: truncateSlackText(text, slackTextLimits.headerText, "header.text"),
     },
   };
 }
@@ -297,10 +346,21 @@ export function createHeaderBlock(text: string) {
 /**
  * Create a simple markdown field block
  */
-export function createMarkdownField(text: string) {
+export function createMarkdownField(text: string, fieldName = "section.field") {
   return {
     type: "mrkdwn" as const,
-    text,
+    text: truncateSlackFieldText(text, fieldName),
+  };
+}
+
+export function createLabeledMarkdownField(
+  label: string,
+  value: string,
+  fieldName: string,
+) {
+  return {
+    type: "mrkdwn" as const,
+    text: truncateSlackLabeledField(label, value, fieldName),
   };
 }
 
@@ -317,15 +377,19 @@ export function createThreatSectionBlock(args: {
   return {
     type: "section",
     fields: [
-      createMarkdownField(`*Id*: ${args.id}`),
-      createMarkdownField(
-        formatThreatAsMarkdown(
+      createMarkdownField(`*Id*: ${args.id}`, "threat.id"),
+      {
+        type: "mrkdwn" as const,
+        text: formatThreatFieldMarkdown(
           args.userInput,
           args.detectedThreats,
           args.requestId,
         ),
+      },
+      createMarkdownField(
+        `*User action*:  ${args.userAction}`,
+        "threat.action",
       ),
-      createMarkdownField(`*User action*:  ${args.userAction}`),
     ],
   };
 }
@@ -343,11 +407,24 @@ export function createModerationSectionBlock(args: {
   return {
     type: "section",
     fields: [
-      createMarkdownField(`*Id*: ${args.id}`),
-      createMarkdownField(`*Justification*: ${args.justification}`),
-      createMarkdownField(`*Categories*: \`${args.categories.join("`, `")}\``),
-      createMarkdownField(`*User action*:  ${args.userAction}`),
-      createMarkdownField(`*Violation type*:  ${args.violationType}`),
+      createMarkdownField(`*Id*: ${args.id}`, "moderation.id"),
+      createLabeledMarkdownField(
+        "*Justification*: ",
+        args.justification,
+        "moderation.justification",
+      ),
+      createMarkdownField(
+        `*Categories*: \`${args.categories.join("`, `")}\``,
+        "moderation.categories",
+      ),
+      createMarkdownField(
+        `*User action*:  ${args.userAction}`,
+        "moderation.action",
+      ),
+      createMarkdownField(
+        `*Violation type*:  ${args.violationType}`,
+        "moderation.violationType",
+      ),
     ],
   };
 }

@@ -1,5 +1,6 @@
 import type {
   PrismaClientWithAccelerate,
+  SafetyViolation,
   SafetyViolationAction,
   SafetyViolationRecordType,
   SafetyViolationSource,
@@ -44,9 +45,28 @@ export class SafetyViolations {
     detectionSource: SafetyViolationSource,
     recordType: SafetyViolationRecordType,
     recordId: string,
-  ): Promise<void> {
+  ): Promise<SafetyViolation> {
+    const safetyViolation = await this.createViolation(
+      userId,
+      userAction,
+      detectionSource,
+      recordType,
+      recordId,
+    );
+    await this.enforceThreshold(userId);
+
+    return safetyViolation;
+  }
+
+  async createViolation(
+    userId: string,
+    userAction: SafetyViolationAction,
+    detectionSource: SafetyViolationSource,
+    recordType: SafetyViolationRecordType,
+    recordId: string,
+  ): Promise<SafetyViolation> {
     this.logger.info(`Recording safety violation for user ${userId}`);
-    await this.prisma.safetyViolation.create({
+    const safetyViolation = await this.prisma.safetyViolation.create({
       data: {
         userId,
         userAction,
@@ -67,6 +87,10 @@ export class SafetyViolations {
       },
     });
 
+    return safetyViolation;
+  }
+
+  async enforceThreshold(userId: string): Promise<void> {
     const shouldBanUser = await this.isOverThreshold(userId);
     if (shouldBanUser) {
       const isSafetyTester = await posthogAiBetaServerClient.isFeatureEnabled(
