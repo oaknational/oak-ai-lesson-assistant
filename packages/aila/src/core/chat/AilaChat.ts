@@ -236,17 +236,15 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  private warningAboutSubject() {
-    const { subject } = this._aila.document.content;
-    if (!subject || this.messages.length > 2) {
-      return;
-    }
-    if (!subjects.includes(subject)) {
+  private warningAboutSubject(subject: string) {
+    const subjectAsSlug = subject
+      .split(" ")
+      .map((s) => s.toLowerCase())
+      .join("-");
+    if (!subjects.includes(subjectAsSlug))
       return subjectWarnings.unknownSubject;
-    }
-    if (unsupportedSubjects.includes(subject)) {
+    if (unsupportedSubjects.includes(subjectAsSlug))
       return subjectWarnings.unsupportedSubject;
-    }
   }
 
   /* If the subject is not supported by Oak,
@@ -256,7 +254,12 @@ export class AilaChat implements AilaChatService {
   // We should move this to a hook in the generation process
   // so that we can generate other types of document
   public async handleSubjectWarning() {
-    const warning = this.warningAboutSubject();
+    const currentSubject = this._aila.document.content.subject;
+    const persistedSubject = this._persistedChat?.lessonPlan?.subject;
+    if (!currentSubject || currentSubject === persistedSubject) {
+      return;
+    }
+    const warning = this.warningAboutSubject(currentSubject);
     if (!warning) {
       return;
     }
@@ -403,10 +406,19 @@ export class AilaChat implements AilaChatService {
     await this.span("reportUsageMetrics", async () => {
       await this.reportUsageMetrics();
     });
+
     await this.span("applyEdits", () => {
       this.applyEdits();
       return Promise.resolve();
     });
+    // Non-agentic mode already enqueues this warning earlier in
+    // AilaStreamHandler before the LLM stream starts. Agentic mode skips that
+    // branch, so we fire it here after applyEdits has set the subject.
+    if (this.aila.options.useAgenticAila) {
+      await this.span("handle-subject-warning", async () => {
+        await this.handleSubjectWarning();
+      });
+    }
     await this.span("appendAssistantMessage", async () => {
       const assistantMessage = this.appendAssistantMessage();
       await this.enqueueMessageId(assistantMessage.id);
