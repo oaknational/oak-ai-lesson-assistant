@@ -131,7 +131,8 @@ async function handleUpstreamAIProviderError(
     streamingJSON({
       type: "error",
       message: "The AI service is temporarily unavailable",
-      value: "The AI service is temporarily unavailable. Please try again shortly.",
+      value:
+        "The AI service is temporarily unavailable. Please try again shortly.",
     } as ErrorDocument),
   );
 }
