@@ -1,3 +1,18 @@
+# [1.72.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.71.0...v1.72.0) (2026-05-13)
+
+
+### Bug Fixes
+
+* exclude threat-detected messages from LLM generation context ([#1037](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1037)) ([3cab3be](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3cab3bef42285a390ac11972b9dd36557c0e745d))
+* moderation modal padding and empty moderation modal - AI-2193 ([#1038](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1038)) ([c8c1075](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c8c10750afbd8548475111cc4592d36c0a79227b))
+* pass Aila moderation identifiers to Oak service ([#1036](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1036)) ([86c3487](https://github.com/oaknational/oak-ai-lesson-assistant/commit/86c3487a40827f34281633266bb7ea1baeafc87f))
+* retry Oak Moderation Service once ([#1035](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1035)) ([0fcca19](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0fcca1919e7857de4d26aef0b5aa589972fde7b4))
+
+
+### Features
+
+* consistent lesson order in planning prompt -AI-2152 ([#1033](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1033)) ([39199e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/39199e4c7e0f6fb3eaea1dbd457f8aa19ed20243))
+
 # [1.71.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.70.0...v1.71.0) (2026-05-06)
 
 
