@@ -6,11 +6,16 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { AilaModeration } from ".";
 import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
+import type { LLMService } from "../../core/llm/LLMService";
 import type { AilaPlugin } from "../../core/plugins";
 import type { AilaChatInitializationOptions } from "../../core/types";
 import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";
+
+jest.mock("@oakai/db", () => ({
+  prisma: {},
+}));
 
 // Ensure that no tests start relying on prisma
 const prismaMock = {} as PrismaClientWithAccelerate;
@@ -41,6 +46,17 @@ const setUpModeration = ({
       useModeration: true,
       usePersistence: false,
       useAnalytics: false,
+    },
+    services: {
+      chatLlmService: {
+        name: "mock-llm-service",
+        createChatCompletionStream: jest.fn(),
+        createChatCompletionObjectStream: jest.fn(),
+      } as unknown as LLMService,
+      chatCategoriser: {
+        categorise: jest.fn(),
+      },
+      oakModerator: moderator,
     },
     moderator,
     prisma: prismaMock,
@@ -101,6 +117,48 @@ describe("AilaModeration", () => {
         type: "moderation",
         categories: moderationResult.categories,
         id: undefined, // Because we are not persisting
+      });
+    });
+
+    it("passes session and assistant message identifiers to the moderator", async () => {
+      const moderationResult: ModerationResult = {
+        categories: [],
+      };
+      const moderator = new MockModerator([moderationResult]);
+      const moderateSpy = jest.spyOn(moderator, "moderate");
+
+      const messages: Message[] = [
+        { id: "user-message-1", role: "user", content: "test user message" },
+        {
+          id: "assistant-message-1",
+          role: "assistant",
+          content: "test assistant message",
+        },
+      ];
+      const chat = {
+        id: "session-1",
+        userId: "user-1",
+        messages,
+      };
+      const content = {};
+
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document: {
+          content,
+        },
+        chat,
+        moderator,
+      });
+
+      await ailaModeration.moderate({
+        messages,
+        content,
+        pluginContext,
+      });
+
+      expect(moderateSpy).toHaveBeenCalledWith(JSON.stringify(content), {
+        sessionId: "session-1",
+        messageId: "assistant-message-1",
       });
     });
 

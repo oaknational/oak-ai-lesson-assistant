@@ -11,12 +11,16 @@ import type {
 } from "openai/resources/index.mjs";
 import zodToJsonSchema from "zod-to-json-schema";
 
-import { AilaModerationError, AilaModerator } from ".";
 import {
   DEFAULT_MODERATION_MODEL,
   DEFAULT_MODERATION_TEMPERATURE,
 } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
+import {
+  AilaModerationError,
+  AilaModerator,
+  type AilaModeratorContext,
+} from "./AilaModerator";
 
 const log = aiLogger("aila:moderation");
 
@@ -168,7 +172,10 @@ export class OpenAiModerator extends AilaModerator {
     };
   }
 
-  async moderate(input: string): Promise<ModerationResult> {
+  async moderate(
+    input: string,
+    _context?: AilaModeratorContext,
+  ): Promise<ModerationResult> {
     try {
       return await this._moderate(input, 0);
     } catch (error) {
