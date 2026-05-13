@@ -1,3 +1,4 @@
+import { slugify } from "@oakai/core/src/utils/slugify";
 import {
   subjectWarnings,
   subjects,
@@ -236,34 +237,30 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  private warningAboutSubject(subject: string) {
-    const subjectAsSlug = subject
-      .split(" ")
-      .map((s) => s.toLowerCase())
-      .join("-");
-    if (!subjects.includes(subjectAsSlug))
-      return subjectWarnings.unknownSubject;
-    if (unsupportedSubjects.includes(subjectAsSlug))
-      return subjectWarnings.unsupportedSubject;
-  }
-
-  /* If the subject is not supported by Oak,
-    send a warning message before the first completion */
-
-  // #TODO This is specific to lesson plan generation
-  // We should move this to a hook in the generation process
-  // so that we can generate other types of document
   public async handleSubjectWarning() {
-    const currentSubject = this._aila.document.content.subject;
-    const persistedSubject = this._persistedChat?.lessonPlan?.subject;
-    if (!currentSubject || currentSubject === persistedSubject) {
+    const rawSubject = this._aila.document.content.subject;
+    if (!rawSubject) return;
+
+    const currentSubject = slugify(rawSubject);
+    const persistedSubject = this._persistedChat?.lessonPlan?.subject
+      ? slugify(this._persistedChat.lessonPlan.subject)
+      : undefined;
+    if (currentSubject === persistedSubject) return;
+
+    if (!subjects.includes(currentSubject)) {
+      await this.enqueue({
+        type: "prompt",
+        message: subjectWarnings.unknownSubject,
+      });
       return;
     }
-    const warning = this.warningAboutSubject(currentSubject);
-    if (!warning) {
-      return;
+
+    if (unsupportedSubjects.includes(currentSubject)) {
+      await this.enqueue({
+        type: "prompt",
+        message: subjectWarnings.unsupportedSubject,
+      });
     }
-    await this.enqueue({ type: "prompt", message: warning });
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
