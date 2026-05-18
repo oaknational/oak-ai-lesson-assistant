@@ -6,16 +6,15 @@ import type { AilaExecutionContext } from "../types";
 import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
 
 /**
- * These tests exercise the helper against the real `AilaAmericanisms` detector
- * so we cover the integration between filtering rules and the corrector flow.
- * Test inputs use phrases known to produce stable flags from the underlying
- * `american-british-english-translator` dictionary:
- *   - "color" / "recognize"  -> SPELLING
- *   - "eraser"               -> PHRASING
- *   - "construction"         -> MEANING (advisory; should be skipped)
+ * Real `AilaAmericanisms` detector with a mocked corrector agent. Inputs use
+ * phrases that `american-british-english-translator` classifies consistently
+ * across dictionary versions, so the tests stay reproducible:
+ *   - "color" / "recognize" -> SPELLING
+ *   - "eraser"              -> PHRASING
+ *   - "construction"        -> MEANING (advisory, skipped)
  */
 
-function createContext(corrector: jest.Mock): AilaExecutionContext {
+function createContext(correctorAgent: jest.Mock): AilaExecutionContext {
   return {
     persistedState: {
       messages: [],
@@ -23,7 +22,7 @@ function createContext(corrector: jest.Mock): AilaExecutionContext {
       relevantLessons: null,
     },
     runtime: {
-      britishEnglishCorrectorAgent: corrector,
+      britishEnglishCorrectorAgent: correctorAgent,
     } as unknown as AilaExecutionContext["runtime"],
     currentTurn: {
       document: {},
@@ -43,8 +42,8 @@ const TITLE: SectionKey = "title";
 
 describe("applyBritishEnglishCorrection", () => {
   it("returns null and skips the corrector when no Americanisms are detected", async () => {
-    const corrector = jest.fn();
-    const context = createContext(corrector);
+    const correctorAgent = jest.fn();
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -54,16 +53,16 @@ describe("applyBritishEnglishCorrection", () => {
     });
 
     expect(result).toBeNull();
-    expect(corrector).not.toHaveBeenCalled();
+    expect(correctorAgent).not.toHaveBeenCalled();
     expect(context.currentTurn.notes).toEqual([]);
   });
 
   it("invokes the corrector and returns validated corrected content for a spelling flag", async () => {
-    const corrector = jest.fn().mockResolvedValue({
+    const correctorAgent = jest.fn().mockResolvedValue({
       error: null,
       data: "This will recognise the colour",
     });
-    const context = createContext(corrector);
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -72,17 +71,17 @@ describe("applyBritishEnglishCorrection", () => {
       responseSchema: z.string(),
     });
 
-    expect(corrector).toHaveBeenCalledTimes(1);
+    expect(correctorAgent).toHaveBeenCalledTimes(1);
     expect(result).toBe("This will recognise the colour");
     expect(context.currentTurn.notes).toEqual([]);
   });
 
   it("invokes the corrector for a phrasing flag (eraser)", async () => {
-    const corrector = jest.fn().mockResolvedValue({
+    const correctorAgent = jest.fn().mockResolvedValue({
       error: null,
       data: "Use a rubber to erase",
     });
-    const context = createContext(corrector);
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -91,15 +90,15 @@ describe("applyBritishEnglishCorrection", () => {
       responseSchema: z.string(),
     });
 
-    expect(corrector).toHaveBeenCalledTimes(1);
+    expect(correctorAgent).toHaveBeenCalledTimes(1);
     expect(result).toBe("Use a rubber to erase");
   });
 
   it("skips the corrector when only MEANING-class flags are detected", async () => {
-    const corrector = jest.fn();
-    const context = createContext(corrector);
+    const correctorAgent = jest.fn();
+    const context = createContext(correctorAgent);
 
-    // "construction" reliably flags as MEANING only (advisory).
+    // "construction" reliably flags as MEANING only
     const result = await applyBritishEnglishCorrection({
       context,
       sectionKey: TITLE,
@@ -108,15 +107,15 @@ describe("applyBritishEnglishCorrection", () => {
     });
 
     expect(result).toBeNull();
-    expect(corrector).not.toHaveBeenCalled();
+    expect(correctorAgent).not.toHaveBeenCalled();
     expect(context.currentTurn.notes).toEqual([]);
   });
 
   it("returns null without leaking a user-facing note when the corrector errors", async () => {
-    const corrector = jest.fn().mockResolvedValue({
+    const correctorAgent = jest.fn().mockResolvedValue({
       error: { message: "model refused" },
     });
-    const context = createContext(corrector);
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -130,11 +129,11 @@ describe("applyBritishEnglishCorrection", () => {
   });
 
   it("returns null without leaking a user-facing note when the corrector returns schema-invalid content", async () => {
-    const corrector = jest.fn().mockResolvedValue({
+    const correctorAgent = jest.fn().mockResolvedValue({
       error: null,
       data: 42, // not a string — fails responseSchema
     });
-    const context = createContext(corrector);
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -148,8 +147,10 @@ describe("applyBritishEnglishCorrection", () => {
   });
 
   it("swallows corrector promise rejections so the turn keeps streaming", async () => {
-    const corrector = jest.fn().mockRejectedValue(new Error("network timeout"));
-    const context = createContext(corrector);
+    const correctorAgent = jest
+      .fn()
+      .mockRejectedValue(new Error("network timeout"));
+    const context = createContext(correctorAgent);
 
     const result = await applyBritishEnglishCorrection({
       context,
@@ -164,7 +165,7 @@ describe("applyBritishEnglishCorrection", () => {
 
   it("passes only actionable issues to the corrector", async () => {
     let capturedIssues: Array<{ issue: string }> = [];
-    const corrector = jest.fn().mockImplementation((props: unknown) => {
+    const correctorAgent = jest.fn().mockImplementation((props: unknown) => {
       const typed = props as { issues: Array<{ issue: string }> };
       capturedIssues = typed.issues;
       return Promise.resolve({
@@ -172,7 +173,7 @@ describe("applyBritishEnglishCorrection", () => {
         data: "Triangle construction recognises the colour",
       });
     });
-    const context = createContext(corrector);
+    const context = createContext(correctorAgent);
 
     // Mix MEANING ("construction", "triangle") with SPELLING ("recognize", "color").
     await applyBritishEnglishCorrection({
@@ -182,7 +183,7 @@ describe("applyBritishEnglishCorrection", () => {
       responseSchema: z.string(),
     });
 
-    expect(corrector).toHaveBeenCalledTimes(1);
+    expect(correctorAgent).toHaveBeenCalledTimes(1);
     expect(
       capturedIssues.every((i) => i.issue !== AMERICANISM_ISSUE_KIND.MEANING),
     ).toBe(true);

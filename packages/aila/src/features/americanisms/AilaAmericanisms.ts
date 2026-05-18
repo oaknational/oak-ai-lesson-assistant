@@ -13,9 +13,10 @@ import {
 
 export type AilaDocumentContent = Record<string, unknown>;
 
-// Phrases the translator dictionary flags but which are correct British English
-// in the contexts Aila generates (e.g. "fall" as a verb, "connection" not
-// archaic "connexion"). Filtered to avoid unnecessary corrections.
+// Phrases the translator dictionary flags as Americanisms but which are
+// correct British English in Aila's educational contexts — e.g. "gas" as a
+// state of matter, which the dictionary maps to "petrol". Filtered so the
+// corrector never fires on them and the scorers don't flag them.
 const FILTER_OUT_PHRASES: ReadonlySet<string> = new Set([
   "practice",
   "practices",

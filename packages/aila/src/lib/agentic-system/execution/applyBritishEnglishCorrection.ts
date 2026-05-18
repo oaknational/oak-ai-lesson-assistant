@@ -11,10 +11,10 @@ const americanisms = new AilaAmericanisms();
 const log = aiLogger("aila:agents");
 
 /**
- * Detect Americanisms in a freshly generated section. If actionable issues are
- * found, invoke the British English corrector agent and return validated
+ * Detects Americanisms in a freshly generated section. If actionable issues are
+ * found it invokes the British English corrector agent and returns validated
  * corrected content. Returns `null` when no correction is needed or the
- * corrector fails — callers should fall back to the original content.
+ * corrector fails and falls back to the original content.
  */
 export async function applyBritishEnglishCorrection({
   context,
@@ -30,7 +30,7 @@ export async function applyBritishEnglishCorrection({
   const detected = americanisms.findAmericanisms({ [sectionKey]: content });
   const sectionIssues = detected[0]?.issues ?? [];
 
-  // MEANING flags are advisory only (high false-positive rate) — never correct.
+  // MEANING flags are advisory only (high false-positive rate), they should never be corrected.
   const actionable = sectionIssues.filter(
     (issue) => issue.issue !== AMERICANISM_ISSUE_KIND.MEANING,
   );
@@ -44,10 +44,7 @@ export async function applyBritishEnglishCorrection({
     `british-english-corrector fired ${sectionKey} actionable=${actionable.length}`,
   );
 
-  // The corrector is best-effort: SDK rejections, model errors, and
-  // schema-invalid output all route to logs and fall back to the original
-  // section. These must not surface in `currentTurn.notes`, which is replayed
-  // verbatim to the teacher by the message-to-user agent.
+  // The corrector is best-effort. Errors are not surfaced in `currentTurn.notes` (as this is displayed to the teacher by the message-to-user agent).
   let result: AgentResult<unknown>;
   try {
     result = await context.runtime.britishEnglishCorrectorAgent({
