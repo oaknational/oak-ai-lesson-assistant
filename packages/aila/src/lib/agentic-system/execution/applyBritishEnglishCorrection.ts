@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import type { z } from "zod";
 
 import { AMERICANISM_ISSUE_KIND } from "../../../features/americanisms";
@@ -6,6 +8,7 @@ import type { SectionKey } from "../schema";
 import type { AilaExecutionContext } from "../types";
 
 const americanisms = new AilaAmericanisms();
+const log = aiLogger("aila:agents");
 
 /**
  * Detect Americanisms in a freshly generated section. If actionable issues are
@@ -32,7 +35,14 @@ export async function applyBritishEnglishCorrection({
     (issue) => issue.issue !== AMERICANISM_ISSUE_KIND.MEANING,
   );
 
-  if (actionable.length === 0) return null;
+  if (actionable.length === 0) {
+    log.info(`corrector-stat skipped ${sectionKey}`);
+    return null;
+  }
+
+  log.info(
+    `corrector-stat fired ${sectionKey} actionable=${actionable.length}`,
+  );
 
   const result = await context.runtime.britishEnglishCorrectorAgent({
     sectionKey,
