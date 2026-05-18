@@ -196,7 +196,7 @@ function verifyChatOwnership(
   }
 }
 
-async function loadChatDataFromDatabase(
+async function loadGenerationContext(
   chatId: string,
   userId: string,
   prisma: PrismaClientWithAccelerate,
@@ -208,6 +208,7 @@ async function loadChatDataFromDatabase(
         id: true,
         userId: true,
         output: true,
+        threatDetections: { select: { messageId: true } },
       },
     });
 
@@ -225,7 +226,7 @@ async function loadChatDataFromDatabase(
 
     output.lessonPlan = output.lessonPlan ?? {};
 
-    const { messages, lessonPlan } = await migrateChatData(
+    const { messages: allMessages, lessonPlan } = await migrateChatData(
       output,
       async (upgradedData) => {
         await prisma.appSession.update({
@@ -236,9 +237,19 @@ async function loadChatDataFromDatabase(
       {
         id: chat.id,
         userId,
-        caller: "chatHandler.loadChatDataFromDatabase",
+        caller: "chatHandler.loadGenerationContext",
       },
     );
+
+    const threatenedMessageIds = new Set(
+      chat.threatDetections
+        .map((td) => td.messageId)
+        .filter((id): id is string => id !== null),
+    );
+    const messages =
+      threatenedMessageIds.size > 0
+        ? allMessages.filter((m) => !threatenedMessageIds.has(m.id))
+        : allMessages;
 
     log.info(
       `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
@@ -248,7 +259,7 @@ async function loadChatDataFromDatabase(
     log.error(`Error loading chat data for chat ${chatId}`, error);
     captureException(error, {
       extra: { chatId, userId },
-      tags: { context: "loadChatDataFromDatabase" },
+      tags: { context: "loadGenerationContext" },
     });
     throw error;
   }
@@ -360,7 +371,7 @@ export async function handleChatPostRequest(
       span.setAttributes({ chat_id: chatId });
 
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
-        await loadChatDataFromDatabase(chatId, userId, config.prisma);
+        await loadGenerationContext(chatId, userId, config.prisma);
 
       const messages = prepareMessages(dbMessages, frontendMessages, chatId);
 

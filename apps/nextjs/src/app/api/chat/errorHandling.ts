@@ -11,6 +11,8 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/node";
+import { APICallError } from "ai";
+import { APIError } from "openai";
 
 import { streamingJSON } from "./protocol";
 
@@ -71,6 +73,70 @@ async function handleGenericError(e: Error): Promise<Response> {
   );
 }
 
+type UpstreamAIProviderError = {
+  statusCode: number;
+  requestId?: string | null;
+  url?: string;
+};
+
+function getUpstreamAIProviderError(
+  error: unknown,
+): UpstreamAIProviderError | null {
+  let current: unknown = error;
+
+  while (current) {
+    if (
+      APICallError.isInstance(current) &&
+      current.statusCode !== undefined &&
+      current.statusCode >= 500
+    ) {
+      return {
+        statusCode: current.statusCode,
+        url: current.url,
+      };
+    }
+
+    if (
+      current instanceof APIError &&
+      current.status !== undefined &&
+      current.status >= 500
+    ) {
+      return {
+        statusCode: current.status,
+        requestId: current.request_id,
+      };
+    }
+
+    current =
+      current instanceof Error && "cause" in current ? current.cause : null;
+  }
+
+  return null;
+}
+
+async function handleUpstreamAIProviderError(
+  e: Error,
+  providerError: UpstreamAIProviderError,
+): Promise<Response> {
+  log.warn("Upstream AI provider error", providerError);
+  Sentry.captureMessage("Upstream AI provider error", {
+    level: "warning",
+    extra: {
+      ...providerError,
+      cause: e.message,
+    },
+  });
+
+  return Promise.resolve(
+    streamingJSON({
+      type: "error",
+      message: "The AI service is temporarily unavailable",
+      value:
+        "The AI service is temporarily unavailable. Please try again shortly.",
+    } as ErrorDocument),
+  );
+}
+
 export async function handleChatException(
   e: unknown,
   chatId: string,
@@ -90,6 +156,13 @@ export async function handleChatException(
 
   if (e instanceof UserBannedError) {
     return handleUserBannedError();
+  }
+
+  if (e instanceof Error) {
+    const upstreamProviderError = getUpstreamAIProviderError(e);
+    if (upstreamProviderError) {
+      return handleUpstreamAIProviderError(e, upstreamProviderError);
+    }
   }
 
   Sentry.captureException(

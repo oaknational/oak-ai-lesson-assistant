@@ -6,6 +6,8 @@ import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
+import * as Sentry from "@sentry/node";
+import { APICallError } from "ai";
 import invariant from "tiny-invariant";
 
 import {
@@ -21,6 +23,11 @@ jest.mock(
     handleThreatDetectionError: jest.fn(),
   }),
 );
+
+jest.mock("@sentry/node", () => ({
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
 
 describe("handleChatException", () => {
   describe("AilaThreatDetectionError", () => {
@@ -125,6 +132,52 @@ describe("handleChatException", () => {
         message: "An unexpected error occurred",
         value: "Sorry, an unexpected error occurred. Please try again later.",
       });
+    });
+  });
+
+  describe("upstream AI provider error", () => {
+    it("should return a temporary AI service message and capture a warning", async () => {
+      const providerError = new APICallError({
+        message:
+          "500 The server had an error while processing your request. Sorry about that!",
+        url: "https://oai.eu.hconeai.com/v1/chat/completions",
+        requestBodyValues: {},
+        statusCode: 500,
+      });
+      const error = new Error("Unexpected error in chat route", {
+        cause: providerError,
+      });
+      const prisma = {} as unknown as PrismaClientWithAccelerate;
+
+      const response = await handleChatException(error, "test-chat-id", prisma);
+
+      expect(response.status).toBe(200);
+
+      invariant(
+        response.body instanceof ReadableStream,
+        "Expected response.body to be a ReadableStream",
+      );
+
+      const consumed = await consumeStream(response.body);
+      const message = extractStreamMessage(consumed);
+
+      expect(message).toEqual({
+        type: "error",
+        message: "The AI service is temporarily unavailable",
+        value:
+          "The AI service is temporarily unavailable. Please try again shortly.",
+      });
+      expect(Sentry.captureMessage).toHaveBeenCalledWith(
+        "Upstream AI provider error",
+        expect.objectContaining({
+          level: "warning",
+          extra: expect.objectContaining({
+            statusCode: 500,
+            url: "https://oai.eu.hconeai.com/v1/chat/completions",
+          }),
+        }),
+      );
+      expect(Sentry.captureException).not.toHaveBeenCalled();
     });
   });
 
