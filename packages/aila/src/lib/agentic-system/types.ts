@@ -16,6 +16,7 @@ import type {
   PriorKnowledgeSchema,
   SubjectSchema,
 } from "../../protocol/schema";
+import type { BritishEnglishCorrectorAgentProps } from "./agents/britishEnglishCorrectorAgent";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type { JsonPatchOperation } from "./compatibility/helpers/immerPatchToJsonPatch";
@@ -53,6 +54,9 @@ export type AilaRuntimeContext = {
   messageToUserAgent: (
     props: MessageToUserAgentProps,
   ) => Promise<AgentResult<MessageToUserAgentOutput>>;
+  britishEnglishCorrectorAgent: (
+    props: BritishEnglishCorrectorAgentProps,
+  ) => Promise<AgentResult<unknown>>;
   fetchRelevantLessons: (
     props: RagSearchArgs,
   ) => Promise<AgenticRagLessonPlanResult[]>;

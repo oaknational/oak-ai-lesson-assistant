@@ -30,6 +30,7 @@ function createRuntime(
     plannerAgent: jest.fn(),
     sectionAgents: {} as AilaRuntimeContext["sectionAgents"],
     messageToUserAgent: jest.fn(),
+    britishEnglishCorrectorAgent: jest.fn(),
     fetchRelevantLessons: jest.fn().mockResolvedValue([]),
     ...overrides,
   };

@@ -14,6 +14,7 @@ import {
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { AilaThreatDetectionError } from "../../features/threatDetection/types";
+import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
@@ -343,6 +344,8 @@ export class AilaStreamHandler {
           },
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+        britishEnglishCorrectorAgent:
+          createOpenAIBritishEnglishCorrectorAgent(openai),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
           const subjectSlugs = parseSubjectsForRagSearch(subject);
           const keyStageSlugs = parseKeyStagesForRagSearch(keyStage);
