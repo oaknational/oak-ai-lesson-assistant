@@ -1,13 +1,10 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
 import type {
   ActionDocument,
   ErrorDocument,
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
-import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/node";
@@ -17,20 +14,6 @@ import { APIError } from "openai";
 import { streamingJSON } from "./protocol";
 
 const log = aiLogger("chat");
-
-async function handleThreatError(
-  e: AilaThreatDetectionError,
-  id: string,
-  prisma: PrismaClientWithAccelerate,
-) {
-  const threatErrorMessage = await handleThreatDetectionError({
-    userId: e.userId,
-    chatId: id,
-    error: e,
-    prisma,
-  });
-  return streamingJSON(threatErrorMessage);
-}
 
 async function handleAilaAuthenticationError(): Promise<Response> {
   return Promise.resolve(new Response("Unauthorized", { status: 401 }));
@@ -137,17 +120,9 @@ async function handleUpstreamAIProviderError(
   );
 }
 
-export async function handleChatException(
-  e: unknown,
-  chatId: string,
-  prisma: PrismaClientWithAccelerate,
-): Promise<Response> {
+export async function handleChatException(e: unknown): Promise<Response> {
   if (e instanceof AilaAuthenticationError) {
     return handleAilaAuthenticationError();
-  }
-
-  if (e instanceof AilaThreatDetectionError) {
-    return handleThreatError(e, chatId, prisma);
   }
 
   if (e instanceof RateLimitExceededError) {

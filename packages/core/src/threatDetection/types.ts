@@ -23,6 +23,7 @@ export const threatCategorySchema = z.enum([
 export type ThreatCategory = z.infer<typeof threatCategorySchema>;
 
 export const threatDetectionMessageSchema = z.object({
+  id: z.string().optional(),
   role: z.enum(["system", "user", "assistant"]),
   content: z.string(),
 });

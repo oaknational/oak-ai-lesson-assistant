@@ -4,7 +4,6 @@ import { setupPolly } from "../../tests/mocks/setupPolly";
 import type { AilaCategorisation } from "../features/categorisation";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { MockThreatDetector } from "../features/threatDetection/detectors/MockThreatDetector";
-import { AilaThreatDetectionError } from "../features/threatDetection/types";
 import * as threatDetectionHandling from "../utils/threatDetection/threatDetectionHandling";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
@@ -12,7 +11,7 @@ import type { AilaChat } from "./chat/AilaChat";
 import { MockLLMService } from "./llm/MockLLMService";
 
 jest.mock("../utils/threatDetection/threatDetectionHandling", () => ({
-  handleThreatDetectionError: jest.fn(),
+  handleThreatDetectionResult: jest.fn(),
 }));
 
 describe("Aila", () => {
@@ -363,8 +362,8 @@ describe("Aila", () => {
         message: "Threat was detected",
       };
 
-      const handleThreatDetectionErrorSpy = jest
-        .spyOn(threatDetectionHandling, "handleThreatDetectionError")
+      const handleThreatDetectionResultSpy = jest
+        .spyOn(threatDetectionHandling, "handleThreatDetectionResult")
         .mockResolvedValue(handledThreatMessage);
 
       const ailaInstance = new Aila({
@@ -402,10 +401,14 @@ describe("Aila", () => {
         value: undefined,
       });
 
-      expect(handleThreatDetectionErrorSpy).toHaveBeenCalledWith({
+      expect(handleThreatDetectionResultSpy).toHaveBeenCalledWith({
         userId: "user123",
         chatId: "123",
-        error: expect.any(AilaThreatDetectionError),
+        threatDetection: expect.objectContaining({
+          provider: "mock",
+          isThreat: true,
+          message: "Mocked response",
+        }),
         messages: ailaInstance.chat.messages,
       });
       expect(enqueueSpy).toHaveBeenCalledWith(handledThreatMessage);

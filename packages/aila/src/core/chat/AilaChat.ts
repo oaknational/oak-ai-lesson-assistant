@@ -11,7 +11,6 @@ import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
-import { AilaThreatDetectionError } from "../../features/threatDetection";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
@@ -22,7 +21,6 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -165,15 +163,7 @@ export class AilaChat implements AilaChatService {
       "Error reading from the OpenAI stream",
       "info",
     );
-    if (error instanceof AilaThreatDetectionError) {
-      const errorObject = await handleThreatDetectionError({
-        userId: this.userId ?? "anonymous",
-        chatId: this.id,
-        error,
-        messages: this.messages,
-      });
-      await this.enqueue(errorObject);
-    } else if (error instanceof Error) {
+    if (error instanceof Error) {
       invariant(this._generation, "Generation not initialised");
       await this.enqueueError({ message: error.message });
     }

@@ -13,7 +13,6 @@ import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerat
 import { OpenAiModerator } from "../features/moderation/moderators/OpenAiModerator";
 import { AilaPrismaPersistence } from "../features/persistence/adaptors/prisma";
 import { AilaSnapshotStore } from "../features/snapshotStore";
-import { AilaThreatDetection } from "../features/threatDetection";
 import type { AilaThreatDetector } from "../features/threatDetection/detectors/AilaThreatDetector";
 import type {
   AilaAnalyticsFeature,
@@ -116,7 +115,7 @@ export class AilaFeatureFactory {
     detectors?: AilaThreatDetector[],
   ): AilaThreatDetectionFeature | undefined {
     if (options.useThreatDetection && detectors) {
-      return new AilaThreatDetection(detectors);
+      return { detectors };
     }
     return undefined;
   }
