@@ -23,21 +23,25 @@ This updates `packages/aila/src/lib/agentic-system/scoring/scores.yaml` and capt
 After the harness completes, summarise how often the British English corrector fired:
 
 ```bash
-fired=$(grep -c "corrector-stat fired" /tmp/score-agentic.log)
-skipped=$(grep -c "corrector-stat skipped" /tmp/score-agentic.log)
+fired=$(grep -c "british-english-corrector fired" /tmp/score-agentic.log)
+skipped=$(grep -c "british-english-corrector skipped" /tmp/score-agentic.log)
+failed=$(grep -cE "british-english-corrector (threw|errored|schema-invalid)" /tmp/score-agentic.log)
 total=$((fired + skipped))
 if [ "$total" -gt 0 ]; then
   echo "Corrector fired: $fired / $total sections ($(awk "BEGIN { printf \"%.1f\", $fired*100/$total }")%)"
   echo "Skipped:         $skipped / $total sections"
+  if [ "$fired" -gt 0 ]; then
+    echo "Failed:          $failed / $fired fires ($(awk "BEGIN { printf \"%.1f\", $failed*100/$fired }")%)"
+  fi
   echo
   echo "Firings by section:"
-  grep "corrector-stat fired" /tmp/score-agentic.log | sed -E 's/.*fired ([a-zA-Z0-9]+).*/\1/' | sort | uniq -c | sort -rn
+  grep "british-english-corrector fired" /tmp/score-agentic.log | sed -E 's/.*fired ([a-zA-Z0-9]+).*/\1/' | sort | uniq -c | sort -rn
 else
-  echo "No corrector-stat lines found. Was DEBUG=ai:aila:agents set when running the harness?"
+  echo "No british-english-corrector lines found. Was DEBUG=ai:aila:agents set when running the harness?"
 fi
 ```
 
-The corrector fires when `AilaAmericanisms` detects actionable (spelling/phrasing) Americanisms on a freshly generated section. Each firing is one additional LLM call. A 0% rate means the static prompt guidance caught everything; a high rate means the prompts are leaking and the corrector is doing the heavy lifting.
+The corrector fires when `AilaAmericanisms` detects actionable (spelling/phrasing) Americanisms on a freshly generated section. Each firing is one additional LLM call. A 0% rate means the static prompt guidance caught everything; a high rate means the prompts are leaking and the corrector is doing the heavy lifting. A non-zero "Failed" line means the corrector errored or returned schema-invalid content — the section is preserved (original wins) but the failure should be investigated if it persists.
 
 ## Verify freshness
 

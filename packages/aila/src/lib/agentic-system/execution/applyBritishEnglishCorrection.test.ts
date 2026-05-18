@@ -10,9 +10,9 @@ import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
  * so we cover the integration between filtering rules and the corrector flow.
  * Test inputs use phrases known to produce stable flags from the underlying
  * `american-british-english-translator` dictionary:
- *   - "color" / "recognize"  → SPELLING
- *   - "eraser"               → PHRASING
- *   - "construction"         → MEANING (advisory; should be skipped)
+ *   - "color" / "recognize"  -> SPELLING
+ *   - "eraser"               -> PHRASING
+ *   - "construction"         -> MEANING (advisory; should be skipped)
  */
 
 function createContext(corrector: jest.Mock): AilaExecutionContext {
@@ -112,7 +112,7 @@ describe("applyBritishEnglishCorrection", () => {
     expect(context.currentTurn.notes).toEqual([]);
   });
 
-  it("logs a note and returns null when the corrector errors", async () => {
+  it("returns null without leaking a user-facing note when the corrector errors", async () => {
     const corrector = jest.fn().mockResolvedValue({
       error: { message: "model refused" },
     });
@@ -126,15 +126,10 @@ describe("applyBritishEnglishCorrection", () => {
     });
 
     expect(result).toBeNull();
-    expect(context.currentTurn.notes).toEqual([
-      expect.objectContaining({
-        message: expect.stringContaining("model refused"),
-        sectionKey: TITLE,
-      }),
-    ]);
+    expect(context.currentTurn.notes).toEqual([]);
   });
 
-  it("logs a note and returns null when the corrector returns schema-invalid content", async () => {
+  it("returns null without leaking a user-facing note when the corrector returns schema-invalid content", async () => {
     const corrector = jest.fn().mockResolvedValue({
       error: null,
       data: 42, // not a string — fails responseSchema
@@ -149,12 +144,22 @@ describe("applyBritishEnglishCorrection", () => {
     });
 
     expect(result).toBeNull();
-    expect(context.currentTurn.notes).toEqual([
-      expect.objectContaining({
-        message: expect.stringContaining("schema-invalid"),
-        sectionKey: TITLE,
-      }),
-    ]);
+    expect(context.currentTurn.notes).toEqual([]);
+  });
+
+  it("swallows corrector promise rejections so the turn keeps streaming", async () => {
+    const corrector = jest.fn().mockRejectedValue(new Error("network timeout"));
+    const context = createContext(corrector);
+
+    const result = await applyBritishEnglishCorrection({
+      context,
+      sectionKey: TITLE,
+      content: "This will recognize the color",
+      responseSchema: z.string(),
+    });
+
+    expect(result).toBeNull();
+    expect(context.currentTurn.notes).toEqual([]);
   });
 
   it("passes only actionable issues to the corrector", async () => {
