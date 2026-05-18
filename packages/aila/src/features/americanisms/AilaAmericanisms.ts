@@ -13,6 +13,22 @@ import {
 
 export type AilaDocumentContent = Record<string, unknown>;
 
+// Phrases the translator dictionary flags but which are correct British English
+// in the contexts Aila generates (e.g. "fall" as a verb, "connection" not
+// archaic "connexion"). Filtered to avoid unnecessary corrections.
+const FILTER_OUT_PHRASES: ReadonlySet<string> = new Set([
+  "practice",
+  "practices",
+  "gas",
+  "gases",
+  "period",
+  "periods",
+  "fall",
+  "falls",
+  "connection",
+  "connections",
+]);
+
 export class AilaAmericanisms<T extends AilaDocumentContent>
   implements AilaAmericanismsFeature
 {
@@ -20,17 +36,6 @@ export class AilaAmericanisms<T extends AilaDocumentContent>
     section: keyof T,
     document: T,
   ): AmericanismIssueBySection | undefined {
-    const filterOutPhrases = new Set([
-      "practice",
-      "practices",
-      "gas",
-      "gases",
-      "period",
-      "periods",
-      "fall",
-      "falls",
-    ]);
-
     const sectionContent = document[section];
     if (!sectionContent) return;
 
@@ -43,7 +48,7 @@ export class AilaAmericanisms<T extends AilaDocumentContent>
     Object.values(sectionAmericanismScan).forEach((lineIssues) => {
       lineIssues.forEach((lineIssue) => {
         const [phrase, issueDefinition] = Object.entries(lineIssue)[0] ?? [];
-        if (phrase && issueDefinition && !filterOutPhrases.has(phrase)) {
+        if (phrase && issueDefinition && !FILTER_OUT_PHRASES.has(phrase)) {
           if (!issues.some((issue) => issue.phrase === phrase)) {
             const parsed = americanismIssueSchema.safeParse({
               phrase,
