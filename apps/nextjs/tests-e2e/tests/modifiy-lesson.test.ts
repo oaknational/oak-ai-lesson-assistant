@@ -7,8 +7,8 @@ import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
 import {
   applyLlmFixtures,
-  isFinished,
-  waitForGeneration,
+  expectFinished,
+  performAndWaitForGeneration,
 } from "./aila-chat/helpers";
 
 test.describe("Modify a lesson plan", () => {
@@ -21,7 +21,7 @@ test.describe("Modify a lesson plan", () => {
       await page.goto(
         `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
       );
-      await isFinished(page);
+      await expectFinished(page);
     });
   });
 
@@ -52,8 +52,9 @@ test.describe("Modify a lesson plan", () => {
     await modifyRadioButton.click();
 
     setFixture("modify-lesson-easier");
-    await page.locator("text=Modify section").click();
-    await waitForGeneration(page, generationTimeout);
+    await performAndWaitForGeneration(page, generationTimeout, async () => {
+      await page.locator("text=Modify section").click();
+    });
 
     await expect(
       page.locator(
@@ -92,8 +93,9 @@ test.describe("Modify a lesson plan", () => {
     await additionalMaterial.click();
     const addMaterialsButton = page.locator("text=Add materials");
     setFixture("add-additional-materials");
-    await addMaterialsButton.click();
-    await waitForGeneration(page, generationTimeout);
+    await performAndWaitForGeneration(page, generationTimeout, async () => {
+      await addMaterialsButton.click();
+    });
 
     await expect(
       page.getByText(
