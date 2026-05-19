@@ -28,6 +28,10 @@ const FILTER_OUT_PHRASES: ReadonlySet<string> = new Set([
   "falls",
   "connection",
   "connections",
+  "line",
+  "lines",
+  "triangle",
+  "triangles",
 ]);
 
 export class AilaAmericanisms<T extends AilaDocumentContent>
