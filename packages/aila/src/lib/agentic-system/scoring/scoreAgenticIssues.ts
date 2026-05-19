@@ -40,6 +40,7 @@ import type {
   AilaRuntimeContext,
   AilaTurnCallbacks,
   ChatMessage,
+  CorrectorStats,
 } from "../types";
 import {
   collectMeaningOccurrences,
@@ -81,7 +82,47 @@ type ScenarioConfig = {
   fetchRelevantLessons: () => Promise<never[]>;
 };
 
-type RunCapture = ScorerInput & { error?: string; durationSec: number };
+type RunCapture = ScorerInput & {
+  error?: string;
+  durationSec: number;
+  correctorStats: CorrectorStats;
+};
+
+type CorrectorSummary = {
+  corrections_attempted: number;
+  corrections_not_needed: number;
+  corrections_failed: number;
+  correction_rate: string;
+  correction_failure_rate: string;
+  corrections_by_section: Record<string, number>;
+};
+
+function summariseCorrector(stats: CorrectorStats[]): CorrectorSummary {
+  const attempted: SectionKey[] = stats.flatMap((s) => s.attempted);
+  const notNeeded: SectionKey[] = stats.flatMap((s) => s.notNeeded);
+  const failed = stats.flatMap((s) => s.failed);
+
+  const total = attempted.length + notNeeded.length;
+  const rate = (numerator: number, denominator: number): string =>
+    denominator === 0
+      ? "0.0%"
+      : `${((numerator / denominator) * 100).toFixed(1)}%`;
+
+  const correctionsBySection: Record<string, number> = {};
+  for (const sectionKey of attempted) {
+    correctionsBySection[sectionKey] =
+      (correctionsBySection[sectionKey] ?? 0) + 1;
+  }
+
+  return {
+    corrections_attempted: attempted.length,
+    corrections_not_needed: notNeeded.length,
+    corrections_failed: failed.length,
+    correction_rate: rate(attempted.length, total),
+    correction_failure_rate: rate(failed.length, attempted.length),
+    corrections_by_section: correctionsBySection,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Scorers
@@ -412,6 +453,11 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
   const allPatches: JsonPatchOperation[] = [];
   let finalDocument: PartialLessonPlan = {};
   let finalMessage = "";
+  const aggregateCorrectorStats: CorrectorStats = {
+    attempted: [],
+    notNeeded: [],
+    failed: [],
+  };
 
   const messages: ChatMessage[] = [
     { id: "m0", role: "user", content: scenario.userMessage },
@@ -449,13 +495,19 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
             console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
           }
         },
-        onTurnComplete: ({ document, ailaMessage }) => {
+        onTurnComplete: ({ document, ailaMessage, correctorStats }) => {
           turnDoc = document;
           turnMessage = ailaMessage;
+          aggregateCorrectorStats.attempted.push(...correctorStats.attempted);
+          aggregateCorrectorStats.notNeeded.push(...correctorStats.notNeeded);
+          aggregateCorrectorStats.failed.push(...correctorStats.failed);
           return Promise.resolve();
         },
-        onTurnFailed: ({ ailaMessage }) => {
+        onTurnFailed: ({ ailaMessage, correctorStats }) => {
           turnMessage = ailaMessage;
+          aggregateCorrectorStats.attempted.push(...correctorStats.attempted);
+          aggregateCorrectorStats.notNeeded.push(...correctorStats.notNeeded);
+          aggregateCorrectorStats.failed.push(...correctorStats.failed);
           return Promise.resolve();
         },
       };
@@ -514,6 +566,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       americanismsBySection: new AilaAmericanisms().findAmericanisms(
         finalDocument,
       ),
+      correctorStats: aggregateCorrectorStats,
       error: String(error),
       durationSec,
     };
@@ -528,6 +581,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
     americanismsBySection: new AilaAmericanisms().findAmericanisms(
       finalDocument,
     ),
+    correctorStats: aggregateCorrectorStats,
     durationSec: (Date.now() - startTime) / 1000,
   };
 }
@@ -547,6 +601,7 @@ type ScenarioResults = {
     error?: string;
     complete: boolean;
     scores: RunScore[];
+    correctorStats: CorrectorStats;
   }>;
 };
 
@@ -664,16 +719,25 @@ describe("Agentic Issue Scoring", () => {
     const report = generateReport(allResults);
     console.log("\n" + report);
 
-    const summary: Record<string, Record<string, Record<string, number>>> = {};
+    const summary: Record<
+      string,
+      Record<string, Record<string, number> | CorrectorSummary>
+    > = {};
     for (const scenario of allResults) {
-      const scorerTotals: Record<string, Record<string, number>> = {};
+      const scorerTotals: Record<
+        string,
+        Record<string, number> | CorrectorSummary
+      > = {};
       for (const run of scenario.runs) {
         for (const { scorerId, result } of run.scores) {
           scorerTotals[scorerId] ??= {};
-          const counts = scorerTotals[scorerId];
+          const counts = scorerTotals[scorerId] as Record<string, number>;
           counts[result.heuristic] = (counts[result.heuristic] ?? 0) + 1;
         }
       }
+      scorerTotals.americanisms_corrector = summariseCorrector(
+        scenario.runs.map((r) => r.correctorStats),
+      );
       summary[scenario.scenarioName] = scorerTotals;
     }
 
@@ -720,6 +784,7 @@ describe("Agentic Issue Scoring", () => {
           error: capture.error,
           complete: isComplete(capture.finalDocument),
           scores,
+          correctorStats: capture.correctorStats,
         });
       }
 

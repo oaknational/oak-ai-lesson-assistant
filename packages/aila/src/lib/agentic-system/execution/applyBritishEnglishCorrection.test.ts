@@ -33,6 +33,7 @@ function createContext(correctorAgent: jest.Mock): AilaExecutionContext {
       relevantLessons: null,
       relevantLessonsFetched: false,
       currentStep: null,
+      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     },
     callbacks: {} as AilaExecutionContext["callbacks"],
   };
@@ -55,6 +56,9 @@ describe("applyBritishEnglishCorrection", () => {
     expect(result).toBeNull();
     expect(correctorAgent).not.toHaveBeenCalled();
     expect(context.currentTurn.notes).toEqual([]);
+    expect(context.currentTurn.correctorStats.attempted).toEqual([]);
+    expect(context.currentTurn.correctorStats.notNeeded).toEqual([TITLE]);
+    expect(context.currentTurn.correctorStats.failed).toEqual([]);
   });
 
   it("invokes the corrector and returns validated corrected content for a spelling flag", async () => {
@@ -74,6 +78,8 @@ describe("applyBritishEnglishCorrection", () => {
     expect(correctorAgent).toHaveBeenCalledTimes(1);
     expect(result).toBe("This will recognise the colour");
     expect(context.currentTurn.notes).toEqual([]);
+    expect(context.currentTurn.correctorStats.attempted).toEqual([TITLE]);
+    expect(context.currentTurn.correctorStats.failed).toEqual([]);
   });
 
   it("invokes the corrector for a phrasing flag (eraser)", async () => {
@@ -126,6 +132,9 @@ describe("applyBritishEnglishCorrection", () => {
 
     expect(result).toBeNull();
     expect(context.currentTurn.notes).toEqual([]);
+    expect(context.currentTurn.correctorStats.failed).toEqual([
+      { sectionKey: TITLE, reason: "errored" },
+    ]);
   });
 
   it("returns null without leaking a user-facing note when the corrector returns schema-invalid content", async () => {
@@ -144,6 +153,9 @@ describe("applyBritishEnglishCorrection", () => {
 
     expect(result).toBeNull();
     expect(context.currentTurn.notes).toEqual([]);
+    expect(context.currentTurn.correctorStats.failed).toEqual([
+      { sectionKey: TITLE, reason: "schema-invalid" },
+    ]);
   });
 
   it("swallows corrector promise rejections so the turn keeps streaming", async () => {
@@ -161,6 +173,9 @@ describe("applyBritishEnglishCorrection", () => {
 
     expect(result).toBeNull();
     expect(context.currentTurn.notes).toEqual([]);
+    expect(context.currentTurn.correctorStats.failed).toEqual([
+      { sectionKey: TITLE, reason: "threw" },
+    ]);
   });
 
   it("passes only actionable issues to the corrector", async () => {

@@ -36,11 +36,15 @@ export async function applyBritishEnglishCorrection({
     (issue) => issue.issue !== AMERICANISM_ISSUE_KIND.MEANING,
   );
 
+  const stats = context.currentTurn.correctorStats;
+
   if (actionable.length === 0) {
+    stats.notNeeded.push(sectionKey);
     log.info(`british-english-corrector skipped ${sectionKey}`);
     return null;
   }
 
+  stats.attempted.push(sectionKey);
   log.info(
     `british-english-corrector fired ${sectionKey} actionable=${actionable.length}`,
   );
@@ -56,11 +60,13 @@ export async function applyBritishEnglishCorrection({
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    stats.failed.push({ sectionKey, reason: "threw" });
     log.error(`british-english-corrector threw ${sectionKey} ${message}`);
     return null;
   }
 
   if (result.error) {
+    stats.failed.push({ sectionKey, reason: "errored" });
     log.error(
       `british-english-corrector errored ${sectionKey} ${result.error.message}`,
     );
@@ -69,6 +75,7 @@ export async function applyBritishEnglishCorrection({
 
   const parsed = responseSchema.safeParse(result.data);
   if (!parsed.success) {
+    stats.failed.push({ sectionKey, reason: "schema-invalid" });
     log.error(`british-english-corrector schema-invalid ${sectionKey}`);
     return null;
   }

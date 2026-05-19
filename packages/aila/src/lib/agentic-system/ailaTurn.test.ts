@@ -69,6 +69,7 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -116,6 +117,7 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -185,6 +187,7 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -244,6 +247,7 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -294,6 +298,7 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -340,6 +345,7 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -398,6 +404,7 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      correctorStats: expect.any(Object),
     });
   });
 
@@ -455,6 +462,7 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -519,6 +527,7 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });

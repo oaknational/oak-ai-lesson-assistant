@@ -72,10 +72,12 @@ export type AilaTurnCallbacks = {
     stepsExecuted: PlanStep[];
     document: PartialLessonPlan;
     ailaMessage: string;
+    correctorStats: CorrectorStats;
   }) => void | Promise<void>;
   onTurnFailed: (props: {
     stepsExecuted: PlanStep[];
     ailaMessage: string;
+    correctorStats: CorrectorStats;
   }) => void | Promise<void>;
 };
 
@@ -177,6 +179,14 @@ export type AilaState = {
   ) => Promise<AgenticRagLessonPlanResult[]>;
 };
 
+export type CorrectorFailureReason = "threw" | "errored" | "schema-invalid";
+
+export type CorrectorStats = {
+  attempted: SectionKey[];
+  notNeeded: SectionKey[];
+  failed: { sectionKey: SectionKey; reason: CorrectorFailureReason }[];
+};
+
 export type AilaCurrentTurn = {
   document: PartialLessonPlan;
   plannerOutput: PlannerOutput | null;
@@ -186,6 +196,7 @@ export type AilaCurrentTurn = {
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
   currentStep: PlanStep | null;
+  correctorStats: CorrectorStats;
 };
 
 export type AgentResult<T> =

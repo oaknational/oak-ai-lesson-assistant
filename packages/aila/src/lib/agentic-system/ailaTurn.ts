@@ -30,6 +30,7 @@ export async function ailaTurn({
       stepsExecuted: [],
       relevantLessonsFetched: false,
       currentStep: null,
+      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     },
     callbacks,
   };

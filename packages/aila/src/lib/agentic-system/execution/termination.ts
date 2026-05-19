@@ -30,6 +30,7 @@ export async function terminateWithFailure(
   await context.callbacks.onTurnFailed({
     stepsExecuted: context.currentTurn.stepsExecuted,
     ailaMessage: hardFailureMessage(),
+    correctorStats: context.currentTurn.correctorStats,
   });
   return { status: "failed" };
 }
@@ -101,6 +102,7 @@ export async function terminateWithCustomMessage(
     stepsExecuted: context.currentTurn.stepsExecuted,
     document: context.currentTurn.document,
     ailaMessage: message,
+    correctorStats: context.currentTurn.correctorStats,
   });
   return { status: "success" };
 }

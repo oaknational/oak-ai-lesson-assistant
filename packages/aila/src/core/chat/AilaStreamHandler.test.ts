@@ -396,6 +396,7 @@ describe("AilaStreamHandler", () => {
         document: {},
         ailaMessage:
           "Here's the updated lesson plan. Do you want to make any more changes?",
+        correctorStats: { attempted: [], notNeeded: [], failed: [] },
       });
       return { status: "success" };
     });
@@ -440,6 +441,7 @@ describe("AilaStreamHandler", () => {
         document: { subject: "art" },
         ailaMessage:
           "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
+        correctorStats: { attempted: [], notNeeded: [], failed: [] },
       });
       return { status: "success" };
     });
