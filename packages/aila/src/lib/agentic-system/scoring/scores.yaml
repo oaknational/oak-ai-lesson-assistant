@@ -1,10 +1,11 @@
-codeHash: 84fcb856ce07b8efcfca15c6ea43e8795f70831593b3895572f96f165a61d1dc
-generated: 2026-05-18T14:18:40.355Z
+codeHash: 43084dd54e1c4781da1c7a5a68fbb817256b8c2f0e4a40de5e8dbcb39f3755db
+generated: 2026-05-19T10:54:49.715Z
 runsPerScenario: 3
 summary:
   full-lesson:
     plan-groupings:
-      pass: 3
+      pass: 2
+      flag: 1
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
@@ -23,7 +24,8 @@ summary:
       pass: 3
   no-rag-lesson:
     plan-groupings:
-      pass: 3
+      pass: 2
+      flag: 1
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
