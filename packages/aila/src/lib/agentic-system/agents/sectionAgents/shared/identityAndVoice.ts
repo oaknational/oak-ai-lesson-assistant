@@ -1,3 +1,4 @@
+// cspell:ignore izes ized izing yzes eled eling eler ueled ueling odeled anceled sidewalk
 import { britishEnglishRules } from "../../shared/britishEnglishRules";
 
 /**
