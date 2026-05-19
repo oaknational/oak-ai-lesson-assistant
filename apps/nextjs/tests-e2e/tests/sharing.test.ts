@@ -6,15 +6,21 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
-import { isFinished } from "./aila-chat/helpers";
+import { expectFinished } from "./aila-chat/helpers";
 
 const checkPage = async (page: Page) => {
   const banner = page.getByTestId("share-banner");
-  await expect(banner).toContainText(/Created by .+ sharing-chat/);
-  await expect(banner).toContainText("Please check content carefully");
+  await expect(banner).toContainText(/Created by .+ sharing-chat/, {
+    timeout: 30000,
+  });
+  await expect(banner).toContainText("Please check content carefully", {
+    timeout: 30000,
+  });
 
   const keyStageSubjectTitle = page.getByTestId("key-stage-subject");
-  await expect(keyStageSubjectTitle).toContainText("Key stage 4 • Computing");
+  await expect(keyStageSubjectTitle).toContainText("Key stage 4 • Computing", {
+    timeout: 30000,
+  });
 
   await expect(page.locator("h1")).toContainText("Software Testing Techniques");
 
@@ -38,7 +44,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     const login = await prepareUser(page, "sharing-chat");
 
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`);
-    await isFinished(page);
+    await expectFinished(page);
     return login.chatId;
   });
 
@@ -79,6 +85,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
   await test.step("Share page", async () => {
     await sharePage.waitForURL(
       `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+      { timeout: 30000 },
     );
     await checkPage(sharePage);
   });

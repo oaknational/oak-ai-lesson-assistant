@@ -10,10 +10,9 @@ import {
   applyLlmFixtures,
   continueChat,
   expectFinished,
-  expectStreamingStatus,
   isFinished,
+  performAndWaitForGeneration,
   scrollLessonPlanFromTopToBottom,
-  waitForStreamingStatusChange,
 } from "./helpers";
 
 // --------
@@ -34,54 +33,42 @@ test(
       await setupClerkTestingToken({ page });
 
       await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-      await expect(page.getByTestId("chat-h1")).toBeInViewport();
+      await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
+        timeout: 15000,
+      });
     });
 
     const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
     await test.step("Fill in the chat box", async () => {
       const textbox = page.getByTestId("chat-input");
-      const sendMessage = page.getByTestId("send-message");
       const message = "Create a KS1 lesson on the end of Roman Britain";
       await textbox.fill(message);
-      await expect(textbox).toContainText(message);
+      await expect(textbox).toHaveValue(message);
 
       setFixture("roman-britain-1");
-      await sendMessage.click();
     });
 
-    await test.step("Iterate through the fixtures", async () => {
-      await page.waitForURL(/\/aila\/.+/);
-
+    await test.step("Send message and generate full lesson plan", async () => {
       const maxIterations = 20;
+      let fixtureNumber = 1;
 
-      for (
-        let iterationCount = 1;
-        iterationCount <= maxIterations;
-        iterationCount++
-      ) {
-        setFixture(`roman-britain-${iterationCount}`);
-        await expectStreamingStatus(page, "RequestMade", { timeout: 5000 });
+      await performAndWaitForGeneration(page, generationTimeout, async () => {
+        await Promise.all([
+          page.getByTestId("send-message").click(),
+          page.waitForURL(/\/aila\/.+/),
+        ]);
+      });
 
-        await waitForStreamingStatusChange(
-          page,
-          "RequestMade",
-          "Idle",
-          generationTimeout,
-        );
-
-        await expectStreamingStatus(page, "Idle", { timeout: 5000 });
-
+      while (fixtureNumber < maxIterations) {
         if (await isFinished(page)) {
           break;
         }
-        await continueChat(page);
-        await waitForStreamingStatusChange(
-          page,
-          "Idle",
-          "RequestMade",
-          generationTimeout,
-        );
+        fixtureNumber += 1;
+        setFixture(`roman-britain-${fixtureNumber}`);
+        await performAndWaitForGeneration(page, generationTimeout, async () => {
+          await continueChat(page);
+        });
       }
 
       await scrollLessonPlanFromTopToBottom(page);

@@ -6,7 +6,7 @@ import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { cspSafeWaitForFunction } from "../helpers/auth/clerkHelpers";
 import { bypassVercelProtection } from "../helpers/vercel";
-import { isFinished } from "./aila-chat/helpers";
+import { expectFinished } from "./aila-chat/helpers";
 
 declare global {
   interface Window {
@@ -27,7 +27,7 @@ test.describe("Component renders during lesson chat", () => {
       await page.goto(
         `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
       );
-      await isFinished(page);
+      await expectFinished(page);
     });
   });
 

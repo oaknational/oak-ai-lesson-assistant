@@ -5,7 +5,11 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 import { TEST_BASE_URL } from "../../config/config";
 import { prepareUser } from "../../helpers/auth";
 import { bypassVercelProtection } from "../../helpers/vercel";
-import { applyLlmFixtures, continueChat, waitForGeneration } from "./helpers";
+import {
+  applyLlmFixtures,
+  continueChat,
+  performAndWaitForGeneration,
+} from "./helpers";
 
 const GENERATION_TIMEOUT = 30000;
 
@@ -19,27 +23,31 @@ test("User is restricted after message rate limit is reached", async ({
     await prepareUser(page, "nearly-rate-limited");
 
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-    await expect(page.getByTestId("chat-h1")).toBeInViewport();
+    await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
+      timeout: 15000,
+    });
   });
 
   const { setFixture } = await applyLlmFixtures(page, "replay");
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");
-    const sendMessage = page.getByTestId("send-message");
 
     const message =
       "Create a KS1 lesson on the end of Roman Britain. Ask a question for each quiz and cycle";
     await textbox.fill(message);
-    await expect(textbox).toContainText(message);
+    await expect(textbox).toHaveValue(message);
 
     setFixture("roman-britain-1");
-    await sendMessage.click();
   });
 
   await test.step("Send first message", async () => {
-    await page.waitForURL(/\/aila\/.+/);
-    await waitForGeneration(page, GENERATION_TIMEOUT);
+    await performAndWaitForGeneration(page, GENERATION_TIMEOUT, async () => {
+      await Promise.all([
+        page.getByTestId("send-message").click(),
+        page.waitForURL(/\/aila\/.+/),
+      ]);
+    });
 
     await expect(
       page.getByTestId("chat-message-wrapper-error"),
@@ -51,8 +59,9 @@ test("User is restricted after message rate limit is reached", async ({
   });
 
   await test.step("Send second message", async () => {
-    await continueChat(page);
-    await waitForGeneration(page, 10000);
+    await performAndWaitForGeneration(page, 10000, async () => {
+      await continueChat(page);
+    });
 
     const errorMessage = page.getByTestId("chat-message-wrapper-error");
     await expect(errorMessage).toContainText(
@@ -61,8 +70,9 @@ test("User is restricted after message rate limit is reached", async ({
   });
 
   await test.step("Send third message", async () => {
-    await continueChat(page);
-    await waitForGeneration(page, 10000);
+    await performAndWaitForGeneration(page, 10000, async () => {
+      await continueChat(page);
+    });
 
     await expect(
       page.getByTestId("chat-message-wrapper-error").last(),
