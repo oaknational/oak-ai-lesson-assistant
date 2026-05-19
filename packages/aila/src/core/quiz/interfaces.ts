@@ -56,6 +56,17 @@ export type ComposerResult =
   | { status: "bail"; questions: []; bailReason: string };
 
 /**
+ * How the composer should select questions on this call.
+ * - `fullRegen`: pick 1–6 (existing behaviour). Used for first-time generation and full regeneration.
+ * - `addOne`: pick exactly one *new* question. Used for ADD_QUIZ_QUESTION; the dispatcher inserts it.
+ * - `rewriteOne`: pick exactly one *replacement* for CURRENT-Q{position}. Used for CHANGE_QUIZ_QUESTION.
+ */
+export type QuizBuildMode =
+  | { kind: "fullRegen" }
+  | { kind: "addOne" }
+  | { kind: "rewriteOne"; position: number };
+
+/**
  * Composes final quiz questions from candidate pools
  */
 export interface QuizComposer {
@@ -66,6 +77,7 @@ export interface QuizComposer {
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    mode: QuizBuildMode,
     task: Task,
     userInstructions?: string | null,
   ): Promise<ComposerResult>;
@@ -104,6 +116,7 @@ export interface QuizService {
     similarLessons: AilaRagRelevantLesson[],
     task: Task,
     reportId: string,
+    mode: QuizBuildMode,
     userInstructions?: string | null,
   ): Promise<QuizBuildResult>;
 }

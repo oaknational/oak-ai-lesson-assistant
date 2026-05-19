@@ -16,6 +16,7 @@ import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/planne
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
+import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
 import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { AilaChatError } from "../AilaError";
@@ -245,6 +246,7 @@ export class AilaStreamHandler {
               try {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
+                const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
                 const tracker = createQuizTracker();
                 const { quiz, note } = await tracker.run(
                   async (task, reportId) => {
@@ -254,9 +256,14 @@ export class AilaStreamHandler {
                       this._chat.relevantLessons ?? [],
                       task,
                       reportId,
+                      mode,
                       userInstructions,
                     );
-                    task.addData({ quiz: result.quiz, userInstructions });
+                    task.addData({
+                      quiz: result.quiz,
+                      mode,
+                      userInstructions,
+                    });
                     return result;
                   },
                 );
@@ -277,6 +284,7 @@ export class AilaStreamHandler {
               try {
                 const userInstructions =
                   ctx.currentTurn.currentStep?.sectionInstructions;
+                const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
                 const tracker = createQuizTracker();
                 const { quiz, note } = await tracker.run(
                   async (task, reportId) => {
@@ -286,9 +294,14 @@ export class AilaStreamHandler {
                       this._chat.relevantLessons ?? [],
                       task,
                       reportId,
+                      mode,
                       userInstructions,
                     );
-                    task.addData({ quiz: result.quiz, userInstructions });
+                    task.addData({
+                      quiz: result.quiz,
+                      mode,
+                      userInstructions,
+                    });
                     return result;
                   },
                 );

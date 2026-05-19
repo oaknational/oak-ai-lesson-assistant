@@ -123,6 +123,7 @@ export async function POST(request: Request) {
             relevantLessons,
             task,
             reportId,
+            { kind: "fullRegen" },
             userInstructions,
           );
           task.addData({ quiz: result.quiz, note: result.note });

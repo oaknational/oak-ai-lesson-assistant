@@ -26,6 +26,7 @@ import { LLMComposer } from "../composers/LLMQuizComposer";
 import type {
   QuestionEnricher,
   QuestionSource,
+  QuizBuildMode,
   QuizComposer,
   QuizService,
 } from "../interfaces";
@@ -74,6 +75,7 @@ async function buildQuiz(
   similarLessons: AilaRagRelevantLesson[],
   task: Task,
   reportId: string,
+  mode: QuizBuildMode,
   userInstructions?: string | null,
 ) {
   task.addData({
@@ -81,6 +83,7 @@ async function buildQuiz(
       quizType,
       lessonPlan,
       similarLessons,
+      mode,
       userInstructions,
     },
   });
@@ -118,6 +121,7 @@ async function buildQuiz(
       questionPools,
       lessonPlan,
       quizType,
+      mode,
       t,
       userInstructions,
     );
@@ -151,6 +155,7 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
       similarLessons,
       task,
       reportId,
+      mode,
       userInstructions,
     ) =>
       buildQuiz(
@@ -162,6 +167,7 @@ export function buildQuizService(settings: QuizBuilderSettings): QuizService {
         similarLessons,
         task,
         reportId,
+        mode,
         userInstructions,
       ),
   };
