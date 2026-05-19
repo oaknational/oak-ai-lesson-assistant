@@ -28,7 +28,8 @@ export async function applyBritishEnglishCorrection({
   responseSchema: z.ZodTypeAny;
 }): Promise<unknown> {
   const detected = americanisms.findAmericanisms({ [sectionKey]: content });
-  const sectionIssues = detected[0]?.issues ?? [];
+  const sectionIssues =
+    detected.find((d) => d.section === sectionKey)?.issues ?? [];
 
   // MEANING flags are advisory only (high false-positive rate), they should never be corrected.
   const actionable = sectionIssues.filter(

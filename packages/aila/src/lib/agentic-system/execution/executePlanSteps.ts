@@ -94,7 +94,9 @@ async function executeGenerateStep(
     responseSchema: sectionSchema,
   });
 
-  const validated = sectionSchema.parse(corrected ?? result.data);
+  // applyBritishEnglishCorrection has already validated `corrected` against
+  // sectionSchema, so we only need to parse on the fallback branch.
+  const validated = corrected ?? sectionSchema.parse(result.data);
 
   // We use immer to generate JSON patches at the granularity we control.
   // Patches are generated at the exact path we mutate:

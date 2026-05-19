@@ -63,8 +63,6 @@ export function createBritishEnglishCorrectorAgent({
         content: `Original section JSON:\n${JSON.stringify(content)}`,
       },
     ],
-    modelParams: {
-      ...DEFAULT_AGENT_MODEL_PARAMS,
-    },
+    modelParams: DEFAULT_AGENT_MODEL_PARAMS,
   };
 }
