@@ -1,5 +1,4 @@
 import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
 import { UserBannedError, scheduleModerationNotification } from "@oakai/core";
 import type * as OakCore from "@oakai/core";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -7,6 +6,10 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import type { Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
+
+jest.mock("@oakai/db", () => ({
+  prisma: {},
+}));
 
 jest.mock("@oakai/core", () => {
   const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
@@ -177,121 +180,24 @@ describe("webActionsPlugin", () => {
 });
 
 describe("onStreamError", () => {
-  it("should record a safety violation when a threat error is encountered", async () => {
-    const createViolation = jest
-      .fn()
-      .mockResolvedValue({ id: "violation-123" });
-    const enforceThreshold = jest.fn().mockResolvedValue(undefined);
-    const safetyViolations = jest.fn().mockImplementation(() => ({
-      createViolation,
-      enforceThreshold,
-    }));
-    const createThreatDetection = jest.fn().mockResolvedValue(undefined);
-    const threatDetections = jest.fn().mockImplementation(() => ({
-      create: createThreatDetection,
-    }));
+  it("should enqueue and rethrow ordinary stream errors", async () => {
     const mockEnqueue = jest.fn();
     const prisma = {} as unknown as PrismaClientWithAccelerate;
     const pluginContext = {
-      aila: {
-        userId: "user_abc",
-        chatId: "chat_abc",
-        messages: [
-          {
-            id: "message_abc",
-            role: "user",
-            content: "test threat",
-          },
-        ],
-      } as unknown as AilaPluginContext["aila"],
+      aila: {} as unknown as AilaPluginContext["aila"],
       enqueue: mockEnqueue,
     };
 
-    const plugin = createWebActionsPlugin(
-      prisma,
-      safetyViolations,
-      threatDetections,
-    );
+    const plugin = createWebActionsPlugin(prisma);
+
     await expect(async () => {
-      await plugin.onStreamError(
-        new AilaThreatDetectionError("user_abc", "test"),
-        pluginContext,
-      );
+      await plugin.onStreamError(new Error("test"), pluginContext);
     }).rejects.toThrow("test");
 
-    expect(createViolation).toHaveBeenCalledWith(
-      "user_abc",
-      "CHAT_MESSAGE",
-      "THREAT",
-      "CHAT_SESSION",
-      "chat_abc",
-    );
-    expect(createThreatDetection).toHaveBeenCalledWith({
-      appSessionId: "chat_abc",
-      recordType: "CHAT_SESSION",
-      recordId: "chat_abc",
-      messageId: "message_abc",
-      userId: "user_abc",
-      threateningMessage: "test threat",
-      provider: "unknown",
-      category: "other",
-      severity: "high",
-      providerResponse: undefined,
-      safetyViolationId: "violation-123",
-    });
-    expect(enforceThreshold).toHaveBeenCalledWith("user_abc");
-    expect(mockEnqueue).toHaveBeenCalledWith({
-      type: "error",
-      value: "Threat detected",
-      message:
-        "I wasn't able to process your request because a potentially malicious input was detected.",
-    });
     expect(mockEnqueue).toHaveBeenCalledWith({
       message: "test",
       type: "error",
       value: "Sorry, an error occurred: test",
-    });
-  });
-
-  it("should enqueue an account lock action when the user becomes banned", async () => {
-    const createViolation = jest
-      .fn()
-      .mockResolvedValue({ id: "violation-456" });
-    const enforceThreshold = jest
-      .fn()
-      .mockRejectedValue(new UserBannedError("error"));
-    const safetyViolations = jest.fn().mockImplementation(() => ({
-      createViolation,
-      enforceThreshold,
-    }));
-    const threatDetections = jest.fn().mockImplementation(() => ({
-      create: jest.fn().mockResolvedValue(undefined),
-    }));
-    const mockEnqueue = jest.fn();
-    const prisma = {} as unknown as PrismaClientWithAccelerate;
-    const pluginContext = {
-      aila: {
-        userId: "user_abc",
-      } as unknown as AilaPluginContext["aila"],
-      enqueue: mockEnqueue,
-    };
-
-    const plugin = createWebActionsPlugin(
-      prisma,
-      safetyViolations,
-      threatDetections,
-    );
-    await expect(async () => {
-      await plugin.onStreamError(
-        new AilaThreatDetectionError("user_abc", "test"),
-        pluginContext,
-      );
-    }).rejects.toThrow("test");
-
-    expect(createViolation).toHaveBeenCalled();
-    expect(mockEnqueue).toHaveBeenCalledWith({
-      type: "action",
-      action: "SHOW_ACCOUNT_LOCKED",
     });
   });
 });

@@ -12,16 +12,14 @@ import { aiLogger } from "@oakai/logger";
 import invariant from "tiny-invariant";
 
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
-import { AilaThreatDetector } from "../AilaThreatDetector";
+import type { AilaThreatDetector } from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
 
-export class ModelArmorThreatDetector extends AilaThreatDetector {
+export class ModelArmorThreatDetector implements AilaThreatDetector {
   private readonly modelArmorClient: ModelArmorClient;
 
   constructor() {
-    super();
-
     const projectId = process.env.MODEL_ARMOR_PROJECT_ID;
     const location = process.env.MODEL_ARMOR_LOCATION;
     const templateId = process.env.MODEL_ARMOR_TEMPLATE_ID;

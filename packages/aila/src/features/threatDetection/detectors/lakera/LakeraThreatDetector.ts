@@ -9,15 +9,14 @@ import type {
 import { aiLogger } from "@oakai/logger";
 
 import { extractPromptTextFromMessages } from "../../../../utils/extractPromptTextFromMessages";
-import { AilaThreatDetector } from "../AilaThreatDetector";
+import type { AilaThreatDetector } from "../AilaThreatDetector";
 
 const log = aiLogger("aila:threat");
 
-export class LakeraThreatDetector extends AilaThreatDetector {
+export class LakeraThreatDetector implements AilaThreatDetector {
   private readonly lakeraClient: LakeraClient;
 
   constructor() {
-    super();
     const apiKey = process.env.LAKERA_GUARD_API_KEY;
     const projectId = process.env.LAKERA_GUARD_PROJECT_ID;
     const apiUrl = process.env.LAKERA_GUARD_URL;

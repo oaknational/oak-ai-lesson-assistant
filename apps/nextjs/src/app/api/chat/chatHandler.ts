@@ -393,7 +393,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
-      return handleChatException(e, chatId, config.prisma);
+      return handleChatException(e);
     } finally {
       if (aila) {
         await aila.ensureShutdown();
