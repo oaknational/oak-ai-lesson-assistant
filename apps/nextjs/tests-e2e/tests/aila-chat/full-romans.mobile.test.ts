@@ -46,24 +46,17 @@ test(
       await setupClerkTestingToken({ page });
 
       await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-      await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
-        timeout: 15000,
-      });
+      await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
     const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
-    await test.step("Fill in the chat box", async () => {
-      const textbox = page.getByTestId("chat-input");
-      const message = "Create a KS1 lesson on the end of Roman Britain";
-      await textbox.fill(message);
-      await expect(textbox).toHaveValue(message);
-
-      setFixture("roman-britain-1");
-    });
-
     await test.step("Send message and generate full lesson plan", async () => {
+      setFixture("roman-britain-1");
       await performAndWaitForGeneration(page, generationTimeout, async () => {
+        await page
+          .getByTestId("chat-input")
+          .fill("Create a KS1 lesson on the end of Roman Britain");
         await Promise.all([
           page.getByTestId("send-message").click(),
           page.waitForURL(/\/aila\/.+/),

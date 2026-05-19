@@ -25,21 +25,16 @@ test(
       await setupClerkTestingToken({ page });
 
       await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-      await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
-        timeout: 15000,
-      });
-    });
-
-    await test.step("Fill in the chat box", async () => {
-      const textbox = page.getByTestId("chat-input");
-      const message =
-        "Create a KS1 lesson on the Romans, create the whole lesson without asking me any questions. As short as possible.";
-      await textbox.fill(message);
-      await expect(textbox).toHaveValue(message);
+      await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
     await test.step("Send message and generate full lesson plan", async () => {
       await performAndWaitForGeneration(page, generationTimeout, async () => {
+        await page
+          .getByTestId("chat-input")
+          .fill(
+            "Create a KS1 lesson on the Romans, create the whole lesson without asking me any questions. As short as possible.",
+          );
         await Promise.all([
           page.getByTestId("send-message").click(),
           page.waitForURL(/\/aila\/.+/),

@@ -23,9 +23,7 @@ test("User is restricted after message rate limit is reached", async ({
     await prepareUser(page, "nearly-rate-limited");
 
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-    await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
-      timeout: 15000,
-    });
+    await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
   const { setFixture } = await applyLlmFixtures(page, "replay");

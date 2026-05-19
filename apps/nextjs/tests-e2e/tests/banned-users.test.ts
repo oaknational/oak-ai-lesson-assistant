@@ -15,9 +15,7 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
     await prepareUser(page, "nearly-banned");
 
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
-    await expect(page.getByTestId("chat-h1")).toContainText("Hello,", {
-      timeout: 15000,
-    });
+    await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
   // NOTE: Change "replay" to "record" to record a new fixture

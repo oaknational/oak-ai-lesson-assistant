@@ -12,7 +12,6 @@ export async function expectStreamingStatus(
   await expect(statusElement).toContainText(status, args);
 }
 
-
 type GenerationSnapshot = {
   assistantMessages: number;
   errorMessages: number;
@@ -75,7 +74,6 @@ async function waitForGenerationResult(
     )
     .toBeTruthy();
 }
-
 
 export async function performAndWaitForGeneration(
   page: Page,
