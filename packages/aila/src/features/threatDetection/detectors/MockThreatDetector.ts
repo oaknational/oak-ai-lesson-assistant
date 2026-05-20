@@ -3,12 +3,11 @@ import type {
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
 
-import { AilaThreatDetector } from "./AilaThreatDetector";
+import type { AilaThreatDetector } from "./AilaThreatDetector";
 
-export class MockThreatDetector extends AilaThreatDetector {
+export class MockThreatDetector implements AilaThreatDetector {
   private readonly _response: boolean;
   constructor({ response }: { response: boolean }) {
-    super();
     this._response = response;
   }
 

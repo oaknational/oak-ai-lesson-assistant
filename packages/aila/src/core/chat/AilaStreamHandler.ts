@@ -13,7 +13,6 @@ import {
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
-import { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
@@ -22,10 +21,12 @@ import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
+import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChatError } from "../AilaError";
 import { ReportStorage, createQuizTracker } from "../quiz/reporting";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
+import type { Message } from "./types";
 
 const log = aiLogger("aila:stream");
 
@@ -34,6 +35,11 @@ function agenticTurnSucceeded(
 ): boolean {
   return status === "success";
 }
+
+type ThreatCheckOutcome =
+  | { status: "safe" }
+  | { status: "threat_detected"; threatDetection: ThreatDetectionResult }
+  | { status: "check_failed"; error: Error; detectorName: string };
 
 class ThreatDetectionFailureError extends Error {
   public readonly detectorName: string;
@@ -67,31 +73,34 @@ export class AilaStreamHandler {
     });
   }
 
-  private async span(step: string, handler: () => Promise<void>) {
-    await this._chat.aila.tracing.span(step, { op: "aila.step" }, handler);
+  private async span<T>(step: string, handler: () => Promise<T>): Promise<T> {
+    return await this._chat.aila.tracing.span(
+      step,
+      { op: "aila.step" },
+      handler,
+    );
   }
 
-  private async checkForThreats(
-    messages?: {
-      role: "system" | "assistant" | "user" | "data";
-      content: string;
-    }[],
-  ) {
-    const messagesToCheck = (messages ?? this._chat.messages).filter(
-      (message): message is ThreatDetectionMessage => message.role !== "data",
+  private threatDetectionMessages(): ThreatDetectionMessage[] {
+    return this._chat.messages.filter(
+      (m): m is Message & { role: "system" | "user" | "assistant" } =>
+        m.role !== "data",
     );
-    if (!this._chat.aila.threatDetection?.detectors) {
+  }
+
+  private async checkForThreats(): Promise<ThreatCheckOutcome> {
+    const messagesToCheck = this.threatDetectionMessages();
+    const detectors = this._chat.aila.threatDetection?.detectors;
+    if (!detectors) {
       log.info("No threat detectors configured");
-      return;
+      return { status: "safe" };
     }
 
     const lastMessage = messagesToCheck[messagesToCheck.length - 1];
     if (!lastMessage) {
       log.info("No messages to check for threats");
-      return;
+      return { status: "safe" };
     }
-
-    const detectors = this._chat.aila.threatDetection?.detectors ?? [];
     for (const detector of detectors) {
       const detectorName = detector.constructor.name;
       log.info("Running detector", { detector: detectorName });
@@ -100,18 +109,22 @@ export class AilaStreamHandler {
         threatDetection = await detector.detectThreat(messagesToCheck);
       } catch (error) {
         log.error("Threat detector failed", { detector: detectorName, error });
-        throw new ThreatDetectionFailureError(detectorName, { cause: error });
+        return {
+          status: "check_failed",
+          error:
+            error instanceof Error
+              ? error
+              : new Error("Unknown threat detector failure", { cause: error }),
+          detectorName,
+        };
       }
       if (threatDetection.isThreat) {
         log.info("Threat detected", { threatDetection });
-        throw new AilaThreatDetectionError(
-          this._chat.userId ?? "unknown",
-          "Potential threat detected",
-          threatDetection,
-        );
+        return { status: "threat_detected", threatDetection };
       }
     }
     log.info("Threat check complete - no threats found");
+    return { status: "safe" };
   }
 
   private async stream(
@@ -138,9 +151,25 @@ export class AilaStreamHandler {
         await this._chat.persistChat();
       });
 
-      await this.span("check-threats", async () => {
-        await this.checkForThreats();
+      const threatCheckOutcome = await this.span("check-threats", async () => {
+        return await this.checkForThreats();
       });
+
+      if (threatCheckOutcome.status === "threat_detected") {
+        skipCompletion = true;
+        await this.span("handle-threat-detected", async () => {
+          await this.enqueueThreatResponse(threatCheckOutcome.threatDetection);
+        });
+        return;
+      }
+
+      if (threatCheckOutcome.status === "check_failed") {
+        skipCompletion = true;
+        await this.span("handle-threat-check-failure", async () => {
+          await this.handleThreatDetectionFailure(threatCheckOutcome);
+        });
+        return;
+      }
 
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
@@ -176,27 +205,7 @@ export class AilaStreamHandler {
         error: e,
         type: e?.constructor?.name,
       });
-      if (e instanceof AilaThreatDetectionError) {
-        await this.handleThreatDetected(e);
-        skipCompletion = true;
-        return;
-      }
-      if (e instanceof ThreatDetectionFailureError) {
-        await this.handleThreatDetectionFailure(e);
-        skipCompletion = true;
-        return;
-      }
-      try {
-        await this.handleStreamError(e);
-      } catch (streamError) {
-        if (streamError instanceof AilaThreatDetectionError) {
-          await this.handleThreatDetected(streamError);
-          skipCompletion = true;
-          return;
-        }
-
-        throw streamError;
-      }
+      await this.handleStreamError(e);
     } finally {
       const status = this._chat.generation?.status;
       const shouldComplete = this._chat.aila.options.useAgenticAila
@@ -405,14 +414,23 @@ export class AilaStreamHandler {
     }
   }
 
-  private async handleThreatDetected(error: AilaThreatDetectionError) {
-    log.info("Handling threat detection error");
-    await this._chat.generationFailed(error);
+  private async enqueueThreatResponse(threatDetection: ThreatDetectionResult) {
+    const response = await handleThreatDetectionResult({
+      userId: this._chat.userId ?? "anonymous",
+      chatId: this._chat.id,
+      threatDetection,
+      messages: this.threatDetectionMessages(),
+    });
+    await this._chat.enqueue(response);
   }
 
-  private async handleThreatDetectionFailure(
-    error: ThreatDetectionFailureError,
-  ) {
+  private async handleThreatDetectionFailure(outcome: {
+    error: Error;
+    detectorName: string;
+  }) {
+    const error = new ThreatDetectionFailureError(outcome.detectorName, {
+      cause: outcome.error,
+    });
     this._chat.aila.errorReporter?.reportError(
       error,
       "Threat detection failed",
@@ -426,27 +444,7 @@ export class AilaStreamHandler {
     });
   }
 
-  private isThreatDetectionProviderError(error: Error): boolean {
-    const detectors = this._chat.aila.threatDetection?.detectors ?? [];
-    return detectors.some((detector) => detector.isThreatError(error));
-  }
-
   private async handleStreamError(error: unknown) {
-    if (error instanceof Error) {
-      if (error instanceof AilaThreatDetectionError) {
-        throw error;
-      }
-
-      if (this.isThreatDetectionProviderError(error)) {
-        throw new AilaThreatDetectionError(
-          this._chat.userId ?? "unknown",
-          "Threat detected",
-          undefined,
-          { cause: error },
-        );
-      }
-    }
-
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,

@@ -12,10 +12,10 @@ test("Landing on the site when not onboarded", async ({ page }) => {
     await prepareUser(page, "needs-onboarding");
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
 
-    await page.waitForURL(`${TEST_BASE_URL}/onboarding`);
+    await page.waitForURL(`${TEST_BASE_URL}/onboarding`, { timeout: 30000 });
     await expect(
       page.getByText("This product is experimental and uses AI"),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 30000 });
   });
 
   await test.step("Toggle terms", async () => {
@@ -34,7 +34,9 @@ test("Landing on the site when not onboarded", async ({ page }) => {
   await test.step("Submit", async () => {
     await page.getByText("I understand").click();
 
-    await page.waitForURL(`${TEST_BASE_URL}/?reason=onboarded`);
+    await page.waitForURL(`${TEST_BASE_URL}/?reason=onboarded`, {
+      timeout: 30000,
+    });
   });
 });
 
@@ -44,12 +46,16 @@ test("Onboarded without a demo status", async ({ page }) => {
     await prepareUser(page, "needs-demo-status");
     await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}`);
 
-    await page.waitForURL(`${TEST_BASE_URL}/onboarding`);
-    await expect(page.getByText("Preparing your account")).toBeVisible();
+    await page.waitForURL(`${TEST_BASE_URL}/onboarding`, { timeout: 30000 });
+    await expect(page.getByText("Preparing your account")).toBeVisible({
+      timeout: 30000,
+    });
   });
 
   await test.step("Redirect", async () => {
-    await page.waitForURL(`${TEST_BASE_URL}/?reason=metadata-upgraded`);
+    await page.waitForURL(`${TEST_BASE_URL}/?reason=metadata-upgraded`, {
+      timeout: 30000,
+    });
   });
 });
 
@@ -61,6 +67,6 @@ test("Loading onboarding when already onboarded", async ({ page }) => {
   });
 
   await test.step("Redirect", async () => {
-    await page.waitForURL(`${TEST_BASE_URL}/`);
+    await page.waitForURL(`${TEST_BASE_URL}/`, { timeout: 30000 });
   });
 });

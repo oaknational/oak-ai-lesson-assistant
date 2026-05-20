@@ -1,6 +1,9 @@
 import { clerkSetup } from "@clerk/testing/playwright";
 import { test as setup } from "@playwright/test";
 
-setup("global setup", async () => {
+import { warmVercelPreview } from "../helpers/vercel";
+
+setup("global setup", async ({ page }) => {
   await clerkSetup();
+  await warmVercelPreview(page);
 });

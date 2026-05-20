@@ -1,3 +1,16 @@
+# [1.73.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.72.0...v1.73.0) (2026-05-19)
+
+
+### Bug Fixes
+
+* [AI-2146] improve diagnostics and resilience for AI provider, threat detection and Clerk errors ([#1045](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1045)) ([d736d58](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d736d58e090313e0ca7109445285e4be4be11e10))
+* prettier ([4b17283](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4b172837603901d7b654bfc7c5bb51f27e38cadf))
+
+
+### Features
+
+* add americanism scoring to agentic harness ([#990](https://github.com/oaknational/oak-ai-lesson-assistant/issues/990)) ([2c71235](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2c71235642ef3708708015b5ac2a2efb7ac70343))
+
 # [1.72.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.71.0...v1.72.0) (2026-05-13)
 
 

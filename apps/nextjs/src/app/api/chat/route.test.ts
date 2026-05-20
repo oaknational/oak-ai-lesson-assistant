@@ -25,7 +25,6 @@ jest.mock(
   () => ({
     ModelArmorThreatDetector: jest.fn().mockImplementation(() => ({
       detectThreat: jest.fn(),
-      isThreatError: jest.fn().mockResolvedValue(false),
     })),
   }),
 );

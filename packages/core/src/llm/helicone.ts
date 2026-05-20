@@ -17,9 +17,6 @@ export function heliconeHeaders({
     throw new Error("Missing required environment variables for Helicone");
   }
 
-  const heliconeSecurityEnabled =
-    process.env.HELICONE_LLM_SECURITY_ENABLED === "true";
-
   const userId = chatMeta?.userId;
   const chatId = chatMeta?.chatId;
 
@@ -29,9 +26,6 @@ export function heliconeHeaders({
     "Helicone-Posthog-Host": `${process.env.HELICONE_POSTHOG_HOST}`,
     "Helicone-Property-App": app,
     "Helicone-Property-Environment": `${process.env.NEXT_PUBLIC_SENTRY_ENV}`,
-    ...(heliconeSecurityEnabled && {
-      "Helicone-LLM-Security-Enabled": "true",
-    }),
     ...(userId && {
       "Helicone-Property-User": userId,
       "Helicone-User-Id": userId,

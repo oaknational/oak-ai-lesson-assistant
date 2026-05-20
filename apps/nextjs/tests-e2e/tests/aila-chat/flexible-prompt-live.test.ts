@@ -5,7 +5,11 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
-import { continueChat, isFinished, waitForGeneration } from "./helpers";
+import {
+  continueChat,
+  isFinished,
+  performAndWaitForGeneration,
+} from "./helpers";
 
 const generationTimeout = 75000;
 
@@ -24,27 +28,26 @@ test(
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
-    await test.step("Fill in the chat box", async () => {
-      const textbox = page.getByTestId("chat-input");
-      const sendMessage = page.getByTestId("send-message");
-      const message =
-        "Create a KS1 lesson on the Romans, create the whole lesson without asking me any questions. As short as possible.";
-      await textbox.fill(message);
-      await expect(textbox).toContainText(message);
-
-      await sendMessage.click();
-    });
-
-    await test.step("Iterate through the lesson plan", async () => {
-      await page.waitForURL(/\/aila\/.+/);
-      await waitForGeneration(page, generationTimeout);
+    await test.step("Send message and generate full lesson plan", async () => {
+      await performAndWaitForGeneration(page, generationTimeout, async () => {
+        await page
+          .getByTestId("chat-input")
+          .fill(
+            "Create a KS1 lesson on the Romans, create the whole lesson without asking me any questions. As short as possible.",
+          );
+        await Promise.all([
+          page.getByTestId("send-message").click(),
+          page.waitForURL(/\/aila\/.+/),
+        ]);
+      });
 
       for (let i = 0; i < 12; i++) {
-        await continueChat(page);
-        await waitForGeneration(page, generationTimeout);
         if (await isFinished(page)) {
           break;
         }
+        await performAndWaitForGeneration(page, generationTimeout, async () => {
+          await continueChat(page);
+        });
         if (i === 11) {
           throw new Error("Failed to finish the lesson plan after 12 tries");
         }

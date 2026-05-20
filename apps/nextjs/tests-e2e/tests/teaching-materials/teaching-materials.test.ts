@@ -4,6 +4,8 @@ import { TEST_BASE_URL } from "../../config/config";
 import { bypassVercelProtection } from "../../helpers/vercel";
 import { applyTeachingMaterialsMockAPIRequests } from "./helpers";
 
+test.describe.configure({ mode: "serial" });
+
 test.describe("Teaching Materials", () => {
   test(
     "Complete teaching materials flow - glossary",

@@ -1,10 +1,6 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection/types";
-import * as moderationErrorHandling from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
 import { UserBannedError } from "@oakai/core";
-import type { TracingSpan } from "@oakai/core/src/tracing";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import * as Sentry from "@sentry/node";
 import { APICallError } from "ai";
@@ -17,12 +13,9 @@ import {
 
 import { handleChatException } from "./errorHandling";
 
-jest.mock(
-  "@oakai/aila/src/utils/threatDetection/threatDetectionHandling",
-  () => ({
-    handleThreatDetectionError: jest.fn(),
-  }),
-);
+jest.mock("@oakai/db", () => ({
+  prisma: {},
+}));
 
 jest.mock("@sentry/node", () => ({
   captureException: jest.fn(),
@@ -30,42 +23,10 @@ jest.mock("@sentry/node", () => ({
 }));
 
 describe("handleChatException", () => {
-  describe("AilaThreatDetectionError", () => {
-    it("should forward the message from handleThreatDetectionError", async () => {
-      jest
-        .spyOn(moderationErrorHandling, "handleThreatDetectionError")
-        .mockResolvedValue({
-          type: "error",
-          value: "Threat detected",
-          message: "Threat was detected",
-        });
-
-      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
-      const error = new AilaThreatDetectionError("user_abc", "test error");
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
-
-      expect(response.status).toBe(200);
-
-      invariant(response.body);
-      const message = extractStreamMessage(await consumeStream(response.body));
-
-      expect(message).toEqual({
-        type: "error",
-        value: "Threat detected",
-        message: "Threat was detected",
-      });
-    });
-  });
-
   describe("AilaAuthenticationError", () => {
     it("should return an error chat message", async () => {
-      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new AilaAuthenticationError("test error");
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
+      const response = await handleChatException(error);
 
       expect(response.status).toBe(401);
 
@@ -81,15 +42,12 @@ describe("handleChatException", () => {
 
   describe("RateLimitExceededError", () => {
     it("should return an error chat message", async () => {
-      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new RateLimitExceededError(
         "user_abc",
         100,
         Date.now() + 3600 * 1000,
       );
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
+      const response = await handleChatException(error);
 
       expect(response.status).toBe(200);
 
@@ -113,9 +71,7 @@ describe("handleChatException", () => {
   describe("generic Error", () => {
     it("should return a generic error message without leaking internal details", async () => {
       const error = new Error("Missing environment variable OPENAI_API_KEY");
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
+      const response = await handleChatException(error);
 
       expect(response.status).toBe(200);
 
@@ -147,9 +103,7 @@ describe("handleChatException", () => {
       const error = new Error("Unexpected error in chat route", {
         cause: providerError,
       });
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
+      const response = await handleChatException(error);
 
       expect(response.status).toBe(200);
 
@@ -183,11 +137,8 @@ describe("handleChatException", () => {
 
   describe("UserBannedError", () => {
     it("should return an error chat message", async () => {
-      const _span = { setTag: jest.fn() } as unknown as TracingSpan;
       const error = new UserBannedError("test error");
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
-
-      const response = await handleChatException(error, "test-chat-id", prisma);
+      const response = await handleChatException(error);
 
       expect(response.status).toBe(200);
 

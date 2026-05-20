@@ -94,38 +94,30 @@ export class OpenAiModerator extends AilaModerator {
 
     const schema = zodToJsonSchema(moderationResponseSchema);
 
-    const moderationResponse = await this._callOpenAi(
-      {
-        model: this._model,
-        messages: [
-          {
-            role: "system",
-            content: moderationPrompt,
-          },
-          { role: "user", content: input },
-        ],
-        temperature: this._temperature,
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "moderationResponse",
-            /**
-             * Currently `strict` mode does not support minimum/maximum integer types, which
-             * we use for the likert scale in the moderation schema.
-             * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
-             */
-            // strict: true,
-            schema,
-          },
+    const moderationResponse = await this._callOpenAi({
+      model: this._model,
+      messages: [
+        {
+          role: "system",
+          content: moderationPrompt,
+        },
+        { role: "user", content: input },
+      ],
+      temperature: this._temperature,
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "moderationResponse",
+          /**
+           * Currently `strict` mode does not support minimum/maximum integer types, which
+           * we use for the likert scale in the moderation schema.
+           * @see https://community.openai.com/t/new-function-calling-with-strict-has-a-problem-with-minimum-integer-type/903258
+           */
+          // strict: true,
+          schema,
         },
       },
-      {
-        headers: {
-          // This call uses the resulting JSON lesson plan. The user input has already been checked by helicone.
-          "Helicone-LLM-Security-Enabled": undefined,
-        },
-      },
-    );
+    });
 
     const log = aiLogger("aila:moderation:response");
     log.info(JSON.stringify(moderationResponse));
