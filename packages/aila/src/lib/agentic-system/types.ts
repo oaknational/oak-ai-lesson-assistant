@@ -127,13 +127,9 @@ export type SectionAgentResponseMap = {
   "keywords--default": z.infer<typeof KeywordsSchema>;
   "starterQuiz--default": z.infer<typeof LatestQuizSchema>;
   "starterQuiz--maths": z.infer<typeof LatestQuizSchema>;
-  "starterQuiz--addOne": z.infer<typeof LatestQuizSchema>;
-  "starterQuiz--rewriteOne": z.infer<typeof LatestQuizSchema>;
   "cycle--default": z.infer<typeof CycleSchema>;
   "exitQuiz--default": z.infer<typeof LatestQuizSchema>;
   "exitQuiz--maths": z.infer<typeof LatestQuizSchema>;
-  "exitQuiz--addOne": z.infer<typeof LatestQuizSchema>;
-  "exitQuiz--rewriteOne": z.infer<typeof LatestQuizSchema>;
   "additionalMaterials--default": z.infer<typeof AdditionalMaterialsSchema>;
 };
 

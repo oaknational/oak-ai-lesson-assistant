@@ -1,4 +1,4 @@
-generated: 2026-05-19T14:01:50.914Z
+generated: 2026-05-20T13:49:32.057Z
 runsPerCell: 5
 cells:
   - id: addOne-with-candidates
@@ -41,7 +41,7 @@ cells:
     description: rewriteOne(2) + currentQuiz (3Q) + 5 candidate questions → exactly
       1 non-CURRENT question
     passThreshold: 0.95
-    passRate: 1
+    passRate: 0.8
     runs:
       - pass: true
         reasons: []
@@ -61,12 +61,17 @@ cells:
         selectedCount: 1
         selectedUids:
           - rag-frac-2
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 1
-        selectedUids:
-          - rag-frac-2
+      - pass: false
+        reasons:
+          - "status: got bail, want success"
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason: None of the non-CURRENT candidate questions assess simplifying
+          fractions (equivalent fractions), so we cannot find a suitable
+          replacement for CURRENT-Q2. To fix this, you could adjust the quiz
+          instructions to include candidate questions on simplifying fractions
+          or provide additional question options that test equivalent fractions.
       - pass: true
         reasons: []
         status: success
@@ -83,53 +88,51 @@ cells:
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No non-current candidate questions were provided that assess
+        bailReason: No non-CURRENT candidate questions provided to select from. To
+          proceed, please supply additional candidate questions covering
+          equivalent fractions, finding common denominators, or basic fraction
+          notation, so an appropriate question can be added.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason: No non-CURRENT candidate questions are available to select from.
+          Please provide additional candidate questions that assess finding
+          common denominators and writing equivalent fractions to complete the
+          quiz.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason: No non-CURRENT candidate questions were provided in the prompt.
+          Please supply additional candidate questions that assess equivalent
+          fractions, finding common denominators, and fraction notation to allow
+          adding a relevant question to the starter quiz.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason: No candidate questions beyond the existing CURRENT-Q1 to CURRENT-Q3
+          are provided in the prompt. To add a new diagnostic question, please
+          supply additional non-CURRENT candidate questions that cover
           equivalent fractions, finding common denominators, or fraction
-          notation. Please provide additional candidate questions on finding the
-          lowest common multiple of denominators or converting fractions to
-          equivalent forms so we can select one to complete your starter quiz.
+          notation.
       - pass: true
         reasons: []
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No additional candidate questions are available beyond the current
-          quiz (CURRENT-Q1 to CURRENT-Q3). To include a new question assessing
-          prerequisite skills such as finding common denominators or converting
-          to equivalent fractions, please provide additional candidate questions
-          covering those areas.
-      - pass: true
-        reasons: []
-        status: bail
-        selectedCount: 0
-        selectedUids: []
-        bailReason: No non-CURRENT candidate questions were provided to select from.
-          Please supply additional candidate questions (with UIDs not labeled
-          CURRENT-Q*) so that one can be chosen to complement the existing quiz.
-      - pass: true
-        reasons: []
-        status: bail
-        selectedCount: 0
-        selectedUids: []
-        bailReason: 'No non-CURRENT question is available in the candidate list that
-          tests equivalent fractions or finding common denominators. To complete
-          the quiz, please provide additional candidate questions that address
-          constructing equivalent fractions (e.g., "Complete: 2/3 = ?/9") or
-          determining common denominators for given fractions.'
-      - pass: true
-        reasons: []
-        status: bail
-        selectedCount: 0
-        selectedUids: []
-        bailReason: No non-CURRENT candidate questions are provided for selection. To
-          add a question that assesses understanding of equivalent fractions,
-          finding common denominators, or basic fraction notation, please supply
-          additional candidate questions or expand the pool with questions
-          focused on those prerequisite skills.
+        bailReason: No non-CURRENT questions were provided in the candidate list to
+          select from. Please provide additional suitable candidate questions
+          covering equivalent fractions, finding common denominators, or basic
+          fraction notation to add to the quiz.
   - id: fullRegen-no-current
     description: fullRegen + only candidate pool (no currentQuiz) → 1-6 questions selected
     passThreshold: 0.95
-    passRate: 0.8
+    passRate: 1
     runs:
       - pass: true
         reasons: []
@@ -141,19 +144,26 @@ cells:
           - rag-frac-1
           - rag-frac-3
           - rag-frac-4
-      - pass: false
-        reasons:
-          - "status: got bail, want success"
-        status: bail
-        selectedCount: 0
-        selectedUids: []
-        bailReason: The candidate questions do not include any that specifically assess
-          understanding of equivalent fractions, which is a key prerequisite
-          identified for this lesson. Without at least one question on
-          equivalent fractions, the quiz would not fully diagnose students’
-          prior knowledge. Please provide additional candidate questions
-          covering equivalent fractions or adjust the quiz instructions to match
-          the available question bank.
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-5
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-5
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
       - pass: true
         reasons: []
         status: success
@@ -174,16 +184,6 @@ cells:
           - rag-frac-1
           - rag-frac-3
           - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 5
-        selectedUids:
-          - rag-frac-1
-          - rag-frac-2
-          - rag-frac-3
-          - rag-frac-4
-          - rag-frac-5
   - id: fullRegen-with-current
     description: fullRegen + currentQuiz + candidate pool (modify path) → 1-6
       questions selected
@@ -200,6 +200,17 @@ cells:
           - rag-frac-5
           - CURRENT-Q1
           - rag-frac-1
+          - rag-frac-4
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - rag-frac-2
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1
           - rag-frac-3
       - pass: true
         reasons: []
@@ -207,41 +218,30 @@ cells:
         selectedCount: 6
         selectedUids:
           - CURRENT-Q2
-          - rag-frac-5
-          - CURRENT-Q1
-          - rag-frac-2
-          - rag-frac-1
-          - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 6
-        selectedUids:
-          - CURRENT-Q2
           - rag-frac-2
           - rag-frac-5
           - CURRENT-Q1
-          - rag-frac-1
-          - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 6
-        selectedUids:
-          - CURRENT-Q2
-          - rag-frac-2
-          - rag-frac-5
-          - CURRENT-Q1
-          - rag-frac-1
-          - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 6
-        selectedUids:
-          - CURRENT-Q1
-          - CURRENT-Q2
-          - rag-frac-2
           - rag-frac-1
           - rag-frac-3
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - rag-frac-2
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1
+          - rag-frac-4
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - rag-frac-2
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1
           - rag-frac-4

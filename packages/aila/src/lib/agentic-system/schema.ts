@@ -43,11 +43,17 @@ const quizIntentSchema = z.object({
 export type QuizAction = z.infer<typeof quizActionSchema>;
 export type QuizIntent = z.infer<typeof quizIntentSchema>;
 
+const structuralQuizAction = quizActionSchema.exclude([
+  "REGENERATE_QUIZ",
+] as const);
+
+export const structuralQuizIntentSchema = quizIntentSchema.extend({
+  action: structuralQuizAction,
+});
+
 /** Quiz actions that structurally modify individual questions (not full regeneration). */
-export type StructuralQuizAction = Exclude<QuizAction, "REGENERATE_QUIZ">;
-export type StructuralQuizIntent = Omit<QuizIntent, "action"> & {
-  action: StructuralQuizAction;
-};
+export type StructuralQuizAction = z.infer<typeof structuralQuizAction>;
+export type StructuralQuizIntent = z.infer<typeof structuralQuizIntentSchema>;
 
 const sectionStepSchema = z
   .object({
@@ -148,13 +154,9 @@ export const SECTION_AGENT_IDS = [
   "keywords--default",
   "starterQuiz--default",
   "starterQuiz--maths",
-  "starterQuiz--addOne",
-  "starterQuiz--rewriteOne",
   "cycle--default",
   "exitQuiz--default",
   "exitQuiz--maths",
-  "exitQuiz--addOne",
-  "exitQuiz--rewriteOne",
   "additionalMaterials--default",
 ] as const;
 export type SectionAgentId = (typeof SECTION_AGENT_IDS)[number];

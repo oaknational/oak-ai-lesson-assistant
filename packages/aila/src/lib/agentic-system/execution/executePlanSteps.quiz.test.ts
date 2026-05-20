@@ -71,61 +71,6 @@ function getUpdatedStarterQuiz(
   return call?.document?.starterQuiz;
 }
 
-describe("agent selection by quiz mode", () => {
-  it("calls starterQuiz--addOne (not --default) for ADD_QUIZ_QUESTION", async () => {
-    const newQuestion = makeQuestion("What is photosynthesis?");
-    const defaultAgent = jest.fn();
-    const addOneAgent = jest.fn().mockResolvedValue({
-      error: null,
-      data: { version: "v3", questions: [newQuestion], imageMetadata: [] },
-    });
-    const callbacks = makeCallbacks();
-
-    const runtime = makeRuntime({
-      plannerAgent: jest.fn().mockResolvedValue({
-        error: null,
-        data: {
-          decision: "plan",
-          parsedUserMessage: "Add a question",
-          plan: [
-            {
-              type: "section",
-              sectionKey: "starterQuiz",
-              action: "generate",
-              sectionInstructions: null,
-              quizIntent: {
-                action: "ADD_QUIZ_QUESTION",
-                position: null,
-              },
-            },
-          ],
-        },
-      }),
-      sectionAgents: {
-        "starterQuiz--default": {
-          id: "starterQuiz--default",
-          description: "starter quiz",
-          handler: defaultAgent,
-        },
-        "starterQuiz--addOne": {
-          id: "starterQuiz--addOne",
-          description: "starter quiz add one",
-          handler: addOneAgent,
-        },
-      } as unknown as SectionAgentRegistry,
-    });
-
-    await ailaTurn({
-      persistedState: makePersistedState(),
-      runtime,
-      callbacks,
-    });
-
-    expect(addOneAgent).toHaveBeenCalledTimes(1);
-    expect(defaultAgent).not.toHaveBeenCalled();
-  });
-});
-
 describe("executePlanSteps — quiz dispatch intercept", () => {
   describe("REGENERATE_QUIZ", () => {
     it("calls the section agent and replaces the quiz when quizIntent action is REGENERATE_QUIZ", async () => {
@@ -215,9 +160,9 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           },
         }),
         sectionAgents: {
-          "starterQuiz--addOne": {
-            id: "starterQuiz--addOne",
-            description: "starter quiz add one",
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
             handler: sectionAgent,
           },
         } as unknown as SectionAgentRegistry,
@@ -268,9 +213,9 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           },
         }),
         sectionAgents: {
-          "starterQuiz--addOne": {
-            id: "starterQuiz--addOne",
-            description: "starter quiz add one",
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
             handler: sectionAgent,
           },
         } as unknown as SectionAgentRegistry,
@@ -336,9 +281,9 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           },
         }),
         sectionAgents: {
-          "starterQuiz--addOne": {
-            id: "starterQuiz--addOne",
-            description: "starter quiz add one",
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
             handler: sectionAgent,
           },
         } as unknown as SectionAgentRegistry,
@@ -386,9 +331,9 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           },
         }),
         sectionAgents: {
-          "starterQuiz--rewriteOne": {
-            id: "starterQuiz--rewriteOne",
-            description: "starter quiz rewrite one",
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
             handler: sectionAgent,
           },
         } as unknown as SectionAgentRegistry,

@@ -10,7 +10,11 @@ import {
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
-import type { PlanStep, StructuralQuizIntent } from "../schema";
+import {
+  type PlanStep,
+  type StructuralQuizIntent,
+  structuralQuizIntentSchema,
+} from "../schema";
 import type {
   AgentResult,
   AilaExecutionContext,
@@ -75,11 +79,13 @@ async function executeGenerateStep(
     quizIntent.action !== "REGENERATE_QUIZ" &&
     (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz")
   ) {
+    const parsedQuizIntent = structuralQuizIntentSchema.parse(quizIntent);
+
     return executeQuizDispatchStep(
       context,
       step,
       step.sectionKey,
-      quizIntent as StructuralQuizIntent,
+      parsedQuizIntent,
     );
   }
 

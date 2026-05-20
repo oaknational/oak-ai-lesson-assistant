@@ -10,6 +10,8 @@ import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
 import type { VoiceId } from "./shared/voices";
 
+type InstructionsValue = string | ((ctx: AilaExecutionContext) => string);
+
 /**
  * This is a factory function for section agents.
  * A section agent is responsible for generating a specific section of the document.
@@ -24,7 +26,7 @@ export function createSectionAgent<ResponseType>({
   modelParams,
 }: {
   responseSchema: z.ZodType<ResponseType>;
-  instructions: string;
+  instructions: InstructionsValue;
   contentToString?: (content: ResponseType) => string;
   extraInputFromCtx?: (
     state: AilaExecutionContext,
@@ -52,6 +54,9 @@ export function createSectionAgent<ResponseType>({
     id,
     description,
     handler: (ctx: AilaExecutionContext) => {
+      const resolvedInstructions =
+        typeof instructions === "function" ? instructions(ctx) : instructions;
+
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
           ctx,
@@ -61,7 +66,7 @@ export function createSectionAgent<ResponseType>({
       const genericPromptAgent = sectionToGenericPromptAgent(
         {
           responseSchema,
-          instructions,
+          instructions: resolvedInstructions,
           messages: ctx.persistedState.messages,
           contentToString,
           basedOnContent,

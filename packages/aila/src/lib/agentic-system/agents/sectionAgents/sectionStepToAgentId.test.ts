@@ -38,28 +38,17 @@ describe("sectionStepToAgentId", () => {
   });
 
   describe("starterQuiz", () => {
-    it("routes ADD_QUIZ_QUESTION to --addOne", () => {
+    // REMOVE_QUIZ_QUESTION is intentionally excluded: it's handled deterministically
+    // by the dispatcher before any agent is invoked, and deriveQuizBuildMode throws
+    // on REMOVE inside the agent path.
+    it.each([
+      "ADD_QUIZ_QUESTION",
+      "CHANGE_QUIZ_QUESTION",
+      "REGENERATE_QUIZ",
+    ] as const)("routes %s to --default for non-maths lessons", (action) => {
       expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "ADD_QUIZ_QUESTION"), baseProps),
-      ).toBe("starterQuiz--addOne");
-    });
-
-    it("routes CHANGE_QUIZ_QUESTION to --rewriteOne", () => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "CHANGE_QUIZ_QUESTION"), baseProps),
-      ).toBe("starterQuiz--rewriteOne");
-    });
-
-    it("routes REGENERATE_QUIZ to --default in a non-maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "REGENERATE_QUIZ"), baseProps),
+        sectionStepToAgentId(quizStep("starterQuiz", action), baseProps),
       ).toBe("starterQuiz--default");
-    });
-
-    it("routes REGENERATE_QUIZ to --maths in a maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "REGENERATE_QUIZ"), mathsProps),
-      ).toBe("starterQuiz--maths");
     });
 
     it("routes a step with no quizIntent to --default", () => {
@@ -74,49 +63,35 @@ describe("sectionStepToAgentId", () => {
       );
     });
 
-    it("routes ADD_QUIZ_QUESTION to --maths in a maths lesson", () => {
-      // The --maths handler is mode-aware and derives addOne / rewriteOne / fullRegen
-      // from currentStep.quizIntent.action at the handler boundary.
+    it.each([
+      "ADD_QUIZ_QUESTION",
+      "CHANGE_QUIZ_QUESTION",
+      "REGENERATE_QUIZ",
+    ] as const)("routes %s to --maths in a maths lesson", (action) => {
       expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "ADD_QUIZ_QUESTION"), mathsProps),
-      ).toBe("starterQuiz--maths");
-    });
-
-    it("routes CHANGE_QUIZ_QUESTION to --maths in a maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", "CHANGE_QUIZ_QUESTION"), mathsProps),
+        sectionStepToAgentId(quizStep("starterQuiz", action), mathsProps),
       ).toBe("starterQuiz--maths");
     });
   });
 
   describe("exitQuiz", () => {
-    it("routes ADD_QUIZ_QUESTION to --addOne", () => {
+    it.each([
+      "ADD_QUIZ_QUESTION",
+      "CHANGE_QUIZ_QUESTION",
+      "REGENERATE_QUIZ",
+    ] as const)("routes %s to --default for non-maths lessons", (action) => {
       expect(
-        sectionStepToAgentId(quizStep("exitQuiz", "ADD_QUIZ_QUESTION"), baseProps),
-      ).toBe("exitQuiz--addOne");
+        sectionStepToAgentId(quizStep("exitQuiz", action), baseProps),
+      ).toBe("exitQuiz--default");
     });
 
-    it("routes CHANGE_QUIZ_QUESTION to --rewriteOne", () => {
+    it.each([
+      "ADD_QUIZ_QUESTION",
+      "CHANGE_QUIZ_QUESTION",
+      "REGENERATE_QUIZ",
+    ] as const)("routes %s to --maths in a maths lesson", (action) => {
       expect(
-        sectionStepToAgentId(quizStep("exitQuiz", "CHANGE_QUIZ_QUESTION"), baseProps),
-      ).toBe("exitQuiz--rewriteOne");
-    });
-
-    it("routes REGENERATE_QUIZ to --maths in a maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("exitQuiz", "REGENERATE_QUIZ"), mathsProps),
-      ).toBe("exitQuiz--maths");
-    });
-
-    it("routes ADD_QUIZ_QUESTION to --maths in a maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("exitQuiz", "ADD_QUIZ_QUESTION"), mathsProps),
-      ).toBe("exitQuiz--maths");
-    });
-
-    it("routes CHANGE_QUIZ_QUESTION to --maths in a maths lesson", () => {
-      expect(
-        sectionStepToAgentId(quizStep("exitQuiz", "CHANGE_QUIZ_QUESTION"), mathsProps),
+        sectionStepToAgentId(quizStep("exitQuiz", action), mathsProps),
       ).toBe("exitQuiz--maths");
     });
   });

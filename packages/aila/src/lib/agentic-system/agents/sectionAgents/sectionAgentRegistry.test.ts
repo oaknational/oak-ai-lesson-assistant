@@ -8,12 +8,12 @@ const mockCustomHandlers = {
   "exitQuiz--maths": jest.fn(),
 };
 
-describe("createSectionAgentRegistry — quiz mode agents", () => {
+describe("createSectionAgentRegistry — quiz agents", () => {
   it.each([
-    "starterQuiz--addOne",
-    "starterQuiz--rewriteOne",
-    "exitQuiz--addOne",
-    "exitQuiz--rewriteOne",
+    "starterQuiz--default",
+    "starterQuiz--maths",
+    "exitQuiz--default",
+    "exitQuiz--maths",
   ] as const)("registers %s", (agentId) => {
     const registry = createSectionAgentRegistry({
       openai: mockOpenAI,

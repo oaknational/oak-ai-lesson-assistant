@@ -34,25 +34,18 @@ export function sectionStepToAgentId(
   },
 ): SectionAgentId {
   const { sectionKey } = sectionStep;
+  console.log("Determining agent for sectionKey:", sectionKey);
+  console.log("Props:", props.config.mathsQuizEnabled, props.document.subject);
 
-  if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
-    const quizAction = sectionStep.quizIntent?.action;
-
-    // Maths lessons share a single mode-aware --maths handler for
-    // REGENERATE / ADD / CHANGE. The handler derives QuizBuildMode from
-    // sectionStep.quizIntent at the boundary so the composer can pick the
-    // right schema and prompt fragments.
-    if (props.config.mathsQuizEnabled && props.document.subject === "maths") {
-      return `${sectionKey}--maths`;
-    }
-
-    if (quizAction === "ADD_QUIZ_QUESTION") {
-      return `${sectionKey}--addOne`;
-    }
-    if (quizAction === "CHANGE_QUIZ_QUESTION") {
-      return `${sectionKey}--rewriteOne`;
-    }
-    return SECTION_AGENT_MAP_DEFAULTS[sectionKey];
+  if (
+    (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") &&
+    props.config.mathsQuizEnabled &&
+    props.document.subject === "maths"
+  ) {
+    console.log(
+      `Using maths-specific agent for section ${sectionKey} because mathsQuizEnabled is true and subject is maths`,
+    );
+    return `${sectionKey}--maths`;
   }
 
   return SECTION_AGENT_MAP_DEFAULTS[sectionKey];
