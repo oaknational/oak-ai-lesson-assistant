@@ -64,7 +64,20 @@ export class AilaStreamHandler {
       start: (controller) => {
         this.stream(controller, abortController).catch((error) => {
           log.error("Error in stream:", error);
-          controller.error(error);
+          try {
+            controller.error(error);
+          } catch (e) {
+            if (
+              e instanceof TypeError &&
+              (e as NodeJS.ErrnoException).code === "ERR_INVALID_STATE"
+            ) {
+              log.info(
+                "Controller already terminated before error could be signalled",
+              );
+            } else {
+              throw e;
+            }
+          }
         });
       },
     });
@@ -186,6 +199,9 @@ export class AilaStreamHandler {
         await this.span("read-from-stream", async () => {
           await this.readFromStream(abortController);
         });
+        if (abortController?.signal.aborted) {
+          skipCompletion = true;
+        }
       }
 
       log.info(
@@ -196,6 +212,16 @@ export class AilaStreamHandler {
     } catch (e) {
       if (this._chat.aila.options.useAgenticAila) {
         agenticTurnOutcome = { status: "failed" };
+        // ailaTurn threw rather than returning; its internal failure path never
+        // completed, so the client has not received an error message.
+        await this._chat.enqueue({
+          type: "error",
+          value: "Something went wrong. Please try sending your message again.",
+        });
+      } else if (this._chat.generation) {
+        // Sets status → FAILED so the finally block skips complete() (and moderation).
+        skipCompletion = true;
+        await this._chat.generationFailed(e);
       }
       log.info("Caught error in stream", {
         error: e,
