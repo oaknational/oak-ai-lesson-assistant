@@ -125,6 +125,15 @@ describe("quizOperationDispatcher", () => {
       expect(result.data).toBe(quiz);
       expect(result.note).toMatch(/trouble adding/i);
     });
+    it("returns the quiz unchanged with a note when position is out of range", async () => {
+      const quiz = makeQuiz([q1, q2]);
+      const agent = jest.fn().mockResolvedValue(null);
+
+      const result = await quizOperationDispatcher(quiz, intent(0), agent);
+
+      expect(result.data).toBe(quiz);
+      expect(result.note).toMatch(/valid positions/i);
+    });
   });
 
   describe("CHANGE_QUIZ_QUESTION", () => {

@@ -63,6 +63,13 @@ async function handleAdd(
   const { questions } = currentQuiz;
   const insertAt = intent.position ?? questions.length + 1;
 
+  if (insertAt < 1 || insertAt > questions.length + 1) {
+    return {
+      data: currentQuiz,
+      note: `You asked to add a question at position ${insertAt}, but valid positions are 1 to ${questions.length + 1}.`,
+    };
+  }
+
   const newQuestion = await runSingleQuestion();
   if (!newQuestion) {
     return {
