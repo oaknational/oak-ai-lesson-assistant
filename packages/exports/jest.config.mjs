@@ -12,6 +12,8 @@ const config = {
   },
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper: {
+    "^@oakai/test-support$": "<rootDir>/../test-support/index.cjs",
+    "^@oakai/test-support/jest$": "<rootDir>/../test-support/jest.cjs",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   extensionsToTreatAsEsm: [".ts"],
@@ -20,6 +22,7 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
+  setupFilesAfterEnv: ["@oakai/test-support/jest", "<rootDir>/jest.setup.afterenv.cjs"],
   globals: {
     __dirname: "<rootDir>",
   },

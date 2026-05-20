@@ -1,0 +1,28 @@
+{
+  "name": "@oakai/test-support",
+  "version": "1.0.0",
+  "description": "Shared test helpers for Oak AI packages",
+  "license": "MIT",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.cjs"
+    },
+    "./jest": {
+      "types": "./jest.d.ts",
+      "default": "./jest.cjs"
+    }
+  },
+  "main": "./index.cjs",
+  "types": "./index.d.ts",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint ."
+  },
+  "prettier": "@oakai/prettier-config",
+  "devDependencies": {
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "workspace:*"
+  }
+}

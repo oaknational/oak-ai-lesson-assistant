@@ -1,10 +1,5 @@
-import { PromptVariants } from "@oakai/core/src/models/promptVariants";
-import {
-  ailaGenerate,
-  generateAilaPromptVersionVariantSlug,
-} from "@oakai/core/src/prompts/lesson-assistant/variants";
+import { generateAilaPromptVersionVariantSlug } from "@oakai/core/src/prompts/lesson-assistant/variants";
 import type { Prompt } from "@oakai/db";
-import { prisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
@@ -165,6 +160,7 @@ export class AilaGeneration {
 
     let prompt: Prompt | null = null;
     let promptId: string | undefined = undefined;
+    const { prisma } = await import("@oakai/db/client");
 
     if (
       process.env.NODE_ENV === "production" &&
@@ -205,6 +201,10 @@ export class AilaGeneration {
     if (!prompt) {
       // // If the prompt does not exist for this variant, we can try to generate it
       try {
+        const [{ PromptVariants }, { ailaGenerate }] = await Promise.all([
+          import("@oakai/core/src/models/promptVariants"),
+          import("@oakai/core/src/prompts/lesson-assistant/variants"),
+        ]);
         const prompts = new PromptVariants(prisma, ailaGenerate, promptSlug);
         const created = await prompts.setCurrent(variantSlug, true);
         promptId = created?.id;

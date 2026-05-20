@@ -1,5 +1,5 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import { UserBannedError } from "@oakai/core";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 
 import * as Sentry from "@sentry/node";

@@ -25,6 +25,8 @@ const config = {
     ...pathsToModuleNameMapper(tsconfig.compilerOptions?.paths || {}, {
       prefix: "<rootDir>/src/",
     }),
+    "^@oakai/test-support$": "<rootDir>/../test-support/index.cjs",
+    "^@oakai/test-support/jest$": "<rootDir>/../test-support/jest.cjs",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
@@ -33,6 +35,7 @@ const config = {
   rootDir: ".",
   resetMocks: true,
   setupFiles: ["<rootDir>/jest.setup.cjs"],
+  setupFilesAfterEnv: ["@oakai/test-support/jest", "<rootDir>/jest.setup.afterenv.cjs"],
 };
 
 export default config;

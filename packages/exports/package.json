@@ -28,6 +28,7 @@
     "typescript": "5.9.2"
   },
   "devDependencies": {
+    "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/mathjax": "^0.0.40",
     "dedent": "^1.5.3",
