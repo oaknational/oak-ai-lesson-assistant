@@ -34,6 +34,10 @@ import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
 import { createSectionAgentRegistry } from "../agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../ailaTurn";
 import type { JsonPatchOperation } from "../compatibility/helpers/immerPatchToJsonPatch";
+import {
+  createEmptyCorrectorStats,
+  mergeCorrectorStats,
+} from "../correctorStats";
 import type { PlanStep, PlannerOutput, SectionKey } from "../schema";
 import type {
   AilaPersistedState,
@@ -421,11 +425,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
   const allPatches: JsonPatchOperation[] = [];
   let finalDocument: PartialLessonPlan = {};
   let finalMessage = "";
-  const aggregateCorrectorStats: CorrectorStats = {
-    attempted: [],
-    notNeeded: [],
-    failed: [],
-  };
+  const aggregateCorrectorStats = createEmptyCorrectorStats();
 
   const messages: ChatMessage[] = [
     { id: "m0", role: "user", content: scenario.userMessage },
@@ -463,24 +463,23 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
             console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
           }
         },
-        onTurnComplete: ({ document, ailaMessage, correctorStats }) => {
+        onTurnComplete: ({ document, ailaMessage }) => {
           turnDoc = document;
           turnMessage = ailaMessage;
-          aggregateCorrectorStats.attempted.push(...correctorStats.attempted);
-          aggregateCorrectorStats.notNeeded.push(...correctorStats.notNeeded);
-          aggregateCorrectorStats.failed.push(...correctorStats.failed);
           return Promise.resolve();
         },
-        onTurnFailed: ({ ailaMessage, correctorStats }) => {
+        onTurnFailed: ({ ailaMessage }) => {
           turnMessage = ailaMessage;
-          aggregateCorrectorStats.attempted.push(...correctorStats.attempted);
-          aggregateCorrectorStats.notNeeded.push(...correctorStats.notNeeded);
-          aggregateCorrectorStats.failed.push(...correctorStats.failed);
           return Promise.resolve();
         },
       };
 
-      await ailaTurn({ persistedState: persisted, runtime, callbacks });
+      const outcome = await ailaTurn({
+        persistedState: persisted,
+        runtime,
+        callbacks,
+      });
+      mergeCorrectorStats(aggregateCorrectorStats, outcome.correctorStats);
       turnCount++;
 
       // Record the planner output as a synthetic PlannerOutput for scoring.

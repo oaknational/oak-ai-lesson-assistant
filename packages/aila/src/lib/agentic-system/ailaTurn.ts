@@ -1,3 +1,4 @@
+import { createEmptyCorrectorStats } from "./correctorStats";
 import { executePlanSteps } from "./execution/executePlanSteps";
 import { executePlanningPhase } from "./execution/executePlanningPhase";
 import { handleRelevantLessons } from "./execution/handleRelevantLessons";
@@ -30,7 +31,7 @@ export async function ailaTurn({
       stepsExecuted: [],
       relevantLessonsFetched: false,
       currentStep: null,
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
+      correctorStats: createEmptyCorrectorStats(),
     },
     callbacks,
   };

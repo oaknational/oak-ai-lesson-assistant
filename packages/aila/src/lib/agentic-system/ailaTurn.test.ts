@@ -47,6 +47,68 @@ describe("ailaTurn", () => {
     }
   });
 
+  it("returns empty corrector stats on hard failures before section execution", async () => {
+    const callbacks = createCallbacks();
+    const runtime = createRuntime({
+      plannerAgent: jest
+        .fn()
+        .mockResolvedValue({ error: { message: "planner failed" } }),
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(outcome).toEqual({
+      status: "failed",
+      correctorStats: { attempted: [], notNeeded: [], failed: [] },
+    });
+  });
+
+  it("returns corrector stats for successful section execution", async () => {
+    const callbacks = createCallbacks();
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the subject",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "subject",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "subject--default": {
+          id: "subject--default",
+          description: "subject",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "art",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: { attempted: [], notNeeded: ["subject"], failed: [] },
+    });
+  });
+
   it("hard-fails when the planner fails", async () => {
     const callbacks = createCallbacks();
     const runtime = createRuntime({
@@ -61,7 +123,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: [],
     });
@@ -69,7 +131,6 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -109,7 +170,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: ["subject"],
     });
@@ -117,7 +178,6 @@ describe("ailaTurn", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -171,7 +231,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -187,7 +247,6 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -231,7 +290,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -247,7 +306,6 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -274,7 +332,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalled();
   });
@@ -292,13 +350,12 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -339,13 +396,12 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
     expect(sectionHandler).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
   });
@@ -390,7 +446,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -404,7 +460,6 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
-      correctorStats: expect.any(Object),
     });
   });
 
@@ -448,7 +503,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -462,7 +517,6 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
@@ -514,7 +568,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
         {
@@ -527,7 +581,6 @@ describe("ailaTurn", () => {
       document: { subject: "art" },
       ailaMessage:
         "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
-      correctorStats: expect.any(Object),
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });

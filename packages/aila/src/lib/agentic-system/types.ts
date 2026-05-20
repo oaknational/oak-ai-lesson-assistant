@@ -72,12 +72,10 @@ export type AilaTurnCallbacks = {
     stepsExecuted: PlanStep[];
     document: PartialLessonPlan;
     ailaMessage: string;
-    correctorStats: CorrectorStats;
   }) => void | Promise<void>;
   onTurnFailed: (props: {
     stepsExecuted: PlanStep[];
     ailaMessage: string;
-    correctorStats: CorrectorStats;
   }) => void | Promise<void>;
 };
 
@@ -87,7 +85,9 @@ export type AilaTurnArgs = {
   callbacks: AilaTurnCallbacks;
 };
 
-export type AilaTurnOutcome = { status: "success" } | { status: "failed" };
+export type AilaTurnOutcome =
+  | { status: "success"; correctorStats: CorrectorStats }
+  | { status: "failed"; correctorStats: CorrectorStats };
 
 export type AilaTurnPhaseOutcome = { status: "continue" } | AilaTurnOutcome;
 

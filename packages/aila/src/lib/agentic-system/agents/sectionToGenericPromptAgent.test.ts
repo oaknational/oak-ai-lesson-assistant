@@ -2,6 +2,7 @@ import type { ResponseCreateParamsNonStreaming } from "openai/resources/response
 import { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../protocol/schema";
+import { createEmptyCorrectorStats } from "../correctorStats";
 import type {
   AgenticRagLessonPlanResult,
   AilaExecutionContext,
@@ -77,7 +78,7 @@ describe("sectionToGenericPromptAgent", () => {
       relevantLessonsFetched: false,
       relevantLessons: mockRelevantLessons,
       currentStep: null,
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
+      correctorStats: createEmptyCorrectorStats(),
     },
     callbacks: {
       onPlannerComplete: jest.fn(),

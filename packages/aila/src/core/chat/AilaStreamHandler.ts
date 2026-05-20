@@ -29,8 +29,10 @@ import type { PatchEnqueuer } from "./PatchEnqueuer";
 
 const log = aiLogger("aila:stream");
 
-function agenticTurnSucceeded(outcome: AilaTurnOutcome | null): boolean {
-  return outcome?.status === "success";
+function agenticTurnSucceeded(
+  status: AilaTurnOutcome["status"] | null,
+): boolean {
+  return status === "success";
 }
 
 class ThreatDetectionFailureError extends Error {
@@ -118,7 +120,7 @@ export class AilaStreamHandler {
   ) {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
-    let agenticTurnOutcome: AilaTurnOutcome | null = null;
+    let agenticTurnStatus: AilaTurnOutcome["status"] | null = null;
     let skipCompletion = false;
     try {
       if (!this._chat.aila.options.useAgenticAila) {
@@ -142,7 +144,8 @@ export class AilaStreamHandler {
 
       if (this._chat.aila.options.useAgenticAila) {
         await this.span("start-agent-stream", async () => {
-          agenticTurnOutcome = await this.startAgentStream();
+          const outcome = await this.startAgentStream();
+          agenticTurnStatus = outcome.status;
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -167,7 +170,7 @@ export class AilaStreamHandler {
       );
     } catch (e) {
       if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnOutcome = { status: "failed" };
+        agenticTurnStatus = "failed";
       }
       log.info("Caught error in stream", {
         error: e,
@@ -197,11 +200,11 @@ export class AilaStreamHandler {
     } finally {
       const status = this._chat.generation?.status;
       const shouldComplete = this._chat.aila.options.useAgenticAila
-        ? agenticTurnSucceeded(agenticTurnOutcome)
+        ? agenticTurnSucceeded(agenticTurnStatus)
         : status !== "FAILED";
       log.info("In finally block", {
         status,
-        agenticTurnOutcome,
+        agenticTurnStatus,
         skipCompletion,
         chatId: this._chat.id,
       });

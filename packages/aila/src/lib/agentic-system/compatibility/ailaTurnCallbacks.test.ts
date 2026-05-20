@@ -61,7 +61,6 @@ describe("ailaTurnCallbacks", () => {
       stepsExecuted: [],
       document: { subject: "art" },
       ailaMessage: "We've updated the subject, title, and key learning points",
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     });
     expect(chunks).toEqual(
       `],"sectionsEdited":[],"prompt":{"type":"text","value":"We've updated the subject, title, and key learning points"},"status":"complete"}`,
@@ -92,7 +91,6 @@ describe("ailaTurnCallbacks", () => {
       stepsExecuted: [],
       ailaMessage:
         "I wasn't able to complete that lesson update. Please try again.",
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     });
 
     expect(chunks).toEqual(
@@ -177,7 +175,6 @@ describe("ailaTurnCallbacks", () => {
         title: "Goethe's Colour Wheel",
       },
       ailaMessage: "We've updated the subject and title",
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     });
 
     expect(JSON.parse(chunks)).toMatchObject({

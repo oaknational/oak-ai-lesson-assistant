@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { AMERICANISM_ISSUE_KIND } from "../../../features/americanisms";
+import { createEmptyCorrectorStats } from "../correctorStats";
 import type { SectionKey } from "../schema";
 import type { AilaExecutionContext } from "../types";
 import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
@@ -33,7 +34,7 @@ function createContext(correctorAgent: jest.Mock): AilaExecutionContext {
       relevantLessons: null,
       relevantLessonsFetched: false,
       currentStep: null,
-      correctorStats: { attempted: [], notNeeded: [], failed: [] },
+      correctorStats: createEmptyCorrectorStats(),
     },
     callbacks: {} as AilaExecutionContext["callbacks"],
   };
