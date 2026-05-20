@@ -21,6 +21,9 @@
     "lint": "eslint ."
   },
   "prettier": "@oakai/prettier-config",
+  "dependencies": {
+    "@oakai/logger": "workspace:*"
+  },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
     "@oakai/prettier-config": "workspace:*"

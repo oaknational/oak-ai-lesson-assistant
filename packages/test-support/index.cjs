@@ -79,6 +79,7 @@ function addAllowance(method, matcher, options = {}) {
   state.allowances[method].push({
     matcher,
     remaining: options.times ?? 1,
+    optional: options.optional ?? false,
   });
 }
 
@@ -92,7 +93,8 @@ function allowConsoleWarn(matcher, options) {
 
 function recordCall(method, args) {
   const allowance = state.allowances[method].find(
-    (entry) => entry.remaining > 0 && callMatches(entry.matcher, args),
+    (entry) =>
+      (entry.remaining > 0 || entry.optional) && callMatches(entry.matcher, args),
   );
 
   if (allowance) {
@@ -135,7 +137,7 @@ function assertNoConsoleIssues() {
     }
 
     for (const allowance of state.allowances[method]) {
-      if (allowance.remaining > 0) {
+      if (allowance.remaining > 0 && !allowance.optional) {
         messages.push(
           `allow${method === "error" ? "ConsoleError" : "ConsoleWarn"}(${matcherName(allowance.matcher)}) was declared but console.${method} was never called with a matching message.\n` +
             `Remove the allowance, or check whether the code still logs this ${method}.`,

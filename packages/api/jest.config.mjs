@@ -35,10 +35,7 @@ const config = {
   rootDir: ".",
   resetMocks: true,
   setupFiles: ["<rootDir>/jest.setup.cjs"],
-  setupFilesAfterEnv: [
-    "@oakai/test-support/jest",
-    "<rootDir>/jest.setup.afterenv.cjs",
-  ],
+  setupFilesAfterEnv: ["@oakai/test-support/jest"],
 };
 
 export default config;

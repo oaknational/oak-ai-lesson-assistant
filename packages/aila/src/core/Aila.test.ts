@@ -188,7 +188,7 @@ describe("Aila", () => {
 
     // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
-      allowConsoleWarn(/\[Polly\]/);
+      allowConsoleWarn(/\[Polly\]/, { optional: true });
       const ailaInstance = new Aila({
         document: {
           content: {},

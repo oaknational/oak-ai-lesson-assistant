@@ -1184,6 +1184,10 @@ importers:
         version: 5.9.2
 
   packages/test-support:
+    dependencies:
+      '@oakai/logger':
+        specifier: workspace:*
+        version: link:../logger
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*

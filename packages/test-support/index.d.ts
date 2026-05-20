@@ -6,6 +6,7 @@ export type ConsoleCallMatcher =
 
 export type ConsoleAllowanceOptions = {
   times?: number;
+  optional?: boolean;
 };
 
 export function allowConsoleError(

@@ -22,10 +22,7 @@ const config = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",
   resetMocks: true,
-  setupFilesAfterEnv: [
-    "@oakai/test-support/jest",
-    "<rootDir>/jest.setup.afterenv.cjs",
-  ],
+  setupFilesAfterEnv: ["@oakai/test-support/jest"],
   globals: {
     __dirname: "<rootDir>",
   },
