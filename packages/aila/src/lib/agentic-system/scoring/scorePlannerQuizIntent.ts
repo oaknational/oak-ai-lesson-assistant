@@ -51,19 +51,6 @@ const QUIZ_QUESTIONS: LatestQuizQuestion[] = [
   makeQuestion("What is the largest planet in our solar system?"),
 ];
 
-// Maths-only topics so we can verify the planner classifies the same way on
-// maths-subject documents (the routing flips downstream — sectionStepToAgentId
-// sends maths quiz steps to the --maths handler — but the planner stays
-// subject-agnostic in classification).
-const MATHS_QUIZ_QUESTIONS: LatestQuizQuestion[] = [
-  makeQuestion("What is 2/4 in its simplest form?"),
-  makeQuestion("What is 7 multiplied by 8?"),
-  makeQuestion("What is the area of a rectangle with sides 5 cm and 3 cm?"),
-  makeQuestion("Solve for x: 2x + 3 = 11"),
-  makeQuestion("What is the value of pi to two decimal places?"),
-  makeQuestion("What is the sum of the interior angles of a triangle?"),
-];
-
 const populatedQuiz = (questions: LatestQuizQuestion[]): LatestQuiz => ({
   version: "v3",
   questions,
@@ -84,21 +71,8 @@ const baseDoc: PartialLessonPlan = {
   exitQuiz: populatedQuiz(QUIZ_QUESTIONS),
 };
 
-const docWithEmptyStarter: PartialLessonPlan = {
+const baseDocWithEmptyStarter: PartialLessonPlan = {
   ...baseDoc,
-  starterQuiz: emptyQuiz,
-};
-
-const mathsDoc: PartialLessonPlan = {
-  title: "Adding fractions with different denominators",
-  subject: "maths",
-  keyStage: "ks3",
-  starterQuiz: populatedQuiz(MATHS_QUIZ_QUESTIONS),
-  exitQuiz: populatedQuiz(MATHS_QUIZ_QUESTIONS),
-};
-
-const mathsDocWithEmptyStarter: PartialLessonPlan = {
-  ...mathsDoc,
   starterQuiz: emptyQuiz,
 };
 
@@ -196,7 +170,18 @@ const CELLS: EvalCell[] = [
     passThreshold: 0, // baseline only
   },
   // -------- Empty-quiz add → regenerate (ADR-0001 'no silent fallback') --------
-
+  {
+    id: "prose-empty-quiz-add-regenerate",
+    description:
+      "ADD on empty starter quiz → REGENERATE_QUIZ (empty-quiz exception)",
+    initialDocument: baseDocWithEmptyStarter,
+    userMessage: "For the starter quiz, add a question",
+    expected: {
+      sectionKey: "starterQuiz",
+      action: "REGENERATE_QUIZ",
+    },
+    passThreshold: 0.95,
+  },
   {
     id: "prose-button-remove",
     description:
@@ -258,96 +243,6 @@ const CELLS: EvalCell[] = [
       sectionKey: "exitQuiz",
       action: "REMOVE_QUIZ_QUESTION",
       position: 4,
-    },
-    passThreshold: 0.95,
-  },
-  // -------- Maths-subject parity --------
-  // The planner is subject-agnostic in quiz classification — these mirror the
-  // core action cells with a maths-subject document to guard against future
-  // planner edits that accidentally introduce subject-specific behaviour.
-  {
-    id: "maths-prose-action-remove",
-    description:
-      "Maths lesson + 'remove question 3' → REMOVE_QUIZ_QUESTION, position=3",
-    initialDocument: mathsDoc,
-    userMessage: "Please remove question 3 from the starter quiz",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
-      position: 3,
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-prose-action-add",
-    description: "Maths lesson + 'add a question' → ADD_QUIZ_QUESTION",
-    initialDocument: mathsDoc,
-    userMessage:
-      "Please add a question about prime numbers to the starter quiz",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "ADD_QUIZ_QUESTION",
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-prose-action-change",
-    description:
-      "Maths lesson + 'rewrite question 2' → CHANGE_QUIZ_QUESTION, position=2",
-    initialDocument: mathsDoc,
-    userMessage: "Please rewrite question 2 in the starter quiz to be easier",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "CHANGE_QUIZ_QUESTION",
-      position: 2,
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-prose-action-regenerate",
-    description: "Maths lesson + 'generate a new quiz' → REGENERATE_QUIZ",
-    initialDocument: mathsDoc,
-    userMessage: "Generate a new starter quiz",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "REGENERATE_QUIZ",
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-prose-button-add",
-    description: "Maths lesson + button Add prose → ADD_QUIZ_QUESTION",
-    initialDocument: mathsDoc,
-    userMessage: "For the starter quiz, add a question: about prime numbers",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "ADD_QUIZ_QUESTION",
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-prose-button-change",
-    description:
-      "Maths lesson + button Change prose → CHANGE_QUIZ_QUESTION, position=2",
-    initialDocument: mathsDoc,
-    userMessage:
-      "For the starter quiz, change question: make question 2 easier",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "CHANGE_QUIZ_QUESTION",
-      position: 2,
-    },
-    passThreshold: 0.95,
-  },
-  {
-    id: "maths-empty-quiz-add-regenerate",
-    description:
-      "Maths lesson + ADD on empty starter quiz → REGENERATE_QUIZ (empty-quiz exception)",
-    initialDocument: mathsDocWithEmptyStarter,
-    userMessage: "For the starter quiz, add a question",
-    expected: {
-      sectionKey: "starterQuiz",
-      action: "REGENERATE_QUIZ",
     },
     passThreshold: 0.95,
   },

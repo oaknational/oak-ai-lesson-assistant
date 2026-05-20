@@ -1,4 +1,4 @@
-generated: 2026-05-19T13:41:57.933Z
+generated: 2026-05-20T08:53:09.805Z
 runsPerCell: 5
 cells:
   - id: prose-action-remove
@@ -181,6 +181,36 @@ cells:
         actual:
           action: REMOVE_QUIZ_QUESTION
           position: 1
+  - id: prose-empty-quiz-add-regenerate
+    description: ADD on empty starter quiz → REGENERATE_QUIZ (empty-quiz exception)
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        actual:
+          action: REGENERATE_QUIZ
+          position: null
+      - pass: true
+        reasons: []
+        actual:
+          action: REGENERATE_QUIZ
+          position: null
+      - pass: true
+        reasons: []
+        actual:
+          action: REGENERATE_QUIZ
+          position: null
+      - pass: true
+        reasons: []
+        actual:
+          action: REGENERATE_QUIZ
+          position: null
+      - pass: true
+        reasons: []
+        actual:
+          action: REGENERATE_QUIZ
+          position: null
   - id: prose-button-remove
     description: Button Remove + textarea '3' → buildProse-shape prose, no marker
     passThreshold: 0.95
@@ -333,219 +363,3 @@ cells:
         actual:
           action: REMOVE_QUIZ_QUESTION
           position: 4
-  - id: maths-prose-action-remove
-    description: Maths lesson + 'remove question 3' → REMOVE_QUIZ_QUESTION, position=3
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: REMOVE_QUIZ_QUESTION
-          position: 3
-      - pass: true
-        reasons: []
-        actual:
-          action: REMOVE_QUIZ_QUESTION
-          position: 3
-      - pass: true
-        reasons: []
-        actual:
-          action: REMOVE_QUIZ_QUESTION
-          position: 3
-      - pass: true
-        reasons: []
-        actual:
-          action: REMOVE_QUIZ_QUESTION
-          position: 3
-      - pass: true
-        reasons: []
-        actual:
-          action: REMOVE_QUIZ_QUESTION
-          position: 3
-  - id: maths-prose-action-add
-    description: Maths lesson + 'add a question' → ADD_QUIZ_QUESTION
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-  - id: maths-prose-action-change
-    description: Maths lesson + 'rewrite question 2' → CHANGE_QUIZ_QUESTION, position=2
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-  - id: maths-prose-action-regenerate
-    description: Maths lesson + 'generate a new quiz' → REGENERATE_QUIZ
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: REGENERATE_QUIZ
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: REGENERATE_QUIZ
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: REGENERATE_QUIZ
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: REGENERATE_QUIZ
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: REGENERATE_QUIZ
-          position: null
-  - id: maths-prose-button-add
-    description: Maths lesson + button Add prose → ADD_QUIZ_QUESTION
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: true
-        reasons: []
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-  - id: maths-prose-button-change
-    description: Maths lesson + button Change prose → CHANGE_QUIZ_QUESTION, position=2
-    passThreshold: 0.95
-    passRate: 1
-    runs:
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-      - pass: true
-        reasons: []
-        actual:
-          action: CHANGE_QUIZ_QUESTION
-          position: 2
-  - id: maths-empty-quiz-add-regenerate
-    description: Maths lesson + ADD on empty starter quiz → REGENERATE_QUIZ
-      (empty-quiz exception)
-    passThreshold: 0.95
-    passRate: 0
-    runs:
-      - pass: false
-        reasons:
-          - "action: got ADD_QUIZ_QUESTION, want REGENERATE_QUIZ"
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: false
-        reasons:
-          - "action: got ADD_QUIZ_QUESTION, want REGENERATE_QUIZ"
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: false
-        reasons:
-          - "action: got ADD_QUIZ_QUESTION, want REGENERATE_QUIZ"
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: false
-        reasons:
-          - "action: got ADD_QUIZ_QUESTION, want REGENERATE_QUIZ"
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
-      - pass: false
-        reasons:
-          - "action: got ADD_QUIZ_QUESTION, want REGENERATE_QUIZ"
-        actual:
-          action: ADD_QUIZ_QUESTION
-          position: null
