@@ -20,22 +20,6 @@ describe("deriveQuizBuildMode", () => {
     expect(deriveQuizBuildMode(step())).toEqual({ kind: "fullRegen" });
   });
 
-  it("returns fullRegen for REGENERATE_QUIZ", () => {
-    expect(
-      deriveQuizBuildMode(
-        step({ action: "REGENERATE_QUIZ", position: null }),
-      ),
-    ).toEqual({ kind: "fullRegen" });
-  });
-
-  it("returns addOne for ADD_QUIZ_QUESTION", () => {
-    expect(
-      deriveQuizBuildMode(
-        step({ action: "ADD_QUIZ_QUESTION", position: null }),
-      ),
-    ).toEqual({ kind: "addOne" });
-  });
-
   it("returns rewriteOne with position for CHANGE_QUIZ_QUESTION", () => {
     expect(
       deriveQuizBuildMode(

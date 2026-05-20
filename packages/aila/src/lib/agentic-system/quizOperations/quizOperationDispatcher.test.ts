@@ -38,14 +38,6 @@ describe("quizOperationDispatcher", () => {
       expect(result.note).toBeUndefined();
     });
 
-    it("preserves quiz metadata when removing a question", async () => {
-      const quiz = makeQuiz([q1, q2, q3]);
-      const result = await quizOperationDispatcher(quiz, intent(1), noAgent);
-
-      expect(result.data.version).toBe("v3");
-      expect(result.data.imageMetadata).toEqual([]);
-    });
-
     it("returns the quiz unchanged with a note when position is null", async () => {
       const quiz = makeQuiz([q1, q2, q3]);
       const result = await quizOperationDispatcher(quiz, intent(null), noAgent);

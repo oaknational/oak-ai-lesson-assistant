@@ -9,35 +9,16 @@ const mockCustomHandlers = {
 };
 
 describe("createSectionAgentRegistry — quiz mode agents", () => {
-  it("registers starterQuiz--addOne", () => {
+  it.each([
+    "starterQuiz--addOne",
+    "starterQuiz--rewriteOne",
+    "exitQuiz--addOne",
+    "exitQuiz--rewriteOne",
+  ] as const)("registers %s", (agentId) => {
     const registry = createSectionAgentRegistry({
       openai: mockOpenAI,
       customAgentHandlers: mockCustomHandlers,
     });
-    expect(registry["starterQuiz--addOne"]).toBeDefined();
-  });
-
-  it("registers starterQuiz--rewriteOne", () => {
-    const registry = createSectionAgentRegistry({
-      openai: mockOpenAI,
-      customAgentHandlers: mockCustomHandlers,
-    });
-    expect(registry["starterQuiz--rewriteOne"]).toBeDefined();
-  });
-
-  it("registers exitQuiz--addOne", () => {
-    const registry = createSectionAgentRegistry({
-      openai: mockOpenAI,
-      customAgentHandlers: mockCustomHandlers,
-    });
-    expect(registry["exitQuiz--addOne"]).toBeDefined();
-  });
-
-  it("registers exitQuiz--rewriteOne", () => {
-    const registry = createSectionAgentRegistry({
-      openai: mockOpenAI,
-      customAgentHandlers: mockCustomHandlers,
-    });
-    expect(registry["exitQuiz--rewriteOne"]).toBeDefined();
+    expect(registry[agentId]).toBeDefined();
   });
 });

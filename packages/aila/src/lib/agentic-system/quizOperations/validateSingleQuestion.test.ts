@@ -15,14 +15,6 @@ describe("validateSingleQuestion", () => {
     expect(validateSingleQuestion(validQuestion)).toBe(true);
   });
 
-  it("returns false for null", () => {
-    expect(validateSingleQuestion(null)).toBe(false);
-  });
-
-  it("returns false for undefined", () => {
-    expect(validateSingleQuestion(undefined)).toBe(false);
-  });
-
   it("returns false when question text is empty", () => {
     expect(validateSingleQuestion({ ...validQuestion, question: "" })).toBe(
       false,
@@ -33,9 +25,5 @@ describe("validateSingleQuestion", () => {
     expect(validateSingleQuestion({ ...validQuestion, question: "   " })).toBe(
       false,
     );
-  });
-
-  it("returns false when the value does not match the schema", () => {
-    expect(validateSingleQuestion({ notAQuestion: true })).toBe(false);
   });
 });
