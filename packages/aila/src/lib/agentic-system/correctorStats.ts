@@ -7,9 +7,8 @@ export const createEmptyCorrectorStats = (): CorrectorStats => ({
 });
 
 /**
- * Append every bucket of `source` onto `target` in place. Used by the scoring
- * harness to accumulate per-turn stats into a per-run total without writing
- * out the three-bucket spread at every call site.
+ * Used by the scoring harness to accumulate per-turn stats into a per-run
+ * total.
  */
 export const mergeCorrectorStats = (
   target: CorrectorStats,

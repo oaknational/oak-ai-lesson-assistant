@@ -1,3 +1,4 @@
+// cspell:ignore recognize emphasize utilize organize analyze labeled labeling traveled traveling aluminum eraser sidewalk elevator gotten
 /**
  * Canonical British English rules used by:
  *   - sectionAgents identityAndVoice (preventive — applied during generation)

@@ -11,14 +11,9 @@ export type CorrectorSummary = {
 };
 
 /**
- * Pure aggregator. Flattens a list of `CorrectorStats` (one per run of a
- * scenario) into the shape that lands in `scores.yaml` as the
- * `americanisms_corrector` block.
- *
- * Rates are emitted as `"X.X%"` strings so the YAML diff stays human-readable.
- * Division-by-zero is defended: when there are no attempts the failure rate
- * collapses to `"0.0%"` rather than producing `NaN` or being omitted, so the
- * schema stays regular across runs.
+ * Formats `CorrectorStats` (one per run of a scenario) into a shape that's
+ * eventually inserted into `scores.yaml` as the `americanisms_corrector`
+ * block.
  */
 export function summariseCorrector(stats: CorrectorStats[]): CorrectorSummary {
   const attempted: SectionKey[] = stats.flatMap((s) => s.attempted);

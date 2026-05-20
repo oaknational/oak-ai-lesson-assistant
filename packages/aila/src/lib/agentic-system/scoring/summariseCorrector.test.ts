@@ -102,8 +102,6 @@ describe("summariseCorrector — unit", () => {
 
 describe("summariseCorrector — multi-run aggregation (harness integration shape)", () => {
   it("flattens stats across multiple runs of a scenario into one summary", () => {
-    // Simulates what `afterAll` does: each scenario has N runs, each run has
-    // its own CorrectorStats, summariseCorrector concatenates them.
     const runs: CorrectorStats[] = [
       // Run 1: clean except for one cycle1 fire
       {
@@ -139,8 +137,7 @@ describe("summariseCorrector — multi-run aggregation (harness integration shap
   });
 
   it("accumulates corrections_by_section across runs (same section firing twice)", () => {
-    // The harness allows the same section to fire across multiple runs;
-    // each occurrence increments its count in the by-section tally.
+    // The harness allows the same section to fire across multiple runs
     const runs: CorrectorStats[] = [
       { attempted: [CYCLE1], notNeeded: [], failed: [] },
       { attempted: [CYCLE1], notNeeded: [], failed: [] },
@@ -154,8 +151,6 @@ describe("summariseCorrector — multi-run aggregation (harness integration shap
   });
 
   it("produces a YAML-ready shape — keys, types, and rate string format", () => {
-    // End-to-end shape check matching what lands in scores.yaml under
-    // `summary.<scenario>.americanisms_corrector`.
     const summary = summariseCorrector([
       {
         attempted: [STARTER_QUIZ],
