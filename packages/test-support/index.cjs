@@ -14,8 +14,8 @@ const state = {
 };
 
 function getJest() {
-  if (global.jest) {
-    return global.jest;
+  if (globalThis.jest) {
+    return globalThis.jest;
   }
 
   return require("@jest/globals").jest;
@@ -121,6 +121,10 @@ function resetState() {
   state.unexpected.warn = [];
 }
 
+function allowFnName(method) {
+  return method === "error" ? "allowConsoleError" : "allowConsoleWarn";
+}
+
 function assertNoConsoleIssues() {
   const messages = [];
 
@@ -129,7 +133,7 @@ function assertNoConsoleIssues() {
       messages.push(
         `Unexpected console.${method} — if this is expected in this test, declare it before the code that triggers it:\n` +
           `\n` +
-          `  allow${method === "error" ? "ConsoleError" : "ConsoleWarn"}(${JSON.stringify(formatArgs(args))});\n` +
+          `  ${allowFnName(method)}(${JSON.stringify(formatArgs(args))});\n` +
           `\n` +
           `Import from '@oakai/test-support'. Use a RegExp or substring to match loosely.\n` +
           `Received: ${formatArgs(args)}`,
@@ -139,7 +143,7 @@ function assertNoConsoleIssues() {
     for (const allowance of state.allowances[method]) {
       if (allowance.remaining > 0 && !allowance.optional) {
         messages.push(
-          `allow${method === "error" ? "ConsoleError" : "ConsoleWarn"}(${matcherName(allowance.matcher)}) was declared but console.${method} was never called with a matching message.\n` +
+          `${allowFnName(method)}(${matcherName(allowance.matcher)}) was declared but console.${method} was never called with a matching message.\n` +
             `Remove the allowance, or check whether the code still logs this ${method}.`,
         );
       }
