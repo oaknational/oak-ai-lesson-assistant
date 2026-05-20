@@ -28,6 +28,27 @@ const parsedUserMessageSchema = z
     "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'",
   );
 
+const quizActionSchema = z.enum([
+  "REGENERATE_QUIZ",
+  "ADD_QUIZ_QUESTION",
+  "REMOVE_QUIZ_QUESTION",
+  "CHANGE_QUIZ_QUESTION",
+]);
+
+const quizIntentSchema = z.object({
+  action: quizActionSchema,
+  position: z.number().int().positive().nullable(),
+});
+
+export type QuizAction = z.infer<typeof quizActionSchema>;
+export type QuizIntent = z.infer<typeof quizIntentSchema>;
+
+/** Quiz actions that structurally modify individual questions (not full regeneration). */
+export type StructuralQuizAction = Exclude<QuizAction, "REGENERATE_QUIZ">;
+export type StructuralQuizIntent = Omit<QuizIntent, "action"> & {
+  action: StructuralQuizAction;
+};
+
 const sectionStepSchema = z
   .object({
     type: z
@@ -45,6 +66,7 @@ const sectionStepSchema = z
           "Extract from conversation if user has preferences (e.g., 'focus on images', " +
           "'make it harder', 'replace question 3'). Null if no specific instructions.",
       ),
+    quizIntent: quizIntentSchema.nullable().optional(),
   })
   .describe("Section plan step.");
 
@@ -126,9 +148,13 @@ export const SECTION_AGENT_IDS = [
   "keywords--default",
   "starterQuiz--default",
   "starterQuiz--maths",
+  "starterQuiz--addOne",
+  "starterQuiz--rewriteOne",
   "cycle--default",
   "exitQuiz--default",
   "exitQuiz--maths",
+  "exitQuiz--addOne",
+  "exitQuiz--rewriteOne",
   "additionalMaterials--default",
 ] as const;
 export type SectionAgentId = (typeof SECTION_AGENT_IDS)[number];

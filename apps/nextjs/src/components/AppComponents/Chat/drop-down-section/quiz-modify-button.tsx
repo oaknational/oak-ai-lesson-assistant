@@ -6,11 +6,12 @@ import { ComponentType } from "@/lib/avo/Avo";
 
 import ActionButtonWrapper from "./action-button-wrapper";
 import { quizModifyOptions } from "./action-button.types";
+import { buildQuizMessage } from "./buildQuizMessage";
 import type { FeedbackOption } from "./drop-down-form-wrapper";
 
 export type QuizModifyButtonProps = Readonly<{
   sectionTitle: string;
-  sectionPath: string;
+  sectionPath: "starterQuiz" | "exitQuiz";
   sectionValue: LessonPlanSectionWhileStreaming;
 }>;
 
@@ -23,22 +24,12 @@ const QuizModifyButton = ({
   const generateMessage = (
     option: FeedbackOption<AilaUserModificationAction>,
     userFeedbackText: string,
-  ) => {
-    switch (option.label) {
-      case "Generate a new quiz": {
-        const detail = userFeedbackText ? `: ${userFeedbackText}` : "";
-        return `Generate a new ${section}${detail}`;
-      }
-      case "Change question":
-        return `For the ${section}, change question: ${userFeedbackText}`;
-      case "Add question":
-        return `For the ${section}, add a question: ${userFeedbackText}`;
-      case "Remove question":
-        return `For the ${section}, remove question: ${userFeedbackText}`;
-      default:
-        return `For the ${section}, ${userFeedbackText}`;
-    }
-  };
+  ) =>
+    buildQuizMessage({
+      sectionLabel: section,
+      details: userFeedbackText,
+      optionLabel: option.label,
+    });
 
   return (
     <ActionButtonWrapper

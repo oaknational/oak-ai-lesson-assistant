@@ -5,7 +5,11 @@ import type { SectionAgent, SectionAgentRegistry } from "../../types";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
 import { cycleAgent } from "./cycleAgent";
-import { exitQuizAgent } from "./exitQuizAgent";
+import {
+  exitQuizAddOneAgent,
+  exitQuizAgent,
+  exitQuizRewriteOneAgent,
+} from "./exitQuizAgent";
 import { keyLearningPointsAgent } from "./keyLearningPointsAgent";
 import { keyStageAgent } from "./keyStageAgent";
 import { keywordsAgent } from "./keywordsAgent";
@@ -13,7 +17,11 @@ import { learningCycleOutcomesAgent } from "./learningCycleOutcomesAgent";
 import { learningOutcomeAgent } from "./learningOutcomeAgent";
 import { misconceptionsAgent } from "./misconceptionsAgent";
 import { priorKnowledgeAgent } from "./priorKnowledgeAgent";
-import { starterQuizAgent } from "./starterQuizAgent";
+import {
+  starterQuizAddOneAgent,
+  starterQuizAgent,
+  starterQuizRewriteOneAgent,
+} from "./starterQuizAgent";
 import { subjectAgent } from "./subjectAgent";
 import { titleAgent } from "./titleAgent";
 
@@ -99,6 +107,20 @@ export const createSectionAgentRegistry = ({
     description: "Generates starter quiz questions for maths",
     handler: customAgentHandlers["starterQuiz--maths"],
   },
+  "starterQuiz--addOne": starterQuizAddOneAgent({
+    id: "starterQuiz--addOne",
+    description: "Adds a single question to the starter quiz",
+    openai,
+    contentFromDocument: (document) =>
+      "starterQuiz" in document ? document.starterQuiz : undefined,
+  }),
+  "starterQuiz--rewriteOne": starterQuizRewriteOneAgent({
+    id: "starterQuiz--rewriteOne",
+    description: "Rewrites a single starter quiz question",
+    openai,
+    contentFromDocument: (document) =>
+      "starterQuiz" in document ? document.starterQuiz : undefined,
+  }),
   "cycle--default": cycleAgent({
     id: "cycle--default",
     description: "Generates learning cycle content",
@@ -117,6 +139,20 @@ export const createSectionAgentRegistry = ({
     description: "Generates exit quiz questions for maths",
     handler: customAgentHandlers["exitQuiz--maths"],
   },
+  "exitQuiz--addOne": exitQuizAddOneAgent({
+    id: "exitQuiz--addOne",
+    description: "Adds a single question to the exit quiz",
+    openai,
+    contentFromDocument: (document) =>
+      "exitQuiz" in document ? document.exitQuiz : undefined,
+  }),
+  "exitQuiz--rewriteOne": exitQuizRewriteOneAgent({
+    id: "exitQuiz--rewriteOne",
+    description: "Rewrites a single exit quiz question",
+    openai,
+    contentFromDocument: (document) =>
+      "exitQuiz" in document ? document.exitQuiz : undefined,
+  }),
   "additionalMaterials--default": additionalMaterialsAgent({
     id: "additionalMaterials--default",
     description: "Provides additional materials for the lesson",

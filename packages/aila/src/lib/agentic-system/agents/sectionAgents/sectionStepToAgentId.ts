@@ -33,14 +33,27 @@ export function sectionStepToAgentId(
     };
   },
 ): SectionAgentId {
-  if (props.config.mathsQuizEnabled && props.document.subject === "maths") {
-    if (sectionStep.sectionKey === "starterQuiz") {
-      return "starterQuiz--maths";
+  const { sectionKey } = sectionStep;
+
+  if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
+    const quizAction = sectionStep.quizIntent?.action;
+
+    // Maths lessons share a single mode-aware --maths handler for
+    // REGENERATE / ADD / CHANGE. The handler derives QuizBuildMode from
+    // sectionStep.quizIntent at the boundary so the composer can pick the
+    // right schema and prompt fragments.
+    if (props.config.mathsQuizEnabled && props.document.subject === "maths") {
+      return `${sectionKey}--maths`;
     }
-    if (sectionStep.sectionKey === "exitQuiz") {
-      return "exitQuiz--maths";
+
+    if (quizAction === "ADD_QUIZ_QUESTION") {
+      return `${sectionKey}--addOne`;
     }
+    if (quizAction === "CHANGE_QUIZ_QUESTION") {
+      return `${sectionKey}--rewriteOne`;
+    }
+    return SECTION_AGENT_MAP_DEFAULTS[sectionKey];
   }
 
-  return SECTION_AGENT_MAP_DEFAULTS[sectionStep.sectionKey];
+  return SECTION_AGENT_MAP_DEFAULTS[sectionKey];
 }
