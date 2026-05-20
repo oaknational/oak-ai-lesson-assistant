@@ -1,12 +1,10 @@
-import type {
-  LatestQuiz,
-  LatestQuizQuestion,
-} from "../../../protocol/schema";
+import type { LatestQuiz, LatestQuizQuestion } from "../../../protocol/schema";
 import { ailaTurn } from "../ailaTurn";
 import type {
   AilaPersistedState,
   AilaRuntimeContext,
   AilaTurnCallbacks,
+  SectionAgentRegistry,
 } from "../types";
 
 const makeQuestion = (text: string): LatestQuizQuestion => ({
@@ -56,7 +54,7 @@ function makeRuntime(
   return {
     config: { mathsQuizEnabled: false },
     plannerAgent: jest.fn(),
-    sectionAgents: {},
+    sectionAgents: {} as unknown as SectionAgentRegistry,
     messageToUserAgent: jest.fn().mockResolvedValue({
       error: null,
       data: { message: "Done" },
@@ -66,7 +64,9 @@ function makeRuntime(
   };
 }
 
-function getUpdatedStarterQuiz(callbacks: AilaTurnCallbacks): LatestQuiz | undefined {
+function getUpdatedStarterQuiz(
+  callbacks: AilaTurnCallbacks,
+): LatestQuiz | undefined {
   const call = jest.mocked(callbacks.onTurnComplete).mock.calls[0]?.[0];
   return call?.document?.starterQuiz;
 }
@@ -112,10 +112,14 @@ describe("agent selection by quiz mode", () => {
           description: "starter quiz add one",
           handler: addOneAgent,
         },
-      },
+      } as unknown as SectionAgentRegistry,
     });
 
-    await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+    await ailaTurn({
+      persistedState: makePersistedState(),
+      runtime,
+      callbacks,
+    });
 
     expect(addOneAgent).toHaveBeenCalledTimes(1);
     expect(defaultAgent).not.toHaveBeenCalled();
@@ -150,8 +154,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "REGENERATE_QUIZ",
-                    position: null,
-                  },
+                  position: null,
+                },
               },
             ],
           },
@@ -162,10 +166,14 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
-      await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
 
       expect(sectionAgent).toHaveBeenCalledTimes(1);
       const updatedQuiz = getUpdatedStarterQuiz(callbacks);
@@ -200,7 +208,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "ADD_QUIZ_QUESTION",
-                    position: null,
+                  position: null,
                 },
               },
             ],
@@ -212,10 +220,14 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz add one",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
-      await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
 
       expect(sectionAgent).toHaveBeenCalledTimes(1);
       const updatedQuiz = getUpdatedStarterQuiz(callbacks);
@@ -249,8 +261,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "ADD_QUIZ_QUESTION",
-                    position: 2,
-                  },
+                  position: 2,
+                },
               },
             ],
           },
@@ -261,10 +273,14 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz add one",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
-      await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
 
       const updatedQuiz = getUpdatedStarterQuiz(callbacks);
       expect(updatedQuiz?.questions).toHaveLength(4);
@@ -287,7 +303,11 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
 
       const emptyState: AilaPersistedState = {
         messages: [
-          { id: "u1", role: "user", content: "Add a question to the starter quiz" },
+          {
+            id: "u1",
+            role: "user",
+            content: "Add a question to the starter quiz",
+          },
         ],
         initialDocument: {
           starterQuiz: { version: "v3", questions: [], imageMetadata: [] },
@@ -309,8 +329,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "ADD_QUIZ_QUESTION",
-                    position: null,
-                  },
+                  position: null,
+                },
               },
             ],
           },
@@ -321,7 +341,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz add one",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
       await ailaTurn({ persistedState: emptyState, runtime, callbacks });
@@ -359,7 +379,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "CHANGE_QUIZ_QUESTION",
-                    position: 2,
+                  position: 2,
                 },
               },
             ],
@@ -371,10 +391,14 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz rewrite one",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
-      await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
 
       expect(sectionAgent).toHaveBeenCalledTimes(1);
       const updatedQuiz = getUpdatedStarterQuiz(callbacks);
@@ -404,7 +428,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "REMOVE_QUIZ_QUESTION",
-                    position: 2,
+                  position: 2,
                 },
               },
             ],
@@ -416,7 +440,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
       const outcome = await ailaTurn({
@@ -450,8 +474,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "REMOVE_QUIZ_QUESTION",
-                    position: null,
-                  },
+                  position: null,
+                },
               },
             ],
           },
@@ -487,7 +511,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionInstructions: null,
                 quizIntent: {
                   action: "REMOVE_QUIZ_QUESTION",
-                    position: 99,
+                  position: 99,
                 },
               },
             ],
@@ -495,7 +519,11 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
         }),
       });
 
-      await ailaTurn({ persistedState: makePersistedState(), runtime, callbacks });
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
 
       const updatedQuiz = getUpdatedStarterQuiz(callbacks);
       expect(updatedQuiz?.questions).toHaveLength(3);
@@ -534,7 +562,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
             description: "starter quiz",
             handler: sectionAgent,
           },
-        },
+        } as unknown as SectionAgentRegistry,
       });
 
       const outcome = await ailaTurn({

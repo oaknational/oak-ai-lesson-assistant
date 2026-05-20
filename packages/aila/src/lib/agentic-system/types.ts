@@ -49,7 +49,7 @@ export type AilaRuntimeContext = {
   plannerAgent: (
     props: PlannerAgentProps,
   ) => Promise<AgentResult<PlannerOutput>>;
-  sectionAgents: Partial<SectionAgentRegistry>;
+  sectionAgents: SectionAgentRegistry;
   messageToUserAgent: (
     props: MessageToUserAgentProps,
   ) => Promise<AgentResult<MessageToUserAgentOutput>>;
