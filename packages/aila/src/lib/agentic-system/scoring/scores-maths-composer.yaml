@@ -1,4 +1,4 @@
-generated: 2026-05-20T13:49:32.057Z
+generated: 2026-05-20T14:15:12.425Z
 runsPerCell: 5
 cells:
   - id: addOne-with-candidates
@@ -41,7 +41,7 @@ cells:
     description: rewriteOne(2) + currentQuiz (3Q) + 5 candidate questions → exactly
       1 non-CURRENT question
     passThreshold: 0.95
-    passRate: 0.8
+    passRate: 1
     runs:
       - pass: true
         reasons: []
@@ -61,17 +61,12 @@ cells:
         selectedCount: 1
         selectedUids:
           - rag-frac-2
-      - pass: false
-        reasons:
-          - "status: got bail, want success"
-        status: bail
-        selectedCount: 0
-        selectedUids: []
-        bailReason: None of the non-CURRENT candidate questions assess simplifying
-          fractions (equivalent fractions), so we cannot find a suitable
-          replacement for CURRENT-Q2. To fix this, you could adjust the quiz
-          instructions to include candidate questions on simplifying fractions
-          or provide additional question options that test equivalent fractions.
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
       - pass: true
         reasons: []
         status: success
@@ -88,47 +83,46 @@ cells:
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No non-CURRENT candidate questions provided to select from. To
-          proceed, please supply additional candidate questions covering
-          equivalent fractions, finding common denominators, or basic fraction
-          notation, so an appropriate question can be added.
+        bailReason: No non-CURRENT candidate questions were provided in the list. Please
+          include additional candidate questions that assess equivalent
+          fractions, finding common denominators, or fraction notation so a
+          suitable question can be selected to enrich the quiz.
       - pass: true
         reasons: []
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No non-CURRENT candidate questions are available to select from.
-          Please provide additional candidate questions that assess finding
-          common denominators and writing equivalent fractions to complete the
-          quiz.
+        bailReason: No non-CURRENT candidate questions were provided to choose from.
+          Please supply additional candidate questions covering equivalent
+          fractions, common denominators, or fraction notation so that an
+          appropriate question can be added.
       - pass: true
         reasons: []
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No non-CURRENT candidate questions were provided in the prompt.
-          Please supply additional candidate questions that assess equivalent
-          fractions, finding common denominators, and fraction notation to allow
-          adding a relevant question to the starter quiz.
+        bailReason: No non-CURRENT candidate questions were provided to select from.
+          Please supply additional candidate questions that target equivalent
+          fractions, common denominators, or fraction notation so we can compose
+          a balanced starter quiz.
       - pass: true
         reasons: []
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No candidate questions beyond the existing CURRENT-Q1 to CURRENT-Q3
-          are provided in the prompt. To add a new diagnostic question, please
-          supply additional non-CURRENT candidate questions that cover
-          equivalent fractions, finding common denominators, or fraction
-          notation.
+        bailReason: There are no non-CURRENT candidate questions provided to add. Please
+          supply additional candidate questions aligned with the prior knowledge
+          (equivalent fractions, common denominators, fraction notation) or
+          allow selection from the existing CURRENT questions by replacing one.
       - pass: true
         reasons: []
         status: bail
         selectedCount: 0
         selectedUids: []
-        bailReason: No non-CURRENT questions were provided in the candidate list to
-          select from. Please provide additional suitable candidate questions
-          covering equivalent fractions, finding common denominators, or basic
-          fraction notation to add to the quiz.
+        bailReason: No non-CURRENT candidate questions were provided to select from.
+          Please provide additional candidate questions covering equivalent
+          fractions, finding common denominators, or basic fraction notation to
+          allow selection of an appropriate starter quiz question.
   - id: fullRegen-no-current
     description: fullRegen + only candidate pool (no currentQuiz) → 1-6 questions selected
     passThreshold: 0.95
@@ -139,31 +133,21 @@ cells:
         status: success
         selectedCount: 5
         selectedUids:
-          - rag-frac-2
-          - rag-frac-5
           - rag-frac-1
+          - rag-frac-2
           - rag-frac-3
           - rag-frac-4
+          - rag-frac-5
       - pass: true
         reasons: []
         status: success
         selectedCount: 5
         selectedUids:
           - rag-frac-2
-          - rag-frac-5
           - rag-frac-1
           - rag-frac-3
           - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 5
-        selectedUids:
-          - rag-frac-2
           - rag-frac-5
-          - rag-frac-1
-          - rag-frac-3
-          - rag-frac-4
       - pass: true
         reasons: []
         status: success
@@ -180,10 +164,20 @@ cells:
         selectedCount: 5
         selectedUids:
           - rag-frac-2
-          - rag-frac-5
           - rag-frac-1
           - rag-frac-3
           - rag-frac-4
+          - rag-frac-5
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
   - id: fullRegen-with-current
     description: fullRegen + currentQuiz + candidate pool (modify path) → 1-6
       questions selected
@@ -195,20 +189,31 @@ cells:
         status: success
         selectedCount: 6
         selectedUids:
+          - CURRENT-Q3
           - CURRENT-Q2
           - rag-frac-2
           - rag-frac-5
           - CURRENT-Q1
           - rag-frac-1
-          - rag-frac-4
       - pass: true
         reasons: []
         status: success
         selectedCount: 6
         selectedUids:
           - CURRENT-Q2
+          - CURRENT-Q1
           - rag-frac-2
           - rag-frac-5
+          - rag-frac-1
+          - rag-frac-3
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q3
+          - CURRENT-Q2
+          - rag-frac-2
           - CURRENT-Q1
           - rag-frac-1
           - rag-frac-3
@@ -218,11 +223,11 @@ cells:
         selectedCount: 6
         selectedUids:
           - CURRENT-Q2
+          - CURRENT-Q3
           - rag-frac-2
           - rag-frac-5
           - CURRENT-Q1
           - rag-frac-1
-          - rag-frac-3
       - pass: true
         reasons: []
         status: success
@@ -230,18 +235,7 @@ cells:
         selectedUids:
           - CURRENT-Q2
           - rag-frac-2
+          - CURRENT-Q3
           - rag-frac-5
           - CURRENT-Q1
           - rag-frac-1
-          - rag-frac-4
-      - pass: true
-        reasons: []
-        status: success
-        selectedCount: 6
-        selectedUids:
-          - CURRENT-Q2
-          - rag-frac-2
-          - rag-frac-5
-          - CURRENT-Q1
-          - rag-frac-1
-          - rag-frac-4
