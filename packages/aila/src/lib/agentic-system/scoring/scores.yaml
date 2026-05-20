@@ -1,5 +1,5 @@
 codeHash: 15e1c1710a1b3421bbd55a3234885154380c1d1b7d8c95c2d23389229ed5f137
-generated: 2026-05-20T10:14:24.893Z
+generated: 2026-05-20T11:14:21.142Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -44,18 +44,15 @@ summary:
     americanisms-spelling:
       pass: 3
     americanisms-phrasing:
-      pass: 2
-      flag: 1
+      pass: 3
     americanisms-meanings:
       flag: 3
     quiz-question-count:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 2
-      corrections_not_needed: 31
+      corrections_attempted: 0
+      corrections_not_needed: 33
       corrections_failed: 0
-      correction_rate: 6.1%
+      correction_rate: 0.0%
       correction_failure_rate: 0.0%
-      corrections_by_section:
-        cycle1: 1
-        cycle2: 1
+      corrections_by_section: {}
