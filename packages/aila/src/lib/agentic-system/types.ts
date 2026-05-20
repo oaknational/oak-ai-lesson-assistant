@@ -85,9 +85,10 @@ export type AilaTurnArgs = {
   callbacks: AilaTurnCallbacks;
 };
 
-export type AilaTurnOutcome =
-  | { status: "success"; correctorStats: CorrectorStats }
-  | { status: "failed"; correctorStats: CorrectorStats };
+export type AilaTurnOutcome = {
+  status: "success" | "failed";
+  correctorStats: CorrectorStats;
+};
 
 export type AilaTurnPhaseOutcome = { status: "continue" } | AilaTurnOutcome;
 

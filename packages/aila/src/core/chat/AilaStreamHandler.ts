@@ -30,10 +30,8 @@ import type { Message } from "./types";
 
 const log = aiLogger("aila:stream");
 
-function agenticTurnSucceeded(
-  status: AilaTurnOutcome["status"] | null,
-): boolean {
-  return status === "success";
+function agenticTurnSucceeded(outcome: AilaTurnOutcome | null): boolean {
+  return outcome?.status === "success";
 }
 
 type ThreatCheckOutcome =
@@ -133,7 +131,7 @@ export class AilaStreamHandler {
   ) {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
-    let agenticTurnStatus: AilaTurnOutcome["status"] | null = null;
+    let agenticTurnOutcome: AilaTurnOutcome | null = null;
     let skipCompletion = false;
     try {
       if (!this._chat.aila.options.useAgenticAila) {
@@ -172,9 +170,8 @@ export class AilaStreamHandler {
       }
 
       if (this._chat.aila.options.useAgenticAila) {
-        await this.span("start-agent-stream", async () => {
-          const outcome = await this.startAgentStream();
-          agenticTurnStatus = outcome.status;
+        agenticTurnOutcome = await this.span("start-agent-stream", async () => {
+          return await this.startAgentStream();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -198,9 +195,6 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
-      if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnStatus = "failed";
-      }
       log.info("Caught error in stream", {
         error: e,
         type: e?.constructor?.name,
@@ -209,11 +203,13 @@ export class AilaStreamHandler {
     } finally {
       const status = this._chat.generation?.status;
       const shouldComplete = this._chat.aila.options.useAgenticAila
-        ? agenticTurnSucceeded(agenticTurnStatus)
+        ? agenticTurnSucceeded(agenticTurnOutcome)
         : status !== "FAILED";
       log.info("In finally block", {
         status,
-        agenticTurnStatus,
+        agenticTurn: agenticTurnOutcome
+          ? { status: agenticTurnOutcome.status }
+          : null,
         skipCompletion,
         chatId: this._chat.id,
       });
