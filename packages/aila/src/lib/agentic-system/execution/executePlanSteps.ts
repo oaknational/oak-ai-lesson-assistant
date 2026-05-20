@@ -147,7 +147,6 @@ async function executeQuizDispatchStep(
       return quizResult.data.questions[0] ?? null;
     },
   );
-  console.log("Dispatch result:", dispatchResult);
 
   if (dispatchResult.note) {
     context.currentTurn.notes.push({
