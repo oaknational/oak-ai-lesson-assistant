@@ -94,7 +94,8 @@ function allowConsoleWarn(matcher, options) {
 function recordCall(method, args) {
   const allowance = state.allowances[method].find(
     (entry) =>
-      (entry.remaining > 0 || entry.optional) && callMatches(entry.matcher, args),
+      (entry.remaining > 0 || entry.optional) &&
+      callMatches(entry.matcher, args),
   );
 
   if (allowance) {
