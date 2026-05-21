@@ -8,11 +8,13 @@ import type { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
+import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
+import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
 import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
@@ -177,8 +179,8 @@ export class AilaStreamHandler {
       }
 
       if (this._chat.aila.options.useAgenticAila) {
-        await this.span("start-agent-stream", async () => {
-          agenticTurnOutcome = await this.startAgentStream();
+        agenticTurnOutcome = await this.span("start-agent-stream", async () => {
+          return await this.startAgentStream();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -206,7 +208,10 @@ export class AilaStreamHandler {
       );
     } catch (e) {
       if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnOutcome = { status: "failed" };
+        agenticTurnOutcome = {
+          status: "failed",
+          correctorStats: createEmptyCorrectorStats(),
+        };
         // ailaTurn threw rather than returning; its internal failure path never
         // completed, so the client has not received an error message.
         await this._chat.enqueue({
@@ -230,7 +235,9 @@ export class AilaStreamHandler {
         : status !== "FAILED";
       log.info("In finally block", {
         status,
-        agenticTurnOutcome,
+        agenticTurn: agenticTurnOutcome
+          ? { status: agenticTurnOutcome.status }
+          : null,
         skipCompletion,
         chatId: this._chat.id,
       });
@@ -377,6 +384,8 @@ export class AilaStreamHandler {
           },
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+        britishEnglishCorrectorAgent:
+          createOpenAIBritishEnglishCorrectorAgent(openai),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
           const {
             getRelevantLessonPlans,

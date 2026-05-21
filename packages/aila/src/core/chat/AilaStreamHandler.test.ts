@@ -13,7 +13,10 @@ import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry as createSectionAgentRegistryFactory } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
-import type { SectionAgentRegistry } from "../../lib/agentic-system/types";
+import type {
+  AilaTurnOutcome,
+  SectionAgentRegistry,
+} from "../../lib/agentic-system/types";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
 import type { AilaPlugin } from "../plugins";
 import { AilaStreamHandler } from "./AilaStreamHandler";
@@ -39,6 +42,15 @@ function createMockSectionAgentRegistry(): SectionAgentRegistry {
       "exitQuiz--maths": jest.fn(),
     },
   });
+}
+
+function createAilaTurnOutcome(
+  status: AilaTurnOutcome["status"],
+): AilaTurnOutcome {
+  return {
+    status,
+    correctorStats: { attempted: [], notNeeded: [], failed: [] },
+  };
 }
 
 jest.mock("@oakai/core/src/llm/openai", () => ({
@@ -231,7 +243,7 @@ describe("AilaStreamHandler", () => {
   });
 
   it("skips completion for failed agentic turns", async () => {
-    mockedAilaTurn.mockResolvedValue({ status: "failed" });
+    mockedAilaTurn.mockResolvedValue(createAilaTurnOutcome("failed"));
 
     const chat = createMockChat({ useAgenticAila: true });
     const handler = new AilaStreamHandler(chat as never);
@@ -479,7 +491,7 @@ describe("AilaStreamHandler", () => {
         ailaMessage:
           "Here's the updated lesson plan. Do you want to make any more changes?",
       });
-      return { status: "success" };
+      return createAilaTurnOutcome("success");
     });
 
     const chat = createMockChat({ useAgenticAila: true });
@@ -523,7 +535,7 @@ describe("AilaStreamHandler", () => {
         ailaMessage:
           "The lesson plan has been updated, but the usual summary wasn't available. Please review the changes and let me know what you'd like to adjust next.",
       });
-      return { status: "success" };
+      return createAilaTurnOutcome("success");
     });
 
     const chat = createMockChat({ useAgenticAila: true });
