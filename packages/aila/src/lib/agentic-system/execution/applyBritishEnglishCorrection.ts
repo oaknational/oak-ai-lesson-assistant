@@ -16,7 +16,7 @@ const log = aiLogger("aila:agents");
  * corrected content. Returns `null` when no correction is needed or the
  * corrector fails and falls back to the original content.
  */
-export async function applyBritishEnglishCorrection({
+export async function applyBritishEnglishCorrection<S extends z.ZodTypeAny>({
   context,
   sectionKey,
   content,
@@ -25,8 +25,8 @@ export async function applyBritishEnglishCorrection({
   context: AilaExecutionContext;
   sectionKey: SectionKey;
   content: unknown;
-  responseSchema: z.ZodTypeAny;
-}): Promise<unknown> {
+  responseSchema: S;
+}): Promise<z.infer<S> | null> {
   const detected = americanisms.findAmericanisms({ [sectionKey]: content });
   const sectionIssues =
     detected.find((d) => d.section === sectionKey)?.issues ?? [];
