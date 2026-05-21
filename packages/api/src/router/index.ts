@@ -4,6 +4,7 @@ import { analyticsRouter } from "./analytics";
 import { appRouter } from "./app";
 import { authRouter } from "./auth";
 import { cloudinaryRouter } from "./cloudinary";
+import { debugRouter } from "./debug";
 import { exportsRouter } from "./exports";
 import { healthRouter } from "./health";
 import { lessonRouter } from "./lesson";
@@ -22,6 +23,7 @@ export const oakAppRouter = router({
   subjectsAndKeyStages: subjectAndKeyStagesRouter,
   lessonSummary: lessonSummaryRouter,
   cloudinaryRouter: cloudinaryRouter,
+  debug: debugRouter,
   exports: exportsRouter,
   moderations: moderationsRouter,
   health: healthRouter,
