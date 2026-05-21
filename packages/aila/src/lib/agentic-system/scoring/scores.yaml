@@ -1,12 +1,13 @@
-codeHash: f2828a473ab5e0323850957514faac4583d35776d3561283cda0be31d538465b
-generated: 2026-05-21T11:45:58.629Z
+codeHash: 19f299a0dec55977d6c826af38f02fb8cac6b66c642163d573f2684710e7c0db
+generated: 2026-05-21T12:48:46.209Z
 runsPerScenario: 3
 summary:
   full-lesson:
     plan-groupings:
       pass: 3
     additional-materials-tone:
-      skip: 3
+      skip: 2
+      pass: 1
     cycle-verbosity:
       pass: 3
     keyword-casing:
