@@ -1,3 +1,5 @@
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
+
 import type { LessonPlanDocInputData } from "../schema/input.schema";
 import type { LessonPlanDocsTemplateData } from "../schema/lessonPlanDocsTemplate.schema";
 import {
@@ -22,7 +24,7 @@ export async function prepLessonPlanForDocs(
   return Promise.resolve({
     lesson_title: lessonPlan.title,
     subject: lessonPlan.subject,
-    key_stage: camelCaseToTitleCase(lessonPlan.keyStage) ?? "",
+    key_stage: keyStageToSentenceCase(lessonPlan.keyStage ?? ""),
     topic: lessonPlan.topic ?? " ",
     learning_outcome: lessonPlan.learningOutcome ?? " ",
     learning_cycle_outcome_1: lessonPlan.learningCycles?.[0]
