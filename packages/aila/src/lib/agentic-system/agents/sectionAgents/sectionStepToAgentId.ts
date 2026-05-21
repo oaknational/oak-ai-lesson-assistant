@@ -34,17 +34,12 @@ export function sectionStepToAgentId(
   },
 ): SectionAgentId {
   const { sectionKey } = sectionStep;
-  console.log("Determining agent for sectionKey:", sectionKey);
-  console.log("Props:", props.config.mathsQuizEnabled, props.document.subject);
 
   if (
     (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") &&
     props.config.mathsQuizEnabled &&
     props.document.subject === "maths"
   ) {
-    console.log(
-      `Using maths-specific agent for section ${sectionKey} because mathsQuizEnabled is true and subject is maths`,
-    );
     return `${sectionKey}--maths`;
   }
 
