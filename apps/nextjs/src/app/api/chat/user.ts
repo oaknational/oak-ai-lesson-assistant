@@ -1,10 +1,8 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import {
-  UserBannedError,
-  demoUsers,
-  scheduleRateLimitNotification,
-} from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { scheduleRateLimitNotification } from "@oakai/core/src/backgroundTasks";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { startSpan } from "@oakai/core/src/tracing";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";

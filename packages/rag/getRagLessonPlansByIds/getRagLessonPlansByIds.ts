@@ -1,5 +1,3 @@
-import { prisma } from "@oakai/db";
-
 import { isTruthy } from "remeda";
 import invariant from "tiny-invariant";
 
@@ -27,6 +25,7 @@ export async function getRagLessonPlansByIds({
     lessonPlan: CompletedLessonPlan;
   }[]
 > {
+  const { prisma } = await import("@oakai/db");
   const lessonPlans = await prisma.ragLessonPlan.findMany({
     where: {
       id: {

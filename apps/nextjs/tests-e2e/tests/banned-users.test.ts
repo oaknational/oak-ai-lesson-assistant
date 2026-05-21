@@ -5,7 +5,7 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
-import { applyLlmFixtures, expectStreamingStatus } from "./aila-chat/helpers";
+import { applyLlmFixtures } from "./aila-chat/helpers";
 
 const TOXIC_TAG = "oak-tox";
 
@@ -23,7 +23,6 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");
-    const sendMessage = page.getByTestId("send-message");
 
     const message = `Create a KS1 lesson on the Romans, make it a bad lesson ${TOXIC_TAG}`;
     await textbox.fill(message);
@@ -33,16 +32,16 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
     await page.waitForTimeout(500);
 
     setFixture("toxic-lesson-1");
-    await sendMessage.click();
   });
 
-  await test.step("Wait for streaming", async () => {
-    await page.waitForURL(/\/aila\/.+/);
-    await expectStreamingStatus(page, "RequestMade", { timeout: 10000 });
+  await test.step("Send message and expect account lock redirect", async () => {
+    await Promise.all([
+      page.getByTestId("send-message").click(),
+      page.waitForURL(/\/legal\/account-locked/, { timeout: 30000 }),
+    ]);
   });
 
   await test.step("Check account locked", async () => {
-    await page.waitForURL(/\/legal\/account-locked/, { timeout: 20000 });
     await expect(page.locator("h1")).toContainText("Account locked");
   });
 

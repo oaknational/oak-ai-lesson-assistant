@@ -1,6 +1,6 @@
 import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
-import { UserBannedError, scheduleModerationNotification } from "@oakai/core";
-import type * as OakCore from "@oakai/core";
+import { scheduleModerationNotification } from "@oakai/core/src/backgroundTasks";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { Moderation } from "@prisma/client";
@@ -11,15 +11,10 @@ jest.mock("@oakai/db", () => ({
   prisma: {},
 }));
 
-jest.mock("@oakai/core", () => {
-  const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
-
-  return {
-    ...actualCore,
-    scheduleModerationNotification: jest.fn(),
-    scheduleThreatDetectionAilaNotification: jest.fn(),
-  };
-});
+jest.mock("@oakai/core/src/backgroundTasks", () => ({
+  scheduleModerationNotification: jest.fn(),
+  scheduleThreatDetectionAilaNotification: jest.fn(),
+}));
 
 describe("webActionsPlugin", () => {
   describe("onToxicModeration", () => {

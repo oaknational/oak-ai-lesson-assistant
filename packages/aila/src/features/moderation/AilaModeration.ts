@@ -206,6 +206,11 @@ export class AilaModeration implements AilaModerationFeature {
     }
 
     const contentString = JSON.stringify(content);
+    if (!contentString || contentString === "{}") {
+      log.info("Skipping moderation - document content is empty");
+      return { categories: [] };
+    }
+
     const moderationContext = {
       sessionId: this._aila.chatId,
       messageId,

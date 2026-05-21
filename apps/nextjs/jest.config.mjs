@@ -34,6 +34,9 @@ const config = {
     "^@/storybook/(.*)$": "<rootDir>/.storybook/$1",
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
     "^@/ai-apps/(.*)$": "<rootDir>/src/ai-apps/$1",
+    "^@oakai/test-support$": "<rootDir>/../../packages/test-support/index.cjs",
+    "^@oakai/test-support/jest$":
+      "<rootDir>/../../packages/test-support/jest.cjs",
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   testMatch: ["**/*.test.ts", "**/*.test.tsx"],

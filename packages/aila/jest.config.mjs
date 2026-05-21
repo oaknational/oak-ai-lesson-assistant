@@ -11,6 +11,8 @@ const tsconfig = JSON.parse(
 const moduleNameMapper = Object.assign(
   pathsToModuleNameMapper(tsconfig.compilerOptions.paths, { prefix: "<rootDir>/" }),
   {
+    "^@oakai/test-support$": "<rootDir>/../test-support/index.cjs",
+    "^@oakai/test-support/jest$": "<rootDir>/../test-support/jest.cjs",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   }
 );
@@ -39,7 +41,7 @@ const config = {
   coverageReporters: ["lcov", "text"],
   collectCoverageFrom: ["src/**/*.{ts,tsx,js,jsx}"],
   coverageDirectory: "coverage",
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.cjs"],
 };
 
 export default config;

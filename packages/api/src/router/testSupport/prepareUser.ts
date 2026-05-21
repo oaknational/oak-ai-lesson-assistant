@@ -48,6 +48,16 @@ const findOrCreateUser = async (
   if (existingUser) {
     if (existingUser.banned) {
       await client.users.unbanUser(existingUser.id);
+      const startedAt = Date.now();
+      let user = await client.users.getUser(existingUser.id);
+      while (user.banned && Date.now() - startedAt < 5000) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        user = await client.users.getUser(existingUser.id);
+      }
+      if (user.banned) {
+        throw new Error(`Failed to unban test user ${existingUser.id}`);
+      }
+      return user;
     }
     return existingUser;
   }
