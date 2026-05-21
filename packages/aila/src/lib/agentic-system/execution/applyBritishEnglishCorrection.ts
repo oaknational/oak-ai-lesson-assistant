@@ -80,5 +80,10 @@ export async function applyBritishEnglishCorrection<S extends z.ZodTypeAny>({
     return null;
   }
 
+  // `z.infer<S>` resolves to `any` inside this function because `S extends
+  // z.ZodTypeAny` widens S to `ZodType<any, any, any>` from TS's view of the
+  // body. The Zod safeParse above has already validated the shape against the
+  // schema, so this is safe at runtime
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return parsed.data;
 }
