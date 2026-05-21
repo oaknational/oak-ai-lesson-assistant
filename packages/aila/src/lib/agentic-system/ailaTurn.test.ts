@@ -109,6 +109,111 @@ describe("ailaTurn", () => {
     });
   });
 
+  it("emits the corrected section content when the corrector fires", async () => {
+    const callbacks = createCallbacks();
+    const britishEnglishCorrectorAgent = jest.fn().mockResolvedValue({
+      error: null,
+      data: "Introduction to colour theory",
+    });
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the title",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "title",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "title--default": {
+          id: "title--default",
+          description: "title",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "Introduction to color theory",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+      britishEnglishCorrectorAgent,
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(britishEnglishCorrectorAgent).toHaveBeenCalledTimes(1);
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: { attempted: ["title"], notNeeded: [], failed: [] },
+    });
+    expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "add", path: "/title", value: "Introduction to colour theory" },
+    ]);
+  });
+
+  it("emits the original section content when the corrector fails", async () => {
+    const callbacks = createCallbacks();
+    const britishEnglishCorrectorAgent = jest
+      .fn()
+      .mockResolvedValue({ error: { message: "corrector failed" } });
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the title",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "title",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "title--default": {
+          id: "title--default",
+          description: "title",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "Introduction to color theory",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+      britishEnglishCorrectorAgent,
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(britishEnglishCorrectorAgent).toHaveBeenCalledTimes(1);
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: {
+        attempted: ["title"],
+        notNeeded: [],
+        failed: [{ sectionKey: "title", reason: "errored" }],
+      },
+    });
+    expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "add", path: "/title", value: "Introduction to color theory" },
+    ]);
+  });
+
   it("hard-fails when the planner fails", async () => {
     const callbacks = createCallbacks();
     const runtime = createRuntime({
