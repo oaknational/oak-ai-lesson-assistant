@@ -1,18 +1,12 @@
-import { scheduleRateLimitNotification } from "@oakai/core";
-import type * as OakCore from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { scheduleRateLimitNotification } from "@oakai/core/src/backgroundTasks";
 import { RateLimitExceededError } from "@oakai/core/src/utils/rateLimiting/errors";
 
 import { reportRateLimitError } from "./user";
 
-jest.mock("@oakai/core", () => {
-  const actualCore = jest.requireActual<typeof OakCore>("@oakai/core");
-
-  return {
-    ...actualCore,
-    scheduleRateLimitNotification: jest.fn(),
-  };
-});
+jest.mock("@oakai/core/src/backgroundTasks", () => ({
+  scheduleRateLimitNotification: jest.fn(),
+}));
 
 describe("chat route user functions", () => {
   describe("reportRateLimitError", () => {
