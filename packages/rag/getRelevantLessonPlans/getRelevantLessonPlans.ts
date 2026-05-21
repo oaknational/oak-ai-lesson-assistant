@@ -1,4 +1,3 @@
-import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 // import { CohereClient } from "cohere-ai";
@@ -29,6 +28,7 @@ export async function getRelevantLessonPlans({
   const queryVector = await getEmbedding({ text: title, openai });
 
   log.info(`Searching vector database for lesson plans`);
+  const { prisma } = await import("@oakai/db");
   const vectorSearchResults = await vectorSearch({
     prisma,
     log,

@@ -1,6 +1,6 @@
-import { demoUsers } from "@oakai/core";
 import { createHubspotCustomer } from "@oakai/core/src/analytics/hubspotClient";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";

@@ -1,4 +1,3 @@
-import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import OpenAI from "openai";
@@ -63,6 +62,7 @@ export class PostgresQuizSearchService {
       const queryEmbedding = await this.createEmbedding(query);
       const queryVectorString = `[${queryEmbedding.join(",")}]`;
 
+      const { prisma } = await import("@oakai/db");
       const rows = await prisma.$queryRaw<SearchRow[]>`
         SELECT
           question_uid,

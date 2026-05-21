@@ -4,12 +4,7 @@ import type {
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
 import { aiLogger } from "@oakai/logger";
-import {
-  getRagLessonPlansByIds,
-  getRelevantLessonPlans,
-  parseKeyStagesForRagSearch,
-  parseSubjectsForRagSearch,
-} from "@oakai/rag";
+import type { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
@@ -288,13 +283,17 @@ export class AilaStreamHandler {
       controller: this._controller!,
     });
 
-    const relevantLessonsPopulated = this._chat.relevantLessons
-      ? await getRagLessonPlansByIds({
-          lessonPlanIds: this._chat.relevantLessons.map(
-            (lesson) => lesson.lessonPlanId,
-          ),
-        })
-      : [];
+    let relevantLessonsPopulated: Awaited<
+      ReturnType<typeof getRagLessonPlansByIds>
+    > = [];
+    if (this._chat.relevantLessons) {
+      const { getRagLessonPlansByIds } = await import("@oakai/rag");
+      relevantLessonsPopulated = await getRagLessonPlansByIds({
+        lessonPlanIds: this._chat.relevantLessons.map(
+          (lesson) => lesson.lessonPlanId,
+        ),
+      });
+    }
 
     return await ailaTurn({
       callbacks: ailaTurnCallbacks,
@@ -379,6 +378,11 @@ export class AilaStreamHandler {
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
+          const {
+            getRelevantLessonPlans,
+            parseKeyStagesForRagSearch,
+            parseSubjectsForRagSearch,
+          } = await import("@oakai/rag");
           const subjectSlugs = parseSubjectsForRagSearch(subject);
           const keyStageSlugs = parseKeyStagesForRagSearch(keyStage);
           const relevantLessons = await getRelevantLessonPlans({

@@ -6,13 +6,17 @@ import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categor
 import { NextRequest } from "next/server";
 
 import { handleChatPostRequest } from "./chatHandler";
-import type { Config } from "./config";
+import type { Config } from "./configTypes";
 
 const chatId = "test-chat-id";
 const userId = "test-user-id";
 
 jest.mock("./user", () => ({
   fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
+}));
+
+jest.mock("@oakai/db", () => ({
+  prisma: {},
 }));
 
 // Mock the serverSideFeatureFlag module

@@ -31,7 +31,7 @@ import { z } from "zod";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import type { Config } from "./config";
+import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,

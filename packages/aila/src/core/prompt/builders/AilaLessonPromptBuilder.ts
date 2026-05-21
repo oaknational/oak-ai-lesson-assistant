@@ -2,9 +2,7 @@ import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBe
 import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
-import { getRelevantLessonPlans, parseSubjectsForRagSearch } from "@oakai/rag";
 
 import { omit } from "remeda";
 
@@ -48,7 +46,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     if (!basedOnId) {
       return;
     }
-    const plan = await fetchLessonPlan({ id: basedOnId, prisma: globalPrisma });
+    const { prisma } = await import("@oakai/db/client");
+    const plan = await fetchLessonPlan({ id: basedOnId, prisma });
     if (plan) {
       return plan;
     }
@@ -94,6 +93,8 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
     if (newRagEnabled) {
       log.info("Using new RAG schema");
+      const { getRelevantLessonPlans, parseSubjectsForRagSearch } =
+        await import("@oakai/rag");
 
       const keyStageSlugs = keyStage ? [parseKeyStage(keyStage)] : null;
       const subjectSlugs = subject ? parseSubjectsForRagSearch(subject) : null;
@@ -122,6 +123,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
     let relevantLessonPlans: RagLessonPlan[] = [];
     await tryWithErrorReporting(async () => {
+      const { prisma } = await import("@oakai/db/client");
       relevantLessonPlans = await fetchRagContent({
         title: title ?? "unknown",
         subject,
@@ -131,7 +133,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         k:
           this._aila?.options.numberOfRecordsInRag ??
           DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-        prisma: globalPrisma,
+        prisma,
         chatId,
         userId,
       });

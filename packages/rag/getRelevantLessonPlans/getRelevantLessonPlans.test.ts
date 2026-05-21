@@ -4,8 +4,6 @@
  * it's a signal that the RAG logic has changed.
  * In this case, the new functionality should be tested and the snapshots updated.
  */
-import { prisma } from "@oakai/db";
-
 // import OpenAI from "openai";
 import ragFixtures from "../fixtures.json";
 
@@ -17,6 +15,8 @@ async function pgVectorSearch({
   vector: number[];
   limit?: number;
 }): Promise<unknown> {
+  const { prisma } = await import("@oakai/db");
+
   const prismaResult = await prisma.$queryRaw`
       SELECT
         lesson_plan_id,

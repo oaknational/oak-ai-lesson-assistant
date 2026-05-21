@@ -142,6 +142,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.3",
     "@estruyf/github-actions-reporter": "^1.7.0",
+    "@oakai/test-support": "workspace:*",
     "@playwright/test": "^1.51.1",
     "@storybook/addon-docs": "^10.0.8",
     "@storybook/addon-links": "^10.0.8",
