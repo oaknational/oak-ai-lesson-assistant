@@ -10,6 +10,7 @@ import {
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
+import { validateSingleQuestion } from "../quizOperations/validateSingleQuestion";
 import {
   type PlanStep,
   type StructuralQuizIntent,
@@ -150,6 +151,7 @@ async function executeQuizDispatchStep(
       if (agentResult.error) return null;
       const quizResult = LatestQuizSchema.safeParse(agentResult.data);
       if (!quizResult.success) return null;
+      if (!validateSingleQuestion(quizResult.data.questions[0])) return null;
       return quizResult.data.questions[0] ?? null;
     },
   );
