@@ -2,6 +2,8 @@ import { Flex } from "@radix-ui/themes";
 
 import { useDemoLocking } from "@/hooks/useDemoLocking";
 
+import { DebugOverlay } from "./DebugOverlay";
+import { StreamingStatusTestHook } from "./StreamingStatusTestHook";
 import ChatLhsHeader from "./chat-lhs-header";
 import { ChatList } from "./chat-list";
 import { ChatPanel } from "./chat-panel";
@@ -18,6 +20,7 @@ const ChatLeftHandSide = ({
   setShowLessonMobile,
 }: Readonly<ChatLeftHandSideProps>) => {
   const isDemoLocked = useDemoLocking();
+  const showDebugState = process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd";
 
   return (
     <Flex
@@ -30,8 +33,13 @@ const ChatLeftHandSide = ({
       <ChatLhsHeader
         setShowLessonMobile={setShowLessonMobile}
         showLessonMobile={showLessonMobile}
-        showStreamingStatus={process.env.NEXT_PUBLIC_ENVIRONMENT !== "prd"}
       />
+      {showDebugState && (
+        <>
+          <StreamingStatusTestHook />
+          <DebugOverlay />
+        </>
+      )}
       <div>
         <ChatPanelArea isDemoLocked={isDemoLocked}>
           <ChatList
