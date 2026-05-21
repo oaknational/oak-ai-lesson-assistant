@@ -19,6 +19,7 @@ import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/planne
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
+import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
 import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
@@ -65,7 +66,20 @@ export class AilaStreamHandler {
       start: (controller) => {
         this.stream(controller, abortController).catch((error) => {
           log.error("Error in stream:", error);
-          controller.error(error);
+          try {
+            controller.error(error);
+          } catch (e) {
+            if (
+              e instanceof TypeError &&
+              (e as NodeJS.ErrnoException).code === "ERR_INVALID_STATE"
+            ) {
+              log.info(
+                "Controller already terminated before error could be signalled",
+              );
+            } else {
+              throw e;
+            }
+          }
         });
       },
     });
@@ -187,6 +201,9 @@ export class AilaStreamHandler {
         await this.span("read-from-stream", async () => {
           await this.readFromStream(abortController);
         });
+        if (abortController?.signal.aborted) {
+          skipCompletion = true;
+        }
       }
 
       log.info(
@@ -195,6 +212,22 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
+      if (this._chat.aila.options.useAgenticAila) {
+        agenticTurnOutcome = {
+          status: "failed",
+          correctorStats: createEmptyCorrectorStats(),
+        };
+        // ailaTurn threw rather than returning; its internal failure path never
+        // completed, so the client has not received an error message.
+        await this._chat.enqueue({
+          type: "error",
+          value: "Something went wrong. Please try sending your message again.",
+        });
+      } else if (this._chat.generation) {
+        // Sets status → FAILED so the finally block skips complete() (and moderation).
+        skipCompletion = true;
+        await this._chat.generationFailed(e);
+      }
       log.info("Caught error in stream", {
         error: e,
         type: e?.constructor?.name,
