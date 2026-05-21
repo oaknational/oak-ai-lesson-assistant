@@ -16,6 +16,8 @@ import {
   useLessonPlanActions,
   useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
+
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
@@ -200,7 +202,7 @@ export const LessonPlanDisplay = ({
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
-                {slugToSentenceCase(lessonPlan.keyStage ?? "")}
+                {keyStageToSentenceCase(lessonPlan.keyStage ?? "")}
               </Text>
             )}
             <span>•</span>

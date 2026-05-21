@@ -36,7 +36,7 @@ function makeBaseLessonPlan(
   return {
     title: "Test Lesson",
     subject: "science",
-    keyStage: "keyStage3",
+    keyStage: "ks3",
     topic: "Forces",
     learningOutcome: "Understand Newton's laws",
     learningCycles: ["Cycle 1 outcome", "Cycle 2 outcome", "Cycle 3 outcome"],
@@ -66,7 +66,7 @@ describe("prepLessonPlanForDocs", () => {
 
     expect(result.lesson_title).toBe("Test Lesson");
     expect(result.subject).toBe("science");
-    expect(result.key_stage).toBe("Key Stage3");
+    expect(result.key_stage).toBe("Key stage 3");
     expect(result.topic).toBe("Forces");
     expect(result.learning_outcome).toBe("Understand Newton's laws");
   });

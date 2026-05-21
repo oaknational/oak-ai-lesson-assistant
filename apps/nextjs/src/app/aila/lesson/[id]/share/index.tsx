@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 
@@ -40,7 +40,7 @@ export default function ShareChat({
   }, [userHasCopiedLink, setUserHasCopiedLink]);
 
   const keyStageSubjectTuple = [
-    slugToSentenceCase(parseKeyStage(lessonPlan.keyStage ?? "")),
+    keyStageToSentenceCase(lessonPlan.keyStage ?? ""),
     slugToSentenceCase(lessonPlan.subject ?? ""),
   ].filter(Boolean);
 

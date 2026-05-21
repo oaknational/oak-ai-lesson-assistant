@@ -1,3 +1,5 @@
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
+
 import type { AdditionalMaterialsTemplateData } from "../schema/additionalMaterialsDoc.schema";
 import type { LessonSlidesInputData } from "../schema/input.schema";
 import type { LessonSlidesTemplateData } from "../schema/lessonSlidesTemplate.schema";
@@ -66,7 +68,7 @@ export async function prepLessonForSlides(
     lesson_title: data.title,
     topic_title: data.topic ?? "",
     subject_title: camelCaseToTitleCase(data.subject),
-    key_stage_title: camelCaseToTitleCase(data.keyStage),
+    key_stage_title: keyStageToSentenceCase(data.keyStage ?? ""),
     learning_outcomes: data.learningOutcome,
     keywords: keywords,
     keyword_sentences: keyword_sentences,
