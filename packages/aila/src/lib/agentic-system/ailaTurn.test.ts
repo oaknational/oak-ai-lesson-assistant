@@ -228,7 +228,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: [],
     });
@@ -275,7 +275,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: ["subject"],
     });
@@ -336,7 +336,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -395,7 +395,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -437,7 +437,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalled();
   });
@@ -455,7 +455,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
@@ -501,7 +501,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "failed" }));
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(sectionHandler).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
@@ -551,7 +551,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
+    expect(outcome).toMatchObject({ status: "success" });
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -608,7 +608,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
+    expect(outcome).toMatchObject({ status: "success" });
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -673,7 +673,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual(expect.objectContaining({ status: "success" }));
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
         {

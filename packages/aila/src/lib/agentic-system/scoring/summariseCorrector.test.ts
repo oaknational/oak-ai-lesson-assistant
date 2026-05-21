@@ -9,7 +9,7 @@ const STARTER_QUIZ: SectionKey = "starterQuiz";
 
 const empty: CorrectorStats = { attempted: [], notNeeded: [], failed: [] };
 
-describe("summariseCorrector — unit", () => {
+describe("summariseCorrector (counts and rates)", () => {
   it("returns zeros and 0.0% rates when given no runs", () => {
     expect(summariseCorrector([])).toEqual({
       corrections_attempted: 0,
@@ -100,7 +100,7 @@ describe("summariseCorrector — unit", () => {
   });
 });
 
-describe("summariseCorrector — multi-run aggregation (harness integration shape)", () => {
+describe("summariseCorrector (multi-run aggregation)", () => {
   it("flattens stats across multiple runs of a scenario into one summary", () => {
     const runs: CorrectorStats[] = [
       // Run 1: clean except for one cycle1 fire
@@ -150,7 +150,7 @@ describe("summariseCorrector — multi-run aggregation (harness integration shap
     });
   });
 
-  it("produces a YAML-ready shape — keys, types, and rate string format", () => {
+  it("produces a YAML-ready shape", () => {
     const summary = summariseCorrector([
       {
         attempted: [STARTER_QUIZ],
