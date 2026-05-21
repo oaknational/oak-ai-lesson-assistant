@@ -1,15 +1,12 @@
-import {
-  UserBannedError,
-  SafetyViolations as defaultSafetyViolations,
-  ThreatDetections as defaultThreatDetections,
-  scheduleThreatDetectionAilaNotification,
-} from "@oakai/core";
+import { scheduleThreatDetectionAilaNotification } from "@oakai/core/src/backgroundTasks";
+import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { ThreatDetections as defaultThreatDetections } from "@oakai/core/src/models/threatDetections";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type {
@@ -36,7 +33,7 @@ export async function handleThreatDetectionResult(
     chatId,
     threatDetection,
     messages,
-    prisma = globalPrisma,
+    prisma,
   }: {
     userId: string;
     chatId: string;
@@ -81,11 +78,13 @@ export async function handleThreatDetectionResult(
     log.error("Failed to schedule threat detection notification", { error: e });
   }
 
+  const prismaClient = prisma ?? (await import("@oakai/db")).prisma;
+
   const action = await recordThreatDetectionSafetyViolation({
     userId,
     chatId,
     messages,
-    prisma,
+    prisma: prismaClient,
     threatDetection,
     SafetyViolations,
     ThreatDetections,

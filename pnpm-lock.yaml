@@ -395,6 +395,9 @@ importers:
       '@estruyf/github-actions-reporter':
         specifier: ^1.7.0
         version: 1.7.0(@playwright/test@1.51.1)
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../../packages/test-support
       '@playwright/test':
         specifier: ^1.51.1
         version: 1.51.1
@@ -567,6 +570,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@pollyjs/adapter-fetch':
         specifier: ^6.0.6
         version: 6.0.6
@@ -655,6 +661,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/archiver':
         specifier: ^6.0.3
         version: 6.0.3
@@ -761,6 +770,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -937,6 +949,9 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
     devDependencies:
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -977,6 +992,9 @@ importers:
       '@oakai/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1023,6 +1041,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1091,6 +1112,9 @@ importers:
         specifier: 3.25.76
         version: 3.25.76
     devDependencies:
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1143,6 +1167,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@oakai/test-support':
+        specifier: workspace:*
+        version: link:../test-support
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -1155,6 +1182,19 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+
+  packages/test-support:
+    dependencies:
+      '@oakai/logger':
+        specifier: workspace:*
+        version: link:../logger
+    devDependencies:
+      '@oakai/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@oakai/prettier-config':
+        specifier: workspace:*
+        version: link:../prettier-config
 
 packages:
 

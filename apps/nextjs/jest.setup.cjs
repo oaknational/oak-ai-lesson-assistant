@@ -1,4 +1,9 @@
 require("@testing-library/jest-dom");
+require("@oakai/test-support/jest");
+
+jest.mock("@oakai/logger", () =>
+  require("@oakai/test-support").mockOakLoggerModule(),
+);
 
 process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 

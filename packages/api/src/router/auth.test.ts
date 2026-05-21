@@ -1,5 +1,5 @@
-import { demoUsers } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
 import { aiLogger } from "@oakai/logger";
 
 import { clerkClient } from "@clerk/nextjs/server";
@@ -7,7 +7,7 @@ import * as Sentry from "@sentry/node";
 
 import { authRouter } from "./auth";
 
-jest.mock("@oakai/core", () => ({
+jest.mock("@oakai/core/src/models/demoUsers", () => ({
   demoUsers: {
     isDemoStatusSet: jest.fn(),
     getUserRegion: jest.fn(),
