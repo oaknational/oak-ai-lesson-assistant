@@ -69,7 +69,7 @@ const exactKeyStageMap: Record<string, KeyStageSlug> = {
 export function parseKeyStage(maybeKeyStage: string): string {
   const strippedMaybeKeyStage = maybeKeyStage
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, "_");
+    .replaceAll(/[^a-z0-9]/g, "_");
 
   // Check for exact matches first
   const exactMatch = exactKeyStageMap[strippedMaybeKeyStage];

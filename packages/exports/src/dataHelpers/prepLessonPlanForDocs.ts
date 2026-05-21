@@ -3,7 +3,6 @@ import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
 import type { LessonPlanDocInputData } from "../schema/input.schema";
 import type { LessonPlanDocsTemplateData } from "../schema/lessonPlanDocsTemplate.schema";
 import {
-  camelCaseToTitleCase,
   formatLegacyQuestionForDoc,
   formatQuestionForDoc,
   stringOrBullets,
