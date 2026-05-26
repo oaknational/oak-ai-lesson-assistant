@@ -1,5 +1,4 @@
 // cspell:words etcpasswd windowssystem Mathmatiques Mathématiques lait
-
 import { sanitizeFilename, truncateFilename } from "./sanitizeFilename";
 
 describe("sanitizeFilename", () => {
