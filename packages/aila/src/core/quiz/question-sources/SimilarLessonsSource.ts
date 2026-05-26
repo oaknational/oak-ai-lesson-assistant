@@ -7,7 +7,7 @@ import type {
 } from "../../../protocol/schema";
 import type { QuestionSource, QuizQuestionPool } from "../interfaces";
 import type { Task } from "../reporting";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
+import type { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 const log = aiLogger("aila:quiz");
 
@@ -29,11 +29,10 @@ export class SimilarLessonsSource implements QuestionSource {
   private maxLessons: number;
 
   constructor(
-    retrievalService?: QuizQuestionRetrievalService,
+    retrievalService: QuizQuestionRetrievalService,
     maxLessons: number = MAX_SIMILAR_LESSONS,
   ) {
-    this.retrievalService =
-      retrievalService ?? new QuizQuestionRetrievalService();
+    this.retrievalService = retrievalService;
     this.maxLessons = maxLessons;
   }
 

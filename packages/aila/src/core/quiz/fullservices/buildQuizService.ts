@@ -1,3 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 /**
  * Quiz Generation Pipeline Factory
  *
@@ -40,15 +42,23 @@ import type {
   QuizBuilderSettings,
   QuizComposerType,
 } from "../schema";
+import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
-function createSource(type: QuestionSourceType): QuestionSource {
+type QuizServiceDeps = {
+  prisma: PrismaClientWithAccelerate;
+};
+
+function createSource(
+  type: QuestionSourceType,
+  { prisma }: QuizServiceDeps,
+): QuestionSource {
   switch (type) {
     case "similarLessons":
-      return new SimilarLessonsSource();
+      return new SimilarLessonsSource(new QuizQuestionRetrievalService(prisma));
     case "basedOnLesson":
-      return new BasedOnLessonSource();
+      return new BasedOnLessonSource(new QuizQuestionRetrievalService(prisma));
     case "multiQuerySemantic":
-      return new MultiQuerySemanticSource();
+      return new MultiQuerySemanticSource({ prisma });
     case "currentQuiz":
       return new CurrentQuizSource();
   }
@@ -136,8 +146,11 @@ async function buildQuiz(
   return { quiz, note };
 }
 
-export function buildQuizService(settings: QuizBuilderSettings): QuizService {
-  const sources = settings.sources.map(createSource);
+export function buildQuizService(
+  settings: QuizBuilderSettings,
+  deps: QuizServiceDeps,
+): QuizService {
+  const sources = settings.sources.map((source) => createSource(source, deps));
   const enrichers = settings.enrichers.map(createEnricher);
   const composer = createComposer(settings.composer);
 

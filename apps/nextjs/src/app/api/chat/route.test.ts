@@ -15,10 +15,6 @@ jest.mock("./user", () => ({
   fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
 }));
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 // Mock the serverSideFeatureFlag module
 jest.mock("@/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
@@ -57,6 +53,7 @@ describe("Chat API Route", () => {
         .mockImplementation(
           async (options: Partial<AilaInitializationOptions>) => {
             const ailaConfig: AilaInitializationOptions = {
+              prisma: options.prisma!,
               options: {
                 usePersistence: false,
                 useRag: false,
@@ -85,6 +82,16 @@ describe("Chat API Route", () => {
         appSession: {
           findUnique: jest.fn().mockResolvedValue(null),
           update: jest.fn(),
+        },
+        prompt: {
+          findFirst: jest.fn().mockResolvedValue({ id: "prompt_1" }),
+        },
+        lessonSchema: {
+          findFirst: jest.fn().mockResolvedValue({ id: "lesson_schema_1" }),
+          create: jest.fn(),
+        },
+        lessonSnapshot: {
+          create: jest.fn().mockResolvedValue({ id: "lesson_snapshot_1" }),
         },
       } as unknown as Config["prisma"],
     };

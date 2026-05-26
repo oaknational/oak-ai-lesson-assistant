@@ -318,6 +318,7 @@ async function createAilaInstance({
     { chat_id: chatId, user_id: userId },
     async (): Promise<Aila> => {
       const ailaOptions: Partial<AilaInitializationOptions> = {
+        prisma: config.prisma,
         options,
         chat: {
           id: chatId,
@@ -328,7 +329,8 @@ async function createAilaInstance({
           chatLlmService: llmService,
           moderationAiClient,
           oakModerator,
-          ragService: (aila: AilaServices) => new AilaRag({ aila }),
+          ragService: (aila: AilaServices) =>
+            new AilaRag({ aila, prisma: config.prisma }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
             new PosthogAnalyticsAdapter(aila),

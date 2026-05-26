@@ -5,6 +5,7 @@ import {
   isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/safetyResult";
+import { prisma } from "@oakai/db/client";
 
 import type { User } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -58,7 +59,7 @@ export default async function SharePage({ params }: Readonly<SharePageProps>) {
   const { firstName, lastName } = user;
   const creatorsName = firstName && lastName && `${firstName + " " + lastName}`;
 
-  const moderations = await getSessionModerations(id);
+  const moderations = await getSessionModerations(id, prisma);
 
   if (moderations.some((m) => isToxic(m) || isHighlySensitive(m))) {
     return notFound();

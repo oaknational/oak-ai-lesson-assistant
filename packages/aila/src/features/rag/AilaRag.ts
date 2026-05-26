@@ -1,6 +1,5 @@
 import { RAG } from "@oakai/core/src/rag";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import type { AilaRagFeature } from ".";
@@ -21,10 +20,10 @@ export class AilaRag implements AilaRagFeature {
     prisma,
   }: {
     aila: AilaServices;
-    prisma?: PrismaClientWithAccelerate;
+    prisma: PrismaClientWithAccelerate;
   }) {
     this._aila = aila;
-    this._prisma = prisma ?? globalPrisma;
+    this._prisma = prisma;
     this._rag = new RAG(this._prisma, {
       userId: aila.userId,
       chatId: aila.chatId,

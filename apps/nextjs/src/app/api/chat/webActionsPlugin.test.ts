@@ -7,10 +7,6 @@ import type { Moderation } from "@prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 jest.mock("@oakai/core/src/backgroundTasks", () => ({
   scheduleModerationNotification: jest.fn(),
   scheduleThreatDetectionAilaNotification: jest.fn(),
