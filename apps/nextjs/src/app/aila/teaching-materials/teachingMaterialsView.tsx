@@ -15,6 +15,7 @@ import StepOne from "@/components/AppComponents/TeachingMaterials/StepLayouts/St
 import StepThree from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepThree";
 import StepTwo from "@/components/AppComponents/TeachingMaterials/StepLayouts/StepTwo";
 import { handleDialogSelection } from "@/components/AppComponents/TeachingMaterials/StepLayouts/helpers";
+import { TeachingMaterialsLockingModerationModal } from "@/components/AppComponents/TeachingMaterials/TeachingMaterialsLockingModeration";
 import DialogContents from "@/components/DialogControl/DialogContents";
 import { DialogRoot } from "@/components/DialogControl/DialogRoot";
 import { OakMathJaxContext } from "@/components/MathJax";
@@ -26,6 +27,7 @@ import {
 } from "@/stores/TeachingMaterialsStoreProvider";
 import {
   docTypeSelector,
+  moderationSelector,
   pageDataSelector,
   stepNumberSelector,
   threatDetectionSelector,
@@ -50,9 +52,11 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const stepNumber = useTeachingMaterialsStore(stepNumberSelector);
   const pageData = useTeachingMaterialsStore(pageDataSelector);
   const threatDetected = useTeachingMaterialsStore(threatDetectionSelector);
+  const moderation = useTeachingMaterialsStore(moderationSelector);
 
   const docType = useTeachingMaterialsStore(docTypeSelector);
   const year = useTeachingMaterialsStore(yearSelector);
+
   const error = useTeachingMaterialsStore((state) => state.error);
   const lessonPlan = useTeachingMaterialsStore(
     (state) => state.pageData.lessonPlan,
@@ -106,14 +110,17 @@ const TeachingMaterialsViewInner: FC<TeachingMaterialsPageProps> = () => {
   const title = titleAreaContent?.[stepNumberParsed]?.title ?? "";
   const subTitle = titleAreaContent?.[stepNumberParsed]?.subTitle ?? "";
   return (
-    <ResourcesLayout
-      title={title}
-      subTitle={subTitle}
-      step={stepNumber + 1}
-      docTypeName={docTypeName}
-    >
-      {stepComponents[stepNumber]}
-    </ResourcesLayout>
+    <>
+      <TeachingMaterialsLockingModerationModal moderation={moderation} />
+      <ResourcesLayout
+        title={title}
+        subTitle={subTitle}
+        step={stepNumber + 1}
+        docTypeName={docTypeName}
+      >
+        {stepComponents[stepNumber]}
+      </ResourcesLayout>
+    </>
   );
 };
 

@@ -42,8 +42,9 @@ describe("QuizTracker", () => {
 
       await tracker.run(async (task) => {
         await task.child("generator", async (task) => {
-          await task.child("query-0", async (task) => {
+          await task.child("query-0", (task) => {
             task.addData({ query: "test query" });
+            return Promise.resolve();
           });
         });
       });
@@ -57,8 +58,8 @@ describe("QuizTracker", () => {
 
       await tracker.run(async (task) => {
         await Promise.all([
-          task.child("a", async () => {}),
-          task.child("b", async () => {}),
+          task.child("a", () => Promise.resolve()),
+          task.child("b", () => Promise.resolve()),
         ]);
       });
 
@@ -71,7 +72,7 @@ describe("QuizTracker", () => {
 
       await expect(
         tracker.run(async (task) => {
-          await task.child("failing", async () => {
+          await task.child("failing", () => {
             throw new Error("boom");
           });
         }),
@@ -152,8 +153,9 @@ describe("QuizTracker", () => {
         onUpdate: (snapshot) => updates.push(structuredClone(snapshot)),
       });
 
-      await tracker.run(async (task) => {
+      await tracker.run((task) => {
         task.addData({ foo: "bar" });
+        return Promise.resolve();
       });
 
       const dataUpdate = updates.find((u) => u.data.foo === "bar");
@@ -191,8 +193,9 @@ describe("QuizTracker", () => {
       const tracker = createQuizTracker({});
       let receivedId: string | undefined;
 
-      await tracker.run(async (task, reportId) => {
+      await tracker.run((task, reportId) => {
         receivedId = reportId;
+        return Promise.resolve();
       });
 
       expect(receivedId).toBeDefined();
@@ -215,8 +218,9 @@ describe("QuizTracker", () => {
       const tracker = createQuizTracker({});
       let callbackId: string | undefined;
 
-      await tracker.run(async (task, reportId) => {
+      await tracker.run((task, reportId) => {
         callbackId = reportId;
+        return Promise.resolve();
       });
 
       const report = tracker.getReport();

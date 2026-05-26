@@ -81,7 +81,7 @@ Generate a list of 1-${maxQueries} semantic search queries`;
     lessonPlan: PartialLessonPlan,
   ): string {
     if (quizType === "/starterQuiz") {
-      const priorKnowledge = lessonPlan.priorKnowledge || [];
+      const priorKnowledge = lessonPlan.priorKnowledge ?? [];
       const priorKnowledgeList =
         priorKnowledge.length > 0
           ? `\n\nPrior knowledge items to focus on:\n${priorKnowledge.map((item, i) => `${i + 1}. ${item}`).join("\n")}`
@@ -89,7 +89,7 @@ Generate a list of 1-${maxQueries} semantic search queries`;
 
       return `The purpose of the starter quiz is to assess the prior knowledge of the students, identify misconceptions, and reactivate prior knowledge. Please consider alignment with the "prior knowledge" section of the lesson plan.${priorKnowledgeList}`;
     } else if (quizType === "/exitQuiz") {
-      const keyLearningPoints = lessonPlan.keyLearningPoints || [];
+      const keyLearningPoints = lessonPlan.keyLearningPoints ?? [];
       const learningPointsList =
         keyLearningPoints.length > 0
           ? `\n\nKey learning points to focus on:\n${keyLearningPoints.map((item, i) => `${i + 1}. ${item}`).join("\n")}`

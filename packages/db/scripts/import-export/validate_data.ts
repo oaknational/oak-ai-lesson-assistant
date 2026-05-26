@@ -118,9 +118,7 @@ const validateCSV = (
           });
 
           for (const fk of Object.keys(foreignKeys)) {
-            if (!foreignKeyCheck[fk]) {
-              foreignKeyCheck[fk] = new Set();
-            }
+            foreignKeyCheck[fk] ??= new Set();
 
             if (row[fk]) {
               foreignKeyCheck[fk].add(row[fk]);

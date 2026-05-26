@@ -5,6 +5,24 @@ import { z } from "zod";
  * These can be used for validation and type inference in TRPC endpoints.
  */
 
+export const slideTypeSchema = z.enum([
+  "title",
+  "keywords",
+  "lessonOutcome",
+  "lessonOutline",
+  "summary",
+  "endOfLesson",
+  "teacher",
+  "copyright",
+  "checkForUnderstanding",
+  "explanation",
+  "practice",
+  "feedback",
+  "content",
+  "other",
+  "unknown",
+]);
+
 export const nonTextElementTypeSchema = z.enum([
   "shape",
   "image",
@@ -59,6 +77,13 @@ export const slideContentSchema = z.object({
     .array(z.string())
     .optional()
     .describe("Learning cycles covered on this slide"),
+  coversDiversity: z
+    .boolean()
+    .optional()
+    .describe("Whether the slide covers diversity topics"),
+  slideType: slideTypeSchema.describe(
+    "Classification of the slide's purpose/type",
+  ),
 });
 
 export const slideDeckContentSchema = z.object({

@@ -18,8 +18,6 @@ import EndOfLessonFeedback from "./ContentOptions/EndOfLessonFeedback";
 import ReportContentDialog from "./ContentOptions/ReportContentDialog";
 import ShareChatDialog from "./ContentOptions/ShareChatDialog";
 import AdditionalMaterialsError from "./ContentOptions/TeachingMaterialsError";
-import AdditionalMaterialsInappropriateContent from "./ContentOptions/TeachingMaterialsInappropriateContent";
-import AdditionalMaterialsModeration from "./ContentOptions/TeachingMaterialsModeration";
 import AdditionalMaterialsRateLimit from "./ContentOptions/TeachingMaterialsRateLimit";
 import AdditionalMaterialsStartAgain from "./ContentOptions/TeachingMaterialsStartAgain";
 import AdditionalMaterialsThreatDetected from "./ContentOptions/TeachingMaterialsThreatDetected";
@@ -61,10 +59,6 @@ const dialogTitlesAndIcons: Record<
     title: "Are you absolutely sure?",
     iconName: null,
   },
-  "teaching-materials-moderation": {
-    title: "",
-    iconName: null,
-  },
   "teaching-materials-threat-detected": {
     title: "",
     iconName: null,
@@ -72,11 +66,6 @@ const dialogTitlesAndIcons: Record<
   "teaching-materials-rate-limit": {
     title: "",
     iconName: null,
-  },
-  "teaching-materials-toxic-moderation": {
-    title: "",
-    iconName: null,
-    hideClosedButton: true,
   },
   "teaching-materials-error": {
     title: "An error occurred",
@@ -170,19 +159,11 @@ const DialogContents = ({
             {dialogWindow === "clear-single-chat" && (
               <ClearSingleChatFromChatHistory closeDialog={closeDialog} />
             )}
-            {dialogWindow === "teaching-materials-moderation" && (
-              <AdditionalMaterialsModeration closeDialog={closeDialog} />
-            )}
             {dialogWindow === "teaching-materials-threat-detected" && (
               <AdditionalMaterialsThreatDetected closeDialog={closeDialog} />
             )}
             {dialogWindow === "teaching-materials-rate-limit" && (
               <AdditionalMaterialsRateLimit closeDialog={closeDialog} />
-            )}
-            {dialogWindow === "teaching-materials-toxic-moderation" && (
-              <AdditionalMaterialsInappropriateContent
-                closeDialog={closeDialog}
-              />
             )}
             {dialogWindow === "teaching-materials-start-again" && (
               <AdditionalMaterialsStartAgain closeDialog={closeDialog} />

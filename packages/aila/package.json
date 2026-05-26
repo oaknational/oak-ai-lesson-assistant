@@ -26,7 +26,6 @@
   "dependencies": {
     "@anatine/zod-mock": "^3.13.4",
     "@clerk/nextjs": "6.36.1",
-    "@elastic/elasticsearch": "^8.13.1",
     "@faker-js/faker": "^9.4.0",
     "@oakai/core": "*",
     "@oakai/db": "*",
@@ -55,6 +54,7 @@
   "devDependencies": {
     "@oakai/eslint-config": "*",
     "@oakai/prettier-config": "*",
+    "@oakai/test-support": "workspace:*",
     "@pollyjs/adapter-fetch": "^6.0.6",
     "@pollyjs/adapter-node-http": "^6.0.6",
     "@pollyjs/core": "^6.0.6",

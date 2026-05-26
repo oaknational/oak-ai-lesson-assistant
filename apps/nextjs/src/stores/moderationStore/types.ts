@@ -9,12 +9,11 @@ export type ModerationState = {
   id: string;
   moderations: Moderation[] | [];
   isModerationsLoading: boolean | null;
-  toxicInitialModeration: PersistedModerationBase | null;
-  toxicModeration: PersistedModerationBase | null;
+  lockingModeration: PersistedModerationBase | null;
   lastModeration: PersistedModerationBase | null;
 
   actions: {
-    updateToxicModeration: (mod: PersistedModerationBase | null) => void;
+    updateLockingModeration: (mod: PersistedModerationBase | null) => void;
     setLastModeration: (mod: PersistedModerationBase | null) => void;
     setIsModerationsLoading: (isModerationsLoading: boolean) => void;
     updateModerationState: (mods?: Moderation[]) => void;

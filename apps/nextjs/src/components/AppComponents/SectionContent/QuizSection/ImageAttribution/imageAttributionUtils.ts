@@ -52,9 +52,7 @@ export function getGroupedAttributions(
     const attributions = getAttributionsForQuestion(question, quizAttributions);
 
     attributions.forEach((attribution) => {
-      if (!attributionGroups[attribution]) {
-        attributionGroups[attribution] = [];
-      }
+      attributionGroups[attribution] ??= [];
       attributionGroups[attribution].push(index + 1);
     });
   });

@@ -1,12 +1,13 @@
-import { isSafe } from "@oakai/core/src/utils/ailaModeration/helpers";
 import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { isSafe } from "@oakai/core/src/utils/ailaModeration/safetyResult";
+import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/severityLevel";
 
-import { useChatModeration } from "@/components/ContextProviders/ChatModerationContext";
-import { Icon } from "@/components/Icon";
+import { OakBox, type OakBoxProps } from "@oaknational/oak-components";
+
+import { ContentGuidanceBanner } from "@/components/AppComponents/Moderation/ContentGuidanceBanner";
 import { useModerationStore } from "@/stores/AilaStoresProvider";
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
-import { Message } from "./layout";
 import { isModeration } from "./protocol";
 
 export function getModeration(
@@ -31,36 +32,20 @@ export function getModeration(
 
 export function Moderation({
   forMessage,
-}: Readonly<{ forMessage: ParsedMessage }>) {
+  ...boxProps
+}: Readonly<{ forMessage: ParsedMessage } & OakBoxProps>) {
   const persistedModerations = useModerationStore((state) => state.moderations);
   const moderation = getModeration(forMessage, persistedModerations);
-  const { moderationModalHelpers } = useChatModeration();
 
   if (!moderation) {
     return null;
   }
 
+  const categories = getDisplayCategories(moderation);
+
   return (
-    <Message.Container roleType="moderation">
-      <Message.Content>
-        <div className="flex items-center">
-          <Icon icon="warning" size="sm" className="mr-6" />
-          <aside className="pt-3 text-sm">
-            <a
-              href="#"
-              onClick={() => {
-                moderationModalHelpers.openModal({
-                  moderation,
-                  closeModal: moderationModalHelpers.closeModal,
-                });
-              }}
-              className="underline"
-            >
-              View content guidance
-            </a>
-          </aside>
-        </div>
-      </Message.Content>
-    </Message.Container>
+    <OakBox {...boxProps}>
+      <ContentGuidanceBanner categories={categories} />
+    </OakBox>
   );
 }

@@ -43,8 +43,7 @@ export class SimilarLessonsSource implements QuestionSource {
   ): Promise<QuizQuestionPool[]> {
     const lessonsToUse = similarLessons.slice(0, this.maxLessons);
     log.info(
-      `Using ${lessonsToUse.length}/${similarLessons.length} similar lessons for quiz candidates:`,
-      lessonsToUse.map((lesson) => "\n- " + lesson.title),
+      `Using ${lessonsToUse.length}/${similarLessons.length} similar lessons for quiz candidates`,
     );
     const poolPromises = lessonsToUse.map(async (lesson) => {
       const questions = await this.retrievalService.getQuestionsForPlanId(

@@ -533,10 +533,8 @@ export async function prepLessonForSlides(
     learning_cycle_3_title: data.cycle3?.title ?? "",
     learning_cycle_1_text: data.cycle1.explanation.slideText,
     learning_cycle_1_image_prompt: data.cycle1.explanation.imagePrompt,
-    learning_cycle_1_check_question_1_question: data.cycle1
-      .checkForUnderstanding[0]?.question
-      ? data.cycle1.checkForUnderstanding[0]?.question
-      : "   ",
+    learning_cycle_1_check_question_1_question:
+      data.cycle1.checkForUnderstanding[0]?.question ?? "   ",
     learning_cycle_1_question_1_check_answer_1:
       processQuizAnswersForSlides(
         data.cycle1.checkForUnderstanding[0]?.answers,
@@ -573,10 +571,8 @@ export async function prepLessonForSlides(
         data.cycle1.checkForUnderstanding[0]?.answers,
         data.cycle1.checkForUnderstanding[0]?.distractors,
       )[2] ?? "",
-    learning_cycle_1_check_question_2: data.cycle1.checkForUnderstanding[1]
-      ?.question
-      ? data.cycle1.checkForUnderstanding[1]?.question
-      : "   ",
+    learning_cycle_1_check_question_2:
+      data.cycle1.checkForUnderstanding[1]?.question ?? "   ",
     learning_cycle_1_question_2_check_answer_1:
       processQuizAnswersForSlides(
         data.cycle1.checkForUnderstanding[1]?.answers ?? [],
@@ -597,10 +593,8 @@ export async function prepLessonForSlides(
 
     learning_cycle_2_text: data.cycle2?.explanation.slideText ?? "",
     learning_cycle_2_image_prompt: data.cycle2?.explanation.imagePrompt ?? "",
-    learning_cycle_2_question_1_check_question: data.cycle2
-      ?.checkForUnderstanding[0]?.question
-      ? data.cycle2?.checkForUnderstanding[0]?.question
-      : "   ",
+    learning_cycle_2_question_1_check_question:
+      data.cycle2?.checkForUnderstanding[0]?.question ?? "   ",
     learning_cycle_2_question_1_check_answer_1: data.cycle2
       ? processQuizAnswersForSlides(
           data.cycle2.checkForUnderstanding[0]?.answers,
@@ -619,10 +613,8 @@ export async function prepLessonForSlides(
           data.cycle2.checkForUnderstanding[0]?.distractors,
         )[2]
       : "   ",
-    learning_cycle_2_question_2_check_question: data.cycle2
-      ?.checkForUnderstanding[1]?.question
-      ? data.cycle2?.checkForUnderstanding[1]?.question
-      : "   ",
+    learning_cycle_2_question_2_check_question:
+      data.cycle2?.checkForUnderstanding[1]?.question ?? "   ",
     learning_cycle_2_question_2_check_answer_1: data.cycle2
       ? processQuizAnswersForSlides(
           data.cycle2.checkForUnderstanding[1]?.answers ?? [],
@@ -647,10 +639,8 @@ export async function prepLessonForSlides(
 
     learning_cycle_3_text: data.cycle3?.explanation?.slideText ?? "",
     learning_cycle_3_image_prompt: data.cycle3?.explanation?.imagePrompt ?? "",
-    learning_cycle_3_question_1_check_question: data.cycle3
-      ?.checkForUnderstanding[0]?.question
-      ? data.cycle3?.checkForUnderstanding[0]?.question
-      : "   ",
+    learning_cycle_3_question_1_check_question:
+      data.cycle3?.checkForUnderstanding[0]?.question ?? "   ",
     learning_cycle_3_question_1_check_answer_1: data.cycle3
       ? processQuizAnswersForSlides(
           data.cycle3.checkForUnderstanding[0]?.answers,
@@ -669,10 +659,8 @@ export async function prepLessonForSlides(
           data.cycle3.checkForUnderstanding[0]?.distractors,
         )[2]
       : "   ",
-    learning_cycle_3_question_2_check_question: data.cycle3
-      ?.checkForUnderstanding[1]?.question
-      ? data.cycle3?.checkForUnderstanding[1]?.question
-      : "   ",
+    learning_cycle_3_question_2_check_question:
+      data.cycle3?.checkForUnderstanding[1]?.question ?? "   ",
     learning_cycle_3_question_2_check_answer_1: data.cycle3
       ? processQuizAnswersForSlides(
           data.cycle3.checkForUnderstanding[1]?.answers ?? [],

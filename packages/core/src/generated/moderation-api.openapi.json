@@ -1,0 +1,306 @@
+{
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/moderate": {
+      "post": {
+        "tags": [],
+        "parameters": [],
+        "operationId": "moderateContent",
+        "requestBody": {
+          "description": "Body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "context": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "string"
+                      },
+                      "session_id": {
+                        "type": "string"
+                      },
+                      "message_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "scores": {
+                      "type": "object",
+                      "properties": {
+                        "l/discriminatory-language": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "l/offensive-language": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "u/sensitive-content": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "u/violence-or-suffering": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "u/mental-health-challenges": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "u/crime-or-illegal-activities": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "u/sexual-violence": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "s/nudity-or-sexual-content": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "p/practical-activities": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "p/outdoor-learning": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "p/additional-qualifications": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "r/recent-content": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "r/recent-conflicts": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "n/self-harm-suicide": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "n/potentially-offensive-language": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "n/strangulation-suffocation": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/guides-self-harm-suicide": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/encourages-harmful-behaviour": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/encourages-illegal-activity": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/encourages-violence-harm-others": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/using-creating-weapons": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/using-creating-harmful-substances": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "t/extreme-offensive-language": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "e/rshe-content": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        }
+                      },
+                      "required": [
+                        "l/discriminatory-language",
+                        "l/offensive-language",
+                        "u/sensitive-content",
+                        "u/violence-or-suffering",
+                        "u/mental-health-challenges",
+                        "u/crime-or-illegal-activities",
+                        "u/sexual-violence",
+                        "s/nudity-or-sexual-content",
+                        "p/practical-activities",
+                        "p/outdoor-learning",
+                        "p/additional-qualifications",
+                        "r/recent-content",
+                        "r/recent-conflicts",
+                        "n/self-harm-suicide",
+                        "n/potentially-offensive-language",
+                        "n/strangulation-suffocation",
+                        "t/guides-self-harm-suicide",
+                        "t/encourages-harmful-behaviour",
+                        "t/encourages-illegal-activity",
+                        "t/encourages-violence-harm-others",
+                        "t/using-creating-weapons",
+                        "t/using-creating-harmful-substances",
+                        "t/extreme-offensive-language",
+                        "e/rshe-content"
+                      ]
+                    },
+                    "flagged_categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "l/discriminatory-language",
+                          "l/offensive-language",
+                          "u/sensitive-content",
+                          "u/violence-or-suffering",
+                          "u/mental-health-challenges",
+                          "u/crime-or-illegal-activities",
+                          "u/sexual-violence",
+                          "s/nudity-or-sexual-content",
+                          "p/practical-activities",
+                          "p/outdoor-learning",
+                          "p/additional-qualifications",
+                          "r/recent-content",
+                          "r/recent-conflicts",
+                          "n/self-harm-suicide",
+                          "n/potentially-offensive-language",
+                          "n/strangulation-suffocation",
+                          "t/guides-self-harm-suicide",
+                          "t/encourages-harmful-behaviour",
+                          "t/encourages-illegal-activity",
+                          "t/encourages-violence-harm-others",
+                          "t/using-creating-weapons",
+                          "t/using-creating-harmful-substances",
+                          "t/extreme-offensive-language",
+                          "e/rshe-content"
+                        ]
+                      }
+                    },
+                    "prompt_version": {
+                      "type": "string"
+                    },
+                    "moderation_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  "required": [
+                    "scores",
+                    "flagged_categories",
+                    "prompt_version"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "403",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Moderation API",
+    "version": "1.1.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

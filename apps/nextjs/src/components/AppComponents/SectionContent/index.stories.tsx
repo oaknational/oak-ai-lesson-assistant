@@ -123,6 +123,7 @@ export const QuizWithImages: Story = {
           attribution: "Pixabay",
           width: 800,
           height: 600,
+          aiDescription: "",
         },
         {
           imageUrl:
@@ -130,6 +131,7 @@ export const QuizWithImages: Story = {
           attribution: "Oak National Academy",
           width: 800,
           height: 600,
+          aiDescription: "",
         },
         {
           imageUrl:
@@ -137,6 +139,7 @@ export const QuizWithImages: Story = {
           attribution: "Pixabay",
           width: 800,
           height: 600,
+          aiDescription: "",
         },
       ],
       questions: [

@@ -8,10 +8,8 @@ import type {
 } from "@oakai/aila/src/core/quiz/interfaces";
 import {
   type GeneratorData,
-  type ImageDescriptionsData,
   type ReportNode,
   extractGeneratorData,
-  extractImageDescriptionsData,
   getChild,
 } from "@oakai/aila/src/core/quiz/reporting";
 import type { LatestQuiz } from "@oakai/aila/src/protocol/schema";
@@ -37,10 +35,11 @@ interface QuizPlaygroundViewProps {
 export function QuizPlaygroundView({
   viewMode,
   report,
-  isStreaming = false,
+  isStreaming: _isStreaming = false,
 }: Readonly<QuizPlaygroundViewProps>) {
   // TODO: use Zod schema parsing instead of type cast
   const quiz = report?.data.quiz as LatestQuiz | undefined;
+  const note = report?.data.note as string | undefined;
   // Helper to check stage status from report tree
   const getNodeStatus = (path: string[]) => {
     let node: ReportNode | undefined = report ?? undefined;
@@ -62,10 +61,6 @@ export function QuizPlaygroundView({
     report ?? undefined,
     "multiQuerySemantic",
   );
-  const imageDescriptionsNode = getChild(
-    report ?? undefined,
-    "imageDescriptions",
-  );
   const composerNode = getChild(report ?? undefined, "llmComposer");
   // Composer has nested children for prompt and LLM response
   const composerPromptNode = getChild(composerNode, "buildPrompt");
@@ -76,7 +71,21 @@ export function QuizPlaygroundView({
   const basedOnLesson = extractGeneratorData(basedOnLessonNode);
   const similarLessons = extractGeneratorData(similarLessonsNode);
   const multiQuerySemantic = extractGeneratorData(multiQuerySemanticNode);
-  const imageDescriptions = extractImageDescriptionsData(imageDescriptionsNode);
+  // Collect image metadata from all source pools
+  const allPools = [
+    ...(currentQuiz?.pools ?? []),
+    ...(basedOnLesson?.pools ?? []),
+    ...(similarLessons?.pools ?? []),
+    ...(multiQuerySemantic?.pools ?? []),
+  ];
+  const allImages = allPools.flatMap((pool) =>
+    pool.questions.flatMap((q) =>
+      q.imageMetadata.map((img) => ({
+        ...img,
+        questionUid: q.sourceUid,
+      })),
+    ),
+  );
 
   return (
     <ViewModeContext.Provider value={viewMode}>
@@ -250,33 +259,32 @@ export function QuizPlaygroundView({
           </div>
         </div>
 
-        {/* Stage 2: Enrichers (Image Descriptions) */}
+        {/* Stage 2: Image Descriptions */}
         <div className="h-24" />
         <LearnBlock variant="section">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">
-            Stage 2: Enrichers
+            Image Descriptions
           </h2>
           <p className="max-w-3xl text-base leading-relaxed text-gray-600">
-            Many quiz questions contain mathematical diagrams and images. We
-            generate text descriptions using GPT-4o vision so they can be
-            included in the text-based composition prompt. Descriptions are
-            cached in Upstash to avoid regenerating them on every request.
+            Many quiz questions contain mathematical diagrams and images.
+            AI-generated descriptions are created at ingest time and stored
+            alongside each question, so they&apos;re available immediately for
+            the composition prompt without any runtime processing.
           </p>
         </LearnBlock>
         <Section
           title="Image Descriptions"
           color="lemon"
-          loading={isStageLoading(["imageDescriptions"])}
           stats={
-            imageDescriptions
-              ? `${imageDescriptions.totalImages} images, ${imageDescriptions.cacheHits} cached, ${formatSeconds(imageDescriptionsNode?.durationMs ?? 0)}`
+            allImages.length > 0
+              ? `${allImages.length} images across ${allPools.length} pools`
               : undefined
           }
         >
-          {imageDescriptions ? (
-            <ImageDescriptionsView result={imageDescriptions} />
+          {allImages.length > 0 ? (
+            <IngestImageDescriptionsView images={allImages} />
           ) : (
-            <p className="text-gray-400">Waiting for image processing...</p>
+            <p className="text-gray-400">No images in candidate questions</p>
           )}
         </Section>
 
@@ -372,11 +380,16 @@ export function QuizPlaygroundView({
           defaultOpen
           color="pink"
           stats={
-            quiz
+            quiz?.questions
               ? `${quiz.questions.length} questions, ${formatSeconds(report?.durationMs ?? 0)} total`
               : undefined
           }
         >
+          {note && (
+            <p className="bg-amber-50 text-amber-800 mb-4 rounded p-3 text-sm">
+              {note}
+            </p>
+          )}
           {quiz ? (
             <FinalQuizDisplay quiz={quiz} report={report} />
           ) : (
@@ -629,82 +642,67 @@ function SourceSection({ result }: Readonly<{ result: GeneratorData }>) {
   );
 }
 
-// Image Descriptions View
-function ImageDescriptionsView({
-  result,
-}: Readonly<{ result: ImageDescriptionsData }>) {
+// Ingest-time Image Descriptions View
+function IngestImageDescriptionsView({
+  images,
+}: Readonly<{
+  images: {
+    imageUrl: string;
+    aiDescription: string;
+    width: number;
+    height: number;
+    attribution: string | null;
+    questionUid: string;
+  }[];
+}>) {
   const [showAll, setShowAll] = useState(false);
-
-  if (result.totalImages === 0) {
-    return <p className="text-gray-500">No images found in question pools</p>;
-  }
-
-  const displayedDescriptions = showAll
-    ? result.descriptions
-    : result.descriptions.slice(0, 5);
+  const displayed = showAll ? images : images.slice(0, 5);
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 text-sm">
-        <span>
-          Total: <strong>{result.totalImages}</strong>
-        </span>
-        <span className="text-green-600">
-          Cache hits: <strong>{result.cacheHits}</strong>
-        </span>
-        <span className="text-yellow-600">
-          Cache misses: <strong>{result.cacheMisses}</strong>
-        </span>
-        <span className="text-blue-600">
-          Generated: <strong>{result.generatedCount}</strong>
-        </span>
-      </div>
-
       <table className="min-w-full text-sm">
         <thead className="bg-gray-50">
           <tr>
             <th className="px-3 py-2 text-left">Image</th>
-            <th className="px-3 py-2 text-left">Description</th>
-            <th className="px-3 py-2 text-left">Cached</th>
+            <th className="px-3 py-2 text-left">AI Description</th>
+            <th className="px-3 py-2 text-left">Question</th>
           </tr>
         </thead>
         <tbody>
-          {displayedDescriptions.map((entry, i) => (
+          {displayed.map((img, i) => (
             <tr
-              key={entry.url}
+              key={`${img.questionUid}-${img.imageUrl}`}
               className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50"} align-top`}
             >
               <td className="px-4 py-3">
                 <div className="flex flex-col gap-2">
                   <img
-                    src={entry.url}
-                    alt={`Quiz question diagram`}
+                    src={img.imageUrl}
+                    alt="Quiz question diagram"
                     className="h-32 w-auto rounded border object-contain"
                   />
                   <span className="max-w-[200px] truncate font-mono text-xs text-gray-400">
-                    {entry.url.split("/").pop()}
+                    {img.width}x{img.height}
                   </span>
                 </div>
               </td>
-              <td className="max-w-md px-3 py-2">{entry.description}</td>
+              <td className="max-w-md px-3 py-2">{img.aiDescription}</td>
               <td className="px-3 py-2">
-                {entry.wasCached ? (
-                  <span className="text-green-600">Yes</span>
-                ) : (
-                  <span className="text-yellow-600">No</span>
-                )}
+                <span className="font-mono text-xs text-gray-500">
+                  {img.questionUid}
+                </span>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {result.descriptions.length > 5 && (
+      {images.length > 5 && (
         <button
           onClick={() => setShowAll(!showAll)}
           className="text-blue-600 text-sm hover:underline"
         >
-          {showAll ? "Show less" : `Show all ${result.descriptions.length}`}
+          {showAll ? "Show less" : `Show all ${images.length}`}
         </button>
       )}
     </div>

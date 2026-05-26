@@ -1,7 +1,7 @@
 import { AilaAuthenticationError } from "@oakai/aila/src/core/AilaError";
-import { demoUsers } from "@oakai/core";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
-import { inngest } from "@oakai/core/src/inngest";
+import { scheduleRateLimitNotification } from "@oakai/core/src/backgroundTasks";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import { startSpan } from "@oakai/core/src/tracing";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
@@ -14,7 +14,7 @@ async function checkRateLimit(
   isDemoUser: boolean,
   chatId: string,
 ): Promise<void> {
-  return startSpan("check-rate-limit", { userId, chatId }, async (span) => {
+  return startSpan("check-rate-limit", { userId, chatId }, async (_span) => {
     const rateLimiter = isDemoUser
       ? rateLimits.generations.demo
       : rateLimits.generations.standard;
@@ -47,8 +47,7 @@ export async function reportRateLimitError(
       },
     });
 
-    await inngest.send({
-      name: "app/slack.notifyRateLimit",
+    await scheduleRateLimitNotification({
       user: {
         id: userId,
       },
@@ -63,7 +62,7 @@ export async function reportRateLimitError(
 export async function fetchAndCheckUser(chatId: string): Promise<string> {
   const userId = (await auth()).userId;
 
-  return startSpan("fetch-and-check-user", { chatId }, async (span) => {
+  return startSpan("fetch-and-check-user", { chatId }, async (_span) => {
     if (!userId) {
       throw new AilaAuthenticationError("No user id");
     }

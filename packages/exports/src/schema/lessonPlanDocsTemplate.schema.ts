@@ -64,6 +64,23 @@ export const lessonPlanDocsTemplateSchema = z.object({
 
   cycle_3_practice: z.string(),
   cycle_3_feedback: z.string(),
+
+  content_guidance_title_1: z.string().optional(),
+  content_guidance_description_1: z.string().optional(),
+  content_guidance_title_2: z.string().optional(),
+  content_guidance_description_2: z.string().optional(),
+  content_guidance_title_3: z.string().optional(),
+  content_guidance_description_3: z.string().optional(),
+  content_guidance_title_4: z.string().optional(),
+  content_guidance_description_4: z.string().optional(),
+  content_guidance_title_5: z.string().optional(),
+  content_guidance_description_5: z.string().optional(),
+  content_guidance_title_6: z.string().optional(),
+  content_guidance_description_6: z.string().optional(),
+  content_guidance_title_7: z.string().optional(),
+  content_guidance_description_7: z.string().optional(),
+  content_guidance_title_8: z.string().optional(),
+  content_guidance_description_8: z.string().optional(),
 });
 
 export type LessonPlanDocsTemplateData = z.infer<

@@ -1,15 +1,14 @@
-import { inngest } from "@oakai/core/src/inngest";
+import { scheduleThreatDetectionAilaNotification } from "@oakai/core/src/backgroundTasks";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { ThreatDetections as defaultThreatDetections } from "@oakai/core/src/models/threatDetections";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import { lakeraGuardResponseSchema } from "@oakai/core/src/threatDetection/lakera";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
+import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import * as Sentry from "@sentry/nextjs";
-
-import { threatDetectionResultSchema } from "../../features/threatDetection/detectors/AilaThreatDetector";
-import type { AilaThreatDetectionError } from "../../features/threatDetection/types";
 import type {
   ActionDocument,
   ErrorDocument,
@@ -18,60 +17,45 @@ import { safelyReportAnalyticsEvent } from "../reportAnalyticsEvent";
 
 const log = aiLogger("aila:threat");
 
-export async function handleThreatDetectionError(
+type ThreatDetectionHandlingDeps = {
+  SafetyViolations?: typeof defaultSafetyViolations;
+  ThreatDetections?: typeof defaultThreatDetections;
+};
+
+const SHOW_ACCOUNT_LOCKED: ActionDocument = {
+  type: "action",
+  action: "SHOW_ACCOUNT_LOCKED",
+};
+
+export async function handleThreatDetectionResult(
   {
     userId,
     chatId,
-    error,
+    threatDetection,
     messages,
-    prisma = globalPrisma,
+    prisma,
   }: {
     userId: string;
     chatId: string;
-    error: AilaThreatDetectionError;
-    messages?: Array<{
-      role: "system" | "user" | "assistant" | "data";
-      content: string;
-    }>;
+    threatDetection: ThreatDetectionResult;
+    messages?: ThreatDetectionMessage[];
     prisma?: PrismaClientWithAccelerate;
   },
-  SafetyViolations = defaultSafetyViolations,
+  {
+    SafetyViolations = defaultSafetyViolations,
+    ThreatDetections = defaultThreatDetections,
+  }: ThreatDetectionHandlingDeps = {},
 ): Promise<ErrorDocument | ActionDocument> {
-  if (!error.isAnalyticsEventReported) {
-    await safelyReportAnalyticsEvent({
-      eventName: "threat_detected",
-      userId,
-      payload: {
-        chat_id: chatId,
-        error,
-      },
-    });
-
-    error.isAnalyticsEventReported = true;
-  } else {
-    log.info(
-      "Skipping reporting analytics event, already reported. This may be a sign that `handleThreatDetectionError is being called redundantly",
-    );
-  }
+  await safelyReportAnalyticsEvent({
+    eventName: "threat_detected",
+    userId,
+    payload: {
+      chat_id: chatId,
+      threatDetection,
+    },
+  });
 
   try {
-    log.info("Sending slack notification for threat detection", {
-      userId,
-      chatId,
-    });
-
-    const parsedThreatData = threatDetectionResultSchema.safeParse(error.cause);
-    const parsedRawThreatData = lakeraGuardResponseSchema.safeParse(
-      parsedThreatData.data?.rawResponse,
-    );
-
-    if (!parsedRawThreatData.success) {
-      log.warn("Failed to parse Lakera threat detection data, using fallback", {
-        error: parsedRawThreatData.error,
-        rawData: parsedThreatData.data?.rawResponse,
-      });
-    }
-
     const userMessages = (messages ?? [])
       .filter((msg) => msg.role === "user")
       .map((msg) => ({
@@ -79,65 +63,35 @@ export async function handleThreatDetectionError(
         content: msg.content,
       }));
 
-    const eventPayload = {
-      name: "app/slack.notifyThreatDetectionAila" as const,
+    await scheduleThreatDetectionAilaNotification({
       user: {
         id: userId,
       },
       data: {
         chatId,
         userAction: "CHAT_SESSION",
-        threatDetection: parsedRawThreatData.success
-          ? parsedRawThreatData.data
-          : { flagged: true },
+        threatDetection,
         messages: userMessages,
       },
-    };
-
-    log.info("Sending Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
-      messageCount: userMessages.length,
-      threatDataSuccess: parsedRawThreatData.success,
-    });
-
-    await inngest.send(eventPayload);
-
-    log.info("Successfully sent Inngest event", {
-      eventName: eventPayload.name,
-      userId,
-      chatId,
     });
   } catch (e) {
-    log.error("Error scheduling slack notification", e);
-    Sentry.captureException(e);
-    // NOTE: don't throw as it will prevent threat detection from being handled
+    log.error("Failed to schedule threat detection notification", { error: e });
   }
 
-  if (!error.isSafetyViolationRecorded) {
-    const safetyViolations = new SafetyViolations(prisma, console);
-    try {
-      await safetyViolations.recordViolation(
-        userId,
-        "CHAT_MESSAGE",
-        "THREAT",
-        "CHAT_SESSION",
-        chatId,
-      );
-    } catch (e) {
-      if (e instanceof UserBannedError) {
-        return {
-          type: "action",
-          action: "SHOW_ACCOUNT_LOCKED",
-        };
-      }
-      throw e;
-    }
-  } else {
-    log.info(
-      "Skipping recording safety violation, already recorded. This may be a sign that `handleThreatDetectionError is being called redundantly",
-    );
+  const prismaClient = prisma ?? (await import("@oakai/db")).prisma;
+
+  const action = await recordThreatDetectionSafetyViolation({
+    userId,
+    chatId,
+    messages,
+    prisma: prismaClient,
+    threatDetection,
+    SafetyViolations,
+    ThreatDetections,
+  });
+
+  if (action) {
+    return action;
   }
 
   return {
@@ -146,4 +100,99 @@ export async function handleThreatDetectionError(
     message:
       "I wasn't able to process your request because a potentially malicious input was detected.",
   };
+}
+
+function getThreateningMessage(
+  messages?: ThreatDetectionMessage[],
+): { id?: string; content: string } | null {
+  const lastUserMessage = messages?.findLast((m) => m.role === "user");
+  if (lastUserMessage) {
+    return { id: lastUserMessage.id, content: lastUserMessage.content };
+  }
+
+  const lastMessage = messages?.at(-1);
+  if (lastMessage) {
+    return { id: lastMessage.id, content: lastMessage.content };
+  }
+
+  return null;
+}
+
+function getProviderResponse(
+  rawResponse: unknown,
+): Prisma.InputJsonValue | undefined {
+  return rawResponse as Prisma.InputJsonValue | undefined;
+}
+
+async function recordThreatDetectionSafetyViolation({
+  userId,
+  chatId,
+  messages,
+  prisma,
+  threatDetection,
+  SafetyViolations,
+  ThreatDetections,
+}: {
+  userId: string;
+  chatId: string;
+  messages?: ThreatDetectionMessage[];
+  prisma: PrismaClientWithAccelerate;
+  threatDetection: ThreatDetectionResult;
+  SafetyViolations: typeof defaultSafetyViolations;
+  ThreatDetections: typeof defaultThreatDetections;
+}): Promise<ActionDocument | null> {
+  const safetyViolations = new SafetyViolations(prisma);
+  const threatDetections = new ThreatDetections(prisma);
+  const threateningMessage = getThreateningMessage(messages);
+  let shouldCheckThreshold = false;
+  let thresholdChecked = false;
+
+  try {
+    const safetyViolation = await safetyViolations.createViolation(
+      userId,
+      "CHAT_MESSAGE",
+      "THREAT",
+      "CHAT_SESSION",
+      chatId,
+    );
+    shouldCheckThreshold = true;
+
+    await threatDetections.create({
+      appSessionId: chatId,
+      recordType: "CHAT_SESSION",
+      recordId: chatId,
+      messageId: threateningMessage?.id,
+      userId,
+      threateningMessage:
+        threateningMessage?.content ?? threatDetection.message,
+      provider: threatDetection.provider,
+      category: threatDetection.category,
+      severity: threatDetection.severity,
+      providerResponse: getProviderResponse(threatDetection.rawResponse),
+      safetyViolationId: safetyViolation.id,
+    });
+
+    await safetyViolations.enforceThreshold(userId);
+    thresholdChecked = true;
+  } catch (e) {
+    if (e instanceof UserBannedError) {
+      return SHOW_ACCOUNT_LOCKED;
+    }
+
+    if (shouldCheckThreshold && !thresholdChecked) {
+      try {
+        await safetyViolations.enforceThreshold(userId);
+      } catch (thresholdError) {
+        if (thresholdError instanceof UserBannedError) {
+          return SHOW_ACCOUNT_LOCKED;
+        }
+
+        throw thresholdError;
+      }
+    }
+
+    throw e;
+  }
+
+  return null;
 }

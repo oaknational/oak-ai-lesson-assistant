@@ -15,15 +15,12 @@ import {
 } from "@oakai/aila/src/features/analytics";
 import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
-import { HeliconeThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/helicone/HeliconeThreatDetector";
-import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
@@ -34,12 +31,14 @@ import { z } from "zod";
 
 import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
-import type { Config } from "./config";
+import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,
   getFixtureModerationOpenAiClient,
+  getFixtureOakModerator,
 } from "./fixtures";
+import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
 const log = aiLogger("chat");
@@ -66,8 +65,6 @@ function getQuizSources(): QuestionSourceType[] {
 
 export const maxDuration = 300;
 
-const prisma: PrismaClientWithAccelerate = globalPrisma;
-
 export async function GET() {
   return Promise.resolve(new Response("Chat API is working", { status: 200 }));
 }
@@ -76,7 +73,7 @@ async function setupChatHandler(req: NextRequest) {
   return await startSpan(
     "chat-setup-chat-handler",
     {},
-    async (span: TracingSpan) => {
+    async (_span: TracingSpan) => {
       const json = await req.json();
       const {
         id: chatId,
@@ -88,7 +85,10 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await serverSideFeatureFlag("agentic-aila-nov-25");
+      const useAgenticAila =
+        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
+          ? false
+          : await serverSideFeatureFlag("agentic-aila-nov-25");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
@@ -105,11 +105,8 @@ async function setupChatHandler(req: NextRequest) {
         req.headers,
         chatId,
       );
-
-      const threatDetectors = [
-        new HeliconeThreatDetector(),
-        new LakeraThreatDetector(),
-      ];
+      const oakModerator = getFixtureOakModerator(req.headers);
+      const threatDetectors = getThreatDetectors();
 
       return {
         chatId,
@@ -117,6 +114,7 @@ async function setupChatHandler(req: NextRequest) {
         options,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       };
     },
@@ -198,9 +196,10 @@ function verifyChatOwnership(
   }
 }
 
-async function loadChatDataFromDatabase(
+async function loadGenerationContext(
   chatId: string,
   userId: string,
+  prisma: PrismaClientWithAccelerate,
 ): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
@@ -209,6 +208,7 @@ async function loadChatDataFromDatabase(
         id: true,
         userId: true,
         output: true,
+        threatDetections: { select: { messageId: true } },
       },
     });
 
@@ -226,7 +226,7 @@ async function loadChatDataFromDatabase(
 
     output.lessonPlan = output.lessonPlan ?? {};
 
-    const { messages, lessonPlan } = await migrateChatData(
+    const { messages: allMessages, lessonPlan } = await migrateChatData(
       output,
       async (upgradedData) => {
         await prisma.appSession.update({
@@ -237,9 +237,19 @@ async function loadChatDataFromDatabase(
       {
         id: chat.id,
         userId,
-        caller: "chatHandler.loadChatDataFromDatabase",
+        caller: "chatHandler.loadGenerationContext",
       },
     );
+
+    const threatenedMessageIds = new Set(
+      chat.threatDetections
+        .map((td) => td.messageId)
+        .filter((id): id is string => id !== null),
+    );
+    const messages =
+      threatenedMessageIds.size > 0
+        ? allMessages.filter((m) => !threatenedMessageIds.has(m.id))
+        : allMessages;
 
     log.info(
       `Loaded ${messages.length} messages and lesson plan for chat ${chatId}`,
@@ -249,7 +259,7 @@ async function loadChatDataFromDatabase(
     log.error(`Error loading chat data for chat ${chatId}`, error);
     captureException(error, {
       extra: { chatId, userId },
-      tags: { context: "loadChatDataFromDatabase" },
+      tags: { context: "loadGenerationContext" },
     });
     throw error;
   }
@@ -287,6 +297,7 @@ type CreateAilaInstanceArguments = {
   lessonPlan: PartialLessonPlan;
   llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
+  oakModerator: ReturnType<typeof getFixtureOakModerator>;
   threatDetectors: AilaThreatDetector[];
 };
 
@@ -299,6 +310,7 @@ async function createAilaInstance({
   lessonPlan,
   llmService,
   moderationAiClient,
+  oakModerator,
   threatDetectors,
 }: CreateAilaInstanceArguments): Promise<Aila> {
   return await startSpan(
@@ -315,6 +327,7 @@ async function createAilaInstance({
         services: {
           chatLlmService: llmService,
           moderationAiClient,
+          oakModerator,
           ragService: (aila: AilaServices) => new AilaRag({ aila }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
@@ -339,24 +352,26 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await startSpan("chat-api", {}, async (span: TracingSpan) => {
-    const {
-      chatId,
-      messages: frontendMessages,
-      options,
-      llmService,
-      moderationAiClient,
-      threatDetectors,
-    } = await setupChatHandler(req);
-    span.setAttributes({ chat_id: chatId });
-
-    let userId: string | undefined;
+    let chatId = "unknown";
     let aila: Aila | undefined;
-
+    let userId: string | undefined;
     try {
+      const {
+        chatId: resolvedChatId,
+        messages: frontendMessages,
+        options,
+        llmService,
+        moderationAiClient,
+        oakModerator,
+        threatDetectors,
+      } = await setupChatHandler(req);
+
+      chatId = resolvedChatId;
       userId = await fetchAndCheckUser(chatId);
+      span.setAttributes({ chat_id: chatId });
 
       const { messages: dbMessages, lessonPlan: dbLessonPlan } =
-        await loadChatDataFromDatabase(chatId, userId);
+        await loadGenerationContext(chatId, userId, config.prisma);
 
       const messages = prepareMessages(dbMessages, frontendMessages, chatId);
 
@@ -369,6 +384,7 @@ export async function handleChatPostRequest(
         lessonPlan: dbLessonPlan,
         llmService,
         moderationAiClient,
+        oakModerator,
         threatDetectors,
       });
       invariant(aila, "Aila instance is required");
@@ -377,7 +393,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
-      return handleChatException(e, chatId, prisma);
+      return handleChatException(e);
     } finally {
       if (aila) {
         await aila.ensureShutdown();

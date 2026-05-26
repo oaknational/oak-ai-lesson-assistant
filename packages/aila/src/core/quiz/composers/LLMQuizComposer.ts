@@ -21,7 +21,7 @@ import {
 const log = aiLogger("aila:quiz");
 
 const OPENAI_MODEL = "o4-mini";
-const IS_REASONING_MODEL = true;
+const REASONING_EFFORT = "low" as const;
 
 const sum = (arr: number[]) => arr.reduce((acc, val) => acc + val, 0);
 
@@ -117,9 +117,8 @@ export class LLMComposer implements QuizComposer {
     try {
       const response = await openai.beta.chat.completions.parse({
         model: OPENAI_MODEL,
-        ...(IS_REASONING_MODEL
-          ? { max_completion_tokens: 16000 }
-          : { max_tokens: 8000 }),
+        max_completion_tokens: 16000,
+        reasoning_effort: REASONING_EFFORT,
         messages: [
           {
             role: "user",
@@ -145,8 +144,6 @@ export class LLMComposer implements QuizComposer {
     successData: SuccessData,
     questionPools: QuizQuestionPool[],
   ): RagQuizQuestion[] {
-    log.info(`Overall strategy: ${successData.overallStrategy}`);
-
     // Build lookup map of UID -> question from all pools
     const questionsByUid = new Map<string, RagQuizQuestion>();
     questionPools.forEach((pool) => {
@@ -165,7 +162,6 @@ export class LLMComposer implements QuizComposer {
           return null;
         }
 
-        log.info(`Selected: ${selection.questionUid} - ${selection.reasoning}`);
         return question;
       })
       .filter((q): q is RagQuizQuestion => q !== null);

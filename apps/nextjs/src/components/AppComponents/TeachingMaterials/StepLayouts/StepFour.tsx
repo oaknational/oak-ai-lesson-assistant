@@ -47,7 +47,7 @@ import InlineButton from "../InlineButton";
 import { Quiz } from "../Quiz";
 import ResourcesFooter from "../ResourcesFooter";
 import StepLoadingScreen from "../StepLoadingScreen";
-import { ModerationMessage } from "../TeachingMaterialMessage";
+import { ModerationMessage } from "../TeachingMaterialsModerationMessage";
 
 const log = aiLogger("teaching-materials");
 
@@ -199,9 +199,9 @@ const StepFour = ({ handleRefineMaterial }: StepFourProps) => {
     <>
       {isMaterialLoading || (!generation && <OakP>Loading...</OakP>)}
       <OakFlex $mt={"spacing-24"}>{renderGeneratedMaterial()}</OakFlex>
-      {moderation?.categories && moderation.categories.length > 0 && (
-        <ModerationMessage />
-      )}
+
+      <ModerationMessage moderation={moderation} />
+
       <ResourcesFooter>
         <OakFlex $flexDirection="column" $width="100%">
           {refinementHistory.length > 0 && !isMaterialRefining && (

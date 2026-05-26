@@ -1,5 +1,5 @@
 interface SocialItem {
-  icon: "twitter" | "facebook" | "linkedin" | "instagram";
+  icon: "facebook" | "linkedin" | "instagram";
   href: string;
   id: string;
 }
@@ -16,11 +16,6 @@ export interface MenuItem {
 export const menuItems: MenuItem[] = [];
 
 export const socialMenuItems: SocialItem[] = [
-  {
-    icon: "twitter",
-    href: "https://twitter.com/oaknational",
-    id: "twitter",
-  },
   {
     icon: "facebook",
     href: "https://facebook.com/oaknationalacademy",

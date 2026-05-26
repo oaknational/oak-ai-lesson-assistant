@@ -1,5 +1,3 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -56,7 +54,6 @@ export class Aila implements AilaServices {
   private readonly _snapshotStore: AilaSnapshotStore;
   private readonly _persistence: AilaPersistenceFeature[] = [];
   private readonly _threatDetection?: AilaThreatDetectionFeature;
-  private readonly _prisma: PrismaClientWithAccelerate;
   private readonly _plugins: AilaPlugin[];
   private readonly _userId!: string | undefined;
   private readonly _chatId!: string;
@@ -78,8 +75,6 @@ export class Aila implements AilaServices {
       llmService: this._chatLlmService,
     });
 
-    this._prisma = options.prisma ?? globalPrisma;
-
     this._document = new AilaDocument({
       aila: this,
       content: options.document?.content ?? {},
@@ -99,6 +94,7 @@ export class Aila implements AilaServices {
       this,
       this._options,
       options.services?.moderationAiClient,
+      options.services?.oakModerator,
     );
     this._snapshotStore = AilaFeatureFactory.createSnapshotStore(this);
     this._persistence = AilaFeatureFactory.createPersistence(
@@ -249,10 +245,6 @@ export class Aila implements AilaServices {
 
   public get tracing() {
     return this._tracing;
-  }
-
-  public get prisma() {
-    return this._prisma;
   }
 
   // Check methods

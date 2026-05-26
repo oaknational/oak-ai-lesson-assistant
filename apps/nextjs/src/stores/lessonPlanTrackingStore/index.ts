@@ -15,7 +15,6 @@ import type { LessonPlanTrackingState } from "./types";
 
 export * from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const log = aiLogger("analytics:lesson:store");
 
 export const createLessonPlanTrackingStore = ({
@@ -120,7 +119,7 @@ export const createLessonPlanTrackingStore = ({
           if (streamingStatus === "Idle") {
             const chatStore = getStore("chat");
 
-            if (!chatStore.streamingError) {
+            if (!chatStore.streamingError && !chatStore.streamingFailedTurn) {
               try {
                 get().actions.trackCompletion();
               } catch (error) {

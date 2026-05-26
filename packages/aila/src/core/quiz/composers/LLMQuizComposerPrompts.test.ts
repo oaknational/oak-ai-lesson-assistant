@@ -14,7 +14,6 @@ const mockMultipleChoice = (
     distractors: ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -29,7 +28,6 @@ const mockShortAnswer = (
     answers: ["Acceptable answer 1", "Acceptable answer 2"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -45,7 +43,6 @@ const mockMatch = (uid: string, questionText: string): RagQuizQuestion => ({
     ],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -57,7 +54,6 @@ const mockOrder = (uid: string, questionText: string): RagQuizQuestion => ({
     items: ["First step", "Second step", "Third step", "Fourth step"],
   },
   sourceUid: uid,
-  source: {} as RagQuizQuestion["source"],
   imageMetadata: [],
 });
 
@@ -116,7 +112,6 @@ describe("buildCompositionPrompt", () => {
           distractors: ["12 cm²", "3 cm²"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/img.png",
@@ -143,7 +138,7 @@ describe("buildCompositionPrompt", () => {
       expect(prompt).not.toContain("![triangle](http://example.com/img.png)");
     });
 
-    it("should leave images unchanged when no aiDescription", () => {
+    it("should throw when aiDescription is empty", () => {
       const questionWithImage: RagQuizQuestion = {
         question: {
           questionType: "multiple-choice",
@@ -154,13 +149,13 @@ describe("buildCompositionPrompt", () => {
           distractors: ["12 cm²"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/img.png",
             attribution: null,
             width: 100,
             height: 100,
+            aiDescription: "",
           },
         ],
       };
@@ -172,9 +167,9 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
-
-      expect(prompt).toContain("![triangle](http://example.com/img.png)");
+      expect(() =>
+        buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz"),
+      ).toThrow("Missing aiDescription for image");
     });
 
     it("should replace images in answers and distractors", () => {
@@ -187,7 +182,6 @@ describe("buildCompositionPrompt", () => {
           distractors: ["![wrong](http://example.com/wrong.png)"],
         },
         sourceUid: "q-img",
-        source: {} as RagQuizQuestion["source"],
         imageMetadata: [
           {
             imageUrl: "http://example.com/correct.png",

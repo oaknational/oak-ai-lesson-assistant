@@ -2,7 +2,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { Moderation, SafetyViolation } from "@oakai/db";
 
 import {

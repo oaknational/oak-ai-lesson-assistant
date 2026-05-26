@@ -1,4 +1,4 @@
-import type { Page, TestInfo } from "@playwright/test";
+import type { Locator, Page, TestInfo } from "@playwright/test";
 import { expect, test } from "@playwright/test";
 
 import type { AilaStreamingStatus } from "@/stores/chatStore";
@@ -12,35 +12,78 @@ export async function expectStreamingStatus(
   await expect(statusElement).toContainText(status, args);
 }
 
-export async function waitForStreamingStatusChange(
-  page: Page,
-  currentStatus: AilaStreamingStatus,
-  expectedStatus: AilaStreamingStatus,
-  timeout: number,
-) {
-  await page.waitForFunction(
-    ([currentStatus, expectedStatus]) => {
-      const statusElement = document.querySelector(
-        '[data-testid="chat-aila-streaming-status"]',
-      );
-      return (
-        statusElement &&
-        currentStatus &&
-        expectedStatus &&
-        !statusElement.textContent?.includes(currentStatus) &&
-        statusElement.textContent?.includes(expectedStatus)
-      );
-    },
-    [currentStatus, expectedStatus],
-    { timeout },
-  );
+type GenerationSnapshot = {
+  assistantMessages: number;
+  errorMessages: number;
+  progressText: string | null;
+};
 
-  await expectStreamingStatus(page, expectedStatus);
+async function getOptionalText(locator: Locator): Promise<string | null> {
+  if ((await locator.count()) === 0) {
+    return null;
+  }
+  return await locator.textContent({ timeout: 500 }).catch(() => null);
 }
 
-export async function waitForGeneration(page: Page, generationTimeout: number) {
-  return await test.step("Wait for generation", async () => {
-    await expectStreamingStatus(page, "RequestMade");
+async function getGenerationSnapshot(page: Page): Promise<GenerationSnapshot> {
+  const [assistantMessages, errorMessages, progressText] = await Promise.all([
+    page.getByTestId("chat-message-wrapper-aila").count(),
+    page.getByTestId("chat-message-wrapper-error").count(),
+    getOptionalText(page.getByTestId("chat-progress")),
+  ]);
+
+  return {
+    assistantMessages,
+    errorMessages,
+    progressText,
+  };
+}
+
+async function waitForGenerationResult(
+  page: Page,
+  before: GenerationSnapshot,
+  generationTimeout: number,
+) {
+  let seenNonIdle = false;
+
+  await expect
+    .poll(
+      async () => {
+        const current = await getGenerationSnapshot(page);
+        const status = await getOptionalText(
+          page.getByTestId("chat-aila-streaming-status"),
+        );
+
+        if (status !== null && status !== "Idle") {
+          seenNonIdle = true;
+        }
+
+        return (
+          current.assistantMessages > before.assistantMessages ||
+          current.errorMessages > before.errorMessages ||
+          (before.progressText !== null &&
+            current.progressText !== null &&
+            current.progressText !== before.progressText) ||
+          (seenNonIdle && status === "Idle")
+        );
+      },
+      {
+        intervals: [250, 500, 1000],
+        timeout: generationTimeout,
+      },
+    )
+    .toBeTruthy();
+}
+
+export async function performAndWaitForGeneration(
+  page: Page,
+  generationTimeout: number,
+  action: () => Promise<unknown>,
+) {
+  return await test.step("Perform action and wait for generation", async () => {
+    const before = await getGenerationSnapshot(page);
+    await action();
+    await waitForGenerationResult(page, before, generationTimeout);
     await expectStreamingStatus(page, "Idle", {
       timeout: generationTimeout,
     });
@@ -52,13 +95,17 @@ export async function continueChat(page: Page) {
 }
 
 export async function isFinished(page: Page) {
-  const progressText = await page.getByTestId("chat-progress").textContent();
+  const progressText = await page
+    .getByTestId("chat-progress")
+    .textContent({ timeout: 2000 })
+    .catch(() => null);
   return progressText === "10 of 10 sections complete";
 }
 
 export async function expectFinished(page: Page) {
   await expect(page.getByTestId("chat-progress")).toHaveText(
     "10 of 10 sections complete",
+    { timeout: 30000 },
   );
 }
 
@@ -86,16 +133,24 @@ export async function expectSectionsComplete(
 
 export type FixtureMode = "record" | "replay";
 
+export type OakModerationFixture =
+  | "clean"
+  | "guidance"
+  | "toxic"
+  | "highly-sensitive";
+
 export const applyLlmFixtures = async (
   page: Page,
   fixtureMode: FixtureMode,
+  oakModerationFixture: OakModerationFixture = "clean",
 ) => {
-  let fixtureName: string;
+  let fixtureName = "";
 
   await page.route("**/api/chat", async (route) => {
     const headers = route.request().headers();
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = fixtureMode;
+    headers["x-e2e-oak-moderation-fixture"] = oakModerationFixture;
     await route.fallback({ headers });
   });
 

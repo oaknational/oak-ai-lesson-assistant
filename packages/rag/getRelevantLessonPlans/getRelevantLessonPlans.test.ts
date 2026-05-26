@@ -4,8 +4,6 @@
  * it's a signal that the RAG logic has changed.
  * In this case, the new functionality should be tested and the snapshots updated.
  */
-import { prisma } from "@oakai/db";
-
 // import OpenAI from "openai";
 import ragFixtures from "../fixtures.json";
 
@@ -17,6 +15,8 @@ async function pgVectorSearch({
   vector: number[];
   limit?: number;
 }): Promise<unknown> {
+  const { prisma } = await import("@oakai/db");
+
   const prismaResult = await prisma.$queryRaw`
       SELECT
         lesson_plan_id,
@@ -69,7 +69,7 @@ describe.skip("RAG search", () => {
 
     expect(prismaResult).toMatchObject([
       {
-        lesson_plan_id: "cm23dy6hl05bjba3ufdd2scad",
+        lesson_plan_id: "cm23dy6hl05bjba3ufdd2scad", // cspell:disable-line -- cuid
         key: "title",
         content: "Inventions of the Industrial Revolution",
         key_stage_slug: "ks3",

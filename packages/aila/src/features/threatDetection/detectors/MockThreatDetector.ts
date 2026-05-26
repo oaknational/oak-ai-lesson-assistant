@@ -1,23 +1,24 @@
-import {
-  AilaThreatDetector,
-  type ThreatDetectionResult,
-} from "./AilaThreatDetector";
+import type {
+  ThreatDetectionMessage,
+  ThreatDetectionResult,
+} from "@oakai/core/src/threatDetection/types";
 
-export class MockThreatDetector extends AilaThreatDetector {
+import type { AilaThreatDetector } from "./AilaThreatDetector";
+
+export class MockThreatDetector implements AilaThreatDetector {
   private readonly _response: boolean;
   constructor({ response }: { response: boolean }) {
-    super();
     this._response = response;
   }
 
-  async authenticate(): Promise<void> {}
-  async detectThreat(): Promise<ThreatDetectionResult> {
+  detectThreat(
+    _content: ThreatDetectionMessage[],
+  ): Promise<ThreatDetectionResult> {
     return Promise.resolve({
+      provider: "mock",
       isThreat: this._response,
       message: "Mocked response",
+      findings: [],
     });
-  }
-  async isThreatError(): Promise<boolean> {
-    return Promise.resolve(false);
   }
 }

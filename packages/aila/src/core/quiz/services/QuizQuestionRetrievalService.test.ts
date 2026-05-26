@@ -1,108 +1,60 @@
-import { prisma } from "@oakai/db";
-
-import type { Client } from "@elastic/elasticsearch";
+import type { PrismaClient } from "@prisma/client";
 
 import { QuizQuestionRetrievalService } from "./QuizQuestionRetrievalService";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {
-    ragLessonPlan: {
-      findUnique: jest.fn(),
-    },
+const createV3Question = (questionText: string) => ({
+  questionType: "multiple-choice" as const,
+  question: questionText,
+  answers: ["Correct"],
+  distractors: ["Wrong"],
+  hint: "Think about it",
+});
+
+const createMockPrisma = () => ({
+  ragLessonPlan: {
+    findUnique: jest.fn(),
   },
-}));
-
-const mockPrisma = prisma as jest.Mocked<typeof prisma>;
-
-// Helper to create valid HasuraQuizQuestion raw_json
-const createValidRawJson = (uid: string, questionText: string) =>
-  JSON.stringify({
-    questionId: parseInt(uid.replace("QUES-", ""), 10) || 1,
-    questionUid: uid,
-    questionType: "multiple-choice",
-    questionStem: [{ text: questionText, type: "text" }],
-    answers: {
-      "multiple-choice": [
-        {
-          answer: [{ text: "Correct", type: "text" }],
-          answer_is_correct: true,
-        },
-        { answer: [{ text: "Wrong", type: "text" }], answer_is_correct: false },
-      ],
-    },
-    feedback: "Good job!",
-    hint: "Think about it",
-    active: true,
-  });
-
-const createMockClient = () => ({
-  search: jest.fn(),
+  ragQuizQuestion: {
+    findMany: jest.fn(),
+  },
 });
 
 describe("QuizQuestionRetrievalService", () => {
   let service: QuizQuestionRetrievalService;
-  let mockClient: { search: jest.Mock };
+  let mockPrisma: ReturnType<typeof createMockPrisma>;
 
   beforeEach(() => {
-    mockClient = createMockClient();
-    service = new QuizQuestionRetrievalService(mockClient as unknown as Client);
+    mockPrisma = createMockPrisma();
+    service = new QuizQuestionRetrievalService(
+      mockPrisma as unknown as PrismaClient,
+    );
     jest.clearAllMocks();
   });
 
   describe("getQuestionsForPlanId", () => {
     it("should lookup lesson slug from Prisma then fetch questions", async () => {
-      (mockPrisma.ragLessonPlan.findUnique as jest.Mock).mockResolvedValue({
+      mockPrisma.ragLessonPlan.findUnique.mockResolvedValue({
         id: "plan-123",
         oakLessonSlug: "algebra-basics-abc123",
       });
 
-      const mockQuizIds = ["QUES-001", "QUES-002"];
-      const mockQuizIdResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: {
-                  starterQuiz: mockQuizIds,
-                  exitQuiz: ["QUES-003"],
-                },
-                metadata: { lessonSlug: "algebra-basics-abc123" },
-              },
-            },
-          ],
-        },
-      };
-
-      const mockQuestionsResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: "Question 1",
-                metadata: {
-                  questionUid: "QUES-001",
-                  lessonSlug: "algebra-basics-abc123",
-                  raw_json: createValidRawJson("QUES-001", "What is 2+2?"),
-                },
-              },
-            },
-            {
-              _source: {
-                text: "Question 2",
-                metadata: {
-                  questionUid: "QUES-002",
-                  lessonSlug: "algebra-basics-abc123",
-                  raw_json: createValidRawJson("QUES-002", "What is 3+3?"),
-                },
-              },
-            },
-          ],
-        },
-      };
-
-      mockClient.search
-        .mockResolvedValueOnce(mockQuizIdResponse)
-        .mockResolvedValueOnce(mockQuestionsResponse);
+      mockPrisma.ragQuizQuestion.findMany
+        .mockResolvedValueOnce([
+          { questionUid: "QUES-001" },
+          { questionUid: "QUES-002" },
+        ])
+        .mockResolvedValueOnce([
+          {
+            questionUid: "QUES-001",
+            quizQuestion: createV3Question("What is 2+2?"),
+            imageMetadata: null,
+          },
+          {
+            questionUid: "QUES-002",
+            quizQuestion: createV3Question("What is 3+3?"),
+            imageMetadata: null,
+          },
+        ]);
 
       const result = await service.getQuestionsForPlanId(
         "plan-123",
@@ -121,9 +73,7 @@ describe("QuizQuestionRetrievalService", () => {
     });
 
     it("should throw when lesson plan not found", async () => {
-      (mockPrisma.ragLessonPlan.findUnique as jest.Mock).mockResolvedValue(
-        null,
-      );
+      mockPrisma.ragLessonPlan.findUnique.mockResolvedValue(null);
 
       await expect(
         service.getQuestionsForPlanId("nonexistent", "/starterQuiz"),
@@ -131,7 +81,7 @@ describe("QuizQuestionRetrievalService", () => {
     });
 
     it("should throw when lesson plan has no oakLessonSlug", async () => {
-      (mockPrisma.ragLessonPlan.findUnique as jest.Mock).mockResolvedValue({
+      mockPrisma.ragLessonPlan.findUnique.mockResolvedValue({
         id: "plan-123",
         oakLessonSlug: null,
       });
@@ -144,31 +94,23 @@ describe("QuizQuestionRetrievalService", () => {
 
   describe("getStarterQuizIds", () => {
     it("should return starter quiz IDs for a lesson slug", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: {
-                  starterQuiz: ["QUES-001", "QUES-002"],
-                  exitQuiz: ["QUES-003"],
-                },
-                metadata: { lessonSlug: "test-lesson" },
-              },
-            },
-          ],
-        },
-      };
-
-      mockClient.search.mockResolvedValue(mockResponse);
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        { questionUid: "QUES-001" },
+        { questionUid: "QUES-002" },
+      ]);
 
       const result = await service.getStarterQuizIds("test-lesson");
 
       expect(result).toEqual(["QUES-001", "QUES-002"]);
+      expect(mockPrisma.ragQuizQuestion.findMany).toHaveBeenCalledWith({
+        where: { lessonSlug: "test-lesson", quizType: "starterQuiz" },
+        select: { questionUid: true },
+        orderBy: { questionPosition: "asc" },
+      });
     });
 
     it("should return empty array when no quiz found", async () => {
-      mockClient.search.mockResolvedValue({ hits: { hits: [] } });
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([]);
 
       const result = await service.getStarterQuizIds("nonexistent-lesson");
 
@@ -178,58 +120,38 @@ describe("QuizQuestionRetrievalService", () => {
 
   describe("getExitQuizIds", () => {
     it("should return exit quiz IDs for a lesson slug", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: {
-                  starterQuiz: ["QUES-001"],
-                  exitQuiz: ["QUES-002", "QUES-003"],
-                },
-                metadata: { lessonSlug: "test-lesson" },
-              },
-            },
-          ],
-        },
-      };
-
-      mockClient.search.mockResolvedValue(mockResponse);
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        { questionUid: "QUES-002" },
+        { questionUid: "QUES-003" },
+      ]);
 
       const result = await service.getExitQuizIds("test-lesson");
 
       expect(result).toEqual(["QUES-002", "QUES-003"]);
+      expect(mockPrisma.ragQuizQuestion.findMany).toHaveBeenCalledWith({
+        where: { lessonSlug: "test-lesson", quizType: "exitQuiz" },
+        select: { questionUid: true },
+        orderBy: { questionPosition: "asc" },
+      });
     });
   });
 
   describe("retrieveQuestionsByIds", () => {
     it("should retrieve and parse questions in input order", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                metadata: {
-                  questionUid: "QUES-002",
-                  raw_json: createValidRawJson("QUES-002", "Second question"),
-                },
-              },
-            },
-            {
-              _source: {
-                metadata: {
-                  questionUid: "QUES-001",
-                  raw_json: createValidRawJson("QUES-001", "First question"),
-                },
-              },
-            },
-          ],
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        {
+          questionUid: "QUES-002",
+          quizQuestion: createV3Question("Second question"),
+          imageMetadata: null,
         },
-      };
+        {
+          questionUid: "QUES-001",
+          quizQuestion: createV3Question("First question"),
+          imageMetadata: null,
+        },
+      ]);
 
-      mockClient.search.mockResolvedValue(mockResponse);
-
-      // Request in specific order - should be preserved despite ES returning different order
+      // Request in specific order — should be preserved despite Prisma returning different order
       const result = await service.retrieveQuestionsByIds([
         "QUES-001",
         "QUES-002",
@@ -243,38 +165,58 @@ describe("QuizQuestionRetrievalService", () => {
     });
 
     it("should return empty array when no questions found", async () => {
-      mockClient.search.mockResolvedValue({ hits: { hits: [] } });
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([]);
 
       const result = await service.retrieveQuestionsByIds(["QUES-NONEXISTENT"]);
 
       expect(result).toEqual([]);
     });
 
-    it("should filter out questions with invalid raw_json", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                metadata: {
-                  questionUid: "QUES-001",
-                  raw_json: createValidRawJson("QUES-001", "Valid question"),
-                },
-              },
-            },
-            {
-              _source: {
-                metadata: {
-                  questionUid: "QUES-002",
-                  raw_json: "invalid json {{{",
-                },
-              },
-            },
-          ],
-        },
-      };
+    it("should return empty array for empty input", async () => {
+      const result = await service.retrieveQuestionsByIds([]);
 
-      mockClient.search.mockResolvedValue(mockResponse);
+      expect(result).toEqual([]);
+      expect(mockPrisma.ragQuizQuestion.findMany).not.toHaveBeenCalled();
+    });
+
+    it("should include imageMetadata when available", async () => {
+      const v3ImageMetadata = [
+        {
+          imageUrl: "http://example.com/img.png",
+          attribution: "Test",
+          width: 800,
+          height: 600,
+        },
+      ];
+
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        {
+          questionUid: "QUES-V3",
+          quizQuestion: createV3Question("Question with image"),
+          imageMetadata: v3ImageMetadata,
+        },
+      ]);
+
+      const result = await service.retrieveQuestionsByIds(["QUES-V3"]);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]!.question.question).toBe("Question with image");
+      expect(result[0]!.imageMetadata).toEqual(v3ImageMetadata);
+    });
+
+    it("should filter out questions with null quizQuestion", async () => {
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        {
+          questionUid: "QUES-001",
+          quizQuestion: createV3Question("Valid question"),
+          imageMetadata: null,
+        },
+        {
+          questionUid: "QUES-002",
+          quizQuestion: null,
+          imageMetadata: null,
+        },
+      ]);
 
       const result = await service.retrieveQuestionsByIds([
         "QUES-001",
@@ -288,43 +230,23 @@ describe("QuizQuestionRetrievalService", () => {
 
   describe("hasStarterQuiz / hasExitQuiz", () => {
     it("hasStarterQuiz should return true when quiz exists", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: { starterQuiz: ["QUES-001"], exitQuiz: [] },
-              },
-            },
-          ],
-        },
-      };
-
-      mockClient.search.mockResolvedValue(mockResponse);
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        { questionUid: "QUES-001" },
+      ]);
 
       expect(await service.hasStarterQuiz("test-lesson")).toBe(true);
     });
 
     it("hasStarterQuiz should return false when no quiz", async () => {
-      mockClient.search.mockResolvedValue({ hits: { hits: [] } });
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([]);
 
       expect(await service.hasStarterQuiz("test-lesson")).toBe(false);
     });
 
     it("hasExitQuiz should return true when quiz exists", async () => {
-      const mockResponse = {
-        hits: {
-          hits: [
-            {
-              _source: {
-                text: { starterQuiz: [], exitQuiz: ["QUES-001"] },
-              },
-            },
-          ],
-        },
-      };
-
-      mockClient.search.mockResolvedValue(mockResponse);
+      mockPrisma.ragQuizQuestion.findMany.mockResolvedValue([
+        { questionUid: "QUES-001" },
+      ]);
 
       expect(await service.hasExitQuiz("test-lesson")).toBe(true);
     });

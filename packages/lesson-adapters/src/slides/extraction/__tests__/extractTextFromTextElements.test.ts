@@ -88,7 +88,7 @@ describe("extractTextFromTextElements", () => {
     expect(result).toBe("Text here");
   });
 
-  it("preserves internal newlines but trims outer whitespace", () => {
+  it("preserves all whitespace including newlines", () => {
     const textElements: GoogleSlidesTextElement[] = [
       {
         textRun: {
@@ -122,6 +122,6 @@ describe("extractTextFromTextElements", () => {
     ];
 
     const result = extractTextFromTextElements(textElements);
-    expect(result).toBe("Bullet point text");
+    expect(result).toBe("Bullet point text\n");
   });
 });

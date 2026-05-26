@@ -84,6 +84,7 @@ const createQuizWithImages = (): LatestQuiz => ({
       attribution: "Public domain",
       width: 100,
       height: 100,
+      aiDescription: "A right triangle with sides labeled 3cm, 4cm, and 5cm",
     },
   ],
 });
@@ -250,24 +251,6 @@ describe("CurrentQuizSource", () => {
       expect(result[0]!.questions[0]!.question.question).toBe(
         "Exit quiz question",
       );
-    });
-  });
-
-  describe("source field", () => {
-    it("should not include Hasura source (questions come from lesson plan, not database)", async () => {
-      const lessonPlan: PartialLessonPlan = {
-        title: "My Lesson",
-        starterQuiz: createMultipleChoiceQuiz(),
-      };
-
-      const result = await source.getStarterQuizCandidates(
-        lessonPlan,
-        [],
-        createMockTask(),
-      );
-
-      expect(result[0]!.questions[0]!.source).toBeUndefined();
-      expect(result[0]!.questions[1]!.source).toBeUndefined();
     });
   });
 });

@@ -21,3 +21,15 @@ export async function bypassVercelProtection(page: Page | BrowserContext) {
     await route.continue({ headers });
   });
 }
+
+export async function warmVercelPreview(page: Page) {
+  await bypassVercelProtection(page);
+
+  for (const path of ["/", "/aila"]) {
+    await page.goto(`${TEST_BASE_URL}${path}`, {
+      // cspell:disable-next-line
+      waitUntil: "domcontentloaded",
+      timeout: 60000,
+    });
+  }
+}

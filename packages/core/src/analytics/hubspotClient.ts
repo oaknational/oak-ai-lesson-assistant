@@ -1,5 +1,3 @@
-import { aiLogger } from "@oakai/logger";
-
 import { Client } from "@hubspot/api-client";
 import { ApiException } from "@hubspot/api-client/lib/codegen/crm/contacts/apis/exception";
 import type { SimplePublicObject } from "@hubspot/api-client/lib/codegen/crm/contacts/models/SimplePublicObject";
@@ -10,7 +8,6 @@ if (!accessToken) {
 }
 
 const hubspotClient = new Client({ accessToken });
-const log = aiLogger("analytics");
 
 interface CreateHubspotCustomerInput {
   email: string;

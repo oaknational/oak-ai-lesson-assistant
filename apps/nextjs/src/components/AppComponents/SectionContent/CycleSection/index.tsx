@@ -7,7 +7,6 @@ import {
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
 import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 import { sectionToMarkdown } from "@oakai/aila/src/protocol/sectionToMarkdown";
-import { aiLogger } from "@oakai/logger";
 
 import { OakBox, OakHeading } from "@oaknational/oak-components";
 import { MathJax } from "better-react-mathjax";
@@ -15,8 +14,6 @@ import { MathJax } from "better-react-mathjax";
 import { MemoizedReactMarkdownWithStyles } from "@/components/AppComponents/Chat/markdown";
 
 import { MultipleChoiceQuestion } from "../QuizSection/MultipleChoiceQuestion";
-
-const log = aiLogger("ui");
 
 export type CycleSectionProps = {
   cycleSection: LessonPlanSectionWhileStreaming;

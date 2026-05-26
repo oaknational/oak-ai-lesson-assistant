@@ -9,6 +9,7 @@
  */
 
 export { LakeraClient, type LakeraClientConfig } from "./LakeraClient";
+export { toLakeraThreatDetectionResult } from "./toThreatDetectionResult";
 export {
   lakeraGuardRequestSchema,
   lakeraGuardResponseSchema,

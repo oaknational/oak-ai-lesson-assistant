@@ -1,4 +1,5 @@
 export { exportDocLessonPlan } from "./src/exportDocLessonPlan";
+export type { ContentGuidanceCategory } from "./src/dataHelpers/prepLessonPlanForDocs";
 export { exportSlidesFullLesson } from "./src/exportSlidesFullLesson";
 export { exportDocQuiz } from "./src/exportDocQuiz";
 export { downloadDriveFile } from "./src/downloadDriveFile";

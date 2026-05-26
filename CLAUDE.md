@@ -34,6 +34,10 @@
 - **AI Integration**: OpenAI, Langchain, Claude
 - **Authentication**: Clerk
 
+## Agentic System
+
+The agentic lesson generation pipeline lives in `packages/aila/src/lib/agentic-system/`. After changing files in the `agents/` or `execution/` folders, run `/score-agentic` before committing. A CI check will fail if the scoring report is stale.
+
 ## Additional Documentation
 
 For detailed information on commands, git workflow, code style, and task management, see `.claude/skills/` directory.

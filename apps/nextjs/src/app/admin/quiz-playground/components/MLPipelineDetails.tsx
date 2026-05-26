@@ -17,7 +17,7 @@ import { QuestionCard } from "./QuestionCard";
  */
 interface QueryTermData {
   query: string;
-  elasticsearchHits: Array<{
+  searchHits: Array<{
     questionUid: string;
     text: string;
     score: number;
@@ -62,12 +62,12 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
     const queryNode = reportNode.children[key];
     if (!queryNode) continue;
 
-    const esNode = queryNode.children.elasticsearch;
+    const searchNode = queryNode.children.search;
     const cohereNode = queryNode.children.cohere;
 
-    // Extract ES hits
-    const esHits =
-      (esNode?.data.hitsWithScores as Array<{
+    // Extract search hits (Postgres vector search)
+    const searchHits =
+      (searchNode?.data.hitsWithScores as Array<{
         questionUid: string;
         text: string;
         score: number;
@@ -90,9 +90,9 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
     terms.push({
       query:
         (queryNode.data.query as string) ??
-        (esNode?.data.query as string) ??
+        (searchNode?.data.query as string) ??
         "",
-      elasticsearchHits: esHits,
+      searchHits,
       cohereResults,
       finalCandidates,
       timingMs: queryNode.durationMs ?? 0,
@@ -103,7 +103,7 @@ function extractQueryTerms(reportNode: ReportNode): QueryTermData[] {
 }
 
 export function MLPipelineDetails({
-  result,
+  result: _result,
   reportNode,
 }: Readonly<MLPipelineDetailsProps>) {
   const searchTerms = extractQueryTerms(reportNode);
@@ -133,12 +133,12 @@ function SearchTermAccordion({
   index: number;
 }>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [showAllES, setShowAllES] = useState(false);
+  const [showAllSearch, setShowAllSearch] = useState(false);
   const [showAllCohere, setShowAllCohere] = useState(false);
 
-  const displayedESHits = showAllES
-    ? term.elasticsearchHits
-    : term.elasticsearchHits.slice(0, 6);
+  const displayedSearchHits = showAllSearch
+    ? term.searchHits
+    : term.searchHits.slice(0, 6);
   const displayedCohereResults = showAllCohere
     ? term.cohereResults
     : term.cohereResults.slice(0, 6);
@@ -166,17 +166,17 @@ function SearchTermAccordion({
 
       {isOpen && (
         <div className="space-y-6 border-t p-4">
-          {/* Elasticsearch Results */}
+          {/* Search Results */}
           <section>
             <h4 className="mb-2 font-medium">
-              Elasticsearch Hits ({term.elasticsearchHits.length} total)
+              Search Hits ({term.searchHits.length} total)
             </h4>
             <LearnBlock>
               <p className="text-sm text-gray-600">
-                These are the raw results from Elasticsearch hybrid search. The
-                score combines BM25 text relevance (keyword matching) with
-                vector similarity (semantic meaning). Higher scores indicate
-                better matches to the search query.
+                These are the raw results from pgvector cosine similarity
+                search. The score represents how semantically similar each
+                question is to the search query. Higher scores indicate better
+                matches.
               </p>
             </LearnBlock>
             <div className="overflow-x-auto">
@@ -190,7 +190,7 @@ function SearchTermAccordion({
                   </tr>
                 </thead>
                 <tbody>
-                  {displayedESHits.map((hit, i) => (
+                  {displayedSearchHits.map((hit, i) => (
                     <tr
                       key={hit.questionUid}
                       className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -212,14 +212,14 @@ function SearchTermAccordion({
                 </tbody>
               </table>
             </div>
-            {term.elasticsearchHits.length > 10 && (
+            {term.searchHits.length > 10 && (
               <button
-                onClick={() => setShowAllES(!showAllES)}
+                onClick={() => setShowAllSearch(!showAllSearch)}
                 className="text-blue-600 mt-2 text-sm hover:underline"
               >
-                {showAllES
+                {showAllSearch
                   ? "Show less"
-                  : `Show all ${term.elasticsearchHits.length}`}
+                  : `Show all ${term.searchHits.length}`}
               </button>
             )}
           </section>

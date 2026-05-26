@@ -1,16 +1,17 @@
-import { isToxic } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
+import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import { type PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
-import { performLakeraThreatCheck } from "@oakai/teaching-materials/src/threatDetection/lakeraThreatCheck";
+import { performThreatCheck } from "@oakai/teaching-materials/src/threatDetection/performThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 
 import type { PartialLessonPlan } from "../../../../aila/src/protocol/schema";
-import { getMockModerationResult } from "./moderationFixtures";
 import { recordSafetyViolation } from "./safetyUtils";
 
 const log = aiLogger("teaching-materials");
@@ -54,7 +55,7 @@ export async function generatePartialLessonPlan({
     { role: "user" as const, content: `${input.subject} - ${input.title}` },
   ];
 
-  const lakeraResult = await performLakeraThreatCheck({
+  const threatDetection = await performThreatCheck({
     messages,
   });
 
@@ -67,10 +68,28 @@ export async function generatePartialLessonPlan({
     throw new Error("Failed to generate lesson plan");
   }
 
-  const moderation = await generateTeachingMaterialModeration({
-    input: JSON.stringify(lesson),
-    provider: "openai",
-  });
+  const useOakService =
+    process.env.OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY === "true";
+
+  let moderation: ModerationResult;
+  if (useOakService) {
+    const baseUrl = process.env.MODERATION_API_URL;
+    if (!baseUrl) {
+      throw new Error(
+        "MODERATION_API_URL is required when OAK_MODERATION_TEACHING_MATERIALS_V1_PRIMARY is enabled",
+      );
+    }
+    moderation = await moderateWithOakService(JSON.stringify(lesson), {
+      baseUrl,
+      protectionBypassSecret:
+        process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
+    });
+  } else {
+    moderation = await generateTeachingMaterialModeration({
+      input: JSON.stringify(lesson),
+      provider: "openai",
+    });
+  }
 
   const interaction = await prisma.additionalMaterialInteraction.create({
     data: {
@@ -83,8 +102,9 @@ export async function generatePartialLessonPlan({
       output: lesson,
       outputModeration: moderation,
       inputThreatDetection: {
-        flagged: lakeraResult.flagged,
-        metadata: lakeraResult,
+        flagged: threatDetection.isThreat,
+        provider: threatDetection.provider,
+        metadata: threatDetection.rawResponse,
       },
     },
   });
@@ -107,7 +127,7 @@ export async function generatePartialLessonPlan({
     };
   }
 
-  if (lakeraResult.flagged) {
+  if (threatDetection.isThreat) {
     await recordSafetyViolation({
       prisma,
       auth,
@@ -115,7 +135,7 @@ export async function generatePartialLessonPlan({
       violationType: "THREAT",
       userAction: "PARTIAL_LESSON_GENERATION",
       messages: messages,
-      threatDetection: lakeraResult,
+      threatDetection,
     });
 
     return {

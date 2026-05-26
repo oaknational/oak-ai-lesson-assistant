@@ -8,7 +8,11 @@ import * as Sentry from "@sentry/nextjs";
 
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";
-import { getExistingExportData, getUserEmail } from "./exportHelpers";
+import {
+  getExistingExportData,
+  getLessonPlanCacheKeyInput,
+  getUserEmail,
+} from "./exportHelpers";
 
 const log = aiLogger("exports");
 
@@ -26,7 +30,15 @@ export async function exportLessonPlan({
     prisma: PrismaClientWithAccelerate;
   };
 }) {
-  const userEmail = await getUserEmail(ctx);
+  const [userEmail, { cacheKeyInput, contentGuidanceCategories }] =
+    await Promise.all([
+      getUserEmail(ctx),
+      getLessonPlanCacheKeyInput({
+        prisma: ctx.prisma,
+        chatId: input.chatId,
+      }),
+    ]);
+
   if (!userEmail) {
     return {
       error: new Error("User email not found"),
@@ -40,26 +52,26 @@ export async function exportLessonPlan({
     ctx,
     input,
     exportType,
+    cacheKeyInput,
   });
 
   if (exportData) {
     return exportData;
   }
 
-  /**
-   * User hasn't yet exported the lesson in this state, so we'll do it now
-   * and store the result in the database
-   */
-
   const result = await exportDocLessonPlan({
     snapshotId: lessonSnapshot.id,
     lessonPlan: input.data,
     userEmail,
+    contentGuidanceCategories:
+      contentGuidanceCategories.length > 0
+        ? contentGuidanceCategories
+        : undefined,
     onStateChange: (state) => {
       log.info(state);
 
       Sentry.addBreadcrumb({
-        category: "exportWorksheetDocs",
+        category: "exportLessonPlanDoc",
         message: "Export state change",
         data: state,
       });

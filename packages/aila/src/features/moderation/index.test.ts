@@ -6,11 +6,16 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { AilaModeration } from ".";
 import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
+import type { LLMService } from "../../core/llm/LLMService";
 import type { AilaPlugin } from "../../core/plugins";
 import type { AilaChatInitializationOptions } from "../../core/types";
 import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";
+
+jest.mock("@oakai/db", () => ({
+  prisma: {},
+}));
 
 // Ensure that no tests start relying on prisma
 const prismaMock = {} as PrismaClientWithAccelerate;
@@ -41,6 +46,17 @@ const setUpModeration = ({
       useModeration: true,
       usePersistence: false,
       useAnalytics: false,
+    },
+    services: {
+      chatLlmService: {
+        name: "mock-llm-service",
+        createChatCompletionStream: jest.fn(),
+        createChatCompletionObjectStream: jest.fn(),
+      } as unknown as LLMService,
+      chatCategoriser: {
+        categorise: jest.fn(),
+      },
+      oakModerator: moderator,
     },
     moderator,
     prisma: prismaMock,
@@ -81,7 +97,7 @@ describe("AilaModeration", () => {
         userId: "456",
         messages,
       };
-      const content = {};
+      const content = { title: "Test Lesson" };
 
       const { ailaModeration, pluginContext } = setUpModeration({
         document: {
@@ -102,6 +118,83 @@ describe("AilaModeration", () => {
         categories: moderationResult.categories,
         id: undefined, // Because we are not persisting
       });
+    });
+
+    it("passes session and assistant message identifiers to the moderator", async () => {
+      const moderationResult: ModerationResult = {
+        categories: [],
+      };
+      const moderator = new MockModerator([moderationResult]);
+      const moderateSpy = jest.spyOn(moderator, "moderate");
+
+      const messages: Message[] = [
+        { id: "user-message-1", role: "user", content: "test user message" },
+        {
+          id: "assistant-message-1",
+          role: "assistant",
+          content: "test assistant message",
+        },
+      ];
+      const chat = {
+        id: "session-1",
+        userId: "user-1",
+        messages,
+      };
+      const content = { title: "Test Lesson" };
+
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document: {
+          content,
+        },
+        chat,
+        moderator,
+      });
+
+      await ailaModeration.moderate({
+        messages,
+        content,
+        pluginContext,
+      });
+
+      expect(moderateSpy).toHaveBeenCalledWith(JSON.stringify(content), {
+        sessionId: "session-1",
+        messageId: "assistant-message-1",
+      });
+    });
+
+    it("should skip moderation call when document content is empty", async () => {
+      const moderationResult: ModerationResult = {
+        categories: ["l/strong-language"],
+        justification: "Test justification",
+      };
+      const moderator = new MockModerator([moderationResult]);
+      const moderateSpy = jest.spyOn(moderator, "moderate");
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+      const content = {};
+
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document: { content },
+        chat,
+        moderator,
+      });
+
+      const result = await ailaModeration.moderate({
+        messages,
+        content,
+        pluginContext,
+      });
+
+      expect(moderateSpy).not.toHaveBeenCalled();
+      expect(result).toEqual({ type: "moderation", categories: [] });
     });
 
     it("should skip moderation when there are no user messages", async () => {
@@ -137,8 +230,41 @@ describe("AilaModeration", () => {
       });
     });
 
+    it("should simulate a highly sensitive input with a special code from the user", async () => {
+      const specialCode = "oak-hs";
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: specialCode },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+
+      const document = { content: {} };
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document,
+        chat,
+        moderator: new MockModerator([]),
+      });
+
+      const result = await ailaModeration.moderate({
+        messages,
+        content: document.content,
+        pluginContext,
+      });
+
+      expect(result).toEqual({
+        type: "moderation",
+        id: undefined,
+        categories: ["n/self-harm-suicide"],
+      });
+    });
+
     it("should simulate a toxic input with a special code from the user", async () => {
-      const specialCode = "mod:tox";
+      const specialCode = "oak-tox";
 
       const messages: Message[] = [
         { id: "1", role: "user", content: specialCode },
@@ -166,8 +292,105 @@ describe("AilaModeration", () => {
       expect(result).toEqual({
         type: "moderation",
         id: undefined, // We are not testing persistence
-        categories: ["t/encouragement-violence"],
+        categories: ["t/encourages-violence-harm-others"],
       });
+    });
+
+    it("should detect toxic Oak Moderation Service categories", async () => {
+      const moderationResult: ModerationResult = {
+        categories: ["t/encourages-violence-harm-others"],
+      };
+      const moderator = new MockModerator([moderationResult]);
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+
+      const moderations = {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        create: jest.fn((mod) => ({ id: "ABC", ...mod })),
+      } as unknown as Moderations;
+      const mockPlugin = {
+        onToxicModeration: jest.fn(() => {}),
+      } as unknown as AilaPlugin;
+
+      const document = { content: { title: "Test Lesson" } };
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document,
+        chat,
+        moderator,
+        forcePersistence: true,
+        moderations,
+        plugins: [mockPlugin],
+      });
+
+      await ailaModeration.moderate({
+        messages,
+        content: document.content,
+        pluginContext,
+      });
+
+      expect(mockPlugin.onToxicModeration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          categories: ["t/encourages-violence-harm-others"],
+        }),
+        pluginContext,
+      );
+    });
+
+    it("calls onHighlySensitiveModeration (not onToxicModeration) for n/ categories", async () => {
+      const moderationResult: ModerationResult = {
+        categories: ["n/self-harm-suicide"],
+      };
+      const moderator = new MockModerator([moderationResult]);
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+      const moderations = {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        create: jest.fn((mod) => ({ id: "ABC", ...mod })),
+      } as unknown as Moderations;
+      const mockPlugin = {
+        onToxicModeration: jest.fn(() => {}),
+        onHighlySensitiveModeration: jest.fn(() => {}),
+      } as unknown as AilaPlugin;
+
+      const document = { content: { title: "Test Lesson" } };
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document,
+        chat,
+        moderator,
+        forcePersistence: true,
+        moderations,
+        plugins: [mockPlugin],
+      });
+
+      await ailaModeration.moderate({
+        messages,
+        content: document.content,
+        pluginContext,
+      });
+
+      expect(mockPlugin.onHighlySensitiveModeration).toHaveBeenCalledWith(
+        expect.objectContaining({
+          categories: ["n/self-harm-suicide"],
+        }),
+        pluginContext,
+      );
+      expect(mockPlugin.onToxicModeration).not.toHaveBeenCalled();
     });
 
     it("calls any Aila plugins on a toxic moderation", async () => {
@@ -194,7 +417,7 @@ describe("AilaModeration", () => {
         onToxicModeration: jest.fn(() => {}),
       } as unknown as AilaPlugin;
 
-      const document = { content: {} };
+      const document = { content: { title: "Test Lesson" } };
       const { ailaModeration, pluginContext } = setUpModeration({
         document,
         chat,

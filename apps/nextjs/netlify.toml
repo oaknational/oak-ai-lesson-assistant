@@ -1,15 +1,3 @@
-
-[[context.production.plugins]]
-package = "./apps/nextjs/plugins/netlify-plugin-oak-inngest"
-  [context.production.plugins.inputs]
-  host = "https://labs.thenational.academy"
-  path = "/api/inngest"
-
-[[context.deploy-preview.plugins]]
-package = "./apps/nextjs/plugins/netlify-plugin-oak-inngest"
-  [context.deploy-preview.plugins.inputs]
-  path = "/api/inngest"
-
 # Force all access through the managed TLD (default). HTTP
 [[redirects]]
 from = 'http://oak-ai-beta.netlify.app/*'

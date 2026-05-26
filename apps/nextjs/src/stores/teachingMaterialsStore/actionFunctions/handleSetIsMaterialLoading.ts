@@ -4,13 +4,13 @@ import type {
 } from "../types";
 
 const handleSetIsMaterialLoading =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (isLoading: boolean) => {
     set({ isMaterialLoading: isLoading });
   };
 
 export const handleSetIsMaterialRefining =
-  (set: TeachingMaterialsSetter, get: TeachingMaterialsGetter) =>
+  (set: TeachingMaterialsSetter, _get: TeachingMaterialsGetter) =>
   (isRefining: boolean) => {
     set({ isMaterialRefining: isRefining });
   };

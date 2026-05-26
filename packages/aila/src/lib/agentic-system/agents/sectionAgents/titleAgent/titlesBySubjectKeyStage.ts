@@ -1,3 +1,4 @@
+/* cspell:disable -- multilingual lesson title fixture data */
 export const titlesBySubjectKeyStage: Record<
   string,
   Record<string, string[] | undefined> | undefined

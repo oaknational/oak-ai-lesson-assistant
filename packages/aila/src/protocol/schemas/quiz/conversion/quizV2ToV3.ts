@@ -30,9 +30,9 @@ export const convertQuizV2ToV3 = (quizV2: QuizV2): QuizV3 => {
     imageMetadata: quizV2.imageAttributions.map((attr) => ({
       imageUrl: attr.imageUrl,
       attribution: attr.attribution,
-      // Dummy dimensions for pre-production content
       width: 800,
       height: 600,
+      aiDescription: "",
     })),
   };
 };

@@ -1,4 +1,4 @@
-import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getSafetyResult } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 
 import invariant from "tiny-invariant";
 

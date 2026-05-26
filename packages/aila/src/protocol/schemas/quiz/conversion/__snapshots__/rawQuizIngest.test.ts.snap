@@ -4,12 +4,14 @@ exports[`convertHasuraQuizToV3 should convert Hasura quiz to V3 format 1`] = `
 {
   "imageMetadata": [
     {
+      "aiDescription": "",
       "attribution": "Photo by John Doe on Unsplash",
       "height": 768,
       "imageUrl": "https://example.com/dog.jpg",
       "width": 1024,
     },
     {
+      "aiDescription": "",
       "attribution": "Image © Example Inc",
       "height": 480,
       "imageUrl": "https://example.com/cat.jpg",

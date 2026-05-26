@@ -318,6 +318,7 @@ function HomePageHero({ pageData }: HomePageProps) {
           >
             <StyledMuxPlayer
               playbackId={pageData?.heroVideo.video.asset.playbackId}
+              thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
             />
           </OakBoxCustomMaxWidth>
 
@@ -340,6 +341,7 @@ function HomePageHero({ pageData }: HomePageProps) {
         >
           <StyledMuxPlayer
             playbackId={pageData?.heroVideo.video.asset.playbackId}
+            thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
           />
         </OakFlexCustomMaxWidthWithHalfWidth>
       </OakFlex>
@@ -370,7 +372,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         >
           <StyledMuxPlayer
             playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
-            thumbnailTime={3.67}
+            thumbnailTime={pageData?.belowTheFoldVideo.video.asset.thumbTime}
           />
         </OakBoxCustomMaxWidth>
         <OakP $font={"body-2"}>
@@ -446,7 +448,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
                 playbackId={
                   pageData?.belowTheFoldVideo2?.video.asset.playbackId
                 }
-                thumbnailTime={51}
+                thumbnailTime={
+                  pageData?.belowTheFoldVideo2?.video.asset.thumbTime
+                }
               />
             </OakBoxCustomMaxWidth>
           )}

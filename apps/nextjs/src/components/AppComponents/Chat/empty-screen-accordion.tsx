@@ -1,36 +1,53 @@
 import React from "react";
 
-import { OakBox } from "@oaknational/oak-components";
 import * as Accordion from "@radix-ui/react-accordion";
 
-import { lessonSections } from "@/ai-apps/lesson-planner/lessonSection";
 import { Icon } from "@/components/Icon";
 import AiIcon from "@/components/SVGParts/AiIcon";
 import LessonIcon from "@/components/SVGParts/LessonIcon";
 import QuizIcon from "@/components/SVGParts/QuizIcon";
 import SlidesIcon from "@/components/SVGParts/SlidesIcon";
 
-import { handleRewordingSections } from "./export-buttons";
+const lessonPlanItems = [
+  "Learning outcome",
+  "Learning cycle outcomes",
+  "Suggested prior knowledge",
+  "Key learning points",
+  "Misconceptions & common errors",
+  "Keywords",
+  "Prior knowledge starter quiz",
+  "Learning cycles",
+  "Assessment exit quiz",
+];
+
+const slideDeckItems = [
+  "Prior knowledge starter quiz",
+  "Outcome",
+  "Keywords",
+  "Lesson outline",
+  "Learning cycles",
+  "Assessment exit quiz",
+  "Useful slide graphics",
+];
+
+const quizItems = ["Prior knowledge starter quiz", "Assessment exit quiz"];
+
+const worksheetItems = ["Practice tasks"];
+
+function SectionList({ items }: { readonly items: readonly string[] }) {
+  return (
+    <div className="flex flex-col gap-8 pl-20">
+      {items.map((item) => (
+        <div className="flex items-center gap-8" key={item}>
+          <Icon icon="tick" size="sm" />
+          <span className="text-base">{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const EmptyScreenAccordion = () => {
-  const slidesLessonSections = lessonSections.filter(
-    (section) =>
-      ![
-        "Title",
-        "Key stage",
-        "Subject",
-        "Prior knowledge",
-        "Key learning points",
-        "Misconceptions",
-        "Starter quiz",
-        "Exit quiz",
-      ].includes(section),
-  );
-
-  const quizLessonSections = lessonSections.filter(
-    (section) => !["Title", "Key stage", "Subject"].includes(section),
-  );
-
   return (
     <Accordion.Root type="single" collapsible>
       <AccordionItem value="item-1">
@@ -38,28 +55,7 @@ const EmptyScreenAccordion = () => {
           <AiIcon />1 lesson plan
         </AccordionTrigger>
         <AccordionContent>
-          <div className="flex flex-col gap-8 pl-20">
-            {lessonSections.map((section) => {
-              if (
-                section === "Title" ||
-                section === "Key stage" ||
-                section === "Subject"
-              ) {
-                return null;
-              }
-              return (
-                <div className="flex items-center gap-8" key={section}>
-                  <Icon icon="tick" size="sm" />
-
-                  <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <SectionList items={lessonPlanItems} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
@@ -67,27 +63,7 @@ const EmptyScreenAccordion = () => {
           <SlidesIcon />1 slide deck
         </AccordionTrigger>
         <AccordionContent>
-          <div className="flex flex-col gap-8 pl-20">
-            {slidesLessonSections.map((section) => {
-              if (
-                section == "Title" ||
-                section == "Key stage" ||
-                section == "Subject"
-              ) {
-                return null;
-              }
-              return (
-                <div className="flex items-center gap-8" key={section}>
-                  <Icon icon="tick" size="sm" />
-                  <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <SectionList items={slideDeckItems} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
@@ -95,35 +71,16 @@ const EmptyScreenAccordion = () => {
           <QuizIcon />2 quizzes
         </AccordionTrigger>
         <AccordionContent>
-          <div className="flex flex-col gap-8 pl-20">
-            {quizLessonSections.map((section) => {
-              if (
-                section == "Title" ||
-                section == "Key stage" ||
-                section == "Subject"
-              ) {
-                return null;
-              }
-              return (
-                <div className="flex items-center gap-8" key={section}>
-                  <Icon icon="tick" size="sm" />
-                  <span className="text-base">
-                    {convertTitleCaseToSentenceCase(
-                      handleRewordingSections(section),
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          <SectionList items={quizItems} />
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-4">
-        <div className="flex w-full items-center justify-between">
-          <span className="flex w-full items-center gap-10 text-left text-base font-bold">
-            <LessonIcon />1 worksheet
-          </span>
-        </div>
+        <AccordionTrigger>
+          <LessonIcon />1 worksheet
+        </AccordionTrigger>
+        <AccordionContent>
+          <SectionList items={worksheetItems} />
+        </AccordionContent>
       </AccordionItem>
     </Accordion.Root>
   );
@@ -187,8 +144,3 @@ const AccordionContent = React.forwardRef<
 AccordionContent.displayName = "AccordionContent";
 
 export default EmptyScreenAccordion;
-
-function convertTitleCaseToSentenceCase(titleCase: string) {
-  const lowerCaseTitle = titleCase.toLowerCase();
-  return lowerCaseTitle.charAt(0).toUpperCase() + lowerCaseTitle.slice(1);
-}

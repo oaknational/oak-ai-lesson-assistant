@@ -5,10 +5,8 @@ import {
   chatWithNullLessonPlan,
   chatWithStringLessonPlan,
   chatWithV1Quiz,
-  chatWithV2Quiz,
   chatWithV3Quiz,
   invalidChatData,
-  mockV2Quiz,
 } from "./fixtures/migrationTestData";
 import { migrateChatData } from "./migrateChatData";
 
@@ -75,7 +73,7 @@ describe("migrateChatData", () => {
       const mockError = new Error("Persistence failed");
       const mockPersist = jest
         .fn<(chatData: unknown) => Promise<void>>()
-        .mockImplementation(async () => {
+        .mockImplementation(() => {
           throw mockError;
         });
 

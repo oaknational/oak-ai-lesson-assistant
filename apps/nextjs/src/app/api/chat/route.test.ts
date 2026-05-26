@@ -6,7 +6,7 @@ import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categor
 import { NextRequest } from "next/server";
 
 import { handleChatPostRequest } from "./chatHandler";
-import type { Config } from "./config";
+import type { Config } from "./configTypes";
 
 const chatId = "test-chat-id";
 const userId = "test-user-id";
@@ -15,10 +15,23 @@ jest.mock("./user", () => ({
   fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
 }));
 
+jest.mock("@oakai/db", () => ({
+  prisma: {},
+}));
+
 // Mock the serverSideFeatureFlag module
 jest.mock("@/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
 }));
+
+jest.mock(
+  "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector",
+  () => ({
+    ModelArmorThreatDetector: jest.fn().mockImplementation(() => ({
+      detectThreat: jest.fn(),
+    })),
+  }),
+);
 
 describe("Chat API Route", () => {
   let testConfig: Config;
@@ -68,8 +81,12 @@ describe("Chat API Route", () => {
             return ailaInstance;
           },
         ),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      prisma: {} as any,
+      prisma: {
+        appSession: {
+          findUnique: jest.fn().mockResolvedValue(null),
+          update: jest.fn(),
+        },
+      } as unknown as Config["prisma"],
     };
   });
 

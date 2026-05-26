@@ -88,7 +88,6 @@ export class CohereReranker {
           questionUid: cohereResponseSchema.parse(result.document).questionUid,
         }));
 
-      log.info("Ranked documents:", results);
       return results;
     } catch (error) {
       log.error("Error during reranking:", error);

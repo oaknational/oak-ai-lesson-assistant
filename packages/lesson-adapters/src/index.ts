@@ -48,11 +48,7 @@ export {
 } from "./agents";
 
 // Services
-export {
-  generatePlan,
-  generatePlanInputSchema,
-  type GeneratePlanInput,
-} from "./services";
+export { generatePlan } from "./services";
 
 // Schemas
 export {
@@ -61,4 +57,12 @@ export {
   type SlidesAgentResponse,
   type TextEdit,
   type TableCellEdit,
+  generatePlanInputSchema,
+  type GeneratePlanInput,
 } from "./schemas";
+
+// Execution
+export {
+  executeSlideChanges,
+  type ExecuteSlideChangesResult,
+} from "./execution";

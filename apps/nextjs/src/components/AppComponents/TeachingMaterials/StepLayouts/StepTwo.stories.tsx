@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { DemoProvider } from "@/components/ContextProviders/Demo";
@@ -23,8 +24,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    handleSubmitLessonPlan: async (params) => {
+    handleSubmitLessonPlan: (params) => {
       console.log("Submitting lesson plan:", params);
+      return Promise.resolve();
     },
   },
   decorators: [

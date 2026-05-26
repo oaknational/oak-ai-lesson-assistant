@@ -2,7 +2,6 @@ import type {
   LessonPlanKey,
   PartialLessonPlan,
 } from "@oakai/aila/src/protocol/schema";
-import { convertQuizV1ToV2 } from "@oakai/aila/src/protocol/schemas/quiz/conversion/quizV1ToV2";
 
 import type { LessonPlanState } from "./index";
 

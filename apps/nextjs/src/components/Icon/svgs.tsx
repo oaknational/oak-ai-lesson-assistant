@@ -59,8 +59,6 @@ import starWhite from "@/assets/svg/Star-filled-white.svg";
 import star from "@/assets/svg/Star-filled.svg";
 import tickWhite from "@/assets/svg/Tick-white.svg";
 import tick from "@/assets/svg/Tick.svg";
-import twitterWhite from "@/assets/svg/Twitter-white.svg";
-import twitter from "@/assets/svg/Twitter.svg";
 import warningWhite from "@/assets/svg/Warning-white.svg";
 import warning from "@/assets/svg/Warning.svg";
 import acornWhite from "@/assets/svg/acorn-white.svg";
@@ -111,7 +109,7 @@ export const svgs: Record<IconName, SVGImport> = {
   tick: tick as SVGImport,
   warning: warning as SVGImport,
   facebook: facebook as SVGImport,
-  twitter: twitter as SVGImport,
+
   linkedin: linkedin as SVGImport,
   instagram: instagram as SVGImport,
   reload: reload as SVGImport,
@@ -144,7 +142,7 @@ export const svgs: Record<IconName, SVGImport> = {
   "tick-white": tickWhite as SVGImport,
   "warning-white": warningWhite as SVGImport,
   "facebook-white": facebookWhite as SVGImport,
-  "twitter-white": twitterWhite as SVGImport,
+
   "linkedin-white": linkedinWhite as SVGImport,
   "instagram-white": instagramWhite as SVGImport,
   "question-mark": questionMark as SVGImport,

@@ -1,13 +1,13 @@
+import { aiLogger } from "@oakai/logger";
+
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import {
-  type LessonAdaptBrowseDataSchema,
-  type LessonAdaptContentSchema,
-  lessonAdaptApiDataSchema,
-} from "./schemas";
+import { lessonAdaptApiDataSchema } from "./schemas";
 import { transformKeywords, transformMisconceptions } from "./transformer";
 import type { LessonOverviewResponse } from "./types";
+
+const logger = aiLogger("lessons");
 
 /**
  * Schema for extracted lesson details displayed on the adapt page
@@ -44,7 +44,7 @@ export function extractLessonDataForAdaptPage(
 ): ExtractedLessonData {
   // Validate the incoming data structure using our schema
   const validationResult = lessonAdaptApiDataSchema.safeParse(lessonResponse);
-  console.log("Validation result:", JSON.stringify(validationResult, null, 2));
+  logger.info("Validation result:", JSON.stringify(validationResult, null, 2));
 
   if (!validationResult.success) {
     throw new TRPCError({
@@ -61,12 +61,12 @@ export function extractLessonDataForAdaptPage(
 
   // Extract learning cycles from lesson_outline
   // lesson_outline is an array of objects with shape: { lesson_outline: string }
-  const learningCycles = (browseData.lesson_data.lesson_outline || []).map(
+  const learningCycles = (browseData.lesson_data.lesson_outline ?? []).map(
     (item) => item.lesson_outline,
   );
 
   // Extract key learning points
-  const keyLearningPoints = (lessonData.key_learning_points || []).map(
+  const keyLearningPoints = (lessonData.key_learning_points ?? []).map(
     (item) => item.key_learning_point,
   );
 
@@ -77,9 +77,9 @@ export function extractLessonDataForAdaptPage(
     learningOutcome: lessonData.pupil_lesson_outcome,
     learningCycles,
     keyLearningPoints,
-    keywords: transformKeywords(lessonData.lesson_keywords || []),
+    keywords: transformKeywords(lessonData.lesson_keywords ?? []),
     misconceptions: transformMisconceptions(
-      lessonData.misconceptions_and_common_mistakes || [],
+      lessonData.misconceptions_and_common_mistakes ?? [],
     ),
   });
 }

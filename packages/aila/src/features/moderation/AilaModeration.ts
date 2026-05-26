@@ -1,11 +1,12 @@
 import { Moderations } from "@oakai/core/src/models/moderations";
-import {
-  getCategoryGroup,
-  getMockModerationResult,
-  getSafetyResult,
-  isToxic,
-} from "@oakai/core/src/utils/ailaModeration/helpers";
+import { getCategoryGroup } from "@oakai/core/src/utils/ailaModeration/guidanceText";
+import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mockModeration";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+import {
+  getSafetyResult,
+  isHighlySensitive,
+  isToxic,
+} from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
 import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
@@ -114,6 +115,7 @@ export class AilaModeration implements AilaModerationFeature {
     const moderationResult: ModerationResult = await this.performModeration({
       messages,
       content,
+      messageId: lastAssistantMessage.id,
       retries: 3,
     });
 
@@ -128,6 +130,10 @@ export class AilaModeration implements AilaModerationFeature {
       if (isToxic(moderationResult)) {
         for (const plugin of this._aila.plugins ?? []) {
           await plugin.onToxicModeration?.(moderation, pluginContext);
+        }
+      } else if (isHighlySensitive(moderationResult)) {
+        for (const plugin of this._aila.plugins ?? []) {
+          await plugin.onHighlySensitiveModeration?.(moderation, pluginContext);
         }
       }
 
@@ -182,10 +188,12 @@ export class AilaModeration implements AilaModerationFeature {
   public async performModeration({
     messages,
     content,
+    messageId,
     retries = 0,
   }: {
     messages: Message[];
     content: AilaDocumentContent;
+    messageId?: string;
     retries?: number;
   }): Promise<ModerationResult> {
     log.info("Performing moderation");
@@ -198,11 +206,29 @@ export class AilaModeration implements AilaModerationFeature {
     }
 
     const contentString = JSON.stringify(content);
+    if (!contentString || contentString === "{}") {
+      log.info("Skipping moderation - document content is empty");
+      return { categories: [] };
+    }
+
+    const moderationContext = {
+      sessionId: this._aila.chatId,
+      messageId,
+    };
 
     // Fire off shadow moderation call (non-blocking, errors caught)
     if (this._shadowModerator) {
       const shadowPromise = this._shadowModerator
-        .moderate(contentString)
+        .moderate(contentString, moderationContext)
+        .then((result) => {
+          if (result) {
+            log.info("Shadow moderation result", {
+              categories: result.categories,
+              scores: result.scores,
+              safety: getSafetyResult(result),
+            });
+          }
+        })
         .catch((err) => {
           log.error("Shadow moderation failed (non-fatal)", { err });
         });
@@ -216,19 +242,25 @@ export class AilaModeration implements AilaModerationFeature {
     }
 
     // Production moderation call
-    const response = await this._moderator.moderate(contentString);
+    const response = await this._moderator.moderate(
+      contentString,
+      moderationContext,
+    );
     return (
-      response ?? (await this.retryModeration({ messages, content, retries }))
+      response ??
+      (await this.retryModeration({ messages, content, messageId, retries }))
     );
   }
 
   public async retryModeration({
     messages,
     content,
+    messageId,
     retries,
   }: {
     messages: Message[];
     content: AilaDocumentContent;
+    messageId?: string;
     retries: number;
   }): Promise<ModerationResult> {
     if (retries < 1) {
@@ -246,6 +278,7 @@ export class AilaModeration implements AilaModerationFeature {
     return this.performModeration({
       messages,
       content,
+      messageId,
       retries: retries - 1,
     });
   }

@@ -7,6 +7,37 @@ export type ModerationBase = {
   messageId?: string | null;
 };
 
+/**
+ * Category codes from the Oak Moderation Service.
+ * The service applies per-category thresholds and returns flagged codes.
+ */
+export const oakModerationServiceCodes = [
+  "l/discriminatory-language",
+  "l/offensive-language",
+  "u/sensitive-content",
+  "u/violence-or-suffering",
+  "u/mental-health-challenges",
+  "u/crime-or-illegal-activities",
+  "u/sexual-violence",
+  "s/nudity-or-sexual-content",
+  "p/practical-activities",
+  "p/outdoor-learning",
+  "p/additional-qualifications",
+  "r/recent-content",
+  "r/recent-conflicts",
+  "n/self-harm-suicide",
+  "n/potentially-offensive-language",
+  "n/strangulation-suffocation",
+  "t/guides-self-harm-suicide",
+  "t/encourages-harmful-behaviour",
+  "t/encourages-illegal-activity",
+  "t/encourages-violence-harm-others",
+  "t/using-creating-weapons",
+  "t/using-creating-harmful-substances",
+  "t/extreme-offensive-language",
+  "e/rshe-content",
+] as const;
+
 export const moderationCategoriesSchema = z.array(
   z
     .union([
@@ -35,7 +66,8 @@ export const moderationCategoriesSchema = z.array(
       z.literal("t/encouragement-harmful-behaviour"),
       z.literal("t/encouragement-illegal-activity"),
       z.literal("t/encouragement-violence"),
-      z.literal("t/encouragement-violence"),
+      // Oak Moderation Service categories
+      ...oakModerationServiceCodes.map((code) => z.literal(code)),
     ])
     .describe(
       "If the content scores less than 5 for any group, specify the categories on which it failed.",
@@ -53,6 +85,14 @@ const moderationScoresSchema = z.object({
   t: likertScale.describe("Toxic score"),
 });
 
+export const oakModerationServiceScoresSchema = z.object(
+  Object.fromEntries(
+    oakModerationServiceCodes.map((code) => [code, likertScale]),
+  ) as {
+    [K in (typeof oakModerationServiceCodes)[number]]: typeof likertScale;
+  },
+);
+
 /**
  * Schema for the moderation response from the LLM.
  * Note: it's important that 'categories' is the last field in the schema
@@ -68,7 +108,9 @@ export const moderationResponseSchema = z.object({
  */
 export const moderationResultSchema = z.object({
   justification: z.string().optional(),
-  scores: moderationScoresSchema.optional(),
+  scores: z
+    .union([moderationScoresSchema, oakModerationServiceScoresSchema])
+    .optional(),
   categories: moderationCategoriesSchema,
 });
 

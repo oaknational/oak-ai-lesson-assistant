@@ -24,6 +24,7 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5"
