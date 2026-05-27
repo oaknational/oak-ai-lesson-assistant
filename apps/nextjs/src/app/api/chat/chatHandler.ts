@@ -18,6 +18,7 @@ import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetectio
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
+import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -28,8 +29,6 @@ import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
@@ -85,10 +84,7 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila =
-        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
-          ? false
-          : await serverSideFeatureFlag("agentic-aila-nov-25");
+      const useAgenticAila = await getAgenticAilaEnabled();
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
