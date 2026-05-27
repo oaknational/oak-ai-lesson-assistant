@@ -9,6 +9,7 @@ function createCallbacks() {
   return {
     onPlannerComplete: jest.fn(),
     onSectionComplete: jest.fn(),
+    onRagFetchStatusChange: jest.fn(),
     onTurnComplete: jest.fn().mockResolvedValue(undefined),
     onTurnFailed: jest.fn().mockResolvedValue(undefined),
   } satisfies AilaTurnCallbacks;
@@ -19,6 +20,7 @@ function createPersistedState(): AilaPersistedState {
     messages: [{ id: "u1", role: "user", content: "Update the subject" }],
     initialDocument: {},
     relevantLessons: null,
+    ragFetched: { status: "not_fetched", searchIdentity: null },
   };
 }
 

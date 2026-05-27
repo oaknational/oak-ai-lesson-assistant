@@ -14,6 +14,7 @@ import type {
   MisconceptionsSchema,
   PartialLessonPlan,
   PriorKnowledgeSchema,
+  RagFetched,
   SubjectSchema,
 } from "../../protocol/schema";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
@@ -41,6 +42,7 @@ export type AilaPersistedState = {
   messages: ChatMessage[];
   initialDocument: PartialLessonPlan;
   relevantLessons: AgenticRagLessonPlanResult[] | null;
+  ragFetched: RagFetched;
 };
 
 type RagSearchArgs = { title: string; subject: string; keyStage: string };
@@ -64,6 +66,7 @@ export type AilaRuntimeContext = {
 export type AilaTurnCallbacks = {
   onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
   onSectionComplete: (patches: JsonPatchOperation[]) => void;
+  onRagFetchStatusChange: (ragFetched: RagFetched) => void | Promise<void>;
   onTurnComplete: (props: {
     stepsExecuted: PlanStep[];
     document: PartialLessonPlan;

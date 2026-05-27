@@ -417,6 +417,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
     messages,
     initialDocument: { ...scenario.initialDocument },
     relevantLessons: null,
+    ragFetched: { status: "not_fetched", searchIdentity: null },
   };
 
   const startTime = Date.now();
@@ -445,6 +446,10 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
           for (const p of patches) {
             console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
           }
+        },
+        onRagFetchStatusChange: (ragFetched) => {
+          persisted.ragFetched = ragFetched;
+          return Promise.resolve();
         },
         onTurnComplete: ({ document, ailaMessage }) => {
           turnDoc = document;

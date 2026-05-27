@@ -281,6 +281,9 @@ export class AilaStreamHandler {
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,
       controller: this._controller!,
+      onRagFetchStatusChange: async (ragFetched) => {
+        this._chat.ragFetched = ragFetched;
+      },
     });
 
     let relevantLessonsPopulated: Awaited<
@@ -301,6 +304,7 @@ export class AilaStreamHandler {
         messages: extractPromptTextFromMessages(this._chat.messages),
         initialDocument,
         relevantLessons: relevantLessonsPopulated,
+        ragFetched: this._chat.ragFetched,
       },
       runtime: {
         config: {

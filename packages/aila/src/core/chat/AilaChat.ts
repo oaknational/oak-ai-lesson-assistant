@@ -21,6 +21,7 @@ import {
 import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
+  RagFetched,
 } from "../../protocol/schema";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
@@ -39,6 +40,7 @@ export class AilaChat implements AilaChatService {
   private readonly _id: string;
   private readonly _messages: Message[];
   private _relevantLessons: AilaRagRelevantLesson[] | null;
+  private _ragFetched: RagFetched;
   private _isShared: boolean | undefined;
   private readonly _userId: string | undefined;
   private readonly _aila: AilaServices;
@@ -81,7 +83,7 @@ export class AilaChat implements AilaChatService {
     this._patchEnqueuer = new PatchEnqueuer();
     this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
-
+    this._ragFetched = { status: "not_fetched", searchIdentity: null };
     this.quizService = buildQuizService({
       sources: aila.options.quizSources,
       enrichers: [],
@@ -129,12 +131,20 @@ export class AilaChat implements AilaChatService {
     return this._relevantLessons;
   }
 
+  public get ragFetched() {
+    return this._ragFetched;
+  }
+
   public get generation() {
     return this._generation;
   }
 
   public set relevantLessons(lessons: AilaRagRelevantLesson[] | null) {
     this._relevantLessons = lessons;
+  }
+
+  public set ragFetched(value: RagFetched) {
+    this._ragFetched = value;
   }
 
   public getPatchEnqueuer(): PatchEnqueuer {
@@ -336,6 +346,11 @@ export class AilaChat implements AilaChatService {
 
     if (persistedChat) {
       this._relevantLessons = persistedChat.relevantLessons ?? null;
+      this._ragFetched =
+        persistedChat.ragFetchedStatus ?? {
+          status: "not_fetched",
+          searchIdentity: null,
+        };
       this._isShared = persistedChat.isShared;
       this._iteration = persistedChat.iteration ?? 1;
       this._createdAt = new Date(persistedChat.createdAt);
