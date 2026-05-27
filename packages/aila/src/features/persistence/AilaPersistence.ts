@@ -70,7 +70,7 @@ export abstract class AilaPersistence {
       path: `/aila/${id}`,
       lessonPlan: document.content,
       relevantLessons,
-      ragFetchedStatus: ragFetched,
+      ragFetched,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
       options,
     };

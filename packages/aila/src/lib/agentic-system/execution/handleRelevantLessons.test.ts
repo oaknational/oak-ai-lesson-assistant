@@ -53,7 +53,7 @@ function createContext(
     callbacks: {
       onPlannerComplete: jest.fn(),
       onSectionComplete: jest.fn(),
-      onRagFetchStatusChange: jest.fn().mockResolvedValue(undefined),
+      onRagFetchedChange: jest.fn().mockResolvedValue(undefined),
       onTurnComplete: jest.fn(),
       onTurnFailed: jest.fn(),
     },
@@ -119,7 +119,7 @@ describe("handleRelevantLessons", () => {
     expect(ctx.persistedState.ragFetched.status).toBe("none_found");
   });
 
-  it("does not call onRagFetchStatusChange when state is unchanged", async () => {
+  it("does not call onRagFetchedChange when state is unchanged", async () => {
     const identity = {
       title: "Photosynthesis",
       subject: "science",
@@ -134,8 +134,8 @@ describe("handleRelevantLessons", () => {
 
     expect(
       ctx.callbacks as AilaTurnCallbacks
-    ).toHaveProperty("onRagFetchStatusChange");
-    expect(ctx.callbacks.onRagFetchStatusChange).not.toHaveBeenCalled();
+    ).toHaveProperty("onRagFetchedChange");
+    expect(ctx.callbacks.onRagFetchedChange).not.toHaveBeenCalled();
   });
 
 });

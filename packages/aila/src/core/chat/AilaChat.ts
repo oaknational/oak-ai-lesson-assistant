@@ -347,7 +347,7 @@ export class AilaChat implements AilaChatService {
     if (persistedChat) {
       this._relevantLessons = persistedChat.relevantLessons ?? null;
       this._ragFetched =
-        persistedChat.ragFetchedStatus ?? {
+        persistedChat.ragFetched ?? {
           status: "not_fetched",
           searchIdentity: null,
         };

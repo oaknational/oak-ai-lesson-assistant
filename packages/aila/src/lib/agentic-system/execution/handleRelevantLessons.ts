@@ -28,7 +28,7 @@ async function persistRagFetched(
     return;
   }
   context.persistedState.ragFetched = next;
-  await context.callbacks.onRagFetchStatusChange(next);
+  await context.callbacks.onRagFetchedChange(next);
 }
 
 /** Decide whether to re-fetch RAG lessons; may terminate the turn early. */

@@ -9,7 +9,7 @@ function createCallbacks() {
   return {
     onPlannerComplete: jest.fn(),
     onSectionComplete: jest.fn(),
-    onRagFetchStatusChange: jest.fn(),
+    onRagFetchedChange: jest.fn(),
     onTurnComplete: jest.fn().mockResolvedValue(undefined),
     onTurnFailed: jest.fn().mockResolvedValue(undefined),
   } satisfies AilaTurnCallbacks;

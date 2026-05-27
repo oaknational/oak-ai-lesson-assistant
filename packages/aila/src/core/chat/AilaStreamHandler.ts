@@ -281,7 +281,7 @@ export class AilaStreamHandler {
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,
       controller: this._controller!,
-      onRagFetchStatusChange: async (ragFetched) => {
+      onRagFetchedChange: async (ragFetched) => {
         this._chat.ragFetched = ragFetched;
       },
     });

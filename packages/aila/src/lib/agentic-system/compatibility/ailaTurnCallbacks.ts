@@ -8,14 +8,14 @@ import { createOnTurnComplete } from "./onTurnComplete";
 export function createAilaTurnCallbacks({
   chat,
   controller,
-  onRagFetchStatusChange,
+  onRagFetchedChange,
 }: {
   chat: {
     appendChunk: (chunk: string) => void;
     enqueue: <T extends JsonPatchDocumentOptional>(event: T) => Promise<void>;
   };
   controller: ReadableStreamDefaultController;
-  onRagFetchStatusChange?: AilaTurnCallbacks["onRagFetchStatusChange"];
+  onRagFetchedChange?: AilaTurnCallbacks["onRagFetchedChange"];
 }): AilaTurnCallbacks {
   const patchState = { isFirstSection: true };
   const textStreamer = createTextStreamer(controller, chat);
@@ -26,8 +26,8 @@ export function createAilaTurnCallbacks({
   return {
     onPlannerComplete,
     onSectionComplete,
-    onRagFetchStatusChange: async (ragFetchedStatus) => {
-      await onRagFetchStatusChange?.(ragFetchedStatus);
+    onRagFetchedChange: async (ragFetchedStatus) => {
+      await onRagFetchedChange?.(ragFetchedStatus);
     },
     onTurnComplete: async (args) => {
       onTurnComplete(args);

@@ -447,7 +447,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
             console.log(`    [turn ${turnCount + 1}] section done → ${p.path}`);
           }
         },
-        onRagFetchStatusChange: (ragFetched) => {
+        onRagFetchedChange: (ragFetched) => {
           persisted.ragFetched = ragFetched;
           return Promise.resolve();
         },

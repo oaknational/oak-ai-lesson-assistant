@@ -81,7 +81,7 @@ describe("sectionToGenericPromptAgent", () => {
     callbacks: {
       onPlannerComplete: jest.fn(),
       onSectionComplete: jest.fn(),
-      onRagFetchStatusChange: jest.fn(),
+      onRagFetchedChange: jest.fn(),
       onTurnComplete: jest.fn(),
       onTurnFailed: jest.fn(),
     },

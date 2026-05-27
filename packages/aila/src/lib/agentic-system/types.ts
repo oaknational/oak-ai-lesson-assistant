@@ -66,7 +66,7 @@ export type AilaRuntimeContext = {
 export type AilaTurnCallbacks = {
   onPlannerComplete: ({ sectionKeys }: { sectionKeys: SectionKey[] }) => void;
   onSectionComplete: (patches: JsonPatchOperation[]) => void;
-  onRagFetchStatusChange: (ragFetched: RagFetched) => void | Promise<void>;
+  onRagFetchedChange: (ragFetched: RagFetched) => void | Promise<void>;
   onTurnComplete: (props: {
     stepsExecuted: PlanStep[];
     document: PartialLessonPlan;

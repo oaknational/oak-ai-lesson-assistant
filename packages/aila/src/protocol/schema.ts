@@ -452,7 +452,7 @@ export const chatSchema = z
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
-    ragFetchedStatus: ragFetchedSchema.optional(),
+    ragFetched: ragFetchedSchema.optional(),
     messages: z.array(MessageSchema.passthrough()),
   })
   .passthrough();
@@ -471,7 +471,7 @@ export const chatSchemaWithMissingMessageIds = z
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
-    ragFetchedStatus: ragFetchedSchema.optional(),
+    ragFetched: ragFetchedSchema.optional(),
     messages: z.array(
       z
         .object({
