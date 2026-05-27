@@ -424,6 +424,21 @@ const AilaRagRelevantLessonSchema = z.object({
 
 export type AilaRagRelevantLesson = z.infer<typeof AilaRagRelevantLessonSchema>;
 
+export const searchIdentitySchema = z.object({
+  title: z.string(),
+  subject: z.string(),
+  keyStage: z.string(),
+});
+
+export type SearchIdentity = z.infer<typeof searchIdentitySchema>;
+
+export const ragFetchedSchema = z.object({
+  status: z.enum(["not_fetched", "shown", "none_found", "selected"]),
+  searchIdentity: searchIdentitySchema.nullish(),
+});
+
+export type RagFetched = z.infer<typeof ragFetchedSchema>;
+
 export const chatSchema = z
   .object({
     id: z.string(),
@@ -437,6 +452,7 @@ export const chatSchema = z
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
+    ragFetchedStatus: ragFetchedSchema.optional(),
     messages: z.array(MessageSchema.passthrough()),
   })
   .passthrough();
@@ -455,6 +471,7 @@ export const chatSchemaWithMissingMessageIds = z
     updatedAt: z.union([z.date(), z.number()]).optional(),
     iteration: z.number().optional(),
     startingMessage: z.string().optional(),
+    ragFetchedStatus: ragFetchedSchema.optional(),
     messages: z.array(
       z
         .object({
