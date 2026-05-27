@@ -69,7 +69,7 @@ export type AilaInitializationOptions = {
   };
   chat: Omit<AilaChatInitializationOptions, "llmService">;
   options?: AilaOptions;
-  prisma?: PrismaClientWithAccelerate;
+  prisma: PrismaClientWithAccelerate;
   moderator?: AilaModerator;
   moderation?: AilaModerationFeature;
   persistence?: AilaPersistence[];

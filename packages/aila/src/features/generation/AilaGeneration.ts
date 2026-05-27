@@ -1,5 +1,5 @@
 import { generateAilaPromptVersionVariantSlug } from "@oakai/core/src/prompts/lesson-assistant/variants";
-import type { Prompt } from "@oakai/db";
+import type { PrismaClientWithAccelerate, Prompt } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { kv } from "@vercel/kv";
@@ -25,6 +25,7 @@ export class AilaGeneration {
   private _totalTokens: number = 0;
   private readonly _systemPrompt: string = "";
   private _promptId: string | null = null;
+  private readonly _prisma: PrismaClientWithAccelerate;
 
   constructor({
     aila,
@@ -33,6 +34,7 @@ export class AilaGeneration {
     chat,
     systemPrompt,
     promptId,
+    prisma,
   }: {
     aila: AilaServices;
     id: string;
@@ -40,6 +42,7 @@ export class AilaGeneration {
     chat: AilaChat;
     systemPrompt: string;
     promptId?: string;
+    prisma: PrismaClientWithAccelerate;
   }) {
     this._id = id;
     this._status = status;
@@ -47,6 +50,7 @@ export class AilaGeneration {
     this._startedAt = new Date();
     this._systemPrompt = systemPrompt;
     this._aila = aila;
+    this._prisma = prisma;
     if (promptId) {
       this._promptId = promptId;
     }
@@ -160,7 +164,7 @@ export class AilaGeneration {
 
     let prompt: Prompt | null = null;
     let promptId: string | undefined = undefined;
-    const { prisma } = await import("@oakai/db/client");
+    const prisma = this._prisma;
 
     if (
       process.env.NODE_ENV === "production" &&
