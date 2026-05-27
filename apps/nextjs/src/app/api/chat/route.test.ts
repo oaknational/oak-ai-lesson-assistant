@@ -19,9 +19,9 @@ jest.mock("@oakai/db", () => ({
   prisma: {},
 }));
 
-// Mock the serverSideFeatureFlag module
-jest.mock("@/utils/serverSideFeatureFlag", () => ({
-  serverSideFeatureFlag: jest.fn().mockResolvedValue(false),
+// Mock the shared agentic flag helper
+jest.mock("@oakai/api/src/utils/getAgenticAilaEnabled", () => ({
+  getAgenticAilaEnabled: jest.fn().mockResolvedValue(false),
 }));
 
 jest.mock(
