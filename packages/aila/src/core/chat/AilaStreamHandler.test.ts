@@ -567,21 +567,29 @@ describe("AilaStreamHandler", () => {
 
   it("calls generationFailed and skips complete when non-agentic stream errors", async () => {
     const chat = createMockChat({ useAgenticAila: false });
-    // Override: stream throws immediately
     chat.createChatCompletionObjectStream = jest
       .fn()
       .mockRejectedValue(new Error("LLM stream failed"));
-    // Override: generationFailed must update status so shouldComplete becomes false
-    chat.generationFailed = jest.fn().mockImplementation(() => {
-      if (chat.generation) {
-        (chat.generation as { status: string }).status = "FAILED";
-      }
-      return Promise.resolve();
-    });
+    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
 
     const handler = new AilaStreamHandler(chat as never);
     await consumeStream(handler.startStreaming());
 
+    expect(chat.generationFailed).toHaveBeenCalledTimes(1);
+    expect(chat.complete).not.toHaveBeenCalled();
+  });
+
+  it("skips complete after a non-agentic stream error even if generation status is unchanged", async () => {
+    const chat = createMockChat({ useAgenticAila: false });
+    chat.createChatCompletionObjectStream = jest
+      .fn()
+      .mockRejectedValue(new Error("LLM stream failed"));
+    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
+
+    const handler = new AilaStreamHandler(chat as never);
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.generation?.status).toBe("REQUESTED");
     expect(chat.generationFailed).toHaveBeenCalledTimes(1);
     expect(chat.complete).not.toHaveBeenCalled();
   });
@@ -599,6 +607,20 @@ describe("AilaStreamHandler", () => {
     await consumeStream(handler.startStreaming());
 
     expect(chat.generationFailed).toHaveBeenCalledTimes(1);
+    expect(chat.complete).not.toHaveBeenCalled();
+  });
+
+  it("skips complete when non-agentic setup fails before generation exists", async () => {
+    const chat = createMockChat({ useAgenticAila: false });
+    chat.generation = undefined;
+    chat.setupGeneration = jest
+      .fn()
+      .mockRejectedValue(new Error("Generation setup failed"));
+
+    const handler = new AilaStreamHandler(chat as never);
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.generationFailed).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
