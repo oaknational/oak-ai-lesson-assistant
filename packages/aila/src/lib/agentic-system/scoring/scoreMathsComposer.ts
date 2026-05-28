@@ -30,10 +30,7 @@ import type {
   RagQuizQuestion,
 } from "../../../core/quiz/interfaces";
 import { createMockTask } from "../../../core/quiz/reporting/testing";
-import type {
-  PartialLessonPlan,
-  QuizPath,
-} from "../../../protocol/schema";
+import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -156,7 +153,9 @@ type ExpectedShape = {
   /** Composer must return status: "success" (vs "bail"). */
   status: "success" | "bail";
   /** Required number of selected questions. */
-  questionCount?: { exactly: number } | { minInclusive: number; maxInclusive: number };
+  questionCount?:
+    | { exactly: number }
+    | { minInclusive: number; maxInclusive: number };
   /** None of the selected question UIDs may start with "CURRENT-Q". */
   excludeCurrentQ?: boolean;
 };
@@ -276,10 +275,7 @@ type CellResult = {
   runs: CellRun[];
 };
 
-function scoreRun(
-  cell: ComposerEvalCell,
-  result: ComposerResult,
-): CellRun {
+function scoreRun(cell: ComposerEvalCell, result: ComposerResult): CellRun {
   const reasons: string[] = [];
 
   if (result.status !== cell.expected.status) {

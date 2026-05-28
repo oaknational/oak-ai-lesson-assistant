@@ -144,7 +144,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain(
         "[IMAGE: a right triangle with base 3cm and height 4cm]",
@@ -221,7 +226,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("[IMAGE: a square with side 5cm]");
       expect(prompt).toContain("[IMAGE: a rectangle 2cm by 3cm]");
@@ -319,7 +329,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("**Current Quiz (Being Modified)**");
       expect(prompt).toContain("CURRENT-Q1 through CURRENT-Q6");
@@ -334,7 +349,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).not.toContain("Current Quiz");
       expect(prompt).not.toContain("CURRENT-Q");
@@ -343,7 +363,12 @@ describe("buildCompositionPrompt", () => {
     it("should use correct pool header for currentQuiz", () => {
       const pools: QuizQuestionPool[] = [currentQuizPool];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("### Current Quiz (To Be Modified)");
     });
@@ -365,7 +390,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN);
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).not.toContain("**Current Quiz (Being Modified)**");
     });

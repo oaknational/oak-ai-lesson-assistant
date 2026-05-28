@@ -1,5 +1,4 @@
 import type { LatestQuizQuestion } from "../../../protocol/schema";
-
 import { validateSingleQuestion } from "./validateSingleQuestion";
 
 const validQuestion: LatestQuizQuestion = {
