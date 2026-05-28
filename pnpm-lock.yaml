@@ -933,6 +933,9 @@ importers:
       '@googleapis/docs':
         specifier: ^5.0.1
         version: 5.0.1
+      '@oakai/core':
+        specifier: '*'
+        version: link:../core
       '@oakai/logger':
         specifier: '*'
         version: link:../logger

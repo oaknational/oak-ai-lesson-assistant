@@ -4,6 +4,7 @@ import type {
   BasedOnOptional,
   LessonPlanKey,
 } from "@oakai/aila/src/protocol/schema";
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
 import { aiLogger } from "@oakai/logger";
 
 import { Flex, Text } from "@radix-ui/themes";
@@ -200,7 +201,7 @@ export const LessonPlanDisplay = ({
           <Flex direction="row" gap="2" className="opacity-90">
             {notEmpty(lessonPlan.keyStage) && (
               <Text className="font-bold">
-                {slugToSentenceCase(lessonPlan.keyStage ?? "")}
+                {keyStageToSentenceCase(lessonPlan.keyStage ?? "")}
               </Text>
             )}
             <span>•</span>
