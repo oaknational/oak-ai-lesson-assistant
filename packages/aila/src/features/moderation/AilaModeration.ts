@@ -8,7 +8,6 @@ import {
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/safetyResult";
 import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { waitUntil } from "@vercel/functions";
@@ -43,7 +42,7 @@ export class AilaModeration implements AilaModerationFeature {
     shouldPersist = true,
   }: {
     aila: AilaServices;
-    prisma?: PrismaClientWithAccelerate;
+    prisma: PrismaClientWithAccelerate;
     moderator?: AilaModerator;
     shadowModerator?: AilaModerator;
     moderations?: Moderations;
@@ -51,7 +50,7 @@ export class AilaModeration implements AilaModerationFeature {
   }) {
     log.info("Initializing AilaModeration");
     this._aila = aila;
-    this._prisma = prisma ?? globalPrisma;
+    this._prisma = prisma;
 
     this._moderator =
       moderator ??

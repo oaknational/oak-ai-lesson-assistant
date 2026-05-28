@@ -1,3 +1,4 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import {
@@ -57,12 +58,14 @@ export class Aila implements AilaServices {
   private readonly _plugins: AilaPlugin[];
   private readonly _userId!: string | undefined;
   private readonly _chatId!: string;
+  private readonly _prisma!: PrismaClientWithAccelerate;
   private readonly _americanisms: AilaAmericanismsFeature;
   private readonly _tracing: AilaTracingService;
 
   constructor(options: AilaInitializationOptions) {
     this._userId = options.chat.userId;
     this._chatId = options.chat.id;
+    this._prisma = options.prisma;
     this._options = this.initialiseOptions(options.options);
 
     this._chatLlmService =
@@ -205,6 +208,10 @@ export class Aila implements AilaServices {
 
   public get userId() {
     return this._userId;
+  }
+
+  public get prisma() {
+    return this._prisma;
   }
 
   public get messages() {

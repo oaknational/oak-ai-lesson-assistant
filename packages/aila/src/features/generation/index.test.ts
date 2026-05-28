@@ -5,6 +5,15 @@ import type { AilaInitializationOptions } from "../../core/types";
 import { AilaGeneration } from "./AilaGeneration";
 
 const ailaArgs: AilaInitializationOptions = {
+  prisma: {} as never,
+  options: {
+    useAnalytics: false,
+    useModeration: false,
+    usePersistence: false,
+    useRag: false,
+    useThreatDetection: false,
+    useErrorReporting: false,
+  },
   plugins: [],
   chat: {
     id: "chat_1",
@@ -43,6 +52,7 @@ describe("calculateTokenUsage", () => {
       chat,
       systemPrompt: "Test system prompt",
       promptId: "test",
+      prisma: {} as never,
     });
     ailaGeneration.complete({
       status: "SUCCESS",
@@ -81,6 +91,7 @@ describe("calculateTokenUsage", () => {
       chat,
       systemPrompt: "Test system prompt",
       promptId: "test",
+      prisma: {} as never,
     });
     ailaGeneration.complete({
       status: "SUCCESS",

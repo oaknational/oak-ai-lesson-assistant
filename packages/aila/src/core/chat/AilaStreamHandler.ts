@@ -292,6 +292,7 @@ export class AilaStreamHandler {
         lessonPlanIds: this._chat.relevantLessons.map(
           (lesson) => lesson.lessonPlanId,
         ),
+        prisma: this._chat.aila.prisma,
       });
     }
 
@@ -389,6 +390,7 @@ export class AilaStreamHandler {
             title,
             subjectSlugs,
             keyStageSlugs,
+            prisma: this._chat.aila.prisma,
           });
           const persistedRelevantLessons = relevantLessons.map((result) => ({
             lessonPlanId: result.ragLessonPlanId,
@@ -444,6 +446,7 @@ export class AilaStreamHandler {
       chatId: this._chat.id,
       threatDetection,
       messages: this.threatDetectionMessages(),
+      prisma: this._chat.aila.prisma,
     });
     await this._chat.enqueue(response);
   }
