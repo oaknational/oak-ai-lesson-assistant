@@ -1,10 +1,11 @@
+import { allowConsoleWarn } from "@oakai/test-support";
+
 import type { Polly } from "@pollyjs/core";
 
 import { setupPolly } from "../../tests/mocks/setupPolly";
 import type { AilaCategorisation } from "../features/categorisation";
 import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import { MockThreatDetector } from "../features/threatDetection/detectors/MockThreatDetector";
-import { AilaThreatDetectionError } from "../features/threatDetection/types";
 import * as threatDetectionHandling from "../utils/threatDetection/threatDetectionHandling";
 import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
@@ -12,11 +13,25 @@ import type { AilaChat } from "./chat/AilaChat";
 import { MockLLMService } from "./llm/MockLLMService";
 
 jest.mock("../utils/threatDetection/threatDetectionHandling", () => ({
-  handleThreatDetectionError: jest.fn(),
+  handleThreatDetectionResult: jest.fn(),
 }));
 
 describe("Aila", () => {
   let polly: Polly;
+
+  const createPromptPrisma = () =>
+    ({
+      prompt: {
+        findFirst: jest.fn().mockResolvedValue({ id: "prompt_1" }),
+      },
+      lessonSchema: {
+        findFirst: jest.fn().mockResolvedValue({ id: "lesson_schema_1" }),
+        create: jest.fn(),
+      },
+      lessonSnapshot: {
+        create: jest.fn().mockResolvedValue({ id: "lesson_snapshot_1" }),
+      },
+    }) as never;
 
   beforeAll(() => {
     polly = setupPolly();
@@ -29,6 +44,7 @@ describe("Aila", () => {
   describe("constructing", () => {
     it("should initialise Aila instance with persistence", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {},
         },
@@ -47,6 +63,7 @@ describe("Aila", () => {
 
     it("should initialize Aila instance with analytics", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {},
         },
@@ -67,6 +84,7 @@ describe("Aila", () => {
   describe("initialise", () => {
     it("should not set the initial title, subject and key stage when passed values for title, key stage and subject", async () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {
             title: "Roman Britain",
@@ -80,6 +98,8 @@ describe("Aila", () => {
           useRag: false,
           useAnalytics: false,
           useModeration: false,
+          useThreatDetection: false,
+          useErrorReporting: false,
         },
         plugins: [],
       });
@@ -102,6 +122,7 @@ describe("Aila", () => {
       };
 
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {},
         },
@@ -147,6 +168,7 @@ describe("Aila", () => {
         }),
       };
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {
             title: "Roman Britain",
@@ -187,7 +209,9 @@ describe("Aila", () => {
 
     // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
+      allowConsoleWarn(/\[Polly\]/, { optional: true });
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {},
         },
@@ -199,6 +223,11 @@ describe("Aila", () => {
           useRag: false,
         },
         plugins: [],
+        services: {
+          chatCategoriser: {
+            categorise: jest.fn().mockResolvedValue(undefined),
+          } as unknown as AilaCategorisation,
+        },
       });
 
       await ailaInstance.initialise();
@@ -214,6 +243,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is not set and usePersistence is true
     it("should throw AilaAuthenticationError when userId is not set and usePersistence is true", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: undefined },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
@@ -229,6 +259,7 @@ describe("Aila", () => {
     // userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: "" },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
@@ -242,6 +273,7 @@ describe("Aila", () => {
     // userId is an empty string and usePersistence is true
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: "" },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
@@ -254,6 +286,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: "" },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
@@ -267,6 +300,7 @@ describe("Aila", () => {
     // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: undefined },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
@@ -280,6 +314,7 @@ describe("Aila", () => {
     // Throws AilaAuthenticationError when userId is an empty string and usePersistence is true
     it("should throw AilaAuthenticationError when userId is an empty string and usePersistence is true", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: "" },
         options: { usePersistence: true, useAnalytics: false },
         plugins: [],
@@ -293,6 +328,7 @@ describe("Aila", () => {
     // Does not throw AilaAuthenticationError when userId is not set and usePersistence is false
     it("should not throw AilaAuthenticationError when userId is not set and usePersistence is false", () => {
       const ailaInstance = new Aila({
+        prisma: {} as never,
         chat: { id: "123", userId: undefined },
         options: { usePersistence: false, useAnalytics: false },
         plugins: [],
@@ -318,6 +354,7 @@ describe("Aila", () => {
       const mockLLMService = new MockLLMService();
 
       const ailaInstance = new Aila({
+        prisma: createPromptPrisma(),
         document: {
           content: {},
         },
@@ -327,6 +364,8 @@ describe("Aila", () => {
           useRag: false,
           useAnalytics: false,
           useModeration: false,
+          useThreatDetection: false,
+          useErrorReporting: false,
         },
         plugins: [],
         services: {
@@ -363,11 +402,13 @@ describe("Aila", () => {
         message: "Threat was detected",
       };
 
-      const handleThreatDetectionErrorSpy = jest
-        .spyOn(threatDetectionHandling, "handleThreatDetectionError")
+      const handleThreatDetectionResultSpy = jest
+        .spyOn(threatDetectionHandling, "handleThreatDetectionResult")
         .mockResolvedValue(handledThreatMessage);
+      const prisma = {} as never;
 
       const ailaInstance = new Aila({
+        prisma,
         document: {
           content: {},
         },
@@ -402,11 +443,16 @@ describe("Aila", () => {
         value: undefined,
       });
 
-      expect(handleThreatDetectionErrorSpy).toHaveBeenCalledWith({
+      expect(handleThreatDetectionResultSpy).toHaveBeenCalledWith({
         userId: "user123",
         chatId: "123",
-        error: expect.any(AilaThreatDetectionError),
+        threatDetection: expect.objectContaining({
+          provider: "mock",
+          isThreat: true,
+          message: "Mocked response",
+        }),
         messages: ailaInstance.chat.messages,
+        prisma,
       });
       expect(enqueueSpy).toHaveBeenCalledWith(handledThreatMessage);
     });
@@ -418,6 +464,7 @@ describe("Aila", () => {
     it("should only call shutdown once", async () => {
       const shutdownMock = jest.fn();
       const ailaInstance = new Aila({
+        prisma: {} as never,
         plugins: [],
         chat: {
           id: "chat_1",
@@ -448,6 +495,7 @@ describe("Aila", () => {
         JSON.stringify(mockedResponse),
       ]);
       const ailaInstance = new Aila({
+        prisma: createPromptPrisma(),
         document: {
           content: {
             title: "Roman Britain",
@@ -495,6 +543,7 @@ describe("Aila", () => {
       const mockCategoriser = new MockCategoriser({ mockedContent });
 
       const ailaInstance = new Aila({
+        prisma: {} as never,
         document: {
           content: {},
         },
@@ -538,6 +587,7 @@ describe("Aila", () => {
       const mockLLMService = new MockLLMService(mockLLMResponse);
 
       const ailaInstance = new Aila({
+        prisma: createPromptPrisma(),
         document: {
           content: {},
         },

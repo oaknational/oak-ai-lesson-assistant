@@ -1,18 +1,10 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
-import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
-import {
-  type PrismaClientWithAccelerate,
-  prisma as globalPrisma,
-} from "@oakai/db";
+import { prisma as globalPrisma } from "@oakai/db";
 
 import { nanoid } from "nanoid";
 
+import type { Config } from "./configTypes";
 import { createWebActionsPlugin } from "./webActionsPlugin";
-
-export interface Config {
-  prisma: PrismaClientWithAccelerate;
-  createAila: (options: Partial<AilaInitializationOptions>) => Promise<Aila>;
-}
 
 export const defaultConfig: Config = {
   prisma: globalPrisma,

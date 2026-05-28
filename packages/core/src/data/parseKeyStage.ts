@@ -69,7 +69,7 @@ const exactKeyStageMap: Record<string, KeyStageSlug> = {
 export function parseKeyStage(maybeKeyStage: string): string {
   const strippedMaybeKeyStage = maybeKeyStage
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, "_");
+    .replaceAll(/[^a-z0-9]/g, "_");
 
   // Check for exact matches first
   const exactMatch = exactKeyStageMap[strippedMaybeKeyStage];
@@ -86,6 +86,20 @@ export function parseKeyStage(maybeKeyStage: string): string {
   }
 
   return maybeKeyStage;
+}
+
+/**
+ * Format a key stage value for display, e.g. "Key stage 2".
+ *
+ * Accepts any input `parseKeyStage` accepts ("ks2", "KS2", "key-stage-2",
+ * "Key stage 2", "Year 5", etc.) so callers don't have to care whether a
+ * lesson was produced by the legacy megaprompt (canonical "key-stage-N")
+ * or the agentic system (short "ksN").
+ */
+export function keyStageToSentenceCase(keyStage: string): string {
+  if (!keyStage) return "";
+  const spaced = parseKeyStage(keyStage).replace(/-/g, " ");
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1).toLowerCase();
 }
 
 export function parseKeyStageSlugForAnalytics(keyStage: string): string {

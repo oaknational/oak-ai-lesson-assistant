@@ -13,10 +13,6 @@ import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 // Ensure that no tests start relying on prisma
 const prismaMock = {} as PrismaClientWithAccelerate;
 
@@ -97,7 +93,7 @@ describe("AilaModeration", () => {
         userId: "456",
         messages,
       };
-      const content = {};
+      const content = { title: "Test Lesson" };
 
       const { ailaModeration, pluginContext } = setUpModeration({
         document: {
@@ -140,7 +136,7 @@ describe("AilaModeration", () => {
         userId: "user-1",
         messages,
       };
-      const content = {};
+      const content = { title: "Test Lesson" };
 
       const { ailaModeration, pluginContext } = setUpModeration({
         document: {
@@ -160,6 +156,41 @@ describe("AilaModeration", () => {
         sessionId: "session-1",
         messageId: "assistant-message-1",
       });
+    });
+
+    it("should skip moderation call when document content is empty", async () => {
+      const moderationResult: ModerationResult = {
+        categories: ["l/strong-language"],
+        justification: "Test justification",
+      };
+      const moderator = new MockModerator([moderationResult]);
+      const moderateSpy = jest.spyOn(moderator, "moderate");
+
+      const messages: Message[] = [
+        { id: "1", role: "user", content: "test user message" },
+        { id: "2", role: "assistant", content: "test assistant message" },
+      ];
+      const chat = {
+        id: "123",
+        userId: "456",
+        messages,
+      };
+      const content = {};
+
+      const { ailaModeration, pluginContext } = setUpModeration({
+        document: { content },
+        chat,
+        moderator,
+      });
+
+      const result = await ailaModeration.moderate({
+        messages,
+        content,
+        pluginContext,
+      });
+
+      expect(moderateSpy).not.toHaveBeenCalled();
+      expect(result).toEqual({ type: "moderation", categories: [] });
     });
 
     it("should skip moderation when there are no user messages", async () => {
@@ -285,7 +316,7 @@ describe("AilaModeration", () => {
         onToxicModeration: jest.fn(() => {}),
       } as unknown as AilaPlugin;
 
-      const document = { content: {} };
+      const document = { content: { title: "Test Lesson" } };
       const { ailaModeration, pluginContext } = setUpModeration({
         document,
         chat,
@@ -333,7 +364,7 @@ describe("AilaModeration", () => {
         onHighlySensitiveModeration: jest.fn(() => {}),
       } as unknown as AilaPlugin;
 
-      const document = { content: {} };
+      const document = { content: { title: "Test Lesson" } };
       const { ailaModeration, pluginContext } = setUpModeration({
         document,
         chat,
@@ -382,7 +413,7 @@ describe("AilaModeration", () => {
         onToxicModeration: jest.fn(() => {}),
       } as unknown as AilaPlugin;
 
-      const document = { content: {} };
+      const document = { content: { title: "Test Lesson" } };
       const { ailaModeration, pluginContext } = setUpModeration({
         document,
         chat,

@@ -138,10 +138,18 @@ export class AilaDocument implements AilaDocumentService {
     // The initial lesson plan is blank, so we take the first messages
     // and attempt to deduce the lesson plan key stage, subject, title and topic
     if (shouldCategoriseBasedOnInitialMessages) {
-      const result = await this._categoriser.categorise(
-        messages,
-        this._content,
-      );
+      let result: AilaDocumentContent | undefined;
+      try {
+        result = await this._categoriser.categorise(messages, this._content);
+      } catch (error) {
+        log.error("Failed to initialise content from messages", { error });
+        this._aila.errorReporter?.reportError(
+          error,
+          "Failed to initialise content from messages",
+          "warning",
+        );
+        return;
+      }
 
       if (result) {
         this.initialise(result);

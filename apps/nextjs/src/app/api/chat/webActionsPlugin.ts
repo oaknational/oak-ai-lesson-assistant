@@ -2,14 +2,9 @@ import type {
   AilaPlugin,
   AilaPluginContext,
 } from "@oakai/aila/src/core/plugins";
-import { AilaThreatDetectionError } from "@oakai/aila/src/features/threatDetection";
-import { handleThreatDetectionError } from "@oakai/aila/src/utils/threatDetection/threatDetectionHandling";
-import {
-  UserBannedError,
-  SafetyViolations as defaultSafetyViolations,
-  ThreatDetections as defaultThreatDetections,
-  scheduleModerationNotification,
-} from "@oakai/core";
+import { scheduleModerationNotification } from "@oakai/core/src/backgroundTasks";
+import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
+import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -20,32 +15,16 @@ const log = aiLogger("chat");
 type PluginCreator = (
   prisma: PrismaClientWithAccelerate,
   SafetyViolations?: typeof defaultSafetyViolations,
-  ThreatDetections?: typeof defaultThreatDetections,
 ) => AilaPlugin;
 
 export const createWebActionsPlugin: PluginCreator = (
   prisma,
   SafetyViolations = defaultSafetyViolations,
-  ThreatDetections = defaultThreatDetections,
 ) => {
   const onStreamError: AilaPlugin["onStreamError"] = async (
     error,
-    { aila, enqueue },
+    { enqueue },
   ) => {
-    if (error instanceof AilaThreatDetectionError) {
-      const threatError = await handleThreatDetectionError(
-        {
-          userId: aila.userId ?? "anonymous",
-          chatId: aila.chatId ?? "unknown",
-          error,
-          messages: aila.messages,
-          prisma,
-        },
-        { SafetyViolations, ThreatDetections },
-      );
-      await enqueue(threatError);
-    }
-
     if (error instanceof Error) {
       await enqueue({
         type: "error",

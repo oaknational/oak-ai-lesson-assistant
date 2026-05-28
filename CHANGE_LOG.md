@@ -1,3 +1,43 @@
+# [1.74.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.73.0...v1.74.0) (2026-05-21)
+
+
+### Bug Fixes
+
+* [AI-2162] stop empty moderation requests and fix stream completion edge cases ([#1052](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1052)) ([d1377fa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d1377fac534cb4055acf7a46408b030bd3a45123))
+
+
+### Features
+
+* subject warning message in agentic - AI-2149 ([#1044](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1044)) ([4d42584](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4d42584e0c9b6f503ed1209689db01129ae3af02))
+
+# [1.73.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.72.0...v1.73.0) (2026-05-19)
+
+
+### Bug Fixes
+
+* [AI-2146] improve diagnostics and resilience for AI provider, threat detection and Clerk errors ([#1045](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1045)) ([d736d58](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d736d58e090313e0ca7109445285e4be4be11e10))
+* prettier ([4b17283](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4b172837603901d7b654bfc7c5bb51f27e38cadf))
+
+
+### Features
+
+* add americanism scoring to agentic harness ([#990](https://github.com/oaknational/oak-ai-lesson-assistant/issues/990)) ([2c71235](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2c71235642ef3708708015b5ac2a2efb7ac70343))
+
+# [1.72.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.71.0...v1.72.0) (2026-05-13)
+
+
+### Bug Fixes
+
+* exclude threat-detected messages from LLM generation context ([#1037](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1037)) ([3cab3be](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3cab3bef42285a390ac11972b9dd36557c0e745d))
+* moderation modal padding and empty moderation modal - AI-2193 ([#1038](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1038)) ([c8c1075](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c8c10750afbd8548475111cc4592d36c0a79227b))
+* pass Aila moderation identifiers to Oak service ([#1036](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1036)) ([86c3487](https://github.com/oaknational/oak-ai-lesson-assistant/commit/86c3487a40827f34281633266bb7ea1baeafc87f))
+* retry Oak Moderation Service once ([#1035](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1035)) ([0fcca19](https://github.com/oaknational/oak-ai-lesson-assistant/commit/0fcca1919e7857de4d26aef0b5aa589972fde7b4))
+
+
+### Features
+
+* consistent lesson order in planning prompt -AI-2152 ([#1033](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1033)) ([39199e4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/39199e4c7e0f6fb3eaea1dbd457f8aa19ed20243))
+
 # [1.71.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.70.0...v1.71.0) (2026-05-06)
 
 

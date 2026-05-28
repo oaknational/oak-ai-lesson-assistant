@@ -1,12 +1,13 @@
-import { demoUsers } from "@oakai/core";
 import { createHubspotCustomer } from "@oakai/core/src/analytics/hubspotClient";
 import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { demoUsers } from "@oakai/core/src/models/demoUsers";
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { z } from "zod";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";
+import { withClerkDiagnostics } from "./helpers/clerkDiagnostics";
 
 export const authRouter = router({
   hasSeenWhatsNew: protectedProcedure
@@ -89,28 +90,48 @@ export const authRouter = router({
 
   setDemoStatus: protectedProcedure.mutation(async ({ ctx }) => {
     const { userId } = ctx.auth;
+    const cfIpCountry = ctx.req.headers.get("cf-ipcountry");
     const client = await clerkClient();
-    const user = await client.users.getUser(userId);
+    const requestContext = {
+      procedure: "auth.setDemoStatus",
+      userId,
+      requestUrl: ctx.req.url,
+      cfIpCountry,
+    };
+    const user = await withClerkDiagnostics(
+      {
+        ...requestContext,
+        clerkOperation: "users.getUser",
+      },
+      () => client.users.getUser(userId),
+    );
 
     if (demoUsers.isDemoStatusSet(user)) {
-      return { isDemoUser: user.publicMetadata.labs };
+      return { isDemoUser: Boolean(user.publicMetadata.labs.isDemoUser) };
     }
 
     const { region, isDemoRegion: isDemoUser } = await demoUsers.getUserRegion(
       user,
-      ctx.req.headers.get("cf-ipcountry"),
+      cfIpCountry,
     );
 
-    await client.users.updateUserMetadata(userId, {
-      publicMetadata: {
-        labs: {
-          isDemoUser,
-        },
+    await withClerkDiagnostics(
+      {
+        ...requestContext,
+        clerkOperation: "users.updateUserMetadata",
       },
-      privateMetadata: {
-        region,
-      },
-    });
+      () =>
+        client.users.updateUserMetadata(userId, {
+          publicMetadata: {
+            labs: {
+              isDemoUser,
+            },
+          },
+          privateMetadata: {
+            region,
+          },
+        }),
+    );
 
     await posthogAiBetaServerClient.identifyImmediate({
       distinctId: userId,

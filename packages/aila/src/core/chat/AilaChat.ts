@@ -1,3 +1,4 @@
+import { slugify } from "@oakai/core/src/utils/slugify";
 import {
   subjectWarnings,
   subjects,
@@ -11,7 +12,6 @@ import { DEFAULT_MODEL, DEFAULT_TEMPERATURE } from "../../constants";
 import type { AilaChatService, AilaServices } from "../../core/AilaServices";
 import { AilaGeneration } from "../../features/generation/AilaGeneration";
 import type { AilaGenerationStatus } from "../../features/generation/types";
-import { AilaThreatDetectionError } from "../../features/threatDetection";
 import { generateMessageId } from "../../helpers/chat/generateMessageId";
 import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol";
 import {
@@ -22,7 +22,6 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
 } from "../../protocol/schema";
-import { handleThreatDetectionError } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaError } from "../AilaError";
 import type { LLMService } from "../llm/LLMService";
 import { OpenAIService } from "../llm/OpenAIService";
@@ -80,14 +79,18 @@ export class AilaChat implements AilaChatService {
         chatId: id,
       });
     this._patchEnqueuer = new PatchEnqueuer();
-    this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    this._promptBuilder =
+      promptBuilder ?? new AilaLessonPromptBuilder(aila, aila.prisma);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
 
-    this.quizService = buildQuizService({
-      sources: aila.options.quizSources,
-      enrichers: [],
-      composer: "llm",
-    });
+    this.quizService = buildQuizService(
+      {
+        sources: aila.options.quizSources,
+        enrichers: [],
+        composer: "llm",
+      },
+      { prisma: aila.prisma },
+    );
   }
 
   public get aila() {
@@ -165,15 +168,7 @@ export class AilaChat implements AilaChatService {
       "Error reading from the OpenAI stream",
       "info",
     );
-    if (error instanceof AilaThreatDetectionError) {
-      const errorObject = await handleThreatDetectionError({
-        userId: this.userId ?? "anonymous",
-        chatId: this.id,
-        error,
-        messages: this.messages,
-      });
-      await this.enqueue(errorObject);
-    } else if (error instanceof Error) {
+    if (error instanceof Error) {
       invariant(this._generation, "Generation not initialised");
       await this.enqueueError({ message: error.message });
     }
@@ -236,31 +231,30 @@ export class AilaChat implements AilaChatService {
     }
   }
 
-  private warningAboutSubject() {
-    const { subject } = this._aila.document.content;
-    if (!subject || this.messages.length > 2) {
-      return;
-    }
-    if (!subjects.includes(subject)) {
-      return subjectWarnings.unknownSubject;
-    }
-    if (unsupportedSubjects.includes(subject)) {
-      return subjectWarnings.unsupportedSubject;
-    }
-  }
-
-  /* If the subject is not supported by Oak,
-    send a warning message before the first completion */
-
-  // #TODO This is specific to lesson plan generation
-  // We should move this to a hook in the generation process
-  // so that we can generate other types of document
   public async handleSubjectWarning() {
-    const warning = this.warningAboutSubject();
-    if (!warning) {
+    const rawSubject = this._aila.document.content.subject;
+    if (!rawSubject) return;
+
+    const currentSubject = slugify(rawSubject);
+    const persistedSubject = this._persistedChat?.lessonPlan?.subject
+      ? slugify(this._persistedChat.lessonPlan.subject)
+      : undefined;
+    if (currentSubject === persistedSubject) return;
+
+    if (!subjects.includes(currentSubject)) {
+      await this.enqueue({
+        type: "prompt",
+        message: subjectWarnings.unknownSubject,
+      });
       return;
     }
-    await this.enqueue({ type: "prompt", message: warning });
+
+    if (unsupportedSubjects.includes(currentSubject)) {
+      await this.enqueue({
+        type: "prompt",
+        message: subjectWarnings.unsupportedSubject,
+      });
+    }
   }
 
   public async enqueue(message: JsonPatchDocumentOptional) {
@@ -286,6 +280,7 @@ export class AilaChat implements AilaChatService {
       aila: this._aila,
       chat: this,
       id: `${this.id ?? "aila-generation"}-${Date.now()}`,
+      prisma: this._aila.prisma,
       systemPrompt,
       status: "PENDING",
     });
@@ -403,10 +398,19 @@ export class AilaChat implements AilaChatService {
     await this.span("reportUsageMetrics", async () => {
       await this.reportUsageMetrics();
     });
+
     await this.span("applyEdits", () => {
       this.applyEdits();
       return Promise.resolve();
     });
+    // Non-agentic mode already enqueues this warning earlier in
+    // AilaStreamHandler before the LLM stream starts. Agentic mode skips that
+    // branch, so we fire it here after applyEdits has set the subject.
+    if (this.aila.options.useAgenticAila) {
+      await this.span("handle-subject-warning", async () => {
+        await this.handleSubjectWarning();
+      });
+    }
     await this.span("appendAssistantMessage", async () => {
       const assistantMessage = this.appendAssistantMessage();
       await this.enqueueMessageId(assistantMessage.id);

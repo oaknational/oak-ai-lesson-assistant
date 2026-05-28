@@ -57,7 +57,7 @@ export const appSessionsRouter = router({
     .query(async ({ input, ctx }) => {
       const { id } = input;
 
-      const moderations = await getSessionModerations(id);
+      const moderations = await getSessionModerations(id, ctx.prisma);
       return moderations
         .filter((moderation) => userIsOwner(moderation, ctx.auth))
         .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());

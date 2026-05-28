@@ -18,6 +18,7 @@ import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetectio
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
+import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -29,9 +30,7 @@ import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
-
-import type { Config } from "./config";
+import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
 import {
   getFixtureLLMService,
@@ -85,10 +84,7 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila =
-        process.env.NEXT_PUBLIC_ENVIRONMENT === "prd"
-          ? false
-          : await serverSideFeatureFlag("agentic-aila-nov-25");
+      const useAgenticAila = await getAgenticAilaEnabled();
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
@@ -318,6 +314,7 @@ async function createAilaInstance({
     { chat_id: chatId, user_id: userId },
     async (): Promise<Aila> => {
       const ailaOptions: Partial<AilaInitializationOptions> = {
+        prisma: config.prisma,
         options,
         chat: {
           id: chatId,
@@ -328,7 +325,8 @@ async function createAilaInstance({
           chatLlmService: llmService,
           moderationAiClient,
           oakModerator,
-          ragService: (aila: AilaServices) => new AilaRag({ aila }),
+          ragService: (aila: AilaServices) =>
+            new AilaRag({ aila, prisma: config.prisma }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
             new PosthogAnalyticsAdapter(aila),
@@ -393,7 +391,7 @@ export async function handleChatPostRequest(
       const stream = await generateChatStream(aila, abortController);
       return stream;
     } catch (e) {
-      return handleChatException(e, chatId, config.prisma);
+      return handleChatException(e);
     } finally {
       if (aila) {
         await aila.ensureShutdown();

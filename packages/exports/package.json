@@ -21,6 +21,7 @@
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
     "@googleapis/docs": "^5.0.1",
+    "@oakai/core": "*",
     "@oakai/logger": "*",
     "@oakai/teaching-materials": "*",
     "@resvg/resvg-js": "^2.6.2",
@@ -28,6 +29,7 @@
     "typescript": "5.9.2"
   },
   "devDependencies": {
+    "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/mathjax": "^0.0.40",
     "dedent": "^1.5.3",

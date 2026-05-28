@@ -1,4 +1,4 @@
-import { prisma } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import OpenAI from "openai";
@@ -22,8 +22,10 @@ export interface SearchRow {
  */
 export class PostgresQuizSearchService {
   private readonly openai: OpenAI;
+  private readonly prisma: PrismaClientWithAccelerate;
 
-  constructor() {
+  constructor({ prisma }: { prisma: PrismaClientWithAccelerate }) {
+    this.prisma = prisma;
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
@@ -63,7 +65,7 @@ export class PostgresQuizSearchService {
       const queryEmbedding = await this.createEmbedding(query);
       const queryVectorString = `[${queryEmbedding.join(",")}]`;
 
-      const rows = await prisma.$queryRaw<SearchRow[]>`
+      const rows = await this.prisma.$queryRaw<SearchRow[]>`
         SELECT
           question_uid,
           description,

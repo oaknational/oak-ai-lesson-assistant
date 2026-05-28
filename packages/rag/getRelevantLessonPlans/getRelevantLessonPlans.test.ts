@@ -4,19 +4,25 @@
  * it's a signal that the RAG logic has changed.
  * In this case, the new functionality should be tested and the snapshots updated.
  */
-import { prisma } from "@oakai/db";
-
 // import OpenAI from "openai";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 import ragFixtures from "../fixtures.json";
 
 // const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 async function pgVectorSearch({
   vector,
   limit = 1,
+  prisma,
 }: {
   vector: number[];
   limit?: number;
+  prisma?: PrismaClientWithAccelerate;
 }): Promise<unknown> {
+  if (!prisma) {
+    throw new Error("pgVectorSearch requires a Prisma client");
+  }
+
   const prismaResult = await prisma.$queryRaw`
       SELECT
         lesson_plan_id,
