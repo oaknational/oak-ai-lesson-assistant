@@ -3,7 +3,11 @@ import { z } from "zod";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { ImageMetadata } from "../../../protocol/schemas/quiz";
-import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
+import type {
+  QuizBuildMode,
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "../interfaces";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";
 
 /**
@@ -75,18 +79,49 @@ const BailDataSchema = z.object({
     ),
 });
 
+function selectedQuestionsBounds(
+  mode: QuizBuildMode,
+  isModifying: boolean,
+): { min: number; max: number; description: string } {
+  switch (mode.kind) {
+    case "fullRegen":
+      return {
+        min: 1,
+        max: 6,
+        description: isModifying
+          ? "Questions to include in the modified quiz. Maintain the current question count unless user explicitly asks to add or remove questions."
+          : "Questions to include in the quiz. Target 6 questions unless user specifies a different number.",
+      };
+    case "addOne":
+      return {
+        min: 1,
+        max: 1,
+        description:
+          "The single additional question to add to the quiz. Do not select any UID labelled CURRENT-Q*.",
+      };
+    case "rewriteOne":
+      return {
+        min: 1,
+        max: 1,
+        description: `The single replacement question for CURRENT-Q${mode.position}. Do not select any UID labelled CURRENT-Q*.`,
+      };
+  }
+}
+
 /**
- * Build the composition response schema.
- * Schema always allows 1-6 questions, but description guides the LLM's default:
- * - New quiz: target 6 unless user specifies otherwise
- * - Modifying: maintain current count unless user instructs otherwise
+ * Build the composition response schema. Bounds vary by mode:
+ * - `fullRegen`: 1-6 questions. Description nudges the model toward 6 (new quiz) or
+ *   "maintain current count" (modifying).
+ * - `addOne` / `rewriteOne`: exactly 1 question — structurally enforced via min(1).max(1),
+ *   so the dispatcher never has to silently truncate over-generation.
  *
  * Includes bail support for when no suitable questions can be found.
  */
-export function buildCompositionResponseSchema(isModifying: boolean) {
-  const description = isModifying
-    ? "Questions to include in the modified quiz. Maintain the current question count unless user explicitly asks to add or remove questions."
-    : "Questions to include in the quiz. Target 6 questions unless user specifies a different number.";
+export function buildCompositionResponseSchema(
+  mode: QuizBuildMode,
+  isModifying: boolean,
+) {
+  const { min, max, description } = selectedQuestionsBounds(mode, isModifying);
 
   const SuccessDataSchema = z.object({
     overallStrategy: z
@@ -98,8 +133,8 @@ export function buildCompositionResponseSchema(isModifying: boolean) {
       ),
     selectedQuestions: z
       .array(SelectedQuestionSchema)
-      .min(1)
-      .max(6)
+      .min(min)
+      .max(max)
       .describe(description),
   });
 
@@ -154,6 +189,7 @@ export function buildCompositionPrompt(
   questionPools: QuizQuestionPool[],
   lessonPlan: PartialLessonPlan,
   quizType: QuizPath,
+  mode: QuizBuildMode,
   userInstructions?: string | null,
 ): string {
   const sourceExplanation = buildSourceTypesExplanation(questionPools);
@@ -166,7 +202,7 @@ export function buildCompositionPrompt(
     buildQuestionSelectionCriteria(quizType),
     buildUserInstructionsSection(userInstructions),
     "---",
-    buildOutputInstructions(),
+    buildOutputInstructions(mode),
     "---",
     buildLessonPlanSummary(lessonPlan),
     "---",
@@ -183,18 +219,41 @@ function buildSystemContext(): string {
   return "You are a mathematics education specialist selecting quiz questions for Oak National Academy lesson plans.";
 }
 
-function buildOutputInstructions(): string {
-  return dedent`
-    OUTPUT OPTIONS:
+function buildOutputInstructions(mode: QuizBuildMode): string {
+  switch (mode.kind) {
+    case "fullRegen":
+      return dedent`
+        OUTPUT OPTIONS:
 
-    **Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
+        **Success**: Select 6 questions if possible. If fewer suitable candidates are available, you may select as few as 3 questions. Quality matters more than quantity—do not include questions that are irrelevant or poorly matched to the lesson plan just to reach 6.
 
-    **Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
+        **Bail**: If you cannot find at least 3 suitable questions from the candidates provided, you must bail rather than return poor-quality questions.
 
-    It is better to bail than to return a quiz with irrelevant questions.
+        It is better to bail than to return a quiz with irrelevant questions.
 
-    When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content. Quizzes are retrieved from Oak's existing question bank, so topics outside the curriculum may not have suitable questions available.
-  `;
+        When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content. Quizzes are retrieved from Oak's existing question bank, so topics outside the curriculum may not have suitable questions available.
+      `;
+    case "addOne":
+      return dedent`
+        OUTPUT OPTIONS:
+
+        **Success**: Select ONE additional question to append to the user's existing quiz. Do not select any UID labelled CURRENT-Q* — those are the existing questions and will be preserved automatically. Choose a question that complements the existing set and fills a gap relative to the lesson plan.
+
+        **Bail**: If no non-CURRENT candidate is a good fit for adding, bail rather than picking a poor one.
+
+        When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content.
+      `;
+    case "rewriteOne":
+      return dedent`
+        OUTPUT OPTIONS:
+
+        **Success**: Select ONE replacement question for CURRENT-Q${mode.position}. Do not select any UID labelled CURRENT-Q* — picking a CURRENT-Q* UID would either keep the existing question or duplicate another existing question, neither of which is a valid rewrite. Choose from the other candidate pools and pick a question that addresses the same area of the lesson plan as the original, ideally with a different angle or difficulty.
+
+        **Bail**: If no non-CURRENT candidate is a good replacement, bail rather than picking a poor one.
+
+        When bailing, explain why and suggest what the user could try - for example, adjusting their quiz instructions to align more closely with Oak's national curriculum content.
+      `;
+  }
 }
 
 function buildQuizTypeInstructions(

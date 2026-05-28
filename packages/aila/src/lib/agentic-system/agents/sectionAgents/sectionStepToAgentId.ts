@@ -33,14 +33,15 @@ export function sectionStepToAgentId(
     };
   },
 ): SectionAgentId {
-  if (props.config.mathsQuizEnabled && props.document.subject === "maths") {
-    if (sectionStep.sectionKey === "starterQuiz") {
-      return "starterQuiz--maths";
-    }
-    if (sectionStep.sectionKey === "exitQuiz") {
-      return "exitQuiz--maths";
-    }
+  const { sectionKey } = sectionStep;
+
+  if (
+    (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") &&
+    props.config.mathsQuizEnabled &&
+    props.document.subject === "maths"
+  ) {
+    return `${sectionKey}--maths`;
   }
 
-  return SECTION_AGENT_MAP_DEFAULTS[sectionStep.sectionKey];
+  return SECTION_AGENT_MAP_DEFAULTS[sectionKey];
 }
