@@ -58,7 +58,7 @@ export async function vectorSearch({
     prisma,
     queryVector,
     keyStageSlugs: keyStageSlugs.map(keyStageForSearch),
-    subjectSlugs,
+    subjectSlugs: subjectSlugs.map((s) => s.toLowerCase()),
     limit,
   });
   log.info(`Prisma returned ${queryResponse.length} lesson plan part results`);
