@@ -4,6 +4,7 @@ import type {
   BasedOnOptional,
   LessonPlanKey,
 } from "@oakai/aila/src/protocol/schema";
+import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
 import { aiLogger } from "@oakai/logger";
 
 import { Flex, Text } from "@radix-ui/themes";
@@ -16,8 +17,6 @@ import {
   useLessonPlanActions,
   useLessonPlanStore,
 } from "@/stores/AilaStoresProvider";
-import { keyStageToSentenceCase } from "@oakai/core/src/data/parseKeyStage";
-
 import { slugToSentenceCase } from "@/utils/toSentenceCase";
 
 import Skeleton from "../common/Skeleton";
