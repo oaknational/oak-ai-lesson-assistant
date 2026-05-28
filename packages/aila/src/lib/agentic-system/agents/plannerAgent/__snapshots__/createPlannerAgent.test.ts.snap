@@ -119,9 +119,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -135,7 +135,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
@@ -348,9 +356,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -364,7 +372,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
@@ -568,9 +584,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -584,7 +600,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
@@ -797,9 +821,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -813,7 +837,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
@@ -1015,9 +1047,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -1031,7 +1063,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
@@ -1244,9 +1284,9 @@ When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user
 **Action classification:**
 Classify the user message into one of these actions:
 - \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
 - \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
 
 The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
 
@@ -1260,7 +1300,15 @@ For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` 
 For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
 For \`REGENERATE_QUIZ\`, emit \`position: null\`.
 
-**Empty-quiz exception:** When the classified action would be \`ADD_QUIZ_QUESTION\` and the target quiz has no questions in the current document, emit \`REGENERATE_QUIZ\` instead — adding a single question to an empty quiz is meaningless; the user wants a quiz generated.
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
 
 If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
 
