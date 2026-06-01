@@ -14,7 +14,11 @@ import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sect
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
-import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
+import type {
+  AilaTurnOutcome,
+  SectionAgent,
+} from "../../lib/agentic-system/types";
+import type { LatestQuiz } from "../../protocol/schema";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChatError } from "../AilaError";
@@ -284,6 +288,46 @@ export class AilaStreamHandler {
       controller: this._controller!,
     });
 
+    // starterQuiz and exitQuiz only differ by quiz path and the words used in
+    // their messages; everything else is the same maths-engine build flow.
+    const buildMathsQuizHandler =
+      (
+        quizType: "/starterQuiz" | "/exitQuiz",
+        quizNoun: string,
+        article: string,
+      ): SectionAgent<LatestQuiz>["handler"] =>
+      async (ctx) => {
+        try {
+          const userInstructions =
+            ctx.currentTurn.currentStep?.sectionInstructions;
+          const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+          const tracker = createQuizTracker();
+          const { quiz, note } = await tracker.run(async (task, reportId) => {
+            const result = await this._chat.quizService.buildQuiz(
+              quizType,
+              ctx.currentTurn.document,
+              this._chat.relevantLessons ?? [],
+              task,
+              reportId,
+              mode,
+              userInstructions,
+            );
+            task.addData({ quiz: result.quiz, mode, userInstructions });
+            return result;
+          });
+          await ReportStorage.store(tracker.getReport());
+
+          return { error: null, data: quiz, note };
+        } catch (error) {
+          log.error(`Error generating ${quizNoun}`, { error });
+          return {
+            error: {
+              message: `Failed to generate ${article} ${quizNoun} with maths quiz engine`,
+            },
+          };
+        }
+      };
+
     let relevantLessonsPopulated: Awaited<
       ReturnType<typeof getRagLessonPlansByIds>
     > = [];
@@ -312,82 +356,16 @@ export class AilaStreamHandler {
         sectionAgents: createSectionAgentRegistry({
           openai,
           customAgentHandlers: {
-            "starterQuiz--maths": async (ctx) => {
-              try {
-                const userInstructions =
-                  ctx.currentTurn.currentStep?.sectionInstructions;
-                const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
-                const tracker = createQuizTracker();
-                const { quiz, note } = await tracker.run(
-                  async (task, reportId) => {
-                    const result = await this._chat.quizService.buildQuiz(
-                      "/starterQuiz",
-                      ctx.currentTurn.document,
-                      this._chat.relevantLessons ?? [],
-                      task,
-                      reportId,
-                      mode,
-                      userInstructions,
-                    );
-                    task.addData({
-                      quiz: result.quiz,
-                      mode,
-                      userInstructions,
-                    });
-                    return result;
-                  },
-                );
-                await ReportStorage.store(tracker.getReport());
-
-                return { error: null, data: quiz, note };
-              } catch (error) {
-                log.error("Error generating starter quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate a starter quiz with maths quiz engine",
-                  },
-                };
-              }
-            },
-            "exitQuiz--maths": async (ctx) => {
-              try {
-                const userInstructions =
-                  ctx.currentTurn.currentStep?.sectionInstructions;
-                const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
-                const tracker = createQuizTracker();
-                const { quiz, note } = await tracker.run(
-                  async (task, reportId) => {
-                    const result = await this._chat.quizService.buildQuiz(
-                      "/exitQuiz",
-                      ctx.currentTurn.document,
-                      this._chat.relevantLessons ?? [],
-                      task,
-                      reportId,
-                      mode,
-                      userInstructions,
-                    );
-                    task.addData({
-                      quiz: result.quiz,
-                      mode,
-                      userInstructions,
-                    });
-                    return result;
-                  },
-                );
-                await ReportStorage.store(tracker.getReport());
-
-                return { error: null, data: quiz, note };
-              } catch (error) {
-                log.error("Error generating exit quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate an exit quiz with maths quiz engine",
-                  },
-                };
-              }
-            },
+            "starterQuiz--maths": buildMathsQuizHandler(
+              "/starterQuiz",
+              "starter quiz",
+              "a",
+            ),
+            "exitQuiz--maths": buildMathsQuizHandler(
+              "/exitQuiz",
+              "exit quiz",
+              "an",
+            ),
           },
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
