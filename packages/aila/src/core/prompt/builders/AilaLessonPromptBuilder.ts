@@ -2,6 +2,7 @@ import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBe
 import { parseKeyStage } from "@oakai/core/src/data/parseKeyStage";
 import type { TemplateProps } from "@oakai/core/src/prompts/lesson-assistant";
 import { template } from "@oakai/core/src/prompts/lesson-assistant";
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { omit } from "remeda";
@@ -21,8 +22,11 @@ import { AilaPromptBuilder } from "../AilaPromptBuilder";
 const log = aiLogger("aila:prompt");
 
 export class AilaLessonPromptBuilder extends AilaPromptBuilder {
-  constructor(aila: AilaServices) {
+  private readonly prisma: PrismaClientWithAccelerate;
+
+  constructor(aila: AilaServices, prisma: PrismaClientWithAccelerate) {
     super(aila);
+    this.prisma = prisma;
   }
 
   public async build(): Promise<string> {
@@ -46,7 +50,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
     if (!basedOnId) {
       return;
     }
-    const { prisma } = await import("@oakai/db/client");
+    const prisma = this.prisma;
     const plan = await fetchLessonPlan({ id: basedOnId, prisma });
     if (plan) {
       return plan;
@@ -103,6 +107,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
         title,
         keyStageSlugs,
         subjectSlugs,
+        prisma: this.prisma,
       });
       const stringifiedRelevantLessonPlans = JSON.stringify(
         relevantLessonPlans.map((l) =>
@@ -123,7 +128,7 @@ export class AilaLessonPromptBuilder extends AilaPromptBuilder {
 
     let relevantLessonPlans: RagLessonPlan[] = [];
     await tryWithErrorReporting(async () => {
-      const { prisma } = await import("@oakai/db/client");
+      const prisma = this.prisma;
       relevantLessonPlans = await fetchRagContent({
         title: title ?? "unknown",
         subject,

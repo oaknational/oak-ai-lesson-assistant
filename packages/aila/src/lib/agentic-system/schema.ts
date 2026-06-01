@@ -28,6 +28,33 @@ const parsedUserMessageSchema = z
     "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'",
   );
 
+const quizActionSchema = z.enum([
+  "REGENERATE_QUIZ",
+  "ADD_QUIZ_QUESTION",
+  "REMOVE_QUIZ_QUESTION",
+  "CHANGE_QUIZ_QUESTION",
+]);
+
+const quizIntentSchema = z.object({
+  action: quizActionSchema,
+  position: z.number().int().positive().nullable(),
+});
+
+export type QuizAction = z.infer<typeof quizActionSchema>;
+export type QuizIntent = z.infer<typeof quizIntentSchema>;
+
+const structuralQuizAction = quizActionSchema.exclude([
+  "REGENERATE_QUIZ",
+] as const);
+
+export const structuralQuizIntentSchema = quizIntentSchema.extend({
+  action: structuralQuizAction,
+});
+
+/** Quiz actions that structurally modify individual questions (not full regeneration). */
+export type StructuralQuizAction = z.infer<typeof structuralQuizAction>;
+export type StructuralQuizIntent = z.infer<typeof structuralQuizIntentSchema>;
+
 const sectionStepSchema = z
   .object({
     type: z
@@ -45,6 +72,7 @@ const sectionStepSchema = z
           "Extract from conversation if user has preferences (e.g., 'focus on images', " +
           "'make it harder', 'replace question 3'). Null if no specific instructions.",
       ),
+    quizIntent: quizIntentSchema.nullable().optional(),
   })
   .describe("Section plan step.");
 
