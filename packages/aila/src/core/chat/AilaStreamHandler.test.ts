@@ -169,6 +169,7 @@ function createMockChat({
       options: {
         useAgenticAila,
       },
+      prisma: {},
       tracing: {
         span: async (
           _step: string,

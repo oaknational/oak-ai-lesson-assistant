@@ -2,11 +2,20 @@ import { aiLogger } from "@oakai/logger";
 
 import { type Draft, enablePatches, produceWithPatches } from "immer";
 
-import type { PartialLessonPlan } from "../../../protocol/schema";
-import { CompletedLessonPlanSchema } from "../../../protocol/schema";
+import type { LatestQuiz, PartialLessonPlan } from "../../../protocol/schema";
+import {
+  CompletedLessonPlanSchema,
+  LatestQuizSchema,
+} from "../../../protocol/schema";
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
-import type { PlanStep } from "../schema";
+import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
+import { validateSingleQuestion } from "../quizOperations/validateSingleQuestion";
+import {
+  type PlanStep,
+  type StructuralQuizIntent,
+  structuralQuizIntentSchema,
+} from "../schema";
 import type {
   AgentResult,
   AilaExecutionContext,
@@ -66,6 +75,22 @@ async function executeGenerateStep(
   context: AilaExecutionContext,
   step: PlanStep,
 ): Promise<AilaTurnPhaseOutcome> {
+  const { quizIntent } = step;
+  if (
+    quizIntent &&
+    quizIntent.action !== "REGENERATE_QUIZ" &&
+    (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz")
+  ) {
+    const parsedQuizIntent = structuralQuizIntentSchema.parse(quizIntent);
+
+    return executeQuizDispatchStep(
+      context,
+      step,
+      step.sectionKey,
+      parsedQuizIntent,
+    );
+  }
+
   const result = await runSectionAgent(context, step);
 
   if (result.error) {
@@ -109,6 +134,55 @@ async function executeGenerateStep(
   return { status: "continue" };
 }
 
+async function executeQuizDispatchStep(
+  context: AilaExecutionContext,
+  step: PlanStep,
+  sectionKey: "starterQuiz" | "exitQuiz",
+  intent: StructuralQuizIntent,
+): Promise<AilaTurnPhaseOutcome> {
+  const currentQuiz: LatestQuiz = context.currentTurn.document[sectionKey] ?? {
+    version: "v3",
+    questions: [],
+    imageMetadata: [],
+  };
+
+  const dispatchResult = await quizOperationDispatcher(
+    currentQuiz,
+    intent,
+    async () => {
+      const agentId = sectionStepToAgentId(step, {
+        config: context.runtime.config,
+        document: context.currentTurn.document,
+      });
+      const agent = context.runtime.sectionAgents[agentId];
+      if (!agent) return null;
+      const agentResult = await agent.handler(context);
+      if (agentResult.error) return null;
+      const quizResult = LatestQuizSchema.safeParse(agentResult.data);
+      if (!quizResult.success) return null;
+      if (!validateSingleQuestion(quizResult.data.questions[0])) return null;
+      return quizResult.data.questions[0] ?? null;
+    },
+  );
+
+  if (dispatchResult.note) {
+    context.currentTurn.notes.push({
+      message: dispatchResult.note,
+      sectionKey: step.sectionKey,
+    });
+  }
+
+  commitStepUpdate(context, step, (draft) => {
+    if (sectionKey === "starterQuiz") {
+      draft.starterQuiz = dispatchResult.data;
+    } else {
+      draft.exitQuiz = dispatchResult.data;
+    }
+  });
+
+  return { status: "continue" };
+}
+
 async function runSectionAgent(
   context: AilaExecutionContext,
   step: PlanStep,
@@ -118,6 +192,9 @@ async function runSectionAgent(
     document: context.currentTurn.document,
   });
   const agent = context.runtime.sectionAgents[agentId];
+  if (!agent) {
+    return { error: { message: `No agent registered for ${agentId}` } };
+  }
   const forceSectionThrow = shouldForceSectionThrow(step.sectionKey);
   const forceSectionFailure = shouldForceSectionFailure(step.sectionKey);
 

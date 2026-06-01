@@ -1,3 +1,24 @@
+# [1.75.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.74.0...v1.75.0) (2026-06-01)
+
+
+### Features
+
+* [AI-2214] add dev/staging debug overlay ([#1059](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1059)) ([5c6795c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5c6795c79577ba3c159f2f5ca340d7db77c43a51))
+* key stage to sentence case helper - AI-2085 ([#1058](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1058)) ([b7967f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b7967f7c627f259a0c4f9c0a10edcd2f9918e00b))
+* stable quiz questions - AI-2165 ([#1053](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1053)) ([9353931](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9353931253d710ff0af809da9d9d7fb0f6c5b05b))
+
+# [1.74.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.73.0...v1.74.0) (2026-05-21)
+
+
+### Bug Fixes
+
+* [AI-2162] stop empty moderation requests and fix stream completion edge cases ([#1052](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1052)) ([d1377fa](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d1377fac534cb4055acf7a46408b030bd3a45123))
+
+
+### Features
+
+* subject warning message in agentic - AI-2149 ([#1044](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1044)) ([4d42584](https://github.com/oaknational/oak-ai-lesson-assistant/commit/4d42584e0c9b6f503ed1209689db01129ae3af02))
+
 # [1.73.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.72.0...v1.73.0) (2026-05-19)
 
 

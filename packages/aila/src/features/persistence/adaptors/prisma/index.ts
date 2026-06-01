@@ -1,5 +1,4 @@
 import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
@@ -27,10 +26,10 @@ export class AilaPrismaPersistence extends AilaPersistence {
   }: {
     chat: AilaChatService;
     aila: AilaServices;
-    prisma?: PrismaClientWithAccelerate;
+    prisma: PrismaClientWithAccelerate;
   }) {
     super({ chat, name: "AilaPrismaPersistence", aila });
-    this._prisma = prisma ?? globalPrisma;
+    this._prisma = prisma;
   }
 
   async loadChat(): Promise<AilaPersistedChat | null> {

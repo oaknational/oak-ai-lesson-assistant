@@ -1,6 +1,20 @@
 import type { PartialLessonPlan } from "../../../protocol/schema";
-import type { QuizQuestionPool, RagQuizQuestion } from "../interfaces";
-import { buildCompositionPrompt } from "./LLMQuizComposerPrompts";
+import type {
+  QuizBuildMode,
+  QuizQuestionPool,
+  RagQuizQuestion,
+} from "../interfaces";
+import {
+  buildCompositionPrompt,
+  buildCompositionResponseSchema,
+} from "./LLMQuizComposerPrompts";
+
+const FULL_REGEN: QuizBuildMode = { kind: "fullRegen" };
+const ADD_ONE: QuizBuildMode = { kind: "addOne" };
+const REWRITE_ONE = (position: number): QuizBuildMode => ({
+  kind: "rewriteOne",
+  position,
+});
 
 const mockMultipleChoice = (
   uid: string,
@@ -130,7 +144,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain(
         "[IMAGE: a right triangle with base 3cm and height 4cm]",
@@ -168,7 +187,7 @@ describe("buildCompositionPrompt", () => {
       ];
 
       expect(() =>
-        buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz"),
+        buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz", FULL_REGEN),
       ).toThrow("Missing aiDescription for image");
     });
 
@@ -207,7 +226,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("[IMAGE: a square with side 5cm]");
       expect(prompt).toContain("[IMAGE: a rectangle 2cm by 3cm]");
@@ -220,6 +244,7 @@ describe("buildCompositionPrompt", () => {
         mockQuestionPools,
         mockLessonPlan,
         "/starterQuiz",
+        FULL_REGEN,
       );
 
       expect(prompt).toContain("Compose a starter quiz");
@@ -240,6 +265,7 @@ describe("buildCompositionPrompt", () => {
         mockQuestionPools,
         mockLessonPlan,
         "/exitQuiz",
+        FULL_REGEN,
       );
 
       expect(prompt).toContain("Compose an exit quiz");
@@ -264,6 +290,7 @@ describe("buildCompositionPrompt", () => {
         mockQuestionPools,
         mockLessonPlan,
         "/starterQuiz",
+        FULL_REGEN,
       );
 
       expect(prompt).toMatchSnapshot();
@@ -274,6 +301,7 @@ describe("buildCompositionPrompt", () => {
         mockQuestionPools,
         mockLessonPlan,
         "/exitQuiz",
+        FULL_REGEN,
       );
 
       expect(prompt).toMatchSnapshot();
@@ -301,7 +329,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("**Current Quiz (Being Modified)**");
       expect(prompt).toContain("CURRENT-Q1 through CURRENT-Q6");
@@ -316,7 +349,12 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).not.toContain("Current Quiz");
       expect(prompt).not.toContain("CURRENT-Q");
@@ -325,7 +363,12 @@ describe("buildCompositionPrompt", () => {
     it("should use correct pool header for currentQuiz", () => {
       const pools: QuizQuestionPool[] = [currentQuizPool];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).toContain("### Current Quiz (To Be Modified)");
     });
@@ -347,9 +390,198 @@ describe("buildCompositionPrompt", () => {
         },
       ];
 
-      const prompt = buildCompositionPrompt(pools, mockLessonPlan, "/exitQuiz");
+      const prompt = buildCompositionPrompt(
+        pools,
+        mockLessonPlan,
+        "/exitQuiz",
+        FULL_REGEN,
+      );
 
       expect(prompt).not.toContain("**Current Quiz (Being Modified)**");
     });
+  });
+
+  describe("single-question modes", () => {
+    const currentQuizPool: QuizQuestionPool = {
+      source: { type: "currentQuiz", quizType: "/exitQuiz" },
+      questions: [
+        mockMultipleChoice("CURRENT-Q1", "Existing question 1"),
+        mockMultipleChoice("CURRENT-Q2", "Existing question 2"),
+        mockMultipleChoice("CURRENT-Q3", "Existing question 3"),
+      ],
+    };
+    const candidatePool: QuizQuestionPool = {
+      source: { type: "semanticSearch", semanticQuery: "fractions" },
+      questions: [mockMultipleChoice("cand-1", "Candidate question")],
+    };
+
+    describe("addOne mode", () => {
+      it("instructs the model to select exactly one question", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          ADD_ONE,
+        );
+
+        expect(prompt).toContain("Select ONE additional question");
+      });
+
+      it("forbids selecting any CURRENT-Q* UID", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          ADD_ONE,
+        );
+
+        expect(prompt).toContain("Do not select any UID labelled CURRENT-Q");
+      });
+
+      it("does not include the 'select 6 questions' output instruction", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          ADD_ONE,
+        );
+
+        expect(prompt).not.toContain("Select 6 questions");
+      });
+    });
+
+    describe("rewriteOne mode", () => {
+      it("names the position being replaced", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          REWRITE_ONE(2),
+        );
+
+        expect(prompt).toContain("CURRENT-Q2");
+        expect(prompt).toContain("Select ONE replacement");
+      });
+
+      it("forbids selecting any CURRENT-Q* UID", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          REWRITE_ONE(2),
+        );
+
+        expect(prompt).toContain("Do not select any UID labelled CURRENT-Q");
+      });
+
+      it("does not include the 'select 6 questions' output instruction", () => {
+        const prompt = buildCompositionPrompt(
+          [currentQuizPool, candidatePool],
+          mockLessonPlan,
+          "/exitQuiz",
+          REWRITE_ONE(2),
+        );
+
+        expect(prompt).not.toContain("Select 6 questions");
+      });
+    });
+  });
+});
+
+describe("buildCompositionResponseSchema", () => {
+  it("fullRegen allows 1-6 selected questions", () => {
+    const schema = buildCompositionResponseSchema(FULL_REGEN, false);
+    const success = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: Array.from({ length: 6 }, (_, i) => ({
+          questionUid: `q${i}`,
+          reasoning: "r",
+        })),
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(success).success).toBe(true);
+  });
+
+  it("fullRegen rejects more than 6 selected questions", () => {
+    const schema = buildCompositionResponseSchema(FULL_REGEN, false);
+    const tooMany = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: Array.from({ length: 7 }, (_, i) => ({
+          questionUid: `q${i}`,
+          reasoning: "r",
+        })),
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(tooMany).success).toBe(false);
+  });
+
+  it("addOne accepts exactly one selected question", () => {
+    const schema = buildCompositionResponseSchema(ADD_ONE, true);
+    const one = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: [{ questionUid: "q0", reasoning: "r" }],
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(one).success).toBe(true);
+  });
+
+  it("addOne rejects two selected questions", () => {
+    const schema = buildCompositionResponseSchema(ADD_ONE, true);
+    const two = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: [
+          { questionUid: "q0", reasoning: "r" },
+          { questionUid: "q1", reasoning: "r" },
+        ],
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(two).success).toBe(false);
+  });
+
+  it("rewriteOne accepts exactly one selected question", () => {
+    const schema = buildCompositionResponseSchema(REWRITE_ONE(2), true);
+    const one = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: [{ questionUid: "q0", reasoning: "r" }],
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(one).success).toBe(true);
+  });
+
+  it("rewriteOne rejects two selected questions", () => {
+    const schema = buildCompositionResponseSchema(REWRITE_ONE(2), true);
+    const two = {
+      status: "success" as const,
+      success: {
+        overallStrategy: "x",
+        selectedQuestions: [
+          { questionUid: "q0", reasoning: "r" },
+          { questionUid: "q1", reasoning: "r" },
+        ],
+      },
+      bail: null,
+    };
+
+    expect(schema.safeParse(two).success).toBe(false);
   });
 });

@@ -39,7 +39,7 @@ export async function handleThreatDetectionResult(
     chatId: string;
     threatDetection: ThreatDetectionResult;
     messages?: ThreatDetectionMessage[];
-    prisma?: PrismaClientWithAccelerate;
+    prisma: PrismaClientWithAccelerate;
   },
   {
     SafetyViolations = defaultSafetyViolations,
@@ -78,13 +78,11 @@ export async function handleThreatDetectionResult(
     log.error("Failed to schedule threat detection notification", { error: e });
   }
 
-  const prismaClient = prisma ?? (await import("@oakai/db")).prisma;
-
   const action = await recordThreatDetectionSafetyViolation({
     userId,
     chatId,
     messages,
-    prisma: prismaClient,
+    prisma,
     threatDetection,
     SafetyViolations,
     ThreatDetections,

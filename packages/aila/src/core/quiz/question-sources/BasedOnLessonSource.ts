@@ -5,7 +5,7 @@ import type {
 } from "../../../protocol/schema";
 import type { QuestionSource, QuizQuestionPool } from "../interfaces";
 import type { Task } from "../reporting";
-import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
+import type { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 /**
  * Retrieves quiz questions from the specific Oak lesson that the user
@@ -17,9 +17,8 @@ export class BasedOnLessonSource implements QuestionSource {
 
   private retrievalService: QuizQuestionRetrievalService;
 
-  constructor(retrievalService?: QuizQuestionRetrievalService) {
-    this.retrievalService =
-      retrievalService ?? new QuizQuestionRetrievalService();
+  constructor(retrievalService: QuizQuestionRetrievalService) {
+    this.retrievalService = retrievalService;
   }
 
   private async getCandidates(

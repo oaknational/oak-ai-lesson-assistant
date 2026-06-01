@@ -107,6 +107,43 @@ Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field c
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
+### 🔹 QUIZ INTENT
+
+When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+
+**Action classification:**
+Classify the user message into one of these actions:
+- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
+- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
+- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
+- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+
+The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+
+**Position resolution:**
+For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+- Explicit number: "remove question 3" → \`position: 3\`
+- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
+- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- If position cannot be determined, emit \`position: null\`
+
+For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+
+**Empty-quiz exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
+- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
+- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+
+Example:
+- User message: "For the starter quiz, add a question"
+- Document: \`starterQuiz: { questions: [], ... }\`
+- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+
+If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+
+---
+
 ### 🔹 SECTION INSTRUCTIONS
 
 When creating plan steps, extract any user-provided instructions specific to that section into the \`sectionInstructions\` field:

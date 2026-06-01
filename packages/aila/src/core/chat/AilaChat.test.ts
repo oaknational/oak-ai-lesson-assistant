@@ -2,14 +2,6 @@ import { subjectWarnings } from "@oakai/core/src/utils/subjects";
 
 import { AilaChat } from "./AilaChat";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
-jest.mock("@oakai/db/client", () => ({
-  prisma: {},
-}));
-
 describe("AilaChat", () => {
   it("still requires generation for non-threat errors", async () => {
     const chat = new AilaChat({

@@ -13,10 +13,6 @@ import {
 
 import { handleChatException } from "./errorHandling";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 jest.mock("@sentry/node", () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
