@@ -301,7 +301,6 @@ export class AilaStreamHandler {
       (
         quizType: "/starterQuiz" | "/exitQuiz",
         quizNoun: string,
-        article: string,
       ): SectionAgent<LatestQuiz>["handler"] =>
       async (ctx) => {
         try {
@@ -329,7 +328,7 @@ export class AilaStreamHandler {
           log.error(`Error generating ${quizNoun}`, { error });
           return {
             error: {
-              message: `Failed to generate ${article} ${quizNoun} with maths quiz engine`,
+              message: `Failed to generate a ${quizNoun} with maths quiz engine`,
             },
           };
         }
@@ -366,13 +365,8 @@ export class AilaStreamHandler {
             "starterQuiz--maths": buildMathsQuizHandler(
               "/starterQuiz",
               "starter quiz",
-              "a",
             ),
-            "exitQuiz--maths": buildMathsQuizHandler(
-              "/exitQuiz",
-              "exit quiz",
-              "an",
-            ),
+            "exitQuiz--maths": buildMathsQuizHandler("/exitQuiz", "exit quiz"),
           },
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
