@@ -1111,6 +1111,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@sentry/nextjs':
+        specifier: ^10.29.0
+        version: 10.31.0(@opentelemetry/context-async-hooks@2.2.0)(@opentelemetry/core@2.2.0)(@opentelemetry/sdk-trace-base@2.2.0)(next@16.0.10)(react@19.2.1)(webpack@5.102.1)
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -17684,7 +17687,7 @@ packages:
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       cjs-module-lexer: 1.4.3
-      module-details-from-path: 1.0.3
+      module-details-from-path: 1.0.4
     dev: false
 
   /import-lazy@4.0.0:
