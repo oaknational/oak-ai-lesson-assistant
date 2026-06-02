@@ -157,12 +157,15 @@ describe("hasSearchIdentityChangedSignificantly", () => {
         next: "Introduction to Algebraic Expressions",
         expected: true,
       },
-    ])("$label: $prev → $next should be $expected", ({ prev, next, expected }) => {
-      const prevId = { ...base, title: prev };
-      const nextId = { ...base, title: next };
-      expect(hasSearchIdentityChangedSignificantly(prevId, nextId)).toBe(
-        expected,
-      );
-    });
+    ])(
+      "$label: $prev → $next should be $expected",
+      ({ prev, next, expected }) => {
+        const prevId = { ...base, title: prev };
+        const nextId = { ...base, title: next };
+        expect(hasSearchIdentityChangedSignificantly(prevId, nextId)).toBe(
+          expected,
+        );
+      },
+    );
   });
 });

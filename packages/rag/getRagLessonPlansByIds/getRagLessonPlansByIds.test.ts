@@ -1,8 +1,7 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import * as Sentry from "@sentry/nextjs";
-
 import { generateMock } from "@anatine/zod-mock";
+import * as Sentry from "@sentry/nextjs";
 
 import { CompletedLessonPlanSchema } from "../../aila/src/protocol/schema";
 import { QuizV1Schema } from "../../aila/src/protocol/schemas/quiz/quizV1";

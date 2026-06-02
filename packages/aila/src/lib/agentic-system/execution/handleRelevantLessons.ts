@@ -10,9 +10,7 @@ function searchIdentityEqual(
   if (a == null && b == null) return true;
   if (a == null || b == null) return false;
   return (
-    a.title === b.title &&
-    a.subject === b.subject &&
-    a.keyStage === b.keyStage
+    a.title === b.title && a.subject === b.subject && a.keyStage === b.keyStage
   );
 }
 
