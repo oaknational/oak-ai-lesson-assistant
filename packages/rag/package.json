@@ -21,6 +21,7 @@
     "@oakai/db": "*",
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
+    "@sentry/nextjs": "^10.29.0",
     "zod": "3.25.76"
   },
   "devDependencies": {
