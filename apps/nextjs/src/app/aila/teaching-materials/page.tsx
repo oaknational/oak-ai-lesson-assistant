@@ -36,6 +36,15 @@ export default async function TeachingMaterialsPage({
       },
     };
   }
+  if (docType) {
+    pageProps = {
+      source: "aila",
+      initialStep: 1,
+      queryParams: {
+        docType,
+      },
+    };
+  }
 
   return <TeachingMaterialsView {...pageProps} />;
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import type { TeachingMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
+
 import { useUser } from "@clerk/nextjs";
 import {
   OakBox,
@@ -7,10 +9,10 @@ import {
   OakGrid,
   OakGridArea,
   OakHeading,
-  OakLI,
   OakMaxWidth,
   OakP,
   OakPrimaryButton,
+  OakTertiaryButton,
   OakUL,
 } from "@oaknational/oak-components";
 import Link from "next/link";
@@ -21,6 +23,19 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 import EmptyScreenAccordion from "../empty-screen-accordion";
+
+const teachingMaterialsList: {
+  label: string;
+  docType: TeachingMaterialType;
+}[] = [
+  { label: "Glossaries", docType: "additional-glossary" },
+  {
+    label: "Comprehension tasks",
+    docType: "additional-comprehension",
+  },
+  { label: "Starter quiz", docType: "additional-starter-quiz" },
+  { label: "Exit quiz", docType: "additional-exit-quiz" },
+];
 
 const StyledUL = styled(OakUL)`
   list-style-type: disc;
@@ -56,7 +71,7 @@ export function AilaStart() {
           <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
             <OakBox
               $background="bg-primary"
-              $pa="spacing-32"
+              $pa="spacing-24"
               $borderRadius="border-radius-s"
               $position={"relative"}
             >
@@ -84,47 +99,49 @@ export function AilaStart() {
               </OakFlex>
             </OakBox>
           </OakGridArea>
-          <OakGridArea $colSpan={[12, 6, 5]}>
+          <OakGridArea $colSpan={[12, 6, 4]}>
             <OakBox
               $background="bg-primary"
-              $pa="spacing-32"
+              $pa="spacing-24"
               $borderRadius="border-radius-s"
             >
-              <OakFlex $flexDirection="column">
-                {/* Heading, description, and list */}
-                <OakHeading $mb="spacing-12" $font="heading-5" tag="h2">
-                  Create teaching materials with AI
+              <OakFlex $gap="spacing-24" $flexDirection="column">
+                <OakHeading $font="heading-5" tag="h2">
+                  Create teaching materials
                 </OakHeading>
-                <OakP $mb="spacing-12" $font="body-2">
-                  Enhance lessons with a range of teaching materials, including:
+                <OakP $font="body-2">
+                  Enhance your own lessons with editable resources:
                 </OakP>
-                <StyledUL>
-                  <OakLI $mv="spacing-12">Glossaries</OakLI>
-                  <OakLI $mv="spacing-12">Comprehension tasks</OakLI>
-                  <OakLI $mt="spacing-12">Quizzes</OakLI>
-                </StyledUL>
-                <OakBox $mt="spacing-24">
-                  <OakPrimaryButton
-                    element={Link}
-                    href={getAilaUrl("teaching-materials")}
-                    data-testid={"create-teaching-materials-button"}
-                    iconName="arrow-right"
-                    isTrailingIcon={true}
-                    onClick={() => {
-                      track.createTeachingMaterialsInitiated({
-                        platform: "aila-beta",
-                        product: "ai lesson assistant",
-                        engagementIntent: "explore",
-                        componentType: "create_additional_materials_button",
-                        eventVersion: "2.0.0",
-                        analyticsUseCase: "Teacher",
-                        isLoggedIn: Boolean(user),
-                      });
-                    }}
-                  >
-                    Create teaching materials
-                  </OakPrimaryButton>
-                </OakBox>
+                <OakBox
+                  $color={"border-neutral"}
+                  $bb={"border-solid-s"}
+                  $pa="spacing-0"
+                />
+
+                <OakFlex $flexDirection={"column"} $gap="spacing-12">
+                  {teachingMaterialsList.map((item) => (
+                    <OakTertiaryButton
+                      key={item.docType}
+                      data-testid={`create-teaching-materials-button-${item.docType}`}
+                      element="a"
+                      href={`${getAilaUrl("teaching-materials")}?docType=${item.docType}`}
+                      iconName="chevron-right"
+                      onClick={() => {
+                        track.createTeachingMaterialsInitiated({
+                          platform: "aila-beta",
+                          product: "ai lesson assistant",
+                          engagementIntent: "explore",
+                          componentType: "create_additional_materials_button",
+                          eventVersion: "2.0.0",
+                          analyticsUseCase: "Teacher",
+                          isLoggedIn: Boolean(user),
+                        });
+                      }}
+                    >
+                      {item.label}
+                    </OakTertiaryButton>
+                  ))}
+                </OakFlex>
               </OakFlex>
             </OakBox>
           </OakGridArea>
