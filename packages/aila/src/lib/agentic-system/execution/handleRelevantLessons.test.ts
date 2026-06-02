@@ -27,6 +27,7 @@ function createContext(
       },
     },
     runtime: {
+      britishEnglishCorrectorAgent: jest.fn(),
       plannerAgent: jest.fn(),
       sectionAgents: {} as AilaExecutionContext["runtime"]["sectionAgents"],
       messageToUserAgent: jest.fn(),
@@ -49,6 +50,11 @@ function createContext(
       relevantLessons: null,
       relevantLessonsFetched: false,
       currentStep: null,
+      correctorStats: {
+        attempted: [],
+        notNeeded: [],
+        failed: [],
+      },
     },
     callbacks: {
       onPlannerComplete: jest.fn(),
@@ -132,10 +138,9 @@ describe("handleRelevantLessons", () => {
 
     await handleRelevantLessons(ctx);
 
-    expect(
-      ctx.callbacks as AilaTurnCallbacks
-    ).toHaveProperty("onRagFetchedChange");
+    expect(ctx.callbacks as AilaTurnCallbacks).toHaveProperty(
+      "onRagFetchedChange",
+    );
     expect(ctx.callbacks.onRagFetchedChange).not.toHaveBeenCalled();
   });
-
 });
