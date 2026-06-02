@@ -17,6 +17,7 @@ import type {
   RagFetched,
   SubjectSchema,
 } from "../../protocol/schema";
+import type { BritishEnglishCorrectorAgentProps } from "./agents/britishEnglishCorrectorAgent";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type { JsonPatchOperation } from "./compatibility/helpers/immerPatchToJsonPatch";
@@ -55,6 +56,9 @@ export type AilaRuntimeContext = {
   messageToUserAgent: (
     props: MessageToUserAgentProps,
   ) => Promise<AgentResult<MessageToUserAgentOutput>>;
+  britishEnglishCorrectorAgent: (
+    props: BritishEnglishCorrectorAgentProps,
+  ) => Promise<AgentResult<unknown>>;
   fetchRelevantLessons: (
     props: RagSearchArgs,
   ) => Promise<AgenticRagLessonPlanResult[]>;
@@ -84,7 +88,10 @@ export type AilaTurnArgs = {
   callbacks: AilaTurnCallbacks;
 };
 
-export type AilaTurnOutcome = { status: "success" } | { status: "failed" };
+export type AilaTurnOutcome = {
+  status: "success" | "failed";
+  correctorStats: CorrectorStats;
+};
 
 export type AilaTurnPhaseOutcome = { status: "continue" } | AilaTurnOutcome;
 
@@ -176,6 +183,14 @@ export type AilaState = {
   ) => Promise<AgenticRagLessonPlanResult[]>;
 };
 
+export type CorrectorFailureReason = "threw" | "errored" | "schema-invalid";
+
+export type CorrectorStats = {
+  attempted: SectionKey[];
+  notNeeded: SectionKey[];
+  failed: { sectionKey: SectionKey; reason: CorrectorFailureReason }[];
+};
+
 export type AilaCurrentTurn = {
   document: PartialLessonPlan;
   plannerOutput: PlannerOutput | null;
@@ -185,6 +200,7 @@ export type AilaCurrentTurn = {
   relevantLessons: AgenticRagLessonPlanResult[] | null;
   relevantLessonsFetched: boolean;
   currentStep: PlanStep | null;
+  correctorStats: CorrectorStats;
 };
 
 export type AgentResult<T> =

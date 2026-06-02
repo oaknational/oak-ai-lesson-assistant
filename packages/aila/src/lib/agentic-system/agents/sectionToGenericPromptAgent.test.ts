@@ -63,6 +63,7 @@ describe("sectionToGenericPromptAgent", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sectionAgents: {} as any, // Mock - not used in this test
       messageToUserAgent: jest.fn(),
+      britishEnglishCorrectorAgent: jest.fn(),
       fetchRelevantLessons: jest.fn(),
       config: {
         mathsQuizEnabled: false,
@@ -77,6 +78,7 @@ describe("sectionToGenericPromptAgent", () => {
       relevantLessonsFetched: false,
       relevantLessons: mockRelevantLessons,
       currentStep: null,
+      correctorStats: { attempted: [], notNeeded: [], failed: [] },
     },
     callbacks: {
       onPlannerComplete: jest.fn(),

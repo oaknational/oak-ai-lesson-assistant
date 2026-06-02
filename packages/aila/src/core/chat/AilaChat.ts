@@ -81,14 +81,18 @@ export class AilaChat implements AilaChatService {
         chatId: id,
       });
     this._patchEnqueuer = new PatchEnqueuer();
-    this._promptBuilder = promptBuilder ?? new AilaLessonPromptBuilder(aila);
+    this._promptBuilder =
+      promptBuilder ?? new AilaLessonPromptBuilder(aila, aila.prisma);
     this._relevantLessons = null; // null means not fetched yet, [] means fetched but none found
     this._ragFetched = { status: "not_fetched", searchIdentity: null };
-    this.quizService = buildQuizService({
-      sources: aila.options.quizSources,
-      enrichers: [],
-      composer: "llm",
-    });
+    this.quizService = buildQuizService(
+      {
+        sources: aila.options.quizSources,
+        enrichers: [],
+        composer: "llm",
+      },
+      { prisma: aila.prisma },
+    );
   }
 
   public get aila() {
@@ -286,6 +290,7 @@ export class AilaChat implements AilaChatService {
       aila: this._aila,
       chat: this,
       id: `${this.id ?? "aila-generation"}-${Date.now()}`,
+      prisma: this._aila.prisma,
       systemPrompt,
       status: "PENDING",
     });
@@ -346,11 +351,10 @@ export class AilaChat implements AilaChatService {
 
     if (persistedChat) {
       this._relevantLessons = persistedChat.relevantLessons ?? null;
-      this._ragFetched =
-        persistedChat.ragFetched ?? {
-          status: "not_fetched",
-          searchIdentity: null,
-        };
+      this._ragFetched = persistedChat.ragFetched ?? {
+        status: "not_fetched",
+        searchIdentity: null,
+      };
       this._isShared = persistedChat.isShared;
       this._iteration = persistedChat.iteration ?? 1;
       this._createdAt = new Date(persistedChat.createdAt);

@@ -16,7 +16,6 @@ const meta = {
   tags: ["autodocs"],
   decorators: [DemoDecorator, StoreDecorator],
   args: {
-    showStreamingStatus: false,
     setShowLessonMobile: fn(),
     showLessonMobile: false,
   },
@@ -30,17 +29,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-
-export const NonProdStreamingStatus: Story = {
-  args: {
-    showStreamingStatus: true,
-  },
-  parameters: {
-    chatStoreState: {
-      ailaStreamingStatus: "StreamingLessonPlan",
-    },
-  },
-};
 
 export const DemoBannerPadding: Story = {
   parameters: {

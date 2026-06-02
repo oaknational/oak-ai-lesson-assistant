@@ -1,3 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 import * as Sentry from "@sentry/nextjs";
 import { isTruthy } from "remeda";
 import invariant from "tiny-invariant";
@@ -13,12 +15,14 @@ import { migrateLessonPlan } from "../../aila/src/protocol/schemas/versioning/mi
  */
 export async function getRagLessonPlansByIds({
   lessonPlanIds,
+  prisma,
 }: {
   /**
    * lessonPlanId is the legacy name for ragLessonPlanId
    * i.e. the id of the record associated with that particular ingest/RAG interpretation of the Oak lesson
    */
   lessonPlanIds: string[];
+  prisma: PrismaClientWithAccelerate;
 }): Promise<
   {
     ragLessonPlanId: string;
@@ -27,7 +31,6 @@ export async function getRagLessonPlansByIds({
     lessonPlan: CompletedLessonPlan;
   }[]
 > {
-  const { prisma } = await import("@oakai/db");
   const lessonPlans = await prisma.ragLessonPlan.findMany({
     where: {
       id: {

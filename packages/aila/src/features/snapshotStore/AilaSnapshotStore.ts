@@ -1,6 +1,5 @@
 import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
-import { prisma as globalPrisma } from "@oakai/db/client";
 
 import type { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
@@ -20,11 +19,11 @@ export class AilaSnapshotStore {
   }: {
     name?: string;
     aila: AilaServices;
-    prisma?: PrismaClientWithAccelerate;
+    prisma: PrismaClientWithAccelerate;
   }) {
     this._name = name;
     this._aila = aila;
-    this._prisma = prisma ?? globalPrisma;
+    this._prisma = prisma;
   }
 
   get name() {

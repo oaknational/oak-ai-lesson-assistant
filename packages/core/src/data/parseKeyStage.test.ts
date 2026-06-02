@@ -1,4 +1,4 @@
-import { parseKeyStage } from "./parseKeyStage";
+import { keyStageToSentenceCase, parseKeyStage } from "./parseKeyStage";
 
 const testKeyStageMap: Record<
   string,
@@ -124,5 +124,21 @@ describe("Analytics helpers", () => {
         expect(parseKeyStage(input)).toBe(expected);
       },
     );
+  });
+
+  describe("keyStageToSentenceCase", () => {
+    test.each([
+      ["ks1", "Key stage 1"],
+      ["ks2", "Key stage 2"],
+      ["KS3", "Key stage 3"],
+      ["key-stage-4", "Key stage 4"],
+      ["Key Stage 5", "Key stage 5"],
+      ["early-years-foundation-stage", "Early years foundation stage"],
+      ["EYFS", "Early years foundation stage"],
+      ["Year 6", "Key stage 2"],
+      ["", ""],
+    ])("Formats '%s' as '%s'", (input, expected) => {
+      expect(keyStageToSentenceCase(input)).toBe(expected);
+    });
   });
 });

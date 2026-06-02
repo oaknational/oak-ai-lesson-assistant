@@ -32,6 +32,7 @@ function createRuntime(
     plannerAgent: jest.fn(),
     sectionAgents: {} as AilaRuntimeContext["sectionAgents"],
     messageToUserAgent: jest.fn(),
+    britishEnglishCorrectorAgent: jest.fn(),
     fetchRelevantLessons: jest.fn().mockResolvedValue([]),
     ...overrides,
   };
@@ -48,6 +49,173 @@ describe("ailaTurn", () => {
     }
   });
 
+  it("returns empty corrector stats on hard failures before section execution", async () => {
+    const callbacks = createCallbacks();
+    const runtime = createRuntime({
+      plannerAgent: jest
+        .fn()
+        .mockResolvedValue({ error: { message: "planner failed" } }),
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(outcome).toEqual({
+      status: "failed",
+      correctorStats: { attempted: [], notNeeded: [], failed: [] },
+    });
+  });
+
+  it("returns corrector stats for successful section execution", async () => {
+    const callbacks = createCallbacks();
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the subject",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "subject",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "subject--default": {
+          id: "subject--default",
+          description: "subject",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "art",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: { attempted: [], notNeeded: ["subject"], failed: [] },
+    });
+  });
+
+  it("emits the corrected section content when the corrector fires", async () => {
+    const callbacks = createCallbacks();
+    const britishEnglishCorrectorAgent = jest.fn().mockResolvedValue({
+      error: null,
+      data: "Introduction to colour theory",
+    });
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the title",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "title",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "title--default": {
+          id: "title--default",
+          description: "title",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "Introduction to color theory",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+      britishEnglishCorrectorAgent,
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(britishEnglishCorrectorAgent).toHaveBeenCalledTimes(1);
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: { attempted: ["title"], notNeeded: [], failed: [] },
+    });
+    expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "add", path: "/title", value: "Introduction to colour theory" },
+    ]);
+  });
+
+  it("emits the original section content when the corrector fails", async () => {
+    const callbacks = createCallbacks();
+    const britishEnglishCorrectorAgent = jest
+      .fn()
+      .mockResolvedValue({ error: { message: "corrector failed" } });
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the title",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "title",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "title--default": {
+          id: "title--default",
+          description: "title",
+          handler: jest.fn().mockResolvedValue({
+            error: null,
+            data: "Introduction to color theory",
+          }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+      britishEnglishCorrectorAgent,
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(britishEnglishCorrectorAgent).toHaveBeenCalledTimes(1);
+    expect(outcome).toEqual({
+      status: "success",
+      correctorStats: {
+        attempted: ["title"],
+        notNeeded: [],
+        failed: [{ sectionKey: "title", reason: "errored" }],
+      },
+    });
+    expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "add", path: "/title", value: "Introduction to color theory" },
+    ]);
+  });
+
   it("hard-fails when the planner fails", async () => {
     const callbacks = createCallbacks();
     const runtime = createRuntime({
@@ -62,7 +230,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: [],
     });
@@ -109,7 +277,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
       sectionKeys: ["subject"],
     });
@@ -170,7 +338,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -229,7 +397,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onSectionComplete).toHaveBeenCalledWith([
       { op: "add", path: "/subject", value: "art" },
     ]);
@@ -271,7 +439,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalled();
   });
@@ -289,7 +457,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(plannerAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
@@ -335,7 +503,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "failed" });
+    expect(outcome).toMatchObject({ status: "failed" });
     expect(sectionHandler).not.toHaveBeenCalled();
     expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
       stepsExecuted: [],
@@ -385,7 +553,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toMatchObject({ status: "success" });
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -442,7 +610,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toMatchObject({ status: "success" });
     expect(messageToUserAgent).not.toHaveBeenCalled();
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
@@ -507,7 +675,7 @@ describe("ailaTurn", () => {
       callbacks,
     });
 
-    expect(outcome).toEqual({ status: "success" });
+    expect(outcome).toMatchObject({ status: "success" });
     expect(callbacks.onTurnComplete).toHaveBeenCalledWith({
       stepsExecuted: [
         {

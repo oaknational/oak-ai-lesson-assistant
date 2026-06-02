@@ -13,10 +13,6 @@ import type { PartialLessonPlan } from "../../protocol/schema";
 import type { AilaModerator } from "./moderators";
 import { MockModerator } from "./moderators/MockModerator";
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 // Ensure that no tests start relying on prisma
 const prismaMock = {} as PrismaClientWithAccelerate;
 

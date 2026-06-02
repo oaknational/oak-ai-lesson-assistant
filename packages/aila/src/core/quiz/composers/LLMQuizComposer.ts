@@ -6,6 +6,7 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type {
   ComposerResult,
+  QuizBuildMode,
   QuizComposer,
   QuizQuestionPool,
   RagQuizQuestion,
@@ -42,6 +43,7 @@ export class LLMComposer implements QuizComposer {
     questionPools: QuizQuestionPool[],
     lessonPlan: PartialLessonPlan,
     quizType: QuizPath,
+    mode: QuizBuildMode,
     task: Task,
     userInstructions?: string | null,
   ): Promise<ComposerResult> {
@@ -57,12 +59,14 @@ export class LLMComposer implements QuizComposer {
         questionPools,
         lessonPlan,
         quizType,
+        mode,
         userInstructions,
       );
       const count = sum(questionPools.map((p) => p.questions.length));
       t.addData({
         prompt: builtPrompt,
         candidateCount: count,
+        mode,
         userInstructions,
       });
       return Promise.resolve(builtPrompt);
@@ -73,7 +77,7 @@ export class LLMComposer implements QuizComposer {
       (p) => p.source.type === "currentQuiz",
     );
     const result = await task.child("llmCall", async (t) => {
-      const response = await this.callOpenAI(prompt, isModifying);
+      const response = await this.callOpenAI(prompt, mode, isModifying);
       t.addData({ response });
 
       if (response.status === "bail" || !response.success) {
@@ -109,10 +113,11 @@ export class LLMComposer implements QuizComposer {
 
   private async callOpenAI(
     prompt: string,
+    mode: QuizBuildMode,
     isModifying: boolean,
   ): Promise<CompositionResponse> {
     const openai = createOpenAIClient({ app: "quiz-composer" });
-    const responseSchema = buildCompositionResponseSchema(isModifying);
+    const responseSchema = buildCompositionResponseSchema(mode, isModifying);
 
     try {
       const response = await openai.beta.chat.completions.parse({

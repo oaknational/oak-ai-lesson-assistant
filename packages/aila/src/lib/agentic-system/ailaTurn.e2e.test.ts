@@ -4,6 +4,7 @@ import {
   CompletedLessonPlanSchema,
   type PartialLessonPlan,
 } from "../../protocol/schema";
+import { createOpenAIBritishEnglishCorrectorAgent } from "./agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "./agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "./agents/plannerAgent";
 import { createSectionAgentRegistry } from "./agents/sectionAgents/sectionAgentRegistry";
@@ -87,6 +88,8 @@ describe("ailaTurn e2e happy path with continue loop", () => {
         },
       }),
       messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+      britishEnglishCorrectorAgent:
+        createOpenAIBritishEnglishCorrectorAgent(openai),
       fetchRelevantLessons: () => Promise.resolve([]),
     };
 

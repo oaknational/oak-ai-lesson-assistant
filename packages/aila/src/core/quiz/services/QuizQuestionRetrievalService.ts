@@ -1,6 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-
-import type { PrismaClient } from "@prisma/client";
 
 import type { QuizPath } from "../../../protocol/schema";
 import type {
@@ -16,19 +15,10 @@ const log = aiLogger("aila:quiz");
  * Handles lookups by lesson slug, question IDs, or plan ID.
  */
 export class QuizQuestionRetrievalService {
-  private db?: PrismaClient;
+  private db: PrismaClientWithAccelerate;
 
-  constructor(db?: PrismaClient) {
+  constructor(db: PrismaClientWithAccelerate) {
     this.db = db;
-  }
-
-  private async getDb(): Promise<PrismaClient> {
-    if (!this.db) {
-      const { prisma } = await import("@oakai/db");
-      this.db = prisma as unknown as PrismaClient;
-    }
-
-    return this.db;
   }
 
   // === Plan ID lookups ===
@@ -41,7 +31,7 @@ export class QuizQuestionRetrievalService {
     planId: string,
     quizType: QuizPath,
   ): Promise<RagQuizQuestion[]> {
-    const db = await this.getDb();
+    const db = this.db;
     const lessonPlan = await db.ragLessonPlan.findUnique({
       where: { id: planId },
       select: { oakLessonSlug: true },
@@ -95,7 +85,7 @@ export class QuizQuestionRetrievalService {
     const dbQuizType = quizType.replace(/^\//, "");
 
     try {
-      const db = await this.getDb();
+      const db = this.db;
       const rows = await db.ragQuizQuestion.findMany({
         where: { lessonSlug, quizType: dbQuizType },
         select: { questionUid: true },
@@ -130,7 +120,7 @@ export class QuizQuestionRetrievalService {
       return [];
     }
 
-    const db = await this.getDb();
+    const db = this.db;
     const rows = await db.ragQuizQuestion.findMany({
       where: { questionUid: { in: questionUids } },
       select: {

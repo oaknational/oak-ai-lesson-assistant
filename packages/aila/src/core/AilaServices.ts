@@ -1,3 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
@@ -70,6 +72,7 @@ export interface AilaQuizService {
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;
+  readonly prisma: PrismaClientWithAccelerate;
   readonly messages: Message[];
   readonly options: AilaOptionsWithDefaultFallbackValues;
   readonly analytics?: AilaAnalyticsFeature;
