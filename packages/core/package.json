@@ -39,7 +39,7 @@
     "@upstash/redis": "^1.22.0",
     "@vercel/functions": "^1.4.0",
     "@vercel/oidc": "^3.1.0",
-    "cloudinary": "^1.41.1",
+    "cloudinary": "^2.7.0",
     "dd-trace": "^5.21.0",
     "google-auth-library": "^9.7.0",
     "json-stringify-safe": "^5.0.1",
