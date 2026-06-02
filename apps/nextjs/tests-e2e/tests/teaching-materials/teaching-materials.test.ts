@@ -26,15 +26,12 @@ test.describe("Teaching Materials", () => {
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
         await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
-
-      await test.step("Step 2: Input lesson context", async () => {
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
-        await page.getByText("Year 3").click();
+        await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByText("Biology").click();
+        await page.getByRole("button", { name: "Biology", exact: true }).click();
 
         // Fill lesson title
         await page
@@ -106,14 +103,13 @@ test.describe("Teaching Materials", () => {
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
         await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
-
-      await test.step("Step 2: Input lesson context", async () => {
         const buttons = page.getByTestId("drop-down-button");
+
         await buttons.first().click();
-        await page.getByText("Year 3").click();
+        await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByText("Biology").click();
+        await page.getByRole("button", { name: "Biology", exact: true }).click();
+
         await page
           .getByPlaceholder("Type a learning objective")
           .fill("I want a lesson about data representation");
