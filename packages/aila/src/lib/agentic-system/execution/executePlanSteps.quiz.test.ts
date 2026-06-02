@@ -59,6 +59,7 @@ function makeRuntime(
       error: null,
       data: { message: "Done" },
     }),
+    britishEnglishCorrectorAgent: jest.fn(),
     fetchRelevantLessons: jest.fn().mockResolvedValue([]),
     ...overrides,
   };
