@@ -415,6 +415,57 @@ describe("ailaTurn", () => {
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
 
+  it("strips a basedOn step the planner produced without relevant lessons", async () => {
+    const callbacks = createCallbacks();
+    const basedOnHandler = jest.fn();
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Update the subject",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "basedOn",
+              action: "generate",
+              sectionInstructions: null,
+            },
+            {
+              type: "section",
+              sectionKey: "subject",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "basedOn--default": {
+          id: "basedOn--default",
+          description: "basedOn",
+          handler: basedOnHandler,
+        },
+        "subject--default": {
+          id: "subject--default",
+          description: "subject",
+          handler: jest.fn().mockResolvedValue({ error: null, data: "art" }),
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+    });
+
+    await ailaTurn({
+      persistedState: createPersistedState(),
+      runtime,
+      callbacks,
+    });
+
+    expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
+      sectionKeys: ["subject"],
+    });
+    expect(basedOnHandler).not.toHaveBeenCalled();
+  });
+
   it("supports forced planner failures via env var", async () => {
     process.env.AILA_AGENTIC_FORCE_FAIL = "planner";
 
