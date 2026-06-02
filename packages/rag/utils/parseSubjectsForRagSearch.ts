@@ -13,5 +13,7 @@ const subjectMap: Record<string, string[]> = {
 };
 
 export function parseSubjectsForRagSearch(subject: string): string[] {
-  return subjectMap[subject] ?? [subject];
+  // Lowercase so callers passing "Science" still match the lowercase keys.
+  const key = subject.toLowerCase();
+  return subjectMap[key] ?? [key];
 }
