@@ -65,8 +65,8 @@ export const handleFetchOwaLesson =
           const response = await callWithHandshakeRetry(
             () =>
               trpc.client.teachingMaterials.handleFetchOwaLesson.mutate({
-                lessonSlug,
-                programmeSlug,
+                lessonSlug: z.string().parse(lessonSlug),
+                programmeSlug: z.string().parse(programmeSlug),
               }),
             refreshAuth,
           );
