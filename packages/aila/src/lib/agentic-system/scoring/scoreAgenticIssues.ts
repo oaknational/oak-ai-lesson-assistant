@@ -28,22 +28,32 @@ import {
   CompletedLessonPlanSchema,
   type PartialLessonPlan,
 } from "../../../protocol/schema";
+import { createOpenAIBritishEnglishCorrectorAgent } from "../agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
 import { createSectionAgentRegistry } from "../agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../ailaTurn";
 import type { JsonPatchOperation } from "../compatibility/helpers/immerPatchToJsonPatch";
+import {
+  createEmptyCorrectorStats,
+  mergeCorrectorStats,
+} from "../correctorStats";
 import type { PlanStep, PlannerOutput, SectionKey } from "../schema";
 import type {
   AilaPersistedState,
   AilaRuntimeContext,
   AilaTurnCallbacks,
   ChatMessage,
+  CorrectorStats,
 } from "../types";
 import {
   collectMeaningOccurrences,
   formatMeaningEvidence,
 } from "./scoreAgenticIssues.helpers";
+import {
+  type CorrectorSummary,
+  summariseCorrector,
+} from "./summariseCorrector";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -80,7 +90,11 @@ type ScenarioConfig = {
   fetchRelevantLessons: () => Promise<never[]>;
 };
 
-type RunCapture = ScorerInput & { error?: string; durationSec: number };
+type RunCapture = ScorerInput & {
+  error?: string;
+  durationSec: number;
+  correctorStats: CorrectorStats;
+};
 
 // ---------------------------------------------------------------------------
 // Scorers
@@ -402,6 +416,8 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       },
     }),
     messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+    britishEnglishCorrectorAgent:
+      createOpenAIBritishEnglishCorrectorAgent(openai),
     fetchRelevantLessons: scenario.fetchRelevantLessons,
   };
 
@@ -409,6 +425,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
   const allPatches: JsonPatchOperation[] = [];
   let finalDocument: PartialLessonPlan = {};
   let finalMessage = "";
+  const aggregateCorrectorStats = createEmptyCorrectorStats();
 
   const messages: ChatMessage[] = [
     { id: "m0", role: "user", content: scenario.userMessage },
@@ -457,7 +474,12 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
         },
       };
 
-      await ailaTurn({ persistedState: persisted, runtime, callbacks });
+      const outcome = await ailaTurn({
+        persistedState: persisted,
+        runtime,
+        callbacks,
+      });
+      mergeCorrectorStats(aggregateCorrectorStats, outcome.correctorStats);
       turnCount++;
 
       // Record the planner output as a synthetic PlannerOutput for scoring.
@@ -511,6 +533,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
       americanismsBySection: new AilaAmericanisms().findAmericanisms(
         finalDocument,
       ),
+      correctorStats: aggregateCorrectorStats,
       error: String(error),
       durationSec,
     };
@@ -525,6 +548,7 @@ async function runOnce(scenario: ScenarioConfig): Promise<RunCapture> {
     americanismsBySection: new AilaAmericanisms().findAmericanisms(
       finalDocument,
     ),
+    correctorStats: aggregateCorrectorStats,
     durationSec: (Date.now() - startTime) / 1000,
   };
 }
@@ -544,6 +568,7 @@ type ScenarioResults = {
     error?: string;
     complete: boolean;
     scores: RunScore[];
+    correctorStats: CorrectorStats;
   }>;
 };
 
@@ -661,16 +686,25 @@ describe("Agentic Issue Scoring", () => {
     const report = generateReport(allResults);
     console.log("\n" + report);
 
-    const summary: Record<string, Record<string, Record<string, number>>> = {};
+    const summary: Record<
+      string,
+      Record<string, Record<string, number> | CorrectorSummary>
+    > = {};
     for (const scenario of allResults) {
-      const scorerTotals: Record<string, Record<string, number>> = {};
+      const scorerTotals: Record<
+        string,
+        Record<string, number> | CorrectorSummary
+      > = {};
       for (const run of scenario.runs) {
         for (const { scorerId, result } of run.scores) {
           scorerTotals[scorerId] ??= {};
-          const counts = scorerTotals[scorerId];
+          const counts = scorerTotals[scorerId] as Record<string, number>;
           counts[result.heuristic] = (counts[result.heuristic] ?? 0) + 1;
         }
       }
+      scorerTotals.americanisms_corrector = summariseCorrector(
+        scenario.runs.map((r) => r.correctorStats),
+      );
       summary[scenario.scenarioName] = scorerTotals;
     }
 
@@ -717,6 +751,7 @@ describe("Agentic Issue Scoring", () => {
           error: capture.error,
           complete: isComplete(capture.finalDocument),
           scores,
+          correctorStats: capture.correctorStats,
         });
       }
 
