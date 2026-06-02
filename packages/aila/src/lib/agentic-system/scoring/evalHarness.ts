@@ -5,8 +5,8 @@
  * scorePlannerQuizIntent). Each harness supplies its own cells, per-run scorer
  * and formatters; the run loop, markdown report and YAML output are the same.
  */
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import YAML from "yaml";
 
 /** Minimum shape every scored run shares. */
@@ -71,24 +71,29 @@ export function generateReport<TRun extends ScoredRun>(
   formatActual: (run: TRun) => string,
 ): string {
   const lines: string[] = [];
-  lines.push(`# ${title}`);
-  lines.push("");
-  lines.push(`Generated: ${new Date().toISOString()}`);
-  lines.push(`Runs per cell: ${runsPerCell}`);
-  lines.push("");
-  lines.push("| Cell | Threshold | Pass rate | Status |");
-  lines.push("|------|-----------|-----------|--------|");
+  lines.push(
+    `# ${title}`,
+    "",
+    `Generated: ${new Date().toISOString()}`,
+    `Runs per cell: ${runsPerCell}`,
+    "",
+    "| Cell | Threshold | Pass rate | Status |",
+    "|------|-----------|-----------|--------|",
+  );
   for (const r of results) {
-    const meets = r.passRate >= r.passThreshold;
-    const status = r.passThreshold === 0 ? "📊 baseline" : meets ? "✓" : "🚩";
+    let status: string;
+    if (r.passThreshold === 0) {
+      status = "📊 baseline";
+    } else {
+      status = r.passRate >= r.passThreshold ? "✓" : "🚩";
+    }
     lines.push(
       `| ${r.cellId} | ${(r.passThreshold * 100).toFixed(0)}% | ${(r.passRate * 100).toFixed(0)}% | ${status} |`,
     );
   }
   lines.push("");
   for (const r of results) {
-    lines.push(`### ${r.cellId} — ${r.description}`);
-    lines.push("");
+    lines.push(`### ${r.cellId} — ${r.description}`, "");
     for (let i = 0; i < r.runs.length; i++) {
       const run = r.runs[i]!;
       const icon = run.pass ? "✓" : "🚩";
