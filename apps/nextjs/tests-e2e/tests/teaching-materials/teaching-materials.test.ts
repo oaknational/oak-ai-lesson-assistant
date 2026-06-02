@@ -22,14 +22,10 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
-        await page.getByTestId("create-teaching-materials-button").click();
+        await page
+          .getByTestId("create-teaching-materials-button-additional-glossary")
+          .click();
         await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
-
-      await test.step("Step 1: Select material type", async () => {
-        await page.getByText("Glossary").click();
-
-        await page.getByText("Next, provide lesson details").click();
       });
 
       await test.step("Step 2: Input lesson context", async () => {
@@ -106,13 +102,10 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
-        await page.getByTestId("create-teaching-materials-button").click();
+        await page
+          .getByTestId("create-teaching-materials-button-additional-glossary")
+          .click();
         await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
-
-      await test.step("Step 1: Select material type", async () => {
-        await page.getByText("Glossary").click();
-        await page.getByTestId("mobile-next-button").click();
       });
 
       await test.step("Step 2: Input lesson context", async () => {
