@@ -1,3 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db";
+
 import * as Sentry from "@sentry/nextjs";
 
 import { generateMock } from "@anatine/zod-mock";
@@ -6,15 +8,6 @@ import { CompletedLessonPlanSchema } from "../../aila/src/protocol/schema";
 import { QuizV1Schema } from "../../aila/src/protocol/schemas/quiz/quizV1";
 import { QuizV2Schema } from "../../aila/src/protocol/schemas/quiz/quizV2";
 import { getRagLessonPlansByIds } from "./getRagLessonPlansByIds";
-
-jest.mock("@oakai/db", () => ({
-  __esModule: true,
-  prisma: {
-    ragLessonPlan: {
-      findMany: jest.fn(),
-    },
-  },
-}));
 
 jest.mock("@sentry/nextjs", () => ({
   __esModule: true,
@@ -42,22 +35,24 @@ function makeRow(overrides: Partial<DbRow> = {}): DbRow {
 
 describe("getRagLessonPlansByIds", () => {
   let findManyMock: jest.Mock;
+  let prisma: PrismaClientWithAccelerate;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    const dbModule = await import("@oakai/db");
-    findManyMock = (
-      dbModule as unknown as {
-        prisma: { ragLessonPlan: { findMany: jest.Mock } };
-      }
-    ).prisma.ragLessonPlan.findMany;
+    findManyMock = jest.fn();
+    prisma = {
+      ragLessonPlan: { findMany: findManyMock },
+    } as unknown as PrismaClientWithAccelerate;
   });
 
   describe("query construction", () => {
     it("queries findMany with id IN lessonPlanIds", async () => {
       findManyMock.mockResolvedValue([]);
 
-      await getRagLessonPlansByIds({ lessonPlanIds: ["a", "b", "c"] });
+      await getRagLessonPlansByIds({
+        lessonPlanIds: ["a", "b", "c"],
+        prisma,
+      });
 
       expect(findManyMock).toHaveBeenCalledTimes(1);
       expect(findManyMock).toHaveBeenCalledWith({
@@ -68,7 +63,10 @@ describe("getRagLessonPlansByIds", () => {
     it("returns an empty array when no lesson plan IDs are requested", async () => {
       findManyMock.mockResolvedValue([]);
 
-      const result = await getRagLessonPlansByIds({ lessonPlanIds: [] });
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: [],
+        prisma,
+      });
 
       expect(result).toEqual([]);
     });
@@ -78,6 +76,7 @@ describe("getRagLessonPlansByIds", () => {
 
       const result = await getRagLessonPlansByIds({
         lessonPlanIds: ["missing"],
+        prisma,
       });
 
       expect(result).toEqual([]);
@@ -96,7 +95,10 @@ describe("getRagLessonPlansByIds", () => {
         }),
       ]);
 
-      const result = await getRagLessonPlansByIds({ lessonPlanIds: ["rag-1"] });
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-1"],
+        prisma,
+      });
 
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -112,7 +114,10 @@ describe("getRagLessonPlansByIds", () => {
         makeRow({ id: "rag-x", ingestLessonId: "ingest-x" }),
       ]);
 
-      const result = await getRagLessonPlansByIds({ lessonPlanIds: ["rag-x"] });
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-x"],
+        prisma,
+      });
 
       expect(result[0]?.ragLessonPlanId).toBe("ingest-x");
     });
@@ -122,7 +127,10 @@ describe("getRagLessonPlansByIds", () => {
         makeRow({ id: "rag-y", ingestLessonId: null }),
       ]);
 
-      const result = await getRagLessonPlansByIds({ lessonPlanIds: ["rag-y"] });
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-y"],
+        prisma,
+      });
 
       expect(result[0]?.ragLessonPlanId).toBe("rag-y");
     });
@@ -130,7 +138,10 @@ describe("getRagLessonPlansByIds", () => {
     it("preserves a null oakLessonId", async () => {
       findManyMock.mockResolvedValue([makeRow({ oakLessonId: null })]);
 
-      const result = await getRagLessonPlansByIds({ lessonPlanIds: ["rag-id"] });
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-id"],
+        prisma,
+      });
 
       expect(result[0]?.oakLessonId).toBeNull();
     });
@@ -154,6 +165,7 @@ describe("getRagLessonPlansByIds", () => {
 
       const result = await getRagLessonPlansByIds({
         lessonPlanIds: ["rag-v2"],
+        prisma,
       });
 
       expect(result).toHaveLength(1);
@@ -179,6 +191,7 @@ describe("getRagLessonPlansByIds", () => {
 
       const result = await getRagLessonPlansByIds({
         lessonPlanIds: ["rag-v1"],
+        prisma,
       });
 
       expect(result).toHaveLength(1);
@@ -199,6 +212,7 @@ describe("getRagLessonPlansByIds", () => {
 
       const result = await getRagLessonPlansByIds({
         lessonPlanIds: ["rag-bad"],
+        prisma,
       });
 
       expect(result).toEqual([]);
@@ -218,6 +232,7 @@ describe("getRagLessonPlansByIds", () => {
 
       const result = await getRagLessonPlansByIds({
         lessonPlanIds: ["rag-good", "rag-bad"],
+        prisma,
       });
 
       expect(result).toHaveLength(1);
