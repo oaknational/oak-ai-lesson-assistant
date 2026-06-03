@@ -293,6 +293,9 @@ export class AilaStreamHandler {
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,
       controller: this._controller!,
+      onRagFetchedChange: async (ragFetched) => {
+        this._chat.ragFetched = ragFetched;
+      },
     });
 
     // starterQuiz and exitQuiz only differ by quiz path and the words used in
@@ -353,6 +356,7 @@ export class AilaStreamHandler {
         messages: extractPromptTextFromMessages(this._chat.messages),
         initialDocument,
         relevantLessons: relevantLessonsPopulated,
+        ragFetched: this._chat.ragFetched,
       },
       runtime: {
         config: {

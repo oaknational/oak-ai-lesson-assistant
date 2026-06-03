@@ -1,5 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
+import * as Sentry from "@sentry/nextjs";
 import { isTruthy } from "remeda";
 import invariant from "tiny-invariant";
 
@@ -7,6 +8,7 @@ import {
   type CompletedLessonPlan,
   CompletedLessonPlanSchema,
 } from "../../aila/src/protocol/schema";
+import { migrateLessonPlan } from "../../aila/src/protocol/schemas/versioning/migrateLessonPlan";
 
 /**
  * @todo Implement cache strategy for this function
@@ -37,25 +39,35 @@ export async function getRagLessonPlansByIds({
     },
   });
 
-  return lessonPlans
-    .map((lp, i) => {
-      const parseResult = CompletedLessonPlanSchema.safeParse(lp.lessonPlan);
+  const results = await Promise.all(
+    lessonPlans.map(async (lp, i) => {
+      try {
+        const { lessonPlan: migratedLessonPlan } = await migrateLessonPlan({
+          lessonPlan: lp.lessonPlan as unknown as Record<string, unknown>,
+          persistMigration: null,
+          outputSchema: CompletedLessonPlanSchema,
+        });
 
-      if (!parseResult.success) {
-        // @todo error to sentry
+        const id = lessonPlanIds[i];
+        invariant(id, "No id found for lesson plan, this should be impossible");
+
+        return {
+          ragLessonPlanId: lp.ingestLessonId ?? id,
+          oakLessonId: lp.oakLessonId,
+          oakLessonSlug: lp.oakLessonSlug,
+          lessonPlan: migratedLessonPlan,
+        };
+      } catch (error) {
+        Sentry.captureException(error, {
+          extra: {
+            ragLessonPlanId: lp.id,
+            oakLessonId: lp.oakLessonId,
+          },
+        });
         return null;
       }
+    }),
+  );
 
-      const id = lessonPlanIds[i];
-
-      invariant(id, "No id found for lesson plan, this should be impossible");
-
-      return {
-        ragLessonPlanId: lp.ingestLessonId ?? id,
-        oakLessonId: lp.oakLessonId,
-        oakLessonSlug: lp.oakLessonSlug,
-        lessonPlan: parseResult.data,
-      };
-    })
-    .filter(isTruthy);
+  return results.filter(isTruthy);
 }

@@ -21,6 +21,7 @@ function createContext(correctorAgent: jest.Mock): AilaExecutionContext {
       messages: [],
       initialDocument: {},
       relevantLessons: null,
+      ragFetched: { status: "not_fetched", searchIdentity: null },
     },
     runtime: {
       britishEnglishCorrectorAgent: correctorAgent,
