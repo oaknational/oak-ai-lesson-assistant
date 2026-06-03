@@ -1,3 +1,11 @@
+# [1.76.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.75.0...v1.76.0) (2026-06-03)
+
+
+### Features
+
+* **agentic:** add per-section British English corrector agent ([#1049](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1049)) ([369dc92](https://github.com/oaknational/oak-ai-lesson-assistant/commit/369dc921044366e5c6cc5fdce9b76b52d1d76fbf))
+* prevent refetched rag - AI-2164 ([#1061](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1061)) ([ab84658](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ab84658cac75e644f8b7904d2039d6958327ce8b))
+
 # [1.75.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.74.0...v1.75.0) (2026-06-01)
 
 
