@@ -1,3 +1,6 @@
+// cspell:ignore izes ized izing yzes eled eling eler ueled ueling odeled anceled sidewalk
+import { britishEnglishRules } from "../../shared/britishEnglishRules";
+
 /**
  * This is context for all Aila agents.
  * It contains shared information that can be used by all agents.
@@ -15,6 +18,17 @@ You will be given a specific task and the current state of the lesson plan. You 
 ## Markdown
 Do not use markdown formatting unless specified for a specific section.
 
-## Language
-Use British English spelling and vocabulary (e.g. colour not color, centre not centre, rubbish not trash) unless the user sets a different primary language. This reflects our UK teacher audience.
+## Language — British English (mandatory)
+Write **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.
+
+${britishEnglishRules}
+
+### Self-check before emitting content
+Before returning your section, scan your output for these specific patterns and correct them:
+1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.
+2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, "have gotten", "on the weekend", "period" (when used as punctuation), "math" → replace with the UK term above.
+3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).
+4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).
+
+Do not mix British and American forms. If unsure, prefer the British form.
 `;

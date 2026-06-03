@@ -151,6 +151,7 @@ When creating plan steps, extract any user-provided instructions specific to tha
 - For other sections: specific guidance about content, style, or approach
 - Set \`sectionInstructions\` to \`null\` if no specific preferences are mentioned
 - Keep instructions concise but preserve user intent
+- **Write \`sectionInstructions\` in British English.** They are passed verbatim to section agents, so any Americanism here will seed the generated content. If the user's message uses American spellings or vocabulary (e.g. *color*, *organize*, *eraser*, *math*), rephrase them in British English (*colour*, *organise*, *rubber*, *maths*) when extracting. In particular, write verbs in the **-ise** form (*emphasise*, *recognise*, *summarise*), never the *-ize* form.
 
 ---
 

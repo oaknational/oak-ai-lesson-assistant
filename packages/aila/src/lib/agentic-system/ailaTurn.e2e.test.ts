@@ -4,6 +4,7 @@ import {
   CompletedLessonPlanSchema,
   type PartialLessonPlan,
 } from "../../protocol/schema";
+import { createOpenAIBritishEnglishCorrectorAgent } from "./agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "./agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "./agents/plannerAgent";
 import { createSectionAgentRegistry } from "./agents/sectionAgents/sectionAgentRegistry";
@@ -33,6 +34,7 @@ const runTurn = async (
   const callbacks: AilaTurnCallbacks = {
     onPlannerComplete: () => void 0,
     onSectionComplete: () => void 0,
+    onRagFetchedChange: () => Promise.resolve(),
     onTurnComplete: ({ document, ailaMessage }) => {
       nextDocCapture = document;
       messageCapture = ailaMessage;
@@ -86,6 +88,8 @@ describe("ailaTurn e2e happy path with continue loop", () => {
         },
       }),
       messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+      britishEnglishCorrectorAgent:
+        createOpenAIBritishEnglishCorrectorAgent(openai),
       fetchRelevantLessons: () => Promise.resolve([]),
     };
 
@@ -97,6 +101,7 @@ describe("ailaTurn e2e happy path with continue loop", () => {
       messages,
       initialDocument: {},
       relevantLessons: null,
+      ragFetched: { status: "not_fetched", searchIdentity: null },
     };
 
     let currentDoc: PartialLessonPlan = persisted.initialDocument;

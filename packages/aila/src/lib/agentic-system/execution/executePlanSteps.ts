@@ -25,6 +25,7 @@ import {
   shouldForceSectionFailure,
   shouldForceSectionThrow,
 } from "../utils/faultInjection";
+import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
 import { terminateWithFailure } from "./termination";
 
 const log = aiLogger("aila:agents");
@@ -110,7 +111,15 @@ async function executeGenerateStep(
   }
 
   const sectionSchema = CompletedLessonPlanSchema.shape[step.sectionKey];
-  const validated = sectionSchema.parse(result.data);
+
+  const corrected = await applyBritishEnglishCorrection({
+    context,
+    sectionKey: step.sectionKey,
+    content: result.data,
+    responseSchema: sectionSchema,
+  });
+
+  const validated = corrected ?? sectionSchema.parse(result.data);
 
   // We use immer to generate JSON patches at the granularity we control.
   // Patches are generated at the exact path we mutate:

@@ -18,9 +18,7 @@
  *
  * Output: packages/aila/src/lib/agentic-system/scoring/scores-maths-composer.yaml
  */
-import fs from "fs";
 import path from "path";
-import YAML from "yaml";
 
 import { LLMComposer } from "../../../core/quiz/composers/LLMQuizComposer";
 import type {
@@ -31,6 +29,12 @@ import type {
 } from "../../../core/quiz/interfaces";
 import { createMockTask } from "../../../core/quiz/reporting/testing";
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
+import {
+  type ScoredCell,
+  generateReport,
+  runEvalCells,
+  writeScores,
+} from "./evalHarness";
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -267,14 +271,6 @@ type CellRun = {
   error?: string;
 };
 
-type CellResult = {
-  cellId: string;
-  description: string;
-  passThreshold: number;
-  passRate: number;
-  runs: CellRun[];
-};
-
 function scoreRun(cell: ComposerEvalCell, result: ComposerResult): CellRun {
   const reasons: string[] = [];
 
@@ -357,42 +353,10 @@ async function runCellOnce(cell: ComposerEvalCell): Promise<CellRun> {
 // Report
 // ---------------------------------------------------------------------------
 
-function generateReport(results: CellResult[], runsPerCell: number): string {
-  const lines: string[] = [];
-  lines.push("# Maths Composer Eval Report");
-  lines.push("");
-  lines.push(`Generated: ${new Date().toISOString()}`);
-  lines.push(`Runs per cell: ${runsPerCell}`);
-  lines.push("");
-  lines.push("| Cell | Threshold | Pass rate | Status |");
-  lines.push("|------|-----------|-----------|--------|");
-  for (const r of results) {
-    const meets = r.passRate >= r.passThreshold;
-    const status = r.passThreshold === 0 ? "📊 baseline" : meets ? "✓" : "🚩";
-    lines.push(
-      `| ${r.cellId} | ${(r.passThreshold * 100).toFixed(0)}% | ${(r.passRate * 100).toFixed(0)}% | ${status} |`,
-    );
-  }
-  lines.push("");
-  for (const r of results) {
-    lines.push(`### ${r.cellId} — ${r.description}`);
-    lines.push("");
-    for (let i = 0; i < r.runs.length; i++) {
-      const run = r.runs[i]!;
-      const icon = run.pass ? "✓" : "🚩";
-      const actual =
-        run.status === "success"
-          ? `status=success count=${run.selectedCount} uids=[${run.selectedUids.join(", ")}]`
-          : `status=bail reason="${run.bailReason ?? ""}"`;
-      const reasonStr = run.reasons.length
-        ? ` — ${run.reasons.join("; ")}`
-        : "";
-      lines.push(`- Run ${i + 1} ${icon} ${actual}${reasonStr}`);
-    }
-    lines.push("");
-  }
-  return lines.join("\n");
-}
+const formatActual = (run: CellRun): string =>
+  run.status === "success"
+    ? `status=success count=${run.selectedCount} uids=[${run.selectedUids.join(", ")}]`
+    : `status=bail reason="${run.bailReason ?? ""}"`;
 
 const OUTPUT_FILE = path.join(__dirname, "scores-maths-composer.yaml");
 const SCORE_RUNS = parseInt(process.env.SCORE_RUNS ?? "3", 10);
@@ -403,56 +367,34 @@ const SCORE_RUNS = parseInt(process.env.SCORE_RUNS ?? "3", 10);
 
 describe("Maths Composer Eval", () => {
   test(`score all cells (${SCORE_RUNS} runs each)`, async () => {
-    const results: CellResult[] = [];
+    const results: ScoredCell<CellRun>[] = await runEvalCells(
+      CELLS,
+      SCORE_RUNS,
+      runCellOnce,
+      (run) =>
+        run.status === "success"
+          ? `success count=${run.selectedCount} uids=[${run.selectedUids.join(", ")}]`
+          : `bail reason="${run.bailReason ?? run.error ?? ""}"`,
+    );
 
-    for (const cell of CELLS) {
-      console.log(`\n--- ${cell.id} (${SCORE_RUNS} runs) ---`);
-      const runs: CellRun[] = [];
-      for (let i = 0; i < SCORE_RUNS; i++) {
-        const run = await runCellOnce(cell);
-        const icon = run.pass ? "✓" : "🚩";
-        const actual =
-          run.status === "success"
-            ? `success count=${run.selectedCount} uids=[${run.selectedUids.join(", ")}]`
-            : `bail reason="${run.bailReason ?? run.error ?? ""}"`;
-        console.log(`  Run ${i + 1} ${icon} ${actual}`);
-        runs.push(run);
-      }
-      const passCount = runs.filter((r) => r.pass).length;
-      const passRate = passCount / runs.length;
-      results.push({
-        cellId: cell.id,
-        description: cell.description,
-        passThreshold: cell.passThreshold,
-        passRate,
-        runs,
-      });
-    }
+    console.log(
+      "\n" +
+        generateReport(
+          "Maths Composer Eval Report",
+          results,
+          SCORE_RUNS,
+          formatActual,
+        ),
+    );
 
-    const report = generateReport(results, SCORE_RUNS);
-    console.log("\n" + report);
-
-    const yamlData = {
-      generated: new Date().toISOString(),
-      runsPerCell: SCORE_RUNS,
-      cells: results.map((r) => ({
-        id: r.cellId,
-        description: r.description,
-        passThreshold: r.passThreshold,
-        passRate: r.passRate,
-        runs: r.runs.map((run) => ({
-          pass: run.pass,
-          reasons: run.reasons,
-          status: run.status,
-          selectedCount: run.selectedCount,
-          selectedUids: run.selectedUids,
-          ...(run.bailReason ? { bailReason: run.bailReason } : {}),
-          ...(run.error ? { error: run.error } : {}),
-        })),
-      })),
-    };
-    fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-    fs.writeFileSync(OUTPUT_FILE, YAML.stringify(yamlData));
-    console.log(`\nReport written to: ${OUTPUT_FILE}`);
+    writeScores(OUTPUT_FILE, results, SCORE_RUNS, (run) => ({
+      pass: run.pass,
+      reasons: run.reasons,
+      status: run.status,
+      selectedCount: run.selectedCount,
+      selectedUids: run.selectedUids,
+      ...(run.bailReason ? { bailReason: run.bailReason } : {}),
+      ...(run.error ? { error: run.error } : {}),
+    }));
   }, 600_000);
 });

@@ -1,0 +1,146 @@
+import type {
+  AgenticRagLessonPlanResult,
+  AilaExecutionContext,
+  AilaTurnCallbacks,
+} from "../types";
+import { handleRelevantLessons } from "./handleRelevantLessons";
+
+jest.mock("./termination", () => ({
+  terminateWithResponse: jest.fn(),
+}));
+
+function createContext(
+  overrides: {
+    document?: Partial<AilaExecutionContext["currentTurn"]["document"]>;
+    ragFetched?: AilaExecutionContext["persistedState"]["ragFetched"];
+    fetchResult?: AgenticRagLessonPlanResult[];
+  } = {},
+): AilaExecutionContext {
+  return {
+    persistedState: {
+      messages: [],
+      initialDocument: {},
+      relevantLessons: null,
+      ragFetched: overrides.ragFetched ?? {
+        status: "not_fetched",
+        searchIdentity: null,
+      },
+    },
+    runtime: {
+      britishEnglishCorrectorAgent: jest.fn(),
+      plannerAgent: jest.fn(),
+      sectionAgents: {} as AilaExecutionContext["runtime"]["sectionAgents"],
+      messageToUserAgent: jest.fn(),
+      fetchRelevantLessons: jest
+        .fn()
+        .mockResolvedValue(overrides.fetchResult ?? []),
+      config: { mathsQuizEnabled: false },
+    },
+    currentTurn: {
+      document: {
+        title: "Photosynthesis",
+        subject: "science",
+        keyStage: "key-stage-3",
+        ...overrides.document,
+      },
+      plannerOutput: null,
+      errors: [],
+      notes: [],
+      stepsExecuted: [],
+      relevantLessons: null,
+      relevantLessonsFetched: false,
+      currentStep: null,
+      correctorStats: {
+        attempted: [],
+        notNeeded: [],
+        failed: [],
+      },
+    },
+    callbacks: {
+      onPlannerComplete: jest.fn(),
+      onSectionComplete: jest.fn(),
+      onRagFetchedChange: jest.fn().mockResolvedValue(undefined),
+      onTurnComplete: jest.fn(),
+      onTurnFailed: jest.fn(),
+    },
+  };
+}
+
+const fakeLessons: AgenticRagLessonPlanResult[] = [
+  {
+    ragLessonPlanId: "lp1",
+    oakLessonId: 1,
+    oakLessonSlug: "photosynthesis",
+    lessonPlan: { title: "Photosynthesis" },
+  },
+];
+
+describe("handleRelevantLessons", () => {
+  it("skips fetch and persists 'selected' when basedOn is set", async () => {
+    const ctx = createContext({
+      document: { basedOn: { id: "abc", title: "Some lesson" } },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    expect(ctx.persistedState.ragFetched.status).toBe("selected");
+  });
+
+  it("skips fetch when title is missing", async () => {
+    const ctx = createContext({ document: { title: undefined } });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+  });
+
+  it("skips fetch when identity has not changed significantly", async () => {
+    const ctx = createContext({
+      ragFetched: {
+        status: "shown",
+        searchIdentity: {
+          title: "Photosynthesis",
+          subject: "science",
+          keyStage: "key-stage-3",
+        },
+      },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+  });
+
+  it("fetches and continues when no lessons found", async () => {
+    const ctx = createContext({ fetchResult: [] });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.runtime.fetchRelevantLessons).toHaveBeenCalled();
+    expect(ctx.persistedState.ragFetched.status).toBe("none_found");
+  });
+
+  it("does not call onRagFetchedChange when state is unchanged", async () => {
+    const identity = {
+      title: "Photosynthesis",
+      subject: "science",
+      keyStage: "key-stage-3",
+    };
+    const ctx = createContext({
+      document: { basedOn: { id: "abc", title: "X" } },
+      ragFetched: { status: "selected", searchIdentity: identity },
+    });
+
+    await handleRelevantLessons(ctx);
+
+    expect(ctx.callbacks as AilaTurnCallbacks).toHaveProperty(
+      "onRagFetchedChange",
+    );
+    expect(ctx.callbacks.onRagFetchedChange).not.toHaveBeenCalled();
+  });
+});

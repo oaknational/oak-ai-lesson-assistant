@@ -31,7 +31,10 @@ export async function terminateWithFailure(
     stepsExecuted: context.currentTurn.stepsExecuted,
     ailaMessage: hardFailureMessage(),
   });
-  return { status: "failed" };
+  return {
+    status: "failed",
+    correctorStats: context.currentTurn.correctorStats,
+  };
 }
 
 /**
@@ -102,7 +105,10 @@ export async function terminateWithCustomMessage(
     document: context.currentTurn.document,
     ailaMessage: message,
   });
-  return { status: "success" };
+  return {
+    status: "success",
+    correctorStats: context.currentTurn.correctorStats,
+  };
 }
 
 async function resolveMessageToUserError(
