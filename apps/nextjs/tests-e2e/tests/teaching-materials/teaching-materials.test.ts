@@ -22,10 +22,16 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
+        const createSessionReady = page.waitForResponse((response) =>
+          response.url().includes("createMaterialSession"),
+        );
+
         await page
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
-        await page.waitForURL(/\/aila\/teaching-materials/);
+        await page.waitForURL(/\/aila\/teaching-materials/, {
+          waitUntil: "load",
+        });
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
@@ -40,6 +46,8 @@ test.describe("Teaching Materials", () => {
           .getByPlaceholder("Type a lesson title or learning outcome")
           .fill("Exploring animal habitats");
 
+        // Ensure the session is created (resourceId + docType set) before submitting
+        await createSessionReady;
         await page.getByText("Next, review lesson details").click();
       });
 
@@ -101,10 +109,16 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
+        const createSessionReady = page.waitForResponse((response) =>
+          response.url().includes("createMaterialSession"),
+        );
+
         await page
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
-        await page.waitForURL(/\/aila\/teaching-materials/);
+        await page.waitForURL(/\/aila\/teaching-materials/, {
+          waitUntil: "load",
+        });
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
@@ -118,6 +132,9 @@ test.describe("Teaching Materials", () => {
         await page
           .getByPlaceholder("Type a learning objective")
           .fill("I want a lesson about data representation");
+
+        // Ensure the session is created (resourceId + docType set) before submitting
+        await createSessionReady;
         await page.getByTestId("mobile-next-button").click();
       });
 
