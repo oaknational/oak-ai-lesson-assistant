@@ -15,10 +15,8 @@
  *
  * Output: packages/aila/src/lib/agentic-system/scoring/scores-planner-quiz-intent.yaml
  */
-import fs from "fs";
 import OpenAI from "openai";
 import path from "path";
-import YAML from "yaml";
 
 import type {
   LatestQuiz,
@@ -28,6 +26,12 @@ import type {
 import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
 import type { PlannerOutput, QuizIntent } from "../schema";
 import type { ChatMessage } from "../types";
+import {
+  type ScoredCell,
+  generateReport,
+  runEvalCells,
+  writeScores,
+} from "./evalHarness";
 
 // ---------------------------------------------------------------------------
 // Fixtures
@@ -263,14 +267,6 @@ type CellRun = {
   error?: string;
 };
 
-type CellResult = {
-  cellId: string;
-  description: string;
-  passThreshold: number;
-  passRate: number;
-  runs: CellRun[];
-};
-
 function findQuizStep(
   planner: PlannerOutput,
   sectionKey: "starterQuiz" | "exitQuiz",
@@ -368,43 +364,12 @@ async function runCellOnce(cell: EvalCell, openai: OpenAI): Promise<CellRun> {
 // Report
 // ---------------------------------------------------------------------------
 
-function generateReport(results: CellResult[], runsPerCell: number): string {
-  const lines: string[] = [];
-  lines.push("# Planner Quiz-Intent Eval Report");
-  lines.push("");
-  lines.push(`Generated: ${new Date().toISOString()}`);
-  lines.push(`Runs per cell: ${runsPerCell}`);
-  lines.push("");
-  lines.push("| Cell | Threshold | Pass rate | Status |");
-  lines.push("|------|-----------|-----------|--------|");
-  for (const r of results) {
-    const meets = r.passRate >= r.passThreshold;
-    const status = r.passThreshold === 0 ? "📊 baseline" : meets ? "✓" : "🚩";
-    lines.push(
-      `| ${r.cellId} | ${(r.passThreshold * 100).toFixed(0)}% | ${(r.passRate * 100).toFixed(0)}% | ${status} |`,
-    );
-  }
-  lines.push("");
-  for (const r of results) {
-    lines.push(`### ${r.cellId} — ${r.description}`);
-    lines.push("");
-    for (let i = 0; i < r.runs.length; i++) {
-      const run = r.runs[i]!;
-      const icon = run.pass ? "✓" : "🚩";
-      const actual = run.actual
-        ? `action=${run.actual.action} position=${run.actual.position}`
-        : run.error
-          ? `error=${run.error}`
-          : `decision=${run.decision}`;
-      const reasonStr = run.reasons.length
-        ? ` — ${run.reasons.join("; ")}`
-        : "";
-      lines.push(`- Run ${i + 1} ${icon} ${actual}${reasonStr}`);
-    }
-    lines.push("");
-  }
-  return lines.join("\n");
-}
+const formatActual = (run: CellRun): string =>
+  run.actual
+    ? `action=${run.actual.action} position=${run.actual.position}`
+    : run.error
+      ? `error=${run.error}`
+      : `decision=${run.decision}`;
 
 const OUTPUT_FILE = path.join(__dirname, "scores-planner-quiz-intent.yaml");
 const SCORE_RUNS = parseInt(process.env.SCORE_RUNS ?? "5", 10);
@@ -416,54 +381,34 @@ const SCORE_RUNS = parseInt(process.env.SCORE_RUNS ?? "5", 10);
 describe("Planner Quiz-Intent Eval", () => {
   test(`score all cells (${SCORE_RUNS} runs each)`, async () => {
     const openai = new OpenAI();
-    const results: CellResult[] = [];
 
-    for (const cell of CELLS) {
-      console.log(`\n--- ${cell.id} (${SCORE_RUNS} runs) ---`);
-      const runs: CellRun[] = [];
-      for (let i = 0; i < SCORE_RUNS; i++) {
-        const run = await runCellOnce(cell, openai);
-        const icon = run.pass ? "✓" : "🚩";
-        const actual = run.actual
+    const results: ScoredCell<CellRun>[] = await runEvalCells(
+      CELLS,
+      SCORE_RUNS,
+      (cell) => runCellOnce(cell, openai),
+      (run) =>
+        run.actual
           ? `${run.actual.action} pos=${run.actual.position}`
           : run.error
             ? `error: ${run.error}`
-            : `decision: ${run.decision}`;
-        console.log(`  Run ${i + 1} ${icon} ${actual}`);
-        runs.push(run);
-      }
-      const passCount = runs.filter((r) => r.pass).length;
-      const passRate = passCount / runs.length;
-      results.push({
-        cellId: cell.id,
-        description: cell.description,
-        passThreshold: cell.passThreshold,
-        passRate,
-        runs,
-      });
-    }
+            : `decision: ${run.decision}`,
+    );
 
-    const report = generateReport(results, SCORE_RUNS);
-    console.log("\n" + report);
+    console.log(
+      "\n" +
+        generateReport(
+          "Planner Quiz-Intent Eval Report",
+          results,
+          SCORE_RUNS,
+          formatActual,
+        ),
+    );
 
-    const yamlData = {
-      generated: new Date().toISOString(),
-      runsPerCell: SCORE_RUNS,
-      cells: results.map((r) => ({
-        id: r.cellId,
-        description: r.description,
-        passThreshold: r.passThreshold,
-        passRate: r.passRate,
-        runs: r.runs.map((run) => ({
-          pass: run.pass,
-          reasons: run.reasons,
-          actual: run.actual,
-          ...(run.error ? { error: run.error } : {}),
-        })),
-      })),
-    };
-    fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-    fs.writeFileSync(OUTPUT_FILE, YAML.stringify(yamlData));
-    console.log(`\nReport written to: ${OUTPUT_FILE}`);
+    writeScores(OUTPUT_FILE, results, SCORE_RUNS, (run) => ({
+      pass: run.pass,
+      reasons: run.reasons,
+      actual: run.actual,
+      ...(run.error ? { error: run.error } : {}),
+    }));
   }, 600_000);
 });
