@@ -25,13 +25,15 @@ test.describe("Teaching Materials", () => {
         await page
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
-        await expect(page).toHaveURL(/\/aila\/teaching-materials/);
+        await page.waitForURL(/\/aila\/teaching-materials/);
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
         await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByRole("button", { name: "Biology", exact: true }).click();
+        await page
+          .getByRole("button", { name: "Biology", exact: true })
+          .click();
 
         // Fill lesson title
         await page
@@ -102,13 +104,16 @@ test.describe("Teaching Materials", () => {
         await page
           .getByTestId("create-teaching-materials-button-additional-glossary")
           .click();
-        await expect(page).toHaveURL(/\/aila\/teaching-materials/);
+        await page.waitForURL(/\/aila\/teaching-materials/);
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
         await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByRole("button", { name: "Biology", exact: true }).click();
+
+        await page
+          .getByRole("button", { name: "Biology", exact: true })
+          .click();
 
         await page
           .getByPlaceholder("Type a learning objective")
