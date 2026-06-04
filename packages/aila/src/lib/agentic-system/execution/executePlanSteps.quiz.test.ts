@@ -31,6 +31,7 @@ function makeCallbacks(): AilaTurnCallbacks {
     onSectionComplete: jest.fn(),
     onTurnComplete: jest.fn().mockResolvedValue(undefined),
     onTurnFailed: jest.fn().mockResolvedValue(undefined),
+    onRagFetchedChange: jest.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -45,6 +46,7 @@ function makePersistedState(): AilaPersistedState {
     ],
     initialDocument: { starterQuiz },
     relevantLessons: null,
+    ragFetched: { status: "not_fetched", searchIdentity: null },
   };
 }
 
@@ -259,6 +261,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           starterQuiz: { version: "v3", questions: [], imageMetadata: [] },
         },
         relevantLessons: null,
+        ragFetched: { status: "not_fetched", searchIdentity: null },
       };
 
       const runtime = makeRuntime({

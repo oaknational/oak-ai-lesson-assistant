@@ -56,6 +56,7 @@ describe("sectionToGenericPromptAgent", () => {
       messages: mockMessages,
       initialDocument: mockDocument,
       relevantLessons: mockRelevantLessons,
+      ragFetched: { status: "not_fetched", searchIdentity: null },
     },
     runtime: {
       plannerAgent: jest.fn(),
@@ -82,6 +83,7 @@ describe("sectionToGenericPromptAgent", () => {
     callbacks: {
       onPlannerComplete: jest.fn(),
       onSectionComplete: jest.fn(),
+      onRagFetchedChange: jest.fn(),
       onTurnComplete: jest.fn(),
       onTurnFailed: jest.fn(),
     },

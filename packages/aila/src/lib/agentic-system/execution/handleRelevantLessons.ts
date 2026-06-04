@@ -1,55 +1,98 @@
 import { enablePatches, produceWithPatches } from "immer";
 
+import type { RagFetched } from "../../../protocol/schema";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
+import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
 import { terminateWithResponse } from "./termination";
 
 enablePatches();
 
-/**
- * Handle fetching relevant lessons if document metadata has changed
- * @returns `continue` to keep going, otherwise a terminal turn outcome
- */
+function searchIdentityEqual(
+  a: RagFetched["searchIdentity"],
+  b: RagFetched["searchIdentity"],
+): boolean {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return (
+    a.title === b.title && a.subject === b.subject && a.keyStage === b.keyStage
+  );
+}
+
+async function persistRagFetched(
+  context: AilaExecutionContext,
+  next: RagFetched,
+): Promise<void> {
+  const prev = context.persistedState.ragFetched;
+  if (
+    prev.status === next.status &&
+    searchIdentityEqual(prev.searchIdentity, next.searchIdentity)
+  ) {
+    return;
+  }
+  context.persistedState.ragFetched = next;
+  await context.callbacks.onRagFetchedChange(next);
+}
+
+/** Decide whether to re-fetch RAG lessons; may terminate the turn early. */
 export async function handleRelevantLessons(
   context: AilaExecutionContext,
 ): Promise<AilaTurnPhaseOutcome> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
-  const { initialDocument } = context.persistedState;
+  const ragFetched = context.persistedState.ragFetched;
 
-  if (!title || !subject || !keyStage) {
-    // if any of the above sections are missing, do not refetch RAG lessons
-    return { status: "continue" };
-  }
+  const nextSearchIdentity =
+    title && subject && keyStage ? { title, subject, keyStage } : null;
 
-  // A basedOn set during this turn means the user just chose a lesson to adapt,
-  // so it is valid and we should not refetch.
-  const basedOnSetThisTurn = basedOn !== initialDocument.basedOn;
-  if (basedOn && basedOnSetThisTurn) {
-    return { status: "continue" };
-  }
-
-  const hasDocumentMetadataChanged =
-    title !== initialDocument.title ||
-    subject !== initialDocument.subject ||
-    keyStage !== initialDocument.keyStage;
-
-  if (!hasDocumentMetadataChanged) {
-    // metadata is unchanged, so any existing basedOn is still valid and there
-    // is nothing new to fetch
-    return { status: "continue" };
-  }
-
-  // The lesson metadata changed, so a basedOn carried over from a previous
-  // lesson no longer applies and must be cleared before we refetch.
   if (basedOn) {
+    const basedOnIsStale =
+      ragFetched.searchIdentity != null &&
+      nextSearchIdentity != null &&
+      hasSearchIdentityChangedSignificantly(
+        ragFetched.searchIdentity,
+        nextSearchIdentity,
+      );
+
+    if (!basedOnIsStale) {
+      // user has chosen a lesson to adapt and the search identity still
+      // matches — record the selection and stop
+      await persistRagFetched(context, {
+        status: "selected",
+        searchIdentity: nextSearchIdentity ?? ragFetched.searchIdentity,
+      });
+      return { status: "continue" };
+    }
+
+    // The lesson metadata changed significantly, so a basedOn carried over from
+    // a previous lesson no longer applies and must be cleared before we refetch.
     clearBasedOn(context);
   }
 
-  context.currentTurn.relevantLessons =
-    await context.runtime.fetchRelevantLessons({ title, subject, keyStage });
+  if (!nextSearchIdentity) {
+    // can't form a search identity without all three — don't fetch
+    return { status: "continue" };
+  }
+
+  if (
+    !hasSearchIdentityChangedSignificantly(
+      ragFetched.searchIdentity,
+      nextSearchIdentity,
+    )
+  ) {
+    return { status: "continue" };
+  }
+
+  const lessons =
+    await context.runtime.fetchRelevantLessons(nextSearchIdentity);
+  context.currentTurn.relevantLessons = lessons;
   context.currentTurn.relevantLessonsFetched = true;
 
-  if (context.currentTurn.relevantLessons.length > 0) {
+  await persistRagFetched(context, {
+    status: lessons.length > 0 ? "shown" : "none_found",
+    searchIdentity: nextSearchIdentity,
+  });
+
+  if (lessons.length > 0) {
     return await terminateWithResponse(context);
   }
 

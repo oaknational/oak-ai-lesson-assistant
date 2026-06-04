@@ -34,6 +34,7 @@ const runTurn = async (
   const callbacks: AilaTurnCallbacks = {
     onPlannerComplete: () => void 0,
     onSectionComplete: () => void 0,
+    onRagFetchedChange: () => Promise.resolve(),
     onTurnComplete: ({ document, ailaMessage }) => {
       nextDocCapture = document;
       messageCapture = ailaMessage;
@@ -100,6 +101,7 @@ describe("ailaTurn e2e happy path with continue loop", () => {
       messages,
       initialDocument: {},
       relevantLessons: null,
+      ragFetched: { status: "not_fetched", searchIdentity: null },
     };
 
     let currentDoc: PartialLessonPlan = persisted.initialDocument;

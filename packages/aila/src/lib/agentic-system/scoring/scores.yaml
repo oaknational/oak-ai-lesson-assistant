@@ -1,12 +1,13 @@
-codeHash: c33b155381467008d3f0762ad3c690b0c7c97f3b092ad7656e3e8c3488a6f092
-generated: 2026-06-02T14:58:44.673Z
+codeHash: 66f62f5759062753d32cbf3c0ff757bfef156e9e2d81cef0084fff22b8663fa6
+generated: 2026-06-04T09:21:18.957Z
 runsPerScenario: 3
 summary:
   full-lesson:
     plan-groupings:
       pass: 3
     additional-materials-tone:
-      skip: 3
+      skip: 2
+      pass: 1
     cycle-verbosity:
       pass: 3
     keyword-casing:
@@ -50,9 +51,10 @@ summary:
     quiz-question-count:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 0
-      corrections_not_needed: 33
+      corrections_attempted: 1
+      corrections_not_needed: 32
       corrections_failed: 0
-      correction_rate: 0.0%
+      correction_rate: 3.0%
       correction_failure_rate: 0.0%
-      corrections_by_section: {}
+      corrections_by_section:
+        cycle1: 1

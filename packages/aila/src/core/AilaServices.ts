@@ -20,6 +20,7 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
   PartialLessonPlan,
+  RagFetched,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
@@ -52,6 +53,8 @@ export interface AilaChatService {
   readonly persistedChat: AilaPersistedChat | undefined;
   get relevantLessons(): AilaRagRelevantLesson[] | null;
   set relevantLessons(lessons: AilaRagRelevantLesson[] | null);
+  get ragFetched(): RagFetched;
+  set ragFetched(value: RagFetched);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
   readonly quizService: QuizService;
