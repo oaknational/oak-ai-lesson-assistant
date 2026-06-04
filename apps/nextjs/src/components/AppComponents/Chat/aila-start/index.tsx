@@ -135,7 +135,9 @@ export function AilaStart() {
                   <AilaFaqAccordion
                     id="create-lesson-whats-included"
                     header={
-                      <OakSpan $font="body-2-bold">What's included?</OakSpan>
+                      <OakSpan $textAlign="left" $font="body-2-bold">
+                        What's included?
+                      </OakSpan>
                     }
                     $bt="border-solid-s"
                     $bb="border-solid-s"
@@ -171,7 +173,7 @@ export function AilaStart() {
                   <AilaFaqAccordion
                     id="create-lesson-aila-different"
                     header={
-                      <OakSpan $font="body-2-bold">
+                      <OakSpan $textAlign="left" $font="body-2-bold">
                         How's Aila different from other AI tools?
                       </OakSpan>
                     }
@@ -207,7 +209,9 @@ export function AilaStart() {
                   <AilaFaqAccordion
                     id="create-lesson-why-trust"
                     header={
-                      <OakSpan $font="body-2-bold">Why trust Aila?</OakSpan>
+                      <OakSpan $textAlign="left" $font="body-2-bold">
+                        Why trust Aila?
+                      </OakSpan>
                     }
                   >
                     <OakP $font="body-2">
