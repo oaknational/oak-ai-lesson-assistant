@@ -20,6 +20,7 @@ import {
   OakQuote,
   OakSecondaryButton,
   OakSmallPrimaryInvertedButton,
+  OakTagFunctional,
   OakTertiaryButton,
   OakUL,
   oakColorTokens,
@@ -302,7 +303,14 @@ function HomePageHero({ pageData }: HomePageProps) {
           $width={"100%"}
         >
           <OakBox $width="fit-content">
-            <BetaTagPage />
+            <OakTagFunctional
+              $borderRadius={"border-radius-xl"}
+              $background={"bg-decorative3-main"}
+              label={"Beta"}
+              $pv={"spacing-8"}
+              $ph={"spacing-12"}
+              $font="body-2-bold"
+            />
           </OakBox>
           <OakHeading tag="h1" $font={"heading-4"}>
             Build tailor-made lessons and teaching materials with AI

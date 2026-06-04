@@ -134,11 +134,11 @@ export function AilaStart() {
           <OakGridArea $alignContent={"center"} $colSpan={[12, 6, 7]}>
             <OakBox
               $background="bg-primary"
-              $pa="spacing-24"
+              $pa="spacing-32"
               $borderRadius="border-radius-s"
               $position={"relative"}
             >
-              <OakFlex $flexDirection="column" $gap="spacing-32">
+              <OakFlex $flexDirection="column" $gap="spacing-24">
                 <OakHeading $font="heading-5" tag="h2">
                   Create a lesson
                 </OakHeading>
