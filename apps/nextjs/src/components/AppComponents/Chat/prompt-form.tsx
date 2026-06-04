@@ -112,7 +112,7 @@ export function PromptForm({
         $mt={`${formError ? "spacing-0" : "spacing-24"}`}
         $display={["none", "block"]}
       >
-        <ChatPanelDisclaimer size="sm" />
+        <ChatPanelDisclaimer />
       </OakBox>
     </form>
   );
