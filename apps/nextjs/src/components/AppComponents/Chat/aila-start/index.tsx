@@ -121,7 +121,6 @@ export function AilaStart() {
               $flexDirection="column"
               $mv={["spacing-48", "spacing-48", "spacing-48"]}
             >
-              <OakFlex $alignItems="center" $gap="spacing-12"></OakFlex>
               <OakFlex $flexDirection="column" $gap="spacing-8">
                 <OakHeading tag="h1" $font="heading-4">
                   Aila, Oak's AI lesson assistant
