@@ -20,6 +20,7 @@ import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
 import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
+import { AILA_FEEDBACK_FORM_URL, BetaTagWithFeedback } from "./beta-tag";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
 import EmptyScreenAccordion from "./empty-screen-accordion";
@@ -147,19 +148,22 @@ export function ChatStart({
           <div className="h-full w-full overflow-y-scroll p-18 px-10 sm:w-[66%]">
             <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
               <div className="flex h-full flex-col justify-center gap-18">
-                <div>
-                  <h1
-                    data-testid="chat-h1"
-                    className="mb-11 text-3xl font-semibold capitalize"
-                  >
-                    Hello{userFirstName ? ", " + userFirstName : ""}
-                  </h1>
-                  <p className="mb-7 text-base leading-normal">
-                    I&apos;m Aila, Oak&apos;s AI lesson assistant.
-                    <br />
-                    Tell me what you want to teach and I&apos;ll help you create
-                    your lesson.
-                  </p>
+                <div className="flex flex-col gap-22">
+                  <BetaTagWithFeedback feedbackHref={AILA_FEEDBACK_FORM_URL} />
+                  <div>
+                    <h1
+                      data-testid="chat-h1"
+                      className="mb-11 text-3xl font-semibold capitalize"
+                    >
+                      Hello{userFirstName ? ", " + userFirstName : ""}
+                    </h1>
+                    <p className="mb-7 text-base leading-normal">
+                      I&apos;m Aila, Oak&apos;s AI lesson assistant.
+                      <br />
+                      Tell me what you want to teach and I&apos;ll help you
+                      create your lesson.
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <p className="mb-13 text-xl font-bold">

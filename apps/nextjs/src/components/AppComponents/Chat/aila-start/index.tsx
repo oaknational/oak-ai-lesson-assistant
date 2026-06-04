@@ -23,6 +23,7 @@ import Link from "next/link";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
+import { AILA_FEEDBACK_FORM_URL, BetaTagWithFeedback } from "../beta-tag";
 import ChatPanelDisclaimer from "../chat-panel-disclaimer";
 
 const teachingMaterialsList: {
@@ -97,9 +98,10 @@ export function AilaStart() {
       $flexDirection="column"
       $alignItems="center"
       $minHeight={["100%", "100vh", "100vh"]}
+      $pt={["spacing-72"]}
     >
       <OakMaxWidth
-        $mt={["spacing-80"]}
+        $mt={["spacing-48"]}
         $maxWidth="spacing-960"
         $background="bg-decorative3-very-subdued"
         $justifyContent={"space-between"}
@@ -112,6 +114,9 @@ export function AilaStart() {
           $ph={["spacing-12", "spacing-12", "spacing-0"]}
         >
           <OakGridArea $alignContent={"center"} $colSpan={[12, 12, 12]}>
+            <OakBox $ph={["spacing-12", "spacing-12", "spacing-0"]}>
+              <BetaTagWithFeedback feedbackHref={AILA_FEEDBACK_FORM_URL} />
+            </OakBox>
             <OakFlex
               $flexDirection="column"
               $mv={["spacing-48", "spacing-80", "spacing-48"]}
@@ -135,7 +140,7 @@ export function AilaStart() {
               $borderRadius="border-radius-s"
               $position={"relative"}
             >
-              <OakFlex $flexDirection="column" $gap="spacing-24">
+              <OakFlex $flexDirection="column" $gap="spacing-32">
                 <OakHeading $font="heading-5" tag="h2">
                   Create a lesson
                 </OakHeading>
