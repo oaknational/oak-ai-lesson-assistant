@@ -67,15 +67,6 @@ function createContext(
   };
 }
 
-const fakeLessons: AgenticRagLessonPlanResult[] = [
-  {
-    ragLessonPlanId: "lp1",
-    oakLessonId: 1,
-    oakLessonSlug: "photosynthesis",
-    lessonPlan: { title: "Photosynthesis" },
-  },
-];
-
 describe("handleRelevantLessons", () => {
   it("skips fetch and persists 'selected' when basedOn is set", async () => {
     const ctx = createContext({
