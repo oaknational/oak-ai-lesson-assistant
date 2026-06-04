@@ -26,22 +26,30 @@ import EmptyScreenAccordion from "../empty-screen-accordion";
 
 const teachingMaterialsList: {
   label: string;
+  ariaLabel: string;
   docType: TeachingMaterialType;
 }[] = [
-  { label: "Glossaries", docType: "additional-glossary" },
   {
-    label: "Comprehension tasks",
+    label: "Glossary",
+    ariaLabel: "Create a glossary teaching material",
+    docType: "additional-glossary",
+  },
+  {
+    label: "Comprehension task",
+    ariaLabel: "Create a comprehension tasks teaching material",
     docType: "additional-comprehension",
   },
-  { label: "Starter quiz", docType: "additional-starter-quiz" },
-  { label: "Exit quiz", docType: "additional-exit-quiz" },
+  {
+    label: "Starter quiz",
+    ariaLabel: "Create a starter quiz teaching material",
+    docType: "additional-starter-quiz",
+  },
+  {
+    label: "Exit quiz",
+    ariaLabel: "Create an exit quiz teaching material",
+    docType: "additional-exit-quiz",
+  },
 ];
-
-const StyledUL = styled(OakUL)`
-  list-style-type: disc;
-
-  padding-left: 20px;
-`;
 
 export function AilaStart() {
   const { track } = useAnalytics();
@@ -126,6 +134,7 @@ export function AilaStart() {
                       element="a"
                       href={`${getAilaUrl("teaching-materials")}?docType=${item.docType}`}
                       iconName="chevron-right"
+                      aria-label={item.ariaLabel}
                       onClick={() => {
                         track.createTeachingMaterialsInitiated({
                           platform: "aila-beta",
