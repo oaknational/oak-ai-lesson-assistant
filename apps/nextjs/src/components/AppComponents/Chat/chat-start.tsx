@@ -196,7 +196,7 @@ export function ChatStart({
                   </div>
                 </div>
               </div>
-              <ChatPanelDisclaimer size="sm" />
+              <ChatPanelDisclaimer />
             </div>
           </div>
           <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25 pb-9 sm:flex">

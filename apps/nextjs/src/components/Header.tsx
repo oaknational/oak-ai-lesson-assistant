@@ -84,7 +84,7 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
 
           <div className="h-22 py-8">
             <HamburgerButton onClick={() => setMenuOpen(!menuOpen)}>
-              <OakIcon $colorFilter={"black"} iconName="hamburger" />
+              <OakIcon $colorFilter={"icon-primary"} iconName="hamburger" />
             </HamburgerButton>
           </div>
         </OakFlex>

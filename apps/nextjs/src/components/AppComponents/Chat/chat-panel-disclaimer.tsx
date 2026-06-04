@@ -1,20 +1,26 @@
-const ChatPanelDisclaimer = ({
-  size,
-}: {
-  readonly size: "sm" | "md" | "lg";
-}) => {
+import { OakLink, OakP } from "@oaknational/oak-components";
+
+const ChatPanelDisclaimer = () => {
   return (
-    <p className={` text-${size}`}>
-      Aila can make mistakes. Check your lesson before use.{" "}
-      <a
-        href="https://www.thenational.academy/legal/terms-and-conditions"
-        className="text-blue underline"
+    <OakP $font="body-3" $textAlign="center">
+      AI can make mistakes. Review content before use. Read our{" "}
+      <OakLink
+        href="https://www.thenational.academy/legal/privacy-policy"
         target="_blank"
+        rel="noopener noreferrer"
       >
-        Oak terms and conditions
-      </a>
-      {"."}
-    </p>
+        privacy policy
+      </OakLink>{" "}
+      and{" "}
+      <OakLink
+        href="https://www.thenational.academy/legal/terms-and-conditions"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        terms and conditions
+      </OakLink>
+      .
+    </OakP>
   );
 };
 
