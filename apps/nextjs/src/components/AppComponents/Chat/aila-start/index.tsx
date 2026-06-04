@@ -101,26 +101,25 @@ export function AilaStart() {
       $pt={["spacing-72"]}
     >
       <OakMaxWidth
-        $mt={["spacing-48"]}
+        $mt={["spacing-24"]}
         $maxWidth="spacing-960"
         $background="bg-decorative3-very-subdued"
         $justifyContent={"space-between"}
       >
         <OakGrid
           $height={"100%"}
-          $cg={["spacing-0", "spacing-20", "spacing-20"]}
-          $rg={["spacing-48", "spacing-0", "spacing-0"]}
+          $cg={["spacing-32", "spacing-20", "spacing-20"]}
+          $rg={["spacing-32", "spacing-0", "spacing-0"]}
           $mh="auto"
           $ph={["spacing-12", "spacing-12", "spacing-0"]}
         >
           <OakGridArea $alignContent={"center"} $colSpan={[12, 12, 12]}>
-            <OakBox $ph={["spacing-12", "spacing-12", "spacing-0"]}>
+            <OakBox>
               <BetaTagWithFeedback feedbackHref={AILA_FEEDBACK_FORM_URL} />
             </OakBox>
             <OakFlex
               $flexDirection="column"
-              $mv={["spacing-48", "spacing-80", "spacing-48"]}
-              $ph={["spacing-12", "spacing-12", "spacing-0"]}
+              $mv={["spacing-48", "spacing-48", "spacing-48"]}
             >
               <OakFlex $alignItems="center" $gap="spacing-12"></OakFlex>
               <OakFlex $flexDirection="column" $gap="spacing-8">
