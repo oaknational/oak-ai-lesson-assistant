@@ -72,6 +72,12 @@ export const TeachingMaterialsStoresProvider: React.FC<
       void stores.teachingMaterials.getState().actions.fetchOwaData(props);
     }
 
+    if (props.source === "aila" && props.queryParams?.docType) {
+      void stores.teachingMaterials
+        .getState()
+        .actions.createMaterialSession(props.queryParams.docType, 1);
+    }
+
     haveInitialized.current = true;
   }, [isLoaded, isSignedIn, props, stores.teachingMaterials]);
 

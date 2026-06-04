@@ -22,29 +22,32 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
-        await page.getByTestId("create-teaching-materials-button").click();
-        await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
+        const createSessionReady = page.waitForResponse((response) =>
+          response.url().includes("createMaterialSession"),
+        );
 
-      await test.step("Step 1: Select material type", async () => {
-        await page.getByText("Glossary").click();
-
-        await page.getByText("Next, provide lesson details").click();
-      });
-
-      await test.step("Step 2: Input lesson context", async () => {
+        await page
+          .getByTestId("create-teaching-materials-button-additional-glossary")
+          .click();
+        await page.waitForURL(/\/aila\/teaching-materials/, {
+          waitUntil: "load",
+        });
         const buttons = page.getByTestId("drop-down-button");
 
         await buttons.first().click();
-        await page.getByText("Year 3").click();
+        await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByText("Biology").click();
+        await page
+          .getByRole("button", { name: "Biology", exact: true })
+          .click();
 
         // Fill lesson title
         await page
           .getByPlaceholder("Type a lesson title or learning outcome")
           .fill("Exploring animal habitats");
 
+        // Ensure the session is created (resourceId + docType set) before submitting
+        await createSessionReady;
         await page.getByText("Next, review lesson details").click();
       });
 
@@ -106,24 +109,32 @@ test.describe("Teaching Materials", () => {
       await applyTeachingMaterialsMockAPIRequests(page);
 
       await test.step("Navigate to teaching materials", async () => {
-        await page.getByTestId("create-teaching-materials-button").click();
-        await expect(page).toHaveURL(/\/aila\/teaching-materials/);
-      });
+        const createSessionReady = page.waitForResponse((response) =>
+          response.url().includes("createMaterialSession"),
+        );
 
-      await test.step("Step 1: Select material type", async () => {
-        await page.getByText("Glossary").click();
-        await page.getByTestId("mobile-next-button").click();
-      });
-
-      await test.step("Step 2: Input lesson context", async () => {
+        await page
+          .getByTestId("create-teaching-materials-button-additional-glossary")
+          .click();
+        await page.waitForURL(/\/aila\/teaching-materials/, {
+          waitUntil: "load",
+        });
         const buttons = page.getByTestId("drop-down-button");
+
         await buttons.first().click();
-        await page.getByText("Year 3").click();
+        await page.getByRole("button", { name: "Year 3", exact: true }).click();
         await buttons.last().click();
-        await page.getByText("Biology").click();
+
+        await page
+          .getByRole("button", { name: "Biology", exact: true })
+          .click();
+
         await page
           .getByPlaceholder("Type a learning objective")
           .fill("I want a lesson about data representation");
+
+        // Ensure the session is created (resourceId + docType set) before submitting
+        await createSessionReady;
         await page.getByTestId("mobile-next-button").click();
       });
 

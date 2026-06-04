@@ -56,7 +56,10 @@ describe("handleCreateMaterialSession", () => {
       documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 2 });
-    expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
+    expect(mockSet).toHaveBeenCalledWith({
+      id: "resource-xyz",
+      docType: "additional-glossary",
+    });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
       docType: teachingMaterialTypeEnum.parse("additional-glossary"),
@@ -90,7 +93,10 @@ describe("handleCreateMaterialSession", () => {
       documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 1 });
-    expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
+    expect(mockSet).toHaveBeenCalledWith({
+      id: "resource-xyz",
+      docType: "additional-glossary",
+    });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
       docType: teachingMaterialTypeEnum.parse("additional-glossary"),
@@ -124,7 +130,10 @@ describe("handleCreateMaterialSession", () => {
       documentType: teachingMaterialTypeEnum.parse("additional-glossary"),
     });
     expect(mockSet).toHaveBeenCalledWith({ stepNumber: 1 });
-    expect(mockSet).toHaveBeenCalledWith({ id: "resource-xyz" });
+    expect(mockSet).toHaveBeenCalledWith({
+      id: "resource-xyz",
+      docType: "additional-glossary",
+    });
     expect(mockTrackMaterialSelected).toHaveBeenCalledWith({
       resourceId: "resource-xyz",
       docType: teachingMaterialTypeEnum.parse("additional-glossary"),
