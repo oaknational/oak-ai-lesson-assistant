@@ -13,9 +13,9 @@ export const AILA_FEEDBACK_FORM_URL =
 
 export function BetaTagWithFeedback({
   feedbackHref,
-}: {
+}: Readonly<{
   feedbackHref: string;
-}) {
+}>) {
   return (
     <OakFlex $alignItems="center" $gap="spacing-12">
       <BetaTagPage />
