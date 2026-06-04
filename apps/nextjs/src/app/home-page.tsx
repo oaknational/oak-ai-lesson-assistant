@@ -31,7 +31,6 @@ import styled from "styled-components";
 
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
 import type { HomePageQueryResult } from "@/cms/types/aiHomePageType";
-import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
