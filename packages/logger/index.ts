@@ -78,7 +78,6 @@ export type LoggerKey =
   | "scrolling"
   | "snippets"
   | "testing"
-  | "teaching-materials"
   | "tracing"
   | "transcripts"
   | "trpc"

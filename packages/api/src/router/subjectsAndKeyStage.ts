@@ -64,6 +64,36 @@ const lessonWithQuestions = z.object({
 
 type LessonWithQuestions = z.infer<typeof lessonWithQuestions>;
 
+function mapMultipleChoiceAnswer(answer: MultipleChoice) {
+  let text = "";
+
+  const found = answer.answer.find((_) => _.type === "text");
+
+  if (found) {
+    text = found.text;
+  }
+
+  return {
+    answer: text,
+    distractor: !answer.answer_is_correct,
+  };
+}
+
+function mapQuestion(question: Question) {
+  let text = "";
+  const stem = question.questionStem;
+  if (stem && stem.length > 0 && stem[0]) {
+    text = stem[0].text;
+  }
+
+  const answers = question.answers["multiple-choice"].map(mapMultipleChoiceAnswer);
+
+  return {
+    question: text,
+    answers,
+  };
+}
+
 async function getQuestionsForKSAndSubject(
   prisma: PrismaClientWithAccelerate,
   keyStage: KeyStageName | undefined,
@@ -116,33 +146,7 @@ async function getQuestionsForKSAndSubject(
     const quizzes = [newLessonContent?.starterQuiz, newLessonContent?.exitQuiz];
 
     const questions = quizzes.flatMap((quiz) => {
-      return quiz.map((question) => {
-        let text = "";
-        const stem = question.questionStem;
-        if (stem && stem.length > 0 && stem[0]) {
-          text = stem[0].text;
-        }
-
-        const answers = question.answers["multiple-choice"].map((answer) => {
-          let text = "";
-
-          const found = answer.answer.find((_) => _.type === "text");
-
-          if (found) {
-            text = found.text;
-          }
-
-          return {
-            answer: text,
-            distractor: !answer.answer_is_correct,
-          };
-        });
-
-        return {
-          question: text,
-          answers,
-        };
-      });
+      return quiz.map(mapQuestion);
     });
 
     return {

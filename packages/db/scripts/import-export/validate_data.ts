@@ -25,6 +25,14 @@ const log = (message: string) => {
   logger.info(`[LOG] ${new Date().toISOString()}: ${message}`);
 };
 
+const camelCaseToSnakeCase = (str: string) => {
+  const newStr = str.replace(
+    /[A-Z]/g,
+    (letter) => `_${letter.toLowerCase()}`,
+  );
+  return newStr.replace(/^_/, "");
+};
+
 // Helper function to get the Prisma model metadata
 function getModelConstraints() {
   log("Inferring model constraints from Prisma schema...");
@@ -58,16 +66,8 @@ function getModelConstraints() {
         .filter((field) => field.relationName)
         .reduce(
           (acc, field) => {
-            const CamelCaseToSnakeCase = (str: string) => {
-              const newStr = str.replace(
-                /[A-Z]/g,
-                (letter) => `_${letter.toLowerCase()}`,
-              );
-              return newStr.replace(/^_/, "");
-            };
-
-            const refTable = CamelCaseToSnakeCase(field.type);
-            acc[CamelCaseToSnakeCase(field.name)] = refTable;
+            const refTable = camelCaseToSnakeCase(field.type);
+            acc[camelCaseToSnakeCase(field.name)] = refTable;
             return acc;
           },
           {} as Record<string, string>,
