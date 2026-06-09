@@ -18,14 +18,16 @@ export function BetaTagWithFeedback({
 }>) {
   return (
     <OakFlex $alignItems="center" $gap="spacing-12">
-      <BetaTagPage />
+      <span className="flex items-center justify-center rounded-[12px] bg-teachersPastelBlue px-[8px] py-[6px] text-sm font-semibold leading-5">
+        Beta
+      </span>
       <OakLink
         href={feedbackHref}
         color="text-primary"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <OakSpan $font="body-2" $color="text-primary">
+        <OakSpan $font="body-3" $color="text-primary">
           Feedback will help us improve Aila
         </OakSpan>
       </OakLink>
