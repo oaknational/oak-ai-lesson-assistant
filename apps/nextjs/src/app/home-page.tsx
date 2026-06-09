@@ -289,52 +289,59 @@ const OakFlexWithBackground = styled(OakFlex)<{
 function HomePageHero({ pageData }: HomePageProps) {
   return (
     <HeroContainer>
+      <OakBox $mb={"spacing-24"} $width="fit-content">
+        <OakTagFunctional
+          $borderRadius={"border-radius-xl"}
+          $background={"bg-decorative3-main"}
+          label={`Beta`}
+          $pv={"spacing-8"}
+          $ph={"spacing-12"}
+          $font="body-2-bold"
+        />
+      </OakBox>
       <OakFlex
         $flexDirection={["column", "row"]}
         $justifyContent={"space-between"}
-        $alignItems={["center"]}
         $gap={"spacing-20"}
       >
         <OakFlexCustomMaxWidthWithHalfWidth
           $flexDirection={"column"}
-          $gap={"spacing-20"}
-          customMaxWidth={550}
+          $gap={"spacing-24"}
+          customMaxWidth={631}
           $width={"100%"}
         >
-          <OakBox $width="fit-content">
-            <OakTagFunctional
-              $borderRadius={"border-radius-xl"}
-              $background={"bg-decorative3-main"}
-              label={"Beta"}
-              $pv={"spacing-8"}
-              $ph={"spacing-12"}
-              $font="body-2-bold"
-            />
-          </OakBox>
           <OakHeading tag="h1" $font={"heading-4"}>
-            Build tailor-made lessons and teaching materials with AI
+            Create tailored lessons and resources with AI
           </OakHeading>
 
-          <OakBoxCustomMaxWidth
-            $display={["flex", "none"]}
-            $borderColor="border-primary"
-            $borderStyle={"solid"}
-            $ba={"border-solid-xl"}
-            customMaxWidth={600}
-            $height="fit-content"
-          >
-            <StyledMuxPlayer
-              playbackId={pageData?.heroVideo.video.asset.playbackId}
-              thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
-            />
-          </OakBoxCustomMaxWidth>
-
-          <OakP $textAlign="left" $font="body-2">
-            Transform your lesson prep with your free AI-powered lesson
-            assistant, Aila. Whether it&apos;s creating bespoke resources or
-            tailoring content to your class, Aila can help speed things along.
-          </OakP>
-          <HomePageCTA />
+          <OakFlex $flexDirection={"column-reverse"}>
+            <OakBoxCustomMaxWidth
+              $display={["flex", "none"]}
+              $borderColor="border-primary"
+              $borderStyle={"solid"}
+              $ba={"border-solid-xl"}
+              customMaxWidth={629}
+              $height="fit-content"
+            >
+              <StyledMuxPlayer
+                playbackId={pageData?.heroVideo.video.asset.playbackId}
+                thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
+              />
+            </OakBoxCustomMaxWidth>
+            <OakBox $mb={["spacing-32", "spacing-0"]}>
+              <OakP
+                $mb={["spacing-0", "spacing-48"]}
+                $textAlign="left"
+                $font="body-1"
+              >
+                Try Aila, Oak&apos;s AI lesson assistant, built for teachers.
+                Create and adapt lessons and resources that draw on Oak&apos;s
+                national curriculum-aligned content, with you in control every
+                step of the way.
+              </OakP>
+              <HomePageCTA />
+            </OakBox>
+          </OakFlex>
         </OakFlexCustomMaxWidthWithHalfWidth>
 
         <OakFlexCustomMaxWidthWithHalfWidth
@@ -383,10 +390,15 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           />
         </OakBoxCustomMaxWidth>
         <OakP $font={"body-2"}>
-          Aila, your AI-powered lesson assistant, can help you create
-          high-quality lessons and teaching materials in minutes. When
-          you&apos;re ready, you can download everything in several editable
-          formats to adapt as you like.
+          Aila is Oak&apos;s AI lesson assistant, built for teachers. It helps
+          you quickly create and adapt lessons and resources that draw on
+          Oak&apos;s national curriculum-aligned content. All fully editable and
+          ready to download.
+        </OakP>
+        <OakP $font={"body-2"}>
+          Work step by step with Aila to create lesson plans, slide decks,
+          quizzes, worksheets and more. You stay in control throughout,
+          reviewing and adapting everything to suit your pupils.
         </OakP>
         <OakP $font={"body-2-bold"}>Lessons created with Aila include:</OakP>
 

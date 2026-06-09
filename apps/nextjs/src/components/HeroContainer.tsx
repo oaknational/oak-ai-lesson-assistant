@@ -7,7 +7,7 @@ const HeroContainerOakBox = styled(OakBox)`
   width: 100%;
   overflow: unset;
   padding-top: 92px;
-  padding-bottom: 92px;
+  padding-bottom: 48px;
   &:before {
     content: "";
     position: absolute;

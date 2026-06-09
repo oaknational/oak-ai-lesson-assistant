@@ -19,9 +19,11 @@ export function BetaTagWithFeedback({
         $borderRadius={"border-radius-l"}
         $background={"bg-decorative3-main"}
         label={"Beta"}
-        $font={"body-2-bold"}
+        $font={"body-3-bold"}
         $pv="spacing-0"
+        $mt="spacing-4"
       />
+
       <OakLink
         href={feedbackHref}
         color="text-primary"

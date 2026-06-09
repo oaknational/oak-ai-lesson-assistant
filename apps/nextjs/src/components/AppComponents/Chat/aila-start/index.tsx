@@ -101,7 +101,7 @@ export function AilaStart() {
       $pt={["spacing-72"]}
     >
       <OakMaxWidth
-        $mt={["spacing-24"]}
+        $mt={["spacing-48"]}
         $maxWidth="spacing-960"
         $background="bg-decorative3-very-subdued"
         $justifyContent={"space-between"}
