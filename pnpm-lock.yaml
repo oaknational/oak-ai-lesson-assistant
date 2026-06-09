@@ -933,6 +933,9 @@ importers:
       '@googleapis/docs':
         specifier: ^5.0.1
         version: 5.0.1
+      '@oakai/core':
+        specifier: '*'
+        version: link:../core
       '@oakai/logger':
         specifier: '*'
         version: link:../logger
@@ -1108,6 +1111,9 @@ importers:
       '@oakai/prettier-config':
         specifier: '*'
         version: link:../prettier-config
+      '@sentry/nextjs':
+        specifier: ^10.29.0
+        version: 10.31.0(@opentelemetry/context-async-hooks@2.2.0)(@opentelemetry/core@2.2.0)(@opentelemetry/sdk-trace-base@2.2.0)(next@16.0.10)(react@19.2.1)(webpack@5.102.1)
       zod:
         specifier: 3.25.76
         version: 3.25.76

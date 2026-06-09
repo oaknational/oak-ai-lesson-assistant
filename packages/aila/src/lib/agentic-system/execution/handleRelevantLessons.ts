@@ -1,39 +1,82 @@
+import type { RagFetched } from "../../../protocol/schema";
 import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
+import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
 import { terminateWithResponse } from "./termination";
 
-/**
- * Handle fetching relevant lessons if document metadata has changed
- * @returns `continue` to keep going, otherwise a terminal turn outcome
- */
+function searchIdentityEqual(
+  a: RagFetched["searchIdentity"],
+  b: RagFetched["searchIdentity"],
+): boolean {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return (
+    a.title === b.title && a.subject === b.subject && a.keyStage === b.keyStage
+  );
+}
+
+async function persistRagFetched(
+  context: AilaExecutionContext,
+  next: RagFetched,
+): Promise<void> {
+  const prev = context.persistedState.ragFetched;
+  if (
+    prev.status === next.status &&
+    searchIdentityEqual(prev.searchIdentity, next.searchIdentity)
+  ) {
+    return;
+  }
+  context.persistedState.ragFetched = next;
+  await context.callbacks.onRagFetchedChange(next);
+}
+
+/** Decide whether to re-fetch RAG lessons; may terminate the turn early. */
 export async function handleRelevantLessons(
   context: AilaExecutionContext,
 ): Promise<AilaTurnPhaseOutcome> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
-
-  if (!title || !subject || !keyStage) {
-    // if any of the above sections are missing, do not refetch RAG lessons
-    return { status: "continue" };
-  }
+  const ragFetched = context.persistedState.ragFetched;
 
   if (basedOn) {
-    // if the user has already chosen a lesson to adapt, do not refetch RAG lessons
+    // user has chosen a lesson to adapt — record that selection
+    await persistRagFetched(context, {
+      status: "selected",
+      searchIdentity:
+        title && subject && keyStage
+          ? { title, subject, keyStage }
+          : ragFetched.searchIdentity,
+    });
     return { status: "continue" };
   }
 
-  const hasDocumentMetadataChanged =
-    title !== context.persistedState.initialDocument.title ||
-    subject !== context.persistedState.initialDocument.subject ||
-    keyStage !== context.persistedState.initialDocument.keyStage;
-
-  if (!hasDocumentMetadataChanged) {
-    // if above sections remain unchanged, do not refetch RAG lessons
+  if (!title || !subject || !keyStage) {
+    // can't form a search identity without all three — don't fetch
     return { status: "continue" };
   }
-  context.currentTurn.relevantLessons =
-    await context.runtime.fetchRelevantLessons({ title, subject, keyStage });
+
+  const nextSearchIdentity = { title, subject, keyStage };
+  if (
+    !hasSearchIdentityChangedSignificantly(
+      ragFetched.searchIdentity,
+      nextSearchIdentity,
+    )
+  ) {
+    return { status: "continue" };
+  }
+
+  const lessons = await context.runtime.fetchRelevantLessons({
+    title,
+    subject,
+    keyStage,
+  });
+  context.currentTurn.relevantLessons = lessons;
   context.currentTurn.relevantLessonsFetched = true;
 
-  if (context.currentTurn.relevantLessons.length > 0) {
+  await persistRagFetched(context, {
+    status: lessons.length > 0 ? "shown" : "none_found",
+    searchIdentity: nextSearchIdentity,
+  });
+
+  if (lessons.length > 0) {
     return await terminateWithResponse(context);
   }
 

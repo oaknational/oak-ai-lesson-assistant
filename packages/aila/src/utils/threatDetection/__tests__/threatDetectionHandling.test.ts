@@ -8,10 +8,6 @@ jest.mock("@oakai/core/src/backgroundTasks", () => ({
   scheduleThreatDetectionAilaNotification: jest.fn(),
 }));
 
-jest.mock("@oakai/db", () => ({
-  prisma: {},
-}));
-
 jest.mock("../../reportAnalyticsEvent", () => ({
   safelyReportAnalyticsEvent: jest.fn().mockResolvedValue(undefined),
 }));

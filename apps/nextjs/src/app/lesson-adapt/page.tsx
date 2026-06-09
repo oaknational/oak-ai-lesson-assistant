@@ -1,7 +1,7 @@
+import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
+
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-
-import { serverSideFeatureFlag } from "@/utils/serverSideFeatureFlag";
 
 import LessonAdaptView from "./LessonAdaptView";
 

@@ -8,6 +8,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
+import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import {
   getRelevantLessonPlans,
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
       title: lessonPlan.title,
       subjectSlugs,
       keyStageSlugs,
+      prisma,
     });
 
     relevantLessons = ragResults.map((result) => ({
@@ -104,16 +106,19 @@ export async function POST(request: Request) {
         },
       });
 
-      const service = buildQuizService({
-        sources: [
-          "currentQuiz",
-          "basedOnLesson",
-          "similarLessons",
-          "multiQuerySemantic",
-        ],
-        enrichers: [],
-        composer: "llm",
-      });
+      const service = buildQuizService(
+        {
+          sources: [
+            "currentQuiz",
+            "basedOnLesson",
+            "similarLessons",
+            "multiQuerySemantic",
+          ],
+          enrichers: [],
+          composer: "llm",
+        },
+        { prisma },
+      );
 
       try {
         await tracker.run(async (task, reportId) => {
@@ -123,6 +128,7 @@ export async function POST(request: Request) {
             relevantLessons,
             task,
             reportId,
+            { kind: "fullRegen" },
             userInstructions,
           );
           task.addData({ quiz: result.quiz, note: result.note });

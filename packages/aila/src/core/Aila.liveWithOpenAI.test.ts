@@ -13,6 +13,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       ailaInstance = new Aila({
+        prisma: {} as never,
         document: { content: {} },
         chat: { id: "test-chat", userId: "test-user" },
         options: {
@@ -68,6 +69,7 @@ const runManually = process.env.RUN_LLM_TESTS === "true";
 
     beforeEach(() => {
       const options: AilaInitializationOptions = {
+        prisma: {} as never,
         document: { content: {} },
         chat: { id: "test-chat", userId: "test-user" },
         options: {

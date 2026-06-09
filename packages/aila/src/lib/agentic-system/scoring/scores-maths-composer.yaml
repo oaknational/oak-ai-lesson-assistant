@@ -1,0 +1,248 @@
+generated: 2026-05-20T14:15:12.425Z
+runsPerCell: 5
+cells:
+  - id: addOne-with-candidates
+    description:
+      addOne mode + currentQuiz (3Q) + 5 candidate questions → exactly 1
+      non-CURRENT question
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+  - id: rewriteOne-pos2
+    description:
+      rewriteOne(2) + currentQuiz (3Q) + 5 candidate questions → exactly
+      1 non-CURRENT question
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 1
+        selectedUids:
+          - rag-frac-2
+  - id: addOne-only-current-bails
+    description: addOne mode + only currentQuiz pool (no other candidates) → composer bails
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason:
+          No non-CURRENT candidate questions were provided in the list. Please
+          include additional candidate questions that assess equivalent
+          fractions, finding common denominators, or fraction notation so a
+          suitable question can be selected to enrich the quiz.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason:
+          No non-CURRENT candidate questions were provided to choose from.
+          Please supply additional candidate questions covering equivalent
+          fractions, common denominators, or fraction notation so that an
+          appropriate question can be added.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason:
+          No non-CURRENT candidate questions were provided to select from.
+          Please supply additional candidate questions that target equivalent
+          fractions, common denominators, or fraction notation so we can compose
+          a balanced starter quiz.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason:
+          There are no non-CURRENT candidate questions provided to add. Please
+          supply additional candidate questions aligned with the prior knowledge
+          (equivalent fractions, common denominators, fraction notation) or
+          allow selection from the existing CURRENT questions by replacing one.
+      - pass: true
+        reasons: []
+        status: bail
+        selectedCount: 0
+        selectedUids: []
+        bailReason:
+          No non-CURRENT candidate questions were provided to select from.
+          Please provide additional candidate questions covering equivalent
+          fractions, finding common denominators, or basic fraction notation to
+          allow selection of an appropriate starter quiz question.
+  - id: fullRegen-no-current
+    description: fullRegen + only candidate pool (no currentQuiz) → 1-6 questions selected
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-1
+          - rag-frac-2
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 5
+        selectedUids:
+          - rag-frac-2
+          - rag-frac-1
+          - rag-frac-3
+          - rag-frac-4
+          - rag-frac-5
+  - id: fullRegen-with-current
+    description: fullRegen + currentQuiz + candidate pool (modify path) → 1-6
+      questions selected
+    passThreshold: 0.95
+    passRate: 1
+    runs:
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q3
+          - CURRENT-Q2
+          - rag-frac-2
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - CURRENT-Q1
+          - rag-frac-2
+          - rag-frac-5
+          - rag-frac-1
+          - rag-frac-3
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q3
+          - CURRENT-Q2
+          - rag-frac-2
+          - CURRENT-Q1
+          - rag-frac-1
+          - rag-frac-3
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - CURRENT-Q3
+          - rag-frac-2
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1
+      - pass: true
+        reasons: []
+        status: success
+        selectedCount: 6
+        selectedUids:
+          - CURRENT-Q2
+          - rag-frac-2
+          - CURRENT-Q3
+          - rag-frac-5
+          - CURRENT-Q1
+          - rag-frac-1

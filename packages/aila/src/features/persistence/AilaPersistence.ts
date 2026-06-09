@@ -41,6 +41,7 @@ export abstract class AilaPersistence {
       messages,
       isShared,
       relevantLessons,
+      ragFetched,
       iteration,
       createdAt,
     } = this._chat;
@@ -69,6 +70,7 @@ export abstract class AilaPersistence {
       path: `/aila/${id}`,
       lessonPlan: document.content,
       relevantLessons,
+      ragFetched,
       messages: messages.filter((m) => ["assistant", "user"].includes(m.role)),
       options,
     };

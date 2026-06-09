@@ -1,11 +1,26 @@
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
+import { deriveQuizBuildMode } from "../../../quizOperations/deriveQuizBuildMode";
 import { createSectionAgent } from "../createSectionAgent";
-import { exitQuizInstructions } from "./exitQuiz.instructions";
+import {
+  addOneQuizInstructions,
+  exitQuizInstructions,
+  rewriteOneQuizInstructions,
+} from "./exitQuiz.instructions";
 import { ExitQuizSchema } from "./exitQuiz.schema";
 
 export const exitQuizAgent = createSectionAgent({
   responseSchema: ExitQuizSchema,
-  instructions: exitQuizInstructions,
+  instructions: (ctx) => {
+    const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+    switch (mode.kind) {
+      case "fullRegen":
+        return exitQuizInstructions;
+      case "addOne":
+        return addOneQuizInstructions;
+      case "rewriteOne":
+        return rewriteOneQuizInstructions(mode.position);
+    }
+  },
   defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

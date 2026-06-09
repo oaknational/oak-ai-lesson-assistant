@@ -1,3 +1,5 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import type { AilaErrorReporter } from "../features/errorReporting";
@@ -18,6 +20,7 @@ import type {
   AilaPersistedChat,
   AilaRagRelevantLesson,
   PartialLessonPlan,
+  RagFetched,
 } from "../protocol/schema";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
@@ -50,6 +53,8 @@ export interface AilaChatService {
   readonly persistedChat: AilaPersistedChat | undefined;
   get relevantLessons(): AilaRagRelevantLesson[] | null;
   set relevantLessons(lessons: AilaRagRelevantLesson[] | null);
+  get ragFetched(): RagFetched;
+  set ragFetched(value: RagFetched);
   readonly parsedMessages: MessagePart[][];
   readonly isShared: boolean | undefined;
   readonly quizService: QuizService;
@@ -67,6 +72,7 @@ export interface AilaQuizService {
 export interface AilaServices {
   readonly userId: string | undefined;
   readonly chatId: string;
+  readonly prisma: PrismaClientWithAccelerate;
   readonly messages: Message[];
   readonly options: AilaOptionsWithDefaultFallbackValues;
   readonly analytics?: AilaAnalyticsFeature;

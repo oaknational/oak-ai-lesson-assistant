@@ -72,6 +72,7 @@ export class AilaFeatureFactory {
         log.info("Oak Moderation Service is primary moderator");
         return new AilaModeration({
           aila,
+          prisma: aila.prisma,
           moderator: oakModerator,
           shadowModerator: new OpenAiModerator({
             userId: aila.userId,
@@ -84,6 +85,7 @@ export class AilaFeatureFactory {
       log.info("Shadow moderation enabled (Oak Moderation Service)");
       return new AilaModeration({
         aila,
+        prisma: aila.prisma,
         moderator: new OpenAiModerator({
           userId: aila.userId,
           chatId: aila.chatId,
@@ -96,7 +98,7 @@ export class AilaFeatureFactory {
   }
 
   static createSnapshotStore(aila: AilaServices) {
-    return new AilaSnapshotStore({ aila });
+    return new AilaSnapshotStore({ aila, prisma: aila.prisma });
   }
 
   static createPersistence(
@@ -104,7 +106,13 @@ export class AilaFeatureFactory {
     options: AilaOptions,
   ): AilaPersistenceFeature[] {
     if (options.usePersistence) {
-      return [new AilaPrismaPersistence({ chat: aila.chat, aila })];
+      return [
+        new AilaPrismaPersistence({
+          chat: aila.chat,
+          aila,
+          prisma: aila.prisma,
+        }),
+      ];
     }
     return [];
   }

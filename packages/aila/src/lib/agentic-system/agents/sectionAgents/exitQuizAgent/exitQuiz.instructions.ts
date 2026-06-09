@@ -19,3 +19,20 @@ Questions must cover:
 ## Question Design
 
 ${quizQuestionDesignInstructions}`;
+
+export const addOneQuizInstructions = `# Task
+
+Generate exactly ONE new multiple-choice question to ADD to the existing quiz. Do not output, modify, or restate the existing questions — they will be preserved by the system.
+
+## Question Design
+
+${quizQuestionDesignInstructions}`;
+
+export const rewriteOneQuizInstructions = (position: number): string =>
+  `# Task
+
+Rewrite question ${position} of the existing quiz. Return only the replacement question. Do not modify or output any of the other questions — they will be preserved by the system.
+
+## Question Design
+
+${quizQuestionDesignInstructions}`;

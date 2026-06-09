@@ -1,3 +1,20 @@
+# [1.76.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.75.0...v1.76.0) (2026-06-03)
+
+
+### Features
+
+* **agentic:** add per-section British English corrector agent ([#1049](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1049)) ([369dc92](https://github.com/oaknational/oak-ai-lesson-assistant/commit/369dc921044366e5c6cc5fdce9b76b52d1d76fbf))
+* prevent refetched rag - AI-2164 ([#1061](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1061)) ([ab84658](https://github.com/oaknational/oak-ai-lesson-assistant/commit/ab84658cac75e644f8b7904d2039d6958327ce8b))
+
+# [1.75.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.74.0...v1.75.0) (2026-06-01)
+
+
+### Features
+
+* [AI-2214] add dev/staging debug overlay ([#1059](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1059)) ([5c6795c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5c6795c79577ba3c159f2f5ca340d7db77c43a51))
+* key stage to sentence case helper - AI-2085 ([#1058](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1058)) ([b7967f7](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b7967f7c627f259a0c4f9c0a10edcd2f9918e00b))
+* stable quiz questions - AI-2165 ([#1053](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1053)) ([9353931](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9353931253d710ff0af809da9d9d7fb0f6c5b05b))
+
 # [1.74.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.73.0...v1.74.0) (2026-05-21)
 
 

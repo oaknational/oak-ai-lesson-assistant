@@ -8,12 +8,19 @@ import type { getRagLessonPlansByIds } from "@oakai/rag";
 
 import type { ReadableStreamDefaultController } from "stream/web";
 
+import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
-import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
+import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
+import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
+import type {
+  AilaTurnOutcome,
+  SectionAgent,
+} from "../../lib/agentic-system/types";
+import type { LatestQuiz } from "../../protocol/schema";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChatError } from "../AilaError";
@@ -177,8 +184,8 @@ export class AilaStreamHandler {
       }
 
       if (this._chat.aila.options.useAgenticAila) {
-        await this.span("start-agent-stream", async () => {
-          agenticTurnOutcome = await this.startAgentStream();
+        agenticTurnOutcome = await this.span("start-agent-stream", async () => {
+          return await this.startAgentStream();
         });
       } else {
         await this.span("set-initial-state", async () => {
@@ -206,7 +213,10 @@ export class AilaStreamHandler {
       );
     } catch (e) {
       if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnOutcome = { status: "failed" };
+        agenticTurnOutcome = {
+          status: "failed",
+          correctorStats: createEmptyCorrectorStats(),
+        };
         // ailaTurn threw rather than returning; its internal failure path never
         // completed, so the client has not received an error message.
         await this._chat.enqueue({
@@ -230,7 +240,9 @@ export class AilaStreamHandler {
         : status !== "FAILED";
       log.info("In finally block", {
         status,
-        agenticTurnOutcome,
+        agenticTurn: agenticTurnOutcome
+          ? { status: agenticTurnOutcome.status }
+          : null,
         skipCompletion,
         chatId: this._chat.id,
       });
@@ -281,7 +293,49 @@ export class AilaStreamHandler {
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,
       controller: this._controller!,
+      onRagFetchedChange: async (ragFetched) => {
+        this._chat.ragFetched = ragFetched;
+      },
     });
+
+    // starterQuiz and exitQuiz only differ by quiz path and the words used in
+    // their messages; everything else is the same maths-engine build flow.
+    const buildMathsQuizHandler =
+      (
+        quizType: "/starterQuiz" | "/exitQuiz",
+        quizNoun: string,
+      ): SectionAgent<LatestQuiz>["handler"] =>
+      async (ctx) => {
+        try {
+          const userInstructions =
+            ctx.currentTurn.currentStep?.sectionInstructions;
+          const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+          const tracker = createQuizTracker();
+          const { quiz, note } = await tracker.run(async (task, reportId) => {
+            const result = await this._chat.quizService.buildQuiz(
+              quizType,
+              ctx.currentTurn.document,
+              this._chat.relevantLessons ?? [],
+              task,
+              reportId,
+              mode,
+              userInstructions,
+            );
+            task.addData({ quiz: result.quiz, mode, userInstructions });
+            return result;
+          });
+          await ReportStorage.store(tracker.getReport());
+
+          return { error: null, data: quiz, note };
+        } catch (error) {
+          log.error(`Error generating ${quizNoun}`, { error });
+          return {
+            error: {
+              message: `Failed to generate a ${quizNoun} with maths quiz engine`,
+            },
+          };
+        }
+      };
 
     let relevantLessonsPopulated: Awaited<
       ReturnType<typeof getRagLessonPlansByIds>
@@ -292,6 +346,7 @@ export class AilaStreamHandler {
         lessonPlanIds: this._chat.relevantLessons.map(
           (lesson) => lesson.lessonPlanId,
         ),
+        prisma: this._chat.aila.prisma,
       });
     }
 
@@ -301,6 +356,7 @@ export class AilaStreamHandler {
         messages: extractPromptTextFromMessages(this._chat.messages),
         initialDocument,
         relevantLessons: relevantLessonsPopulated,
+        ragFetched: this._chat.ragFetched,
       },
       runtime: {
         config: {
@@ -310,73 +366,16 @@ export class AilaStreamHandler {
         sectionAgents: createSectionAgentRegistry({
           openai,
           customAgentHandlers: {
-            "starterQuiz--maths": async (ctx) => {
-              try {
-                const userInstructions =
-                  ctx.currentTurn.currentStep?.sectionInstructions;
-                const tracker = createQuizTracker();
-                const { quiz, note } = await tracker.run(
-                  async (task, reportId) => {
-                    const result = await this._chat.quizService.buildQuiz(
-                      "/starterQuiz",
-                      ctx.currentTurn.document,
-                      this._chat.relevantLessons ?? [],
-                      task,
-                      reportId,
-                      userInstructions,
-                    );
-                    task.addData({ quiz: result.quiz, userInstructions });
-                    return result;
-                  },
-                );
-                await ReportStorage.store(tracker.getReport());
-
-                return { error: null, data: quiz, note };
-              } catch (error) {
-                log.error("Error generating starter quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate a starter quiz with maths quiz engine",
-                  },
-                };
-              }
-            },
-            "exitQuiz--maths": async (ctx) => {
-              try {
-                const userInstructions =
-                  ctx.currentTurn.currentStep?.sectionInstructions;
-                const tracker = createQuizTracker();
-                const { quiz, note } = await tracker.run(
-                  async (task, reportId) => {
-                    const result = await this._chat.quizService.buildQuiz(
-                      "/exitQuiz",
-                      ctx.currentTurn.document,
-                      this._chat.relevantLessons ?? [],
-                      task,
-                      reportId,
-                      userInstructions,
-                    );
-                    task.addData({ quiz: result.quiz, userInstructions });
-                    return result;
-                  },
-                );
-                await ReportStorage.store(tracker.getReport());
-
-                return { error: null, data: quiz, note };
-              } catch (error) {
-                log.error("Error generating exit quiz", { error });
-                return {
-                  error: {
-                    message:
-                      "Failed to generate an exit quiz with maths quiz engine",
-                  },
-                };
-              }
-            },
+            "starterQuiz--maths": buildMathsQuizHandler(
+              "/starterQuiz",
+              "starter quiz",
+            ),
+            "exitQuiz--maths": buildMathsQuizHandler("/exitQuiz", "exit quiz"),
           },
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+        britishEnglishCorrectorAgent:
+          createOpenAIBritishEnglishCorrectorAgent(openai),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
           const {
             getRelevantLessonPlans,
@@ -389,6 +388,7 @@ export class AilaStreamHandler {
             title,
             subjectSlugs,
             keyStageSlugs,
+            prisma: this._chat.aila.prisma,
           });
           const persistedRelevantLessons = relevantLessons.map((result) => ({
             lessonPlanId: result.ragLessonPlanId,
@@ -444,6 +444,7 @@ export class AilaStreamHandler {
       chatId: this._chat.id,
       threatDetection,
       messages: this.threatDetectionMessages(),
+      prisma: this._chat.aila.prisma,
     });
     await this._chat.enqueue(response);
   }
