@@ -18,7 +18,7 @@ export function BetaTagWithFeedback({
 }>) {
   return (
     <OakFlex $alignItems="center" $gap="spacing-12">
-      <span className="flex items-center justify-center rounded-[12px] bg-teachersPastelBlue px-[8px] py-[6px] text-sm font-semibold leading-5">
+      <span className="flex h-[22px] items-center justify-center rounded-full bg-teachersPastelBlue px-[8px] text-sm font-semibold">
         Beta
       </span>
       <OakLink
