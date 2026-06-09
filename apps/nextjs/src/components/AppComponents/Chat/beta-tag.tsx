@@ -26,6 +26,7 @@ export function BetaTagWithFeedback({
         color="text-primary"
         target="_blank"
         rel="noopener noreferrer"
+        style={{ paddingBottom: "0.4rem" }}
       >
         <OakSpan $font="body-3" $color="text-primary">
           Feedback will help us improve Aila
