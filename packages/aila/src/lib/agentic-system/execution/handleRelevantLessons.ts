@@ -1,4 +1,7 @@
-import type { RagFetched } from "../../../protocol/schema";
+import {
+  CompletedLessonPlanSchema,
+  type RagFetched,
+} from "../../../protocol/schema";
 import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
 import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
 import { terminateWithResponse } from "./termination";
@@ -35,6 +38,12 @@ export async function handleRelevantLessons(
 ): Promise<AilaTurnPhaseOutcome> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
   const ragFetched = context.persistedState.ragFetched;
+
+  if (
+    CompletedLessonPlanSchema.safeParse(context.currentTurn.document).success
+  ) {
+    return { status: "continue" };
+  }
 
   if (basedOn) {
     // user has chosen a lesson to adapt — record that selection
