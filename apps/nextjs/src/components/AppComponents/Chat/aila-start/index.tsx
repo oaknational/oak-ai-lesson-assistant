@@ -55,7 +55,7 @@ const teachingMaterialsList: {
 
 type AilaFaqAccordionProps = Pick<
   OakAccordionProps,
-  "id" | "header" | "$bt" | "$bb"
+  "id" | "header" | "$bt" | "$bb" | "$pb"
 > & {
   readonly children: React.ReactNode;
 };
@@ -65,6 +65,7 @@ function AilaFaqAccordion({
   header,
   $bt,
   $bb,
+  $pb,
   children,
 }: AilaFaqAccordionProps) {
   return (
@@ -79,7 +80,8 @@ function AilaFaqAccordion({
       openBackground="bg-primary"
       chevronPosition="right"
       $pa="spacing-0"
-      $pv="spacing-12"
+      $pv="spacing-16"
+      $pb={$pb}
     >
       <OakFlex $mt="spacing-16" $flexDirection="column" $gap="spacing-12">
         {children}
@@ -237,6 +239,7 @@ export function AilaStart() {
                         Why trust Aila?
                       </OakSpan>
                     }
+                    $pb="spacing-0"
                   >
                     <OakP $font="body-2">
                       Thousands of teachers are using Aila to save up to three
