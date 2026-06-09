@@ -89,6 +89,47 @@ const CsvRowSchema = z
   })
   .passthrough();
 
+function handleTable(table: string) {
+  if (table === "key_stage") {
+    return "key_stages";
+  }
+}
+
+function checkForeignKeyReference(
+  fk: string,
+  refTable: string,
+  ids: string[],
+  errors: string[],
+) {
+  const refFilePath = path.join(dataDir, `${handleTable(refTable)}.csv`);
+  if (!fs.existsSync(refFilePath)) {
+    errors.push(
+      `CSV file for referenced table '${refTable}' does not exist.`,
+    );
+  } else {
+    const refIds = new Set<string>();
+    fs.createReadStream(refFilePath)
+      .pipe(csvParser())
+      .on("data", (rawRow: unknown) => {
+        try {
+          const row = CsvRowSchema.parse(rawRow);
+          refIds.add(row.id);
+        } catch {
+          errors.push(`Invalid row format: missing or invalid id field`);
+        }
+      })
+      .on("end", () => {
+        for (const id of ids) {
+          if (!refIds.has(id)) {
+            errors.push(
+              `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
+            );
+          }
+        }
+      });
+  }
+}
+
 const validateCSV = (
   filePath: string,
   nonNullable: string[],
@@ -129,63 +170,24 @@ const validateCSV = (
         }
       })
       .on("end", () => {
-        void (() => {
-          log(`Completed reading CSV file: ${filePath}`);
+        log(`Completed reading CSV file: ${filePath}`);
 
-          // Validate foreign keys in CSV
-          for (const [fk, refTable] of Object.entries(foreignKeys)) {
-            const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
+        // Validate foreign keys in CSV
+        for (const [fk, refTable] of Object.entries(foreignKeys)) {
+          const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
 
-            function handleTable(table: string) {
-              if (table === "key_stage") {
-                return "key_stages";
-              }
-            }
-
-            if (ids.length > 0) {
-              const refFilePath = path.join(
-                dataDir,
-                `${handleTable(refTable)}.csv`,
-              );
-              if (!fs.existsSync(refFilePath)) {
-                errors.push(
-                  `CSV file for referenced table '${refTable}' does not exist.`,
-                );
-              } else {
-                const refIds = new Set<string>();
-                fs.createReadStream(refFilePath)
-                  .pipe(csvParser())
-                  .on("data", (rawRow: unknown) => {
-                    try {
-                      const row = CsvRowSchema.parse(rawRow);
-                      refIds.add(row.id);
-                    } catch {
-                      errors.push(
-                        `Invalid row format: missing or invalid id field`,
-                      );
-                    }
-                  })
-                  .on("end", () => {
-                    ids.forEach((id: string) => {
-                      if (!refIds.has(id)) {
-                        errors.push(
-                          `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
-                        );
-                      }
-                    });
-                  });
-              }
-            }
+          if (ids.length > 0) {
+            checkForeignKeyReference(fk, refTable, ids, errors);
           }
+        }
 
-          if (errors.length > 0) {
-            log(`Validation failed for CSV file: ${filePath}`);
-            reject(new Error(errors.join("\n")));
-          } else {
-            log(`Validation passed for CSV file: ${filePath}`);
-            resolve();
-          }
-        })();
+        if (errors.length > 0) {
+          log(`Validation failed for CSV file: ${filePath}`);
+          reject(new Error(errors.join("\n")));
+        } else {
+          log(`Validation passed for CSV file: ${filePath}`);
+          resolve();
+        }
       })
       .on("error", (error) => {
         reject(

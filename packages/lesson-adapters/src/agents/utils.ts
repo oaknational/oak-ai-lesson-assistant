@@ -28,6 +28,22 @@ export interface SimplifiedSlideContent {
  * @param slides - Array of slide content to format
  * @returns Formatted string representation of slides
  */
+function formatTableRows(
+  table: { id: string; rows: number; columns: number; cells: { id: string; content: string }[][] },
+  tableIdx: number,
+): string[] {
+  const parts: string[] = [
+    `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
+  ];
+  for (const row of table.cells) {
+    const rowContent = row
+      .map((cell) => `[${cell.id}]${cell.content}`)
+      .join(" | ");
+    parts.push(`  ${rowContent}`);
+  }
+  return parts;
+}
+
 export function formatSlidesForPrompt(
   slides: SimplifiedSlideContent[],
 ): string {
@@ -74,15 +90,7 @@ export function formatSlidesForPrompt(
       if (tables.length > 0) {
         parts.push(`\n### Tables:`);
         tables.forEach((table, tableIdx) => {
-          parts.push(
-            `\nTable ${tableIdx + 1} [${table.id}] (${table.rows}×${table.columns}):`,
-          );
-          table.cells.forEach((row) => {
-            const rowContent = row
-              .map((cell) => `[${cell.id}]${cell.content}`)
-              .join(" | ");
-            parts.push(`  ${rowContent}`);
-          });
+          parts.push(...formatTableRows(table, tableIdx));
         });
       }
 
