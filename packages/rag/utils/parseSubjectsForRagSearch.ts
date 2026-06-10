@@ -1,3 +1,5 @@
+import { slugify } from "@oakai/core/src/utils/slugify";
+
 const subjectMap: Record<string, string[]> = {
   science: ["biology", "chemistry", "physics", "science", "combined-science"],
   biology: ["biology", "science", "combined-science"],
@@ -13,7 +15,8 @@ const subjectMap: Record<string, string[]> = {
 };
 
 export function parseSubjectsForRagSearch(subject: string): string[] {
-  // Lowercase so callers passing "Science" still match the lowercase keys.
-  const key = subject.toLowerCase();
+  // Slugify so callers passing "Science" or "Combined Science" still match
+  // the slug keys.
+  const key = slugify(subject);
   return subjectMap[key] ?? [key];
 }
