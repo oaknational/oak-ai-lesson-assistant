@@ -1,6 +1,9 @@
 import { enablePatches, produceWithPatches } from "immer";
 
-import type { RagFetched } from "../../../protocol/schema";
+import {
+  CompletedLessonPlanSchema,
+  type RagFetched,
+} from "../../../protocol/schema";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
 import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
@@ -40,6 +43,12 @@ export async function handleRelevantLessons(
 ): Promise<AilaTurnPhaseOutcome> {
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
   const ragFetched = context.persistedState.ragFetched;
+
+  if (
+    CompletedLessonPlanSchema.safeParse(context.currentTurn.document).success
+  ) {
+    return { status: "continue" };
+  }
 
   const nextSearchIdentity =
     title && subject && keyStage ? { title, subject, keyStage } : null;

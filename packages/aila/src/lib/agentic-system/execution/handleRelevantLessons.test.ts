@@ -1,3 +1,4 @@
+import type { PartialLessonPlan } from "../../../protocol/schema";
 import type {
   AgenticRagLessonPlanResult,
   AilaExecutionContext,
@@ -132,6 +133,58 @@ describe("handleRelevantLessons", () => {
     expect(result).toEqual({ status: "continue" });
     expect(ctx.runtime.fetchRelevantLessons).toHaveBeenCalled();
     expect(ctx.persistedState.ragFetched.status).toBe("none_found");
+  });
+
+  it("skips fetch when lesson is complete", async () => {
+    const minimalQuiz = {
+      version: "v3" as const,
+      questions: [],
+      imageMetadata: [],
+    };
+    const minimalCycle = {
+      title: "Cycle",
+      durationInMinutes: 15,
+      explanation: {
+        spokenExplanation: "Explanation",
+        accompanyingSlideDetails: "Slide details",
+        imagePrompt: "Image prompt",
+        slideText: "Slide text",
+      },
+      checkForUnderstanding: [
+        { question: "Q1?", answers: ["A1"], distractors: ["D1", "D2"] },
+        { question: "Q2?", answers: ["A2"], distractors: ["D3", "D4"] },
+      ],
+      practice: "Practice",
+      feedback: "Feedback",
+    };
+    const completedOverrides: Partial<PartialLessonPlan> = {
+      learningOutcome: "I can explain photosynthesis",
+      learningCycles: ["Introduce photosynthesis"],
+      priorKnowledge: ["Cell biology"],
+      keyLearningPoints: ["Photosynthesis uses light"],
+      misconceptions: [
+        {
+          misconception: "Plants eat soil",
+          description: "Plants make food from light",
+        },
+      ],
+      keywords: [
+        { keyword: "Photosynthesis", definition: "Process of making food" },
+      ],
+      basedOn: null,
+      starterQuiz: minimalQuiz,
+      cycle1: minimalCycle,
+      cycle2: minimalCycle,
+      cycle3: null,
+      exitQuiz: minimalQuiz,
+      additionalMaterials: null,
+    };
+    const ctx = createContext({ document: completedOverrides });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
   });
 
   it("does not call onRagFetchedChange when state is unchanged", async () => {
