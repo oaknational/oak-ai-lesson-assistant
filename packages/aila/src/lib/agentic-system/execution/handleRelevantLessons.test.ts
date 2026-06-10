@@ -259,6 +259,26 @@ describe("handleRelevantLessons", () => {
     expect(ctx.persistedState.ragFetched.status).toBe("none_found");
   });
 
+  it("ends the turn with the lesson picker when lessons are found", async () => {
+    const actual = jest.requireActual<{
+      terminateWithResponse: typeof terminateWithResponse;
+    }>("./termination");
+    jest
+      .mocked(terminateWithResponse)
+      .mockImplementationOnce(actual.terminateWithResponse);
+    const ctx = createContext({ fetchResult: fakeLessons });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result.status).toBe("success");
+    expect(ctx.currentTurn.relevantLessonsFetched).toBe(true);
+    expect(ctx.callbacks.onTurnComplete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ailaMessage: expect.stringContaining("1. Photosynthesis"),
+      }),
+    );
+  });
+
   it("keeps a selected basedOn when a later turn fixes a title typo", async () => {
     const selectedBasedOn = { id: "sel-1", title: "Angles in triangles" };
     const ctx = createContext({
