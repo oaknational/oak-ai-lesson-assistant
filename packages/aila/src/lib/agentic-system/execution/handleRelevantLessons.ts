@@ -54,7 +54,14 @@ export async function handleRelevantLessons(
     title && subject && keyStage ? { title, subject, keyStage } : null;
 
   if (basedOn) {
+    // A basedOn that wasn't in the document at the start of the turn means the
+    // user just chose a lesson to adapt, so it is valid even if the search
+    // identity changed in the same turn.
+    const basedOnSetThisTurn =
+      basedOn !== context.persistedState.initialDocument.basedOn;
+
     const basedOnIsStale =
+      !basedOnSetThisTurn &&
       ragFetched.searchIdentity != null &&
       nextSearchIdentity != null &&
       hasSearchIdentityChangedSignificantly(

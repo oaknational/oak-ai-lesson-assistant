@@ -14,6 +14,7 @@ jest.mock("./termination", () => ({
 function createContext(
   overrides: {
     document?: Partial<AilaExecutionContext["currentTurn"]["document"]>;
+    initialDocument?: PartialLessonPlan;
     ragFetched?: AilaExecutionContext["persistedState"]["ragFetched"];
     fetchResult?: AgenticRagLessonPlanResult[];
   } = {},
@@ -21,7 +22,7 @@ function createContext(
   return {
     persistedState: {
       messages: [],
-      initialDocument: {},
+      initialDocument: overrides.initialDocument ?? {},
       relevantLessons: null,
       ragFetched: overrides.ragFetched ?? {
         status: "not_fetched",
@@ -214,6 +215,7 @@ describe("handleRelevantLessons", () => {
         keyStage: "ks2",
         basedOn: staleBasedOn,
       },
+      initialDocument: { basedOn: staleBasedOn },
       ragFetched: {
         status: "shown",
         searchIdentity: previousTopicIdentity,
@@ -236,6 +238,7 @@ describe("handleRelevantLessons", () => {
         keyStage: "ks2",
         basedOn: staleBasedOn,
       },
+      initialDocument: { basedOn: staleBasedOn },
       ragFetched: { status: "selected", searchIdentity: previousTopicIdentity },
       fetchResult: [],
     });
@@ -255,6 +258,35 @@ describe("handleRelevantLessons", () => {
     expect(ctx.persistedState.ragFetched.status).toBe("none_found");
   });
 
+  it("keeps a basedOn chosen this turn when the topic also changed", async () => {
+    const freshBasedOn = { id: "new-1", title: "Angle bisectors" };
+    const ctx = createContext({
+      document: {
+        title: "Constructing angle bisectors",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: freshBasedOn,
+      },
+      initialDocument: {},
+      ragFetched: { status: "shown", searchIdentity: previousTopicIdentity },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toEqual(freshBasedOn);
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
+    expect(ctx.persistedState.ragFetched).toEqual({
+      status: "selected",
+      searchIdentity: {
+        title: "Constructing angle bisectors",
+        subject: "maths",
+        keyStage: "ks2",
+      },
+    });
+  });
+
   it("prompts the user to pick when a stale basedOn is cleared and lessons are found", async () => {
     const ctx = createContext({
       document: {
@@ -263,6 +295,7 @@ describe("handleRelevantLessons", () => {
         keyStage: "ks2",
         basedOn: staleBasedOn,
       },
+      initialDocument: { basedOn: staleBasedOn },
       ragFetched: { status: "selected", searchIdentity: previousTopicIdentity },
       fetchResult: fakeLessons,
     });
