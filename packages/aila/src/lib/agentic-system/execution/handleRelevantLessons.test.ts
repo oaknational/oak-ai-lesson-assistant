@@ -1,3 +1,4 @@
+// cspell:ignore trangles
 import type { PartialLessonPlan } from "../../../protocol/schema";
 import type {
   AgenticRagLessonPlanResult,
@@ -256,6 +257,34 @@ describe("handleRelevantLessons", () => {
       { op: "remove", path: "/basedOn" },
     ]);
     expect(ctx.persistedState.ragFetched.status).toBe("none_found");
+  });
+
+  it("keeps a selected basedOn when a later turn fixes a title typo", async () => {
+    const selectedBasedOn = { id: "sel-1", title: "Angles in triangles" };
+    const ctx = createContext({
+      document: {
+        title: "Angles in triangles",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: selectedBasedOn,
+      },
+      initialDocument: { basedOn: selectedBasedOn },
+      ragFetched: {
+        status: "selected",
+        searchIdentity: {
+          title: "Angles in trangles",
+          subject: "maths",
+          keyStage: "ks2",
+        },
+      },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toEqual(selectedBasedOn);
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
   });
 
   it("keeps a basedOn chosen this turn when the topic also changed", async () => {
