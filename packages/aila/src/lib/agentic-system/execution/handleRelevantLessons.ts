@@ -44,12 +44,6 @@ export async function handleRelevantLessons(
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
   const ragFetched = context.persistedState.ragFetched;
 
-  if (
-    CompletedLessonPlanSchema.safeParse(context.currentTurn.document).success
-  ) {
-    return { status: "continue" };
-  }
-
   const nextSearchIdentity =
     title && subject && keyStage ? { title, subject, keyStage } : null;
 
@@ -69,19 +63,28 @@ export async function handleRelevantLessons(
         nextSearchIdentity,
       );
 
-    if (!basedOnIsStale) {
-      // user has chosen a lesson to adapt and the search identity still
-      // matches — record the selection and stop
-      await persistRagFetched(context, {
-        status: "selected",
-        searchIdentity: nextSearchIdentity ?? ragFetched.searchIdentity,
-      });
-      return { status: "continue" };
+    if (basedOnIsStale) {
+      // The lesson metadata changed significantly, so a basedOn carried over
+      // from a previous lesson no longer applies. A wrong attribution is
+      // cleared even on a complete lesson, where fetching stays blocked below.
+      clearBasedOn(context);
     }
+  }
 
-    // The lesson metadata changed significantly, so a basedOn carried over from
-    // a previous lesson no longer applies and must be cleared before we refetch.
-    clearBasedOn(context);
+  if (
+    CompletedLessonPlanSchema.safeParse(context.currentTurn.document).success
+  ) {
+    return { status: "continue" };
+  }
+
+  if (context.currentTurn.document.basedOn) {
+    // user has chosen a lesson to adapt and the search identity still
+    // matches — record the selection and stop
+    await persistRagFetched(context, {
+      status: "selected",
+      searchIdentity: nextSearchIdentity ?? ragFetched.searchIdentity,
+    });
+    return { status: "continue" };
   }
 
   if (!nextSearchIdentity) {

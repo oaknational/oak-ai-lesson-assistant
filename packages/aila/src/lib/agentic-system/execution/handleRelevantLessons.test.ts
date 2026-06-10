@@ -87,6 +87,50 @@ const previousTopicIdentity = {
 
 const staleBasedOn = { id: "old-1", title: "Angles in triangles" };
 
+const minimalQuiz = {
+  version: "v3" as const,
+  questions: [],
+  imageMetadata: [],
+};
+const minimalCycle = {
+  title: "Cycle",
+  durationInMinutes: 15,
+  explanation: {
+    spokenExplanation: "Explanation",
+    accompanyingSlideDetails: "Slide details",
+    imagePrompt: "Image prompt",
+    slideText: "Slide text",
+  },
+  checkForUnderstanding: [
+    { question: "Q1?", answers: ["A1"], distractors: ["D1", "D2"] },
+    { question: "Q2?", answers: ["A2"], distractors: ["D3", "D4"] },
+  ],
+  practice: "Practice",
+  feedback: "Feedback",
+};
+const completedOverrides: Partial<PartialLessonPlan> = {
+  learningOutcome: "I can explain photosynthesis",
+  learningCycles: ["Introduce photosynthesis"],
+  priorKnowledge: ["Cell biology"],
+  keyLearningPoints: ["Photosynthesis uses light"],
+  misconceptions: [
+    {
+      misconception: "Plants eat soil",
+      description: "Plants make food from light",
+    },
+  ],
+  keywords: [
+    { keyword: "Photosynthesis", definition: "Process of making food" },
+  ],
+  basedOn: null,
+  starterQuiz: minimalQuiz,
+  cycle1: minimalCycle,
+  cycle2: minimalCycle,
+  cycle3: null,
+  exitQuiz: minimalQuiz,
+  additionalMaterials: null,
+};
+
 describe("handleRelevantLessons", () => {
   it("skips fetch and persists 'selected' when basedOn is set", async () => {
     const ctx = createContext({
@@ -138,55 +182,59 @@ describe("handleRelevantLessons", () => {
   });
 
   it("skips fetch when lesson is complete", async () => {
-    const minimalQuiz = {
-      version: "v3" as const,
-      questions: [],
-      imageMetadata: [],
-    };
-    const minimalCycle = {
-      title: "Cycle",
-      durationInMinutes: 15,
-      explanation: {
-        spokenExplanation: "Explanation",
-        accompanyingSlideDetails: "Slide details",
-        imagePrompt: "Image prompt",
-        slideText: "Slide text",
-      },
-      checkForUnderstanding: [
-        { question: "Q1?", answers: ["A1"], distractors: ["D1", "D2"] },
-        { question: "Q2?", answers: ["A2"], distractors: ["D3", "D4"] },
-      ],
-      practice: "Practice",
-      feedback: "Feedback",
-    };
-    const completedOverrides: Partial<PartialLessonPlan> = {
-      learningOutcome: "I can explain photosynthesis",
-      learningCycles: ["Introduce photosynthesis"],
-      priorKnowledge: ["Cell biology"],
-      keyLearningPoints: ["Photosynthesis uses light"],
-      misconceptions: [
-        {
-          misconception: "Plants eat soil",
-          description: "Plants make food from light",
-        },
-      ],
-      keywords: [
-        { keyword: "Photosynthesis", definition: "Process of making food" },
-      ],
-      basedOn: null,
-      starterQuiz: minimalQuiz,
-      cycle1: minimalCycle,
-      cycle2: minimalCycle,
-      cycle3: null,
-      exitQuiz: minimalQuiz,
-      additionalMaterials: null,
-    };
     const ctx = createContext({ document: completedOverrides });
 
     const result = await handleRelevantLessons(ctx);
 
     expect(result).toEqual({ status: "continue" });
     expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+  });
+
+  it("clears a stale basedOn without refetching when the lesson is complete", async () => {
+    const ctx = createContext({
+      document: {
+        ...completedOverrides,
+        title: "Angle bisectors",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: staleBasedOn,
+      },
+      initialDocument: { basedOn: staleBasedOn },
+      ragFetched: { status: "selected", searchIdentity: previousTopicIdentity },
+      fetchResult: fakeLessons,
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toBeUndefined();
+    expect(ctx.callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "remove", path: "/basedOn" },
+    ]);
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+  });
+
+  it("keeps a valid basedOn untouched when the lesson is complete", async () => {
+    const validBasedOn = { id: "sel-1", title: "Photosynthesis" };
+    const ctx = createContext({
+      document: { ...completedOverrides, basedOn: validBasedOn },
+      initialDocument: { basedOn: validBasedOn },
+      ragFetched: {
+        status: "selected",
+        searchIdentity: {
+          title: "Photosynthesis",
+          subject: "science",
+          keyStage: "key-stage-3",
+        },
+      },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toEqual(validBasedOn);
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
   });
 
   it("does not call onRagFetchedChange when state is unchanged", async () => {
