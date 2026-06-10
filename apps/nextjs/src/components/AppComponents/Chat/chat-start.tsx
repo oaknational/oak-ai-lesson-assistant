@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { aiLogger } from "@oakai/logger";
 
 import { useUser } from "@clerk/nextjs";
+import { OakBox, OakFlex, OakHeading } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/navigation";
@@ -19,11 +20,11 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 import { trpc } from "@/utils/trpc";
 
 import { useDialog } from "../DialogContext";
+import { AilaFaqSection } from "./aila-faq-section";
 import { createStartingPromptFromSearchParams } from "./aila-start/search-params-utils";
 import { AILA_FEEDBACK_FORM_URL, BetaTagWithFeedback } from "./beta-tag";
 import ChatPanelDisclaimer from "./chat-panel-disclaimer";
 import { ChatStartForm } from "./chat-start-form";
-import EmptyScreenAccordion from "./empty-screen-accordion";
 
 const log = aiLogger("chat");
 
@@ -158,10 +159,8 @@ export function ChatStart({
                       Hello{userFirstName ? ", " + userFirstName : ""}
                     </h1>
                     <p className="mb-7 text-base leading-normal">
-                      I&apos;m Aila, Oak&apos;s AI lesson assistant.
-                      <br />
-                      Tell me what you want to teach and I&apos;ll help you
-                      create your lesson.
+                      I&apos;m Aila, Oak&apos;s AI lesson assistant, here to
+                      help teachers create and adapt lessons and resources.
                     </p>
                   </div>
                 </div>
@@ -203,18 +202,21 @@ export function ChatStart({
               <ChatPanelDisclaimer />
             </div>
           </div>
-          <div className="hidden h-full w-[34%] items-center overflow-y-scroll bg-white px-25 pb-9 sm:flex">
-            <div className="relative -mt-45 w-full">
-              <p className="mb-10 text-xl font-bold">Lesson downloads</p>
-              <div className="absolute inset-x-0 top-full">
-                <p className="mb-10 text-base">
-                  Once you&apos;ve finished, you&apos;ll be able to download a
-                  range of editable lesson resources.
-                </p>
-                <EmptyScreenAccordion />
-              </div>
-            </div>
-          </div>
+          <OakFlex
+            $background="bg-primary"
+            $ph="spacing-32"
+            $pv="spacing-12"
+            $flexDirection="column"
+            $justifyContent="center"
+            className="hidden h-full w-[34%] overflow-y-scroll sm:flex"
+          >
+            <OakHeading tag="h6" $font="heading-6">
+              More about Aila
+            </OakHeading>
+            <OakBox $mt="spacing-16">
+              <AilaFaqSection $color="text-primary" />
+            </OakBox>
+          </OakFlex>
         </div>
       </Flex>
     </DialogRoot>
