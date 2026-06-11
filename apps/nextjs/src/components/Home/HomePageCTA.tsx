@@ -26,7 +26,7 @@ export const HomePageCTA = () => {
           });
         }}
       >
-        Start creating with AI
+        Create with AI
       </OakPrimaryButton>
     </OakBox>
   );

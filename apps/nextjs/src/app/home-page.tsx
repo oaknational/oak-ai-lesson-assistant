@@ -415,7 +415,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
           element="a"
           href={getAilaUrl("start")}
         >
-          Start creating with AI
+          Create with Aila
         </OakSecondaryButton>
 
         <OakHeading
