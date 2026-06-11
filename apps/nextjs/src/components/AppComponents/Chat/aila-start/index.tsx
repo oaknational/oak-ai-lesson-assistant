@@ -35,7 +35,7 @@ const teachingMaterialsList: {
   },
   {
     label: "Comprehension task",
-    ariaLabel: "Create a comprehension tasks teaching material",
+    ariaLabel: "Create a comprehension task teaching material",
     docType: "additional-comprehension",
   },
   {
