@@ -305,7 +305,8 @@ function HomePageHero({ pageData }: HomePageProps) {
             <BetaTagPage />
           </OakBox>
           <OakHeading tag="h1" $font={"heading-4"}>
-            Build tailor-made lessons and teaching materials with AI
+            Build tailor-made lessons and teaching materials with AI TEST
+            PREVIEW UPDATES WITH MERGE
           </OakHeading>
 
           <OakBoxCustomMaxWidth
