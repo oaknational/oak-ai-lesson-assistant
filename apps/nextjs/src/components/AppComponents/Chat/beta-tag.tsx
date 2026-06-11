@@ -1,4 +1,5 @@
 import {
+  OakBox,
   OakFlex,
   OakLink,
   OakSpan,
@@ -14,26 +15,27 @@ export function BetaTagWithFeedback({
   feedbackHref: string;
 }>) {
   return (
-    <OakFlex $alignItems="center" $gap="spacing-12">
+    <OakFlex $font="body-3" $alignItems="center" $gap="spacing-12">
       <OakTagFunctional
         $borderRadius={"border-radius-l"}
         $background={"bg-decorative3-main"}
         label={"Beta"}
         $font={"body-3-bold"}
-        $pv="spacing-0"
-        $mt="spacing-4"
+        $pv="spacing-4"
+        $ph="spacing-12"
       />
-
-      <OakLink
-        href={feedbackHref}
-        color="text-primary"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <OakSpan $font="body-3" $color="text-primary">
-          Feedback will help us improve Aila
-        </OakSpan>
-      </OakLink>
+      <OakBox>
+        <OakLink
+          href={feedbackHref}
+          // color="text-primary"
+          // variant="secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <OakSpan $font="body-3">Your feedback</OakSpan>
+        </OakLink>
+        <OakSpan $font="body-3">{` will help us improve Aila`}</OakSpan>
+      </OakBox>
     </OakFlex>
   );
 }

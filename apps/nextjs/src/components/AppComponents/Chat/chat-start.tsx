@@ -147,8 +147,8 @@ export function ChatStart({
       >
         <div className="flex h-full justify-between">
           <div className="h-full w-full overflow-y-scroll p-18 px-10 sm:w-[66%]">
-            <div className="mx-auto flex h-full max-w-[580px] flex-col justify-between">
-              <div className="flex h-full flex-col justify-center gap-18">
+            <div className="mx-auto flex h-full max-w-[580px] flex-col">
+              <div className="flex grow flex-col justify-center gap-18">
                 <div className="flex flex-col gap-22">
                   <BetaTagWithFeedback feedbackHref={AILA_FEEDBACK_FORM_URL} />
                   <div>
@@ -199,7 +199,9 @@ export function ChatStart({
                   </div>
                 </div>
               </div>
-              <ChatPanelDisclaimer />
+              <div className="mt-auto pt-18">
+                <ChatPanelDisclaimer />
+              </div>
             </div>
           </div>
           <OakFlex

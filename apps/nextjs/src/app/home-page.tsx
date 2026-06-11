@@ -291,12 +291,12 @@ function HomePageHero({ pageData }: HomePageProps) {
     <HeroContainer>
       <OakBox $mb={"spacing-24"} $width="fit-content">
         <OakTagFunctional
-          $borderRadius={"border-radius-xl"}
+          $borderRadius={"border-radius-l"}
           $background={"bg-decorative3-main"}
-          label={`Beta`}
-          $pv={"spacing-8"}
-          $ph={"spacing-12"}
-          $font="body-2-bold"
+          label={"Beta"}
+          $font={"body-3-bold"}
+          $pv="spacing-4"
+          $ph="spacing-12"
         />
       </OakBox>
       <OakFlex

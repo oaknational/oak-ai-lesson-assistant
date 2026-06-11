@@ -2,7 +2,7 @@ import { OakLink, OakP } from "@oaknational/oak-components";
 
 const ChatPanelDisclaimer = () => {
   return (
-    <OakP $font="body-3" $textAlign="center">
+    <OakP $font="body-3" $textAlign="left">
       AI can make mistakes. Review content before use. Read our{" "}
       <OakLink
         href="https://www.thenational.academy/legal/privacy-policy"
