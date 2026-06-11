@@ -36,10 +36,34 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: mcky/find-and-replace-pull-request-body@v1.1.6-mcky
+      - name: Update deploy URL in PR description
         if: ${{ steps.ref_from_sha.outputs.pr_number }}
+        uses: actions/github-script@v7
         with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          prNumber: ${{ steps.ref_from_sha.outputs.pr_number }}
-          find: "{deployment_url}"
-          replace: ${{ github.event.deployment_status.environment_url }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = parseInt('${{ steps.ref_from_sha.outputs.pr_number }}');
+            const deployUrl = '${{ github.event.deployment_status.environment_url }}';
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+
+            let body = pr.body || '';
+
+            // Replace content between sentinel comments — works on every deployment, not just the first
+            const updated = body.replace(
+              /<!-- vercel-preview -->.*?<!-- \/vercel-preview -->/gs,
+              `<!-- vercel-preview -->${deployUrl}<!-- /vercel-preview -->`
+            );
+
+            if (updated === body) return;
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              body: updated,
+            });
