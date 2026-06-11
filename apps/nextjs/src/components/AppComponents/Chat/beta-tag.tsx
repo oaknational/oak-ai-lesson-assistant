@@ -25,13 +25,7 @@ export function BetaTagWithFeedback({
         $ph="spacing-12"
       />
       <OakBox>
-        <OakLink
-          href={feedbackHref}
-          // color="text-primary"
-          // variant="secondary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <OakLink href={feedbackHref} target="_blank" rel="noopener noreferrer">
           <OakSpan $font="body-3">Your feedback</OakSpan>
         </OakLink>
         <OakSpan $font="body-3">{` will help us improve Aila`}</OakSpan>
