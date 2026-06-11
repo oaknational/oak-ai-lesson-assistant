@@ -190,6 +190,66 @@ describe("handleRelevantLessons", () => {
     expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
   });
 
+  it("clears a stale basedOn on a topic change when no identity was recorded", async () => {
+    const ctx = createContext({
+      document: {
+        title: "Angle bisectors",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: staleBasedOn,
+      },
+      initialDocument: {
+        title: "Angles in triangles",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: staleBasedOn,
+      },
+      ragFetched: { status: "not_fetched", searchIdentity: null },
+      fetchResult: [],
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toBeUndefined();
+    expect(ctx.callbacks.onSectionComplete).toHaveBeenCalledWith([
+      { op: "remove", path: "/basedOn" },
+    ]);
+    expect(ctx.runtime.fetchRelevantLessons).toHaveBeenCalled();
+  });
+
+  it("keeps a basedOn on an unchanged topic when no identity was recorded", async () => {
+    const ctx = createContext({
+      document: {
+        title: "Angles in triangles",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: staleBasedOn,
+      },
+      initialDocument: {
+        title: "Angles in triangles",
+        subject: "maths",
+        keyStage: "ks2",
+        basedOn: staleBasedOn,
+      },
+      ragFetched: { status: "not_fetched", searchIdentity: null },
+    });
+
+    const result = await handleRelevantLessons(ctx);
+
+    expect(result).toEqual({ status: "continue" });
+    expect(ctx.currentTurn.document.basedOn).toEqual(staleBasedOn);
+    expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    expect(ctx.persistedState.ragFetched).toEqual({
+      status: "selected",
+      searchIdentity: {
+        title: "Angles in triangles",
+        subject: "maths",
+        keyStage: "ks2",
+      },
+    });
+  });
+
   it("clears a stale basedOn without refetching when the lesson is complete", async () => {
     const ctx = createContext({
       document: {
