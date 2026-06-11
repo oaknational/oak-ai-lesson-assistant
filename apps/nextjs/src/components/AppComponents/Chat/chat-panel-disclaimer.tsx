@@ -1,4 +1,4 @@
-import { OakLink, OakP, OakSecondaryLink } from "@oaknational/oak-components";
+import { OakLink, OakP } from "@oaknational/oak-components";
 
 const ChatPanelDisclaimer = () => {
   return (
