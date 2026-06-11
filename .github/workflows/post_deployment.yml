@@ -54,10 +54,19 @@ jobs:
             let body = pr.body || '';
 
             // Replace content between sentinel comments — works on every deployment, not just the first
-            const updated = body.replace(
+            let updated = body.replace(
               /<!-- vercel-preview -->.*?<!-- \/vercel-preview -->/gs,
               `<!-- vercel-preview -->${deployUrl}<!-- /vercel-preview -->`
             );
+
+            // Fall back to plain placeholder (PR opened before sentinels landed on main).
+            // Inject sentinels during replacement so subsequent deployments can update it too.
+            if (updated === body) {
+              updated = body.replace(
+                '{deployment_url}',
+                `<!-- vercel-preview -->${deployUrl}<!-- /vercel-preview -->`
+              );
+            }
 
             if (updated === body) return;
 
