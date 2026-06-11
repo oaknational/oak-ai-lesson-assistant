@@ -45,6 +45,8 @@ jobs:
             const prNumber = parseInt('${{ steps.ref_from_sha.outputs.pr_number }}');
             const deployUrl = '${{ github.event.deployment_status.environment_url }}';
 
+            core.info(`Updating PR #${prNumber} with deploy URL: ${deployUrl}`);
+
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -62,17 +64,23 @@ jobs:
             // Fall back to plain placeholder (PR opened before sentinels landed on main).
             // Inject sentinels during replacement so subsequent deployments can update it too.
             if (updated === body) {
+              core.info('Sentinels not found, falling back to plain {deployment_url} placeholder');
               updated = body.replace(
                 '{deployment_url}',
                 `<!-- vercel-preview -->${deployUrl}<!-- /vercel-preview -->`
               );
             }
 
-            if (updated === body) return;
+            if (updated === body) {
+              core.info('No placeholder or sentinels found in PR body — nothing to update');
+              return;
+            }
 
+            core.info('Updating PR description...');
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber,
               body: updated,
             });
+            core.info('PR description updated successfully');
