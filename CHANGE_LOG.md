@@ -1,3 +1,10 @@
+# [1.77.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.76.0...v1.77.0) (2026-06-15)
+
+
+### Features
+
+* block rag if lesson is complete ([#1068](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1068)) ([65aaf7f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/65aaf7f146612c26b0b650787892ce246cd2d054))
+
 # [1.76.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.75.0...v1.76.0) (2026-06-03)
 
 
