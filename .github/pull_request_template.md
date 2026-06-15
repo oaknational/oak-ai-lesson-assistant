@@ -8,7 +8,7 @@ Fixes #
 
 ## How to test
 
-1. Go to {deployment_url}
+1. Go to <!-- vercel-preview -->{deployment_url}<!-- /vercel-preview -->
 2. Click on \_\_\_\_\_\_
 3. You should see \_\_\_\_\_\_
 
