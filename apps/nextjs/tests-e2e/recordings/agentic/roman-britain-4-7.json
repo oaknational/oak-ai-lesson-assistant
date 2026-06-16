@@ -1,0 +1,178 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- starterQuiz: generate\n- cycle1: generate\n- cycle2: generate\n- cycle3: generate\n- exitQuiz: generate"
+      },
+      {
+        "role": "developer",
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/starterQuiz\",\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}},{\"op\":\"add\",\"path\":\"/cycle1\",\"value\":{\"title\":\"Identify the key factors of Roman rule ending\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Introduce the topic by briefly recapping the Roman presence in Britain and its significance.\",\"Explain that the end of Roman rule was not a sudden event but occurred over several decades due to multiple factors.\",\"Emphasise the economic challenges, such as the strain on resources and reduced revenue for the Roman Empire.\",\"Discuss political instability, touching on how the focus shifted to defending the empire's core regions rather than outlying provinces like Britain.\",\"Mention external pressures from invasions and uprisings threatening the Roman borders.\"],\"accompanyingSlideDetails\":\"A timeline showing key milestones leading to the withdrawal of Roman rule in Britain, combined with illustrations of Roman soldiers and invasions.\",\"imagePrompt\":\"Timeline of Roman withdrawal from Britain; Roman soldiers illustration\",\"slideText\":\"The decline of Roman rule was due to factors including economic strain, political instability, and external pressures.\"},\"checkForUnderstanding\":[{\"question\":\"What were some reasons for the Roman withdrawal from Britain?\",\"answers\":[\"Economic strain, political instability, external pressures\"],\"distractors\":[\"Famine, population growth, overproduction of goods. discussing trivial events.\",\"Technological stagnation, limited trade.\"]},{\"question\":\"Which factor caused reduced revenue for the Roman Empire?\",\"answers\":[\"Economic strain\"],\"distractors\":[\"Political struggles\",\"Military advances\"]}],\"practice\":\"In your exercise notebook, list three factors that contributed to the end of Roman Britain. Next to each factor, write one to two sentences explaining its impact.\",\"feedback\":\"Example: One key factor was economic strain, which caused insufficient funds to maintain the administration and military presence in Britain.\"}},{\"op\":\"add\",\"path\":\"/cycle2\",\"value\":{\"title\":\"Identify the key factors of Roman rule ending\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Begin by revisiting important aspects of Roman rule in Britain for context.\",\"Explain that the decline wasn't an overnight occurrence, highlighting its gradual process over decades.\",\"Showcase key economic factors such as reduced trade and increased local demands, which strained resources.\",\"Discuss political elements, mentioning instability within the Roman leadership and its effects on governance.\",\"Detail military influences, like the redeployment of legions to other parts of the empire, leaving Britain vulnerable.\"],\"accompanyingSlideDetails\":\"A timeline that displays the progressive retreat of Roman rule in Britain, with visuals showing soldiers and maps.\",\"imagePrompt\":\"Roman withdrawal Britain timeline with related imagery\",\"slideText\":\"The Roman withdrawal occurred due to economic, political, and military strains over several decades.\"},\"checkForUnderstanding\":[{\"question\":\"Which factor contributed to the economic challenges faced by Roman Britain?\",\"answers\":[\"Reduced trade routes\"],\"distractors\":[\"Excess population\",\"Technological advancements\"]},{\"question\":\"Why were Roman legions withdrawn from Britain?\",\"answers\":[\"To address threats in other regions\"],\"distractors\":[\"To reduce the cost of the military\",\"To increase diplomatic relations\"]}],\"practice\":\"Create a short timeline summarising the key economic, political, and military events that led to the Roman withdrawal from Britain.\",\"feedback\":\"Model timeline: Include economic challenges like reduced revenue and trade decline; political instability such as power struggles within the empire; and military dynamics like redeployment of legions to protect other Roman territories.\"}},{\"op\":\"add\",\"path\":\"/cycle3\",\"value\":{\"title\":\"Explain the role of economic, political, and military influences\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Begin by introducing the three broad categories of influences – economic, political, and military – explaining that each had a significant role in the withdrawal of Roman rule from Britain.\",\"For economic, discuss the Empire's reduced revenue from diminished agricultural output and disrupted trade routes.\",\"For political, highlight the instability caused by rapid leadership changes and revolts in other parts of the empire.\",\"For military, explain how the Roman army was redeployed to protect vital territories, leaving Britain exposed.\",\"Use concrete examples and references to earlier content to connect these explanations to pupils' existing knowledge.\"],\"accompanyingSlideDetails\":\"A depiction showing key influences such as a collapsing trade network, a crumbling empire map, and Roman soldiers leaving Britain.\",\"imagePrompt\":\"Collapsing Roman trade network and empire map\",\"slideText\":\"The end of Roman rule in Britain was influenced by economic strain, political instability, and military redeployment challenges.\"},\"checkForUnderstanding\":[{\"question\":\"How did economic pressures contribute to the end of Roman Britain?\",\"answers\":[\"By reducing available funds to maintain governance.\"],\"distractors\":[\"By limiting natural resources.\",\"By initiating resource competition.\"]},{\"question\":\"What was a key military decision impacting Roman Britain?\",\"answers\":[\"Withdrawal of Roman legions to protect other territories.\"],\"distractors\":[\"Expansion to northern Britannia.\",\"Distribution of forces among local tribes.\"]}],\"practice\":\"Create a table with three columns entitled economic, political, and military. In each column, write down one or two key points discussed as reasons for the Roman withdrawal from Britain.\",\"feedback\":\"Model Table:\\n- Economic: Reduced agricultural yield. Interruptions in trade routes.\\n- Political: Instability caused by leadership changes.\\n- Military: Withdrawal of legions to core territories.\"}},{\"op\":\"add\",\"path\":\"/exitQuiz\",\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"When did the Roman occupation of Britain come to an end?\",\"hint\":\"Consider the early fifth century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"410 CE\"],\"distractors\":[\"401 CE\",\"450 CE\"]},{\"question\":\"What does 'withdrawal' mean in the context of Roman history?\",\"hint\":\"Think about a strategic retreat.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The act of removing forces from a region\"],\"distractors\":[\"The act of introducing forces to a new area\",\"The defeat in a significant battle\"]},{\"question\":\"Which factor contributed to the end of Roman rule in Britain?\",\"hint\":\"Think about pressures from outside.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Increased external invasions\"],\"distractors\":[\"The expansion of Roman territories\",\"Improved economic conditions\"]},{\"question\":\"Which term refers to regional areas governed as parts of the Roman Empire?\",\"hint\":\"Search for a term related to administrative regions.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Communities\",\"Territories\"]},{\"question\":\"What continued to be used in Britain even after the Roman departure?\",\"hint\":\"Think about structures serving daily needs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman roads\"],\"distractors\":[\"Roman legions\",\"Roman political systems\"]},{\"question\":\"Why was the Roman military strength in Britain reduced?\",\"hint\":\"Think about military deployment.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Legions were sent to defend other parts of the Empire.\"],\"distractors\":[\"Legions were disbanded due to lack of funds.\",\"Legions were lost during conflicts within Britain.\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}]"
+      },
+      {
+        "role": "developer",
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0b63068cba0b1940006a296eec9150819eadfc10bd86a89f0f",
+    "object": "response",
+    "created_at": 1781100268,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100270,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0b63068cba0b1940006a296eed18c8819eba6644ccf15679ae",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"message\":\"Are the starter quiz, cycles, and exit quiz appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed.\"}}",
+            "parsed": {
+              "value": {
+                "message": "Are the starter quiz, cycles, and exit quiz appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 3639,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 38,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 3677
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"message\":\"Are the starter quiz, cycles, and exit quiz appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed.\"}}",
+    "output_parsed": {
+      "value": {
+        "message": "Are the starter quiz, cycles, and exit quiz appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+      }
+    }
+  }
+}

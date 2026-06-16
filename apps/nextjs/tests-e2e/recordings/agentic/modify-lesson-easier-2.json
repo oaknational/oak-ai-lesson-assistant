@@ -1,0 +1,178 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- learningOutcome: generate"
+      },
+      {
+        "role": "developer",
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"replace\",\"path\":\"/learningOutcome\",\"value\":\"I can describe different software testing techniques and their purposes, understanding why they are used in the development process.\"}]"
+      },
+      {
+        "role": "developer",
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Software testing techniques\n- assistant: \n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/title\",\"value\":\"Software Testing Techniques\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/subject\",\"value\":\"computing\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/keyStage\",\"value\":\"key-stage-4\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/topic\",\"value\":\"Testing methodologies and practices\"}}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"No existing Oak lessons are available for this specific topic, so we will start creating the lesson plan from scratch.\",\"value\":{\"type\":\"string\",\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can explain different software testing techniques and their purposes.\"}},{\"type\":\"patch\",\"reasoning\":\"The learning cycles are structured to cover the key areas of software testing techniques, gradually increasing in complexity.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Identify various software testing techniques and their definitions\",\"Explain the purposes of different software testing techniques\",\"Evaluate the effectiveness of different software testing techniques for specific scenarios\"]}}],\"prompt\":{\"type\":\"text\",\"value\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit below.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-BaGMmu5S2868zOXQ\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i0zd5q0003stws9ktyj1zd\"}\n␞\n\n- user: That looks great\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Fantastic! Let's move on to the next step. We will now generate the prior knowledge, key learning points, misconceptions, and keywords sections. Tap **Continue** to proceed.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-txOqXQBi5gmgHw2E\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i106ob0007stws8vtoobd1\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"These points establish the foundational knowledge that students need before engaging with software testing techniques.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"Understand the software development lifecycle\",\"Recognise the importance of quality assurance in software development\",\"Familiarity with basic programming concepts\",\"Awareness of different types of software applications\",\"Basic knowledge of debugging techniques\"]}},{\"type\":\"patch\",\"reasoning\":\"These key learning points highlight the critical aspects of software testing techniques that students should understand by the end of the lesson.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"Software testing ensures the functionality and reliability of applications\",\"Different testing techniques are used depending on the objectives\",\"Manual and automated testing have distinct advantages and disadvantages\",\"Black-box testing focuses on input and output without considering internal code structure\",\"White-box testing involves testing the internal structures and workings of an application\"]}},{\"type\":\"patch\",\"reasoning\":\"Addressing common misconceptions helps to clarify misunderstandings and improve comprehension of software testing techniques.\",\"value\":{\"type\":\"misconceptions\",\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"Testing is only done after development\",\"description\":\"Testing should occur at multiple stages throughout the software development lifecycle to catch issues early.\"},{\"misconception\":\"Automated testing eliminates the need for manual testing\",\"description\":\"Both automated and manual testing have their roles; manual testing is still necessary for exploratory and usability testing.\"},{\"misconception\":\"Testing guarantees bug-free software\",\"description\":\"Testing reduces the number of bugs but cannot guarantee a completely bug-free application.\"}]}},{\"type\":\"patch\",\"reasoning\":\"These keywords are essential terminology that students need to understand to grasp software testing techniques.\",\"value\":{\"type\":\"keywords\",\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Quality assurance\",\"definition\":\"A systematic process to ensure products meet specified requirements and customer expectations.\"},{\"keyword\":\"Black-box testing\",\"definition\":\"A testing technique that examines the functionality without looking into internal structures.\"},{\"keyword\":\"White-box testing\",\"definition\":\"A testing technique that examines the internal structures or workings of an application.\"},{\"keyword\":\"Automated testing\",\"definition\":\"The use of software tools to execute tests automatically, often for repetitive tasks.\"},{\"keyword\":\"Manual testing\",\"definition\":\"The process of manually checking software for defects without the use of tools or scripts.\"}]}}],\"prompt\":{\"type\":\"text\",\"value\":\"Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-nTu8WxAgniTf773K\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i10pm1000bstws8oheg4h8\"}\n␞\n\n- user: Yes, that looks right\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Great! Let's proceed to the next step. We will now generate the starter quiz, learning cycles, and exit quiz. Tap **Continue** to move forward.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-FGeN3T0D0t3OV_3k\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i11ebq000fstws0t1gqb6p\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"The starter quiz checks students' prior knowledge, ensuring they have the necessary foundation before starting the lesson.\",\"value\":{\"type\":\"quiz\",\"op\":\"add\",\"path\":\"/starterQuiz\",\"value\":[{\"question\":\"What is the software development lifecycle?\",\"answers\":[\"A series of phases in software development\"],\"distractors\":[\"A single stage process in software creation\",\"An unrelated sequence of steps\"]},{\"question\":\"Why is quality assurance important in software development?\",\"answers\":[\"To ensure products meet requirements\"],\"distractors\":[\"To reduce the cost of software\",\"To increase the complexity of software\"]},{\"question\":\"What is debugging?\",\"answers\":[\"Finding and fixing errors in code\"],\"distractors\":[\"Writing new code\",\"Testing user interfaces\"]},{\"question\":\"Name a type of software application.\",\"answers\":[\"Web application\"],\"distractors\":[\"Hardware device\",\"Network cable\"]},{\"question\":\"What is a basic programming concept?\",\"answers\":[\"Loops\"],\"distractors\":[\"Photoshop filters\",\"Network routers\"]},{\"question\":\"What is the purpose of testing?\",\"answers\":[\"To ensure functionality and reliability\"],\"distractors\":[\"To increase the price\",\"To make the software more colourful\"]}]}},{\"type\":\"patch\",\"reasoning\":\"The first learning cycle focuses on identifying software testing techniques and explaining their definitions.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle1\",\"value\":{\"title\":\"Identifying Software Testing Techniques\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Explain the role of software testing in ensuring application quality.\",\"Introduce black-box and white-box testing as key techniques.\",\"Define black-box testing: focuses on inputs and outputs without knowledge of internal code.\",\"Define white-box testing: involves testing internal structures of the application.\",\"Discuss manual testing: manually checking the software for defects without tools.\",\"Introduce automated testing: using software tools to execute tests automatically.\"],\"accompanyingSlideDetails\":\"A diagram comparing black-box and white-box testing techniques.\",\"imagePrompt\":\"black-box vs white-box testing diagram\",\"slideText\":\"Learn about black-box and white-box testing techniques and their roles in software testing.\"},\"checkForUnderstanding\":[{\"question\":\"What is black-box testing?\",\"answers\":[\"Testing based on inputs and outputs\"],\"distractors\":[\"Testing internal structures\",\"Testing with software tools\"]},{\"question\":\"What does white-box testing involve?\",\"answers\":[\"Testing internal structures\"],\"distractors\":[\"Testing inputs and outputs\",\"Testing without tools\"]}],\"practice\":\"Match the definitions to the correct testing technique: black-box, white-box, manual, or automated.\",\"feedback\":\"Model answer: Black-box testing is matched with 'testing based on inputs and outputs', white-box with 'testing internal structures', manual with 'checking without tools', and automated with 'using software tools'.\"}}},{\"type\":\"patch\",\"reasoning\":\"The second learning cycle explains the purposes of different software testing techniques.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle2\",\"value\":{\"title\":\"Explaining Purposes of Testing Techniques\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Discuss the purpose of black-box testing: validating software functionality from an end-user perspective.\",\"Explain white-box testing purpose: ensuring internal code correctness and structure integrity.\",\"Introduce the advantages of manual testing: flexibility and human insight in exploratory testing.\",\"Discuss the purpose of automated testing: efficiency in repetitive test cases and regression testing.\",\"Highlight scenarios where each technique is most effective.\"],\"accompanyingSlideDetails\":\"A table listing testing techniques with their purposes and advantages.\",\"imagePrompt\":\"testing techniques purposes table\",\"slideText\":\"Understand the purposes and advantages of different testing techniques.\"},\"checkForUnderstanding\":[{\"question\":\"What is the purpose of black-box testing?\",\"answers\":[\"Validating functionality from an end-user perspective\"],\"distractors\":[\"Ensuring code correctness\",\"Testing with automation tools\"]},{\"question\":\"Why is manual testing beneficial?\",\"answers\":[\"Provides flexibility and human insight\"],\"distractors\":[\"Ensures internal code correctness\",\"Automates repetitive tasks\"]}],\"practice\":\"Explain, in your own words, when it would be most advantageous to use each testing technique: black-box, white-box, manual, and automated.\",\"feedback\":\"Model answer: Black-box testing is best for testing user interfaces, white-box for code correctness, manual for exploratory tasks, and automated for repetitive tests.\"}}},{\"type\":\"patch\",\"reasoning\":\"The third learning cycle involves evaluating the effectiveness of testing techniques for specific scenarios.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle3\",\"value\":{\"title\":\"Evaluating Testing Effectiveness\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Present scenarios where different testing techniques are applied.\",\"Evaluate the effectiveness of black-box testing for user interface scenarios.\",\"Discuss white-box testing's effectiveness for code quality assurance.\",\"Examine manual testing's role in usability testing.\",\"Consider automated testing's efficiency in regression testing.\"],\"accompanyingSlideDetails\":\"Scenarios with testing techniques applied and their evaluations.\",\"imagePrompt\":\"testing scenarios evaluation\",\"slideText\":\"Evaluate the effectiveness of testing techniques in various scenarios.\"},\"checkForUnderstanding\":[{\"question\":\"In which scenario is black-box testing most effective?\",\"answers\":[\"User interface testing\"],\"distractors\":[\"Code quality assurance\",\"Regression testing\"]},{\"question\":\"Which testing is efficient for regression testing?\",\"answers\":[\"Automated testing\"],\"distractors\":[\"Manual testing\",\"Black-box testing\"]}],\"practice\":\"Given a set of scenarios, evaluate and justify which testing technique would be most effective for each.\",\"feedback\":\"Model answer: User interfaces benefit from black-box testing, code quality from white-box, usability from manual, and regression from automated testing.\"}}},{\"type\":\"patch\",\"reasoning\":\"The exit quiz assesses the understanding of key learning points covered during the lesson.\",\"value\":{\"type\":\"quiz\",\"op\":\"add\",\"path\":\"/exitQuiz\",\"value\":[{\"question\":\"What is the main focus of black-box testing?\",\"answers\":[\"Inputs and outputs\"],\"distractors\":[\"Internal code\",\"Testing tools\"]},{\"question\":\"Which technique involves testing internal structures?\",\"answers\":[\"White-box testing\"],\"distractors\":[\"Black-box testing\",\"Manual testing\"]},{\"question\":\"Why is automated testing used?\",\"answers\":[\"For efficiency in repetitive tasks\"],\"distractors\":[\"For human insight\",\"For testing inputs and outputs\"]},{\"question\":\"When is manual testing most beneficial?\",\"answers\":[\"In exploratory tasks\"],\"distractors\":[\"In repetitive tasks\",\"In regression testing\"]},{\"question\":\"Which testing technique validates functionality from an end-user perspective?\",\"answers\":[\"Black-box testing\"],\"distractors\":[\"White-box testing\",\"Automated testing\"]},{\"question\":\"What is the role of white-box testing?\",\"answers\":[\"Ensuring code correctness\"],\"distractors\":[\"Testing user interfaces\",\"Automating tasks\"]}]}}],\"prompt\":{\"type\":\"text\",\"value\":\"The quizzes and learning cycles are now complete. Are the quizzes of an appropriate difficulty level for your pupils to achieve five out of six correct answers?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-0v4EJl_qcvySgXG0\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i126mw000jstwsrnu7konh\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"There are no additional materials required for this lesson plan as it stands.\",\"value\":{\"type\":\"string\",\"op\":\"add\",\"path\":\"/additionalMaterials\",\"value\":\"None\"}}],\"prompt\":{\"type\":\"text\",\"value\":\"Would you like to add any additional materials, e.g. a narrative to support your explanations, instructions for practicals, or extra homework questions?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-7ivNJUpR4v92I_tc\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i134j7000nstwskgx6q53q\"}\n␞\n\n- user: Yes, ok\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Great! If you have specific materials in mind, please let me know, and I can help incorporate them into the lesson plan. Otherwise, we can proceed to finalise the lesson. What would you like to do next?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-wIXidibN-HPSiP6C\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i13xph000rstws4vd5cxy4\"}\n␞\n\n- user: Continue\n- assistant: Have you finished editing your lesson? If anything is missing, just ask me to add it in. Once you're ready, you can download your resources and share your lesson!"
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nMake the learning outcome easier"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0bd9218165cc55e8006a297ecb3080819c9d75af257c79522a",
+    "object": "response",
+    "created_at": 1781104331,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781104333,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0bd9218165cc55e8006a297ecc0638819cbbbaddff26b31a5b",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required.\"}}",
+            "parsed": {
+              "value": {
+                "message": "Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required."
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 5327,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 36,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 5363
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required.\"}}",
+    "output_parsed": {
+      "value": {
+        "message": "Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required."
+      }
+    }
+  }
+}
