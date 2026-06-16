@@ -326,10 +326,7 @@ Thank you and happy classifying!`;
 
   normaliseLessonPlan(plan: LessonPlan) {
     return plan;
-    // return {
-    //   ...plan,
-    //   content: JSON.parse(this.normaliseLessonPlanContent(plan.content)),
-    // };
+    
   }
 
   async fetchLessonPlans({
@@ -658,9 +655,7 @@ Thank you and happy classifying!`;
 
     // If none of that works, fall back to categorising the subject based on free text
     if (!foundSubject) {
-      //  log.info(
-      //   "No subject found. Categorise the input to try to work out what it is using categoriseKeyStageAndSubject",
-      // );
+      
       const categorisation = await this.categoriseKeyStageAndSubject(
         subject,
         this._chatMeta,
