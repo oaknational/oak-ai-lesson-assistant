@@ -7,7 +7,7 @@ import {
 } from "@oaknational/oak-components";
 
 export const AILA_FEEDBACK_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform";
+  "https://survey.hsforms.com/184ua72b5RtOD9SDPq4BKKQbvumd";
 
 export function BetaTagWithFeedback({
   feedbackHref,
