@@ -4,8 +4,9 @@ import { BasedOnSchema } from "../../../../../protocol/schema";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { createSectionAgent } from "../createSectionAgent";
 import { basedOnInstructions } from "./basedOn.instructions";
+import { resolveBasedOnAgainstRelevantLessons } from "./resolveBasedOnAgainstRelevantLessons";
 
-export const basedOnAgent = createSectionAgent({
+const createBaseAgent = createSectionAgent({
   responseSchema: BasedOnSchema.nullable(),
   instructions: basedOnInstructions,
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
@@ -27,3 +28,23 @@ export const basedOnAgent = createSectionAgent({
     ].filter(isTruthy);
   },
 });
+
+export const basedOnAgent: typeof createBaseAgent = (args) => {
+  const agent = createBaseAgent(args);
+  return {
+    ...agent,
+    handler: async (ctx) => {
+      const result = await agent.handler(ctx);
+      if (result.error !== null || result.data == null) {
+        return result;
+      }
+      return {
+        ...result,
+        data: resolveBasedOnAgainstRelevantLessons(
+          result.data,
+          ctx.persistedState.relevantLessons,
+        ),
+      };
+    },
+  };
+};

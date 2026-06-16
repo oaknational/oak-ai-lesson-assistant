@@ -1,3 +1,4 @@
+// cspell:ignore trangles
 import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
 
 describe("hasSearchIdentityChangedSignificantly", () => {
@@ -132,6 +133,24 @@ describe("hasSearchIdentityChangedSignificantly", () => {
         prev: "An Introduction",
         next: "A Basic Overview",
         expected: false,
+      },
+      {
+        label: "single-character typo fix (fuzzy match)",
+        prev: "Angles in trangles",
+        next: "Angles in triangles",
+        expected: false,
+      },
+      {
+        label: "US to UK spelling (fuzzy match)",
+        prev: "Organizing an argument",
+        next: "Organising an argument",
+        expected: false,
+      },
+      {
+        label: "word replacement of similar length",
+        prev: "Angles in triangles",
+        next: "Angle bisectors",
+        expected: true,
       },
       {
         label: "completely different topic",
