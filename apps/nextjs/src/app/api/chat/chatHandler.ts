@@ -19,6 +19,7 @@ import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
+import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -85,6 +86,7 @@ async function setupChatHandler(req: NextRequest) {
       } = json;
 
       const useAgenticAila = await getAgenticAilaEnabled();
+      const useMathsQuizRag = await serverSideFeatureFlag("quiz-rag");
 
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
@@ -94,6 +96,7 @@ async function setupChatHandler(req: NextRequest) {
         usePersistence: true,
         useModeration: true,
         useAgenticAila,
+        useMathsQuizRag: useMathsQuizRag,
       };
 
       const llmService = getFixtureLLMService(req.headers, chatId);

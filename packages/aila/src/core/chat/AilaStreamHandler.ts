@@ -1,3 +1,4 @@
+import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import type {
   ThreatDetectionMessage,
@@ -360,7 +361,7 @@ export class AilaStreamHandler {
       },
       runtime: {
         config: {
-          mathsQuizEnabled: true,
+          mathsQuizEnabled: this._chat.aila.options.useMathsQuizRag ?? false,
         },
         plannerAgent: createOpenAIPlannerAgent(openai),
         sectionAgents: createSectionAgentRegistry({
