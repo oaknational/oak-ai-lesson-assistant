@@ -1,10 +1,9 @@
-import type OpenAI from "openai";
+import { aiLogger } from "@oakai/logger";
 
 import fs from "fs";
 import fsPromises from "fs/promises";
+import type OpenAI from "openai";
 import path from "path";
-
-import { aiLogger } from "@oakai/logger";
 
 import type { AgenticFixtureConfig } from "../../../core/types";
 
@@ -110,7 +109,7 @@ export function wrapOpenAIWithFixture(
         return wrappedParse;
       }
       if (typeof prop === "symbol") {
-        return Reflect.get(target, prop, receiver);
+        return Reflect.get(target, prop, receiver) as unknown;
       }
       throw new Error(
         `FixtureOpenAIProxy: openai.responses.${prop} is not supported — ` +
@@ -124,8 +123,12 @@ export function wrapOpenAIWithFixture(
       if (prop === "responses") {
         return responsesProxy;
       }
-      const value = Reflect.get(target, prop, receiver);
-      return typeof value === "function" ? value.bind(target) : value;
+      const value: unknown = Reflect.get(target, prop, receiver);
+      if (typeof value === "function") {
+        return (value as (...args: unknown[]) => unknown).bind(
+          target,
+        ) as unknown;
+      }
     },
   });
 }
