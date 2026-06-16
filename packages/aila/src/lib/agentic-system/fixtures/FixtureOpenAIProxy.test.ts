@@ -1,6 +1,5 @@
-import type OpenAI from "openai";
-
 import fs from "fs";
+import type OpenAI from "openai";
 import os from "os";
 import path from "path";
 

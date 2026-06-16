@@ -13,9 +13,9 @@ import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
-import { wrapOpenAIWithFixture } from "../../lib/agentic-system/fixtures/FixtureOpenAIProxy";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
+import { wrapOpenAIWithFixture } from "../../lib/agentic-system/fixtures/FixtureOpenAIProxy";
 import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
 import type {
   AilaTurnOutcome,
