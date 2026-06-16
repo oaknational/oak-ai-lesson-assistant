@@ -143,6 +143,10 @@ function IconInfoCardLink({
   );
 }
 
+function truncateLabel(label: string, maxLength = 15): string {
+  return label.length > maxLength ? `${label.slice(0, maxLength)}…` : label;
+}
+
 const StyledMuxPlayer = styled(MuxPlayer)`
   max-height: 369ppx;
   @media (max-width: 1100px) {
@@ -435,7 +439,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             background={lesson.iconTileBackgroundColour}
             title={lesson.title}
             buttonLabel={lesson.fileName}
-            buttonLabelMobile={lesson.mobileFileName ?? lesson.fileName}
+            buttonLabelMobile={truncateLabel(
+              lesson.mobileFileName ?? lesson.fileName,
+            )}
             fileExtension={`.${lesson.file?.asset.extension ?? "zip"}`}
             href={lesson.file?.asset.url}
           />
@@ -483,7 +489,9 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             iconName={example.iconName}
             background={example.iconTileBackgroundColour}
             buttonLabel={example.fileName}
-            buttonLabelMobile={example.mobileFileName ?? example.fileName}
+            buttonLabelMobile={truncateLabel(
+              example.mobileFileName ?? example.fileName,
+            )}
             title={example.title}
             fileExtension={`.${example.file?.asset.extension ?? "pdf"}`}
             href={example.file?.asset.url}
