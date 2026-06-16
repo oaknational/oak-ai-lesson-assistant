@@ -172,6 +172,9 @@ export class Aila implements AilaServices {
       useAgenticAila: options?.useAgenticAila ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
+      ...(options?.agenticFixture
+        ? { agenticFixture: options.agenticFixture }
+        : {}),
     };
   }
 

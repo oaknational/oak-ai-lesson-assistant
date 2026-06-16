@@ -13,6 +13,7 @@ import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
+import { wrapOpenAIWithFixture } from "../../lib/agentic-system/fixtures/FixtureOpenAIProxy";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
 import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
@@ -282,13 +283,25 @@ export class AilaStreamHandler {
       ...this._chat.aila.document.content,
     };
 
-    const openai = createOpenAIClient({
+    let openai = createOpenAIClient({
       app: "lesson-assistant",
       chatMeta: {
         chatId: this._chat.id,
         userId: this._chat.userId,
       },
     });
+
+    const { agenticFixture } = this._chat.aila.options;
+    if (agenticFixture) {
+      log.info(
+        "Wrapping OpenAI client with fixture proxy: mode=%s fixture=%s",
+        agenticFixture.mode,
+        agenticFixture.fixtureName,
+      );
+      openai = wrapOpenAIWithFixture(openai, agenticFixture);
+    } else {
+      log.info("No agenticFixture config — using real OpenAI client");
+    }
 
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,

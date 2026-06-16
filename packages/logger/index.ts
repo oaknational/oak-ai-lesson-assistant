@@ -39,6 +39,7 @@ export type LoggerKey =
   | "aila:rag"
   | "aila:schema"
   | "aila:stream"
+  | "aila:fixtures"
   | "aila:testing"
   | "aila:threat"
   | "adaptations"
