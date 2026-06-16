@@ -148,11 +148,8 @@ function truncateLabel(label: string, maxLength = 15): string {
 }
 
 const StyledMuxPlayer = styled(MuxPlayer)`
-  max-height: 369ppx;
-  @media (max-width: 1100px) {
-    width: 100%;
-    height: fit-content;
-  }
+  aspect-ratio: 16/9;
+  width: 100%;
 `;
 
 const StyledUL = styled(OakUL)`
@@ -382,7 +379,12 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         What to expect
       </OakHeading>
 
-      <OakFlex $grow={1}>
+      <OakFlex
+        $borderColor="border-primary"
+        $borderStyle={"solid"}
+        $ba={"border-solid-xl"}
+        $grow={1}
+      >
         <StyledMuxPlayer
           playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
           thumbnailTime={pageData?.belowTheFoldVideo.video.asset.thumbTime}
@@ -457,7 +459,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
       </OakHeading>
       <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
         {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
-          <OakBoxCustomMaxWidth
+          <OakFlex
             $display={["flex"]}
             $borderColor="border-primary"
             $borderStyle={"solid"}
@@ -471,7 +473,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
                 pageData?.belowTheFoldVideo2?.video.asset.thumbTime
               }
             />
-          </OakBoxCustomMaxWidth>
+          </OakFlex>
         )}
         <OakP $textAlign="left" $font="body-2">
           Tell Aila what you want to teach and get step-by-step support to build
