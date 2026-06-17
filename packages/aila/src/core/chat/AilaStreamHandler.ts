@@ -360,7 +360,7 @@ export class AilaStreamHandler {
       },
       runtime: {
         config: {
-          mathsQuizEnabled: true,
+          mathsQuizEnabled: this._chat.aila.options.useMathsQuizRag ?? false,
         },
         plannerAgent: createOpenAIPlannerAgent(openai),
         sectionAgents: createSectionAgentRegistry({
