@@ -134,14 +134,14 @@ export async function getFileFromBucket(bucketName: string, fileName: string) {
     const contents = await bucket.file(fileName).download();
     return contents.toString();
   } catch (err) {
+    let errorMessage: string;
+    if (typeof err === "string") {
+      errorMessage = err;
+    } else {
+      errorMessage = err instanceof Error ? err.message : JSON.stringify(err);
+    }
     log.error(
-      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${
-        typeof err === "string"
-          ? err
-          : err instanceof Error
-            ? err.message
-            : JSON.stringify(err)
-      }`,
+      `Error fetching file: ${fileName} from bucket: ${bucketName}. Error: ${errorMessage}`,
     );
     return;
   }

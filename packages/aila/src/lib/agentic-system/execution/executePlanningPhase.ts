@@ -36,6 +36,17 @@ export async function executePlanningPhase(
     return await terminateWithResponse(context);
   }
 
+  // basedOn can only be planned when relevant lessons were fetched and offered,
+  // so strip any basedOn step the planner produced without that backing.
+  const hasRelevantLessons =
+    (context.persistedState.relevantLessons?.length ?? 0) > 0;
+  if (!hasRelevantLessons) {
+    context.currentTurn.plannerOutput.plan =
+      context.currentTurn.plannerOutput.plan.filter(
+        (step) => step.sectionKey !== "basedOn",
+      );
+  }
+
   context.callbacks.onPlannerComplete({
     sectionKeys: context.currentTurn.plannerOutput.plan.map(
       (step) => step.sectionKey,

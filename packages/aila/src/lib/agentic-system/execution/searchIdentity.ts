@@ -101,15 +101,55 @@ function tokenise(text: string): Set<string> {
   return new Set(tokens);
 }
 
+// cspell:ignore trangle
+// Single-character typo fixes ("trangle" -> "triangle") shouldn't count as a
+// different word. Only fuzzy-match longer tokens — short words have too many
+// real one-edit neighbours (one/two, light/sight).
+const FUZZY_MIN_TOKEN_LENGTH = 6;
+
+function withinOneEdit(a: string, b: string): boolean {
+  if (Math.abs(a.length - b.length) > 1) return false;
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+  let i = 0;
+  let j = 0;
+  let edits = 0;
+  while (i < short.length && j < long.length) {
+    if (short[i] === long[j]) {
+      i++;
+      j++;
+      continue;
+    }
+    if (edits === 1) return false;
+    edits = 1;
+    if (short.length === long.length) i++;
+    j++;
+  }
+  return edits + (long.length - j) <= 1;
+}
+
+function tokensMatch(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (a.length < FUZZY_MIN_TOKEN_LENGTH || b.length < FUZZY_MIN_TOKEN_LENGTH)
+    return false;
+  return withinOneEdit(a, b);
+}
+
 function titleJaccard(a: string, b: string): number {
   const setA = tokenise(a);
   const setB = tokenise(b);
   if (setA.size === 0 && setB.size === 0) return 1;
+  const unmatched = new Set(setB);
   let intersection = 0;
   for (const t of setA) {
-    if (setB.has(t)) intersection++;
+    const match = unmatched.has(t)
+      ? t
+      : [...unmatched].find((u) => tokensMatch(t, u));
+    if (match !== undefined) {
+      unmatched.delete(match);
+      intersection++;
+    }
   }
-  const union = new Set([...setA, ...setB]).size;
+  const union = setA.size + setB.size - intersection;
   return union === 0 ? 1 : intersection / union;
 }
 
