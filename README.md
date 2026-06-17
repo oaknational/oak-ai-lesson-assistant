@@ -88,7 +88,7 @@ This command copies the Doppler environment variables for the dev environment to
 
 ### Prerequisites
 
-- This project set up following the Installation steps.
+- This project set up following the Installation steps..
 - Docker installed.
 - Optional: A Postgres GUI tool (such as pgAdmin or Postico) to view the data.
 
