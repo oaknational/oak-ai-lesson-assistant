@@ -7,6 +7,7 @@ import {
 } from "@oaknational/oak-components";
 
 export const AILA_FEEDBACK_FORM_URL =
+  process.env.NEXT_PUBLIC_AILA_FEEDBACK_FORM_URL ??
   "https://survey.hsforms.com/184ua72b5RtOD9SDPq4BKKQbvumd";
 
 export function BetaTagWithFeedback({
