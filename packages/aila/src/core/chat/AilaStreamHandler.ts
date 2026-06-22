@@ -6,6 +6,7 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import type { getRagLessonPlansByIds } from "@oakai/rag";
 
+import type OpenAI from "openai";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
@@ -15,7 +16,11 @@ import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sect
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
-import type { AilaTurnOutcome } from "../../lib/agentic-system/types";
+import type {
+  AilaTurnOutcome,
+  SectionAgent,
+} from "../../lib/agentic-system/types";
+import type { LatestQuiz } from "../../protocol/schema";
 import { extractPromptTextFromMessages } from "../../utils/extractPromptTextFromMessages";
 import { handleThreatDetectionResult } from "../../utils/threatDetection/threatDetectionHandling";
 import { AilaChatError } from "../AilaError";
@@ -33,28 +38,18 @@ type ThreatCheckOutcome =
 
 type StreamOutcome =
   | { status: "success" }
-  | { status: "failed"; error?: unknown }
+  | { status: "failed" }
   | { status: "aborted" }
   | { status: "threat_detected" }
-  | { status: "threat_check_failed"; error?: unknown };
+  | { status: "threat_check_failed" };
 
-type StreamReadOutcome = { status: "success" } | { status: "aborted" };
-
-type SectionAgentRegistryOptions = Parameters<
-  typeof createSectionAgentRegistry
->[0];
-type MathsQuizAgentHandlers =
-  SectionAgentRegistryOptions["customAgentHandlers"];
-type MathsQuizAgentContext = Parameters<
-  MathsQuizAgentHandlers["starterQuiz--maths"]
->[0];
-type MathsQuizAgentResult = Awaited<
-  ReturnType<MathsQuizAgentHandlers["starterQuiz--maths"]>
+type StreamReadOutcome = Extract<
+  StreamOutcome,
+  { status: "success" | "aborted" }
 >;
-
-function shouldComplete(outcome: StreamOutcome): boolean {
-  return outcome.status === "success";
-}
+type MathsQuizAgentHandler = SectionAgent<LatestQuiz>["handler"];
+type MathsQuizAgentContext = Parameters<MathsQuizAgentHandler>[0];
+type MathsQuizAgentResult = Awaited<ReturnType<MathsQuizAgentHandler>>;
 
 class ThreatDetectionFailureError extends Error {
   public readonly detectorName: string;
@@ -188,47 +183,27 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
-      outcome = { status: "failed", error: e };
-      if (this._chat.aila.options.useAgenticAila) {
-        // ailaTurn threw rather than returning; its internal failure path never
-        // completed, so the client has not received an error message.
-        await this._chat.enqueue({
-          type: "error",
-          value: "Something went wrong. Please try sending your message again.",
-        });
-      } else if (this._chat.generation) {
-        await this._chat.generationFailed(e);
-      }
+      outcome = { status: "failed" };
       log.info("Caught error in stream", {
         error: e,
         type: e?.constructor?.name,
       });
       await this.handleStreamError(e);
     } finally {
-      const status = this._chat.generation?.status;
-      log.info("In finally block", {
-        outcome,
-        status,
-        chatId: this._chat.id,
-      });
-      if (shouldComplete(outcome)) {
-        try {
-          await this.span("chat-completion", async () => {
-            await this._chat.complete();
-          });
-          log.info("Chat completed", this._chat.iteration, this._chat.id);
-        } catch (e) {
-          log.error("Error in complete", e);
-          this._chat.aila.errorReporter?.reportError(e);
-          await this._chat.enqueue({
-            type: "error",
-            value:
-              "Something went wrong. Please try sending your message again.",
-          });
+      try {
+        const status = this._chat.generation?.status;
+        log.info("In finally block", {
+          outcome,
+          status,
+          chatId: this._chat.id,
+        });
+        if (outcome.status === "success") {
+          await this.completeChat();
         }
+      } finally {
+        this.closeController();
+        log.info("Stream closed", this._chat.iteration, this._chat.id);
       }
-      this.closeController();
-      log.info("Stream closed", this._chat.iteration, this._chat.id);
     }
   }
 
@@ -262,7 +237,6 @@ export class AilaStreamHandler {
       });
       return {
         status: "threat_check_failed",
-        error: threatCheckOutcome.error,
       };
     }
 
@@ -392,14 +366,63 @@ export class AilaStreamHandler {
     });
   }
 
-  private createSectionAgents(openai: SectionAgentRegistryOptions["openai"]) {
+  private async notifyClientOfStreamError(error: unknown) {
+    try {
+      if (this._chat.aila.options.useAgenticAila) {
+        // ailaTurn threw rather than returning; its internal failure path never
+        // completed, so the client has not received an error message.
+        await this.enqueueGenericRetryError();
+      } else if (this._chat.generation) {
+        await this._chat.generationFailed(error);
+      }
+    } catch (recoveryError) {
+      log.error("Error while handling stream failure", {
+        error: recoveryError,
+        originalError: error,
+      });
+      this._chat.aila.errorReporter?.reportError(recoveryError);
+    }
+  }
+
+  private async completeChat() {
+    try {
+      await this.span("chat-completion", async () => {
+        await this._chat.complete();
+      });
+      log.info("Chat completed", this._chat.iteration, this._chat.id);
+    } catch (error) {
+      log.error("Error in complete", error);
+      this._chat.aila.errorReporter?.reportError(error);
+      try {
+        await this.enqueueGenericRetryError();
+      } catch (enqueueError) {
+        log.error("Error enqueueing completion failure message", {
+          error: enqueueError,
+          completionError: error,
+        });
+        this._chat.aila.errorReporter?.reportError(enqueueError);
+      }
+    }
+  }
+
+  private async enqueueGenericRetryError() {
+    await this._chat.enqueue({
+      type: "error",
+      value: "Something went wrong. Please try sending your message again.",
+    });
+  }
+
+  private createSectionAgents(openai: OpenAI) {
     return createSectionAgentRegistry({
       openai,
       customAgentHandlers: this.createMathsQuizAgentHandlers(),
     });
   }
 
-  private createMathsQuizAgentHandlers(): MathsQuizAgentHandlers {
+  private createMathsQuizAgentHandlers(): {
+    "starterQuiz--maths": MathsQuizAgentHandler;
+    "exitQuiz--maths": MathsQuizAgentHandler;
+  } {
     return {
       "starterQuiz--maths": async (ctx) =>
         await this.runMathsQuizAgent(
@@ -531,6 +554,8 @@ export class AilaStreamHandler {
   }
 
   private async handleStreamError(error: unknown) {
+    await this.notifyClientOfStreamError(error);
+
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,
