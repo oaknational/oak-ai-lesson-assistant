@@ -1,10 +1,15 @@
+import { enablePatches, produceWithPatches } from "immer";
+
 import {
   CompletedLessonPlanSchema,
   type RagFetched,
 } from "../../../protocol/schema";
+import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import type { AilaExecutionContext, AilaTurnPhaseOutcome } from "../types";
 import { hasSearchIdentityChangedSignificantly } from "./searchIdentity";
 import { terminateWithResponse } from "./termination";
+
+enablePatches();
 
 function searchIdentityEqual(
   a: RagFetched["searchIdentity"],
@@ -39,30 +44,69 @@ export async function handleRelevantLessons(
   const { title, subject, keyStage, basedOn } = context.currentTurn.document;
   const ragFetched = context.persistedState.ragFetched;
 
+  const nextSearchIdentity =
+    title && subject && keyStage ? { title, subject, keyStage } : null;
+
+  if (basedOn) {
+    const initialDocument = context.persistedState.initialDocument;
+
+    // A basedOn that wasn't in the document at the start of the turn means the
+    // user just chose a lesson to adapt, so it is valid even if the search
+    // identity changed in the same turn.
+    const basedOnSetThisTurn = basedOn !== initialDocument.basedOn;
+
+    // Chats from the legacy pipeline have no recorded search identity, so fall
+    // back to the document as it stood at the start of the turn.
+    const prevSearchIdentity =
+      ragFetched.searchIdentity ??
+      (initialDocument.title &&
+      initialDocument.subject &&
+      initialDocument.keyStage
+        ? {
+            title: initialDocument.title,
+            subject: initialDocument.subject,
+            keyStage: initialDocument.keyStage,
+          }
+        : null);
+
+    const basedOnIsStale =
+      !basedOnSetThisTurn &&
+      prevSearchIdentity != null &&
+      nextSearchIdentity != null &&
+      hasSearchIdentityChangedSignificantly(
+        prevSearchIdentity,
+        nextSearchIdentity,
+      );
+
+    if (basedOnIsStale) {
+      // The lesson metadata changed significantly, so a basedOn carried over
+      // from a previous lesson no longer applies. A wrong attribution is
+      // cleared even on a complete lesson, where fetching stays blocked below.
+      clearBasedOn(context);
+    }
+  }
+
   if (
     CompletedLessonPlanSchema.safeParse(context.currentTurn.document).success
   ) {
     return { status: "continue" };
   }
 
-  if (basedOn) {
-    // user has chosen a lesson to adapt — record that selection
+  if (context.currentTurn.document.basedOn) {
+    // user has chosen a lesson to adapt and the search identity still
+    // matches — record the selection and stop
     await persistRagFetched(context, {
       status: "selected",
-      searchIdentity:
-        title && subject && keyStage
-          ? { title, subject, keyStage }
-          : ragFetched.searchIdentity,
+      searchIdentity: nextSearchIdentity ?? ragFetched.searchIdentity,
     });
     return { status: "continue" };
   }
 
-  if (!title || !subject || !keyStage) {
+  if (!nextSearchIdentity) {
     // can't form a search identity without all three — don't fetch
     return { status: "continue" };
   }
 
-  const nextSearchIdentity = { title, subject, keyStage };
   if (
     !hasSearchIdentityChangedSignificantly(
       ragFetched.searchIdentity,
@@ -72,11 +116,8 @@ export async function handleRelevantLessons(
     return { status: "continue" };
   }
 
-  const lessons = await context.runtime.fetchRelevantLessons({
-    title,
-    subject,
-    keyStage,
-  });
+  const lessons =
+    await context.runtime.fetchRelevantLessons(nextSearchIdentity);
   context.currentTurn.relevantLessons = lessons;
   context.currentTurn.relevantLessonsFetched = true;
 
@@ -90,4 +131,16 @@ export async function handleRelevantLessons(
   }
 
   return { status: "continue" };
+}
+
+function clearBasedOn(context: AilaExecutionContext) {
+  const [nextDoc, patches] = produceWithPatches(
+    context.currentTurn.document,
+    (draft) => {
+      delete draft.basedOn;
+    },
+  );
+
+  context.currentTurn.document = nextDoc;
+  context.callbacks.onSectionComplete(patches.map(immerPatchToJsonPatch));
 }
