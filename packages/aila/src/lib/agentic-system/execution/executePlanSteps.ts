@@ -1,20 +1,25 @@
 import { aiLogger } from "@oakai/logger";
 
 import { type Draft, enablePatches, produceWithPatches } from "immer";
+import { type ZodTypeAny } from "zod";
 
 import type { LatestQuiz, PartialLessonPlan } from "../../../protocol/schema";
 import {
   CompletedLessonPlanSchema,
+  KeywordsSchema,
   LatestQuizSchema,
+  MisconceptionsSchema,
 } from "../../../protocol/schema";
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
+import { sectionListOperationDispatcher } from "../quizOperations/sectionListOperationDispatcher";
 import { validateSingleQuestion } from "../quizOperations/validateSingleQuestion";
 import {
   type PlanStep,
-  type StructuralQuizIntent,
-  structuralQuizIntentSchema,
+  type SectionKey,
+  type StructuralItemIntent,
+  structuralItemIntentSchema,
 } from "../schema";
 import type {
   AgentResult,
@@ -31,6 +36,49 @@ import { terminateWithFailure } from "./termination";
 const log = aiLogger("aila:agents");
 
 enablePatches();
+
+type ListSectionConfig = {
+  itemNoun: string;
+  min: number;
+  max: number;
+  regenerateSuggestion: string;
+  arraySchema: ZodTypeAny;
+  validateItem: (item: unknown) => boolean;
+};
+
+function hasNonEmptyStrings(item: unknown, keys: string[]): boolean {
+  if (typeof item !== "object" || item === null) return false;
+  const record = item as Record<string, unknown>;
+  return keys.every((key) => {
+    const value = record[key];
+    return typeof value === "string" && value.trim().length > 0;
+  });
+}
+
+/**
+ * List-based sections that support targeted single-item edits. A section absent
+ * from this map falls through to whole-section regeneration even if the planner
+ * emits an itemIntent for it.
+ */
+const LIST_SECTION_CONFIG: Partial<Record<SectionKey, ListSectionConfig>> = {
+  keywords: {
+    itemNoun: "keyword",
+    min: 1,
+    max: 5,
+    regenerateSuggestion: "Generate the keywords again",
+    arraySchema: KeywordsSchema,
+    validateItem: (item) => hasNonEmptyStrings(item, ["keyword", "definition"]),
+  },
+  misconceptions: {
+    itemNoun: "misconception",
+    min: 1,
+    max: 3,
+    regenerateSuggestion: "Generate the misconceptions again",
+    arraySchema: MisconceptionsSchema,
+    validateItem: (item) =>
+      hasNonEmptyStrings(item, ["misconception", "description"]),
+  },
+};
 
 /**
  * Execute each step in the plan sequentially using immer to track changes.
@@ -75,20 +123,29 @@ async function executeGenerateStep(
   context: AilaExecutionContext,
   step: PlanStep,
 ): Promise<AilaTurnPhaseOutcome> {
-  const { quizIntent } = step;
-  if (
-    quizIntent &&
-    quizIntent.action !== "REGENERATE_QUIZ" &&
-    (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz")
-  ) {
-    const parsedQuizIntent = structuralQuizIntentSchema.parse(quizIntent);
+  const { itemIntent } = step;
+  if (itemIntent && itemIntent.action !== "REGENERATE_SECTION") {
+    const parsedItemIntent = structuralItemIntentSchema.parse(itemIntent);
 
-    return executeQuizDispatchStep(
-      context,
-      step,
-      step.sectionKey,
-      parsedQuizIntent,
-    );
+    if (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz") {
+      return executeQuizDispatchStep(
+        context,
+        step,
+        step.sectionKey,
+        parsedItemIntent,
+      );
+    }
+
+    const listConfig = LIST_SECTION_CONFIG[step.sectionKey];
+    if (listConfig) {
+      return executeSectionListDispatchStep(
+        context,
+        step,
+        step.sectionKey,
+        parsedItemIntent,
+        listConfig,
+      );
+    }
   }
 
   const result = await runSectionAgent(context, step);
@@ -138,7 +195,7 @@ async function executeQuizDispatchStep(
   context: AilaExecutionContext,
   step: PlanStep,
   sectionKey: "starterQuiz" | "exitQuiz",
-  intent: StructuralQuizIntent,
+  intent: StructuralItemIntent,
 ): Promise<AilaTurnPhaseOutcome> {
   const currentQuiz: LatestQuiz = context.currentTurn.document[sectionKey] ?? {
     version: "v3",
@@ -178,6 +235,55 @@ async function executeQuizDispatchStep(
     } else {
       draft.exitQuiz = dispatchResult.data;
     }
+  });
+
+  return { status: "continue" };
+}
+
+async function executeSectionListDispatchStep(
+  context: AilaExecutionContext,
+  step: PlanStep,
+  sectionKey: SectionKey,
+  intent: StructuralItemIntent,
+  config: ListSectionConfig,
+): Promise<AilaTurnPhaseOutcome> {
+  const currentItems = (context.currentTurn.document[sectionKey] ??
+    []) as unknown[];
+
+  const dispatchResult = await sectionListOperationDispatcher<unknown>(
+    currentItems,
+    intent,
+    async () => {
+      const agentId = sectionStepToAgentId(step, {
+        config: context.runtime.config,
+        document: context.currentTurn.document,
+      });
+      const agent = context.runtime.sectionAgents[agentId];
+      if (!agent) return null;
+      const agentResult = await agent.handler(context);
+      if (agentResult.error) return null;
+      const parsed = config.arraySchema.safeParse(agentResult.data);
+      if (!parsed.success) return null;
+      const item = (parsed.data as unknown[])[0];
+      return config.validateItem(item) ? item : null;
+    },
+    {
+      itemNoun: config.itemNoun,
+      min: config.min,
+      max: config.max,
+      regenerateSuggestion: config.regenerateSuggestion,
+    },
+  );
+
+  if (dispatchResult.note) {
+    context.currentTurn.notes.push({
+      message: dispatchResult.note,
+      sectionKey,
+    });
+  }
+
+  commitStepUpdate(context, step, (draft) => {
+    (draft as Record<string, unknown>)[sectionKey] = dispatchResult.data;
   });
 
   return { status: "continue" };
