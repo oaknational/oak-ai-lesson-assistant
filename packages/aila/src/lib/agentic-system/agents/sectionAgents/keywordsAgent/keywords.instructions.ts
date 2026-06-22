@@ -13,3 +13,30 @@ List key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesso
 ## Tier 2 and 3 vocabulary definitions
 
 ${tier2And3VocabularyDefinitions}`;
+
+export const addOneKeywordInstructions = `# Task
+
+Generate exactly ONE new keyword (with its definition) to ADD to the existing list. Return only that single keyword. Do not output, modify, or restate the existing keywords — they will be preserved by the system.
+
+- Provide a brief, age-appropriate definition
+- Do not include the keyword in its own definition
+- Max 200 characters for the definition
+- Where possible, use definitions from the national curriculum and/or exam boards.
+
+## Tier 2 and 3 vocabulary definitions
+
+${tier2And3VocabularyDefinitions}`;
+
+export const changeOneKeywordInstructions = (position: number): string =>
+  `# Task
+
+Rewrite keyword ${position} of the existing list. Return only the single replacement keyword (with its definition). Do not modify or output any of the other keywords — they will be preserved by the system.
+
+- Provide a brief, age-appropriate definition
+- Do not include the keyword in its own definition
+- Max 200 characters for the definition
+- Where possible, use definitions from the national curriculum and/or exam boards.
+
+## Tier 2 and 3 vocabulary definitions
+
+${tier2And3VocabularyDefinitions}`;
