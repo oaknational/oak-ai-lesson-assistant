@@ -1,5 +1,5 @@
 import type { LatestQuiz, LatestQuizQuestion } from "../../../protocol/schema";
-import type { StructuralQuizIntent } from "../schema";
+import type { StructuralItemIntent } from "../schema";
 import { quizOperationDispatcher } from "./quizOperationDispatcher";
 import type { RunSingleQuestionFn } from "./quizOperationDispatcher";
 
@@ -24,9 +24,9 @@ const q2 = makeQuestion("What colour is the sky?");
 const q3 = makeQuestion("How many sides does a triangle have?");
 
 describe("quizOperationDispatcher", () => {
-  describe("REMOVE_QUIZ_QUESTION", () => {
-    const intent = (position: number | null): StructuralQuizIntent => ({
-      action: "REMOVE_QUIZ_QUESTION",
+  describe("REMOVE_ITEM", () => {
+    const intent = (position: number | null): StructuralItemIntent => ({
+      action: "REMOVE_ITEM",
       position,
     });
 
@@ -72,9 +72,9 @@ describe("quizOperationDispatcher", () => {
     });
   });
 
-  describe("ADD_QUIZ_QUESTION", () => {
-    const intent = (position: number | null = null): StructuralQuizIntent => ({
-      action: "ADD_QUIZ_QUESTION",
+  describe("ADD_ITEM", () => {
+    const intent = (position: number | null = null): StructuralItemIntent => ({
+      action: "ADD_ITEM",
       position,
     });
 
@@ -128,9 +128,9 @@ describe("quizOperationDispatcher", () => {
     });
   });
 
-  describe("CHANGE_QUIZ_QUESTION", () => {
-    const intent = (position: number | null): StructuralQuizIntent => ({
-      action: "CHANGE_QUIZ_QUESTION",
+  describe("CHANGE_ITEM", () => {
+    const intent = (position: number | null): StructuralItemIntent => ({
+      action: "CHANGE_ITEM",
       position,
     });
 
