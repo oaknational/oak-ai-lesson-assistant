@@ -6,7 +6,6 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import type { getRagLessonPlansByIds } from "@oakai/rag";
 
-import type OpenAI from "openai";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
@@ -43,10 +42,6 @@ type StreamOutcome =
   | { status: "threat_detected" }
   | { status: "threat_check_failed" };
 
-type StreamReadOutcome = Extract<
-  StreamOutcome,
-  { status: "success" | "aborted" }
->;
 type MathsQuizAgentHandler = SectionAgent<LatestQuiz>["handler"];
 type MathsQuizAgentContext = Parameters<MathsQuizAgentHandler>[0];
 type MathsQuizAgentResult = Awaited<ReturnType<MathsQuizAgentHandler>>;
@@ -337,7 +332,10 @@ export class AilaStreamHandler {
           mathsQuizEnabled: true,
         },
         plannerAgent: createOpenAIPlannerAgent(openai),
-        sectionAgents: this.createSectionAgents(openai),
+        sectionAgents: createSectionAgentRegistry({
+          openai,
+          customAgentHandlers: this.createMathsQuizAgentHandlers(),
+        }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
         britishEnglishCorrectorAgent:
           createOpenAIBritishEnglishCorrectorAgent(openai),
@@ -366,7 +364,7 @@ export class AilaStreamHandler {
     });
   }
 
-  private async notifyClientOfStreamError(error: unknown) {
+  private async onStreamFailed(error: unknown) {
     try {
       if (this._chat.aila.options.useAgenticAila) {
         // ailaTurn threw rather than returning; its internal failure path never
@@ -409,13 +407,6 @@ export class AilaStreamHandler {
     await this._chat.enqueue({
       type: "error",
       value: "Something went wrong. Please try sending your message again.",
-    });
-  }
-
-  private createSectionAgents(openai: OpenAI) {
-    return createSectionAgentRegistry({
-      openai,
-      customAgentHandlers: this.createMathsQuizAgentHandlers(),
     });
   }
 
@@ -489,7 +480,7 @@ export class AilaStreamHandler {
 
   private async readFromStream(
     abortController?: AbortController,
-  ): Promise<StreamReadOutcome> {
+  ): Promise<{ status: "success" | "aborted" }> {
     if (!this._streamReader) {
       throw new Error("Stream reader is not defined");
     }
@@ -554,7 +545,7 @@ export class AilaStreamHandler {
   }
 
   private async handleStreamError(error: unknown) {
-    await this.notifyClientOfStreamError(error);
+    await this.onStreamFailed(error);
 
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
