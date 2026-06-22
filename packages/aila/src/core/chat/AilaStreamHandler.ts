@@ -15,7 +15,7 @@ import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sect
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
 import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
-import { deriveQuizBuildMode } from "../../lib/agentic-system/quizOperations/deriveQuizBuildMode";
+import { deriveSectionBuildMode } from "../../lib/agentic-system/quizOperations/deriveSectionBuildMode";
 import type {
   AilaTurnOutcome,
   SectionAgent,
@@ -309,7 +309,7 @@ export class AilaStreamHandler {
         try {
           const userInstructions =
             ctx.currentTurn.currentStep?.sectionInstructions;
-          const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+          const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
           const tracker = createQuizTracker();
           const { quiz, note } = await tracker.run(async (task, reportId) => {
             const result = await this._chat.quizService.buildQuiz(

@@ -1,5 +1,5 @@
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
-import { deriveQuizBuildMode } from "../../../quizOperations/deriveQuizBuildMode";
+import { deriveSectionBuildMode } from "../../../quizOperations/deriveSectionBuildMode";
 import { createSectionAgent } from "../createSectionAgent";
 import {
   addOneQuizInstructions,
@@ -11,7 +11,7 @@ import { StarterQuizSchema } from "./starterQuiz.schema";
 export const starterQuizAgent = createSectionAgent({
   responseSchema: StarterQuizSchema,
   instructions: (ctx) => {
-    const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+    const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
     switch (mode.kind) {
       case "fullRegen":
         return starterQuizInstructions;
