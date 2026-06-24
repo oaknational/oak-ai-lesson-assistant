@@ -10,7 +10,7 @@ import { z } from "zod";
 const subjectSchema = z.union([
   subjects,
   z.literal("Rule of law"),
-  z.literal("Digital Literacy"),
+  z.literal("Digital literacy"),
 ]);
 
 const subjectSlugSchema = z.union([
