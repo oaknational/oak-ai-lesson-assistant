@@ -1,3 +1,12 @@
+## [1.77.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.0...v1.77.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* prettier formatting in rag/index.ts ([#1083](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1083)) ([e1ba105](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e1ba10588b3117055ae326ef249f212495ab3e80))
+* remove dead stores and commented code ([#1075](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1075)) ([f4fe70e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/f4fe70e52ff76c9296a65c8a8c1fe19ca7879a8d))
+* reset stale basedOn attribution ([#1065](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1065)) ([25f2689](https://github.com/oaknational/oak-ai-lesson-assistant/commit/25f26895f2012e57f316aa5cb21500615b7ff9bc))
+
 # [1.77.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.76.0...v1.77.0) (2026-06-15)
 
 
