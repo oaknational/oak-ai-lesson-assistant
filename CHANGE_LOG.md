@@ -1,3 +1,10 @@
+## [1.77.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.1...v1.77.2) (2026-06-24)
+
+
+### Bug Fixes
+
+* add missing subjects - AI-2304 ([#1089](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1089)) ([3e5c017](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3e5c0178d83de96c74ef848ec362ac957159aedc))
+
 ## [1.77.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.0...v1.77.1) (2026-06-22)
 
 
