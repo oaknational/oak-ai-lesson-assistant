@@ -20,10 +20,9 @@ export type SectionListDispatchOptions = {
 
 /**
  * Section-agnostic add/remove/change over a list of items. REMOVE is deterministic
- * (no agent); ADD/CHANGE call runSingleItem once and splice the result in. Untouched
- * items are carried over by reference via slice, so they stay byte-preserved. On a
- * declined edit the original items array is returned unchanged with a note, so callers
- * can detect "no change" by reference identity.
+ * (no agent); ADD/CHANGE call runSingleItem once. Untouched items are carried over
+ * by reference (slice), so they stay byte-preserved, and a declined edit returns the
+ * original array unchanged
  */
 export async function sectionListOperationDispatcher<T>(
   items: T[],

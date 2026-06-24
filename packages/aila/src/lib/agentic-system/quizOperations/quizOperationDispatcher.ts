@@ -13,11 +13,9 @@ export type QuizDispatchResult = {
 };
 
 /**
- * Thin quiz adapter over the generic section-list dispatcher: unwrap the questions
- * array, run the operation, then re-wrap the quiz envelope. Quizzes have no item
- * count bounds (min 0, no max), matching the previous behaviour. When the edit is
- * declined the questions array comes back by reference, so the original quiz object
- * is returned unchanged.
+ * Quiz adapter over the generic section-list dispatcher. A declined edit returns
+ * the questions array by reference, so the original quiz object passes through
+ * unchanged.
  */
 export async function quizOperationDispatcher(
   currentQuiz: LatestQuiz,

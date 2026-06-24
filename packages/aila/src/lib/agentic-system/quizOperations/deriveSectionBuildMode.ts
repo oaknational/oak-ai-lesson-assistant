@@ -2,10 +2,8 @@ import type { QuizBuildMode } from "../../../core/quiz/interfaces";
 import type { PlanStep } from "../schema";
 
 /**
- * Translate the planner-emitted itemIntent on a PlanStep into a build mode for
- * the mode-aware section agents (and the quiz composer). Called at the handler
- * boundary so the composer/agent layer stays unaware of agentic-system enums.
- * The mode union is shared with the quiz composer (QuizBuildMode).
+ * Map a PlanStep's itemIntent to a section build mode at the handler entry point,
+ * so the composer/agent layer stays unaware of agentic-system enums.
  */
 export function deriveSectionBuildMode(step: PlanStep | null): QuizBuildMode {
   const intent = step?.itemIntent;

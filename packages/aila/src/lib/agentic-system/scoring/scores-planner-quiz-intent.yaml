@@ -333,7 +333,8 @@ cells:
           action: REGENERATE_SECTION
           position: null
   - id: prose-button-target-exit
-    description: Button Remove on exit quiz + textarea '4' → buildProse-shape prose,
+    description:
+      Button Remove on exit quiz + textarea '4' → buildProse-shape prose,
       no marker
     passThreshold: 0.95
     passRate: 1
