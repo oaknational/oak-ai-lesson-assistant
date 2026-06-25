@@ -128,6 +128,8 @@ export function wrapOpenAIWithFixture(
         return (value as (...args: unknown[]) => unknown).bind(
           target,
         ) as unknown;
+      } else {
+        return value;
       }
     },
   });
