@@ -102,16 +102,22 @@ export function getAgenticFixtureConfig(
   const fixtureMode = headers.get("x-e2e-fixture-mode");
   const fixtureName = headers.get("x-e2e-fixture-name");
 
-  if (!fixtureName || (fixtureMode !== "record" && fixtureMode !== "replay")) {
-    return undefined;
+  if (!fixtureName) {
+    throw new Error("Missing agentic fixture name");
   }
+
+  if (fixtureMode !== "record" && fixtureMode !== "replay") {
+    throw new Error(
+      `Invalid agentic fixture mode: ${fixtureMode ?? "missing"}`,
+    );
+  }
+
   if (
     fixtureName.startsWith("/") ||
     fixtureName.includes("..") ||
     fixtureName.includes("\\")
   ) {
-    log.warn("Ignoring invalid agentic fixtureName: %s", fixtureName);
-    return undefined;
+    throw new Error(`Invalid agentic fixtureName: ${fixtureName}`);
   }
 
   log.info("Using agentic fixture %s (%s)", fixtureName, fixtureMode);

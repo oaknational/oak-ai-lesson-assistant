@@ -107,6 +107,16 @@ async function setupChatHandler(req: NextRequest) {
 
       const agenticFixture = getAgenticFixtureConfig(req.headers);
 
+      if (
+        process.env.AILA_FIXTURES_ENABLED === "true" &&
+        e2eAilaSystem === "agentic" &&
+        !agenticFixture
+      ) {
+        throw new Error(
+          "Agentic E2E fixture mode requires x-e2e-fixture-name and a valid x-e2e-fixture-mode.",
+        );
+      }
+
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
