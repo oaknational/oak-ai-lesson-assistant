@@ -233,5 +233,60 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
       expect(handler).toHaveBeenCalledTimes(1);
       expect(getUpdatedKeywords(callbacks)).toEqual(regenerated);
     });
+
+    it("declines when the section agent returns more than one item", async () => {
+      const extras: Keyword[] = [
+        { keyword: "Glucose", definition: "A simple sugar." },
+        { keyword: "Starch", definition: "A storage carbohydrate." },
+      ];
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: extras });
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Add a keyword about sugars", {
+          action: "ADD_ITEM",
+          position: null,
+        }),
+        sectionAgents: keywordsAgent(handler),
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Add a keyword about sugars"),
+        runtime,
+        callbacks,
+      });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(getUpdatedKeywords(callbacks)).toEqual([k1, k2, k3]);
+    });
+
+    it("leaves an absent section absent instead of writing an empty list", async () => {
+      const handler = jest.fn();
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Remove the second keyword", {
+          action: "REMOVE_ITEM",
+          position: 2,
+        }),
+        sectionAgents: keywordsAgent(handler),
+      });
+
+      await ailaTurn({
+        persistedState: {
+          messages: [
+            { id: "u1", role: "user", content: "Remove the second keyword" },
+          ],
+          initialDocument: {},
+          relevantLessons: null,
+          ragFetched: { status: "not_fetched", searchIdentity: null },
+        },
+        runtime,
+        callbacks,
+      });
+
+      expect(handler).not.toHaveBeenCalled();
+      expect(getUpdatedKeywords(callbacks)).toBeUndefined();
+    });
   });
 });
