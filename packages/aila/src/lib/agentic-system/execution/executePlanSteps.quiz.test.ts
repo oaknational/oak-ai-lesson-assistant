@@ -358,6 +358,61 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
     });
   });
 
+  describe("single-item contract", () => {
+    it("declines when the section agent returns more than one question", async () => {
+      const sectionAgent = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [
+            makeQuestion("First extra question"),
+            makeQuestion("Second extra question"),
+          ],
+          imageMetadata: [],
+        },
+      });
+      const callbacks = makeCallbacks();
+
+      const runtime = makeRuntime({
+        plannerAgent: jest.fn().mockResolvedValue({
+          error: null,
+          data: {
+            decision: "plan",
+            parsedUserMessage: "Add a question to the starter quiz",
+            plan: [
+              {
+                type: "section",
+                sectionKey: "starterQuiz",
+                action: "generate",
+                sectionInstructions: null,
+                itemIntent: {
+                  action: "ADD_ITEM",
+                  position: null,
+                },
+              },
+            ],
+          },
+        }),
+        sectionAgents: {
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
+            handler: sectionAgent,
+          },
+        } as unknown as SectionAgentRegistry,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
+
+      expect(sectionAgent).toHaveBeenCalledTimes(1);
+      expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([q1, q2, q3]);
+    });
+  });
+
   describe("British English correction", () => {
     it("corrects an added question that contains an Americanism", async () => {
       const americanQuestion = makeQuestion("What color is a healthy leaf?");

@@ -217,8 +217,13 @@ async function executeQuizDispatchStep(
       if (agentResult.error) return null;
       const quizResult = LatestQuizSchema.safeParse(agentResult.data);
       if (!quizResult.success) return null;
-      if (!validateSingleQuestion(quizResult.data.questions[0])) return null;
-      return quizResult.data.questions[0] ?? null;
+      // Decline if more than one question comes back, rather than silently
+      // using the first.
+      const { questions } = quizResult.data;
+      if (questions.length !== 1) return null;
+      const question = questions[0];
+      if (!validateSingleQuestion(question)) return null;
+      return question ?? null;
     },
   );
 
