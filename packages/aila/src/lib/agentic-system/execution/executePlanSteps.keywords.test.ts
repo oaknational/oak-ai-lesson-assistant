@@ -303,9 +303,10 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
       const handler = jest
         .fn()
         .mockResolvedValue({ error: null, data: [americanKeyword] });
-      const corrector = jest.fn().mockResolvedValue({
-        error: null,
-        data: [k1, k2, k3, britishKeyword],
+      let correctedContent: unknown;
+      const corrector = jest.fn().mockImplementation((props: unknown) => {
+        correctedContent = (props as { content: unknown }).content;
+        return Promise.resolve({ error: null, data: [britishKeyword] });
       });
       const callbacks = makeCallbacks();
       const runtime = makeRuntime({
@@ -324,11 +325,55 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
       });
 
       expect(corrector).toHaveBeenCalledTimes(1);
+      // only the new item reaches the corrector, never the existing keywords
+      expect(correctedContent).toEqual([americanKeyword]);
       expect(getUpdatedKeywords(callbacks)).toEqual([
         k1,
         k2,
         k3,
         britishKeyword,
+      ]);
+    });
+
+    it("leaves existing items untouched when the added one is clean", async () => {
+      // An existing keyword carries an Americanism; the added one is clean.
+      // Per-item correction must not scan or rewrite the existing keyword.
+      const existingWithAmericanism: Keyword = {
+        keyword: "Color theory",
+        definition: "How colour choices work together.",
+      };
+      const newKeyword: Keyword = {
+        keyword: "Glucose",
+        definition: "A simple sugar made during photosynthesis.",
+      };
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: [newKeyword] });
+      const corrector = jest.fn();
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Add a keyword about glucose", {
+          action: "ADD_ITEM",
+          position: null,
+        }),
+        sectionAgents: keywordsAgent(handler),
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Add a keyword about glucose", [
+          k1,
+          existingWithAmericanism,
+        ]),
+        runtime,
+        callbacks,
+      });
+
+      expect(corrector).not.toHaveBeenCalled();
+      expect(getUpdatedKeywords(callbacks)).toEqual([
+        k1,
+        existingWithAmericanism,
+        newKeyword,
       ]);
     });
 

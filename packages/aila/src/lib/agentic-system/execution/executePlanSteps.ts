@@ -228,7 +228,15 @@ async function executeQuizDispatchStep(
       if (questions.length !== 1) return null;
       const question = questions[0];
       if (!validateSingleQuestion(question)) return null;
-      return question ?? null;
+      // Correct only this new question, wrapped as a single-question quiz, so
+      // existing questions are never sent to the corrector and stay untouched.
+      const correctedQuiz = await applyBritishEnglishCorrection({
+        context,
+        sectionKey,
+        content: { ...currentQuiz, questions: [question] },
+        responseSchema: CompletedLessonPlanSchema.shape[sectionKey],
+      });
+      return correctedQuiz?.questions[0] ?? question ?? null;
     },
   );
 
@@ -239,24 +247,11 @@ async function executeQuizDispatchStep(
     });
   }
 
-  // Correct the agent output like the whole-section path. A declined edit
-  // returns the original quiz by reference, so skip it.
-  const corrected =
-    dispatchResult.data === currentQuiz
-      ? null
-      : await applyBritishEnglishCorrection({
-          context,
-          sectionKey,
-          content: dispatchResult.data,
-          responseSchema: CompletedLessonPlanSchema.shape[sectionKey],
-        });
-  const finalQuiz = corrected ?? dispatchResult.data;
-
   commitStepUpdate(context, step, (draft) => {
     if (sectionKey === "starterQuiz") {
-      draft.starterQuiz = finalQuiz;
+      draft.starterQuiz = dispatchResult.data;
     } else {
-      draft.exitQuiz = finalQuiz;
+      draft.exitQuiz = dispatchResult.data;
     }
   });
 
@@ -294,7 +289,16 @@ async function executeSectionListDispatchStep(
       const data = parsed.data as unknown[];
       if (data.length !== 1) return null;
       const item = data[0];
-      return config.validateItem(item) ? item : null;
+      if (!config.validateItem(item)) return null;
+      // Correct only this new item, wrapped as a single-element section, so
+      // existing items are never sent to the corrector and stay untouched.
+      const correctedItems = (await applyBritishEnglishCorrection({
+        context,
+        sectionKey,
+        content: [item],
+        responseSchema: config.arraySchema,
+      })) as unknown[] | null;
+      return correctedItems?.[0] ?? item;
     },
     {
       itemNoun: config.itemNoun,
@@ -311,24 +315,11 @@ async function executeSectionListDispatchStep(
     });
   }
 
-  // Correct the agent output like the whole-section path. A declined edit
-  // returns the original list by reference, so skip it.
-  const corrected =
-    dispatchResult.data === currentItems
-      ? null
-      : await applyBritishEnglishCorrection({
-          context,
-          sectionKey,
-          content: dispatchResult.data,
-          responseSchema: config.arraySchema,
-        });
-  const finalItems = (corrected ?? dispatchResult.data) as unknown[];
-
   commitStepUpdate(context, step, (draft) => {
     // A declined edit on an absent section would write an empty array (e.g.
     // `keywords: []`), violating the section's min(1) schema; leave it absent.
-    if (sectionWasAbsent && finalItems.length === 0) return;
-    (draft as Record<string, unknown>)[sectionKey] = finalItems;
+    if (sectionWasAbsent && dispatchResult.data.length === 0) return;
+    (draft as Record<string, unknown>)[sectionKey] = dispatchResult.data;
   });
 
   return { status: "continue" };

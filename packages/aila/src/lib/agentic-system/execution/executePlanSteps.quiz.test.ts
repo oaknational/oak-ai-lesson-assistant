@@ -425,13 +425,17 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
           imageMetadata: [],
         },
       });
-      const corrector = jest.fn().mockResolvedValue({
-        error: null,
-        data: {
-          version: "v3",
-          questions: [q1, q2, q3, britishQuestion],
-          imageMetadata: [],
-        },
+      let correctedContent: unknown;
+      const corrector = jest.fn().mockImplementation((props: unknown) => {
+        correctedContent = (props as { content: unknown }).content;
+        return Promise.resolve({
+          error: null,
+          data: {
+            version: "v3",
+            questions: [britishQuestion],
+            imageMetadata: [],
+          },
+        });
       });
       const callbacks = makeCallbacks();
 
@@ -472,6 +476,10 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
       });
 
       expect(corrector).toHaveBeenCalledTimes(1);
+      // only the new question reaches the corrector, never the existing ones
+      expect((correctedContent as { questions: unknown }).questions).toEqual([
+        americanQuestion,
+      ]);
       expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([
         q1,
         q2,

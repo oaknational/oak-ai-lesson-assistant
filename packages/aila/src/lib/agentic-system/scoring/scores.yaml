@@ -1,5 +1,5 @@
-codeHash: 0a14067a4a8269b02907a95b2f2349f516cd26e3b415f57155cda79a662d37a7
-generated: 2026-06-25T12:15:08.760Z
+codeHash: bdfea6ad054b23275942a0874dc43a976ff988724a7df73a002e7d19ddfb375d
+generated: 2026-06-25T14:10:45.301Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -28,7 +28,7 @@ summary:
       correction_rate: 3.0%
       correction_failure_rate: 0.0%
       corrections_by_section:
-        cycle1: 1
+        priorKnowledge: 1
   no-rag-lesson:
     plan-groupings:
       pass: 3
