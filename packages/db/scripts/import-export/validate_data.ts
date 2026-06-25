@@ -86,6 +86,71 @@ const CsvRowSchema = z
   })
   .passthrough();
 
+function handleTable(table: string) {
+  return table === "key_stage" ? "key_stages" : table;
+}
+
+function checkForeignKeyReference(
+  fk: string,
+  refTable: string,
+  ids: string[],
+  errors: string[],
+): Promise<void> {
+  const refFilePath = path.join(dataDir, `${handleTable(refTable)}.csv`);
+  if (!fs.existsSync(refFilePath)) {
+    errors.push(`CSV file for referenced table '${refTable}' does not exist.`);
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    const refIds = new Set<string>();
+    fs.createReadStream(refFilePath)
+      .pipe(csvParser())
+      .on("data", (rawRow: unknown) => {
+        try {
+          const row = CsvRowSchema.parse(rawRow);
+          refIds.add(row.id);
+        } catch {
+          errors.push(`Invalid row format: missing or invalid id field`);
+        }
+      })
+      .on("end", () => {
+        for (const id of ids) {
+          if (!refIds.has(id)) {
+            errors.push(
+              `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
+            );
+          }
+        }
+        resolve();
+      })
+      .on("error", (error) => {
+        reject(
+          new Error(
+            `Error reading referenced CSV file: ${refFilePath}. Error: ${error.message}`,
+          ),
+        );
+      });
+  });
+}
+
+async function checkForeignKeyReferences(
+  foreignKeys: Record<string, string>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  foreignKeyCheck: Record<string, Set<any>>,
+  errors: string[],
+) {
+  await Promise.all(
+    Object.entries(foreignKeys).map(async ([fk, refTable]) => {
+      const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
+
+      if (ids.length > 0) {
+        await checkForeignKeyReference(fk, refTable, ids, errors);
+      }
+    }),
+  );
+}
+
 const validateCSV = (
   filePath: string,
   nonNullable: string[],
@@ -126,54 +191,10 @@ const validateCSV = (
         }
       })
       .on("end", () => {
-        void (() => {
+        void (async () => {
           log(`Completed reading CSV file: ${filePath}`);
 
-          // Validate foreign keys in CSV
-          for (const [fk, refTable] of Object.entries(foreignKeys)) {
-            const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
-
-            function handleTable(table: string) {
-              if (table === "key_stage") {
-                return "key_stages";
-              }
-            }
-
-            if (ids.length > 0) {
-              const refFilePath = path.join(
-                dataDir,
-                `${handleTable(refTable)}.csv`,
-              );
-              if (!fs.existsSync(refFilePath)) {
-                errors.push(
-                  `CSV file for referenced table '${refTable}' does not exist.`,
-                );
-              } else {
-                const refIds = new Set<string>();
-                fs.createReadStream(refFilePath)
-                  .pipe(csvParser())
-                  .on("data", (rawRow: unknown) => {
-                    try {
-                      const row = CsvRowSchema.parse(rawRow);
-                      refIds.add(row.id);
-                    } catch {
-                      errors.push(
-                        `Invalid row format: missing or invalid id field`,
-                      );
-                    }
-                  })
-                  .on("end", () => {
-                    ids.forEach((id: string) => {
-                      if (!refIds.has(id)) {
-                        errors.push(
-                          `Broken foreign key: '${fk}' references '${refTable}' but value '${id}' does not exist in table '${refTable}'.`,
-                        );
-                      }
-                    });
-                  });
-              }
-            }
-          }
+          await checkForeignKeyReferences(foreignKeys, foreignKeyCheck, errors);
 
           if (errors.length > 0) {
             log(`Validation failed for CSV file: ${filePath}`);
@@ -182,7 +203,7 @@ const validateCSV = (
             log(`Validation passed for CSV file: ${filePath}`);
             resolve();
           }
-        })();
+        })().catch(reject);
       })
       .on("error", (error) => {
         reject(
