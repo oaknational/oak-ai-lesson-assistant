@@ -18,6 +18,8 @@ type AgenticRecording = {
 };
 
 const INPUT_PREVIEW_LENGTH = 300;
+// Allow slash-separated path segments while blocking traversal and absolute paths.
+const VALID_FIXTURE_NAME = /^[a-zA-Z0-9_-]+(?:\/[a-zA-Z0-9_-]+)*$/;
 
 function recordingsRoot(): string {
   return (
@@ -27,6 +29,11 @@ function recordingsRoot(): string {
 }
 
 function recordingPath(fixtureName: string, callIndex: number): string {
+  if (!VALID_FIXTURE_NAME.test(fixtureName)) {
+    throw new Error(
+      `Invalid fixture name: ${fixtureName}. Only alphanumeric characters, underscores, hyphens, and slash-separated segments are allowed.`,
+    );
+  }
   return path.join(recordingsRoot(), `${fixtureName}-${callIndex}.json`);
 }
 

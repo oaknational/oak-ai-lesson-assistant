@@ -125,4 +125,15 @@ describe("wrapOpenAIWithFixture", () => {
       void (wrapped.responses as unknown as Record<string, unknown>).create;
     }).toThrow(/not supported/);
   });
+
+  it("rejects fixture names with path traversal characters", async () => {
+    const wrapped = wrapOpenAIWithFixture(makeFakeOpenAI(jest.fn()), {
+      mode: "record",
+      fixtureName: "../escape",
+    });
+
+    await expect(wrapped.responses.parse(params)).rejects.toThrow(
+      /Invalid fixture name/,
+    );
+  });
 });
