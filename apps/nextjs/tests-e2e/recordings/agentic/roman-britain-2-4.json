@@ -1,0 +1,178 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- learningOutcome: generate\n- learningCycles: generate"
+      },
+      {
+        "role": "developer",
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can describe what happened in Britain after the Roman Empire's withdrawal and explain the cultural and societal changes during that period.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Describe the reasons for the withdrawal of Roman forces from Britain.\",\"Identify the immediate effects on local governance and defence after Roman rule ended.\",\"Explain the cultural adaptations that resulted from the transition from Roman to early mediaeval society.\"]}]"
+      },
+      {
+        "role": "developer",
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!"
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0f8646a4bc0ca555006a29686647b8819f81ec68d36c61f650",
+    "object": "response",
+    "created_at": 1781098598,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781098599,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0f8646a4bc0ca555006a29686711ac819f97ac6d550a58bf12",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step.\"}}",
+            "parsed": {
+              "value": {
+                "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step."
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1844,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 38,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1882
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step.\"}}",
+    "output_parsed": {
+      "value": {
+        "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step."
+      }
+    }
+  }
+}

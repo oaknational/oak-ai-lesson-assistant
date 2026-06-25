@@ -5,6 +5,9 @@
   },
   "include": ["src/**/*.ts", "index.ts", "*.ts"],
   "compilerOptions": {
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@oakai/core/src/*": ["../../core/src/*"]
+    }
   }
 }

@@ -1,0 +1,872 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Task\n\n### 🧠 You are a *planning agent* that supports users in creating or editing structured lesson plans.\n\nYour role is **to produce a structured plan** that identifies which lesson sections need action — and what kind of action — before the plan can be passed to the next agent.\n\nYou must respond with **exactly one of two decision types**:\n1. **\"plan\"** - Generate a plan with specific section steps\n2. **\"exit\"** - Exit with a reason when planning is not appropriate\n\n---\n\n### SCOPE\n\n- Aila is focused on supporting educators in creating high quality lesson plans.\n- Its remit is purely educational.\n- If it feels as though the user is trying to engage in non-educational topics, or casual conversation, you should refuse.\n\n### CAPABILITIES\n\n- Aila is designed as a chat interface to generate a lesson plan document under the direction of the user.\n- The user can ask you to add or edit or remove sections of the lesson plan. However the structure is constrained by the predefined sections.\n- You can not add a section which is not part of the predefined structure.\n- The lesson plan is automatically saved as the user makes changes, but no version history is available.\n- Once the lesson plan is complete, the user will be able to download the lesson plan, the quizzes, and the lesson slides in various formats. They will need to click the \"Download\" button, and follow the directions on screen. The only reason they wouldn't be able to click the Download button would be if the lesson is not 'complete'.\n- You are not able to directly alert Oak about any issues they are having. If they have an issues, they can use the \"Feedback\" button in the bottom right corner of the screen to report any issues. \n\n### RELEVANT QUERIES\n\n- It might be that the user asks questions about your the pedagogical approach. This is fine.\n- It is not appropriate to engage in discussions about personal opinions or beliefs.\n\n---\n\n### 🔹 SECTION GROUPS:\n1. `title`, `keyStage`, `subject`\n2. `basedOn` (optional), `learningOutcome`, `learningCycles`  \n3. `priorKnowledge`, `keyLearningPoints`, `misconceptions`, `keywords`  \n4. `starterQuiz`, `cycle1`, `cycle2`, `cycle3` (conditional on `learningCycles`), `exitQuiz`\n5. `additionalMaterials` (optional)\n\nA group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.\n\nAll sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.\n\n**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:\n1. The user's message explicitly names sections from different groups (e.g. \"rewrite the `keywords` and make `cycle2` harder\").\n2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. \"do everything\", \"complete the lesson\", \"fill in the rest\"). In this case, plan all remaining incomplete sections.\n\n\nIf none of these apply — including the default case where the user clicks \"continue\" or sends a vague positive intent — plan **only the next incomplete group**.\n\n#### cycle3\nInclude `cycle3` in the plan **if and only if** the `learningCycles` field contains exactly 3 entries. If `learningCycles` has 2 entries, do not include `cycle3`.\n\n\n\n#### basedOn\n- `basedOn` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.\n- **NEVER include `basedOn` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include `basedOn`.\n\n---\n\n### 🔹 DECISION RULES\n\n#### When to choose **\"exit\"** decision:\n\n1. **Out of scope** (`out_of_scope`): \n   - User's message is completely unrelated to lesson planning (e.g. weather, jokes)\n\n2. **Capability limitation** (`capability_limitation`): \n   - User requests technically impossible actions (e.g. emailing, saving, printing files)\n\n3. **Clarification needed** (`clarification_needed`): \n   - Request is ambiguous or vague (e.g. \"make it better\", \"improve this\")\n   - You cannot confidently determine which section or how it should be changed\n\n4. **Relevant query** (`relevant_query`):\n   - User asks for information about the current lesson or wants clarification\n   - User asks about your capabilities\n   - You need to provide educational context or explanations\n\n#### When to choose **\"plan\"** decision:\n\n1. **Specific section request**: \n   - User requests changes to a specific section\n   - Create plan with only that section\n\n2. **Section deletion**: \n   - User wants to delete a specific section\n   - Use `delete` action for that section\n\n3. **Complete lesson request** (cross-group):\n   - User explicitly asks to complete or generate the whole lesson in one go (e.g. \"do everything\", \"finish the lesson\", \"fill in the rest\").\n   - Plan all remaining incomplete sections in logical order.\n   - This is the only \"plan\" case where multiple groups are included without the user naming specific sections.\n\n4. **Default progression** (single group):\n   - User clicks \"continue\", or provides general positive intent without naming specific sections (e.g. \"next\", \"ok\", \"go on\", \"looks good\").\n   - Plan **only the next incomplete group**, following the SECTION GROUPS order.\n\n---\n\n### 🔹 PLANNING GUIDELINES\n\n- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.\n- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.\n- **User intent**: Respect explicit user directions about specific sections\n\n### 🔹 QUIZ INTENT\n\nWhen planning a step for `starterQuiz` or `exitQuiz`, check whether the user message expresses a structured quiz modification request and, if so, emit a `quizIntent` on that step.\n\n**Action classification:**\nClassify the user message into one of these actions:\n- `REMOVE_QUIZ_QUESTION` — \"remove question N\", \"delete the third question\"\n- `ADD_QUIZ_QUESTION` — \"add a question about X\", \"add another one\". **Before emitting this, check the target quiz's `questions` array — if it is empty, emit `REGENERATE_QUIZ` instead (see Empty-quiz exception below).**\n- `CHANGE_QUIZ_QUESTION` — \"change question N\", \"rewrite question 2\", \"make question N easier\"\n- `REGENERATE_QUIZ` — \"generate a new quiz\", \"redo the whole quiz\", **or any `add`-shaped request when the target quiz has zero existing questions**\n\nThe step's `sectionKey` should be the target quiz (`starterQuiz` or `exitQuiz`).\n\n**Position resolution:**\nFor `REMOVE_QUIZ_QUESTION` and `CHANGE_QUIZ_QUESTION`, resolve `position` (1-indexed) from the message:\n- Explicit number: \"remove question 3\" → `position: 3`\n- Ordinal: \"remove the first question\" → `position: 1`, \"remove the last question\" → `position: currentQuiz.length`\n- Content reference: \"remove the photosynthesis question\" → resolve to the matching 1-indexed position\n- If position cannot be determined, emit `position: null`\n\nFor `ADD_QUIZ_QUESTION`, emit the requested insert position if given, otherwise `position: null` (append).\nFor `REGENERATE_QUIZ`, emit `position: null`.\n\n**Empty-quiz exception (mandatory check before classifying ADD):**\nBefore emitting `ADD_QUIZ_QUESTION`, inspect the target quiz in the CURRENT DOCUMENT:\n- If `starterQuiz.questions` (or `exitQuiz.questions`) is an empty array (length 0), you MUST emit `REGENERATE_QUIZ` instead of `ADD_QUIZ_QUESTION`. Set `position: null`.\n- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.\n\nExample:\n- User message: \"For the starter quiz, add a question\"\n- Document: `starterQuiz: { questions: [], ... }`\n- Correct output: `action: REGENERATE_QUIZ`, `position: null` (NOT `ADD_QUIZ_QUESTION`)\n\nIf the message is not a quiz modification request, omit `quizIntent` (or set it to `null`) on the step.\n\n---\n\n### 🔹 SECTION INSTRUCTIONS\n\nWhen creating plan steps, extract any user-provided instructions specific to that section into the `sectionInstructions` field:\n- For quizzes: preferences about difficulty, question types, images, specific changes (e.g., \"focus on questions with images\", \"make it harder\", \"avoid decimals\")\n- For other sections: specific guidance about content, style, or approach\n- Set `sectionInstructions` to `null` if no specific preferences are mentioned\n- Keep instructions concise but preserve user intent\n- **Write `sectionInstructions` in British English.** They are passed verbatim to section agents, so any Americanism here will seed the generated content. If the user's message uses American spellings or vocabulary (e.g. *color*, *organize*, *eraser*, *math*), rephrase them in British English (*colour*, *organise*, *rubber*, *maths*) when extracting. In particular, write verbs in the **-ise** form (*emphasise*, *recognise*, *summarise*), never the *-ize* form.\n\n---\n\n### 🔹 FINAL NOTES\n\n- You are a **planner**, not a writer\n- Your output directly determines **downstream agent actions**\n- **Never** generate lesson content yourself - that's for section agents\n- **Be precise** - each decision must be clearly justified\n- **Stay focused** - stick to planning, leave content creation to specialists\n"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AGENT_TO_AGENT\nSpeaker: Aila\nAudience: Other agents\nUse this voice when communicating with other agents. It should be clear, concise, and focused on the task at hand."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AGENT_TO_AGENT."
+      },
+      {
+        "role": "developer",
+        "content": "RELEVANT LESSONS (RAG DATA)\n\nRelevant lessons were fetched but none were found.\n\n"
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"Software Testing Techniques\",\n  \"keyStage\": \"key-stage-4\",\n  \"subject\": \"computing\",\n  \"topic\": \"Testing methodologies and practices\",\n  \"learningOutcome\": \"I can explain different software testing techniques and their purposes.\",\n  \"learningCycles\": [\n    \"Identify various software testing techniques and their definitions\",\n    \"Explain the purposes of different software testing techniques\",\n    \"Evaluate the effectiveness of different software testing techniques for specific scenarios\"\n  ],\n  \"priorKnowledge\": [\n    \"Understand the software development lifecycle\",\n    \"Recognise the importance of quality assurance in software development\",\n    \"Familiarity with basic programming concepts\",\n    \"Awareness of different types of software applications\",\n    \"Basic knowledge of debugging techniques\"\n  ],\n  \"keyLearningPoints\": [\n    \"Software testing ensures the functionality and reliability of applications\",\n    \"Different testing techniques are used depending on the objectives\",\n    \"Manual and automated testing have distinct advantages and disadvantages\",\n    \"Black-box testing focuses on input and output without considering internal code structure\",\n    \"White-box testing involves testing the internal structures and workings of an application\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Testing is only done after development\",\n      \"description\": \"Testing should occur at multiple stages throughout the software development lifecycle to catch issues early.\"\n    },\n    {\n      \"misconception\": \"Automated testing eliminates the need for manual testing\",\n      \"description\": \"Both automated and manual testing have their roles; manual testing is still necessary for exploratory and usability testing.\"\n    },\n    {\n      \"misconception\": \"Testing guarantees bug-free software\",\n      \"description\": \"Testing reduces the number of bugs but cannot guarantee a completely bug-free application.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Quality assurance\",\n      \"definition\": \"A systematic process to ensure products meet specified requirements and customer expectations.\"\n    },\n    {\n      \"keyword\": \"Black-box testing\",\n      \"definition\": \"A testing technique that examines the functionality without looking into internal structures.\"\n    },\n    {\n      \"keyword\": \"White-box testing\",\n      \"definition\": \"A testing technique that examines the internal structures or workings of an application.\"\n    },\n    {\n      \"keyword\": \"Automated testing\",\n      \"definition\": \"The use of software tools to execute tests automatically, often for repetitive tasks.\"\n    },\n    {\n      \"keyword\": \"Manual testing\",\n      \"definition\": \"The process of manually checking software for defects without the use of tools or scripts.\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"What is the software development lifecycle?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"A series of phases in software development\"\n        ],\n        \"distractors\": [\n          \"A single stage process in software creation\",\n          \"An unrelated sequence of steps\"\n        ]\n      },\n      {\n        \"question\": \"Why is quality assurance important in software development?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To ensure products meet requirements\"\n        ],\n        \"distractors\": [\n          \"To reduce the cost of software\",\n          \"To increase the complexity of software\"\n        ]\n      },\n      {\n        \"question\": \"What is debugging?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Finding and fixing errors in code\"\n        ],\n        \"distractors\": [\n          \"Writing new code\",\n          \"Testing user interfaces\"\n        ]\n      },\n      {\n        \"question\": \"Name a type of software application.\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Web application\"\n        ],\n        \"distractors\": [\n          \"Hardware device\",\n          \"Network cable\"\n        ]\n      },\n      {\n        \"question\": \"What is a basic programming concept?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Loops\"\n        ],\n        \"distractors\": [\n          \"Photoshop filters\",\n          \"Network routers\"\n        ]\n      },\n      {\n        \"question\": \"What is the purpose of testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To ensure functionality and reliability\"\n        ],\n        \"distractors\": [\n          \"To increase the price\",\n          \"To make the software more colourful\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Identifying Software Testing Techniques\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Explain the role of software testing in ensuring application quality.\",\n        \"Introduce black-box and white-box testing as key techniques.\",\n        \"Define black-box testing: focuses on inputs and outputs without knowledge of internal code.\",\n        \"Define white-box testing: involves testing internal structures of the application.\",\n        \"Discuss manual testing: manually checking the software for defects without tools.\",\n        \"Introduce automated testing: using software tools to execute tests automatically.\"\n      ],\n      \"accompanyingSlideDetails\": \"A diagram comparing black-box and white-box testing techniques.\",\n      \"imagePrompt\": \"black-box vs white-box testing diagram\",\n      \"slideText\": \"Learn about black-box and white-box testing techniques and their roles in software testing.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What is black-box testing?\",\n        \"answers\": [\n          \"Testing based on inputs and outputs\"\n        ],\n        \"distractors\": [\n          \"Testing internal structures\",\n          \"Testing with software tools\"\n        ]\n      },\n      {\n        \"question\": \"What does white-box testing involve?\",\n        \"answers\": [\n          \"Testing internal structures\"\n        ],\n        \"distractors\": [\n          \"Testing inputs and outputs\",\n          \"Testing without tools\"\n        ]\n      }\n    ],\n    \"practice\": \"Match the definitions to the correct testing technique: black-box, white-box, manual, or automated.\",\n    \"feedback\": \"Model answer: Black-box testing is matched with 'testing based on inputs and outputs', white-box with 'testing internal structures', manual with 'checking without tools', and automated with 'using software tools'.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Explaining Purposes of Testing Techniques\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Discuss the purpose of black-box testing: validating software functionality from an end-user perspective.\",\n        \"Explain white-box testing purpose: ensuring internal code correctness and structure integrity.\",\n        \"Introduce the advantages of manual testing: flexibility and human insight in exploratory testing.\",\n        \"Discuss the purpose of automated testing: efficiency in repetitive test cases and regression testing.\",\n        \"Highlight scenarios where each technique is most effective.\"\n      ],\n      \"accompanyingSlideDetails\": \"A table listing testing techniques with their purposes and advantages.\",\n      \"imagePrompt\": \"testing techniques purposes table\",\n      \"slideText\": \"Understand the purposes and advantages of different testing techniques.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What is the purpose of black-box testing?\",\n        \"answers\": [\n          \"Validating functionality from an end-user perspective\"\n        ],\n        \"distractors\": [\n          \"Ensuring code correctness\",\n          \"Testing with automation tools\"\n        ]\n      },\n      {\n        \"question\": \"Why is manual testing beneficial?\",\n        \"answers\": [\n          \"Provides flexibility and human insight\"\n        ],\n        \"distractors\": [\n          \"Ensures internal code correctness\",\n          \"Automates repetitive tasks\"\n        ]\n      }\n    ],\n    \"practice\": \"Explain, in your own words, when it would be most advantageous to use each testing technique: black-box, white-box, manual, and automated.\",\n    \"feedback\": \"Model answer: Black-box testing is best for testing user interfaces, white-box for code correctness, manual for exploratory tasks, and automated for repetitive tests.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Evaluating Testing Effectiveness\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Present scenarios where different testing techniques are applied.\",\n        \"Evaluate the effectiveness of black-box testing for user interface scenarios.\",\n        \"Discuss white-box testing's effectiveness for code quality assurance.\",\n        \"Examine manual testing's role in usability testing.\",\n        \"Consider automated testing's efficiency in regression testing.\"\n      ],\n      \"accompanyingSlideDetails\": \"Scenarios with testing techniques applied and their evaluations.\",\n      \"imagePrompt\": \"testing scenarios evaluation\",\n      \"slideText\": \"Evaluate the effectiveness of testing techniques in various scenarios.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"In which scenario is black-box testing most effective?\",\n        \"answers\": [\n          \"User interface testing\"\n        ],\n        \"distractors\": [\n          \"Code quality assurance\",\n          \"Regression testing\"\n        ]\n      },\n      {\n        \"question\": \"Which testing is efficient for regression testing?\",\n        \"answers\": [\n          \"Automated testing\"\n        ],\n        \"distractors\": [\n          \"Manual testing\",\n          \"Black-box testing\"\n        ]\n      }\n    ],\n    \"practice\": \"Given a set of scenarios, evaluate and justify which testing technique would be most effective for each.\",\n    \"feedback\": \"Model answer: User interfaces benefit from black-box testing, code quality from white-box, usability from manual, and regression from automated testing.\"\n  },\n  \"exitQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"What is the main focus of black-box testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Inputs and outputs\"\n        ],\n        \"distractors\": [\n          \"Internal code\",\n          \"Testing tools\"\n        ]\n      },\n      {\n        \"question\": \"Which technique involves testing internal structures?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"White-box testing\"\n        ],\n        \"distractors\": [\n          \"Black-box testing\",\n          \"Manual testing\"\n        ]\n      },\n      {\n        \"question\": \"Why is automated testing used?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"For efficiency in repetitive tasks\"\n        ],\n        \"distractors\": [\n          \"For human insight\",\n          \"For testing inputs and outputs\"\n        ]\n      },\n      {\n        \"question\": \"When is manual testing most beneficial?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"In exploratory tasks\"\n        ],\n        \"distractors\": [\n          \"In repetitive tasks\",\n          \"In regression testing\"\n        ]\n      },\n      {\n        \"question\": \"Which testing technique validates functionality from an end-user perspective?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Black-box testing\"\n        ],\n        \"distractors\": [\n          \"White-box testing\",\n          \"Automated testing\"\n        ]\n      },\n      {\n        \"question\": \"What is the role of white-box testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Ensuring code correctness\"\n        ],\n        \"distractors\": [\n          \"Testing user interfaces\",\n          \"Automating tasks\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"additionalMaterials\": \"None\"\n}"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Software testing techniques\n- assistant: \n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/title\",\"value\":\"Software Testing Techniques\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/subject\",\"value\":\"computing\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/keyStage\",\"value\":\"key-stage-4\"}}\n␞\n\n␞\n{\"type\":\"patch\",\"reasoning\":\"generated\",\"value\":{\"op\":\"add\",\"path\":\"/topic\",\"value\":\"Testing methodologies and practices\"}}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"No existing Oak lessons are available for this specific topic, so we will start creating the lesson plan from scratch.\",\"value\":{\"type\":\"string\",\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can explain different software testing techniques and their purposes.\"}},{\"type\":\"patch\",\"reasoning\":\"The learning cycles are structured to cover the key areas of software testing techniques, gradually increasing in complexity.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Identify various software testing techniques and their definitions\",\"Explain the purposes of different software testing techniques\",\"Evaluate the effectiveness of different software testing techniques for specific scenarios\"]}}],\"prompt\":{\"type\":\"text\",\"value\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit below.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-BaGMmu5S2868zOXQ\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i0zd5q0003stws9ktyj1zd\"}\n␞\n\n- user: That looks great\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Fantastic! Let's move on to the next step. We will now generate the prior knowledge, key learning points, misconceptions, and keywords sections. Tap **Continue** to proceed.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-txOqXQBi5gmgHw2E\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i106ob0007stws8vtoobd1\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"These points establish the foundational knowledge that students need before engaging with software testing techniques.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"Understand the software development lifecycle\",\"Recognise the importance of quality assurance in software development\",\"Familiarity with basic programming concepts\",\"Awareness of different types of software applications\",\"Basic knowledge of debugging techniques\"]}},{\"type\":\"patch\",\"reasoning\":\"These key learning points highlight the critical aspects of software testing techniques that students should understand by the end of the lesson.\",\"value\":{\"type\":\"string-array\",\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"Software testing ensures the functionality and reliability of applications\",\"Different testing techniques are used depending on the objectives\",\"Manual and automated testing have distinct advantages and disadvantages\",\"Black-box testing focuses on input and output without considering internal code structure\",\"White-box testing involves testing the internal structures and workings of an application\"]}},{\"type\":\"patch\",\"reasoning\":\"Addressing common misconceptions helps to clarify misunderstandings and improve comprehension of software testing techniques.\",\"value\":{\"type\":\"misconceptions\",\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"Testing is only done after development\",\"description\":\"Testing should occur at multiple stages throughout the software development lifecycle to catch issues early.\"},{\"misconception\":\"Automated testing eliminates the need for manual testing\",\"description\":\"Both automated and manual testing have their roles; manual testing is still necessary for exploratory and usability testing.\"},{\"misconception\":\"Testing guarantees bug-free software\",\"description\":\"Testing reduces the number of bugs but cannot guarantee a completely bug-free application.\"}]}},{\"type\":\"patch\",\"reasoning\":\"These keywords are essential terminology that students need to understand to grasp software testing techniques.\",\"value\":{\"type\":\"keywords\",\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Quality assurance\",\"definition\":\"A systematic process to ensure products meet specified requirements and customer expectations.\"},{\"keyword\":\"Black-box testing\",\"definition\":\"A testing technique that examines the functionality without looking into internal structures.\"},{\"keyword\":\"White-box testing\",\"definition\":\"A testing technique that examines the internal structures or workings of an application.\"},{\"keyword\":\"Automated testing\",\"definition\":\"The use of software tools to execute tests automatically, often for repetitive tasks.\"},{\"keyword\":\"Manual testing\",\"definition\":\"The process of manually checking software for defects without the use of tools or scripts.\"}]}}],\"prompt\":{\"type\":\"text\",\"value\":\"Are the prior knowledge, key learning points, misconceptions, and keywords sections suitable for your class?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-nTu8WxAgniTf773K\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i10pm1000bstws8oheg4h8\"}\n␞\n\n- user: Yes, that looks right\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Great! Let's proceed to the next step. We will now generate the starter quiz, learning cycles, and exit quiz. Tap **Continue** to move forward.\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-FGeN3T0D0t3OV_3k\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i11ebq000fstws0t1gqb6p\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"The starter quiz checks students' prior knowledge, ensuring they have the necessary foundation before starting the lesson.\",\"value\":{\"type\":\"quiz\",\"op\":\"add\",\"path\":\"/starterQuiz\",\"value\":[{\"question\":\"What is the software development lifecycle?\",\"answers\":[\"A series of phases in software development\"],\"distractors\":[\"A single stage process in software creation\",\"An unrelated sequence of steps\"]},{\"question\":\"Why is quality assurance important in software development?\",\"answers\":[\"To ensure products meet requirements\"],\"distractors\":[\"To reduce the cost of software\",\"To increase the complexity of software\"]},{\"question\":\"What is debugging?\",\"answers\":[\"Finding and fixing errors in code\"],\"distractors\":[\"Writing new code\",\"Testing user interfaces\"]},{\"question\":\"Name a type of software application.\",\"answers\":[\"Web application\"],\"distractors\":[\"Hardware device\",\"Network cable\"]},{\"question\":\"What is a basic programming concept?\",\"answers\":[\"Loops\"],\"distractors\":[\"Photoshop filters\",\"Network routers\"]},{\"question\":\"What is the purpose of testing?\",\"answers\":[\"To ensure functionality and reliability\"],\"distractors\":[\"To increase the price\",\"To make the software more colourful\"]}]}},{\"type\":\"patch\",\"reasoning\":\"The first learning cycle focuses on identifying software testing techniques and explaining their definitions.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle1\",\"value\":{\"title\":\"Identifying Software Testing Techniques\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Explain the role of software testing in ensuring application quality.\",\"Introduce black-box and white-box testing as key techniques.\",\"Define black-box testing: focuses on inputs and outputs without knowledge of internal code.\",\"Define white-box testing: involves testing internal structures of the application.\",\"Discuss manual testing: manually checking the software for defects without tools.\",\"Introduce automated testing: using software tools to execute tests automatically.\"],\"accompanyingSlideDetails\":\"A diagram comparing black-box and white-box testing techniques.\",\"imagePrompt\":\"black-box vs white-box testing diagram\",\"slideText\":\"Learn about black-box and white-box testing techniques and their roles in software testing.\"},\"checkForUnderstanding\":[{\"question\":\"What is black-box testing?\",\"answers\":[\"Testing based on inputs and outputs\"],\"distractors\":[\"Testing internal structures\",\"Testing with software tools\"]},{\"question\":\"What does white-box testing involve?\",\"answers\":[\"Testing internal structures\"],\"distractors\":[\"Testing inputs and outputs\",\"Testing without tools\"]}],\"practice\":\"Match the definitions to the correct testing technique: black-box, white-box, manual, or automated.\",\"feedback\":\"Model answer: Black-box testing is matched with 'testing based on inputs and outputs', white-box with 'testing internal structures', manual with 'checking without tools', and automated with 'using software tools'.\"}}},{\"type\":\"patch\",\"reasoning\":\"The second learning cycle explains the purposes of different software testing techniques.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle2\",\"value\":{\"title\":\"Explaining Purposes of Testing Techniques\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Discuss the purpose of black-box testing: validating software functionality from an end-user perspective.\",\"Explain white-box testing purpose: ensuring internal code correctness and structure integrity.\",\"Introduce the advantages of manual testing: flexibility and human insight in exploratory testing.\",\"Discuss the purpose of automated testing: efficiency in repetitive test cases and regression testing.\",\"Highlight scenarios where each technique is most effective.\"],\"accompanyingSlideDetails\":\"A table listing testing techniques with their purposes and advantages.\",\"imagePrompt\":\"testing techniques purposes table\",\"slideText\":\"Understand the purposes and advantages of different testing techniques.\"},\"checkForUnderstanding\":[{\"question\":\"What is the purpose of black-box testing?\",\"answers\":[\"Validating functionality from an end-user perspective\"],\"distractors\":[\"Ensuring code correctness\",\"Testing with automation tools\"]},{\"question\":\"Why is manual testing beneficial?\",\"answers\":[\"Provides flexibility and human insight\"],\"distractors\":[\"Ensures internal code correctness\",\"Automates repetitive tasks\"]}],\"practice\":\"Explain, in your own words, when it would be most advantageous to use each testing technique: black-box, white-box, manual, and automated.\",\"feedback\":\"Model answer: Black-box testing is best for testing user interfaces, white-box for code correctness, manual for exploratory tasks, and automated for repetitive tests.\"}}},{\"type\":\"patch\",\"reasoning\":\"The third learning cycle involves evaluating the effectiveness of testing techniques for specific scenarios.\",\"value\":{\"type\":\"cycle\",\"op\":\"add\",\"path\":\"/cycle3\",\"value\":{\"title\":\"Evaluating Testing Effectiveness\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Present scenarios where different testing techniques are applied.\",\"Evaluate the effectiveness of black-box testing for user interface scenarios.\",\"Discuss white-box testing's effectiveness for code quality assurance.\",\"Examine manual testing's role in usability testing.\",\"Consider automated testing's efficiency in regression testing.\"],\"accompanyingSlideDetails\":\"Scenarios with testing techniques applied and their evaluations.\",\"imagePrompt\":\"testing scenarios evaluation\",\"slideText\":\"Evaluate the effectiveness of testing techniques in various scenarios.\"},\"checkForUnderstanding\":[{\"question\":\"In which scenario is black-box testing most effective?\",\"answers\":[\"User interface testing\"],\"distractors\":[\"Code quality assurance\",\"Regression testing\"]},{\"question\":\"Which testing is efficient for regression testing?\",\"answers\":[\"Automated testing\"],\"distractors\":[\"Manual testing\",\"Black-box testing\"]}],\"practice\":\"Given a set of scenarios, evaluate and justify which testing technique would be most effective for each.\",\"feedback\":\"Model answer: User interfaces benefit from black-box testing, code quality from white-box, usability from manual, and regression from automated testing.\"}}},{\"type\":\"patch\",\"reasoning\":\"The exit quiz assesses the understanding of key learning points covered during the lesson.\",\"value\":{\"type\":\"quiz\",\"op\":\"add\",\"path\":\"/exitQuiz\",\"value\":[{\"question\":\"What is the main focus of black-box testing?\",\"answers\":[\"Inputs and outputs\"],\"distractors\":[\"Internal code\",\"Testing tools\"]},{\"question\":\"Which technique involves testing internal structures?\",\"answers\":[\"White-box testing\"],\"distractors\":[\"Black-box testing\",\"Manual testing\"]},{\"question\":\"Why is automated testing used?\",\"answers\":[\"For efficiency in repetitive tasks\"],\"distractors\":[\"For human insight\",\"For testing inputs and outputs\"]},{\"question\":\"When is manual testing most beneficial?\",\"answers\":[\"In exploratory tasks\"],\"distractors\":[\"In repetitive tasks\",\"In regression testing\"]},{\"question\":\"Which testing technique validates functionality from an end-user perspective?\",\"answers\":[\"Black-box testing\"],\"distractors\":[\"White-box testing\",\"Automated testing\"]},{\"question\":\"What is the role of white-box testing?\",\"answers\":[\"Ensuring code correctness\"],\"distractors\":[\"Testing user interfaces\",\"Automating tasks\"]}]}}],\"prompt\":{\"type\":\"text\",\"value\":\"The quizzes and learning cycles are now complete. Are the quizzes of an appropriate difficulty level for your pupils to achieve five out of six correct answers?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-0v4EJl_qcvySgXG0\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i126mw000jstwsrnu7konh\"}\n␞\n\n- user: Continue\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[{\"type\":\"patch\",\"reasoning\":\"There are no additional materials required for this lesson plan as it stands.\",\"value\":{\"type\":\"string\",\"op\":\"add\",\"path\":\"/additionalMaterials\",\"value\":\"None\"}}],\"prompt\":{\"type\":\"text\",\"value\":\"Would you like to add any additional materials, e.g. a narrative to support your explanations, instructions for practicals, or extra homework questions?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-7ivNJUpR4v92I_tc\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i134j7000nstwskgx6q53q\"}\n␞\n\n- user: Yes, ok\n- assistant: \n␞\n{\"type\":\"comment\",\"value\":\"CHAT_START\"}\n␞\n{\"type\":\"llmMessage\",\"patches\":[],\"prompt\":{\"type\":\"text\",\"value\":\"Great! If you have specific materials in mind, please let me know, and I can help incorporate them into the lesson plan. Otherwise, we can proceed to finalise the lesson. What would you like to do next?\"}}\n␞\n{\"type\":\"comment\",\"value\":\"CHAT_COMPLETE\"}\n␞\n\n␞\n{\"type\":\"id\",\"value\":\"a-wIXidibN-HPSiP6C\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATION_START\"}\n␞\n\n␞\n{\"type\":\"comment\",\"value\":\"MODERATING\"}\n␞\n\n␞\n{\"type\":\"moderation\",\"categories\":[],\"id\":\"cm1i13xph000rstws4vd5cxy4\"}\n␞\n\n- user: Continue\n- assistant: Have you finished editing your lesson? If anything is missing, just ask me to add it in. Once you're ready, you can download your resources and share your lesson!"
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nMake the learning outcome easier"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "plan"
+                    },
+                    "parsedUserMessage": {
+                      "type": "string",
+                      "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                    },
+                    "plan": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "section",
+                            "description": "Indicates a section content mutation step."
+                          },
+                          "sectionKey": {
+                            "type": "string",
+                            "enum": [
+                              "title",
+                              "keyStage",
+                              "subject",
+                              "basedOn",
+                              "learningOutcome",
+                              "learningCycles",
+                              "priorKnowledge",
+                              "keyLearningPoints",
+                              "misconceptions",
+                              "keywords",
+                              "starterQuiz",
+                              "cycle1",
+                              "cycle2",
+                              "cycle3",
+                              "exitQuiz",
+                              "additionalMaterials"
+                            ],
+                            "description": "Target section key for this operation."
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "generate",
+                              "delete"
+                            ]
+                          },
+                          "sectionInstructions": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                          },
+                          "quizIntent": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "action": {
+                                    "type": "string",
+                                    "enum": [
+                                      "REGENERATE_QUIZ",
+                                      "ADD_QUIZ_QUESTION",
+                                      "REMOVE_QUIZ_QUESTION",
+                                      "CHANGE_QUIZ_QUESTION"
+                                    ]
+                                  },
+                                  "position": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "exclusiveMinimum": 0
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "action",
+                                  "position"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "sectionKey",
+                          "action",
+                          "sectionInstructions",
+                          "quizIntent"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Section plan step."
+                      }
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "plan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "exit"
+                    },
+                    "parsedUserMessage": {
+                      "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                    },
+                    "reasonType": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "out_of_scope",
+                          "description": "The user's request is outside the scope of this application. See SCOPE"
+                        },
+                        {
+                          "type": "string",
+                          "const": "capability_limitation",
+                          "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                        },
+                        {
+                          "type": "string",
+                          "const": "clarification_needed",
+                          "description": "The user's request is unclear and requires further clarification."
+                        },
+                        {
+                          "type": "string",
+                          "const": "relevant_query",
+                          "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                        }
+                      ]
+                    },
+                    "reasonJustification": {
+                      "type": "string"
+                    },
+                    "additionalInfo": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Any additional information to provide context for the downstream agent."
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "reasonType",
+                    "reasonJustification",
+                    "additionalInfo"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage": {
+              "type": "string",
+              "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "plan"
+                        },
+                        "parsedUserMessage": {
+                          "type": "string",
+                          "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                        },
+                        "plan": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "section",
+                                "description": "Indicates a section content mutation step."
+                              },
+                              "sectionKey": {
+                                "type": "string",
+                                "enum": [
+                                  "title",
+                                  "keyStage",
+                                  "subject",
+                                  "basedOn",
+                                  "learningOutcome",
+                                  "learningCycles",
+                                  "priorKnowledge",
+                                  "keyLearningPoints",
+                                  "misconceptions",
+                                  "keywords",
+                                  "starterQuiz",
+                                  "cycle1",
+                                  "cycle2",
+                                  "cycle3",
+                                  "exitQuiz",
+                                  "additionalMaterials"
+                                ],
+                                "description": "Target section key for this operation."
+                              },
+                              "action": {
+                                "type": "string",
+                                "enum": [
+                                  "generate",
+                                  "delete"
+                                ]
+                              },
+                              "sectionInstructions": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                              },
+                              "quizIntent": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "action": {
+                                        "type": "string",
+                                        "enum": [
+                                          "REGENERATE_QUIZ",
+                                          "ADD_QUIZ_QUESTION",
+                                          "REMOVE_QUIZ_QUESTION",
+                                          "CHANGE_QUIZ_QUESTION"
+                                        ]
+                                      },
+                                      "position": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "action",
+                                      "position"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "sectionKey",
+                              "action",
+                              "sectionInstructions",
+                              "quizIntent"
+                            ],
+                            "additionalProperties": false,
+                            "description": "Section plan step."
+                          }
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "plan"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "exit"
+                        },
+                        "parsedUserMessage": {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                        },
+                        "reasonType": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "out_of_scope",
+                              "description": "The user's request is outside the scope of this application. See SCOPE"
+                            },
+                            {
+                              "type": "string",
+                              "const": "capability_limitation",
+                              "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                            },
+                            {
+                              "type": "string",
+                              "const": "clarification_needed",
+                              "description": "The user's request is unclear and requires further clarification."
+                            },
+                            {
+                              "type": "string",
+                              "const": "relevant_query",
+                              "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                            }
+                          ]
+                        },
+                        "reasonJustification": {
+                          "type": "string"
+                        },
+                        "additionalInfo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Any additional information to provide context for the downstream agent."
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "reasonType",
+                        "reasonJustification",
+                        "additionalInfo"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0530653bea42319f006a297ec84850819d9499e70616301705",
+    "object": "response",
+    "created_at": 1781104328,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781104329,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0530653bea42319f006a297ec8e678819d8cb405a977970048",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to simplify the phrasing of the 'learningOutcome' section.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"learningOutcome\",\"action\":\"generate\",\"sectionInstructions\":\"Simplify the existing learning outcome to make it easier to understand. Ensure to retain the focus on explaining software testing techniques and their purposes.\",\"quizIntent\":null}]}}",
+            "parsed": {
+              "value": {
+                "decision": "plan",
+                "parsedUserMessage": "The user wants to simplify the phrasing of the 'learningOutcome' section.",
+                "plan": [
+                  {
+                    "type": "section",
+                    "sectionKey": "learningOutcome",
+                    "action": "generate",
+                    "sectionInstructions": "Simplify the existing learning outcome to make it easier to understand. Ensure to retain the focus on explaining software testing techniques and their purposes.",
+                    "quizIntent": null
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "plan"
+                    },
+                    "parsedUserMessage": {
+                      "type": "string",
+                      "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                    },
+                    "plan": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "section",
+                            "description": "Indicates a section content mutation step."
+                          },
+                          "sectionKey": {
+                            "type": "string",
+                            "enum": [
+                              "title",
+                              "keyStage",
+                              "subject",
+                              "basedOn",
+                              "learningOutcome",
+                              "learningCycles",
+                              "priorKnowledge",
+                              "keyLearningPoints",
+                              "misconceptions",
+                              "keywords",
+                              "starterQuiz",
+                              "cycle1",
+                              "cycle2",
+                              "cycle3",
+                              "exitQuiz",
+                              "additionalMaterials"
+                            ],
+                            "description": "Target section key for this operation."
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "generate",
+                              "delete"
+                            ]
+                          },
+                          "sectionInstructions": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                          },
+                          "quizIntent": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "action": {
+                                    "type": "string",
+                                    "enum": [
+                                      "REGENERATE_QUIZ",
+                                      "ADD_QUIZ_QUESTION",
+                                      "REMOVE_QUIZ_QUESTION",
+                                      "CHANGE_QUIZ_QUESTION"
+                                    ]
+                                  },
+                                  "position": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "exclusiveMinimum": 0
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "action",
+                                  "position"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "sectionKey",
+                          "action",
+                          "sectionInstructions",
+                          "quizIntent"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Section plan step."
+                      }
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "plan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "exit"
+                    },
+                    "parsedUserMessage": {
+                      "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                    },
+                    "reasonType": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "out_of_scope",
+                          "description": "The user's request is outside the scope of this application. See SCOPE"
+                        },
+                        {
+                          "type": "string",
+                          "const": "capability_limitation",
+                          "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                        },
+                        {
+                          "type": "string",
+                          "const": "clarification_needed",
+                          "description": "The user's request is unclear and requires further clarification."
+                        },
+                        {
+                          "type": "string",
+                          "const": "relevant_query",
+                          "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                        }
+                      ]
+                    },
+                    "reasonJustification": {
+                      "type": "string"
+                    },
+                    "additionalInfo": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Any additional information to provide context for the downstream agent."
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "reasonType",
+                    "reasonJustification",
+                    "additionalInfo"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage": {
+              "type": "string",
+              "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "plan"
+                        },
+                        "parsedUserMessage": {
+                          "type": "string",
+                          "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                        },
+                        "plan": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "section",
+                                "description": "Indicates a section content mutation step."
+                              },
+                              "sectionKey": {
+                                "type": "string",
+                                "enum": [
+                                  "title",
+                                  "keyStage",
+                                  "subject",
+                                  "basedOn",
+                                  "learningOutcome",
+                                  "learningCycles",
+                                  "priorKnowledge",
+                                  "keyLearningPoints",
+                                  "misconceptions",
+                                  "keywords",
+                                  "starterQuiz",
+                                  "cycle1",
+                                  "cycle2",
+                                  "cycle3",
+                                  "exitQuiz",
+                                  "additionalMaterials"
+                                ],
+                                "description": "Target section key for this operation."
+                              },
+                              "action": {
+                                "type": "string",
+                                "enum": [
+                                  "generate",
+                                  "delete"
+                                ]
+                              },
+                              "sectionInstructions": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                              },
+                              "quizIntent": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "action": {
+                                        "type": "string",
+                                        "enum": [
+                                          "REGENERATE_QUIZ",
+                                          "ADD_QUIZ_QUESTION",
+                                          "REMOVE_QUIZ_QUESTION",
+                                          "CHANGE_QUIZ_QUESTION"
+                                        ]
+                                      },
+                                      "position": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "action",
+                                      "position"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "sectionKey",
+                              "action",
+                              "sectionInstructions",
+                              "quizIntent"
+                            ],
+                            "additionalProperties": false,
+                            "description": "Section plan step."
+                          }
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "plan"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "exit"
+                        },
+                        "parsedUserMessage": {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                        },
+                        "reasonType": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "out_of_scope",
+                              "description": "The user's request is outside the scope of this application. See SCOPE"
+                            },
+                            {
+                              "type": "string",
+                              "const": "capability_limitation",
+                              "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                            },
+                            {
+                              "type": "string",
+                              "const": "clarification_needed",
+                              "description": "The user's request is unclear and requires further clarification."
+                            },
+                            {
+                              "type": "string",
+                              "const": "relevant_query",
+                              "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                            }
+                          ]
+                        },
+                        "reasonJustification": {
+                          "type": "string"
+                        },
+                        "additionalInfo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Any additional information to provide context for the downstream agent."
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "reasonType",
+                        "reasonJustification",
+                        "additionalInfo"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 9850,
+      "input_tokens_details": {
+        "cached_tokens": 2944
+      },
+      "output_tokens": 82,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 9932
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to simplify the phrasing of the 'learningOutcome' section.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"learningOutcome\",\"action\":\"generate\",\"sectionInstructions\":\"Simplify the existing learning outcome to make it easier to understand. Ensure to retain the focus on explaining software testing techniques and their purposes.\",\"quizIntent\":null}]}}",
+    "output_parsed": {
+      "value": {
+        "decision": "plan",
+        "parsedUserMessage": "The user wants to simplify the phrasing of the 'learningOutcome' section.",
+        "plan": [
+          {
+            "type": "section",
+            "sectionKey": "learningOutcome",
+            "action": "generate",
+            "sectionInstructions": "Simplify the existing learning outcome to make it easier to understand. Ensure to retain the focus on explaining software testing techniques and their purposes.",
+            "quizIntent": null
+          }
+        ]
+      }
+    }
+  }
+}

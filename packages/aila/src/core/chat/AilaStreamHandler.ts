@@ -14,7 +14,7 @@ import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/planne
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../../lib/agentic-system/ailaTurn";
 import { createAilaTurnCallbacks } from "../../lib/agentic-system/compatibility/ailaTurnCallbacks";
-import { createEmptyCorrectorStats } from "../../lib/agentic-system/correctorStats";
+import { wrapOpenAIWithFixture } from "../../lib/agentic-system/fixtures/FixtureOpenAIProxy";
 import { deriveSectionBuildMode } from "../../lib/agentic-system/quizOperations/deriveSectionBuildMode";
 import type {
   AilaTurnOutcome,
@@ -31,14 +31,21 @@ import type { Message } from "./types";
 
 const log = aiLogger("aila:stream");
 
-function agenticTurnSucceeded(outcome: AilaTurnOutcome | null): boolean {
-  return outcome?.status === "success";
-}
-
 type ThreatCheckOutcome =
   | { status: "safe" }
   | { status: "threat_detected"; threatDetection: ThreatDetectionResult }
   | { status: "check_failed"; error: Error; detectorName: string };
+
+type StreamOutcome =
+  | { status: "success" }
+  | { status: "failed" }
+  | { status: "aborted" }
+  | { status: "threat_detected" }
+  | { status: "threat_check_failed" };
+
+type MathsQuizAgentHandler = SectionAgent<LatestQuiz>["handler"];
+type MathsQuizAgentContext = Parameters<MathsQuizAgentHandler>[0];
+type MathsQuizAgentResult = Awaited<ReturnType<MathsQuizAgentHandler>>;
 
 class ThreatDetectionFailureError extends Error {
   public readonly detectorName: string;
@@ -145,19 +152,9 @@ export class AilaStreamHandler {
   ) {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
-    let agenticTurnOutcome: AilaTurnOutcome | null = null;
-    let skipCompletion = false;
+    let outcome: StreamOutcome = { status: "failed" };
     try {
-      if (!this._chat.aila.options.useAgenticAila) {
-        await this.span("set-up-generation", async () => {
-          await this._chat.setupGeneration();
-        });
-      } else {
-        await this.span("initialise-chunks", () => {
-          this._chat.initialiseChunks();
-          return Promise.resolve();
-        });
-      }
+      await this.setupStreamMode();
 
       await this.span("persist-chat-before-threat-check", async () => {
         await this._chat.persistChat();
@@ -167,44 +164,14 @@ export class AilaStreamHandler {
         return await this.checkForThreats();
       });
 
-      if (threatCheckOutcome.status === "threat_detected") {
-        skipCompletion = true;
-        await this.span("handle-threat-detected", async () => {
-          await this.enqueueThreatResponse(threatCheckOutcome.threatDetection);
-        });
+      const threatOutcome =
+        await this.handleThreatCheckOutcome(threatCheckOutcome);
+      if (threatOutcome) {
+        outcome = threatOutcome;
         return;
       }
 
-      if (threatCheckOutcome.status === "check_failed") {
-        skipCompletion = true;
-        await this.span("handle-threat-check-failure", async () => {
-          await this.handleThreatDetectionFailure(threatCheckOutcome);
-        });
-        return;
-      }
-
-      if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnOutcome = await this.span("start-agent-stream", async () => {
-          return await this.startAgentStream();
-        });
-      } else {
-        await this.span("set-initial-state", async () => {
-          await this._chat.handleSettingInitialState();
-        });
-
-        await this.span("handle-subject-warning", async () => {
-          await this._chat.handleSubjectWarning();
-        });
-        await this.span("start-llm-stream", async () => {
-          await this.startLLMStream();
-        });
-        await this.span("read-from-stream", async () => {
-          await this.readFromStream(abortController);
-        });
-        if (abortController?.signal.aborted) {
-          skipCompletion = true;
-        }
-      }
+      outcome = await this.runTurn(abortController);
 
       log.info(
         "Finished reading from stream",
@@ -212,59 +179,101 @@ export class AilaStreamHandler {
         this._chat.id,
       );
     } catch (e) {
-      if (this._chat.aila.options.useAgenticAila) {
-        agenticTurnOutcome = {
-          status: "failed",
-          correctorStats: createEmptyCorrectorStats(),
-        };
-        // ailaTurn threw rather than returning; its internal failure path never
-        // completed, so the client has not received an error message.
-        await this._chat.enqueue({
-          type: "error",
-          value: "Something went wrong. Please try sending your message again.",
-        });
-      } else if (this._chat.generation) {
-        // Sets status → FAILED so the finally block skips complete() (and moderation).
-        skipCompletion = true;
-        await this._chat.generationFailed(e);
-      }
+      outcome = { status: "failed" };
       log.info("Caught error in stream", {
         error: e,
         type: e?.constructor?.name,
       });
       await this.handleStreamError(e);
     } finally {
-      const status = this._chat.generation?.status;
-      const shouldComplete = this._chat.aila.options.useAgenticAila
-        ? agenticTurnSucceeded(agenticTurnOutcome)
-        : status !== "FAILED";
-      log.info("In finally block", {
-        status,
-        agenticTurn: agenticTurnOutcome
-          ? { status: agenticTurnOutcome.status }
-          : null,
-        skipCompletion,
-        chatId: this._chat.id,
-      });
-      if (shouldComplete && !skipCompletion) {
-        try {
-          await this.span("chat-completion", async () => {
-            await this._chat.complete();
-          });
-          log.info("Chat completed", this._chat.iteration, this._chat.id);
-        } catch (e) {
-          log.error("Error in complete", e);
-          this._chat.aila.errorReporter?.reportError(e);
-          await this._chat.enqueue({
-            type: "error",
-            value:
-              "Something went wrong. Please try sending your message again.",
-          });
+      try {
+        const status = this._chat.generation?.status;
+        log.info("In finally block", {
+          outcome,
+          status,
+          chatId: this._chat.id,
+        });
+        if (outcome.status === "success") {
+          await this.completeChat();
         }
+      } finally {
+        this.closeController();
+        log.info("Stream closed", this._chat.iteration, this._chat.id);
       }
-      this.closeController();
-      log.info("Stream closed", this._chat.iteration, this._chat.id);
     }
+  }
+
+  private async setupStreamMode() {
+    if (!this._chat.aila.options.useAgenticAila) {
+      await this.span("set-up-generation", async () => {
+        await this._chat.setupGeneration();
+      });
+      return;
+    }
+
+    await this.span("initialise-chunks", () => {
+      this._chat.initialiseChunks();
+      return Promise.resolve();
+    });
+  }
+
+  private async handleThreatCheckOutcome(
+    threatCheckOutcome: ThreatCheckOutcome,
+  ): Promise<StreamOutcome | null> {
+    if (threatCheckOutcome.status === "threat_detected") {
+      await this.span("handle-threat-detected", async () => {
+        await this.enqueueThreatResponse(threatCheckOutcome.threatDetection);
+      });
+      return { status: "threat_detected" };
+    }
+
+    if (threatCheckOutcome.status === "check_failed") {
+      await this.span("handle-threat-check-failure", async () => {
+        await this.handleThreatDetectionFailure(threatCheckOutcome);
+      });
+      return {
+        status: "threat_check_failed",
+      };
+    }
+
+    return null;
+  }
+
+  private async runTurn(
+    abortController?: AbortController,
+  ): Promise<StreamOutcome> {
+    if (this._chat.aila.options.useAgenticAila) {
+      return await this.runAgenticTurn();
+    }
+
+    return await this.runNonAgenticTurn(abortController);
+  }
+
+  private async runAgenticTurn(): Promise<StreamOutcome> {
+    return await this.span("start-agent-stream", async () => {
+      const agenticTurnOutcome = await this.startAgentStream();
+      return agenticTurnOutcome.status === "success"
+        ? { status: "success" }
+        : { status: "failed" };
+    });
+  }
+
+  private async runNonAgenticTurn(
+    abortController?: AbortController,
+  ): Promise<StreamOutcome> {
+    await this.span("set-initial-state", async () => {
+      await this._chat.handleSettingInitialState();
+    });
+
+    await this.span("handle-subject-warning", async () => {
+      await this._chat.handleSubjectWarning();
+    });
+    await this.span("start-llm-stream", async () => {
+      await this.startLLMStream();
+    });
+    return await this.span("read-from-stream", async () => {
+      return await this.readFromStream(abortController);
+    });
   }
 
   private setupController(controller: ReadableStreamDefaultController) {
@@ -282,13 +291,25 @@ export class AilaStreamHandler {
       ...this._chat.aila.document.content,
     };
 
-    const openai = createOpenAIClient({
+    let openai = createOpenAIClient({
       app: "lesson-assistant",
       chatMeta: {
         chatId: this._chat.id,
         userId: this._chat.userId,
       },
     });
+
+    const { agenticFixture } = this._chat.aila.options;
+    if (agenticFixture) {
+      log.info(
+        "Wrapping OpenAI client with fixture proxy: mode=%s fixture=%s",
+        agenticFixture.mode,
+        agenticFixture.fixtureName,
+      );
+      openai = wrapOpenAIWithFixture(openai, agenticFixture);
+    } else {
+      log.info("No agenticFixture config — using real OpenAI client");
+    }
 
     const ailaTurnCallbacks = createAilaTurnCallbacks({
       chat: this._chat,
@@ -297,45 +318,6 @@ export class AilaStreamHandler {
         this._chat.ragFetched = ragFetched;
       },
     });
-
-    // starterQuiz and exitQuiz only differ by quiz path and the words used in
-    // their messages; everything else is the same maths-engine build flow.
-    const buildMathsQuizHandler =
-      (
-        quizType: "/starterQuiz" | "/exitQuiz",
-        quizNoun: string,
-      ): SectionAgent<LatestQuiz>["handler"] =>
-      async (ctx) => {
-        try {
-          const userInstructions =
-            ctx.currentTurn.currentStep?.sectionInstructions;
-          const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
-          const tracker = createQuizTracker();
-          const { quiz, note } = await tracker.run(async (task, reportId) => {
-            const result = await this._chat.quizService.buildQuiz(
-              quizType,
-              ctx.currentTurn.document,
-              this._chat.relevantLessons ?? [],
-              task,
-              reportId,
-              mode,
-              userInstructions,
-            );
-            task.addData({ quiz: result.quiz, mode, userInstructions });
-            return result;
-          });
-          await ReportStorage.store(tracker.getReport());
-
-          return { error: null, data: quiz, note };
-        } catch (error) {
-          log.error(`Error generating ${quizNoun}`, { error });
-          return {
-            error: {
-              message: `Failed to generate a ${quizNoun} with maths quiz engine`,
-            },
-          };
-        }
-      };
 
     let relevantLessonsPopulated: Awaited<
       ReturnType<typeof getRagLessonPlansByIds>
@@ -360,18 +342,12 @@ export class AilaStreamHandler {
       },
       runtime: {
         config: {
-          mathsQuizEnabled: true,
+          mathsQuizEnabled: this._chat.aila.options.useMathsQuizRag ?? false,
         },
         plannerAgent: createOpenAIPlannerAgent(openai),
         sectionAgents: createSectionAgentRegistry({
           openai,
-          customAgentHandlers: {
-            "starterQuiz--maths": buildMathsQuizHandler(
-              "/starterQuiz",
-              "starter quiz",
-            ),
-            "exitQuiz--maths": buildMathsQuizHandler("/exitQuiz", "exit quiz"),
-          },
+          customAgentHandlers: this.createMathsQuizAgentHandlers(),
         }),
         messageToUserAgent: createOpenAIMessageToUserAgent(openai),
         britishEnglishCorrectorAgent:
@@ -401,6 +377,110 @@ export class AilaStreamHandler {
     });
   }
 
+  private async onStreamFailed(error: unknown) {
+    try {
+      if (this._chat.aila.options.useAgenticAila) {
+        // ailaTurn threw rather than returning; its internal failure path never
+        // completed, so the client has not received an error message.
+        await this.enqueueGenericRetryError();
+      } else if (this._chat.generation) {
+        await this._chat.generationFailed(error);
+      }
+    } catch (recoveryError) {
+      log.error("Error while handling stream failure", {
+        error: recoveryError,
+        originalError: error,
+      });
+      this._chat.aila.errorReporter?.reportError(recoveryError);
+    }
+  }
+
+  private async completeChat() {
+    try {
+      await this.span("chat-completion", async () => {
+        await this._chat.complete();
+      });
+      log.info("Chat completed", this._chat.iteration, this._chat.id);
+    } catch (error) {
+      log.error("Error in complete", error);
+      this._chat.aila.errorReporter?.reportError(error);
+      try {
+        await this.enqueueGenericRetryError();
+      } catch (enqueueError) {
+        log.error("Error enqueueing completion failure message", {
+          error: enqueueError,
+          completionError: error,
+        });
+        this._chat.aila.errorReporter?.reportError(enqueueError);
+      }
+    }
+  }
+
+  private async enqueueGenericRetryError() {
+    await this._chat.enqueue({
+      type: "error",
+      value: "Something went wrong. Please try sending your message again.",
+    });
+  }
+
+  private createMathsQuizAgentHandlers(): {
+    "starterQuiz--maths": MathsQuizAgentHandler;
+    "exitQuiz--maths": MathsQuizAgentHandler;
+  } {
+    return {
+      "starterQuiz--maths": async (ctx) =>
+        await this.runMathsQuizAgent(
+          ctx,
+          "/starterQuiz",
+          "starter quiz",
+          "Failed to generate a starter quiz with maths quiz engine",
+        ),
+      "exitQuiz--maths": async (ctx) =>
+        await this.runMathsQuizAgent(
+          ctx,
+          "/exitQuiz",
+          "exit quiz",
+          "Failed to generate an exit quiz with maths quiz engine",
+        ),
+    };
+  }
+
+  private async runMathsQuizAgent(
+    ctx: MathsQuizAgentContext,
+    quizPath: "/starterQuiz" | "/exitQuiz",
+    quizName: string,
+    failureMessage: string,
+  ): Promise<MathsQuizAgentResult> {
+    try {
+      const userInstructions = ctx.currentTurn.currentStep?.sectionInstructions;
+      const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
+      const tracker = createQuizTracker();
+      const { quiz, note } = await tracker.run(async (task, reportId) => {
+        const result = await this._chat.quizService.buildQuiz(
+          quizPath,
+          ctx.currentTurn.document,
+          this._chat.relevantLessons ?? [],
+          task,
+          reportId,
+          mode,
+          userInstructions,
+        );
+        task.addData({ quiz: result.quiz, mode, userInstructions });
+        return result;
+      });
+      await ReportStorage.store(tracker.getReport());
+
+      return { error: null, data: quiz, note };
+    } catch (error) {
+      log.error(`Error generating ${quizName}`, { error });
+      return {
+        error: {
+          message: failureMessage,
+        },
+      };
+    }
+  }
+
   private async startLLMStream() {
     await this._chat.enqueue({
       type: "comment",
@@ -411,7 +491,9 @@ export class AilaStreamHandler {
       await this._chat.createChatCompletionObjectStream(messages);
   }
 
-  private async readFromStream(abortController?: AbortController) {
+  private async readFromStream(
+    abortController?: AbortController,
+  ): Promise<{ status: "success" | "aborted" }> {
     if (!this._streamReader) {
       throw new Error("Stream reader is not defined");
     }
@@ -428,10 +510,16 @@ export class AilaStreamHandler {
           this._controller?.enqueue(value);
         }
       }
+      if (abortController?.signal.aborted) {
+        log.info("Stream aborted", this._chat.iteration, this._chat.id);
+        return { status: "aborted" };
+      }
+      return { status: "success" };
     } catch (e) {
       log.error("Error reading from stream", { error: e });
       if (abortController?.signal.aborted) {
         log.info("Stream aborted", this._chat.iteration, this._chat.id);
+        return { status: "aborted" };
       } else {
         throw e;
       }
@@ -470,6 +558,8 @@ export class AilaStreamHandler {
   }
 
   private async handleStreamError(error: unknown) {
+    await this.onStreamFailed(error);
+
     for (const plugin of this._chat.aila.plugins ?? []) {
       await plugin.onStreamError?.(error, {
         aila: this._chat.aila,

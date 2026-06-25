@@ -1,0 +1,886 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Task\n\n### 🧠 You are a *planning agent* that supports users in creating or editing structured lesson plans.\n\nYour role is **to produce a structured plan** that identifies which lesson sections need action — and what kind of action — before the plan can be passed to the next agent.\n\nYou must respond with **exactly one of two decision types**:\n1. **\"plan\"** - Generate a plan with specific section steps\n2. **\"exit\"** - Exit with a reason when planning is not appropriate\n\n---\n\n### SCOPE\n\n- Aila is focused on supporting educators in creating high quality lesson plans.\n- Its remit is purely educational.\n- If it feels as though the user is trying to engage in non-educational topics, or casual conversation, you should refuse.\n\n### CAPABILITIES\n\n- Aila is designed as a chat interface to generate a lesson plan document under the direction of the user.\n- The user can ask you to add or edit or remove sections of the lesson plan. However the structure is constrained by the predefined sections.\n- You can not add a section which is not part of the predefined structure.\n- The lesson plan is automatically saved as the user makes changes, but no version history is available.\n- Once the lesson plan is complete, the user will be able to download the lesson plan, the quizzes, and the lesson slides in various formats. They will need to click the \"Download\" button, and follow the directions on screen. The only reason they wouldn't be able to click the Download button would be if the lesson is not 'complete'.\n- You are not able to directly alert Oak about any issues they are having. If they have an issues, they can use the \"Feedback\" button in the bottom right corner of the screen to report any issues. \n\n### RELEVANT QUERIES\n\n- It might be that the user asks questions about your the pedagogical approach. This is fine.\n- It is not appropriate to engage in discussions about personal opinions or beliefs.\n\n---\n\n### 🔹 SECTION GROUPS:\n1. `title`, `keyStage`, `subject`\n2. `basedOn` (optional), `learningOutcome`, `learningCycles`  \n3. `priorKnowledge`, `keyLearningPoints`, `misconceptions`, `keywords`  \n4. `starterQuiz`, `cycle1`, `cycle2`, `cycle3` (conditional on `learningCycles`), `exitQuiz`\n5. `additionalMaterials` (optional)\n\nA group is **incomplete** if any of its mandatory (non-optional) sections are missing from the current lesson plan. Only plan for sections in the **next incomplete group** — never include sections from more than one group in a single plan, unless the user has explicitly named specific sections from different groups. So if a title exists, but not a key stage or subject, you would plan for the key stage and subject sections.\n\nAll sections of a group must be included in a **single plan** for that turn — never split a group's sections across multiple turns.\n\n**Exception — explicit cross-group plans**: you may include sections from more than one group only if one of the following applies:\n1. The user's message explicitly names sections from different groups (e.g. \"rewrite the `keywords` and make `cycle2` harder\").\n2. The user explicitly asks to complete or generate the whole remaining lesson (e.g. \"do everything\", \"complete the lesson\", \"fill in the rest\"). In this case, plan all remaining incomplete sections.\n\n\nIf none of these apply — including the default case where the user clicks \"continue\" or sends a vague positive intent — plan **only the next incomplete group**.\n\n#### cycle3\nInclude `cycle3` in the plan **if and only if** the `learningCycles` field contains exactly 3 entries. If `learningCycles` has 2 entries, do not include `cycle3`.\n\n\n\n#### basedOn\n- `basedOn` is the outlier here. Once you go past this point, you shouldn't go back unless the user explicitly asks you to. So if learningOutcome and learningCycles are set, you would not go back to basedOn unless the user asks you to.\n- **NEVER include `basedOn` in the plan** unless ALL of the following are true: (1) the RELEVANT LESSONS section above lists at least one lesson title, AND (2) the user has explicitly selected or referenced one of those specific lessons in the Message History or User Message. If the RELEVANT LESSONS section says none were found or is empty, you must not include `basedOn`.\n\n---\n\n### 🔹 DECISION RULES\n\n#### When to choose **\"exit\"** decision:\n\n1. **Out of scope** (`out_of_scope`): \n   - User's message is completely unrelated to lesson planning (e.g. weather, jokes)\n\n2. **Capability limitation** (`capability_limitation`): \n   - User requests technically impossible actions (e.g. emailing, saving, printing files)\n\n3. **Clarification needed** (`clarification_needed`): \n   - Request is ambiguous or vague (e.g. \"make it better\", \"improve this\")\n   - You cannot confidently determine which section or how it should be changed\n\n4. **Relevant query** (`relevant_query`):\n   - User asks for information about the current lesson or wants clarification\n   - User asks about your capabilities\n   - You need to provide educational context or explanations\n\n#### When to choose **\"plan\"** decision:\n\n1. **Specific section request**: \n   - User requests changes to a specific section\n   - Create plan with only that section\n\n2. **Section deletion**: \n   - User wants to delete a specific section\n   - Use `delete` action for that section\n\n3. **Complete lesson request** (cross-group):\n   - User explicitly asks to complete or generate the whole lesson in one go (e.g. \"do everything\", \"finish the lesson\", \"fill in the rest\").\n   - Plan all remaining incomplete sections in logical order.\n   - This is the only \"plan\" case where multiple groups are included without the user naming specific sections.\n\n4. **Default progression** (single group):\n   - User clicks \"continue\", or provides general positive intent without naming specific sections (e.g. \"next\", \"ok\", \"go on\", \"looks good\").\n   - Plan **only the next incomplete group**, following the SECTION GROUPS order.\n\n---\n\n### 🔹 PLANNING GUIDELINES\n\n- **Process sections in their section groups**: Plan all sections of the next incomplete group together in a single plan — never split a group across turns, and never include sections from two or more groups unless the user has explicitly named sections from both.\n- **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.\n- **User intent**: Respect explicit user directions about specific sections\n\n### 🔹 QUIZ INTENT\n\nWhen planning a step for `starterQuiz` or `exitQuiz`, check whether the user message expresses a structured quiz modification request and, if so, emit a `quizIntent` on that step.\n\n**Action classification:**\nClassify the user message into one of these actions:\n- `REMOVE_QUIZ_QUESTION` — \"remove question N\", \"delete the third question\"\n- `ADD_QUIZ_QUESTION` — \"add a question about X\", \"add another one\". **Before emitting this, check the target quiz's `questions` array — if it is empty, emit `REGENERATE_QUIZ` instead (see Empty-quiz exception below).**\n- `CHANGE_QUIZ_QUESTION` — \"change question N\", \"rewrite question 2\", \"make question N easier\"\n- `REGENERATE_QUIZ` — \"generate a new quiz\", \"redo the whole quiz\", **or any `add`-shaped request when the target quiz has zero existing questions**\n\nThe step's `sectionKey` should be the target quiz (`starterQuiz` or `exitQuiz`).\n\n**Position resolution:**\nFor `REMOVE_QUIZ_QUESTION` and `CHANGE_QUIZ_QUESTION`, resolve `position` (1-indexed) from the message:\n- Explicit number: \"remove question 3\" → `position: 3`\n- Ordinal: \"remove the first question\" → `position: 1`, \"remove the last question\" → `position: currentQuiz.length`\n- Content reference: \"remove the photosynthesis question\" → resolve to the matching 1-indexed position\n- If position cannot be determined, emit `position: null`\n\nFor `ADD_QUIZ_QUESTION`, emit the requested insert position if given, otherwise `position: null` (append).\nFor `REGENERATE_QUIZ`, emit `position: null`.\n\n**Empty-quiz exception (mandatory check before classifying ADD):**\nBefore emitting `ADD_QUIZ_QUESTION`, inspect the target quiz in the CURRENT DOCUMENT:\n- If `starterQuiz.questions` (or `exitQuiz.questions`) is an empty array (length 0), you MUST emit `REGENERATE_QUIZ` instead of `ADD_QUIZ_QUESTION`. Set `position: null`.\n- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.\n\nExample:\n- User message: \"For the starter quiz, add a question\"\n- Document: `starterQuiz: { questions: [], ... }`\n- Correct output: `action: REGENERATE_QUIZ`, `position: null` (NOT `ADD_QUIZ_QUESTION`)\n\nIf the message is not a quiz modification request, omit `quizIntent` (or set it to `null`) on the step.\n\n---\n\n### 🔹 SECTION INSTRUCTIONS\n\nWhen creating plan steps, extract any user-provided instructions specific to that section into the `sectionInstructions` field:\n- For quizzes: preferences about difficulty, question types, images, specific changes (e.g., \"focus on questions with images\", \"make it harder\", \"avoid decimals\")\n- For other sections: specific guidance about content, style, or approach\n- Set `sectionInstructions` to `null` if no specific preferences are mentioned\n- Keep instructions concise but preserve user intent\n- **Write `sectionInstructions` in British English.** They are passed verbatim to section agents, so any Americanism here will seed the generated content. If the user's message uses American spellings or vocabulary (e.g. *color*, *organize*, *eraser*, *math*), rephrase them in British English (*colour*, *organise*, *rubber*, *maths*) when extracting. In particular, write verbs in the **-ise** form (*emphasise*, *recognise*, *summarise*), never the *-ize* form.\n\n---\n\n### 🔹 FINAL NOTES\n\n- You are a **planner**, not a writer\n- Your output directly determines **downstream agent actions**\n- **Never** generate lesson content yourself - that's for section agents\n- **Be precise** - each decision must be clearly justified\n- **Stay focused** - stick to planning, leave content creation to specialists\n"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AGENT_TO_AGENT\nSpeaker: Aila\nAudience: Other agents\nUse this voice when communicating with other agents. It should be clear, concise, and focused on the task at hand."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AGENT_TO_AGENT."
+      },
+      {
+        "role": "developer",
+        "content": "RELEVANT LESSONS (RAG DATA)\n\nThese are the titles of the lesson plans we're using for RAG.\n\n- Roman Christianity in Britain\n- The buildings of Roman Britain\n- The fall of the Western Roman Empire\n- The Roman invasion of Britain\n- Britain at the end of Roman rule"
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\"\n}"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!"
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "plan"
+                    },
+                    "parsedUserMessage": {
+                      "type": "string",
+                      "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                    },
+                    "plan": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "section",
+                            "description": "Indicates a section content mutation step."
+                          },
+                          "sectionKey": {
+                            "type": "string",
+                            "enum": [
+                              "title",
+                              "keyStage",
+                              "subject",
+                              "basedOn",
+                              "learningOutcome",
+                              "learningCycles",
+                              "priorKnowledge",
+                              "keyLearningPoints",
+                              "misconceptions",
+                              "keywords",
+                              "starterQuiz",
+                              "cycle1",
+                              "cycle2",
+                              "cycle3",
+                              "exitQuiz",
+                              "additionalMaterials"
+                            ],
+                            "description": "Target section key for this operation."
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "generate",
+                              "delete"
+                            ]
+                          },
+                          "sectionInstructions": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                          },
+                          "quizIntent": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "action": {
+                                    "type": "string",
+                                    "enum": [
+                                      "REGENERATE_QUIZ",
+                                      "ADD_QUIZ_QUESTION",
+                                      "REMOVE_QUIZ_QUESTION",
+                                      "CHANGE_QUIZ_QUESTION"
+                                    ]
+                                  },
+                                  "position": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "exclusiveMinimum": 0
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "action",
+                                  "position"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "sectionKey",
+                          "action",
+                          "sectionInstructions",
+                          "quizIntent"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Section plan step."
+                      }
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "plan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "exit"
+                    },
+                    "parsedUserMessage": {
+                      "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                    },
+                    "reasonType": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "out_of_scope",
+                          "description": "The user's request is outside the scope of this application. See SCOPE"
+                        },
+                        {
+                          "type": "string",
+                          "const": "capability_limitation",
+                          "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                        },
+                        {
+                          "type": "string",
+                          "const": "clarification_needed",
+                          "description": "The user's request is unclear and requires further clarification."
+                        },
+                        {
+                          "type": "string",
+                          "const": "relevant_query",
+                          "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                        }
+                      ]
+                    },
+                    "reasonJustification": {
+                      "type": "string"
+                    },
+                    "additionalInfo": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Any additional information to provide context for the downstream agent."
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "reasonType",
+                    "reasonJustification",
+                    "additionalInfo"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage": {
+              "type": "string",
+              "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "plan"
+                        },
+                        "parsedUserMessage": {
+                          "type": "string",
+                          "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                        },
+                        "plan": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "section",
+                                "description": "Indicates a section content mutation step."
+                              },
+                              "sectionKey": {
+                                "type": "string",
+                                "enum": [
+                                  "title",
+                                  "keyStage",
+                                  "subject",
+                                  "basedOn",
+                                  "learningOutcome",
+                                  "learningCycles",
+                                  "priorKnowledge",
+                                  "keyLearningPoints",
+                                  "misconceptions",
+                                  "keywords",
+                                  "starterQuiz",
+                                  "cycle1",
+                                  "cycle2",
+                                  "cycle3",
+                                  "exitQuiz",
+                                  "additionalMaterials"
+                                ],
+                                "description": "Target section key for this operation."
+                              },
+                              "action": {
+                                "type": "string",
+                                "enum": [
+                                  "generate",
+                                  "delete"
+                                ]
+                              },
+                              "sectionInstructions": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                              },
+                              "quizIntent": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "action": {
+                                        "type": "string",
+                                        "enum": [
+                                          "REGENERATE_QUIZ",
+                                          "ADD_QUIZ_QUESTION",
+                                          "REMOVE_QUIZ_QUESTION",
+                                          "CHANGE_QUIZ_QUESTION"
+                                        ]
+                                      },
+                                      "position": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "action",
+                                      "position"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "sectionKey",
+                              "action",
+                              "sectionInstructions",
+                              "quizIntent"
+                            ],
+                            "additionalProperties": false,
+                            "description": "Section plan step."
+                          }
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "plan"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "exit"
+                        },
+                        "parsedUserMessage": {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                        },
+                        "reasonType": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "out_of_scope",
+                              "description": "The user's request is outside the scope of this application. See SCOPE"
+                            },
+                            {
+                              "type": "string",
+                              "const": "capability_limitation",
+                              "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                            },
+                            {
+                              "type": "string",
+                              "const": "clarification_needed",
+                              "description": "The user's request is unclear and requires further clarification."
+                            },
+                            {
+                              "type": "string",
+                              "const": "relevant_query",
+                              "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                            }
+                          ]
+                        },
+                        "reasonJustification": {
+                          "type": "string"
+                        },
+                        "additionalInfo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Any additional information to provide context for the downstream agent."
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "reasonType",
+                        "reasonJustification",
+                        "additionalInfo"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_050afab62cf18f2d006a297df12e38819cb9dd3eab9d7de562",
+    "object": "response",
+    "created_at": 1781104113,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781104114,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_050afab62cf18f2d006a297df1a190819c800ca75843c96521",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to proceed with developing the next incomplete group for the current lesson.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"learningOutcome\",\"action\":\"generate\",\"sectionInstructions\": \"Generate a clear and concise learning outcome for this KS1 history lesson about the end of Roman Britain.\"   ,\"quizIntent\":null},{\"type\":\"section\",\"sectionKey\":\"learningCycles\",\"action\":\"generate\",\"sectionInstructions\": \"Generate the teaching structure for the lesson, outlining how the topic will be addressed through cycles.\"  ,\"quizIntent\":null}]}}",
+            "parsed": {
+              "value": {
+                "decision": "plan",
+                "parsedUserMessage": "The user wants to proceed with developing the next incomplete group for the current lesson.",
+                "plan": [
+                  {
+                    "type": "section",
+                    "sectionKey": "learningOutcome",
+                    "action": "generate",
+                    "sectionInstructions": "Generate a clear and concise learning outcome for this KS1 history lesson about the end of Roman Britain.",
+                    "quizIntent": null
+                  },
+                  {
+                    "type": "section",
+                    "sectionKey": "learningCycles",
+                    "action": "generate",
+                    "sectionInstructions": "Generate the teaching structure for the lesson, outlining how the topic will be addressed through cycles.",
+                    "quizIntent": null
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "plan"
+                    },
+                    "parsedUserMessage": {
+                      "type": "string",
+                      "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                    },
+                    "plan": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "section",
+                            "description": "Indicates a section content mutation step."
+                          },
+                          "sectionKey": {
+                            "type": "string",
+                            "enum": [
+                              "title",
+                              "keyStage",
+                              "subject",
+                              "basedOn",
+                              "learningOutcome",
+                              "learningCycles",
+                              "priorKnowledge",
+                              "keyLearningPoints",
+                              "misconceptions",
+                              "keywords",
+                              "starterQuiz",
+                              "cycle1",
+                              "cycle2",
+                              "cycle3",
+                              "exitQuiz",
+                              "additionalMaterials"
+                            ],
+                            "description": "Target section key for this operation."
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "generate",
+                              "delete"
+                            ]
+                          },
+                          "sectionInstructions": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                          },
+                          "quizIntent": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "action": {
+                                    "type": "string",
+                                    "enum": [
+                                      "REGENERATE_QUIZ",
+                                      "ADD_QUIZ_QUESTION",
+                                      "REMOVE_QUIZ_QUESTION",
+                                      "CHANGE_QUIZ_QUESTION"
+                                    ]
+                                  },
+                                  "position": {
+                                    "anyOf": [
+                                      {
+                                        "type": "integer",
+                                        "exclusiveMinimum": 0
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "action",
+                                  "position"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "sectionKey",
+                          "action",
+                          "sectionInstructions",
+                          "quizIntent"
+                        ],
+                        "additionalProperties": false,
+                        "description": "Section plan step."
+                      }
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "plan"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "decision": {
+                      "type": "string",
+                      "const": "exit"
+                    },
+                    "parsedUserMessage": {
+                      "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                    },
+                    "reasonType": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "out_of_scope",
+                          "description": "The user's request is outside the scope of this application. See SCOPE"
+                        },
+                        {
+                          "type": "string",
+                          "const": "capability_limitation",
+                          "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                        },
+                        {
+                          "type": "string",
+                          "const": "clarification_needed",
+                          "description": "The user's request is unclear and requires further clarification."
+                        },
+                        {
+                          "type": "string",
+                          "const": "relevant_query",
+                          "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                        }
+                      ]
+                    },
+                    "reasonJustification": {
+                      "type": "string"
+                    },
+                    "additionalInfo": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Any additional information to provide context for the downstream agent."
+                    }
+                  },
+                  "required": [
+                    "decision",
+                    "parsedUserMessage",
+                    "reasonType",
+                    "reasonJustification",
+                    "additionalInfo"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage": {
+              "type": "string",
+              "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "plan"
+                        },
+                        "parsedUserMessage": {
+                          "type": "string",
+                          "description": "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'"
+                        },
+                        "plan": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "const": "section",
+                                "description": "Indicates a section content mutation step."
+                              },
+                              "sectionKey": {
+                                "type": "string",
+                                "enum": [
+                                  "title",
+                                  "keyStage",
+                                  "subject",
+                                  "basedOn",
+                                  "learningOutcome",
+                                  "learningCycles",
+                                  "priorKnowledge",
+                                  "keyLearningPoints",
+                                  "misconceptions",
+                                  "keywords",
+                                  "starterQuiz",
+                                  "cycle1",
+                                  "cycle2",
+                                  "cycle3",
+                                  "exitQuiz",
+                                  "additionalMaterials"
+                                ],
+                                "description": "Target section key for this operation."
+                              },
+                              "action": {
+                                "type": "string",
+                                "enum": [
+                                  "generate",
+                                  "delete"
+                                ]
+                              },
+                              "sectionInstructions": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "User-provided instructions specific to generating this section. Extract from conversation if user has preferences (e.g., 'focus on images', 'make it harder', 'replace question 3'). Null if no specific instructions."
+                              },
+                              "quizIntent": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "action": {
+                                        "type": "string",
+                                        "enum": [
+                                          "REGENERATE_QUIZ",
+                                          "ADD_QUIZ_QUESTION",
+                                          "REMOVE_QUIZ_QUESTION",
+                                          "CHANGE_QUIZ_QUESTION"
+                                        ]
+                                      },
+                                      "position": {
+                                        "anyOf": [
+                                          {
+                                            "type": "integer",
+                                            "exclusiveMinimum": 0
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "action",
+                                      "position"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "sectionKey",
+                              "action",
+                              "sectionInstructions",
+                              "quizIntent"
+                            ],
+                            "additionalProperties": false,
+                            "description": "Section plan step."
+                          }
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "plan"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "decision": {
+                          "type": "string",
+                          "const": "exit"
+                        },
+                        "parsedUserMessage": {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_anyOf_0_properties_parsedUserMessage"
+                        },
+                        "reasonType": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "out_of_scope",
+                              "description": "The user's request is outside the scope of this application. See SCOPE"
+                            },
+                            {
+                              "type": "string",
+                              "const": "capability_limitation",
+                              "description": "The system lacks the capability to fulfil the request. See CAPABILITIES"
+                            },
+                            {
+                              "type": "string",
+                              "const": "clarification_needed",
+                              "description": "The user's request is unclear and requires further clarification."
+                            },
+                            {
+                              "type": "string",
+                              "const": "relevant_query",
+                              "description": "The user's request is relevant. See RELEVANT QUERIES. In this case, provide additional information that you have access to, so that a downstream agent can use it to respond appropriately."
+                            }
+                          ]
+                        },
+                        "reasonJustification": {
+                          "type": "string"
+                        },
+                        "additionalInfo": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Any additional information to provide context for the downstream agent."
+                        }
+                      },
+                      "required": [
+                        "decision",
+                        "parsedUserMessage",
+                        "reasonType",
+                        "reasonJustification",
+                        "additionalInfo"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 3908,
+      "input_tokens_details": {
+        "cached_tokens": 2944
+      },
+      "output_tokens": 120,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 4028
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to proceed with developing the next incomplete group for the current lesson.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"learningOutcome\",\"action\":\"generate\",\"sectionInstructions\": \"Generate a clear and concise learning outcome for this KS1 history lesson about the end of Roman Britain.\"   ,\"quizIntent\":null},{\"type\":\"section\",\"sectionKey\":\"learningCycles\",\"action\":\"generate\",\"sectionInstructions\": \"Generate the teaching structure for the lesson, outlining how the topic will be addressed through cycles.\"  ,\"quizIntent\":null}]}}",
+    "output_parsed": {
+      "value": {
+        "decision": "plan",
+        "parsedUserMessage": "The user wants to proceed with developing the next incomplete group for the current lesson.",
+        "plan": [
+          {
+            "type": "section",
+            "sectionKey": "learningOutcome",
+            "action": "generate",
+            "sectionInstructions": "Generate a clear and concise learning outcome for this KS1 history lesson about the end of Roman Britain.",
+            "quizIntent": null
+          },
+          {
+            "type": "section",
+            "sectionKey": "learningCycles",
+            "action": "generate",
+            "sectionInstructions": "Generate the teaching structure for the lesson, outlining how the topic will be addressed through cycles.",
+            "quizIntent": null
+          }
+        ]
+      }
+    }
+  }
+}

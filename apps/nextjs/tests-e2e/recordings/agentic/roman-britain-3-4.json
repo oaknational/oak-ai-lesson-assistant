@@ -1,0 +1,242 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nList key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. \n\n- Provide a brief, age-appropriate definition for each\n- Do not include the keyword in its own definition\n- Max 200 characters per definition\n- Where possible, use definitions from the national curriculum and/or exam boards.\n- Example: { keyword: \"Cell membrane\", definition: \"A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell.\" }\n\n## Tier 2 and 3 vocabulary definitions\n\n- Tier 2 = academic vocabulary that occurs frequently in written text for pupils but is not subject specific (e.g. explain, beneficial, required)\n- Tier 3 = subject-specific vocabulary that occurs less frequently (e.g. amplitude, hypotenuse)"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\n    \"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\n    \"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\n    \"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\n    \"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Roman departure from Britain was a singular event marked by a specific date\",\n      \"description\": \"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"\n    },\n    {\n      \"misconception\": \"Roman infrastructure ceased to exist immediately after their departure\",\n      \"description\": \"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"\n    },\n    {\n      \"misconception\": \"Britain was left uninhabited after the Roman legions left\",\n      \"description\": \"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"\n    }\n  ]\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- elite: a group of people that are regarded as superior in terms of ability or quality are described as elite.\n- converted: when someone has converted, they have changed their religious faith or other belief\n- 'Chi Rho': 'Chi Rho' is the beginning of Christ’s name in Greek\n- chapel: a chapel is a small building or room used for Christian worship</example-1>\n<example-2>- thatched: thatched roofs were made from a type of plant material, like straw\n- wattle and daub: buildings made up of woven twigs and rods that have been covered in clay are called wattle and daub\n- Hadrian’s Wall: Hadrian’s Wall was the northernmost border of the Ancient Roman Empire\n- hypocaust system: a hypocaust system was an Ancient Roman underfloor heating system</example-2>\n<example-3>- theory: a group of ideas to explain something is called a theory\n- economy: economy is the way people, businesses and governments make and spend money\n- politics: politics refers to the way that a country's government make decisions and laws\n- unstable: something is unstable when there are lots of unpredictable changes\n- sack: to sack is to take all the valuable goods after you have conquered a place</example-3>\n<example-4>- triumph: a triumph was a celebration in the streets of Rome when the emperor returned from winning a war\n- invade: to go somewhere with an army to try to take over is to invade\n- legionaries: legionaries were well-trained Ancient Roman soldiers\n- tactics: plans an army uses to defeat their enemies are called tactics</example-4>\n<example-5>- Hadrian’s Wall: Hadrian's Wall was a long wall the Romans built in the north of England to defend it from Celtic tribes\n- frontier: a frontier is the edge of a place where people live or the border of a state or an empire’s land\n- Romanisation: Romanisation is when people started living and acting like the Romans did\n- Romano-British: Romano-British culture is a mix of Roman and old British ways of living</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "keyword": {
+                    "type": "string",
+                    "description": "The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop."
+                  },
+                  "definition": {
+                    "type": "string",
+                    "description": "A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice."
+                  }
+                },
+                "required": [
+                  "keyword",
+                  "definition"
+                ],
+                "additionalProperties": false,
+                "description": "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice."
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "description": "the keywords that are used in the lesson.\nwritten in TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0e94d7801df50b32006a296ec0b58881a1a7150bf78cd40112",
+    "object": "response",
+    "created_at": 1781100224,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100225,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0e94d7801df50b32006a296ec12e1081a1a66cf7f0b6456fe4",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":[{\"keyword\":\"Withdrawal\",\"definition\":\"The act of removing or taking away forces or presence from a region or place.\"},{\"keyword\":\"Instability\",\"definition\":\"The state of being prone to frequent change or lack of steady conditions.\"},{\"keyword\":\"Province\",\"definition\":\"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"},{\"keyword\":\"Societal\",\"definition\":\"Relating to social groups, communities, and their organisation and structure.\"},{\"keyword\":\"Legion\",\"definition\":\"A large unit or group of soldiers in the Roman army known for their discipline and training.\"}]}",
+            "parsed": {
+              "value": [
+                {
+                  "keyword": "Withdrawal",
+                  "definition": "The act of removing or taking away forces or presence from a region or place."
+                },
+                {
+                  "keyword": "Instability",
+                  "definition": "The state of being prone to frequent change or lack of steady conditions."
+                },
+                {
+                  "keyword": "Province",
+                  "definition": "A geographic area that belonged to the Roman Empire, governed as a part of its territory."
+                },
+                {
+                  "keyword": "Societal",
+                  "definition": "Relating to social groups, communities, and their organisation and structure."
+                },
+                {
+                  "keyword": "Legion",
+                  "definition": "A large unit or group of soldiers in the Roman army known for their discipline and training."
+                }
+              ]
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "keyword": {
+                    "type": "string",
+                    "description": "The keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop."
+                  },
+                  "definition": {
+                    "type": "string",
+                    "description": "A short definition of the keyword including the keyword itself. Should be in sentence case starting with a capital letter and not end with a full stop. Written in TEACHER_TO_PUPIL_SLIDES voice."
+                  }
+                },
+                "required": [
+                  "keyword",
+                  "definition"
+                ],
+                "additionalProperties": false,
+                "description": "A keyword that is used in the lesson. Written in the TEACHER_TO_PUPIL_SLIDES voice."
+              },
+              "minItems": 1,
+              "maxItems": 5,
+              "description": "the keywords that are used in the lesson.\nwritten in TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 2439,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 125,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2564
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":[{\"keyword\":\"Withdrawal\",\"definition\":\"The act of removing or taking away forces or presence from a region or place.\"},{\"keyword\":\"Instability\",\"definition\":\"The state of being prone to frequent change or lack of steady conditions.\"},{\"keyword\":\"Province\",\"definition\":\"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"},{\"keyword\":\"Societal\",\"definition\":\"Relating to social groups, communities, and their organisation and structure.\"},{\"keyword\":\"Legion\",\"definition\":\"A large unit or group of soldiers in the Roman army known for their discipline and training.\"}]}",
+    "output_parsed": {
+      "value": [
+        {
+          "keyword": "Withdrawal",
+          "definition": "The act of removing or taking away forces or presence from a region or place."
+        },
+        {
+          "keyword": "Instability",
+          "definition": "The state of being prone to frequent change or lack of steady conditions."
+        },
+        {
+          "keyword": "Province",
+          "definition": "A geographic area that belonged to the Roman Empire, governed as a part of its territory."
+        },
+        {
+          "keyword": "Societal",
+          "definition": "Relating to social groups, communities, and their organisation and structure."
+        },
+        {
+          "keyword": "Legion",
+          "definition": "A large unit or group of soldiers in the Roman army known for their discipline and training."
+        }
+      ]
+    }
+  }
+}
