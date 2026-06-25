@@ -90,9 +90,7 @@ const CsvRowSchema = z
   .passthrough();
 
 function handleTable(table: string) {
-  if (table === "key_stage") {
-    return "key_stages";
-  }
+  return table === "key_stage" ? "key_stages" : table;
 }
 
 function checkForeignKeyReference(
@@ -100,13 +98,14 @@ function checkForeignKeyReference(
   refTable: string,
   ids: string[],
   errors: string[],
-) {
+): Promise<void> {
   const refFilePath = path.join(dataDir, `${handleTable(refTable)}.csv`);
   if (!fs.existsSync(refFilePath)) {
-    errors.push(
-      `CSV file for referenced table '${refTable}' does not exist.`,
-    );
-  } else {
+    errors.push(`CSV file for referenced table '${refTable}' does not exist.`);
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
     const refIds = new Set<string>();
     fs.createReadStream(refFilePath)
       .pipe(csvParser())
@@ -126,8 +125,33 @@ function checkForeignKeyReference(
             );
           }
         }
+        resolve();
+      })
+      .on("error", (error) => {
+        reject(
+          new Error(
+            `Error reading referenced CSV file: ${refFilePath}. Error: ${error.message}`,
+          ),
+        );
       });
-  }
+  });
+}
+
+async function checkForeignKeyReferences(
+  foreignKeys: Record<string, string>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  foreignKeyCheck: Record<string, Set<any>>,
+  errors: string[],
+) {
+  await Promise.all(
+    Object.entries(foreignKeys).map(async ([fk, refTable]) => {
+      const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
+
+      if (ids.length > 0) {
+        await checkForeignKeyReference(fk, refTable, ids, errors);
+      }
+    }),
+  );
 }
 
 const validateCSV = (
@@ -170,24 +194,19 @@ const validateCSV = (
         }
       })
       .on("end", () => {
-        log(`Completed reading CSV file: ${filePath}`);
+        void (async () => {
+          log(`Completed reading CSV file: ${filePath}`);
 
-        // Validate foreign keys in CSV
-        for (const [fk, refTable] of Object.entries(foreignKeys)) {
-          const ids: string[] = Array.from(foreignKeyCheck[fk] ?? []);
+          await checkForeignKeyReferences(foreignKeys, foreignKeyCheck, errors);
 
-          if (ids.length > 0) {
-            checkForeignKeyReference(fk, refTable, ids, errors);
+          if (errors.length > 0) {
+            log(`Validation failed for CSV file: ${filePath}`);
+            reject(new Error(errors.join("\n")));
+          } else {
+            log(`Validation passed for CSV file: ${filePath}`);
+            resolve();
           }
-        }
-
-        if (errors.length > 0) {
-          log(`Validation failed for CSV file: ${filePath}`);
-          reject(new Error(errors.join("\n")));
-        } else {
-          log(`Validation passed for CSV file: ${filePath}`);
-          resolve();
-        }
+        })().catch(reject);
       })
       .on("error", (error) => {
         reject(

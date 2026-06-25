@@ -23,13 +23,13 @@ export interface SimplifiedSlideContent {
   slideType?: string;
 }
 
-/**
- * Format slides in a readable structure for LLM prompts
- * @param slides - Array of slide content to format
- * @returns Formatted string representation of slides
- */
 function formatTableRows(
-  table: { id: string; rows: number; columns: number; cells: { id: string; content: string }[][] },
+  table: {
+    id: string;
+    rows: number;
+    columns: number;
+    cells: { id: string; content: string }[][];
+  },
   tableIdx: number,
 ): string[] {
   const parts: string[] = [
@@ -44,6 +44,11 @@ function formatTableRows(
   return parts;
 }
 
+/**
+ * Format slides in a readable structure for LLM prompts
+ * @param slides - Array of slide content to format
+ * @returns Formatted string representation of slides
+ */
 export function formatSlidesForPrompt(
   slides: SimplifiedSlideContent[],
 ): string {
