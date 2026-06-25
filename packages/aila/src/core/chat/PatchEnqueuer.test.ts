@@ -49,6 +49,22 @@ describe("PatchEnqueuer", () => {
     ).resolves.toBeUndefined();
   });
 
+  it("skips the write when the closed-controller error has no code", async () => {
+    // Some runtimes throw a plain TypeError with no `code` when the controller
+    // is closed; it must still be treated as a disconnect, not a real failure.
+    const controller = {
+      enqueue: jest.fn(() => {
+        throw new TypeError("Invalid state: Controller is already closed");
+      }),
+    } as unknown as ReadableStreamDefaultController;
+
+    const patchEnqueuer = new PatchEnqueuer(controller);
+
+    await expect(
+      patchEnqueuer.enqueueMessage(message),
+    ).resolves.toBeUndefined();
+  });
+
   it("rethrows when the write fails for any other reason", async () => {
     const controller = {
       enqueue: jest.fn(() => {

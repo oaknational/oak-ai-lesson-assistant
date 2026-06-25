@@ -6,17 +6,20 @@ const log = aiLogger("aila:protocol");
 
 /**
  * The client can disconnect at any point (e.g. before a slow post-response
- * moderation write), which closes the stream controller and makes enqueue throw
- * `ERR_INVALID_STATE`. Streaming is best-effort — the document and moderation are
- * persisted separately — so a closed controller must not throw, or it aborts the
- * turn before persistChat runs.
+ * moderation write), which closes the stream controller and makes enqueue throw.
+ * Streaming is best-effort — the document and moderation are persisted separately
+ * — so a closed controller must not throw, or it aborts the turn before
+ * persistChat runs.
  */
 function isControllerClosed(error: unknown): boolean {
+  // Some runtimes don't set a `code` on a closed-controller error, so match
+  // the TypeError too.
   return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code?: unknown }).code === "ERR_INVALID_STATE"
+    error instanceof TypeError ||
+    (typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: unknown }).code === "ERR_INVALID_STATE")
   );
 }
 
