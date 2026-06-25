@@ -19,6 +19,7 @@ import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
+import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
@@ -117,6 +118,8 @@ async function setupChatHandler(req: NextRequest) {
         );
       }
 
+      const useMathsQuizRag = await serverSideFeatureFlag("quiz-rag");
+
       const options: AilaOptions = {
         useRag: chatOptions.useRag ?? true,
         temperature: chatOptions.temperature ?? 0.7,
@@ -126,6 +129,7 @@ async function setupChatHandler(req: NextRequest) {
         useModeration: true,
         useAgenticAila,
         agenticFixture,
+        useMathsQuizRag: useMathsQuizRag,
       };
 
       // Agentic system never calls LLMService — skip the chunk-based fixture to

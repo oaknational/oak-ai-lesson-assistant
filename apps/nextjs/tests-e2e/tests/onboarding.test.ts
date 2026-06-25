@@ -68,5 +68,6 @@ test("Loading onboarding when already onboarded", async ({ page }) => {
 
   await test.step("Redirect", async () => {
     await page.waitForURL(`${TEST_BASE_URL}/`, { timeout: 30000 });
+    await expect(page).toHaveURL(`${TEST_BASE_URL}/`);
   });
 });

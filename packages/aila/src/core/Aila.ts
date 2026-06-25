@@ -170,6 +170,7 @@ export class Aila implements AilaServices {
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
       useAgenticAila: options?.useAgenticAila ?? false,
+      useMathsQuizRag: options?.useMathsQuizRag ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
       ...(options?.agenticFixture
