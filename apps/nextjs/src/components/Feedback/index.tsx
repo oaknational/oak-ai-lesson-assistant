@@ -32,7 +32,10 @@ const FeedBack = ({
     {},
   );
 
-  const handleRatingClick = (surveyResponseKey: string, feedbackNumber: number) => {
+  const handleRatingClick = (
+    surveyResponseKey: string,
+    feedbackNumber: number,
+  ) => {
     setUsersResponse((prevState) => ({
       ...prevState,
       [surveyResponseKey]: feedbackNumber.toString(),
@@ -92,7 +95,9 @@ const FeedBack = ({
                       className={
                         "flex flex-col items-center justify-center gap-6"
                       }
-                      onClick={() => handleRatingClick(surveyResponseKey, feedback.number)}
+                      onClick={() =>
+                        handleRatingClick(surveyResponseKey, feedback.number)
+                      }
                     >
                       <span
                         className={`rounded-sm border-2 p-8 px-9 text-lg sm:px-15 ${

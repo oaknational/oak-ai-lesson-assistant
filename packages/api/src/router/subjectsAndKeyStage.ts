@@ -86,7 +86,9 @@ function mapQuestion(question: Question) {
     text = stem[0].text;
   }
 
-  const answers = question.answers["multiple-choice"].map(mapMultipleChoiceAnswer);
+  const answers = question.answers["multiple-choice"].map(
+    mapMultipleChoiceAnswer,
+  );
 
   return {
     question: text,

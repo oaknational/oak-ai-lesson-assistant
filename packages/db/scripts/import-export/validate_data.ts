@@ -26,10 +26,7 @@ const log = (message: string) => {
 };
 
 const camelCaseToSnakeCase = (str: string) => {
-  const newStr = str.replace(
-    /[A-Z]/g,
-    (letter) => `_${letter.toLowerCase()}`,
-  );
+  const newStr = str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
   return newStr.replace(/^_/, "");
 };
 
