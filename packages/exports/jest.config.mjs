@@ -12,6 +12,7 @@ const config = {
   },
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper: {
+    "^@oakai/core/src/(.*)$": "<rootDir>/../core/src/$1",
     "^@oakai/test-support$": "<rootDir>/../test-support/index.cjs",
     "^@oakai/test-support/jest$": "<rootDir>/../test-support/jest.cjs",
     "^(\\.{1,2}/.*)\\.js$": "$1",

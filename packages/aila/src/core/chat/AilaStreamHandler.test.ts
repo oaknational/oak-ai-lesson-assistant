@@ -567,17 +567,10 @@ describe("AilaStreamHandler", () => {
 
   it("calls generationFailed and skips complete when non-agentic stream errors", async () => {
     const chat = createMockChat({ useAgenticAila: false });
-    // Override: stream throws immediately
     chat.createChatCompletionObjectStream = jest
       .fn()
       .mockRejectedValue(new Error("LLM stream failed"));
-    // Override: generationFailed must update status so shouldComplete becomes false
-    chat.generationFailed = jest.fn().mockImplementation(() => {
-      if (chat.generation) {
-        (chat.generation as { status: string }).status = "FAILED";
-      }
-      return Promise.resolve();
-    });
+    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
 
     const handler = new AilaStreamHandler(chat as never);
     await consumeStream(handler.startStreaming());
@@ -586,19 +579,82 @@ describe("AilaStreamHandler", () => {
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
-  it("skips complete when generationFailed rejects", async () => {
+  it("skips complete after a non-agentic stream error even if generation status is unchanged", async () => {
     const chat = createMockChat({ useAgenticAila: false });
     chat.createChatCompletionObjectStream = jest
       .fn()
       .mockRejectedValue(new Error("LLM stream failed"));
-    chat.generationFailed = jest
+    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
+
+    const handler = new AilaStreamHandler(chat as never);
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.generation?.status).toBe("REQUESTED");
+    expect(chat.generationFailed).toHaveBeenCalledTimes(1);
+    expect(chat.complete).not.toHaveBeenCalled();
+  });
+
+  it("skips complete when generationFailed rejects", async () => {
+    const streamError = new Error("LLM stream failed");
+    const recoveryError = new Error("generationFailed failed");
+    const chat = createMockChat({ useAgenticAila: false });
+    chat.createChatCompletionObjectStream = jest
       .fn()
-      .mockRejectedValue(new Error("generationFailed failed"));
+      .mockRejectedValue(streamError);
+    chat.generationFailed = jest.fn().mockRejectedValue(recoveryError);
 
     const handler = new AilaStreamHandler(chat as never);
     await consumeStream(handler.startStreaming());
 
     expect(chat.generationFailed).toHaveBeenCalledTimes(1);
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
+      recoveryError,
+    );
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
+      streamError,
+    );
+    expect(chat.complete).not.toHaveBeenCalled();
+  });
+
+  it("closes cleanly when completion and its fallback error message both fail", async () => {
+    const completionError = new Error("complete failed");
+    const enqueueError = new Error("enqueue failed");
+    const chat = createMockChat({ useAgenticAila: false });
+    chat.complete = jest.fn().mockRejectedValue(completionError);
+    chat.enqueue.mockImplementation((message: { value?: string }) => {
+      if (
+        message.value ===
+        "Something went wrong. Please try sending your message again."
+      ) {
+        throw enqueueError;
+      }
+      return Promise.resolve();
+    });
+
+    const handler = new AilaStreamHandler(chat as never);
+
+    await expect(consumeStream(handler.startStreaming())).resolves.toBe(
+      undefined,
+    );
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
+      completionError,
+    );
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
+      enqueueError,
+    );
+  });
+
+  it("skips complete when non-agentic setup fails before generation exists", async () => {
+    const chat = createMockChat({ useAgenticAila: false });
+    chat.generation = undefined;
+    chat.setupGeneration = jest
+      .fn()
+      .mockRejectedValue(new Error("Generation setup failed"));
+
+    const handler = new AilaStreamHandler(chat as never);
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.generationFailed).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
