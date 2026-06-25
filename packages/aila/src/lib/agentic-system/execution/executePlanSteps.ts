@@ -57,8 +57,8 @@ function hasNonEmptyStrings(item: unknown, keys: string[]): boolean {
 
 /**
  * List-based sections that support targeted single-item edits. A section absent
- * from this map falls through to whole-section regeneration even if the planner
- * emits an itemIntent for it.
+ * from this map is handled by the normal whole-section agent path
+ * (`runSectionAgent`), even if the planner emitted an itemIntent for it.
  *
  * `min`/`max` mirror the section schema's array bounds;
  * executePlanSteps.config.test.ts fails if they drift apart.
