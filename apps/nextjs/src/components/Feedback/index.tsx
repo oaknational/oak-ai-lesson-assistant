@@ -32,6 +32,16 @@ const FeedBack = ({
     {},
   );
 
+  const handleRatingClick = (
+    surveyResponseKey: string,
+    feedbackNumber: number,
+  ) => {
+    setUsersResponse((prevState) => ({
+      ...prevState,
+      [surveyResponseKey]: feedbackNumber.toString(),
+    }));
+  };
+
   if (!survey?.id) return null;
 
   return (
@@ -85,12 +95,9 @@ const FeedBack = ({
                       className={
                         "flex flex-col items-center justify-center gap-6"
                       }
-                      onClick={() => {
-                        setUsersResponse((prevState) => ({
-                          ...prevState,
-                          [surveyResponseKey]: feedback.number.toString(),
-                        }));
-                      }}
+                      onClick={() =>
+                        handleRatingClick(surveyResponseKey, feedback.number)
+                      }
                     >
                       <span
                         className={`rounded-sm border-2 p-8 px-9 text-lg sm:px-15 ${

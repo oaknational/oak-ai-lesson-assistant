@@ -17687,7 +17687,7 @@ packages:
       acorn: 8.15.0
       acorn-import-attributes: 1.9.5(acorn@8.15.0)
       cjs-module-lexer: 1.4.3
-      module-details-from-path: 1.0.3
+      module-details-from-path: 1.0.4
     dev: false
 
   /import-lazy@4.0.0:

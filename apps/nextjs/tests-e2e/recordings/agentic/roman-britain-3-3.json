@@ -1,0 +1,224 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nIdentify 1–3 common misconceptions pupils may have about the topic.\n\n- Each should be a succinct incorrect belief (max 200 characters)\n- Follow with a factually accurate correction (max 250 characters)\n- Corrections must be based on facts, not opinion\n- These help teachers plan explanations and check understanding (e.g. via tasks or quizzes)\n\n### Example:\n- Misconception: Multiplying two numbers always makes them bigger\n- Correction: Multiplying by a number < 1, 0, or a negative can produce a smaller or zero result"
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\n    \"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\n    \"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\n    \"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\n    \"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"\n  ]\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- Evidence of Christianity from the 4th century is definitive proof of when it was introduced to Britain.: The evidence of Christianity found in Britain dates back to the 4th century and this gives historians reason to believe this is around the time Christianity was introduced and became popular in Britain.</example-1>\n<example-2>- Pupils may think that Hadrian's Wall was not very high, as the remaining stretches have been damaged.: Remind pupils that Hadrian's Wall is over a thousand years old, and any sections still standing were much taller in the past.</example-2>\n<example-3>- The fall of the Western Roman Empire happened when it was sacked in 410 CE.: The fall of the Western Roman Empire happened gradually over time.</example-3>\n<example-4>- Pupils may think that the people of Britain formed a united kingdom at this time.: Remind pupils that 1st century CE Britain was made up of various Celtic people, kingdoms and tribes.</example-4>\n<example-5>- Pupils may believe the Scots tribe were originally from Scotland.: The Scots tribe originated from Ireland but the name 'Scotland' comes from the tribe after they migrated there.</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "misconception": {
+                    "type": "string",
+                    "description": "a single sentence describing a common misconception about the topic. Do not end with a full stop."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "No more than 2 'correction' sentences addressing the reason for the misconception and how it can be addressed in the lesson."
+                  }
+                },
+                "required": [
+                  "misconception",
+                  "description"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 3,
+              "description": "A set of potential misconceptions which students might have about the content that is delivered in the lesson.\nWritten in the EXPERT_TEACHER voice.\nMinimum 1, maximum 3 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0ba1c15797862a3e006a296eb90788819186d93aab89596a93",
+    "object": "response",
+    "created_at": 1781100217,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100221,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0ba1c15797862a3e006a296eb989508191ab792fa006bf74b4",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":[{\"misconception\":\"The Roman departure from Britain was a singular event marked by a specific date\",\"description\":\"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"},{\"misconception\":\"Roman infrastructure ceased to exist immediately after their departure\",\"description\":\"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"},{\"misconception\":\"Britain was left uninhabited after the Roman legions left\",\"description\":\"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"}]}",
+            "parsed": {
+              "value": [
+                {
+                  "misconception": "The Roman departure from Britain was a singular event marked by a specific date",
+                  "description": "The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event."
+                },
+                {
+                  "misconception": "Roman infrastructure ceased to exist immediately after their departure",
+                  "description": "Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal."
+                },
+                {
+                  "misconception": "Britain was left uninhabited after the Roman legions left",
+                  "description": "Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies."
+                }
+              ]
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "misconception": {
+                    "type": "string",
+                    "description": "a single sentence describing a common misconception about the topic. Do not end with a full stop."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "No more than 2 'correction' sentences addressing the reason for the misconception and how it can be addressed in the lesson."
+                  }
+                },
+                "required": [
+                  "misconception",
+                  "description"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 3,
+              "description": "A set of potential misconceptions which students might have about the content that is delivered in the lesson.\nWritten in the EXPERT_TEACHER voice.\nMinimum 1, maximum 3 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1989,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 126,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2115
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":[{\"misconception\":\"The Roman departure from Britain was a singular event marked by a specific date\",\"description\":\"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"},{\"misconception\":\"Roman infrastructure ceased to exist immediately after their departure\",\"description\":\"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"},{\"misconception\":\"Britain was left uninhabited after the Roman legions left\",\"description\":\"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"}]}",
+    "output_parsed": {
+      "value": [
+        {
+          "misconception": "The Roman departure from Britain was a singular event marked by a specific date",
+          "description": "The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event."
+        },
+        {
+          "misconception": "Roman infrastructure ceased to exist immediately after their departure",
+          "description": "Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal."
+        },
+        {
+          "misconception": "Britain was left uninhabited after the Roman legions left",
+          "description": "Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies."
+        }
+      ]
+    }
+  }
+}

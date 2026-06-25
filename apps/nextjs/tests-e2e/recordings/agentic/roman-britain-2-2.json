@@ -1,0 +1,176 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nLEARNING CYCLE OUTCOMES break the LEARNING OUTCOME into 1–3 manageable chunks, each aligned to a LEARNING CYCLE. These are statements that describe what pupils should know or be able to do by the end of the lesson.\n\n- Phrase each as a command, starting with a verb (e.g. Name, Identify, Label, State, Recall, Define, Sketch, Describe, Explain, Analyse, Discuss, Apply, Compare, Calculate, Construct, Manipulate, Evaluate) \n- Max 20 words per LEARNING CYCLE OUTCOME.\n- Example: \"label the organelles in a plant cell\".\n- Ensure progression: these should increase in difficulty."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the significant changes that occurred in Britain as Roman rule came to an end.\"\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>[\"Describe the origins and spread of Christianity during early Roman times.\",\"Identify archaeological evidence of Christianity's growth in Britain.\",\"Explain how the discovered artefacts support conclusions about Christianity's popularity in Britain.\"]</example-1>\n<example-2>[\"Describe the construction and features of Celtic roundhouses\",\"Explain the construction and historical significance of Hadrian's Wall\",\"Identify features of Roman villas and their significance\"]</example-2>\n<example-3>[\"Identify the main theories explaining the fall of the Western Roman Empire.\",\"Describe the events leading to the sack of Rome in 410 CE\",\"Evaluate the long-term impacts resulting from the fall of the Western Roman Empire\"]</example-3>\n<example-4>[\"Explain why Emperor Claudius decided to invade Britain.\",\"Describe how Emperor Claudius' forces successfully invaded Britain through strategies and tactics.\"]</example-4>\n<example-5>[\"Explain the circumstances leading to the defeat of the Picts and Scots by the Romans.\",\"Describe the reasons behind the departure of Roman soldiers from Britain.\",\"Analyse the characteristics of Romano-British culture and its geographical variance.\"]</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nGenerate the teaching structure for the lesson, outlining how the topic will be addressed through cycles."
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!"
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of learning cycle outcomes.\nShould include a command word.\nShould be succinct.\nShould outline what pupils should be able to do/understand/know by the end of the learning cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 3 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0a64da8b62de4887006a297df488548191a1a4dd5301ac2fda",
+    "object": "response",
+    "created_at": 1781104116,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781104117,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0a64da8b62de4887006a297df51d588191b57bfb555734dd52",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":[\"Describe the key events signalling the end of Roman rule in Britain.\",\"Identify the factors contributing to the departure of Romans from Britain.\",\"Explain the immediate impacts on Britain following the end of Roman rule.\"]}",
+            "parsed": {
+              "value": [
+                "Describe the key events signalling the end of Roman rule in Britain.",
+                "Identify the factors contributing to the departure of Romans from Britain.",
+                "Explain the immediate impacts on Britain following the end of Roman rule."
+              ]
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of learning cycle outcomes.\nShould include a command word.\nShould be succinct.\nShould outline what pupils should be able to do/understand/know by the end of the learning cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 3 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1699,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 44,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1743
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":[\"Describe the key events signalling the end of Roman rule in Britain.\",\"Identify the factors contributing to the departure of Romans from Britain.\",\"Explain the immediate impacts on Britain following the end of Roman rule.\"]}",
+    "output_parsed": {
+      "value": [
+        "Describe the key events signalling the end of Roman rule in Britain.",
+        "Identify the factors contributing to the departure of Romans from Britain.",
+        "Explain the immediate impacts on Britain following the end of Roman rule."
+      ]
+    }
+  }
+}

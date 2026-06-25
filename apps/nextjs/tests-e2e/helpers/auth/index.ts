@@ -35,6 +35,7 @@ export async function prepareUser(
     | "demo"
     | "nearly-banned"
     | "modify-lesson-plan"
+    | "modify-lesson-plan-agentic"
     | "nearly-rate-limited"
     | "sharing-chat"
     | "needs-onboarding"

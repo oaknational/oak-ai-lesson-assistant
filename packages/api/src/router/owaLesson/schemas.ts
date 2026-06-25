@@ -1,9 +1,33 @@
 import {
   lessonContentSchema as lessonContentSchemaFull,
+  subjectSlugs,
+  subjects,
   syntheticUnitvariantLessonsByKsSchema,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
 import { z } from "zod";
+
+const subjectSchema = z.union([
+  subjects,
+  z.literal("Rule of law"),
+  z.literal("Digital literacy"),
+]);
+
+const subjectSlugSchema = z.union([
+  subjectSlugs,
+  z.literal("rule-of-law"),
+  z.literal("digital-literacy"),
+]);
+
+const programmeFieldsSchema = z
+  .object({
+    subject: subjectSchema.nullish(),
+    subject_slug: subjectSlugSchema.nullish(),
+    phase: z.string().nullish(),
+    keystage: z.string().nullish(),
+    year: z.string().nullish(),
+  })
+  .passthrough();
 
 export const lessonContentSchema = lessonContentSchemaFull
   .pick({
@@ -39,6 +63,7 @@ export const lessonBrowseDataByKsSchema = syntheticUnitvariantLessonsSchema
     supplementary_data: true,
     null_unitvariant_id: true,
     unit_data: true,
+    programme_fields: true,
   })
   .extend({
     lesson_data: z.object({
@@ -51,11 +76,22 @@ export const lessonBrowseDataByKsSchema = syntheticUnitvariantLessonsSchema
       prior_knowledge_requirements: z.array(z.string()).nullish(),
       connection_prior_unit_description: z.string().nullish(),
     }),
+    programme_fields: programmeFieldsSchema,
   });
 
-export type LessonBrowseDataByKsSchema = z.infer<
+type LessonBrowseDataByKsSchemaBase = z.infer<
   typeof lessonBrowseDataByKsSchema
 >;
+
+export type LessonBrowseDataByKsSchema = LessonBrowseDataByKsSchemaBase & {
+  programme_fields: {
+    subject?: string | null;
+    subject_slug?: string | null;
+    phase?: string | null;
+    keystage?: string | null;
+    year?: string | null;
+  };
+};
 
 export type LessonContentSchema = z.infer<typeof lessonContentSchema>;
 

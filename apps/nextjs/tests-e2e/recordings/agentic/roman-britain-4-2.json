@@ -1,0 +1,1170 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\nYou rewrite a single section of an Oak National Academy lesson plan to remove Americanisms and use standard British English suitable for UK teachers and pupils.\n\n# Task\nYou receive a single lesson-plan section as JSON, plus a list of Americanisms detected in that section with their British alternatives. Return the section corrected into British English, preserving structure and meaning.\n\n# Constraints\n- Do not change keys or structure. Return the same shape you received.\n- Do not change the educational meaning of the content.\n- Preserve case: \"Recognize\" → \"Recognise\", \"RECOGNIZE\" → \"RECOGNISE\".\n- Apply British English consistently across the section, not only to the listed phrases — if you notice closely related Americanisms in the same section, convert those to British English too.\n- Do not add commentary, markdown, or explanations.\n\n# British English rules\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson)."
+      },
+      {
+        "role": "developer",
+        "content": "Section key: starterQuiz"
+      },
+      {
+        "role": "developer",
+        "content": "Issues detected in this section:\n- \"40\" → (pronounced 'forty') a 40-ounce (1.183L) bottle of malt liquor, commonly drunk by American youths. (phrasing)"
+      },
+      {
+        "role": "user",
+        "content": "Original section JSON:\n{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false,
+              "description": "The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.\nObey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false,
+                  "description": "The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.\nObey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0c500db3484263df006a296ece86f8819d8af98d9731e7ee56",
+    "object": "response",
+    "created_at": 1781100238,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100240,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0c500db3484263df006a296ecf15a8819d829421d0b74594c3",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+            "parsed": {
+              "value": {
+                "version": "v3",
+                "questions": [
+                  {
+                    "question": "What year did the Roman occupation of Britain begin?",
+                    "hint": "Refer to the timeline between 40 and 50 CE.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "43 CE"
+                    ],
+                    "distractors": [
+                      "50 CE",
+                      "40 CE"
+                    ]
+                  },
+                  {
+                    "question": "Which cultural influence significantly shaped the development of Britain during the Roman occupation?",
+                    "hint": "Think of the empire in control during the time.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Roman"
+                    ],
+                    "distractors": [
+                      "Pictish",
+                      "Scottish"
+                    ]
+                  },
+                  {
+                    "question": "Which infrastructure was introduced by the Romans in Britain?",
+                    "hint": "Consider innovations in transportation and connectivity.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Roads"
+                    ],
+                    "distractors": [
+                      "Castles",
+                      "Cathedrals"
+                    ]
+                  },
+                  {
+                    "question": "Name one group that posed a threat to the stability of Roman Britain.",
+                    "hint": "This group was located north of Hadrian's Wall.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Picts"
+                    ],
+                    "distractors": [
+                      "Normans",
+                      "Vikings"
+                    ]
+                  },
+                  {
+                    "question": "What role does economy play in shaping historical events?",
+                    "hint": "Consider whether resources and trade routes can affect power.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "It influences the power and stability of societies."
+                    ],
+                    "distractors": [
+                      "It prevents cultural exchange between nations.",
+                      "It has no long-lasting impact on societies."
+                    ]
+                  },
+                  {
+                    "question": "Which span of years represents the Roman occupation of Britain?",
+                    "hint": "This time frame exceeds three centuries.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "43 CE to 401 CE"
+                    ],
+                    "distractors": [
+                      "55 BCE to 410 CE",
+                      "1 CE to 300 CE"
+                    ]
+                  }
+                ],
+                "imageMetadata": [],
+                "reportId": ""
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false,
+              "description": "The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.\nObey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false,
+                  "description": "The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.\nObey the rules as specified in the STARTER QUIZ section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 2425,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 347,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2772
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+    "output_parsed": {
+      "value": {
+        "version": "v3",
+        "questions": [
+          {
+            "question": "What year did the Roman occupation of Britain begin?",
+            "hint": "Refer to the timeline between 40 and 50 CE.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "43 CE"
+            ],
+            "distractors": [
+              "50 CE",
+              "40 CE"
+            ]
+          },
+          {
+            "question": "Which cultural influence significantly shaped the development of Britain during the Roman occupation?",
+            "hint": "Think of the empire in control during the time.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Roman"
+            ],
+            "distractors": [
+              "Pictish",
+              "Scottish"
+            ]
+          },
+          {
+            "question": "Which infrastructure was introduced by the Romans in Britain?",
+            "hint": "Consider innovations in transportation and connectivity.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Roads"
+            ],
+            "distractors": [
+              "Castles",
+              "Cathedrals"
+            ]
+          },
+          {
+            "question": "Name one group that posed a threat to the stability of Roman Britain.",
+            "hint": "This group was located north of Hadrian's Wall.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Picts"
+            ],
+            "distractors": [
+              "Normans",
+              "Vikings"
+            ]
+          },
+          {
+            "question": "What role does economy play in shaping historical events?",
+            "hint": "Consider whether resources and trade routes can affect power.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "It influences the power and stability of societies."
+            ],
+            "distractors": [
+              "It prevents cultural exchange between nations.",
+              "It has no long-lasting impact on societies."
+            ]
+          },
+          {
+            "question": "Which span of years represents the Roman occupation of Britain?",
+            "hint": "This time frame exceeds three centuries.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "43 CE to 401 CE"
+            ],
+            "distractors": [
+              "55 BCE to 410 CE",
+              "1 CE to 300 CE"
+            ]
+          }
+        ],
+        "imageMetadata": [],
+        "reportId": ""
+      }
+    }
+  }
+}
