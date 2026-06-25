@@ -4,6 +4,22 @@ import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol
 
 const log = aiLogger("aila:protocol");
 
+/**
+ * The client can disconnect at any point (e.g. before a slow post-response
+ * moderation write), which closes the stream controller and makes enqueue throw
+ * `ERR_INVALID_STATE`. Streaming is best-effort — the document and moderation are
+ * persisted separately — so a closed controller must not throw, or it aborts the
+ * turn before persistChat runs.
+ */
+function isControllerClosed(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === "ERR_INVALID_STATE"
+  );
+}
+
 // Paths that PatchString schema accepts
 type StringPatchPath =
   | "/title"
@@ -23,6 +39,22 @@ export class PatchEnqueuer {
     this.controller = controller;
   }
 
+  private safeEnqueue(encoded: string): void {
+    if (!this.controller) {
+      throw new Error("Controller not set");
+    }
+    try {
+      this.controller.enqueue(encoded);
+    } catch (error) {
+      if (isControllerClosed(error)) {
+        log.warn("Stream controller already closed; skipping enqueue");
+        return;
+      }
+      log.error("Error enqueuing patch", error);
+      throw error;
+    }
+  }
+
   private enqueuePromise: Promise<void> = Promise.resolve();
   private enqueueOperation(operation: () => void): Promise<void> {
     this.enqueuePromise = this.enqueuePromise.then(() => {
@@ -39,27 +71,14 @@ export class PatchEnqueuer {
     value: string,
   ): Promise<void> {
     return this.enqueueOperation(() => {
-      if (!this.controller) {
-        throw new Error("Controller not set");
-      }
       const patch = this.createPatch(path, value);
-      const encodedPatch = this.formatPatch(patch);
-      try {
-        this.controller.enqueue(encodedPatch);
-      } catch (error) {
-        log.error("Error enqueuing patch", error);
-        throw error;
-      }
+      this.safeEnqueue(this.formatPatch(patch));
     });
   }
 
   public enqueueMessage(message: JsonPatchDocumentOptional): Promise<void> {
     return this.enqueueOperation(() => {
-      if (!this.controller) {
-        throw new Error("Controller not set");
-      }
-      const encodedMessage = this.formatPatch(message);
-      this.controller.enqueue(encodedMessage);
+      this.safeEnqueue(this.formatPatch(message));
     });
   }
 
