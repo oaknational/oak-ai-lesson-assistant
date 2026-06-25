@@ -229,11 +229,24 @@ async function executeQuizDispatchStep(
     });
   }
 
+  // Correct the agent output like the whole-section path. A declined edit
+  // returns the original quiz by reference, so skip it.
+  const corrected =
+    dispatchResult.data === currentQuiz
+      ? null
+      : await applyBritishEnglishCorrection({
+          context,
+          sectionKey,
+          content: dispatchResult.data,
+          responseSchema: CompletedLessonPlanSchema.shape[sectionKey],
+        });
+  const finalQuiz = corrected ?? dispatchResult.data;
+
   commitStepUpdate(context, step, (draft) => {
     if (sectionKey === "starterQuiz") {
-      draft.starterQuiz = dispatchResult.data;
+      draft.starterQuiz = finalQuiz;
     } else {
-      draft.exitQuiz = dispatchResult.data;
+      draft.exitQuiz = finalQuiz;
     }
   });
 
@@ -288,11 +301,24 @@ async function executeSectionListDispatchStep(
     });
   }
 
+  // Correct the agent output like the whole-section path. A declined edit
+  // returns the original list by reference, so skip it.
+  const corrected =
+    dispatchResult.data === currentItems
+      ? null
+      : await applyBritishEnglishCorrection({
+          context,
+          sectionKey,
+          content: dispatchResult.data,
+          responseSchema: config.arraySchema,
+        });
+  const finalItems = (corrected ?? dispatchResult.data) as unknown[];
+
   commitStepUpdate(context, step, (draft) => {
     // A declined edit on an absent section would write an empty array (e.g.
     // `keywords: []`), violating the section's min(1) schema; leave it absent.
-    if (sectionWasAbsent && dispatchResult.data.length === 0) return;
-    (draft as Record<string, unknown>)[sectionKey] = dispatchResult.data;
+    if (sectionWasAbsent && finalItems.length === 0) return;
+    (draft as Record<string, unknown>)[sectionKey] = finalItems;
   });
 
   return { status: "continue" };

@@ -289,4 +289,78 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
       expect(getUpdatedKeywords(callbacks)).toBeUndefined();
     });
   });
+
+  describe("British English correction", () => {
+    it("corrects an added keyword that contains an Americanism", async () => {
+      const americanKeyword: Keyword = {
+        keyword: "Color pigment",
+        definition: "A substance that gives color to a leaf.",
+      };
+      const britishKeyword: Keyword = {
+        keyword: "Colour pigment",
+        definition: "A substance that gives colour to a leaf.",
+      };
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: [americanKeyword] });
+      const corrector = jest.fn().mockResolvedValue({
+        error: null,
+        data: [k1, k2, k3, britishKeyword],
+      });
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Add a keyword about colour", {
+          action: "ADD_ITEM",
+          position: null,
+        }),
+        sectionAgents: keywordsAgent(handler),
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Add a keyword about colour"),
+        runtime,
+        callbacks,
+      });
+
+      expect(corrector).toHaveBeenCalledTimes(1);
+      expect(getUpdatedKeywords(callbacks)).toEqual([
+        k1,
+        k2,
+        k3,
+        britishKeyword,
+      ]);
+    });
+
+    it("skips correction on a declined edit so untouched items pass through", async () => {
+      const americanKeyword: Keyword = {
+        keyword: "Color wheel",
+        definition: "A chart of colors.",
+      };
+      const handler = jest.fn();
+      const corrector = jest.fn();
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Remove a keyword", {
+          action: "REMOVE_ITEM",
+          position: null,
+        }),
+        sectionAgents: keywordsAgent(handler),
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Remove a keyword", [
+          k1,
+          k2,
+          americanKeyword,
+        ]),
+        runtime,
+        callbacks,
+      });
+
+      expect(corrector).not.toHaveBeenCalled();
+      expect(getUpdatedKeywords(callbacks)).toEqual([k1, k2, americanKeyword]);
+    });
+  });
 });
