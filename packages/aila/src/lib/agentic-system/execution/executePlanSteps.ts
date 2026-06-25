@@ -247,8 +247,9 @@ async function executeSectionListDispatchStep(
   intent: StructuralItemIntent,
   config: ListSectionConfig,
 ): Promise<AilaTurnPhaseOutcome> {
-  const currentItems = (context.currentTurn.document[sectionKey] ??
-    []) as unknown[];
+  const existing = context.currentTurn.document[sectionKey];
+  const sectionWasAbsent = existing == null;
+  const currentItems = (existing ?? []) as unknown[];
 
   const dispatchResult = await sectionListOperationDispatcher<unknown>(
     currentItems,
@@ -264,7 +265,12 @@ async function executeSectionListDispatchStep(
       if (agentResult.error) return null;
       const parsed = config.arraySchema.safeParse(agentResult.data);
       if (!parsed.success) return null;
-      const item = (parsed.data as unknown[])[0];
+      // The add/change agents must return exactly one item; if more come back,
+      // decline rather than silently using the first (which for a change could
+      // land an unrelated item in the target slot).
+      const data = parsed.data as unknown[];
+      if (data.length !== 1) return null;
+      const item = data[0];
       return config.validateItem(item) ? item : null;
     },
     {
@@ -283,6 +289,9 @@ async function executeSectionListDispatchStep(
   }
 
   commitStepUpdate(context, step, (draft) => {
+    // A declined edit on an absent section would write an empty array (e.g.
+    // `keywords: []`), violating the section's min(1) schema; leave it absent.
+    if (sectionWasAbsent && dispatchResult.data.length === 0) return;
     (draft as Record<string, unknown>)[sectionKey] = dispatchResult.data;
   });
 
