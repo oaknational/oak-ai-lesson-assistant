@@ -5,11 +5,9 @@ import type { JsonPatchDocumentOptional } from "../../protocol/jsonPatchProtocol
 const log = aiLogger("aila:protocol");
 
 /**
- * The client can disconnect at any point (e.g. before a slow post-response
- * moderation write), which closes the stream controller and makes enqueue throw.
- * Streaming is best-effort — the document and moderation are persisted separately
- * — so a closed controller must not throw, or it aborts the turn before
- * persistChat runs.
+ * A disconnected client closes the controller, making enqueue throw. Streaming
+ * is best-effort, so swallow that error; otherwise the turn aborts before the
+ * document and moderation are persisted.
  */
 function isControllerClosed(error: unknown): boolean {
   // Some runtimes don't set a `code` on a closed-controller error, so match

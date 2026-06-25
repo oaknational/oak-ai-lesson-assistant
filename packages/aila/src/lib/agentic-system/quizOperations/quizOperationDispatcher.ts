@@ -13,9 +13,8 @@ export type QuizDispatchResult = {
 };
 
 /**
- * Quiz adapter over the generic section-list dispatcher. A declined edit returns
- * the questions array by reference, so the original quiz object passes through
- * unchanged.
+ * Quiz adapter over the generic section-list dispatcher. A declined edit leaves
+ * the quiz unchanged.
  */
 export async function quizOperationDispatcher(
   currentQuiz: LatestQuiz,

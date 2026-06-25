@@ -27,9 +27,8 @@ describe("deriveSectionBuildMode", () => {
   });
 
   it("throws when CHANGE_ITEM arrives without a position", () => {
-    // Invariant violation: dispatcher must return a note before calling the agent
-    // when position is null. Throwing here surfaces an upstream bug rather than
-    // silently degrading.
+    // A null position should never reach here (the dispatcher returns a note
+    // first), so this throws instead of failing silently.
     expect(() =>
       deriveSectionBuildMode(step({ action: "CHANGE_ITEM", position: null })),
     ).toThrow();
