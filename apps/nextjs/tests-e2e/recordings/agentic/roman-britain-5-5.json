@@ -1,0 +1,1182 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nCreate a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.\n\n## Content Scope\n\nQuestions must cover:\n\n- KEY LEARNING POINTS\n- A MISCONCEPTION\n- Understanding of at least one KEYWORD (in context)\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the KEY LEARNING POINTS in the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what life was like in Britain after the Romans left.\",\n  \"learningCycles\": [\n    \"Describe changes in Britain after the end of Roman rule.\",\n    \"Identify factors leading to these changes in social and political structures.\",\n    \"Analyse the implications of these changes for daily life in Britain.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire's significant impact on Britain's infrastructure, culture, and daily life.\",\n    \"Key features and functions of Roman roads, buildings, and systems in Britain.\",\n    \"The timeline and primary events of Roman Britain's invasion and departure.\",\n    \"Awareness of societal structures and communities in Britain before Roman rule.\",\n    \"Contact with basic archaeological methods and their use in historical understanding.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule ended in Britain around 410 CE when Roman troops withdrew to defend other parts of the empire.\",\n    \"After the Romans' departure, Britain lacked centralised governance, leading to the rise of local rulers.\",\n    \"Anglo-Saxon groups began to migrate to Britain, which influenced the culture and settlement patterns.\",\n    \"The decline of Roman infrastructure, such as roads and aqueducts, affected daily life in Britain.\",\n    \"Christianity persisted and evolved in Britain despite the departure of the Romans.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Romans completely disappeared from Britain in 410 CE\",\n      \"description\": \"While Roman troops officially withdrew around this time, their influence on language, culture, and infrastructure persisted in Britain.\"\n    },\n    {\n      \"misconception\": \"Life in Britain immediately became chaotic after the Romans left\",\n      \"description\": \"While central governance declined, some regions maintained stability for a period through local rulers and retained Roman practices.\"\n    },\n    {\n      \"misconception\": \"Christianity was abandoned in Britain after the Romans departed\",\n      \"description\": \"Christianity continued to be a part of Britain's religious landscape and evolved with the changing societal structures.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Infrastructure\",\n      \"definition\": \"The essential physical structures and facilities, such as roads and aqueducts, needed for a society to function effectively\"\n    },\n    {\n      \"keyword\": \"Governance\",\n      \"definition\": \"The action of governing a country or region, including the decision-making processes that define expectations and verify performance\"\n    },\n    {\n      \"keyword\": \"Migration\",\n      \"definition\": \"The movement of people from one region to another, often permanently or for settlement purposes\"\n    },\n    {\n      \"keyword\": \"Settlement\",\n      \"definition\": \"A place where a community establishes itself and builds homes and other necessary structures\"\n    },\n    {\n      \"keyword\": \"Christianity\",\n      \"definition\": \"A religion based on the teachings of Jesus Christ, which played a significant role in historical and cultural developments\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Identify a key feature of Roman roads in Britain.\",\n        \"hint\": \"Consider how Roman roads were designed to improve travel efficiency.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They were straight to reduce travel time and connect key locations\"\n        ],\n        \"distractors\": [\n          \"They were wide to allow for multiple lanes of traffic\",\n          \"They were paved with cobblestones to prevent plant growth\"\n        ]\n      },\n      {\n        \"question\": \"What was a significant impact of the Roman Empire on Britain's infrastructure?\",\n        \"hint\": \"Think about the physical changes brought by Roman rule.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They constructed advanced roads, baths, and aqueducts\"\n        ],\n        \"distractors\": [\n          \"They banned local architectural styles in favour of Roman ones\",\n          \"They prohibited wooden structures entirely\"\n        ]\n      },\n      {\n        \"question\": \"What was one reason the Romans built aqueducts in Britain?\",\n        \"hint\": \"Aqueducts were key to providing people with essential resources.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To supply towns with fresh water\"\n        ],\n        \"distractors\": [\n          \"To mark territorial boundaries\",\n          \"To operate as military transportation routes\"\n        ]\n      },\n      {\n        \"question\": \"Which social feature distinguished Roman Britain from its pre-Roman society?\",\n        \"hint\": \"This relates to societal changes brought by Roman influence.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"The introduction of Roman hierarchical governance\"\n        ],\n        \"distractors\": [\n          \"The development of nomadic lifestyle\",\n          \"The decline of agricultural practices\"\n        ]\n      },\n      {\n        \"question\": \"What is a primary purpose of archaeology in understanding Roman Britain?\",\n        \"hint\": \"Consider how objects from the past can inform us.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To study artefacts that reveal details of life during Roman rule\"\n        ],\n        \"distractors\": [\n          \"To validate myths and legends\",\n          \"To analyse global settlement patterns\"\n        ]\n      },\n      {\n        \"question\": \"Why is the departure of Roman troops in 410 CE significant in British history?\",\n        \"hint\": \"Reflect on the changes that stemmed from this event.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"It led to the end of centralised Roman governance in Britain\"\n        ],\n        \"distractors\": [\n          \"It initiated the decline of Roman technological advancements\",\n          \"It marked the beginning of the Stone Age\"\n        ]\n      }\n    ],\n    \"imageMetadata\": [],\n    \"reportId\": \"\"\n  },\n  \"cycle1\": {\n    \"title\": \"Describe changes in Britain after the end of Roman rule\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Discuss the year 410 CE as the approximate time when Roman troops left Britain, marking the end of centralised Roman administration.\",\n        \"Describe the conditions after the Roman withdrawal, highlighting the decline in maintenance of Roman built-infrastructure like roads and aqueducts.\",\n        \"Explain the emergence of local leadership to fill the gap left by Roman governance.\",\n        \"Introduce the concept of Anglo-Saxon migrations and settlements beginning in this period.\",\n        \"Highlight the economic and cultural adaptations made by local communities during this transitional era.\"\n      ],\n      \"accompanyingSlideDetails\": \"A timeline showcasing the key events during and after the withdrawal of Roman troops from Britain, and an illustration comparing Roman and Anglo-Saxon settlements.\",\n      \"imagePrompt\": \"Illustrations of Roman and Anglo-Saxon settlements for comparison.\",\n      \"slideText\": \"When Roman troops left Britain, local rulers emerged, infrastructure declined, and Anglo-Saxon groups began to migrate and settle.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What year approximately marks the withdrawal of Roman troops from Britain?\",\n        \"answers\": [\n          \"410 CE\"\n        ],\n        \"distractors\": [\n          \"395 CE\",\n          \"450 CE\"\n        ]\n      },\n      {\n        \"question\": \"What was one impact of the Roman withdrawal on Britain?\",\n        \"answers\": [\n          \"The rise of local rulers\"\n        ],\n        \"distractors\": [\n          \"The construction of aqueducts\",\n          \"The expansion of Roman towns\"\n        ]\n      }\n    ],\n    \"practice\": \"Sketch a timeline of events starting from Roman withdrawal in 410 CE and include: the decline of Roman infrastructure, the rise of local rulers, and the beginning of Anglo-Saxon settlements.\",\n    \"feedback\": \"Model answer: A timeline including 410 CE - Roman withdrawal; 420s - Decline in infrastructure maintenance; 430s onwards - Anglo-Saxon settlement beginnings.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Identify factors leading to changes in social and political structures\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Discuss the lack of centralised governance after Roman withdrawal and the rise of local rulers filling power vacuums.\",\n        \"Highlight the role of Anglo-Saxon migrations in introducing new cultural practices and societal organisation.\",\n        \"Explain how the decline of Roman infrastructure, such as aqueducts and roads, impacted trade, communication, and daily life.\",\n        \"Illustrate how former Roman towns experienced transformation, changing their societal and economic roles.\",\n        \"Bring emphasis to the continuity of some Roman practices, like Christianity, and how it integrated into the evolving culture.\"\n      ],\n      \"accompanyingSlideDetails\": \"A table illustrating the societal structures and comparisons between Roman and post-Roman Britain, including rulers, infrastructure, and cultural aspects.\",\n      \"imagePrompt\": \"Comparative table of Roman and early Anglo-Saxon Britain societal structures.\",\n      \"slideText\": \"The withdrawal of Roman rule impacted governance, trade, and cultural practices, paving the way for new societal structures.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group migrated to Britain and influenced new societal structures?\",\n        \"answers\": [\n          \"Anglo-Saxons\"\n        ],\n        \"distractors\": [\n          \"Vikings\",\n          \"Romans\"\n        ]\n      },\n      {\n        \"question\": \"What was a major effect of the decline of Roman infrastructure in Britain?\",\n        \"answers\": [\n          \"A reduction in the efficiency of trade and communication\"\n        ],\n        \"distractors\": [\n          \"An increase in Roman cultural expansion\",\n          \"A cease in local governance\"\n        ]\n      }\n    ],\n    \"practice\": \"Compare and contrast the governance and societal structures of Roman Britain and Britain after Roman withdrawal. Provide two examples for each era.\",\n    \"feedback\": \"Model answer: Roman Britain - centralised governance, use of aqueducts for water supply; Post-Roman Britain - local rulers governing independently, increased use of local resources for daily living.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Describe changes in Britain after the end of Roman rule\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"When Roman troops finally departed Britain in 410 CE, the centralised administration fell, leading to a lack of cohesive control.\",\n        \"This withdrawal caused a decline in the upkeep of Roman infrastructure, such as roads and aqueducts, hindering communication and transportation.\",\n        \"Local leaders arose to fill the power vacuum, leading to fragmented kingdoms and shifting political dynamics.\",\n        \"The vacuum also encouraged migration, including that of the Anglo-Saxons, who began settling in Britain.\",\n        \"This period saw communities adapt to the absence of Roman influence, blending local and new practices.\"\n      ],\n      \"accompanyingSlideDetails\": \"A timeline marking the end of Roman rule alongside images of deteriorated Roman infrastructure and Anglo-Saxon settlements.\",\n      \"imagePrompt\": \"Timeline of Roman Britain ending 410 CE with Anglo-Saxon settlement.\",\n      \"slideText\": \"After Roman withdrawal in 410 CE, local leadership developed, Roman infrastructure fell into disrepair, and Anglo-Saxon migrations began.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What event marked the end of Roman governance in Britain?\",\n        \"answers\": [\n          \"The withdrawal of Roman troops in 410 CE\"\n        ],\n        \"distractors\": [\n          \"The conquest by Viking tribes\",\n          \"The spread of Christianity in Britain\"\n        ]\n      },\n      {\n        \"question\": \"What was one direct consequence of the end of centralised governance by Romans?\",\n        \"answers\": [\n          \"Emergence of local rulers\"\n        ],\n        \"distractors\": [\n          \"Improved infrastructure maintenance\",\n          \"Economic cooperation with Rome\"\n        ]\n      }\n    ],\n    \"practice\": \"Using the provided timeline, illustrate the changes in Britain post-Roman withdrawal. Highlight the decline of Roman infrastructure, rise of local rulers, and the Anglo-Saxon migration.\",\n    \"feedback\": \"Model Answer: The timeline should feature 410 CE indicating Roman withdrawal, the decline in Roman-built roads and aqueducts, the rise of regional rulers, and the start of Anglo-Saxon settlements around 430 CE.\"\n  }\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"When Constantine converted, Christianity became popular among the...\",\"hint\":\"A group of people that are regarded as superior in terms of ability or quality.\",\"questionType\":\"short-answer\",\"answers\":[\"elite\"]},{\"question\":\"Evidence found in Britain suggests Christianity was introduced in the...\",\"hint\":\"The 4th century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"300s CE\"],\"distractors\":[\"100s CE\",\"200s CE\"]},{\"question\":\"What was discovered at Hinton St Mary? A Roman...\",\"hint\":\"It included an image of Jesus Christ.\",\"questionType\":\"short-answer\",\"answers\":[\"mosaic\",\"central roundel\"]},{\"question\":\"What does 'Chi Rho' mean?\",\"hint\":\"They are symbols that look like an X and P in our alphabet.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the beginning of Christ’s name in Greek\"],\"distractors\":[\"the beginning of Christ’s name in Spanish\",\"the beginning of Christ’s name in Italian\"]},{\"question\":\"What was discovered at the Roman villa in Lullingstone?\",\"hint\":\"Archaeologists had to piece thousands of fragments together. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Mosaics\",\"A chapel\",\"Wall paintings\"],\"distractors\":[]},{\"question\":\"The Roman mosaic and the wall paintings are evidence of Christianity's...\",\"hint\":\"This increased during the 4th century.\",\"questionType\":\"short-answer\",\"answers\":[\"popularity\"]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Most Celts lived in buildings called...\",\"hint\":\"The Celts built circular houses with steep roofs.\",\"questionType\":\"short-answer\",\"answers\":[\"roundhouses\",\"round houses\"]},{\"question\":\"Which two of these were materials used by the Celts in their buildings?\",\"hint\":\"The Celts had very different building techniques to the Ancient Romans.\",\"questionType\":\"multiple-choice\",\"answers\":[\"wattle and daub\",\"straw\"],\"distractors\":[\"bricks\",\"concrete\",\"clay tiles\"]},{\"question\":\"Which emperor had a great wall built on Britain's northern border?\",\"hint\":\"The wall is named after him!\",\"questionType\":\"multiple-choice\",\"answers\":[\"Hadrian\"],\"distractors\":[\"Trajan\",\"Nero\",\"Claudius\"]},{\"question\":\"Soldiers from all over the Roman Empire defended Hadrian's Wall in Britain.\",\"hint\":\"The Empire stretched as far as North Africa and Asia.\",\"questionType\":\"multiple-choice\",\"answers\":[\"True\"],\"distractors\":[\"False\"]},{\"question\":\"Match the keyword to the correct definition.\",\"hint\":\"Two of these would be found in Celtic roundhouses.\",\"questionType\":\"match\",\"pairs\":[{\"left\":\"hypocaust system\",\"right\":\"an Ancient Roman underfloor heating system\"},{\"left\":\"thatched\",\"right\":\"roofs made from a type of plant material, like straw\"},{\"left\":\"wattle and daub\",\"right\":\"woven twigs and rods that have been covered in clay to make walls\"}]},{\"question\":\"Which two of these were found at Chedworth Villa?\",\"hint\":\"The owners of Chedworth Villa wanted to show off to their guests.\",\"questionType\":\"multiple-choice\",\"answers\":[\"mosaics\",\"a hypocaust system\"],\"distractors\":[\"a temple\",\"swords\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"Match the definitions to the words.\",\"hint\":\"The economy is the way people, businesses and governments make and manage money\",\"questionType\":\"match\",\"pairs\":[{\"left\":\"to do with money\",\"right\":\"economy\"},{\"left\":\"to do with the government\",\"right\":\"politics\"},{\"left\":\"to do with the army\",\"right\":\"military\"}]},{\"question\":\"The Eastern Roman Empire was also known as the __________ Empire.\",\"hint\":\"Constantinople was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"Byzantine\"],\"distractors\":[\"Constantinople\",\"Great Roman\"]},{\"question\":\"The Western Roman Empire's capital was ...\",\"hint\":\"The city was founded by Romulus (according to the myth)\",\"questionType\":\"short-answer\",\"answers\":[\"Rome\",\"rome\"]},{\"question\":\"The Visigoths' attack on Rome in 410 CE is known as 'the {{  }} of Rome'.\",\"hint\":\"Rome was invaded and all its valuable goods were taken\",\"questionType\":\"short-answer\",\"answers\":[\"sack\"]},{\"question\":\"The Eastern Roman Empire continued to exist for nearly __________ years after the fall of the Western Roman Empire.\",\"hint\":\"The Eastern Roman Empire existed for a very long time after the Western Roman Empire fell\",\"questionType\":\"multiple-choice\",\"answers\":[\"one thousand\"],\"distractors\":[\"ten\",\"one hundred\",\"five hundred\"]},{\"question\":\"According to historians' theories, which of the following contributed to the fall of the Western Roman Empire?\",\"hint\":\"The Roman people often did not pay their taxes\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Empire was spending more money than it was getting in from taxes\",\"The emperors changed too often making politics unstable\",\"The Roman army was not well trained\"],\"distractors\":[\"The Roman citizens paid taxes regularly\",\"The Roman army was able to defend the Empire's borders easily\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"Why did Claudius want to invade Britain?\",\"hint\":\"Roman Emperors proved their strength through conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"He needed to prove his strength.\"],\"distractors\":[\"Britain had attacked the Roman Empire.\",\"Britain was very wealthy.\"]},{\"question\":\"Roman emperors held a {{ }} when they returned to Rome after they had won a war.\",\"hint\":\"They held these celebrations to show how strong they were.\",\"questionType\":\"short-answer\",\"answers\":[\"triumph\"]},{\"question\":\"Which of these **best** describes the Celtic tribes of Britain?\",\"hint\":\"The Celtic tribes of Britain fought one another all of the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Warlike and dangerous\"],\"distractors\":[\"Peaceful and united\",\"Disorganised and cowardly\"]},{\"question\":\"A Roman legionary carried which **three** of these things?\",\"hint\":\"Roman legionaries carried the things they needed for battle.\",\"questionType\":\"multiple-choice\",\"answers\":[\"A sword\",\"A shield\",\"A javelin\"],\"distractors\":[\"A saddle\",\"A chariot\"]},{\"question\":\"Roman legionaries used a tactic called the...\",\"hint\":\"The tactic the legionaries used meant they were protected almost entirely by their shields.\",\"questionType\":\"short-answer\",\"answers\":[\"testudo\",\"tortoise\"]},{\"question\":\"To protect themselves, Roman legionaries built __________.\",\"hint\":\"At first the Roman legionaries built these structures every day, wherever they ended their march.\",\"questionType\":\"multiple-choice\",\"answers\":[\"forts\"],\"distractors\":[\"castles\",\"towns\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"What tribes attacked Roman Britain in 367 CE?\",\"hint\":\"They attacked from the north.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\",\"Scots\"],\"distractors\":[\"Iceni\",\"Dumnonii\"]},{\"question\":\"When did the last Roman soldiers leave Hadrian’s Wall?\",\"hint\":\"This was due to troubles elsewhere in the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"401 CE\"],\"distractors\":[\"391 CE\",\"411 CE\"]},{\"question\":\"In which areas was Romano-British culture more popular?\",\"hint\":\"Think about the regions closer to Europe where the Romans came from.\",\"questionType\":\"multiple-choice\",\"answers\":[\"South-East England\",\"The Midlands\"],\"distractors\":[\"Wales\",\"Scotland\",\"Northern England\"]},{\"question\":\"{{ }} was built to mark the northern frontier of Roman Britain.\",\"hint\":\"It was named after a Roman emperor.\",\"questionType\":\"short-answer\",\"answers\":[\"Hadrian's Wall\",\"hadrian's wall\",\"Hadrians Wall\",\"hadrians wall\"]},{\"question\":\"What does 'Romanisation' mean?\",\"hint\":\"This happened in Britain after the successful Roman conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people started living and acting like the Romans did\"],\"distractors\":[\"how Romans attacked in battle\",\"how a Roman ruler was chosen\"]},{\"question\":\"What examples of Romano-British culture still exist today?\",\"hint\":\"Think about things you can see and hear now that you have learnt about Roman Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"parts of the English language\",\"remains of Roman-built structures\"],\"distractors\":[\"the harvest festival\",\"sports like football\"]}],\"imageMetadata\":[]}</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n- user: Continue\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your pupils? Tap **Continue** or suggest refinements to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0f68b4696de7964e006a296b390800819fbf578ef74ec66b84",
+    "object": "response",
+    "created_at": 1781099321,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781099325,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0f68b4696de7964e006a296b3a2bf4819f9ef38dd0b759535e",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"When did the Roman administration in Britain officially come to an end, approximately?\",\"hint\":\"Consider a specific year associated with this significant event.\",\"questionType\":\"multiple-choice\",\"answers\":[\"410 CE\"],\"distractors\":[\"390 CE\",\"450 CE\"]},{\"question\":\"What was a direct consequence of Roman infrastructure declining after their withdrawal?\",\"hint\":\"Think about how the loss of maintenance would affect the daily life and economy.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Reduced efficiency in trade and communication\"],\"distractors\":[\"Development of new technologies\",\"Increased reliance on Roman resources\"]},{\"question\":\"How did Anglo-Saxon migrations affect Britain's cultural landscape after the Romans left?\",\"hint\":\"Consider the new influences brought by these migrations.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Introduction of Anglo-Saxon language and traditions\"],\"distractors\":[\"Enhanced Roman cultural dominance\",\"Universal adoption of Christianity\"]},{\"question\":\"What misconception is clarified by considering the continuation of certain practices after Roman rule?\",\"hint\":\"Focus on a significant aspect of life that persisted in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Christianity continued to evolve and be practised\"],\"distractors\":[\"Christianity was abandoned\",\"Roman technology disappeared entirely\"]},{\"question\":\"Which term describes the movement of populations such as the Anglo-Saxons into Britain?\",\"hint\":\"This word is commonly used in context with population dynamics.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Migration\"],\"distractors\":[\"Invasion\",\"Colonisation\"]},{\"question\":\"What central change occurred to Britain’s governance after Roman troops departed?\",\"hint\":\"Consider the shift in how regions were governed.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The formation of local rulers taking control\"],\"distractors\":[\"Introduction of a national monarchy\",\"Continuation of Roman political systems\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+            "parsed": {
+              "value": {
+                "version": "v3",
+                "questions": [
+                  {
+                    "question": "When did the Roman administration in Britain officially come to an end, approximately?",
+                    "hint": "Consider a specific year associated with this significant event.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "410 CE"
+                    ],
+                    "distractors": [
+                      "390 CE",
+                      "450 CE"
+                    ]
+                  },
+                  {
+                    "question": "What was a direct consequence of Roman infrastructure declining after their withdrawal?",
+                    "hint": "Think about how the loss of maintenance would affect the daily life and economy.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Reduced efficiency in trade and communication"
+                    ],
+                    "distractors": [
+                      "Development of new technologies",
+                      "Increased reliance on Roman resources"
+                    ]
+                  },
+                  {
+                    "question": "How did Anglo-Saxon migrations affect Britain's cultural landscape after the Romans left?",
+                    "hint": "Consider the new influences brought by these migrations.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Introduction of Anglo-Saxon language and traditions"
+                    ],
+                    "distractors": [
+                      "Enhanced Roman cultural dominance",
+                      "Universal adoption of Christianity"
+                    ]
+                  },
+                  {
+                    "question": "What misconception is clarified by considering the continuation of certain practices after Roman rule?",
+                    "hint": "Focus on a significant aspect of life that persisted in Britain.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Christianity continued to evolve and be practised"
+                    ],
+                    "distractors": [
+                      "Christianity was abandoned",
+                      "Roman technology disappeared entirely"
+                    ]
+                  },
+                  {
+                    "question": "Which term describes the movement of populations such as the Anglo-Saxons into Britain?",
+                    "hint": "This word is commonly used in context with population dynamics.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Migration"
+                    ],
+                    "distractors": [
+                      "Invasion",
+                      "Colonisation"
+                    ]
+                  },
+                  {
+                    "question": "What central change occurred to Britain’s governance after Roman troops departed?",
+                    "hint": "Consider the shift in how regions were governed.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "The formation of local rulers taking control"
+                    ],
+                    "distractors": [
+                      "Introduction of a national monarchy",
+                      "Continuation of Roman political systems"
+                    ]
+                  }
+                ],
+                "imageMetadata": [],
+                "reportId": ""
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 7461,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 385,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 7846
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"When did the Roman administration in Britain officially come to an end, approximately?\",\"hint\":\"Consider a specific year associated with this significant event.\",\"questionType\":\"multiple-choice\",\"answers\":[\"410 CE\"],\"distractors\":[\"390 CE\",\"450 CE\"]},{\"question\":\"What was a direct consequence of Roman infrastructure declining after their withdrawal?\",\"hint\":\"Think about how the loss of maintenance would affect the daily life and economy.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Reduced efficiency in trade and communication\"],\"distractors\":[\"Development of new technologies\",\"Increased reliance on Roman resources\"]},{\"question\":\"How did Anglo-Saxon migrations affect Britain's cultural landscape after the Romans left?\",\"hint\":\"Consider the new influences brought by these migrations.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Introduction of Anglo-Saxon language and traditions\"],\"distractors\":[\"Enhanced Roman cultural dominance\",\"Universal adoption of Christianity\"]},{\"question\":\"What misconception is clarified by considering the continuation of certain practices after Roman rule?\",\"hint\":\"Focus on a significant aspect of life that persisted in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Christianity continued to evolve and be practised\"],\"distractors\":[\"Christianity was abandoned\",\"Roman technology disappeared entirely\"]},{\"question\":\"Which term describes the movement of populations such as the Anglo-Saxons into Britain?\",\"hint\":\"This word is commonly used in context with population dynamics.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Migration\"],\"distractors\":[\"Invasion\",\"Colonisation\"]},{\"question\":\"What central change occurred to Britain’s governance after Roman troops departed?\",\"hint\":\"Consider the shift in how regions were governed.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The formation of local rulers taking control\"],\"distractors\":[\"Introduction of a national monarchy\",\"Continuation of Roman political systems\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+    "output_parsed": {
+      "value": {
+        "version": "v3",
+        "questions": [
+          {
+            "question": "When did the Roman administration in Britain officially come to an end, approximately?",
+            "hint": "Consider a specific year associated with this significant event.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "410 CE"
+            ],
+            "distractors": [
+              "390 CE",
+              "450 CE"
+            ]
+          },
+          {
+            "question": "What was a direct consequence of Roman infrastructure declining after their withdrawal?",
+            "hint": "Think about how the loss of maintenance would affect the daily life and economy.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Reduced efficiency in trade and communication"
+            ],
+            "distractors": [
+              "Development of new technologies",
+              "Increased reliance on Roman resources"
+            ]
+          },
+          {
+            "question": "How did Anglo-Saxon migrations affect Britain's cultural landscape after the Romans left?",
+            "hint": "Consider the new influences brought by these migrations.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Introduction of Anglo-Saxon language and traditions"
+            ],
+            "distractors": [
+              "Enhanced Roman cultural dominance",
+              "Universal adoption of Christianity"
+            ]
+          },
+          {
+            "question": "What misconception is clarified by considering the continuation of certain practices after Roman rule?",
+            "hint": "Focus on a significant aspect of life that persisted in Britain.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Christianity continued to evolve and be practised"
+            ],
+            "distractors": [
+              "Christianity was abandoned",
+              "Roman technology disappeared entirely"
+            ]
+          },
+          {
+            "question": "Which term describes the movement of populations such as the Anglo-Saxons into Britain?",
+            "hint": "This word is commonly used in context with population dynamics.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Migration"
+            ],
+            "distractors": [
+              "Invasion",
+              "Colonisation"
+            ]
+          },
+          {
+            "question": "What central change occurred to Britain’s governance after Roman troops departed?",
+            "hint": "Consider the shift in how regions were governed.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "The formation of local rulers taking control"
+            ],
+            "distractors": [
+              "Introduction of a national monarchy",
+              "Continuation of Roman political systems"
+            ]
+          }
+        ],
+        "imageMetadata": [],
+        "reportId": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,438 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nGenerate a LEARNING CYCLE to structure the main body of the lesson.  These should take approximately 10 minutes to allow time for the teacher to also deliver the quizzes in a 50 minute lesson.\nFor key stage 1 lessons, each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.\nA LEARNING CYCLE is the way that Oak structures the main body of a lesson. The content of the LEARNING CYCLE should enable pupils to achieve the LEARNING CYCLE OUTCOME  \nIt is made up of an EXPLANATION of some KEY LEARNING POINTS, with CHECK FOR UNDERSTANDING questions built into it to ensure pupils have understood the EXPLANATION AND KEY LEARNING POINTS. \nThere should then be a PRACTICE task where pupils practice the KEY LEARNING POINT and check that they can achieve the LEARNING CYCLE OUTCOME.  The FEEDBACK should help pupils to understand whether they have mastered the LEARNING CYCLE OUTCOME.\nEach LEARNING CYCLE should map to one of the LEARNING CYCLE OUTCOMES.\nIf a pupil completes all LEARNING CYCLES, they should have achieved the LEARNING OUTCOME for the lesson.  \n\n## Cycle Structure\n\n### 1. Learning cycle title\n\n- A short, succinct version of the LEARNING CYCLE OUTCOME.\n- Max 50 characters\n- Written in sentence case\n- Example: 'Animal adaptations in extreme environments'\n\n### 2. Explanation\n\nPurpose: \n\n- This is the first phase of a learning cycle.  The teacher will use this to structure how they will explain this concept to their pupils.  \n- There are two elements of an explanation: the spoken teacher explanation and the accompanying visual elements (slide text and slide image).\n- You should break the explanation down into chunks to support them with how to explain a concept.  \n\n**(i) Spoken explanation**:\n- AILA_TO_TEACHER voice\n- 1-5 points that outline what the teacher should explain - try to keep each point to one sentence\n- Include key concepts, models, analogies, examples\n- You should suggest appropriate moments for teachers to model procedures, including appropriate methods or equipment to use tof this\n- Link to prior knowledge\n- Address common misconceptions and mistakes\n- Use clear, concise, age-appropriate language\n- Maximise intrinsic load, minimise extraneous load\n- Minimise cognitive load by:\n  - Starting with concrete ideas before moving onto more abstract ones.\n  - Breaking concepts down into simple steps\n  - Only introducing one concept in each point\n  - Not including extraneous, unnecessary detail.\n- Be as specific as possible\nExample: rather than saying \"Describe the key features of a Seder plate\", say \"Describe the meaning of the hank bone (zeroa), egg (beitzah), bitter herbs (maror), vegetable (karpas) and a sweet paste (haroset) in a Seder plate.\"\n\n**(ii) Accompanying Slide Detail**: describe what should be seen on the slides to support with the spoken explanation e.g. \"a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond\"\n**(iii) Image Search Suggestion**: a phrase that a teacher can use in a search engine to find an appropriate image to go on their slide e.g. 'a diagram showing the covalent bond in a hydrogen molecule'.  \n**(iv) Slide text**: this will be displayed to pupils on the slides during the lesson.  It should be a short, succinct summary of the key point being made in the explanation and should not include any teacher narrative. \n\nExample: 'hydrogen atoms are bonded together with a covalent bond'.\nNon-example: 'now we will look at how hydrogen atoms bond together'.\n\n### 3. Checks for Understanding\n\nContent:\n\n- This should check that pupils have understood the KEY LEARNING POINTS covered in the explanation. \n- You should choose the two highest leverage questions to ask.  \n- They should also test pupils do not hold any common misconceptions. \n- Do not duplicate any questions in the starter quiz.\n\n#### Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess.\n\n### 4. Practice Task\n\nThis is the part of the lesson where you set a task which allows pupils to practice the skills and knowledge that they have learnt in the explanation. \nIt should focus on the key learning points being taught.\nIf a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME and if they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.  \n\nAudience: pupils in the class\nVoice: TEACHER_TO_PUPIL_WRITTEN\n\nWrite the task as a set of instructions that pupils can follow.\n\n- The instructions should contain all information needed to complete the task e.g. \"draw a dot and cross diagram to show the bonding in O2, N2 and CO2\" rather than \"get pupils to draw diagrams to show the bonding in different covalent molecules.\"\n- Reflect the command word in the cycle outcome\n- Include all content needed e.g. if asking pupils to:\n  - analyse a set of results, provide them with the results and a set of questions to support analysis. \n  - to complete a matching task, provide them with the content that needs to be matched.\n  - complete sentences, provide them with the sentences with the gaps marked within them.\n  - put events or statements into order, provide them with the statements in the incorrect order that they will need to sequence.\n  - give an opinion on an extract, provide them with the extract.\n- This could be one longer task or a task with multiple questions or sub tasks.\n- Increase difficulty if using multiple questions/sub tasks\n- Should activate all pupils through speaking, writing, doing\n- Vary task types across cycles\n- Approx. 5–7 mins to complete the task.\n- In key stage one, shorter spoken tasks will be more appropriate. In key stage four, longer, written tasks will be more appropriate.\n- Base your suggestions on other lessons you have seen at Oak National Academy.\n- Practice may look different for different subjects.  E.g.\n  - Maths - completing calculations\n  - Practical subjects (PE, art, music, etc.) -l practising a skill or taking part in a game or performance activity.\n\nExamples include:\n\n- Label a diagram with the provided labels.\n- Sort given items into two or three columns in a table/venn diagram/quadrant\n- Given an incorrect classification, explain why the object has been incorrectly classified.\n- Select an item from a list that matches the key term/definition, justifying choice.\n- Select the equipment/materials needed for an activity.\n- Order items e.g. size, age, number, date, etc.\n- List factors that will have an impact on [insert other variable].\n- List/sequence the steps in a given method.\n- Describe or explain a process, phenomenon, event, situation, pattern or technique or the impact on a place or group of people\n- Decide which of two given descriptions is better, explaining why.\n- Write a speech to explain a concept to someone.\n- Draw and annotate a diagram(s) to explain a process/technique.\n- Apply a given particular skill/technique to a given task.\n- Analyse an example, determining theories, contexts or techniques applied.\n- Extract data from a table or graph and use this to write a conclusion.\n- Complete a series of 4-5 practice calculations (always include a model in the explanation. Then practice should start easy and become more complex e.g. start with just substituting and increase to rearranging, converting units, doing a multi-step process or worded question.)\n- Correct an incorrect worked example\n- Identify two similarities and two differences for two given items, people, period.\n- Present an item and get pupils to compare it to a historical or theoretical example.\n- Create a routine, performance, or work of art for a given scenario for a given user group or audience.\n- Create a set of instructions for solving a problem.\n- For a set of given opinions, decide which are for and against an argument.\n- Plan both sides of a debate on [insert topic].\n- Decide from a set of given opinions which might belong to certain groups of people and why they might hold these opinions.\n- Given the answer to a problem, show the workings-out of the calculation that derived that answer.\n- Draw an annotated sketch of a product.\n- Write a flow chart for the steps you would take to create or carry out [insert product/task/experiment].\n- Identify a mistake or missing step in a given method.\n- Explain which techniques, mediums or quotes have been used and where their inspiration to use these came from (i.e. which pieces of work/artists/periods/movements).\n- Identify the intended audience for a piece of work and explain how you have reached this conclusion.\n- Decide which of two predictions is more likely to be correct, giving reasons for your answer.\n- Explain why a given prediction is unlikely.\n- Watch a short clip of someone performing a particular sport/training/performance, give strengths/weaknesses and suggest improvements.\n- Compare a piece of work to a model and explain similarities, differences and areas for improvement (e.g. pupil work to a model answer/piece of art mimicking work of a great artist and the great artist's original piece).\n- Reflect on the work that you have created and how closely it meets the design brief, identifying strengths and areas for development.\n- Comment on the repeatability, reproducibility, accuracy, precision or validity of a given method, set of results or source of information.\n- Extract data from a table or graph and use this to support a conclusion.\n- Justify the use of a piece of equipment, technique or method, giving reasons for or against using it or other options.\n- Label diagrams, correct errors, match terms, complete sentences\n- Analyse data, justify choices, sequence steps, create outputs\n- Compare/contrast, extract conclusions, reflect on criteria\n- Apply skills or knowledge in context\n  (See full list if needed for inspiration.)\n\n### 5. Feedback\n\nThis section provides pupils with the chance to get feedback on their practice task. This is often done in a class of 30 pupils so consider how you might show the correct answer for this audience. The teacher will not have time to check each pupil's work.\n\n- Must be pupil-facing (it will be shown on slides)\n- Written in the pupil voice.\n- Choose the most appropriate format (indicate this at the start of the feedback)\n  - Model Answer (e.g. sample diagram or response)\n  - Worked Example (e.g. steps in a calculation)\n  - Success Criteria (e.g. 3 key features of a good answer)\n- If you have included a keyword bank or sentence starters in the practice task, update the feedback section to include these.\n\n**Examples:** \n- Practice = completing calculations\n  Feedback = worked examples showing the steps in the calculation with the correct answers.\n- Practice = bouncing a basketball\n  Feedback: success criteria \"1. Bounce the ball with two hands. 2. Bounce the ball to chest height.\"\n- Practice: explaining the type of bonding shown in a molecule\n  Feedback: 'model answer: I can tell that this is a covalent bond because there are two electrons being shared by the pair of atoms.\n\n**Non-example:** \"Get pupils to mark their answer above covalent bonding\""
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what life was like in Britain after the Romans left.\",\n  \"learningCycles\": [\n    \"Describe changes in Britain after the end of Roman rule.\",\n    \"Identify factors leading to these changes in social and political structures.\",\n    \"Analyse the implications of these changes for daily life in Britain.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire's significant impact on Britain's infrastructure, culture, and daily life.\",\n    \"Key features and functions of Roman roads, buildings, and systems in Britain.\",\n    \"The timeline and primary events of Roman Britain's invasion and departure.\",\n    \"Awareness of societal structures and communities in Britain before Roman rule.\",\n    \"Contact with basic archaeological methods and their use in historical understanding.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule ended in Britain around 410 CE when Roman troops withdrew to defend other parts of the empire.\",\n    \"After the Romans' departure, Britain lacked centralised governance, leading to the rise of local rulers.\",\n    \"Anglo-Saxon groups began to migrate to Britain, which influenced the culture and settlement patterns.\",\n    \"The decline of Roman infrastructure, such as roads and aqueducts, affected daily life in Britain.\",\n    \"Christianity persisted and evolved in Britain despite the departure of the Romans.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Romans completely disappeared from Britain in 410 CE\",\n      \"description\": \"While Roman troops officially withdrew around this time, their influence on language, culture, and infrastructure persisted in Britain.\"\n    },\n    {\n      \"misconception\": \"Life in Britain immediately became chaotic after the Romans left\",\n      \"description\": \"While central governance declined, some regions maintained stability for a period through local rulers and retained Roman practices.\"\n    },\n    {\n      \"misconception\": \"Christianity was abandoned in Britain after the Romans departed\",\n      \"description\": \"Christianity continued to be a part of Britain's religious landscape and evolved with the changing societal structures.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Infrastructure\",\n      \"definition\": \"The essential physical structures and facilities, such as roads and aqueducts, needed for a society to function effectively\"\n    },\n    {\n      \"keyword\": \"Governance\",\n      \"definition\": \"The action of governing a country or region, including the decision-making processes that define expectations and verify performance\"\n    },\n    {\n      \"keyword\": \"Migration\",\n      \"definition\": \"The movement of people from one region to another, often permanently or for settlement purposes\"\n    },\n    {\n      \"keyword\": \"Settlement\",\n      \"definition\": \"A place where a community establishes itself and builds homes and other necessary structures\"\n    },\n    {\n      \"keyword\": \"Christianity\",\n      \"definition\": \"A religion based on the teachings of Jesus Christ, which played a significant role in historical and cultural developments\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Identify a key feature of Roman roads in Britain.\",\n        \"hint\": \"Consider how Roman roads were designed to improve travel efficiency.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They were straight to reduce travel time and connect key locations\"\n        ],\n        \"distractors\": [\n          \"They were wide to allow for multiple lanes of traffic\",\n          \"They were paved with cobblestones to prevent plant growth\"\n        ]\n      },\n      {\n        \"question\": \"What was a significant impact of the Roman Empire on Britain's infrastructure?\",\n        \"hint\": \"Think about the physical changes brought by Roman rule.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They constructed advanced roads, baths, and aqueducts\"\n        ],\n        \"distractors\": [\n          \"They banned local architectural styles in favour of Roman ones\",\n          \"They prohibited wooden structures entirely\"\n        ]\n      },\n      {\n        \"question\": \"What was one reason the Romans built aqueducts in Britain?\",\n        \"hint\": \"Aqueducts were key to providing people with essential resources.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To supply towns with fresh water\"\n        ],\n        \"distractors\": [\n          \"To mark territorial boundaries\",\n          \"To operate as military transportation routes\"\n        ]\n      },\n      {\n        \"question\": \"Which social feature distinguished Roman Britain from its pre-Roman society?\",\n        \"hint\": \"This relates to societal changes brought by Roman influence.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"The introduction of Roman hierarchical governance\"\n        ],\n        \"distractors\": [\n          \"The development of nomadic lifestyle\",\n          \"The decline of agricultural practices\"\n        ]\n      },\n      {\n        \"question\": \"What is a primary purpose of archaeology in understanding Roman Britain?\",\n        \"hint\": \"Consider how objects from the past can inform us.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To study artefacts that reveal details of life during Roman rule\"\n        ],\n        \"distractors\": [\n          \"To validate myths and legends\",\n          \"To analyse global settlement patterns\"\n        ]\n      },\n      {\n        \"question\": \"Why is the departure of Roman troops in 410 CE significant in British history?\",\n        \"hint\": \"Reflect on the changes that stemmed from this event.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"It led to the end of centralised Roman governance in Britain\"\n        ],\n        \"distractors\": [\n          \"It initiated the decline of Roman technological advancements\",\n          \"It marked the beginning of the Stone Age\"\n        ]\n      }\n    ],\n    \"imageMetadata\": [],\n    \"reportId\": \"\"\n  }\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"title\":\"The origins and spread of Christianity in the Roman Empire\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Christianity originated in Judea around 30 CE, rapidly spreading across the Roman Empire.\",\"The religion was based on the teachings of Jesus Christ, with early converts persevering despite persecution.\",\"The conversion of Constantine in 312 CE marked its acceptance amongst the Roman elite.\",\"Explain Constantine's vision of the cross and its significance in his victory.\",\"Highlight the eventual institutionalisation of Christianity within the Empire.\"],\"accompanyingSlideDetails\":\"A map of the Roman Empire highlighting Judea and the spread of Christianity, alongside an image of Constantine's statue.\",\"imagePrompt\":\"Roman Empire map with Judea highlighted, Constantine's vision of the cross.\",\"slideText\":\"In 312 CE, Constantine converted to Christianity after a significant victory supported by a divine vision.\"},\"checkForUnderstanding\":[{\"question\":\"Where did Christianity originate?\",\"answers\":[\"Judea\"],\"distractors\":[\"Rome\",\"Carthage\"]},{\"question\":\"What significant event led Constantine to convert to Christianity?\",\"answers\":[\"A vision before a battle\"],\"distractors\":[\"A dream of ruling alone\",\"Advice from his generals\"]}],\"practice\":\"List the key events that led to the spread of Christianity in the Roman Empire on a timeline.\",\"feedback\":\"Model answer: A timeline should show: 30 CE - Judea; 312 CE - Constantine's vision and conversion; 325 CE - Edict of Milan.\"}</example-1>\n<example-2>{\"title\":\"Describe the construction and features of Celtic roundhouses\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":\"- Explain how Celtic roundhouses were typically circular in shape, featuring steep thatched roofs and wattle and daub walls.\\n- Detail the water-resistant properties of wattle and daub walls, constructed from wood covered in clay.\\n- Highlight the absence of chimneys in roundhouses, which allowed smoke to escape slowly through the thatched roof.\\n- Discuss how archaeology provides insights into roundhouse sizes and layouts through posthole analysis and soil impressions.\",\"accompanyingSlideDetails\":\"A diagram showing a labelled Celtic roundhouse, including a steep thatched roof and wattle and daub walls.\",\"imagePrompt\":\"Celtic roundhouse reconstruction\",\"slideText\":\"Celtic roundhouses featured wattle and daub walls, thatched roofs, and a circular layout, offering efficient insulation and construction materials readily available in the environment.\"},\"checkForUnderstanding\":[{\"question\":\"What materials were used to construct the walls of Celtic roundhouses?\",\"answers\":[\"Wattle and daub\"],\"distractors\":[\"Bricks and mortar\",\"Stone slabs\"]},{\"question\":\"What was the purpose of the steeply pitched thatched roofs of roundhouses?\",\"answers\":[\"To allow rain and snow to slide off easily\"],\"distractors\":[\"To increase living space\",\"To trap smoke inside the house\"]}],\"practice\":\"Observe the image of a Celtic roundhouse reconstruction and label the key features, such as the roof material, wall material, shape, and heating source.\",\"feedback\":\"Model answer: The roundhouse features a steeply pitched thatched roof made of straw, wattle and daub walls for insulation, a circular layout, and an indoor open fire for heating.\"}</example-2>\n<example-3>{\"title\":\"Theories explaining the fall of the Western Roman Empire\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Discuss the division of the Roman Empire into Eastern and Western Empires in 395 CE.\",\"Explain the significance of this division and its consequence on the stability of the Western Empire.\",\"Introduce the economic, military, and political challenges faced by the Western Roman Empire.\",\"Present how these factors contributed to the decline of the Empire.\",\"Mention key terms important for understanding, such as 'unstable', 'economy', 'politics', and 'theory'.\"],\"accompanyingSlideDetails\":\"A map displaying the Eastern and Western Roman Empires in 395 CE, highlighting major cities and regions.\",\"imagePrompt\":\"map of Roman Empire split into Eastern and Western regions 395 CE\",\"slideText\":\"The Western Roman Empire faced economic, military, and political challenges after its split from the East in 395 CE.\"},\"checkForUnderstanding\":[{\"question\":\"What year was the Roman Empire divided into East and West?\",\"answers\":[\"395 CE\"],\"distractors\":[\"410 CE\",\"476 CE\"]},{\"question\":\"Which of these is an economic theory for the fall of the Western Roman Empire?\",\"answers\":[\"The Empire spent more than its tax income\"],\"distractors\":[\"Soldiers lacked training\",\"Emperors had short reigns\"]}],\"practice\":\"Complete the following table with examples for each causing factor of the Western Roman Empire's decline: Economic issues, Military issues, Political instability.\",\"feedback\":\"Economic issues: Taxation exceeded income. Military issues: Poorly trained soldiers. Political issues: Frequent emperor changes.\"}</example-3>\n<example-4>{\"title\":\"Explain why Emperor Claudius decided to invade Britain\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"The Roman Emperor Caligula's lack of popularity and eventual assassination exemplifies the vulnerability of perceived weak rulers.\",\"To secure his reign after Caligula, Emperor Claudius sought means to project power and strength.\",\"Ancient Roman emperors often demonstrated their power through conquests of new territories.\",\"Claudius identified Britain, a land with a reputation for resistance against Rome, as a suitable target for conquest.\",\"Successful invasion would allow Claudius to hold a triumph, showcasing his strength to the Roman populace.\",\"Britain's conquest would complete previous Roman attempts, leaving a legacy of achieving what predecessors could not.\"],\"accompanyingSlideDetails\":\"A timeline depicting Roman emperors Tiberius, Caligula, and Claudius along with a map highlighting Roman Empire boundaries in 41 CE including Britain.\",\"imagePrompt\":\"Roman Emperor Claudius statue\",\"slideText\":\"Emperor Claudius sought to invade Britain to secure his power and prove his strength as a ruler.\"},\"checkForUnderstanding\":[{\"question\":\"Why did Emperor Claudius consider his position as potentially weak?\",\"answers\":[\"Due to his physical ailments.\"],\"distractors\":[\"Due to lack of military experience.\",\"Due to economic weakness of the empire.\"]},{\"question\":\"What was the purpose of Roman triumphs held after victories?\",\"answers\":[\"To celebrate and show the power of Rome.\"],\"distractors\":[\"To redistribute captured wealth.\",\"To document historical events.\"]}],\"practice\":\"Write two sentences explaining Emperor Claudius' motivation for invading Britain, including terms such as strength, triumph, and Britain.\",\"feedback\":\"Model Answer: Emperor Claudius wanted to invade Britain to assert his strength and hold a triumph, proving his effectiveness as a ruler.\"}</example-4>\n<example-5>{\"title\":\"Explain the circumstances leading to the defeat of the Picts and Scots by the Romans\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Introduce the geopolitical scenario in Britain in 367 CE and the origins of the Picts and Scots.\",\"Explain the Roman military superiority in terms of tactics and equipment.\",\"Analyze the attempt by Picts and Scots to unite and its relative inexperience.\",\"Describe the outcome of the conflicts and emphasize Roman resilience.\",\"Relate the historical events corresponding to the key objective of maintaining Roman control.\"],\"accompanyingSlideDetails\":\"Illustration showing Roman soldiers facing Picts and Scots near a fortification.\",\"imagePrompt\":\"Roman soldiers vs Picts illustration\",\"slideText\":\"In 367 CE, the Picts (from Scotland) and the Scots (from Ireland) attacked the Romans but were defeated in battle.\"},\"checkForUnderstanding\":[{\"question\":\"Who were the two groups that attacked Roman Britain in 367 CE?\",\"answers\":[\"Picts, Scots\"],\"distractors\":[\"Jutes, Picts\",\"Saxons, Scots\"]},{\"question\":\"Why were the Romans able to defeat the Picts and Scots?\",\"answers\":[\"Superior tactics and equipment\"],\"distractors\":[\"Greater numbers\",\"Familiarity with the terrain\"]}],\"practice\":\"Write one to two sentences explaining why the Romans were able to defeat the Picts and Scots in 367 CE. Ensure your answer includes both their strengths and their weaknesses.\",\"feedback\":\"Model answer: The Romans managed to defeat the Picts and Scots due to their superior tactics and technology, while the Picts and Scots lacked collaborative experience.\"}</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n- user: Continue\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your pupils? Tap **Continue** or suggest refinements to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                },
+                "durationInMinutes": {
+                  "type": "number",
+                  "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
+                },
+                "explanation": {
+                  "type": "object",
+                  "properties": {
+                    "spokenExplanation": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ],
+                      "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
+                    },
+                    "accompanyingSlideDetails": {
+                      "type": "string",
+                      "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
+                    },
+                    "imagePrompt": {
+                      "type": "string",
+                      "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
+                    },
+                    "slideText": {
+                      "type": "string",
+                      "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                    }
+                  },
+                  "required": [
+                    "spokenExplanation",
+                    "accompanyingSlideDetails",
+                    "imagePrompt",
+                    "slideText"
+                  ],
+                  "additionalProperties": false,
+                  "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                },
+                "checkForUnderstanding": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "type": "string",
+                        "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                      },
+                      "answers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                      },
+                      "distractors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                      }
+                    },
+                    "required": [
+                      "question",
+                      "answers",
+                      "distractors"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2
+                },
+                "practice": {
+                  "type": "string",
+                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                },
+                "feedback": {
+                  "type": "string",
+                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                }
+              },
+              "required": [
+                "title",
+                "durationInMinutes",
+                "explanation",
+                "checkForUnderstanding",
+                "practice",
+                "feedback"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_030440f5a9c0f299006a296b0f9f88819e87cbe0cb1e631fe4",
+    "object": "response",
+    "created_at": 1781099279,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781099298,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_030440f5a9c0f299006a296b16d090819e85ca9098eed6d2e5",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"title\":\"Describe changes in Britain after the end of Roman rule\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss the year 410 CE as the approximate time when Roman troops left Britain, marking the end of centralised Roman administration.\",\"Describe the conditions after the Roman withdrawal, highlighting the decline in maintenance of Roman built-infrastructure like roads and aqueducts.\",\"Explain the emergence of local leadership to fill the gap left by Roman governance.\",\"Introduce the concept of Anglo-Saxon migrations and settlements beginning in this period.\",\"Highlight the economic and cultural adaptations made by local communities during this transitional era.\"],\"accompanyingSlideDetails\":\"A timeline showcasing the key events during and after the withdrawal of Roman troops from Britain, and an illustration comparing Roman and Anglo-Saxon settlements.\",\"imagePrompt\":\"Illustrations of Roman and Anglo-Saxon settlements for comparison.\",\"slideText\":\"When Roman troops left Britain, local rulers emerged, infrastructure declined, and Anglo-Saxon groups began to migrate and settle.\"},\"checkForUnderstanding\":[{\"question\":\"What year approximately marks the withdrawal of Roman troops from Britain?\",\"answers\":[\"410 CE\"],\"distractors\":[\"395 CE\",\"450 CE\"]},{\"question\":\"What was one impact of the Roman withdrawal on Britain?\",\"answers\":[\"The rise of local rulers\"],\"distractors\":[\"The construction of aqueducts\",\"The expansion of Roman towns\"]}],\"practice\":\"Sketch a timeline of events starting from Roman withdrawal in 410 CE and include: the decline of Roman infrastructure, the rise of local rulers, and the beginning of Anglo-Saxon settlements.\",\"feedback\":\"Model answer: A timeline including 410 CE - Roman withdrawal; 420s - Decline in infrastructure maintenance; 430s onwards - Anglo-Saxon settlement beginnings.\"}}",
+            "parsed": {
+              "value": {
+                "title": "Describe changes in Britain after the end of Roman rule",
+                "durationInMinutes": 8,
+                "explanation": {
+                  "spokenExplanation": [
+                    "Discuss the year 410 CE as the approximate time when Roman troops left Britain, marking the end of centralised Roman administration.",
+                    "Describe the conditions after the Roman withdrawal, highlighting the decline in maintenance of Roman built-infrastructure like roads and aqueducts.",
+                    "Explain the emergence of local leadership to fill the gap left by Roman governance.",
+                    "Introduce the concept of Anglo-Saxon migrations and settlements beginning in this period.",
+                    "Highlight the economic and cultural adaptations made by local communities during this transitional era."
+                  ],
+                  "accompanyingSlideDetails": "A timeline showcasing the key events during and after the withdrawal of Roman troops from Britain, and an illustration comparing Roman and Anglo-Saxon settlements.",
+                  "imagePrompt": "Illustrations of Roman and Anglo-Saxon settlements for comparison.",
+                  "slideText": "When Roman troops left Britain, local rulers emerged, infrastructure declined, and Anglo-Saxon groups began to migrate and settle."
+                },
+                "checkForUnderstanding": [
+                  {
+                    "question": "What year approximately marks the withdrawal of Roman troops from Britain?",
+                    "answers": [
+                      "410 CE"
+                    ],
+                    "distractors": [
+                      "395 CE",
+                      "450 CE"
+                    ]
+                  },
+                  {
+                    "question": "What was one impact of the Roman withdrawal on Britain?",
+                    "answers": [
+                      "The rise of local rulers"
+                    ],
+                    "distractors": [
+                      "The construction of aqueducts",
+                      "The expansion of Roman towns"
+                    ]
+                  }
+                ],
+                "practice": "Sketch a timeline of events starting from Roman withdrawal in 410 CE and include: the decline of Roman infrastructure, the rise of local rulers, and the beginning of Anglo-Saxon settlements.",
+                "feedback": "Model answer: A timeline including 410 CE - Roman withdrawal; 420s - Decline in infrastructure maintenance; 430s onwards - Anglo-Saxon settlement beginnings."
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                },
+                "durationInMinutes": {
+                  "type": "number",
+                  "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
+                },
+                "explanation": {
+                  "type": "object",
+                  "properties": {
+                    "spokenExplanation": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ],
+                      "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
+                    },
+                    "accompanyingSlideDetails": {
+                      "type": "string",
+                      "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
+                    },
+                    "imagePrompt": {
+                      "type": "string",
+                      "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
+                    },
+                    "slideText": {
+                      "type": "string",
+                      "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                    }
+                  },
+                  "required": [
+                    "spokenExplanation",
+                    "accompanyingSlideDetails",
+                    "imagePrompt",
+                    "slideText"
+                  ],
+                  "additionalProperties": false,
+                  "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                },
+                "checkForUnderstanding": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "type": "string",
+                        "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                      },
+                      "answers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                      },
+                      "distractors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                      }
+                    },
+                    "required": [
+                      "question",
+                      "answers",
+                      "distractors"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2
+                },
+                "practice": {
+                  "type": "string",
+                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                },
+                "feedback": {
+                  "type": "string",
+                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                }
+              },
+              "required": [
+                "title",
+                "durationInMinutes",
+                "explanation",
+                "checkForUnderstanding",
+                "practice",
+                "feedback"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 7893,
+      "input_tokens_details": {
+        "cached_tokens": 3968
+      },
+      "output_tokens": 357,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 8250
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"title\":\"Describe changes in Britain after the end of Roman rule\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss the year 410 CE as the approximate time when Roman troops left Britain, marking the end of centralised Roman administration.\",\"Describe the conditions after the Roman withdrawal, highlighting the decline in maintenance of Roman built-infrastructure like roads and aqueducts.\",\"Explain the emergence of local leadership to fill the gap left by Roman governance.\",\"Introduce the concept of Anglo-Saxon migrations and settlements beginning in this period.\",\"Highlight the economic and cultural adaptations made by local communities during this transitional era.\"],\"accompanyingSlideDetails\":\"A timeline showcasing the key events during and after the withdrawal of Roman troops from Britain, and an illustration comparing Roman and Anglo-Saxon settlements.\",\"imagePrompt\":\"Illustrations of Roman and Anglo-Saxon settlements for comparison.\",\"slideText\":\"When Roman troops left Britain, local rulers emerged, infrastructure declined, and Anglo-Saxon groups began to migrate and settle.\"},\"checkForUnderstanding\":[{\"question\":\"What year approximately marks the withdrawal of Roman troops from Britain?\",\"answers\":[\"410 CE\"],\"distractors\":[\"395 CE\",\"450 CE\"]},{\"question\":\"What was one impact of the Roman withdrawal on Britain?\",\"answers\":[\"The rise of local rulers\"],\"distractors\":[\"The construction of aqueducts\",\"The expansion of Roman towns\"]}],\"practice\":\"Sketch a timeline of events starting from Roman withdrawal in 410 CE and include: the decline of Roman infrastructure, the rise of local rulers, and the beginning of Anglo-Saxon settlements.\",\"feedback\":\"Model answer: A timeline including 410 CE - Roman withdrawal; 420s - Decline in infrastructure maintenance; 430s onwards - Anglo-Saxon settlement beginnings.\"}}",
+    "output_parsed": {
+      "value": {
+        "title": "Describe changes in Britain after the end of Roman rule",
+        "durationInMinutes": 8,
+        "explanation": {
+          "spokenExplanation": [
+            "Discuss the year 410 CE as the approximate time when Roman troops left Britain, marking the end of centralised Roman administration.",
+            "Describe the conditions after the Roman withdrawal, highlighting the decline in maintenance of Roman built-infrastructure like roads and aqueducts.",
+            "Explain the emergence of local leadership to fill the gap left by Roman governance.",
+            "Introduce the concept of Anglo-Saxon migrations and settlements beginning in this period.",
+            "Highlight the economic and cultural adaptations made by local communities during this transitional era."
+          ],
+          "accompanyingSlideDetails": "A timeline showcasing the key events during and after the withdrawal of Roman troops from Britain, and an illustration comparing Roman and Anglo-Saxon settlements.",
+          "imagePrompt": "Illustrations of Roman and Anglo-Saxon settlements for comparison.",
+          "slideText": "When Roman troops left Britain, local rulers emerged, infrastructure declined, and Anglo-Saxon groups began to migrate and settle."
+        },
+        "checkForUnderstanding": [
+          {
+            "question": "What year approximately marks the withdrawal of Roman troops from Britain?",
+            "answers": [
+              "410 CE"
+            ],
+            "distractors": [
+              "395 CE",
+              "450 CE"
+            ]
+          },
+          {
+            "question": "What was one impact of the Roman withdrawal on Britain?",
+            "answers": [
+              "The rise of local rulers"
+            ],
+            "distractors": [
+              "The construction of aqueducts",
+              "The expansion of Roman towns"
+            ]
+          }
+        ],
+        "practice": "Sketch a timeline of events starting from Roman withdrawal in 410 CE and include: the decline of Roman infrastructure, the rise of local rulers, and the beginning of Anglo-Saxon settlements.",
+        "feedback": "Model answer: A timeline including 410 CE - Roman withdrawal; 420s - Decline in infrastructure maintenance; 430s onwards - Anglo-Saxon settlement beginnings."
+      }
+    }
+  }
+}

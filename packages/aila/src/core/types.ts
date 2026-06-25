@@ -42,6 +42,11 @@ export type AilaPublicChatOptions = {
   quizSources?: QuestionSourceType[];
 };
 
+export type AgenticFixtureConfig = {
+  mode: "record" | "replay";
+  fixtureName: string;
+};
+
 export type AilaOptions = AilaPublicChatOptions & {
   useErrorReporting?: boolean;
   usePersistence?: boolean;
@@ -52,9 +57,13 @@ export type AilaOptions = AilaPublicChatOptions & {
   useAgenticAila?: boolean;
   model?: string;
   mode?: AilaGenerateDocumentMode;
+  agenticFixture?: AgenticFixtureConfig;
 };
 
-export type AilaOptionsWithDefaultFallbackValues = Required<AilaOptions>;
+export type AilaOptionsWithDefaultFallbackValues = Required<
+  Omit<AilaOptions, "agenticFixture">
+> &
+  Pick<AilaOptions, "agenticFixture">;
 
 export type AilaChatInitializationOptions = {
   id: string;

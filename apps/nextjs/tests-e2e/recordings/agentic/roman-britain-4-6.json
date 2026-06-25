@@ -1,0 +1,1182 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nCreate a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.\n\n## Content Scope\n\nQuestions must cover:\n\n- KEY LEARNING POINTS\n- A MISCONCEPTION\n- Understanding of at least one KEYWORD (in context)\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the KEY LEARNING POINTS in the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\n    \"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\n    \"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\n    \"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\n    \"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Roman departure from Britain was a singular event marked by a specific date\",\n      \"description\": \"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"\n    },\n    {\n      \"misconception\": \"Roman infrastructure ceased to exist immediately after their departure\",\n      \"description\": \"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"\n    },\n    {\n      \"misconception\": \"Britain was left uninhabited after the Roman legions left\",\n      \"description\": \"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Withdrawal\",\n      \"definition\": \"The act of removing or taking away forces or presence from a region or place.\"\n    },\n    {\n      \"keyword\": \"Instability\",\n      \"definition\": \"The state of being prone to frequent change or lack of steady conditions.\"\n    },\n    {\n      \"keyword\": \"Province\",\n      \"definition\": \"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"\n    },\n    {\n      \"keyword\": \"Societal\",\n      \"definition\": \"Relating to social groups, communities, and their organisation and structure.\"\n    },\n    {\n      \"keyword\": \"Legion\",\n      \"definition\": \"A large unit or group of soldiers in the Roman army known for their discipline and training.\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"What year did the Roman occupation of Britain begin?\",\n        \"hint\": \"Refer to the timeline between 40 and 50 CE.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"43 CE\"\n        ],\n        \"distractors\": [\n          \"50 CE\",\n          \"40 CE\"\n        ]\n      },\n      {\n        \"question\": \"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\n        \"hint\": \"Think of the empire in control during the time.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Roman\"\n        ],\n        \"distractors\": [\n          \"Pictish\",\n          \"Scottish\"\n        ]\n      },\n      {\n        \"question\": \"Which infrastructure was introduced by the Romans in Britain?\",\n        \"hint\": \"Consider innovations in transportation and connectivity.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Roads\"\n        ],\n        \"distractors\": [\n          \"Castles\",\n          \"Cathedrals\"\n        ]\n      },\n      {\n        \"question\": \"Name one group that posed a threat to the stability of Roman Britain.\",\n        \"hint\": \"This group was located north of Hadrian's Wall.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Picts\"\n        ],\n        \"distractors\": [\n          \"Normans\",\n          \"Vikings\"\n        ]\n      },\n      {\n        \"question\": \"What role does economy play in shaping historical events?\",\n        \"hint\": \"Consider whether resources and trade routes can affect power.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"It influences the power and stability of societies.\"\n        ],\n        \"distractors\": [\n          \"It prevents cultural exchange between nations.\",\n          \"It has no long-lasting impact on societies.\"\n        ]\n      },\n      {\n        \"question\": \"Which span of years represents the Roman occupation of Britain?\",\n        \"hint\": \"This time frame exceeds three centuries.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"43 CE to 401 CE\"\n        ],\n        \"distractors\": [\n          \"55 BCE to 410 CE\",\n          \"1 CE to 300 CE\"\n        ]\n      }\n    ],\n    \"imageMetadata\": [],\n    \"reportId\": \"\"\n  },\n  \"cycle1\": {\n    \"title\": \"Identify the key factors of Roman rule ending\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Introduce the topic by briefly recapping the Roman presence in Britain and its significance.\",\n        \"Explain that the end of Roman rule was not a sudden event but occurred over several decades due to multiple factors.\",\n        \"Emphasise the economic challenges, such as the strain on resources and reduced revenue for the Roman Empire.\",\n        \"Discuss political instability, touching on how the focus shifted to defending the empire's core regions rather than outlying provinces like Britain.\",\n        \"Mention external pressures from invasions and uprisings threatening the Roman borders.\"\n      ],\n      \"accompanyingSlideDetails\": \"A timeline showing key milestones leading to the withdrawal of Roman rule in Britain, combined with illustrations of Roman soldiers and invasions.\",\n      \"imagePrompt\": \"Timeline of Roman withdrawal from Britain; Roman soldiers illustration\",\n      \"slideText\": \"The decline of Roman rule was due to factors including economic strain, political instability, and external pressures.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What were some reasons for the Roman withdrawal from Britain?\",\n        \"answers\": [\n          \"Economic strain, political instability, external pressures\"\n        ],\n        \"distractors\": [\n          \"Famine, population growth, overproduction of goods. discussing trivial events.\",\n          \"Technological stagnation, limited trade.\"\n        ]\n      },\n      {\n        \"question\": \"Which factor caused reduced revenue for the Roman Empire?\",\n        \"answers\": [\n          \"Economic strain\"\n        ],\n        \"distractors\": [\n          \"Political struggles\",\n          \"Military advances\"\n        ]\n      }\n    ],\n    \"practice\": \"In your exercise notebook, list three factors that contributed to the end of Roman Britain. Next to each factor, write one to two sentences explaining its impact.\",\n    \"feedback\": \"Example: One key factor was economic strain, which caused insufficient funds to maintain the administration and military presence in Britain.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Identify the key factors of Roman rule ending\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Begin by revisiting important aspects of Roman rule in Britain for context.\",\n        \"Explain that the decline wasn't an overnight occurrence, highlighting its gradual process over decades.\",\n        \"Showcase key economic factors such as reduced trade and increased local demands, which strained resources.\",\n        \"Discuss political elements, mentioning instability within the Roman leadership and its effects on governance.\",\n        \"Detail military influences, like the redeployment of legions to other parts of the empire, leaving Britain vulnerable.\"\n      ],\n      \"accompanyingSlideDetails\": \"A timeline that displays the progressive retreat of Roman rule in Britain, with visuals showing soldiers and maps.\",\n      \"imagePrompt\": \"Roman withdrawal Britain timeline with related imagery\",\n      \"slideText\": \"The Roman withdrawal occurred due to economic, political, and military strains over several decades.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which factor contributed to the economic challenges faced by Roman Britain?\",\n        \"answers\": [\n          \"Reduced trade routes\"\n        ],\n        \"distractors\": [\n          \"Excess population\",\n          \"Technological advancements\"\n        ]\n      },\n      {\n        \"question\": \"Why were Roman legions withdrawn from Britain?\",\n        \"answers\": [\n          \"To address threats in other regions\"\n        ],\n        \"distractors\": [\n          \"To reduce the cost of the military\",\n          \"To increase diplomatic relations\"\n        ]\n      }\n    ],\n    \"practice\": \"Create a short timeline summarising the key economic, political, and military events that led to the Roman withdrawal from Britain.\",\n    \"feedback\": \"Model timeline: Include economic challenges like reduced revenue and trade decline; political instability such as power struggles within the empire; and military dynamics like redeployment of legions to protect other Roman territories.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Explain the role of economic, political, and military influences\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Begin by introducing the three broad categories of influences – economic, political, and military – explaining that each had a significant role in the withdrawal of Roman rule from Britain.\",\n        \"For economic, discuss the Empire's reduced revenue from diminished agricultural output and disrupted trade routes.\",\n        \"For political, highlight the instability caused by rapid leadership changes and revolts in other parts of the empire.\",\n        \"For military, explain how the Roman army was redeployed to protect vital territories, leaving Britain exposed.\",\n        \"Use concrete examples and references to earlier content to connect these explanations to pupils' existing knowledge.\"\n      ],\n      \"accompanyingSlideDetails\": \"A depiction showing key influences such as a collapsing trade network, a crumbling empire map, and Roman soldiers leaving Britain.\",\n      \"imagePrompt\": \"Collapsing Roman trade network and empire map\",\n      \"slideText\": \"The end of Roman rule in Britain was influenced by economic strain, political instability, and military redeployment challenges.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"How did economic pressures contribute to the end of Roman Britain?\",\n        \"answers\": [\n          \"By reducing available funds to maintain governance.\"\n        ],\n        \"distractors\": [\n          \"By limiting natural resources.\",\n          \"By initiating resource competition.\"\n        ]\n      },\n      {\n        \"question\": \"What was a key military decision impacting Roman Britain?\",\n        \"answers\": [\n          \"Withdrawal of Roman legions to protect other territories.\"\n        ],\n        \"distractors\": [\n          \"Expansion to northern Britannia.\",\n          \"Distribution of forces among local tribes.\"\n        ]\n      }\n    ],\n    \"practice\": \"Create a table with three columns entitled economic, political, and military. In each column, write down one or two key points discussed as reasons for the Roman withdrawal from Britain.\",\n    \"feedback\": \"Model Table:\\n- Economic: Reduced agricultural yield. Interruptions in trade routes.\\n- Political: Instability caused by leadership changes.\\n- Military: Withdrawal of legions to core territories.\"\n  }\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"When Constantine converted, Christianity became popular among the...\",\"hint\":\"A group of people that are regarded as superior in terms of ability or quality.\",\"questionType\":\"short-answer\",\"answers\":[\"elite\"]},{\"question\":\"Evidence found in Britain suggests Christianity was introduced in the...\",\"hint\":\"The 4th century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"300s CE\"],\"distractors\":[\"100s CE\",\"200s CE\"]},{\"question\":\"What was discovered at Hinton St Mary? A Roman...\",\"hint\":\"It included an image of Jesus Christ.\",\"questionType\":\"short-answer\",\"answers\":[\"mosaic\",\"central roundel\"]},{\"question\":\"What does 'Chi Rho' mean?\",\"hint\":\"They are symbols that look like an X and P in our alphabet.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the beginning of Christ’s name in Greek\"],\"distractors\":[\"the beginning of Christ’s name in Spanish\",\"the beginning of Christ’s name in Italian\"]},{\"question\":\"What was discovered at the Roman villa in Lullingstone?\",\"hint\":\"Archaeologists had to piece thousands of fragments together. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Mosaics\",\"A chapel\",\"Wall paintings\"],\"distractors\":[]},{\"question\":\"The Roman mosaic and the wall paintings are evidence of Christianity's...\",\"hint\":\"This increased during the 4th century.\",\"questionType\":\"short-answer\",\"answers\":[\"popularity\"]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Most Celts lived in buildings called...\",\"hint\":\"The Celts built circular houses with steep roofs.\",\"questionType\":\"short-answer\",\"answers\":[\"roundhouses\",\"round houses\"]},{\"question\":\"Which two of these were materials used by the Celts in their buildings?\",\"hint\":\"The Celts had very different building techniques to the Ancient Romans.\",\"questionType\":\"multiple-choice\",\"answers\":[\"wattle and daub\",\"straw\"],\"distractors\":[\"bricks\",\"concrete\",\"clay tiles\"]},{\"question\":\"Which emperor had a great wall built on Britain's northern border?\",\"hint\":\"The wall is named after him!\",\"questionType\":\"multiple-choice\",\"answers\":[\"Hadrian\"],\"distractors\":[\"Trajan\",\"Nero\",\"Claudius\"]},{\"question\":\"Soldiers from all over the Roman Empire defended Hadrian's Wall in Britain.\",\"hint\":\"The Empire stretched as far as North Africa and Asia.\",\"questionType\":\"multiple-choice\",\"answers\":[\"True\"],\"distractors\":[\"False\"]},{\"question\":\"Match the keyword to the correct definition.\",\"hint\":\"Two of these would be found in Celtic roundhouses.\",\"questionType\":\"match\",\"pairs\":[{\"left\":\"hypocaust system\",\"right\":\"an Ancient Roman underfloor heating system\"},{\"left\":\"thatched\",\"right\":\"roofs made from a type of plant material, like straw\"},{\"left\":\"wattle and daub\",\"right\":\"woven twigs and rods that have been covered in clay to make walls\"}]},{\"question\":\"Which two of these were found at Chedworth Villa?\",\"hint\":\"The owners of Chedworth Villa wanted to show off to their guests.\",\"questionType\":\"multiple-choice\",\"answers\":[\"mosaics\",\"a hypocaust system\"],\"distractors\":[\"a temple\",\"swords\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"Match the definitions to the words.\",\"hint\":\"The economy is the way people, businesses and governments make and manage money\",\"questionType\":\"match\",\"pairs\":[{\"left\":\"to do with money\",\"right\":\"economy\"},{\"left\":\"to do with the government\",\"right\":\"politics\"},{\"left\":\"to do with the army\",\"right\":\"military\"}]},{\"question\":\"The Eastern Roman Empire was also known as the __________ Empire.\",\"hint\":\"Constantinople was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"Byzantine\"],\"distractors\":[\"Constantinople\",\"Great Roman\"]},{\"question\":\"The Western Roman Empire's capital was ...\",\"hint\":\"The city was founded by Romulus (according to the myth)\",\"questionType\":\"short-answer\",\"answers\":[\"Rome\",\"rome\"]},{\"question\":\"The Visigoths' attack on Rome in 410 CE is known as 'the {{  }} of Rome'.\",\"hint\":\"Rome was invaded and all its valuable goods were taken\",\"questionType\":\"short-answer\",\"answers\":[\"sack\"]},{\"question\":\"The Eastern Roman Empire continued to exist for nearly __________ years after the fall of the Western Roman Empire.\",\"hint\":\"The Eastern Roman Empire existed for a very long time after the Western Roman Empire fell\",\"questionType\":\"multiple-choice\",\"answers\":[\"one thousand\"],\"distractors\":[\"ten\",\"one hundred\",\"five hundred\"]},{\"question\":\"According to historians' theories, which of the following contributed to the fall of the Western Roman Empire?\",\"hint\":\"The Roman people often did not pay their taxes\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Empire was spending more money than it was getting in from taxes\",\"The emperors changed too often making politics unstable\",\"The Roman army was not well trained\"],\"distractors\":[\"The Roman citizens paid taxes regularly\",\"The Roman army was able to defend the Empire's borders easily\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"Why did Claudius want to invade Britain?\",\"hint\":\"Roman Emperors proved their strength through conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"He needed to prove his strength.\"],\"distractors\":[\"Britain had attacked the Roman Empire.\",\"Britain was very wealthy.\"]},{\"question\":\"Roman emperors held a {{ }} when they returned to Rome after they had won a war.\",\"hint\":\"They held these celebrations to show how strong they were.\",\"questionType\":\"short-answer\",\"answers\":[\"triumph\"]},{\"question\":\"Which of these **best** describes the Celtic tribes of Britain?\",\"hint\":\"The Celtic tribes of Britain fought one another all of the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Warlike and dangerous\"],\"distractors\":[\"Peaceful and united\",\"Disorganised and cowardly\"]},{\"question\":\"A Roman legionary carried which **three** of these things?\",\"hint\":\"Roman legionaries carried the things they needed for battle.\",\"questionType\":\"multiple-choice\",\"answers\":[\"A sword\",\"A shield\",\"A javelin\"],\"distractors\":[\"A saddle\",\"A chariot\"]},{\"question\":\"Roman legionaries used a tactic called the...\",\"hint\":\"The tactic the legionaries used meant they were protected almost entirely by their shields.\",\"questionType\":\"short-answer\",\"answers\":[\"testudo\",\"tortoise\"]},{\"question\":\"To protect themselves, Roman legionaries built __________.\",\"hint\":\"At first the Roman legionaries built these structures every day, wherever they ended their march.\",\"questionType\":\"multiple-choice\",\"answers\":[\"forts\"],\"distractors\":[\"castles\",\"towns\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"What tribes attacked Roman Britain in 367 CE?\",\"hint\":\"They attacked from the north.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\",\"Scots\"],\"distractors\":[\"Iceni\",\"Dumnonii\"]},{\"question\":\"When did the last Roman soldiers leave Hadrian’s Wall?\",\"hint\":\"This was due to troubles elsewhere in the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"401 CE\"],\"distractors\":[\"391 CE\",\"411 CE\"]},{\"question\":\"In which areas was Romano-British culture more popular?\",\"hint\":\"Think about the regions closer to Europe where the Romans came from.\",\"questionType\":\"multiple-choice\",\"answers\":[\"South-East England\",\"The Midlands\"],\"distractors\":[\"Wales\",\"Scotland\",\"Northern England\"]},{\"question\":\"{{ }} was built to mark the northern frontier of Roman Britain.\",\"hint\":\"It was named after a Roman emperor.\",\"questionType\":\"short-answer\",\"answers\":[\"Hadrian's Wall\",\"hadrian's wall\",\"Hadrians Wall\",\"hadrians wall\"]},{\"question\":\"What does 'Romanisation' mean?\",\"hint\":\"This happened in Britain after the successful Roman conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people started living and acting like the Romans did\"],\"distractors\":[\"how Romans attacked in battle\",\"how a Roman ruler was chosen\"]},{\"question\":\"What examples of Romano-British culture still exist today?\",\"hint\":\"Think about things you can see and hear now that you have learnt about Roman Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"parts of the English language\",\"remains of Roman-built structures\"],\"distractors\":[\"the harvest festival\",\"sports like football\"]}],\"imageMetadata\":[]}</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_00720258ac0526e5006a296ee8ef3081919dc2c769361364c9",
+    "object": "response",
+    "created_at": 1781100264,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100268,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_00720258ac0526e5006a296ee9943c8191a2f7b064112c76b7",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"When did the Roman occupation of Britain come to an end?\",\"hint\":\"Consider the early fifth century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"410 CE\"],\"distractors\":[\"401 CE\",\"450 CE\"]},{\"question\":\"What does 'withdrawal' mean in the context of Roman history?\",\"hint\":\"Think about a strategic retreat.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The act of removing forces from a region\"],\"distractors\":[\"The act of introducing forces to a new area\",\"The defeat in a significant battle\"]},{\"question\":\"Which factor contributed to the end of Roman rule in Britain?\",\"hint\":\"Think about pressures from outside.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Increased external invasions\"],\"distractors\":[\"The expansion of Roman territories\",\"Improved economic conditions\"]},{\"question\":\"Which term refers to regional areas governed as parts of the Roman Empire?\",\"hint\":\"Search for a term related to administrative regions.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Communities\",\"Territories\"]},{\"question\":\"What continued to be used in Britain even after the Roman departure?\",\"hint\":\"Think about structures serving daily needs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman roads\"],\"distractors\":[\"Roman legions\",\"Roman political systems\"]},{\"question\":\"Why was the Roman military strength in Britain reduced?\",\"hint\":\"Think about military deployment.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Legions were sent to defend other parts of the Empire.\"],\"distractors\":[\"Legions were disbanded due to lack of funds.\",\"Legions were lost during conflicts within Britain.\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+            "parsed": {
+              "value": {
+                "version": "v3",
+                "questions": [
+                  {
+                    "question": "When did the Roman occupation of Britain come to an end?",
+                    "hint": "Consider the early fifth century.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "410 CE"
+                    ],
+                    "distractors": [
+                      "401 CE",
+                      "450 CE"
+                    ]
+                  },
+                  {
+                    "question": "What does 'withdrawal' mean in the context of Roman history?",
+                    "hint": "Think about a strategic retreat.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "The act of removing forces from a region"
+                    ],
+                    "distractors": [
+                      "The act of introducing forces to a new area",
+                      "The defeat in a significant battle"
+                    ]
+                  },
+                  {
+                    "question": "Which factor contributed to the end of Roman rule in Britain?",
+                    "hint": "Think about pressures from outside.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Increased external invasions"
+                    ],
+                    "distractors": [
+                      "The expansion of Roman territories",
+                      "Improved economic conditions"
+                    ]
+                  },
+                  {
+                    "question": "Which term refers to regional areas governed as parts of the Roman Empire?",
+                    "hint": "Search for a term related to administrative regions.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Provinces"
+                    ],
+                    "distractors": [
+                      "Communities",
+                      "Territories"
+                    ]
+                  },
+                  {
+                    "question": "What continued to be used in Britain even after the Roman departure?",
+                    "hint": "Think about structures serving daily needs.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Roman roads"
+                    ],
+                    "distractors": [
+                      "Roman legions",
+                      "Roman political systems"
+                    ]
+                  },
+                  {
+                    "question": "Why was the Roman military strength in Britain reduced?",
+                    "hint": "Think about military deployment.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Legions were sent to defend other parts of the Empire."
+                    ],
+                    "distractors": [
+                      "Legions were disbanded due to lack of funds.",
+                      "Legions were lost during conflicts within Britain."
+                    ]
+                  }
+                ],
+                "imageMetadata": [],
+                "reportId": ""
+              }
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string",
+                  "const": "v3",
+                  "description": "Schema version identifier"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "The question as markdown text"
+                          },
+                          "hint": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Optional hint to help students"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "multiple-choice"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Correct answers as markdown"
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Incorrect answer options as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "short-answer"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Acceptable answers as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "answers"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "match"
+                          },
+                          "pairs": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "left": {
+                                  "type": "string",
+                                  "description": "Left side item to match as markdown"
+                                },
+                                "right": {
+                                  "type": "string",
+                                  "description": "Corresponding right side item as markdown"
+                                }
+                              },
+                              "required": [
+                                "left",
+                                "right"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "description": "Pairs of items to match"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "pairs"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                          },
+                          "hint": {
+                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                          },
+                          "questionType": {
+                            "type": "string",
+                            "const": "order"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Items to be put in correct order as markdown"
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "hint",
+                          "questionType",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  },
+                  "description": "Array of quiz questions"
+                },
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                },
+                "reportId": {
+                  "type": "string",
+                  "nullable": true
+                }
+              },
+              "required": [
+                "version",
+                "questions",
+                "imageMetadata",
+                "reportId"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
+              "type": "string",
+              "description": "The question as markdown text"
+            },
+            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
+              "type": "string",
+              "nullable": true,
+              "description": "Optional hint to help students"
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "string",
+                      "const": "v3",
+                      "description": "Schema version identifier"
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "type": "string",
+                                "description": "The question as markdown text"
+                              },
+                              "hint": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "Optional hint to help students"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "multiple-choice"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Correct answers as markdown"
+                              },
+                              "distractors": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Incorrect answer options as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers",
+                              "distractors"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "short-answer"
+                              },
+                              "answers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Acceptable answers as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "answers"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "match"
+                              },
+                              "pairs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "left": {
+                                      "type": "string",
+                                      "description": "Left side item to match as markdown"
+                                    },
+                                    "right": {
+                                      "type": "string",
+                                      "description": "Corresponding right side item as markdown"
+                                    }
+                                  },
+                                  "required": [
+                                    "left",
+                                    "right"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "description": "Pairs of items to match"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "pairs"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "question": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
+                              },
+                              "hint": {
+                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
+                              },
+                              "questionType": {
+                                "type": "string",
+                                "const": "order"
+                              },
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "description": "Items to be put in correct order as markdown"
+                              }
+                            },
+                            "required": [
+                              "question",
+                              "hint",
+                              "questionType",
+                              "items"
+                            ],
+                            "additionalProperties": false
+                          }
+                        ]
+                      },
+                      "description": "Array of quiz questions"
+                    },
+                    "imageMetadata": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "The URL of the image"
+                          },
+                          "attribution": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Attribution text for the image"
+                          },
+                          "width": {
+                            "type": "number",
+                            "description": "Width of the image in pixels"
+                          },
+                          "height": {
+                            "type": "number",
+                            "description": "Height of the image in pixels"
+                          },
+                          "aiDescription": {
+                            "type": "string",
+                            "description": "AI-generated description of the image content for LLM context"
+                          }
+                        },
+                        "required": [
+                          "imageUrl",
+                          "attribution",
+                          "width",
+                          "height",
+                          "aiDescription"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
+                    },
+                    "reportId": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  },
+                  "required": [
+                    "version",
+                    "questions",
+                    "imageMetadata",
+                    "reportId"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 7326,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 357,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 7683
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"When did the Roman occupation of Britain come to an end?\",\"hint\":\"Consider the early fifth century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"410 CE\"],\"distractors\":[\"401 CE\",\"450 CE\"]},{\"question\":\"What does 'withdrawal' mean in the context of Roman history?\",\"hint\":\"Think about a strategic retreat.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The act of removing forces from a region\"],\"distractors\":[\"The act of introducing forces to a new area\",\"The defeat in a significant battle\"]},{\"question\":\"Which factor contributed to the end of Roman rule in Britain?\",\"hint\":\"Think about pressures from outside.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Increased external invasions\"],\"distractors\":[\"The expansion of Roman territories\",\"Improved economic conditions\"]},{\"question\":\"Which term refers to regional areas governed as parts of the Roman Empire?\",\"hint\":\"Search for a term related to administrative regions.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Communities\",\"Territories\"]},{\"question\":\"What continued to be used in Britain even after the Roman departure?\",\"hint\":\"Think about structures serving daily needs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman roads\"],\"distractors\":[\"Roman legions\",\"Roman political systems\"]},{\"question\":\"Why was the Roman military strength in Britain reduced?\",\"hint\":\"Think about military deployment.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Legions were sent to defend other parts of the Empire.\"],\"distractors\":[\"Legions were disbanded due to lack of funds.\",\"Legions were lost during conflicts within Britain.\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+    "output_parsed": {
+      "value": {
+        "version": "v3",
+        "questions": [
+          {
+            "question": "When did the Roman occupation of Britain come to an end?",
+            "hint": "Consider the early fifth century.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "410 CE"
+            ],
+            "distractors": [
+              "401 CE",
+              "450 CE"
+            ]
+          },
+          {
+            "question": "What does 'withdrawal' mean in the context of Roman history?",
+            "hint": "Think about a strategic retreat.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "The act of removing forces from a region"
+            ],
+            "distractors": [
+              "The act of introducing forces to a new area",
+              "The defeat in a significant battle"
+            ]
+          },
+          {
+            "question": "Which factor contributed to the end of Roman rule in Britain?",
+            "hint": "Think about pressures from outside.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Increased external invasions"
+            ],
+            "distractors": [
+              "The expansion of Roman territories",
+              "Improved economic conditions"
+            ]
+          },
+          {
+            "question": "Which term refers to regional areas governed as parts of the Roman Empire?",
+            "hint": "Search for a term related to administrative regions.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Provinces"
+            ],
+            "distractors": [
+              "Communities",
+              "Territories"
+            ]
+          },
+          {
+            "question": "What continued to be used in Britain even after the Roman departure?",
+            "hint": "Think about structures serving daily needs.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Roman roads"
+            ],
+            "distractors": [
+              "Roman legions",
+              "Roman political systems"
+            ]
+          },
+          {
+            "question": "Why was the Roman military strength in Britain reduced?",
+            "hint": "Think about military deployment.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Legions were sent to defend other parts of the Empire."
+            ],
+            "distractors": [
+              "Legions were disbanded due to lack of funds.",
+              "Legions were lost during conflicts within Britain."
+            ]
+          }
+        ],
+        "imageMetadata": [],
+        "reportId": ""
+      }
+    }
+  }
+}

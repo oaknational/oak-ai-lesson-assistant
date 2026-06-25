@@ -1,0 +1,176 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nList the most important factual things pupils should learn in the lesson.\n\n- Use succinct, knowledge-rich statements\n- Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.\n- Avoid vague or descriptive phrasing\n- Where possible, take these from the English national curriculum and/or the relevant exam boards.\n- Example: \"A plant cell differs from an animal cell because it has a cell wall, chloroplast, and a large vacuole.\" \n- Non-example: \"The unique features of plant cells, including cell walls, chloroplasts, and large vacuoles.\""
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ]\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- Historians are not sure exactly when Christianity was introduced to Britain.\n- In the 4th century CE, after the conversion of Constantine, it became increasingly popular among the elite.\n- Historians know about this rise in popularity from various physical objects that have been found.\n- At Hinton St Mary an early 4th century mosaic appears to show a portrait of Jesus.\n- At Lullingstone, archaeologists unearthed the remains of a chapel within a Roman villa with Christian wall paintings.</example-1>\n<example-2>- Celtic buildings were usually thatched, wattle and daub roundhouses.\n- Archaeologists can look at the remains of buildings to construct arguments about the impact of the Romans in Britain.\n- Evidence of North African Roman soldiers has been found at Hadrian’s Wall, a major Ancient Roman architectural feature.\n- Caerwent, Trimontium and Bath are all places that have examples of the sorts of architecture the Ancient Romans built.\n- Rich Ancient Romans built villas in the British countryside with expensive mosaics and hypocaust systems for heating.</example-2>\n<example-3>- Various major problems affected the Western Roman Empire after its split, leading to many theories about its fall.\n- The Western Roman Empire had many financial, political and military problems after the Empire’s division.\n- The Western Roman Empire was almost destroyed when Alaric and the Visigoths attacked Rome in 410 CE.\n- The Western Roman Empire collapsed in 476 CE when Germanic tribes defeated the last Western Roman Emperor.</example-3>\n<example-4>- Emperor Claudius ordered the invasion of Britain in 43 CE to secure his position as emperor.\n- The invasion was very successful due to the strengths of the Ancient Roman army.\n- Ancient Roman legionaries were highly trained, well equipped and disciplined soldiers.\n- The legionaries used superior tactics alongside fort building to defeat the British tribes.</example-4>\n<example-5>- In 367 CE, the Scots from Ireland and Picts from Scotland came together to attack Roman Britain but were defeated.\n- In 401 CE, the last Roman legionaries left Hadrian’s Wall, built over 200 years before to protect the northern frontier.\n- Much of south-east England and the Midlands had a Romano-British culture.\n- Wales and the north and south-west of England had less Romanisation.\n- Scotland was mostly controlled by the Celtic Picts.</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_0245284939b56b54006a296eb7791c819d838f6e2e2244fd6f",
+    "object": "response",
+    "created_at": 1781100215,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100216,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_0245284939b56b54006a296eb7da60819d93f34cc43017ab02",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":[\"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"]}",
+            "parsed": {
+              "value": [
+                "Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.",
+                "The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.",
+                "Political instability within the Roman Empire weakened control over distant provinces like Britain.",
+                "The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.",
+                "Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance."
+              ]
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 2047,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 104,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 2151
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":[\"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"]}",
+    "output_parsed": {
+      "value": [
+        "Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.",
+        "The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.",
+        "Political instability within the Roman Empire weakened control over distant provinces like Britain.",
+        "The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.",
+        "Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance."
+      ]
+    }
+  }
+}

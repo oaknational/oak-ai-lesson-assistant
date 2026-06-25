@@ -34,6 +34,7 @@ import { z } from "zod";
 import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
 import {
+  getAgenticFixtureConfig,
   getFixtureLLMService,
   getFixtureModerationOpenAiClient,
   getFixtureOakModerator,
@@ -85,7 +86,38 @@ async function setupChatHandler(req: NextRequest) {
         options?: AilaPublicChatOptions;
       } = json;
 
-      const useAgenticAila = await getAgenticAilaEnabled();
+      const e2eAilaSystemHeader =
+        process.env.AILA_FIXTURES_ENABLED === "true"
+          ? req.headers.get("x-e2e-aila-system")
+          : null;
+      const e2eAilaSystem =
+        e2eAilaSystemHeader === "agentic" ||
+        e2eAilaSystemHeader === "megaprompt"
+          ? e2eAilaSystemHeader
+          : null;
+
+      const useAgenticAila = e2eAilaSystem
+        ? e2eAilaSystem === "agentic"
+        : await getAgenticAilaEnabled();
+
+      log.info(
+        "Chat handler: e2eAilaSystem=%s useAgenticAila=%s",
+        e2eAilaSystem ?? "null",
+        String(useAgenticAila),
+      );
+
+      const agenticFixture = getAgenticFixtureConfig(req.headers);
+
+      if (
+        process.env.AILA_FIXTURES_ENABLED === "true" &&
+        e2eAilaSystem === "agentic" &&
+        !agenticFixture
+      ) {
+        throw new Error(
+          "Agentic E2E fixture mode requires x-e2e-fixture-name and a valid x-e2e-fixture-mode.",
+        );
+      }
+
       const useMathsQuizRag = await serverSideFeatureFlag("quiz-rag");
 
       const options: AilaOptions = {
@@ -96,10 +128,16 @@ async function setupChatHandler(req: NextRequest) {
         usePersistence: true,
         useModeration: true,
         useAgenticAila,
+        agenticFixture,
         useMathsQuizRag: useMathsQuizRag,
       };
 
-      const llmService = getFixtureLLMService(req.headers, chatId);
+      // Agentic system never calls LLMService — skip the chunk-based fixture to
+      // avoid FixtureReplayLLMService throwing ENOENT at construction time.
+      const llmService =
+        e2eAilaSystem !== "agentic"
+          ? getFixtureLLMService(req.headers, chatId)
+          : undefined;
       const moderationAiClient = getFixtureModerationOpenAiClient(
         req.headers,
         chatId,

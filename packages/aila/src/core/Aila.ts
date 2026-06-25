@@ -173,6 +173,9 @@ export class Aila implements AilaServices {
       useMathsQuizRag: options?.useMathsQuizRag ?? false,
       model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
+      ...(options?.agenticFixture
+        ? { agenticFixture: options.agenticFixture }
+        : {}),
     };
   }
 
