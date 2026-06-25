@@ -105,6 +105,14 @@ export function getAgenticFixtureConfig(
   if (!fixtureName || (fixtureMode !== "record" && fixtureMode !== "replay")) {
     return undefined;
   }
+  if (
+    fixtureName.startsWith("/") ||
+    fixtureName.includes("..") ||
+    fixtureName.includes("\\")
+  ) {
+    log.warn("Ignoring invalid agentic fixtureName: %s", fixtureName);
+    return undefined;
+  }
 
   log.info("Using agentic fixture %s (%s)", fixtureName, fixtureMode);
   return { mode: fixtureMode, fixtureName };
