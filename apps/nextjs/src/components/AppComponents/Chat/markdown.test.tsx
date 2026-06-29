@@ -118,4 +118,26 @@ describe("preserveMathJaxDelimiters", () => {
       "text `\\\\( x \\\\) end`` after",
     );
   });
+
+  it("converts [math]...[/math] to MathJax inline delimiters", () => {
+    const markdown = String.raw`Explain roots such as [math]x^{1/2}[/math] for square roots.`;
+
+    expect(preserveMathJaxDelimiters(markdown)).toBe(
+      String.raw`Explain roots such as \\(x^{1/2}\\) for square roots.`,
+    );
+  });
+
+  it("converts multiple [math]...[/math] occurrences on one line", () => {
+    const markdown = String.raw`Use [math]x^{1/2}[/math] and [math]x^{1/3}[/math].`;
+
+    expect(preserveMathJaxDelimiters(markdown)).toBe(
+      String.raw`Use \\(x^{1/2}\\) and \\(x^{1/3}\\).`,
+    );
+  });
+
+  it("converts [math]...[/math] spanning multiple lines", () => {
+    const markdown = "[math]x =\n1[/math]";
+
+    expect(preserveMathJaxDelimiters(markdown)).toBe("\\\\(x =\n1\\\\)");
+  });
 });

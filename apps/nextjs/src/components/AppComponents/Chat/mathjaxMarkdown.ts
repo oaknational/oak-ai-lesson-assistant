@@ -1,8 +1,12 @@
 const fencedCodeBlockPattern = /^( {0,3})(`{3,}|~{3,})(.*)$/;
 const mathJaxDelimiterChars = new Set(["(", ")", "[", "]"]);
 
+const normalizeMathDelimiters = (markdown: string) =>
+  markdown.replace(/\[math\]([\s\S]*?)\[\/math\]/g, "\\($1\\)");
+
 export const preserveMathJaxDelimiters = (markdown: string) => {
-  const lines = markdown.match(/[^\r\n]*(?:\r\n|\n|\r|$)/g) ?? [];
+  const normalized = normalizeMathDelimiters(markdown);
+  const lines = normalized.match(/[^\r\n]*(?:\r\n|\n|\r|$)/g) ?? [];
   const chunks = lines.at(-1) === "" ? lines.slice(0, -1) : lines;
   let fence: { marker: "`" | "~"; length: number } | null = null;
 
