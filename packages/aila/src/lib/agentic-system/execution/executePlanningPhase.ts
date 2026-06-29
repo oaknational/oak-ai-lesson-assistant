@@ -3,6 +3,7 @@ import {
   shouldForcePlannerFailure,
   shouldForcePlannerThrow,
 } from "../utils/faultInjection";
+import { normalisePlanSteps } from "./normalisePlanSteps";
 import { terminateWithFailure, terminateWithResponse } from "./termination";
 
 /**
@@ -46,6 +47,11 @@ export async function executePlanningPhase(
         (step) => step.sectionKey !== "basedOn",
       );
   }
+
+  context.currentTurn.plannerOutput.plan = normalisePlanSteps(
+    context.currentTurn.plannerOutput.plan,
+    context.currentTurn.document,
+  );
 
   context.callbacks.onPlannerComplete({
     sectionKeys: context.currentTurn.plannerOutput.plan.map(

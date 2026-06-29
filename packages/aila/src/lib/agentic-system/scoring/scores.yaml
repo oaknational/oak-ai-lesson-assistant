@@ -1,8 +1,10 @@
-codeHash: ec29ccef813954ab5d41ff3df15ab94491e4bf4d05f60ae20b3d1d2d4a29a5a1
-generated: 2026-06-11T00:34:54.870Z
+codeHash: 712e8d159aca9aa781089dcf2430ab7716e3b41fb170f8ba9e1c037138618901
+generated: 2026-06-29T15:24:41.854Z
 runsPerScenario: 3
 summary:
   full-lesson:
+    generation-complete:
+      pass: 3
     plan-groupings:
       pass: 3
     additional-materials-tone:
@@ -18,8 +20,7 @@ summary:
     americanisms-phrasing:
       pass: 3
     americanisms-meanings:
-      pass: 1
-      flag: 2
+      flag: 3
     quiz-question-count:
       pass: 3
     americanisms_corrector:
@@ -30,6 +31,8 @@ summary:
       correction_failure_rate: 0.0%
       corrections_by_section: {}
   no-rag-lesson:
+    generation-complete:
+      pass: 3
     plan-groupings:
       pass: 3
     additional-materials-tone:

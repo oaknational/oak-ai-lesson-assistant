@@ -106,6 +106,19 @@ function wordCount(text: string): number {
 
 const SCORERS: Scorer[] = [
   {
+    id: "generation-complete",
+    description: "Generation completed a valid lesson plan",
+    fn: ({ finalDocument }) => {
+      const result = CompletedLessonPlanSchema.safeParse(finalDocument);
+      return {
+        heuristic: result.success ? "pass" : "flag",
+        evidence: result.success
+          ? "Final document satisfies CompletedLessonPlanSchema"
+          : "Final document is incomplete; downstream issue scores are low-signal",
+      };
+    },
+  },
+  {
     id: "plan-groupings",
     description: "Plan section groupings per turn",
     fn: ({ plannerOutputs, turnCount }) => {
