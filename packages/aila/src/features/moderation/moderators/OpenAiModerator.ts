@@ -28,7 +28,7 @@ export type OpenAiModeratorArgs = {
   chatId: string;
   userId: string | undefined;
   temperature?: number;
-  model?: OpenAI.Chat.ChatModel;
+  model?: string;
   aila?: AilaServices;
   openAiClient?: OpenAILike;
 };
