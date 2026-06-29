@@ -7,8 +7,8 @@ import remarkGfm from "remark-gfm";
 
 import { cn } from "@/lib/utils";
 
-import { preserveMathJaxDelimiters } from "./mathjaxMarkdown";
 import { wrapWithUrlSafety } from "./markdown-url-safety";
+import { preserveMathJaxDelimiters } from "./mathjaxMarkdown";
 import { CodeBlock } from "./ui/codeblock";
 
 const MemoizedReactMarkdown: FC<Options> = memo(
@@ -39,12 +39,7 @@ const createComponents = (className?: string): Partial<Components> => ({
   // Disable blockquote rendering to prevent answers like "> 90 degrees" from being styled as quotes
   blockquote: ({ children }) => <>{children}</>,
   code: (props) => {
-    const {
-      node,
-      className,
-      children,
-      ...restProps
-    } = props as {
+    const { node, className, children, ...restProps } = props as {
       node?: {
         position?: {
           start?: { line?: number };
