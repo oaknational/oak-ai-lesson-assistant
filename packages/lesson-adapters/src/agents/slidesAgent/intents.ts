@@ -29,7 +29,7 @@ type BaseIntentConfig = {
   promptSlideFields?: SlideField[];
   /** Slide types to exclude from evaluation (always kept). Intent-specific. */
   protectedSlideTypes?: string[];
-  /** OpenAI model ID for the LLM calls. Defaults to "gpt-4o-mini" if not set. */
+  /** OpenAI model ID for the LLM calls. Defaults to "gpt-5.4-mini-2026-03-17" if not set (or "gpt-5.4-2026-03-05" for intents that require stronger reasoning). */
   model?: string;
 };
 
@@ -216,7 +216,7 @@ ${SHARED_RULES}`,
       "summary",
       "copyright",
     ],
-    model: "gpt-4o",
+    model: "gpt-5.4-2026-03-05",
   },
 };
 

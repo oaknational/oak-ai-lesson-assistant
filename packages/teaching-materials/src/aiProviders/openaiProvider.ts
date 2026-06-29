@@ -15,7 +15,7 @@ export const OpenAIProvider = {
     const { object } = await generateObject({
       prompt,
       schema,
-      model: openai("gpt-4o"),
+      model: openai("gpt-5.4-2026-03-05"),
       system: systemMessage,
       mode: "json",
     });

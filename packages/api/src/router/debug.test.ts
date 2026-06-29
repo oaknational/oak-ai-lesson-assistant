@@ -47,16 +47,18 @@ describe("debugRouter.getAilaOverlayState", () => {
   it("returns agentic enabled when getAgenticAilaEnabled returns true", async () => {
     mockedGetAgenticAilaEnabled.mockResolvedValue(true);
 
-    await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
+    await expect(createCaller().getAilaOverlayState()).resolves.toMatchObject({
       agenticEnabled: true,
+      models: expect.objectContaining({ chat: expect.any(String) }),
     });
   });
 
   it("returns agentic disabled when getAgenticAilaEnabled returns false", async () => {
     mockedGetAgenticAilaEnabled.mockResolvedValue(false);
 
-    await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
+    await expect(createCaller().getAilaOverlayState()).resolves.toMatchObject({
       agenticEnabled: false,
+      models: expect.objectContaining({ chat: expect.any(String) }),
     });
   });
 

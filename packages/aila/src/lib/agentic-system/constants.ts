@@ -3,7 +3,7 @@ import type { ResponseCreateParamsNonStreaming } from "openai/resources/response
 
 // Defaults for Responses API (used by agentic prompt-based agents)
 export const DEFAULT_RESPONSES_MODEL: OpenAI.ResponsesModel =
-  "gpt-4o-2024-11-20";
+  "gpt-5.4-2026-03-05";
 
 export const DEFAULT_AGENT_MODEL_PARAMS: Omit<
   ResponseCreateParamsNonStreaming,

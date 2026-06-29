@@ -179,7 +179,7 @@ ${formattedSlides}
 Analyse each slide above and map which key learning points and learning cycles it covers.`;
 
     const { output } = await generateText({
-      model: openai("gpt-4o"),
+      model: openai("gpt-5.4-2026-03-05"),
       output: Output.object({ schema: klpLcAgentResponseSchema }),
       system: SYSTEM_PROMPT,
       prompt: promptContent,

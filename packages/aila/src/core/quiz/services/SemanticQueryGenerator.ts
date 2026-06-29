@@ -50,7 +50,7 @@ Generate a list of 1-${maxQueries} semantic search queries`;
 
     try {
       const response = await this.openai.beta.chat.completions.parse({
-        model: "gpt-4o-mini",
+        model: "gpt-5.4-mini-2026-03-17",
         messages: [{ role: "user", content: prompt }],
         response_format: zodResponseFormat(
           SemanticSearchSchema,

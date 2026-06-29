@@ -43,7 +43,7 @@ export async function classifyLessonAdaptIntent(
   userPrompt: string,
 ): Promise<LessonAdaptIntent> {
   const { output } = await generateText({
-    model: openai("gpt-4o-mini"),
+    model: openai("gpt-5.4-mini-2026-03-17"),
     output: Output.object({ schema: intentSchema }),
     system: SYSTEM_PROMPT,
     prompt: userPrompt,
