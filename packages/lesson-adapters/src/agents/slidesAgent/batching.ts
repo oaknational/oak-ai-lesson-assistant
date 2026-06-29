@@ -85,7 +85,7 @@ ${formattedSlides}
 Reminder: Return your response using the schema with textEdits, tableCellEdits, textElementDeletions, and slideDeletions arrays.`;
 
   log.info("=== SLIDES AGENT CALL ===");
-  log.info("  Model: %s", config.model ?? "gpt-4o-mini");
+  log.info("  Model: %s", config.model ?? "gpt-5.4-mini-2026-03-17");
   log.info("  Edit type: %s", editType);
   log.info("  Slides: %d", slides.length);
   log.info(
@@ -95,7 +95,7 @@ Reminder: Return your response using the schema with textEdits, tableCellEdits, 
   log.info("--- USER PROMPT ---\n%s\n--- END USER PROMPT ---", prompt);
 
   const { output, text } = await generateText({
-    model: openai(config.model ?? "gpt-4o-mini"),
+    model: openai(config.model ?? "gpt-5.4-mini-2026-03-17"),
     output: Output.object({ schema: config.schema }),
     system: config.prompt,
     prompt,

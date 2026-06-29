@@ -43,7 +43,26 @@ export function DebugOverlay() {
     return null;
   }
 
+  const modelRows = (() => {
+    if (overlayState.isLoading) {
+      return [{ label: "Models", value: "checking" }];
+    }
+    if (!overlayState.data) {
+      return [{ label: "Models", value: "error" }];
+    }
+    const { chat, moderation, categorise, agentic } =
+      overlayState.data.models;
+    const entries: { label: string; value: string }[] = [
+      { label: "Chat", value: chat },
+    ];
+    if (moderation !== chat) entries.push({ label: "Moderation", value: moderation });
+    if (categorise !== chat) entries.push({ label: "Categorise", value: categorise });
+    if (agentic !== chat) entries.push({ label: "Agentic", value: agentic });
+    return entries;
+  })();
+
   const rows = [
+    ...modelRows,
     {
       label: "Agentic",
       value: overlayState.isLoading
