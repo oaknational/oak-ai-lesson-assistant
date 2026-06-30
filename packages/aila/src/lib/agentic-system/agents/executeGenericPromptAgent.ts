@@ -1,4 +1,4 @@
-import { aiLogger } from "@oakai/logger";
+import { aiLogger, structuredLogger } from "@oakai/logger";
 
 import type OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
@@ -86,14 +86,17 @@ function logPromptCacheUsage<ResponseType>({
   const cacheHitRate =
     inputTokens > 0 ? Number((cachedInputTokens / inputTokens).toFixed(4)) : 0;
 
-  log.info("OpenAI Responses prompt cache usage", {
-    agentId: agent.id,
-    model,
-    inputTokens,
-    cachedInputTokens,
-    uncachedInputTokens: inputTokens - cachedInputTokens,
-    cacheHitRate,
-    outputTokens: usage?.output_tokens ?? 0,
-    totalTokens: usage?.total_tokens ?? 0,
-  });
+  structuredLogger.info(
+    {
+      agentId: agent.id,
+      model,
+      inputTokens,
+      cachedInputTokens,
+      uncachedInputTokens: inputTokens - cachedInputTokens,
+      cacheHitRate,
+      outputTokens: usage?.output_tokens ?? 0,
+      totalTokens: usage?.total_tokens ?? 0,
+    },
+    "OpenAI Responses prompt cache usage",
+  );
 }
