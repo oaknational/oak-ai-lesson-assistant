@@ -104,6 +104,7 @@ export type AilaExecutionContext = {
 
 export type SectionPromptAgentProps<ResponseType> = {
   responseSchema: z.ZodType<ResponseType>;
+  id: string;
   messages: ChatMessage[];
   instructions: string;
   currentValue: ResponseType | undefined;
