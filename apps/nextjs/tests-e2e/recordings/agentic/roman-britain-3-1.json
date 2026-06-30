@@ -1,0 +1,174 @@
+{
+  "params": {
+    "input": [
+      {
+        "role": "developer",
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nList up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.\n\n- Max 30 words per statement.\n- Max 5 statements but aim for fewer\n- Use age-appropriate, key stage-relevant concepts and language.\n- Try to be specific with the concepts.\n- Do not start with \"Pupils…\"—just state the concept\n- May include substantive, disciplinary, or procedural concepts\n- Avoid content that's too advanced\n- Examples: \"Familiarity with the characters and plot of a common fairy tale.\" \"Understanding of a 'ruler' and 'city-state'.\" \"Ability to recognise acceptable/unacceptable behaviour when using technology\".\n- Non-example: \"Knowledge of fairy tales\" (too broad)."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+      },
+      {
+        "role": "developer",
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ]\n}"
+      },
+      {
+        "role": "developer",
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- Christianity began around 2,000 years ago.\n- Constantine was the first Christian Roman emperor.\n- A mosaic is an artistic arrangement of small pieces of tile or stone.\n- Archaeological findings provide significant insights into historical events.</example-1>\n<example-2>- Celtic roundhouses were circular homes with thatched roofs.\n- Wattle and daub is a method of constructing walls.\n- The Roman Empire extended into Britain, influencing its culture and infrastructure.\n- Hadrian's Wall was built under Emperor Hadrian to protect the Roman Empire's northern territory.\n- Roman villas often included advanced engineering, such as the hypocaust system.</example-2>\n<example-3>- The Roman Empire was divided into the Western and Eastern Roman Empires in 395 CE.\n- The Eastern Roman Empire is also known as the Byzantine Empire.\n- The Roman Empire covered extensive territories at its height.</example-3>\n<example-4>- The Roman Empire expanded significantly through conquests.\n- Roman emperors sought to display their strength via military successes.\n- The British Isles were home to various Iron Age tribes before Roman invasions.\n- Key Roman military equipment includes the gladius, scutum, and pilum.\n- Ancient Rome marked military victories with elaborate public celebrations called triumphs.</example-4>\n<example-5>- The Romans invaded and ruled Britain from 43 CE to around 401 CE.\n- Roman roads, artefacts, and buildings became integral to British infrastructure.\n- Tribes such as the Picts and Scots existed in Scotland and Ireland.\n- Romanisation refers to the adoption of Roman customs and traditions.\n- Hadrian's Wall was constructed as a Roman defensive landmark.</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+      },
+      {
+        "role": "user",
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
+      }
+    ],
+    "stream": false,
+    "model": "gpt-4o-2024-11-20",
+    "reasoning": null,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "name": "agent_response_schema",
+        "strict": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of prior knowledge statements, each being a succinct sentence.\nWritten in the EXPERT_TEACHER voice.\nMinimum 1, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      }
+    }
+  },
+  "result": {
+    "id": "resp_001437418865e003006a296eb6031081a2866854549be85cfc",
+    "object": "response",
+    "created_at": 1781100214,
+    "status": "completed",
+    "background": false,
+    "billing": {
+      "payer": "developer"
+    },
+    "completed_at": 1781100215,
+    "error": null,
+    "frequency_penalty": 0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-4o-2024-11-20",
+    "moderation": null,
+    "output": [
+      {
+        "id": "msg_001437418865e003006a296eb66efc81a2a93d0924bed57603",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "output_text",
+            "annotations": [],
+            "logprobs": [],
+            "text": "{\"value\":[\"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"]}",
+            "parsed": {
+              "value": [
+                "Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.",
+                "Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.",
+                "Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.",
+                "Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain."
+              ]
+            }
+          }
+        ],
+        "role": "assistant"
+      }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+      "context": null,
+      "effort": null,
+      "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1,
+    "text": {
+      "format": {
+        "type": "json_schema",
+        "description": null,
+        "name": "agent_response_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "An array of prior knowledge statements, each being a succinct sentence.\nWritten in the EXPERT_TEACHER voice.\nMinimum 1, maximum 5 elements"
+            }
+          },
+          "required": [
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "strict": true
+      },
+      "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [],
+    "top_logprobs": 0,
+    "top_p": 1,
+    "truncation": "disabled",
+    "usage": {
+      "input_tokens": 1845,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 86,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 1931
+    },
+    "user": null,
+    "metadata": {},
+    "output_text": "{\"value\":[\"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"]}",
+    "output_parsed": {
+      "value": [
+        "Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.",
+        "Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.",
+        "Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.",
+        "Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain."
+      ]
+    }
+  }
+}

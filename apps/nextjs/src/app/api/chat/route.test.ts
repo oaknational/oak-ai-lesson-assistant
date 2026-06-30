@@ -15,6 +15,10 @@ jest.mock("./user", () => ({
   fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
 }));
 
+jest.mock("@oakai/api/src/utils/serverSideFeatureFlag", () => ({
+  serverSideFeatureFlag: jest.fn(),
+}));
+
 jest.mock("@oakai/api/src/utils/getAgenticAilaEnabled", () => ({
   getAgenticAilaEnabled: jest.fn().mockResolvedValue(false),
 }));

@@ -10,6 +10,7 @@ export const personaNames = [
   "nearly-rate-limited",
   "sharing-chat",
   "modify-lesson-plan",
+  "modify-lesson-plan-agentic",
   "needs-onboarding",
   "needs-demo-status",
 ] as const;
@@ -71,6 +72,14 @@ export const personas: Record<PersonaName, Persona> = {
     rateLimitTokens: 0,
   },
   "modify-lesson-plan": {
+    isOnboarded: true,
+    isDemoUser: false,
+    region: "GB",
+    chatFixture: "typical",
+    safetyViolations: 0,
+    rateLimitTokens: 0,
+  },
+  "modify-lesson-plan-agentic": {
     isOnboarded: true,
     isDemoUser: false,
     region: "GB",

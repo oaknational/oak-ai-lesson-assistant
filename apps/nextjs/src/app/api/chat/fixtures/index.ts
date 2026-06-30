@@ -1,3 +1,4 @@
+import type { AgenticFixtureConfig } from "@oakai/aila/src/core/types";
 import { aiLogger } from "@oakai/logger";
 
 import { FixtureRecordLLMService } from "./FixtureRecordLLMService";
@@ -85,4 +86,40 @@ export function getFixtureOakModerator(headers: Headers) {
       scenarioName as OakModerationFixtureName,
     );
   }
+}
+
+export function getAgenticFixtureConfig(
+  headers: Headers,
+): AgenticFixtureConfig | undefined {
+  if (!fixturesEnabled) {
+    return undefined;
+  }
+
+  if (headers.get("x-e2e-aila-system") !== "agentic") {
+    return undefined;
+  }
+
+  const fixtureMode = headers.get("x-e2e-fixture-mode");
+  const fixtureName = headers.get("x-e2e-fixture-name");
+
+  if (!fixtureName) {
+    throw new Error("Missing agentic fixture name");
+  }
+
+  if (fixtureMode !== "record" && fixtureMode !== "replay") {
+    throw new Error(
+      `Invalid agentic fixture mode: ${fixtureMode ?? "missing"}`,
+    );
+  }
+
+  if (
+    fixtureName.startsWith("/") ||
+    fixtureName.includes("..") ||
+    fixtureName.includes("\\")
+  ) {
+    throw new Error(`Invalid agentic fixtureName: ${fixtureName}`);
+  }
+
+  log.info("Using agentic fixture %s (%s)", fixtureName, fixtureMode);
+  return { mode: fixtureMode, fixtureName };
 }

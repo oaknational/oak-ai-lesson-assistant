@@ -1,0 +1,36 @@
+{
+  "id": "chatcmpl-DpEpXXolECTcmSPTA6B6xp4aPofUB",
+  "object": "chat.completion",
+  "created": 1781104107,
+  "model": "gpt-4o-2024-08-06",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"scores\":{\"l\":5,\"v\":5,\"u\":5,\"s\":5,\"p\":5,\"t\":5},\"justification\":\"The lesson plan titled 'The end of Roman Britain' for Key Stage 1 history is fully compliant across all moderation categories. There is no use of discriminatory language, offensive language, or strong language; thus, it scores a 5 in the 'Language and discrimination' category. The content does not depict or discuss conflict, violence, serious violence, or sexual violence, which is appropriate for the intended young audience, resulting in a 5 in the 'Violence and crime' category. There is no upsetting, sensitive, or distressing content present, such as depictions of scary events, natural disasters, or sensitive topics like illness or death, earning a 5 in the 'Upsetting, disturbing and sensitive' category. The lesson plan does not include any discussion or depiction of nudity or sexual content, resulting in a 5 in the 'Nudity and sex' category. There are no activities that involve exploration of objects, use of equipment requiring supervision, imitable behaviors, external content, or physical activity, hence a 5 in the 'Physical activity and safety' category. Lastly, the lesson plan contains no guides or encouragements of harmful behavior or illegal activity, resulting in a 5 in the 'Toxic' category.\",\"categories\":[]}",
+        "refusal": null,
+        "annotations": []
+      },
+      "logprobs": null,
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2386,
+    "completion_tokens": 284,
+    "total_tokens": 2670,
+    "prompt_tokens_details": {
+      "cached_tokens": 2048,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 0,
+      "rejected_prediction_tokens": 0
+    }
+  },
+  "service_tier": "default",
+  "system_fingerprint": "fp_ee2fd52555"
+}

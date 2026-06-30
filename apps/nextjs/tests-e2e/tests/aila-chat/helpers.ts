@@ -133,6 +133,8 @@ export async function expectSectionsComplete(
 
 export type FixtureMode = "record" | "replay";
 
+export type AilaSystem = "agentic" | "megaprompt";
+
 export type OakModerationFixture =
   | "clean"
   | "guidance"
@@ -143,6 +145,7 @@ export const applyLlmFixtures = async (
   page: Page,
   fixtureMode: FixtureMode,
   oakModerationFixture: OakModerationFixture = "clean",
+  ailaSystem: AilaSystem = "megaprompt",
 ) => {
   let fixtureName = "";
 
@@ -151,12 +154,13 @@ export const applyLlmFixtures = async (
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = fixtureMode;
     headers["x-e2e-oak-moderation-fixture"] = oakModerationFixture;
+    headers["x-e2e-aila-system"] = ailaSystem;
     await route.fallback({ headers });
   });
 
   return {
     setFixture: (name: string) => {
-      fixtureName = name;
+      fixtureName = ailaSystem === "agentic" ? `agentic/${name}` : name;
     },
   };
 };
