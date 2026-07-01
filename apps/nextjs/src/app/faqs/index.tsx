@@ -13,6 +13,7 @@ import {
   OakUL,
 } from "@oaknational/oak-components";
 
+import { AILA_FEEDBACK_FORM_URL } from "@/components/AppComponents/Chat/beta-tag";
 import GetInTouchBox from "@/components/AppComponents/GetInTouchBox";
 import Layout from "@/components/Layout";
 import { OakBoxCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
@@ -165,7 +166,7 @@ export const FAQPageContent = () => {
               developing Aila. This phase helps identify issues by allowing
               teachers to use the Aila in real-life conditions. Aila is not
               perfect, and will make some mistakes!{" "}
-              <OakLink href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform">
+              <OakLink href={AILA_FEEDBACK_FORM_URL}>
                 Your feedback is essential
               </OakLink>{" "}
               to refine and improve Aila.
@@ -409,7 +410,7 @@ export const FAQPageContent = () => {
             <OakP $mb="spacing-16">
               Yes, please do! We love to hear how users are finding our
               resources and how we can improve them. Submit your{" "}
-              <OakLink href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform">
+              <OakLink href={AILA_FEEDBACK_FORM_URL}>
                 feedback or suggestions{" "}
               </OakLink>
               .
@@ -598,7 +599,7 @@ export const FAQPageContent = () => {
             <OakP $mb="spacing-16">
               Of course, we would love to hear your thoughts and suggestions for
               other features that would support your teaching. Please{" "}
-              <OakLink href="https://docs.google.com/forms/d/e/1FAIpQLSf2AWtTtr4JISeMV4BY5LCMYhDFPz0RPNdXzmy_vjk4BmM69Q/viewform">
+              <OakLink href={AILA_FEEDBACK_FORM_URL}>
                 give us your feedback!
               </OakLink>
             </OakP>

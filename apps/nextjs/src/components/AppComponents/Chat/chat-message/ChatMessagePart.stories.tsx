@@ -3,6 +3,7 @@ import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { chromaticParams } from "@/storybook/chromatic";
+import { MathJaxDecorator } from "@/storybook/decorators/MathJaxDecorator";
 
 import { ChatMessagePart } from "./ChatMessagePart";
 
@@ -10,6 +11,7 @@ const meta = {
   title: "Components/Chat/ChatMessagePart",
   component: ChatMessagePart,
   tags: ["autodocs"],
+  decorators: [MathJaxDecorator],
   args: {
     inspect: false,
   },
@@ -61,6 +63,47 @@ export const TextMessagePart: Story = {
         type: "text",
         value:
           "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.",
+      },
+    },
+  },
+};
+
+export const TextMessagePartWithMaths: Story = {
+  args: {
+    part: {
+      ...basePart,
+      document: {
+        type: "text",
+        value: "The new value is \\(x = 6\\), so the area is $$36cm^2$$.",
+      },
+    },
+  },
+};
+
+export const TextMessagePartWithComplexMathsMarkdown: Story = {
+  args: {
+    part: {
+      ...basePart,
+      document: {
+        type: "text",
+        value: [
+          "Here is a worked example with mixed markdown and maths.",
+          "",
+          "- Start with \\(x_i + \\frac{1}{2}x^2 = 40\\).",
+          "- Rearrange to find \\[x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}\\]",
+          "- The final area is $$36cm^2$$.",
+          "",
+          "| Step | Expression |",
+          "| --- | --- |",
+          "| Substitute | \\(2x + 4 = 16\\) |",
+          "| Solve | \\(x = 6\\) |",
+          "",
+          "Inline code should stay literal: `\\(not maths\\)`",
+          "",
+          "```",
+          "\\[also not maths\\]",
+          "```",
+        ].join("\n"),
       },
     },
   },

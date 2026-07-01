@@ -51,47 +51,84 @@ export class AilaFeatureFactory {
       const oakServicePrimary =
         process.env.OAK_MODERATION_V1_PRIMARY === "true";
       const baseUrl = process.env.MODERATION_API_URL;
+      const shadowEnabled = process.env.MODERATION_SHADOW_ENABLED === "true";
+      const shadowBaseUrl = process.env.MODERATION_SHADOW_API_URL;
 
-      const oakModerator =
-        fixtureOakModerator ??
-        (() => {
-          invariant(
-            baseUrl,
-            "MODERATION_API_URL is required when moderation is enabled",
+      const createOakModerator = ({
+        baseUrl,
+        missingBaseUrlMessage,
+        protectionBypassSecret,
+      }: {
+        baseUrl: string | undefined;
+        missingBaseUrlMessage: string;
+        protectionBypassSecret?: string;
+      }) => {
+        if (fixtureOakModerator) {
+          return fixtureOakModerator;
+        }
+
+        invariant(baseUrl, missingBaseUrlMessage);
+        return new OakModerationServiceModerator({
+          baseUrl,
+          chatId: aila.chatId,
+          userId: aila.userId,
+          protectionBypassSecret,
+        });
+      };
+
+      const createOpenAiModerator = () =>
+        new OpenAiModerator({
+          userId: aila.userId,
+          chatId: aila.chatId,
+          openAiClient,
+        });
+
+      const createShadowModerator = () => {
+        if (!shadowEnabled) {
+          return undefined;
+        }
+
+        if (!shadowBaseUrl) {
+          log.warn(
+            "MODERATION_SHADOW_ENABLED is true but MODERATION_SHADOW_API_URL is not set; shadow moderation disabled",
           );
-          return new OakModerationServiceModerator({
-            baseUrl,
-            chatId: aila.chatId,
-            userId: aila.userId,
-            protectionBypassSecret:
-              process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
-          });
-        })();
+          return undefined;
+        }
+
+        log.info("Shadow moderation enabled (Oak Moderation Service)", {
+          baseUrl: shadowBaseUrl,
+        });
+        return createOakModerator({
+          baseUrl: shadowBaseUrl,
+          missingBaseUrlMessage:
+            "MODERATION_SHADOW_API_URL is required when shadow moderation is enabled",
+          protectionBypassSecret:
+            process.env.MODERATION_SHADOW_API_BYPASS_SECRET ?? undefined,
+        });
+      };
 
       if (oakServicePrimary) {
         log.info("Oak Moderation Service is primary moderator");
         return new AilaModeration({
           aila,
           prisma: aila.prisma,
-          moderator: oakModerator,
-          shadowModerator: new OpenAiModerator({
-            userId: aila.userId,
-            chatId: aila.chatId,
-            openAiClient,
+          moderator: createOakModerator({
+            baseUrl,
+            missingBaseUrlMessage:
+              "MODERATION_API_URL is required when the Oak Moderation Service is primary",
+            protectionBypassSecret:
+              process.env.MODERATION_API_BYPASS_SECRET ?? undefined,
           }),
+          shadowModerator: createShadowModerator(),
         });
       }
 
-      log.info("Shadow moderation enabled (Oak Moderation Service)");
+      log.info("OpenAI moderator is primary moderator");
       return new AilaModeration({
         aila,
         prisma: aila.prisma,
-        moderator: new OpenAiModerator({
-          userId: aila.userId,
-          chatId: aila.chatId,
-          openAiClient,
-        }),
-        shadowModerator: oakModerator,
+        moderator: createOpenAiModerator(),
+        shadowModerator: createShadowModerator(),
       });
     }
     return undefined;
