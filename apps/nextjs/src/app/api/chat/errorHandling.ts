@@ -86,7 +86,7 @@ function getUpstreamAIProviderError(
     ) {
       return {
         statusCode: current.status,
-        requestId: current.request_id,
+        requestId: current.requestID,
       };
     }
 

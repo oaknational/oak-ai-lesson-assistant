@@ -126,6 +126,7 @@ export const errorSchema = z.object({
 });
 
 export type GenericPromptAgent<ResponseType> = {
+  id: string;
   responseSchema: z.ZodType<ResponseType>;
   input: (
     | { role: "developer"; content: string }

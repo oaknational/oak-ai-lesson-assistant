@@ -120,7 +120,7 @@ export class LLMComposer implements QuizComposer {
     const responseSchema = buildCompositionResponseSchema(mode, isModifying);
 
     try {
-      const response = await openai.beta.chat.completions.parse({
+      const response = await openai.chat.completions.parse({
         model: OPENAI_MODEL,
         max_completion_tokens: 16000,
         reasoning_effort: REASONING_EFFORT,

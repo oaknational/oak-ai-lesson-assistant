@@ -106,7 +106,7 @@
     "languagedetect": "^2.0.0",
     "next": "16.0.10",
     "object-hash": "^3.0.0",
-    "openai": "^4.96.0",
+    "openai": "^6.45.0",
     "p-limit": "^7.2.0",
     "partial-json-parser": "^1.2.2",
     "posthog-js": "^1.201.0",

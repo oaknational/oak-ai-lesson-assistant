@@ -42,7 +42,7 @@
     "dotenv-cli": "^6.0.0",
     "immer": "^10.1.1",
     "jsonrepair": "^3.8.0",
-    "openai": "^4.96.0",
+    "openai": "^6.45.0",
     "openapi-fetch": "^0.15.0",
     "p-limit": "^7.2.0",
     "remeda": "^1.29.0",
