@@ -6,7 +6,8 @@ import { MisconceptionsSchema } from "./misconceptions.schema";
 
 export const misconceptionsAgent = createSectionAgent({
   responseSchema: MisconceptionsSchema,
-  instructions: misconceptionsInstructions,
+  instructions: (ctx) =>
+    misconceptionsInstructions(ctx.currentTurn.document.keyStage ?? ""),
   contentToString: stringListToText(
     (m) => `${m.misconception}: ${m.description}`,
   ),

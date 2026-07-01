@@ -5,7 +5,8 @@ import { CycleSchema } from "./cycle.schema";
 
 export const cycleAgent = createSectionAgent({
   responseSchema: CycleSchema,
-  instructions: cyclesInstructions,
+  instructions: (ctx) =>
+    cyclesInstructions(ctx.currentTurn.document.keyStage ?? ""),
   defaultVoice: "EXPERT_TEACHER",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

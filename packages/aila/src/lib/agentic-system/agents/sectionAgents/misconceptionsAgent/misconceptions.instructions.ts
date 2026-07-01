@@ -1,4 +1,11 @@
-export const misconceptionsInstructions = `# Task
+import {
+  getKeyStageLanguageGuidance,
+  normaliseKeyStageForPrompt,
+} from "../shared/keyStageLanguageGuidance";
+
+export function misconceptionsInstructions(keyStage: string): string {
+  const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
+  return `# Task
 
 Identify 1–3 common misconceptions pupils may have about the topic.
 
@@ -9,4 +16,7 @@ Identify 1–3 common misconceptions pupils may have about the topic.
 
 ### Example:
 - Misconception: Multiplying two numbers always makes them bigger
-- Correction: Multiplying by a number < 1, 0, or a negative can produce a smaller or zero result`;
+- Correction: Multiplying by a number < 1, 0, or a negative can produce a smaller or zero result
+
+${getKeyStageLanguageGuidance(normalisedKeyStage)}`;
+}

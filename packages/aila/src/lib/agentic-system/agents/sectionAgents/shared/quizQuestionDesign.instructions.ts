@@ -1,13 +1,19 @@
-export const quizQuestionDesignInstructions = `## Question Design
-- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils 
+import { getKeyStageLanguageGuidance } from "./keyStageLanguageGuidance";
+
+export function quizQuestionDesignInstructions(keyStage: string): string {
+  return `## Question Design
+- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils
 - Avoid negative phrasing e.g. "Which is not…"
 - No true/false questions
 - Avoid clues or irrelevant detail
 - Incorporate common misconceptions if appropriate
 - There should be no overlap between questions in what content they are assessing knowledge of.
-- For key stage 4, these should start with exam command words e.g. state, identify, select.
-- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.
+- For key stage 1 and 2, write question stems in plain, everyday language — short sentences, no academic command words.
+- For key stage 3, question stems may use "explain", "describe", "identify", "suggest".
+- For key stage 4, question stems must start with exam command words e.g. state, identify, describe, explain.
 - Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.
+
+${getKeyStageLanguageGuidance(keyStage)}
 
 ## Answers
 - Include 1 correct answer + 2 high-quality distractors.
@@ -34,3 +40,4 @@ What is the periodic table?
 - a table that shows every known element that has been discovered
 
 Here, the answers are not within the same category or the same length, making it very easy for the pupils to guess.`;
+}

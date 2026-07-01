@@ -6,7 +6,8 @@ import { KeywordsSchema } from "./keywords.schema";
 
 export const keywordsAgent = createSectionAgent({
   responseSchema: KeywordsSchema,
-  instructions: keywordsInstructions,
+  instructions: (ctx) =>
+    keywordsInstructions(ctx.currentTurn.document.keyStage ?? ""),
   contentToString: stringListToText((k) => `${k.keyword}: ${k.definition}`),
   defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,

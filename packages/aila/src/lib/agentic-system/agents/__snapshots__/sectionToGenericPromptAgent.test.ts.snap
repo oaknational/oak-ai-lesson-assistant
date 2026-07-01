@@ -155,7 +155,7 @@ The following voice definitions are available for this task:
 ### EXPERT_TEACHER
 Speaker: Expert teacher
 Audience: User
-Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice.
+Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing.
 
 ### TEACHER_TO_PUPIL_WRITTEN
 Speaker: Teacher
