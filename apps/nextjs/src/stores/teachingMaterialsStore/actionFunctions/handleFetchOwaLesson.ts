@@ -16,6 +16,11 @@ import { handleStoreError } from "../utils/errorHandling";
 
 const log = aiLogger("teaching-materials");
 
+const requiredOwaQueryParamsSchema = z.object({
+  lessonSlug: z.string(),
+  programmeSlug: z.string(),
+});
+
 export const handleFetchOwaLesson =
   (
     set: TeachingMaterialsSetter,
@@ -51,6 +56,11 @@ export const handleFetchOwaLesson =
         set({ isMaterialLoading: true });
         const docTypeParsed = teachingMaterialTypeEnum.parse(docType);
         try {
+          const requiredQueryParams = requiredOwaQueryParamsSchema.parse({
+            lessonSlug,
+            programmeSlug,
+          });
+
           // Create a new session
           await get().actions.createMaterialSession(docTypeParsed, 3, true);
           const id = get().id;
@@ -65,8 +75,8 @@ export const handleFetchOwaLesson =
           const response = await callWithHandshakeRetry(
             () =>
               trpc.client.teachingMaterials.handleFetchOwaLesson.mutate({
-                lessonSlug,
-                programmeSlug,
+                lessonSlug: requiredQueryParams.lessonSlug,
+                programmeSlug: requiredQueryParams.programmeSlug,
               }),
             refreshAuth,
           );

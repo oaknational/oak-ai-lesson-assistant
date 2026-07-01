@@ -25,6 +25,15 @@ export default async function TeachingMaterialsPage({
     source: "aila",
   };
 
+  if (docType) {
+    pageProps = {
+      source: "aila",
+      initialStep: 1,
+      queryParams: {
+        docType,
+      },
+    };
+  }
   if (lessonSlug && docType) {
     pageProps = {
       source: "owa",
