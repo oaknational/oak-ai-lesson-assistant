@@ -11,9 +11,11 @@ const log = aiLogger("aila:protocol");
  */
 function isControllerClosed(error: unknown): boolean {
   // Some runtimes don't set a `code` on a closed-controller error, so match
-  // the TypeError too.
+  // the message too. Match only that message, or an unrelated TypeError from
+  // enqueue would be silently swallowed as a disconnect.
   return (
-    error instanceof TypeError ||
+    (error instanceof TypeError &&
+      error.message.includes("Controller is already closed")) ||
     (typeof error === "object" &&
       error !== null &&
       "code" in error &&

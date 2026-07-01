@@ -65,6 +65,20 @@ describe("PatchEnqueuer", () => {
     ).resolves.toBeUndefined();
   });
 
+  it("rethrows a TypeError unrelated to the controller being closed", async () => {
+    const controller = {
+      enqueue: jest.fn(() => {
+        throw new TypeError("Cannot read properties of undefined");
+      }),
+    } as unknown as ReadableStreamDefaultController;
+
+    const patchEnqueuer = new PatchEnqueuer(controller);
+
+    await expect(patchEnqueuer.enqueueMessage(message)).rejects.toThrow(
+      "Cannot read properties of undefined",
+    );
+  });
+
   it("rethrows when the write fails for any other reason", async () => {
     const controller = {
       enqueue: jest.fn(() => {
