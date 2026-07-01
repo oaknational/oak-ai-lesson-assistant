@@ -1,3 +1,10 @@
+# [1.79.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.78.0...v1.79.0) (2026-07-01)
+
+
+### Features
+
+* configure moderation shadow independently ([093e5c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/093e5c680ec8a05842771b2d919c05cc25d4febf))
+
 # [1.78.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.2...v1.78.0) (2026-06-30)
 
 
