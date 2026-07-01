@@ -41,7 +41,7 @@ This is the Oak KS3 register:
 ✓ "Weather is the day-to-day atmospheric conditions, whereas climate is the average weather conditions over 30 years."
 ✗ "Climatic variability must be distinguished from ephemeral meteorological phenomena." (GCSE/A-level register — too high for KS3)
 
-Command words: describe, explain, identify, suggest, compare, summarise, give reasons for. Use analyse with scaffolding; avoid evaluate and justify as standalone command words. Test: Year 8 classroom or GCSE paper?`;
+Command words: describe, explain, identify, suggest, compare, summarise, give reasons for. Use analyse with scaffolding; avoid evaluate and justify as standalone command words. Test: Is this language suitable for a Year 8 classroom?`;
 }
 
 function ks4Guidance(): string {
