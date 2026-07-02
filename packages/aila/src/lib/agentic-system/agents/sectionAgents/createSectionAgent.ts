@@ -49,6 +49,7 @@ export function createSectionAgent<ResponseType>({
     openai: OpenAI;
     contentFromDocument: (
       document: PartialLessonPlan,
+      ctx: AilaExecutionContext,
     ) => ResponseType | undefined;
   }) => ({
     id,

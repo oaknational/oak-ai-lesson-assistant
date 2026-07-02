@@ -10,6 +10,7 @@ export function getRelevantRAGValues<ResponseType>({
   ctx: AilaExecutionContext;
   contentFromDocument: (
     document: PartialLessonPlan,
+    ctx: AilaExecutionContext,
   ) => ResponseType | undefined;
 }): {
   /**
@@ -28,16 +29,16 @@ export function getRelevantRAGValues<ResponseType>({
   const exemplarContent =
     ctx.persistedState.relevantLessons
       ?.map((lesson) => lesson.lessonPlan)
-      ?.map(contentFromDocument)
+      ?.map((document) => contentFromDocument(document, ctx))
       .filter(isTruthy) ?? [];
 
   const basedOnLesson = ctx.persistedState.relevantLessons?.find(
     (lesson) => lesson.ragLessonPlanId === ctx.currentTurn.document.basedOn?.id,
   );
   const basedOnContent = basedOnLesson
-    ? contentFromDocument(basedOnLesson.lessonPlan)
+    ? contentFromDocument(basedOnLesson.lessonPlan, ctx)
     : undefined;
-  const currentValue = contentFromDocument(ctx.currentTurn.document);
+  const currentValue = contentFromDocument(ctx.currentTurn.document, ctx);
 
   return {
     exemplarContent,

@@ -26,6 +26,7 @@ import {
   shouldForceSectionThrow,
 } from "../utils/faultInjection";
 import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
+import { getCycleIndex, getCycleOutcomeForSection } from "./normalisePlanSteps";
 import { terminateWithFailure } from "./termination";
 
 const log = aiLogger("aila:agents");
@@ -75,6 +76,15 @@ async function executeGenerateStep(
   context: AilaExecutionContext,
   step: PlanStep,
 ): Promise<AilaTurnPhaseOutcome> {
+  const missingCycleOutcome = getMissingCycleOutcomeMessage(context, step);
+  if (missingCycleOutcome) {
+    return await terminateWithFailure(
+      { message: missingCycleOutcome },
+      context,
+      step.sectionKey,
+    );
+  }
+
   const { quizIntent } = step;
   if (
     quizIntent &&
@@ -132,6 +142,21 @@ async function executeGenerateStep(
   });
 
   return { status: "continue" };
+}
+
+function getMissingCycleOutcomeMessage(
+  context: AilaExecutionContext,
+  step: PlanStep,
+): string | null {
+  if (getCycleIndex(step.sectionKey) === null) return null;
+
+  const targetOutcome = getCycleOutcomeForSection(
+    context.currentTurn.document,
+    step.sectionKey,
+  );
+  if (targetOutcome) return null;
+
+  return `Cannot generate ${step.sectionKey}: matching learning cycle outcome is missing.`;
 }
 
 async function executeQuizDispatchStep(
