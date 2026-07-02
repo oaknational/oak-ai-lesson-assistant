@@ -42,7 +42,7 @@ export type TeachingMaterialsPageProps = {
   error?: Error;
   lessonId?: string;
   queryParams?: {
-    lessonSlug: string;
+    lessonSlug?: string;
     programmeSlug?: string;
     docType: string;
   };

@@ -68,6 +68,7 @@ export function createSectionAgent<ResponseType>({
         {
           responseSchema,
           instructions: resolvedInstructions,
+          id,
           messages: ctx.persistedState.messages,
           contentToString,
           basedOnContent,

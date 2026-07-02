@@ -1,3 +1,25 @@
+# [1.79.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.78.0...v1.79.0) (2026-07-01)
+
+
+### Features
+
+* configure moderation shadow independently ([093e5c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/093e5c680ec8a05842771b2d919c05cc25d4febf))
+
+# [1.78.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.2...v1.78.0) (2026-06-30)
+
+
+### Bug Fixes
+
+* [AI-2072] shorten zip filenames to avoid Windows path length limit ([#943](https://github.com/oaknational/oak-ai-lesson-assistant/issues/943)) ([84f5a8b](https://github.com/oaknational/oak-ai-lesson-assistant/commit/84f5a8b3e76a29e55b2f73cc01c26f5711f44183))
+* Resolve SonarQube issues - reduce function nesting depth and remove unnecessary void operator ([#1073](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1073)) ([a034198](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a03419800d13036f223767b0d2305308e3685977))
+* Resolve SonarQube issues: remove duplicate type, add test assertion, reduce function nesting ([#1072](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1072)) ([c0390fd](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c0390fdc46e1644a40dfd1f20be9ce116742d271))
+
+
+### Features
+
+* add maths quiz rag feature flag  ([#1080](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1080)) ([e9e15a6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/e9e15a6a08b8f1ae584258415df7face90c86e3e))
+* agentic e2e tests ([#1078](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1078)) ([65a5b9a](https://github.com/oaknational/oak-ai-lesson-assistant/commit/65a5b9ab23e2845798b0aa332b0652f17cf52bd1))
+
 ## [1.77.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.1...v1.77.2) (2026-06-24)
 
 

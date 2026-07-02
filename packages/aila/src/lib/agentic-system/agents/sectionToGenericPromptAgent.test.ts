@@ -103,6 +103,7 @@ describe("sectionToGenericPromptAgent", () => {
     sectionToGenericPromptAgent(props, defaultModelParams);
 
   const baseProps: SectionPromptAgentProps<MockSchemaType> = {
+    id: "test-section-agent",
     responseSchema: mockSchema,
     messages: mockMessages,
     instructions:
