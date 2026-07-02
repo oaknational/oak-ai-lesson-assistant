@@ -189,26 +189,31 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
     });
   });
 
-  describe("declined edits", () => {
-    it("leaves the keywords unchanged when the position is unknown", async () => {
-      const handler = jest.fn();
+  describe("REGENERATE_SECTION", () => {
+    it("calls the section agent and replaces the keywords when itemIntent action is REGENERATE_SECTION", async () => {
+      const regenerated: Keyword[] = [
+        { keyword: "Respiration", definition: "How cells release energy." },
+      ];
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: regenerated });
       const callbacks = makeCallbacks();
       const runtime = makeRuntime({
-        plannerAgent: plannerEmitting("Remove a keyword", {
-          action: "REMOVE_ITEM",
+        plannerAgent: plannerEmitting("Redo the keywords", {
+          action: "REGENERATE_SECTION",
           position: null,
         }),
         sectionAgents: keywordsAgent(handler),
       });
 
       await ailaTurn({
-        persistedState: makePersistedState("Remove a keyword"),
+        persistedState: makePersistedState("Redo the keywords"),
         runtime,
         callbacks,
       });
 
-      expect(handler).not.toHaveBeenCalled();
-      expect(getUpdatedKeywords(callbacks)).toEqual([k1, k2, k3]);
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(getUpdatedKeywords(callbacks)).toEqual(regenerated);
     });
 
     it("regenerates the whole section when no itemIntent is present", async () => {
@@ -232,6 +237,29 @@ describe("executePlanSteps — keywords dispatch intercept", () => {
 
       expect(handler).toHaveBeenCalledTimes(1);
       expect(getUpdatedKeywords(callbacks)).toEqual(regenerated);
+    });
+  });
+
+  describe("declined edits", () => {
+    it("leaves the keywords unchanged when the position is unknown", async () => {
+      const handler = jest.fn();
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Remove a keyword", {
+          action: "REMOVE_ITEM",
+          position: null,
+        }),
+        sectionAgents: keywordsAgent(handler),
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Remove a keyword"),
+        runtime,
+        callbacks,
+      });
+
+      expect(handler).not.toHaveBeenCalled();
+      expect(getUpdatedKeywords(callbacks)).toEqual([k1, k2, k3]);
     });
 
     it("declines when the section agent returns more than one item", async () => {

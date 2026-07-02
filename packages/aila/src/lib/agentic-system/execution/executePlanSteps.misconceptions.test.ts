@@ -61,7 +61,7 @@ function makeRuntime(
 
 function plannerEmitting(
   parsedUserMessage: string,
-  itemIntent: { action: string; position: number | null },
+  itemIntent?: { action: string; position: number | null },
 ) {
   return jest.fn().mockResolvedValue({
     error: null,
@@ -74,7 +74,7 @@ function plannerEmitting(
           sectionKey: "misconceptions",
           action: "generate",
           sectionInstructions: null,
-          itemIntent,
+          ...(itemIntent ? { itemIntent } : {}),
         },
       ],
     },
@@ -196,6 +196,66 @@ describe("executePlanSteps — misconceptions dispatch intercept", () => {
       expect(misconceptions).toEqual([m1, replacement, m3]);
       expect(misconceptions?.[0]).toEqual(m1);
       expect(misconceptions?.[2]).toEqual(m3);
+    });
+  });
+
+  describe("REGENERATE_SECTION", () => {
+    const regenerated: Misconception[] = [
+      {
+        misconception: "Electricity is used up by components",
+        description: "Current is the same all around a series circuit.",
+      },
+    ];
+
+    it("calls the section agent and replaces the misconceptions when itemIntent action is REGENERATE_SECTION", async () => {
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: regenerated });
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Redo the misconceptions", {
+          action: "REGENERATE_SECTION",
+          position: null,
+        }),
+        sectionAgents: misconceptionsAgent(handler),
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Redo the misconceptions", [
+          m1,
+          m2,
+          m3,
+        ]),
+        runtime,
+        callbacks,
+      });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(getUpdatedMisconceptions(callbacks)).toEqual(regenerated);
+    });
+
+    it("regenerates the whole section when no itemIntent is present", async () => {
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ error: null, data: regenerated });
+      const callbacks = makeCallbacks();
+      const runtime = makeRuntime({
+        plannerAgent: plannerEmitting("Redo the misconceptions"),
+        sectionAgents: misconceptionsAgent(handler),
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState("Redo the misconceptions", [
+          m1,
+          m2,
+          m3,
+        ]),
+        runtime,
+        callbacks,
+      });
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(getUpdatedMisconceptions(callbacks)).toEqual(regenerated);
     });
   });
 });
