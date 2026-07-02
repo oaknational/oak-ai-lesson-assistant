@@ -3,10 +3,7 @@ import type { Moderation } from "@prisma/client";
 import type { ModerationGetter, ModerationSetter } from "../types";
 import { handleUpdateModerationState } from "./handleUpdateModerationState";
 
-function moderation(
-  id: string,
-  categories: string[],
-): Moderation {
+function moderation(id: string, categories: string[]): Moderation {
   return {
     id,
     categories,
@@ -36,10 +33,10 @@ describe("handleUpdateModerationState", () => {
     ]);
     const newestModeration = moderation("newest", ["p/external-content"]);
 
-    handleUpdateModerationState(set, get)([
-      olderLockingModeration,
-      newestModeration,
-    ]);
+    handleUpdateModerationState(
+      set,
+      get,
+    )([olderLockingModeration, newestModeration]);
 
     expect(set).toHaveBeenCalledWith({
       moderations: [olderLockingModeration, newestModeration],

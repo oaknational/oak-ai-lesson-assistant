@@ -28,7 +28,7 @@ function getMessageModeration(
 function moderationSignature(moderation: PersistedModerationBase): string {
   return getDisplayCategories(moderation)
     .map((category) => category.code)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .join("|");
 }
 

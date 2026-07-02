@@ -1,9 +1,8 @@
+import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type {
   ModerationResult,
   PersistedModerationBase,
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-
-import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
@@ -21,10 +20,7 @@ const textPart: MessagePart = {
   },
 };
 
-function message(
-  id: string,
-  parts: MessagePart[] = [textPart],
-): ParsedMessage {
+function message(id: string, parts: MessagePart[] = [textPart]): ParsedMessage {
   return {
     id,
     role: "assistant",
