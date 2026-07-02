@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nDetermine the appropriate key-stage for the lesson plan based on the user's intent.\n"
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
       },
       {
@@ -19,15 +15,15 @@
       },
       {
         "role": "developer",
+        "content": "# Task\n\nDetermine the appropriate key-stage for the lesson plan based on the user's intent.\n"
+      },
+      {
+        "role": "developer",
         "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\"\n}"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n"
-      },
-      {
-        "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSet the Key Stage to KS1 as per user requirements."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSet the Key Stage to 'Key Stage 1' according to the user's instructions."
       },
       {
         "role": "developer",
@@ -41,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:keyStage--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -82,15 +80,15 @@
     }
   },
   "result": {
-    "id": "resp_0ac157065d3f9276006a297de7bcf0819cbe321e7f7fda18b8",
+    "id": "resp_07c3b1898b003a9e006a468119a1f0819f9d5c29e4c49c5e61",
     "object": "response",
-    "created_at": 1781104103,
+    "created_at": 1783005465,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104104,
+    "completed_at": 1783005466,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -101,7 +99,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0ac157065d3f9276006a297de83978819cb6e5de24b9f5b8cf",
+        "id": "msg_07c3b1898b003a9e006a46811a1350819fb581efe781211bd4",
         "type": "message",
         "status": "completed",
         "content": [
@@ -121,8 +119,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:keyStage--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -173,12 +171,30 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1216,
+      "input_tokens": 1188,
       "input_tokens_details": {
         "cached_tokens": 0
       },
@@ -186,7 +202,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1223
+      "total_tokens": 1195
     },
     "user": null,
     "metadata": {},

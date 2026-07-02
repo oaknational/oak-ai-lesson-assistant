@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"The Roman departure from Britain was a singular event marked by a specific date\",\"description\":\"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"},{\"misconception\":\"Roman infrastructure ceased to exist immediately after their departure\",\"description\":\"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"},{\"misconception\":\"Britain was left uninhabited after the Roman legions left\",\"description\":\"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Withdrawal\",\"definition\":\"The act of removing or taking away forces or presence from a region or place.\"},{\"keyword\":\"Instability\",\"definition\":\"The state of being prone to frequent change or lack of steady conditions.\"},{\"keyword\":\"Province\",\"definition\":\"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"},{\"keyword\":\"Societal\",\"definition\":\"Relating to social groups, communities, and their organisation and structure.\"},{\"keyword\":\"Legion\",\"definition\":\"A large unit or group of soldiers in the Roman army known for their discipline and training.\"}]}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"Roman Britain ended abruptly when all infrastructure collapsed\",\"description\":\"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"},{\"misconception\":\"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\"description\":\"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"},{\"misconception\":\"The withdrawal of Rome's armies left Britain immediately defenceless\",\"description\":\"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}]"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -68,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_02b4e441257a6ec1006a296ec2219c819286c391109ee86e2a",
+    "id": "resp_09d8ea21ada3ae53006a46813a8d68819ea9ead73736eab0ad",
     "object": "response",
-    "created_at": 1781100226,
+    "created_at": 1783005498,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781100227,
+    "completed_at": 1783005499,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_02b4e441257a6ec1006a296ec2e28c8192962717839721a5a7",
+        "id": "msg_09d8ea21ada3ae53006a46813b438c819e8a102cc0672debf9",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,10 +97,10 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"}}",
+            "text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed.\"}}",
             "parsed": {
               "value": {
-                "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change."
+                "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
               }
             }
           }
@@ -109,8 +111,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -151,27 +153,45 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2272,
+      "input_tokens": 2309,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 36,
+      "output_tokens": 40,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2308
+      "total_tokens": 2349
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"}}",
+    "output_text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed.\"}}",
     "output_parsed": {
       "value": {
-        "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change."
+        "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
       }
     }
   }

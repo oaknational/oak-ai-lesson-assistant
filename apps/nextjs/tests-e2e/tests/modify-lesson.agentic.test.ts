@@ -24,12 +24,12 @@ const FIXTURE_MODE = "replay" as FixtureMode;
 // tests-e2e/recordings/agentic/. Re-recording may change these.
 const expected = {
   modifiedLearningOutcome:
-    "I can describe different software testing techniques and their purposes, understanding why they are used in the development process.",
+    "I can describe different software testing techniques and say why they are used.",
   modifyConfirmation:
-    "Is the updated learning outcome now appropriately suited for your pupils? Tap Continue to proceed, or let me know if further adjustments are required.",
+    "Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap Continue to proceed.",
   additionalMaterialsConfirmation:
-    "Is the added homework task aligned with the objectives of your lesson? Tap Continue to proceed or let me know if changes are needed.",
-  homeworkTask: "Homework Task: Understanding Software Testing Techniques",
+    "Are the newly added homework task instructions in the additional materials section suitable for assisting your pupils' comprehension? Please share any suggestions for refinement, or tap Continue to proceed.",
+  homeworkTask: "To reinforce the understanding of software testing techniques",
 };
 
 test.describe("Modify a lesson plan (agentic)", () => {
@@ -89,11 +89,8 @@ test.describe("Modify a lesson plan (agentic)", () => {
       await page.locator("text=Modify section").click();
     });
 
-    // The persona chat is seeded with megaprompt output, which has no
-    // ragFetched state. On the first turn the agentic planner re-fetches RAG
-    // and returns a "relevant lessons" message instead of the modification.
-    // Clicking Continue triggers the real turn. Re-seeding the persona with
-    // agentic output would remove this extra turn.
+    // The modification lands on the first turn, so this Continue is answered
+    // with a closing message and exercises the exit path.
     setFixture("modify-lesson-easier-continue");
     await performAndWaitForGeneration(page, generationTimeout, async () => {
       await continueChat(page);
