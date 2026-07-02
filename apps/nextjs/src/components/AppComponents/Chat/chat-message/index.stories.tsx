@@ -21,6 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 export const UserMessage: Story = {
   args: {
+    moderation: null,
     message: {
       id: "test-chat-id",
       content:
@@ -46,6 +47,7 @@ export const UserMessage: Story = {
 
 export const LlmMessage: Story = {
   args: {
+    moderation: null,
     message: {
       id: "test-chat-id",
       content:
@@ -108,6 +110,7 @@ export const LlmMessage: Story = {
 
 export const ErrorMessage: Story = {
   args: {
+    moderation: null,
     message: {
       id: "test-chat-id",
       role: "assistant",
