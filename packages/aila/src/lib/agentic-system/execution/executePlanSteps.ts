@@ -1,9 +1,14 @@
 import { aiLogger } from "@oakai/logger";
 
 import { type Draft, enablePatches, produceWithPatches } from "immer";
-import { type ZodTypeAny } from "zod";
+import { type ZodType } from "zod";
 
-import type { LatestQuiz, PartialLessonPlan } from "../../../protocol/schema";
+import type {
+  Keyword,
+  LatestQuiz,
+  Misconception,
+  PartialLessonPlan,
+} from "../../../protocol/schema";
 import {
   CompletedLessonPlanSchema,
   KeywordsSchema,
@@ -37,12 +42,14 @@ const log = aiLogger("aila:agents");
 
 enablePatches();
 
-type ListSectionConfig = {
+type ListSectionItem = Keyword | Misconception;
+
+type ListSectionConfig<TItem> = {
   itemNoun: string;
   min: number;
   max: number;
   regenerateSuggestion: string;
-  arraySchema: ZodTypeAny;
+  arraySchema: ZodType<TItem[]>;
   validateItem: (item: unknown) => boolean;
 };
 
@@ -64,7 +71,10 @@ function hasNonEmptyStrings(item: unknown, keys: string[]): boolean {
  * executePlanSteps.config.test.ts fails if they drift apart.
  */
 export const LIST_SECTION_CONFIG: Partial<
-  Record<SectionKey, ListSectionConfig>
+  Record<
+    SectionKey,
+    ListSectionConfig<Keyword> | ListSectionConfig<Misconception>
+  >
 > = {
   keywords: {
     itemNoun: "keyword",
@@ -143,7 +153,7 @@ async function executeGenerateStep(
 
     const listConfig = LIST_SECTION_CONFIG[step.sectionKey];
     if (listConfig) {
-      return executeSectionListDispatchStep(
+      return executeSectionListDispatchStep<ListSectionItem>(
         context,
         step,
         step.sectionKey,
@@ -258,18 +268,20 @@ async function executeQuizDispatchStep(
   return { status: "continue" };
 }
 
-async function executeSectionListDispatchStep(
+async function executeSectionListDispatchStep<TItem>(
   context: AilaExecutionContext,
   step: PlanStep,
   sectionKey: SectionKey,
   intent: StructuralItemIntent,
-  config: ListSectionConfig,
+  config: ListSectionConfig<TItem>,
 ): Promise<AilaTurnPhaseOutcome> {
   const existing = context.currentTurn.document[sectionKey];
   const sectionWasAbsent = existing == null;
-  const currentItems = (existing ?? []) as unknown[];
+  // TS can't correlate document[sectionKey] with the config picked by the same
+  // key, so assert once here; arraySchema and validateItem do the real checks.
+  const currentItems = (existing ?? []) as TItem[];
 
-  const dispatchResult = await sectionListOperationDispatcher<unknown>(
+  const dispatchResult = await sectionListOperationDispatcher(
     currentItems,
     intent,
     async () => {
@@ -286,19 +298,19 @@ async function executeSectionListDispatchStep(
       // The add/change agents must return exactly one item; if more come back,
       // decline rather than silently using the first (which for a change could
       // land an unrelated item in the target slot).
-      const data = parsed.data as unknown[];
+      const data = parsed.data;
       if (data.length !== 1) return null;
       const item = data[0];
       if (!config.validateItem(item)) return null;
       // Correct only this new item, wrapped as a single-element section, so
       // existing items are never sent to the corrector and stay untouched.
-      const correctedItems = (await applyBritishEnglishCorrection({
+      const correctedItems = await applyBritishEnglishCorrection({
         context,
         sectionKey,
         content: [item],
         responseSchema: config.arraySchema,
-      })) as unknown[] | null;
-      return correctedItems?.[0] ?? item;
+      });
+      return correctedItems?.[0] ?? item ?? null;
     },
     {
       itemNoun: config.itemNoun,
