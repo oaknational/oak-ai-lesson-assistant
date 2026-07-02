@@ -1,5 +1,5 @@
-codeHash: c3e56a980828b0a5d1035375a250a770079304502883c19cdf730a125ecfa51f
-generated: 2026-07-02T00:03:54.259Z
+codeHash: c75b0c250b10e259cb8af4c3f4d8d4157e21c0ecbe1538cc812fb4be40b736ef
+generated: 2026-07-02T00:17:51.252Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -51,9 +51,11 @@ summary:
     quiz-question-count:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 0
-      corrections_not_needed: 33
+      corrections_attempted: 2
+      corrections_not_needed: 31
       corrections_failed: 0
-      correction_rate: 0.0%
+      correction_rate: 6.1%
       correction_failure_rate: 0.0%
-      corrections_by_section: {}
+      corrections_by_section:
+        starterQuiz: 1
+        cycle1: 1

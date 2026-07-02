@@ -16,7 +16,6 @@ import OakIconLogo from "@/components/OakIconLogo";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
 import { useDialog } from "../DialogContext";
-import { BetaTagHeader } from "./beta-tag";
 import { ChatHistory } from "./chat-history";
 import { DemoBanner } from "./demo-banner";
 import { OpenSideBarButton } from "./open-side-bar-button";
@@ -67,9 +66,16 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
               <OakIconLogo />
             </OakLink>
             <OakSpan $font="heading-6">Aila</OakSpan>
-          </OakFlex>
-          <OakFlex>
-            <BetaTagHeader />
+            <OakFlex
+              $display={["none", "flex"]}
+              $alignItems="center"
+              $gap="spacing-12"
+            >
+              <span className="h-[28px] w-[1px] bg-[#cacaca]" />
+              <OakSpan $font="body-2" $color="text-primary">
+                Oak&apos;s AI lesson assistant
+              </OakSpan>
+            </OakFlex>
           </OakFlex>
         </OakFlex>
 

@@ -49,7 +49,7 @@ You should generate queries for a ${quizType} quiz. ${this.quizSpecificInstructi
 Generate a list of 1-${maxQueries} semantic search queries`;
 
     try {
-      const response = await this.openai.beta.chat.completions.parse({
+      const response = await this.openai.chat.completions.parse({
         model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
         response_format: zodResponseFormat(

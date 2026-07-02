@@ -44,8 +44,9 @@ export const handleCreateMaterialSession =
 
       log.info("Material session created ", {
         resourceId: result.resourceId,
+        docType: docTypeParsed,
       });
-      set({ id: resourceId });
+      set({ id: resourceId, docType: docTypeParsed });
       log.info(get().id, "ID after creation");
 
       const source = get().source;
