@@ -1,6 +1,7 @@
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
 
-export const exitQuizInstructions = `# Task
+export function exitQuizInstructions(keyStage: string): string {
+  return `# Task
 
 Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
 
@@ -19,21 +20,27 @@ Questions must cover:
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
+${quizQuestionDesignInstructions(keyStage)}`;
+}
 
-export const addOneQuizInstructions = `# Task
+export function addOneQuizInstructions(keyStage: string): string {
+  return `# Task
 
 Generate exactly ONE new multiple-choice question to ADD to the existing quiz. Do not output, modify, or restate the existing questions — they will be preserved by the system.
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
+${quizQuestionDesignInstructions(keyStage)}`;
+}
 
-export const rewriteOneQuizInstructions = (position: number): string =>
+export const rewriteOneQuizInstructions = (
+  position: number,
+  keyStage: string,
+): string =>
   `# Task
 
 Rewrite question ${position} of the existing quiz. Return only the replacement question. Do not modify or output any of the other questions — they will be preserved by the system.
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
+${quizQuestionDesignInstructions(keyStage)}`;

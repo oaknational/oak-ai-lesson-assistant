@@ -6,7 +6,8 @@ import { CycleSchema } from "./cycle.schema";
 
 export const cycleAgent = createSectionAgent({
   responseSchema: CycleSchema,
-  instructions: cyclesInstructions,
+  instructions: (ctx) =>
+    cyclesInstructions(ctx.currentTurn.document.keyStage ?? ""),
   extraInputFromCtx: (ctx) => {
     const promptPart = cycleTargetPromptPart(ctx);
     return promptPart ? [{ role: "developer", content: promptPart }] : [];
