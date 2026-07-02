@@ -117,6 +117,19 @@ describe("quizOperationDispatcher", () => {
       expect(result.data).toBe(quiz);
       expect(result.note).toMatch(/trouble adding/i);
     });
+    it("returns the quiz unchanged with a note when the quiz is already at the maximum size", async () => {
+      const quiz = makeQuiz(
+        Array.from({ length: 50 }, (_, i) => makeQuestion(`Question ${i + 1}`)),
+      );
+      const agent = jest.fn() as jest.MockedFunction<RunSingleQuestionFn>;
+
+      const result = await quizOperationDispatcher(quiz, intent(), agent);
+
+      expect(result.data).toBe(quiz);
+      expect(result.note).toMatch(/most this section can hold/i);
+      expect(agent).not.toHaveBeenCalled();
+    });
+
     it("returns the quiz unchanged with a note when position is out of range", async () => {
       const quiz = makeQuiz([q1, q2]);
       const agent = jest.fn().mockResolvedValue(null);

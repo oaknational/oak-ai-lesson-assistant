@@ -7,6 +7,9 @@ import {
 
 export type RunSingleQuestionFn = RunSingleItemFn<LatestQuizQuestion>;
 
+// Sanity cap, not a pedagogical limit; far above any practical quiz size.
+const MAX_QUIZ_QUESTIONS = 50;
+
 export type QuizDispatchResult = {
   data: LatestQuiz;
   note?: string;
@@ -28,7 +31,7 @@ export async function quizOperationDispatcher(
     {
       itemNoun: "question",
       min: 0,
-      max: Number.POSITIVE_INFINITY,
+      max: MAX_QUIZ_QUESTIONS,
       regenerateSuggestion: "Generate a new quiz",
     },
   );
