@@ -10,6 +10,7 @@ Create a 6-question multiple-choice quiz to assess pupil understanding of the le
 Questions must cover:
 
 - KEY LEARNING POINTS
+- The generated learning cycles, with coverage across the lesson and no duplication of starter quiz questions or cycle check questions
 - A MISCONCEPTION
 - Understanding of at least one KEYWORD (in context)
 - Content should be age-appropriate

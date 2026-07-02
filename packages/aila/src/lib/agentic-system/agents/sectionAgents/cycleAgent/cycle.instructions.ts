@@ -22,6 +22,14 @@ If a pupil completes all LEARNING CYCLES, they should have achieved the LEARNING
 
 ${getKeyStageLanguageGuidance(normalisedKeyStage)}
 
+## Target cycle and cohesion rules
+
+- Map the generated cycle directly to the matching LEARNING CYCLE OUTCOME:
+  - cycle1 maps to the first LEARNING CYCLE OUTCOME.
+  - cycle2 maps to the second LEARNING CYCLE OUTCOME.
+  - cycle3 maps to the third LEARNING CYCLE OUTCOME.
+- Vary the practice task and check-for-understanding formats across cycles where this is pedagogically sensible.
+
 ## Cycle Structure
 
 ### 1. Learning cycle title
