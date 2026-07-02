@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.\n\n- Max 30 words per statement.\n- Max 5 statements but aim for fewer\n- Use age-appropriate, key stage-relevant concepts and language.\n- Try to be specific with the concepts.\n- Do not start with \"Pupils…\"—just state the concept\n- May include substantive, disciplinary, or procedural concepts\n- Avoid content that's too advanced\n- Examples: \"Familiarity with the characters and plot of a common fairy tale.\" \"Understanding of a 'ruler' and 'city-state'.\" \"Ability to recognise acceptable/unacceptable behaviour when using technology\".\n- Non-example: \"Knowledge of fairy tales\" (too broad)."
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
       },
       {
@@ -19,7 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ]\n}"
+        "content": "# Task\n\nList up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.\n\n- Max 30 words per statement.\n- Max 5 statements but aim for fewer\n- Use age-appropriate, key stage-relevant concepts and language.\n- Try to be specific with the concepts.\n- Do not start with \"Pupils…\"—just state the concept\n- May include substantive, disciplinary, or procedural concepts\n- Avoid content that's too advanced\n- Examples: \"Familiarity with the characters and plot of a common fairy tale.\" \"Understanding of a 'ruler' and 'city-state'.\" \"Ability to recognise acceptable/unacceptable behaviour when using technology\".\n- Non-example: \"Knowledge of fairy tales\" (too broad)."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:priorKnowledge--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -63,15 +65,15 @@
     }
   },
   "result": {
-    "id": "resp_001437418865e003006a296eb6031081a2866854549be85cfc",
+    "id": "resp_067405bee651fc1d006a468132367881a388cff9894e62c71f",
     "object": "response",
-    "created_at": 1781100214,
+    "created_at": 1783005490,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781100215,
+    "completed_at": 1783005491,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -82,7 +84,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_001437418865e003006a296eb66efc81a2a93d0924bed57603",
+        "id": "msg_067405bee651fc1d006a468132c05481a3944845c1bb8f0c4b",
         "type": "message",
         "status": "completed",
         "content": [
@@ -90,13 +92,14 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"]}",
+            "text": "{\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]}",
             "parsed": {
               "value": [
-                "Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.",
-                "Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.",
-                "Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.",
-                "Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain."
+                "The Roman Empire extended into Britain, impacting its culture and infrastructure.",
+                "The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.",
+                "The concept of Romanisation, highlighting how Roman culture influenced local populations.",
+                "Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.",
+                "Awareness of local tribes and their interactions with Roman settlers."
               ]
             }
           }
@@ -107,8 +110,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:priorKnowledge--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -144,12 +147,30 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1845,
+      "input_tokens": 1851,
       "input_tokens_details": {
         "cached_tokens": 0
       },
@@ -157,17 +178,18 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1931
+      "total_tokens": 1937
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"]}",
+    "output_text": "{\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]}",
     "output_parsed": {
       "value": [
-        "Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.",
-        "Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.",
-        "Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.",
-        "Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain."
+        "The Roman Empire extended into Britain, impacting its culture and infrastructure.",
+        "The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.",
+        "The concept of Romanisation, highlighting how Roman culture influenced local populations.",
+        "Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.",
+        "Awareness of local tribes and their interactions with Roman settlers."
       ]
     }
   }

@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\nYour task is to generate a lesson plan title.\nThe title of the lesson plan is the title of the lesson plan that the user wants to create. This could be anything, but it will likely be a short phrase or sentence that describes the topic of the lesson plan.\nDo not include \"Lesson about\" or \"…Lesson\" in the title. The title should be the standalone main topic of the lesson plan and not mention the word Lesson. It will be used as the title of the lesson plan in our database and displayed to the user in an overview document. The title should be in sentence case.\nYou will be provided with some examples from the relevant subject/key-stage to help guide your response.\n"
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
       },
       {
@@ -19,15 +15,15 @@
       },
       {
         "role": "developer",
+        "content": "# Task\nYour task is to generate a lesson plan title.\nThe title of the lesson plan is the title of the lesson plan that the user wants to create. This could be anything, but it will likely be a short phrase or sentence that describes the topic of the lesson plan.\nDo not include \"Lesson about\" or \"…Lesson\" in the title. The title should be the standalone main topic of the lesson plan and not mention the word Lesson. It will be used as the title of the lesson plan in our database and displayed to the user in an overview document. The title should be in sentence case.\nYou will be provided with some examples from the relevant subject/key-stage to help guide your response.\n"
+      },
+      {
+        "role": "developer",
         "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{}"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n"
-      },
-      {
-        "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nCreate a descriptive title for a lesson suitable for Key Stage 1 about 'The end of Roman Britain'."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nGenerate a title for a lesson focused on the end of Roman Britain suitable for Key Stage 1 students."
       },
       {
         "role": "developer",
@@ -41,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:title--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -64,15 +62,15 @@
     }
   },
   "result": {
-    "id": "resp_08df518ef91ccc6c006a297de6ef44819fbb875d4dbe57d630",
+    "id": "resp_0ce6e03c60f53926006a4681189dd08191adc70b352e978821",
     "object": "response",
-    "created_at": 1781104103,
+    "created_at": 1783005464,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104103,
+    "completed_at": 1783005465,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -83,7 +81,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_08df518ef91ccc6c006a297de75fd8819fb59adf5749be5424",
+        "id": "msg_0ce6e03c60f53926006a46811922a08191a8f820d98a145213",
         "type": "message",
         "status": "completed",
         "content": [
@@ -103,8 +101,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:title--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -137,12 +135,30 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1344,
+      "input_tokens": 1311,
       "input_tokens_details": {
         "cached_tokens": 0
       },
@@ -150,7 +166,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1354
+      "total_tokens": 1321
     },
     "user": null,
     "metadata": {},

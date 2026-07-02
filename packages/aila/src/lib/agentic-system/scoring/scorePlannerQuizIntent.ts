@@ -4,7 +4,7 @@
  * Planner Quiz-Intent Eval Harness
  *
  * Calls the planner agent directly for each eval cell, N times, and scores
- * whether `step.quizIntent` matches the expected action/target/position.
+ * whether `step.itemIntent` matches the expected action/target/position.
  *
  * Covers the eval cells from `docs/superpowers/specs/2026-05-14-quiz-modify-button.md`:
  * marker recognition (hard gate 100%) and prose classification (soft target ≥95%).
@@ -24,7 +24,7 @@ import type {
   PartialLessonPlan,
 } from "../../../protocol/schema";
 import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
-import type { PlannerOutput, QuizIntent } from "../schema";
+import type { ItemIntent, PlannerOutput } from "../schema";
 import type { ChatMessage } from "../types";
 import {
   type ScoredCell,
@@ -86,7 +86,7 @@ const baseDocWithEmptyStarter: PartialLessonPlan = {
 
 type ExpectedIntent = {
   sectionKey: "starterQuiz" | "exitQuiz";
-  action?: QuizIntent["action"];
+  action?: ItemIntent["action"];
   position?: number | null;
 };
 
@@ -103,35 +103,35 @@ const CELLS: EvalCell[] = [
   // -------- Prose → action (soft targets) --------
   {
     id: "prose-action-remove",
-    description: "Prose 'remove question 3' → REMOVE_QUIZ_QUESTION",
+    description: "Prose 'remove question 3' → REMOVE_ITEM",
     initialDocument: baseDoc,
     userMessage: "Please remove question 3 from the starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 3,
     },
     passThreshold: 0.95,
   },
   {
     id: "prose-action-add",
-    description: "Prose 'add a question about X' → ADD_QUIZ_QUESTION",
+    description: "Prose 'add a question about X' → ADD_ITEM",
     initialDocument: baseDoc,
     userMessage: "Please add a question about volcanoes to the starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "ADD_QUIZ_QUESTION",
+      action: "ADD_ITEM",
     },
     passThreshold: 0.95,
   },
   {
     id: "prose-action-change",
-    description: "Prose 'rewrite question 2' → CHANGE_QUIZ_QUESTION",
+    description: "Prose 'rewrite question 2' → CHANGE_ITEM",
     initialDocument: baseDoc,
     userMessage: "Please rewrite question 2 in the starter quiz to be easier",
     expected: {
       sectionKey: "starterQuiz",
-      action: "CHANGE_QUIZ_QUESTION",
+      action: "CHANGE_ITEM",
       position: 2,
     },
     passThreshold: 0.95,
@@ -144,7 +144,7 @@ const CELLS: EvalCell[] = [
     userMessage: "Remove the first question from the starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 1,
     },
     passThreshold: 0.95,
@@ -156,7 +156,7 @@ const CELLS: EvalCell[] = [
     userMessage: "Remove the last question from the starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 6,
     },
     passThreshold: 0.95,
@@ -168,7 +168,7 @@ const CELLS: EvalCell[] = [
     userMessage: "Remove the photosynthesis question from the starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 1,
     },
     passThreshold: 0, // baseline only
@@ -177,12 +177,12 @@ const CELLS: EvalCell[] = [
   {
     id: "prose-empty-quiz-add-regenerate",
     description:
-      "ADD on empty starter quiz → REGENERATE_QUIZ (empty-quiz exception)",
+      "ADD on empty starter quiz → REGENERATE_SECTION (empty-quiz exception)",
     initialDocument: baseDocWithEmptyStarter,
     userMessage: "For the starter quiz, add a question",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REGENERATE_QUIZ",
+      action: "REGENERATE_SECTION",
     },
     passThreshold: 0.95,
   },
@@ -194,7 +194,7 @@ const CELLS: EvalCell[] = [
     userMessage: "For the starter quiz, remove question: 3",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 3,
     },
     passThreshold: 0.95,
@@ -207,7 +207,7 @@ const CELLS: EvalCell[] = [
     userMessage: "For the starter quiz, add a question: about prime numbers",
     expected: {
       sectionKey: "starterQuiz",
-      action: "ADD_QUIZ_QUESTION",
+      action: "ADD_ITEM",
     },
     passThreshold: 0.95,
   },
@@ -220,7 +220,7 @@ const CELLS: EvalCell[] = [
       "For the starter quiz, change question: make question 2 easier",
     expected: {
       sectionKey: "starterQuiz",
-      action: "CHANGE_QUIZ_QUESTION",
+      action: "CHANGE_ITEM",
       position: 2,
     },
     passThreshold: 0.95,
@@ -233,7 +233,7 @@ const CELLS: EvalCell[] = [
     userMessage: "Generate a new starter quiz",
     expected: {
       sectionKey: "starterQuiz",
-      action: "REGENERATE_QUIZ",
+      action: "REGENERATE_SECTION",
     },
     passThreshold: 0.95,
   },
@@ -245,7 +245,7 @@ const CELLS: EvalCell[] = [
     userMessage: "For the exit quiz, remove question: 4",
     expected: {
       sectionKey: "exitQuiz",
-      action: "REMOVE_QUIZ_QUESTION",
+      action: "REMOVE_ITEM",
       position: 4,
     },
     passThreshold: 0.95,
@@ -261,7 +261,7 @@ type CellRun = {
   reasons: string[];
   decision: PlannerOutput["decision"];
   actual: {
-    action?: QuizIntent["action"];
+    action?: ItemIntent["action"];
     position?: number | null;
   } | null;
   error?: string;
@@ -306,11 +306,11 @@ function scoreOneRun(
       actual: null,
     };
   }
-  const intent = step.quizIntent;
+  const intent = step.itemIntent;
   if (!intent) {
     return {
       pass: false,
-      reasons: ["step.quizIntent absent"],
+      reasons: ["step.itemIntent absent"],
       decision: planner.decision,
       actual: null,
     };

@@ -1,133 +1,46 @@
 import type { LatestQuiz, LatestQuizQuestion } from "../../../protocol/schema";
-import type { StructuralQuizIntent } from "../schema";
+import type { StructuralItemIntent } from "../schema";
+import {
+  type RunSingleItemFn,
+  sectionListOperationDispatcher,
+} from "./sectionListOperationDispatcher";
 
-export type RunSingleQuestionFn = () => Promise<LatestQuizQuestion | null>;
+export type RunSingleQuestionFn = RunSingleItemFn<LatestQuizQuestion>;
+
+// Sanity cap, not a pedagogical limit; far above any practical quiz size.
+const MAX_QUIZ_QUESTIONS = 50;
 
 export type QuizDispatchResult = {
   data: LatestQuiz;
   note?: string;
 };
 
+/**
+ * Quiz adapter over the generic section-list dispatcher. A declined edit leaves
+ * the quiz unchanged.
+ */
 export async function quizOperationDispatcher(
   currentQuiz: LatestQuiz,
-  intent: StructuralQuizIntent,
+  intent: StructuralItemIntent,
   runSingleQuestion: RunSingleQuestionFn,
 ): Promise<QuizDispatchResult> {
-  switch (intent.action) {
-    case "REMOVE_QUIZ_QUESTION":
-      return handleRemove(currentQuiz, intent);
-    case "ADD_QUIZ_QUESTION":
-      return handleAdd(currentQuiz, intent, runSingleQuestion);
-    case "CHANGE_QUIZ_QUESTION":
-      return handleChange(currentQuiz, intent, runSingleQuestion);
-  }
-}
-
-function handleRemove(
-  currentQuiz: LatestQuiz,
-  intent: StructuralQuizIntent,
-): QuizDispatchResult {
-  const { position } = intent;
-  const { questions } = currentQuiz;
-
-  if (position === null) {
-    return {
-      data: currentQuiz,
-      note: "I'm not sure which question to remove — could you say 'question 3' for example?",
-    };
-  }
-
-  if (position < 1 || position > questions.length) {
-    return {
-      data: currentQuiz,
-      note: `You asked to remove question ${position}, but there are only ${questions.length} questions.`,
-    };
-  }
+  const result = await sectionListOperationDispatcher<LatestQuizQuestion>(
+    currentQuiz.questions,
+    intent,
+    runSingleQuestion,
+    {
+      itemNoun: "question",
+      min: 0,
+      max: MAX_QUIZ_QUESTIONS,
+      regenerateSuggestion: "Generate a new quiz",
+    },
+  );
 
   return {
-    data: {
-      ...currentQuiz,
-      questions: [
-        ...questions.slice(0, position - 1),
-        ...questions.slice(position),
-      ],
-    },
-  };
-}
-
-async function handleAdd(
-  currentQuiz: LatestQuiz,
-  intent: StructuralQuizIntent,
-  runSingleQuestion: RunSingleQuestionFn,
-): Promise<QuizDispatchResult> {
-  const { questions } = currentQuiz;
-  const insertAt = intent.position ?? questions.length + 1;
-
-  if (insertAt < 1 || insertAt > questions.length + 1) {
-    return {
-      data: currentQuiz,
-      note: `You asked to add a question at position ${insertAt}, but valid positions are 1 to ${questions.length + 1}.`,
-    };
-  }
-
-  const newQuestion = await runSingleQuestion();
-  if (!newQuestion) {
-    return {
-      data: currentQuiz,
-      note: "I had trouble adding a single question. You could try 'Generate a new quiz' for a fresh set.",
-    };
-  }
-
-  return {
-    data: {
-      ...currentQuiz,
-      questions: [
-        ...questions.slice(0, insertAt - 1),
-        newQuestion,
-        ...questions.slice(insertAt - 1),
-      ],
-    },
-  };
-}
-
-async function handleChange(
-  currentQuiz: LatestQuiz,
-  intent: StructuralQuizIntent,
-  runSingleQuestion: RunSingleQuestionFn,
-): Promise<QuizDispatchResult> {
-  const { position } = intent;
-  const { questions } = currentQuiz;
-
-  if (position === null) {
-    return {
-      data: currentQuiz,
-      note: "I'm not sure which question to change — could you say 'question 3' for example?",
-    };
-  }
-
-  if (position < 1 || position > questions.length) {
-    return {
-      data: currentQuiz,
-      note: `You asked to change question ${position}, but there are only ${questions.length} questions.`,
-    };
-  }
-
-  const replacement = await runSingleQuestion();
-  if (!replacement) {
-    return {
-      data: currentQuiz,
-      note: "I had trouble rewriting just that question. You could try 'Generate a new quiz' for a fresh set.",
-    };
-  }
-
-  return {
-    data: {
-      ...currentQuiz,
-      questions: [
-        ...questions.slice(0, position - 1),
-        replacement,
-        ...questions.slice(position),
-      ],
-    },
+    data:
+      result.data === currentQuiz.questions
+        ? currentQuiz
+        : { ...currentQuiz, questions: result.data },
+    note: result.note,
   };
 }
