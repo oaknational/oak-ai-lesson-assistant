@@ -11,14 +11,15 @@ import { StarterQuizSchema } from "./starterQuiz.schema";
 export const starterQuizAgent = createSectionAgent({
   responseSchema: StarterQuizSchema,
   instructions: (ctx) => {
+    const keyStage = ctx.currentTurn.document.keyStage ?? "";
     const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
     switch (mode.kind) {
       case "fullRegen":
-        return starterQuizInstructions;
+        return starterQuizInstructions(keyStage);
       case "addOne":
-        return addOneQuizInstructions;
+        return addOneQuizInstructions(keyStage);
       case "rewriteOne":
-        return rewriteOneQuizInstructions(mode.position);
+        return rewriteOneQuizInstructions(mode.position, keyStage);
     }
   },
   defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",

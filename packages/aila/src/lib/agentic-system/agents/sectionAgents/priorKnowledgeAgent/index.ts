@@ -6,7 +6,8 @@ import { PriorKnowledgeSchema } from "./priorKnowledge.schema";
 
 export const priorKnowledgeAgent = createSectionAgent({
   responseSchema: PriorKnowledgeSchema,
-  instructions: priorKnowledgeInstructions,
+  instructions: (ctx) =>
+    priorKnowledgeInstructions(ctx.currentTurn.document.keyStage ?? ""),
   contentToString: stringListToText(),
   defaultVoice: "EXPERT_TEACHER",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,

@@ -24,7 +24,7 @@ export const voices = {
     speaker: "A pupil",
     audience: "other pupils/teacher",
     description:
-      'Use this voice for the learning outcome (e.g. "I can...") and for any model answers or example pupil work. Match the tone to pupil age.',
+      'Use this voice for the learning outcome (e.g. "I can...") and for any model answers or example pupil work. Match the vocabulary and tone to the key stage in CURRENT DOCUMENT.',
   },
   TEACHER_TO_PUPIL_WRITTEN: {
     id: "TEACHER_TO_PUPIL_WRITTEN",
@@ -45,7 +45,7 @@ export const voices = {
     speaker: "Expert teacher",
     audience: "User",
     description:
-      "Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice.",
+      "Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing.",
   },
   AGENT_TO_AGENT: {
     id: "AGENT_TO_AGENT",

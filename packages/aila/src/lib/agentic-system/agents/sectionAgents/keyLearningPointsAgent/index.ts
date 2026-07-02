@@ -6,7 +6,8 @@ import { KeyLearningPointsSchema } from "./keyLearningPoints.schema";
 
 export const keyLearningPointsAgent = createSectionAgent({
   responseSchema: KeyLearningPointsSchema,
-  instructions: keyLearningPointsInstructions,
+  instructions: (ctx) =>
+    keyLearningPointsInstructions(ctx.currentTurn.document.keyStage ?? ""),
   contentToString: stringListToText(),
   defaultVoice: "EXPERT_TEACHER",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,

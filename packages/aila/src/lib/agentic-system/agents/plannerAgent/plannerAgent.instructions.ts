@@ -53,6 +53,9 @@ If none of these apply — including the default case where the user clicks "con
 #### cycle3
 Include \`cycle3\` in the plan **if and only if** the \`learningCycles\` field contains exactly 3 entries. If \`learningCycles\` has 2 entries, do not include \`cycle3\`.
 
+#### learning cycle order
+When planning group 4, always emit section steps in this exact order: \`starterQuiz\`, \`cycle1\`, \`cycle2\`, optional \`cycle3\`, \`exitQuiz\`. This order matters because each cycle and the exit quiz use the lesson content generated before them as context.
+
 
 
 #### basedOn
