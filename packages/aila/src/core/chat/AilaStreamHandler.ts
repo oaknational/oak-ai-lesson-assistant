@@ -6,6 +6,8 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import type { getRagLessonPlansByIds } from "@oakai/rag";
 
+import type { AilaGenerationStatus } from "features/generation";
+import type { GenerationPersistencePayload } from "features/persistence/AilaPersistence";
 import type { ReadableStreamDefaultController } from "stream/web";
 
 import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
@@ -28,6 +30,7 @@ import { ReportStorage, createQuizTracker } from "../quiz/reporting";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
 import type { Message } from "./types";
+import { wrapOpenAIWithGenerationCapture } from "./wrapOpenAIWithGenerationCapture";
 
 const log = aiLogger("aila:stream");
 
@@ -47,6 +50,15 @@ type MathsQuizAgentHandler = SectionAgent<LatestQuiz>["handler"];
 type MathsQuizAgentContext = Parameters<MathsQuizAgentHandler>[0];
 type MathsQuizAgentResult = Awaited<ReturnType<MathsQuizAgentHandler>>;
 
+export type PendingGeneration = {
+  llmTimeTaken: number;
+  promptTokensUsed: number;
+  completionTokensUsed: number;
+  response: string;
+  promptText: string;
+  status: AilaGenerationStatus;
+};
+
 class ThreatDetectionFailureError extends Error {
   public readonly detectorName: string;
 
@@ -62,6 +74,7 @@ export class AilaStreamHandler {
   private _controller?: ReadableStreamDefaultController;
   private readonly _patchEnqueuer: PatchEnqueuer;
   private _streamReader?: ReadableStreamDefaultReader<string>;
+  private _pendingGenerations: PendingGeneration[] = [];
 
   constructor(chat: AilaChat) {
     this._chat = chat;
@@ -106,6 +119,10 @@ export class AilaStreamHandler {
         m.role !== "data",
     );
   }
+
+  private collectPendingGenerationData = (generation: PendingGeneration) => {
+    this._pendingGenerations.push(generation);
+  };
 
   private async checkForThreats(): Promise<ThreatCheckOutcome> {
     const messagesToCheck = this.threatDetectionMessages();
@@ -196,6 +213,7 @@ export class AilaStreamHandler {
         if (outcome.status === "success") {
           await this.completeChat();
         }
+        await this.persistPendingGenerations();
       } finally {
         this.closeController();
         log.info("Stream closed", this._chat.iteration, this._chat.id);
@@ -309,6 +327,10 @@ export class AilaStreamHandler {
       openai = wrapOpenAIWithFixture(openai, agenticFixture);
     } else {
       log.info("No agenticFixture config — using real OpenAI client");
+      openai = wrapOpenAIWithGenerationCapture(
+        openai,
+        this.collectPendingGenerationData,
+      );
     }
 
     const ailaTurnCallbacks = createAilaTurnCallbacks({
@@ -421,6 +443,37 @@ export class AilaStreamHandler {
       type: "error",
       value: "Something went wrong. Please try sending your message again.",
     });
+  }
+
+  private async persistPendingGenerations() {
+    if (this._pendingGenerations.length === 0) {
+      return;
+    }
+
+    try {
+      const messageId = this._chat.messages[this._chat.messages.length - 1]?.id;
+      const generationPersistencePayload: GenerationPersistencePayload[] =
+        this._pendingGenerations.map((generation) => ({
+          ...generation,
+          userId: this._chat.userId ?? "",
+          appId: "lesson-planner",
+          promptId: "AGENTIC", // what do we want here ?
+          completedAt: new Date(),
+          appSessionId: this._chat.id,
+          messageId,
+        }));
+
+      await this._chat.aila.prisma.generation.createMany({
+        data: generationPersistencePayload,
+      });
+      log.info(
+        "Persisted %d agentic generation(s)",
+        generationPersistencePayload.length,
+      );
+    } catch (e) {
+      log.error("Error persisting generation data", e);
+      this._chat.aila.errorReporter?.reportError(e);
+    }
   }
 
   private createMathsQuizAgentHandlers(): {
