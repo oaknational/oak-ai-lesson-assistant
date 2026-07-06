@@ -3,27 +3,27 @@
     "input": [
       {
         "role": "developer",
-        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
+        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
       },
       {
         "role": "developer",
-        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
+        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
       },
       {
         "role": "developer",
-        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- learningOutcome: generate\n- learningCycles: generate"
+        "content": "# Task\n\nLEARNING CYCLE OUTCOMES break the LEARNING OUTCOME into 1–3 manageable chunks, each aligned to a LEARNING CYCLE. These are statements that describe what pupils should know or be able to do by the end of the lesson.\n\n- Phrase each as a command, starting with a verb (e.g. Name, Identify, Label, State, Recall, Define, Sketch, Describe, Explain, Analyse, Discuss, Apply, Compare, Calculate, Construct, Manipulate, Evaluate) \n- Max 20 words per LEARNING CYCLE OUTCOME.\n- Example: \"label the organelles in a plant cell\".\n- Ensure progression: these should increase in difficulty."
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can describe the significant changes that occurred in Britain as Roman rule came to an end.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Describe the key events signalling the end of Roman rule in Britain.\",\"Identify the factors contributing to the departure of Romans from Britain.\",\"Explain the immediate impacts on Britain following the end of Roman rule.\"]}]"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"basedOn\": null,\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\"\n}"
       },
       {
         "role": "developer",
-        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>[\"Describe the origins and spread of Christianity during early Roman times.\",\"Identify archaeological evidence of Christianity's growth in Britain.\",\"Explain how the discovered artefacts support conclusions about Christianity's popularity in Britain.\"]</example-1>\n<example-2>[\"Describe the construction and features of Celtic roundhouses\",\"Explain the construction and historical significance of Hadrian's Wall\",\"Identify features of Roman villas and their significance\"]</example-2>\n<example-3>[\"Identify the main theories explaining the fall of the Western Roman Empire.\",\"Describe the events leading to the sack of Rome in 410 CE\",\"Evaluate the long-term impacts resulting from the fall of the Western Roman Empire\"]</example-3>\n<example-4>[\"Explain why Emperor Claudius decided to invade Britain.\",\"Describe how Emperor Claudius' forces successfully invaded Britain through strategies and tactics.\"]</example-4>\n<example-5>[\"Explain the circumstances leading to the defeat of the Picts and Scots by the Romans.\",\"Describe the reasons behind the departure of Roman soldiers from Britain.\",\"Analyse the characteristics of Romano-British culture and its geographical variance.\"]</example-5>"
       },
       {
         "role": "developer",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:learningCycleOutcomes--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -46,16 +48,11 @@
           "type": "object",
           "properties": {
             "value": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
+              "type": "array",
+              "items": {
+                "type": "string"
               },
-              "required": [
-                "message"
-              ],
-              "additionalProperties": false
+              "description": "An array of learning cycle outcomes.\nShould include a command word.\nShould be succinct.\nShould outline what pupils should be able to do/understand/know by the end of the learning cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 3 elements"
             }
           },
           "required": [
@@ -68,15 +65,15 @@
     }
   },
   "result": {
-    "id": "resp_0a8d64e64815ea4d006a297df8ba14819cb534290f328ac263",
+    "id": "resp_02c9d334cbe14a4b006a468126cfa481a397b2c9955cbbc7f3",
     "object": "response",
-    "created_at": 1781104120,
+    "created_at": 1783005478,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104121,
+    "completed_at": 1783005480,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +84,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0a8d64e64815ea4d006a297df9410c819c933e08d5735e5e90",
+        "id": "msg_02c9d334cbe14a4b006a4681273ed081a3ac452a875bffb4b8",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,11 +92,13 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
+            "text": "{\"value\":[\"Recall the main reasons why Roman rule in Britain ended.\",\"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\"Evaluate the longer-term cultural impacts of the end of Roman rule.\"]}",
             "parsed": {
-              "value": {
-                "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
-              }
+              "value": [
+                "Recall the main reasons why Roman rule in Britain ended.",
+                "List the immediate changes that occurred in Britain following the departure of Roman forces.",
+                "Evaluate the longer-term cultural impacts of the end of Roman rule."
+              ]
             }
           }
         ],
@@ -109,8 +108,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:learningCycleOutcomes--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -129,16 +128,11 @@
           "type": "object",
           "properties": {
             "value": {
-              "type": "object",
-              "properties": {
-                "message": {
-                  "type": "string"
-                }
+              "type": "array",
+              "items": {
+                "type": "string"
               },
-              "required": [
-                "message"
-              ],
-              "additionalProperties": false
+              "description": "An array of learning cycle outcomes.\nShould include a command word.\nShould be succinct.\nShould outline what pupils should be able to do/understand/know by the end of the learning cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice.\nMinimum 1, maximum 3 elements"
             }
           },
           "required": [
@@ -151,28 +145,48 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1833,
+      "input_tokens": 1652,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 33,
+      "output_tokens": 45,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1866
+      "total_tokens": 1697
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
+    "output_text": "{\"value\":[\"Recall the main reasons why Roman rule in Britain ended.\",\"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\"Evaluate the longer-term cultural impacts of the end of Roman rule.\"]}",
     "output_parsed": {
-      "value": {
-        "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
-      }
+      "value": [
+        "Recall the main reasons why Roman rule in Britain ended.",
+        "List the immediate changes that occurred in Britain following the departure of Roman forces.",
+        "Evaluate the longer-term cultural impacts of the end of Roman rule."
+      ]
     }
   }
 }

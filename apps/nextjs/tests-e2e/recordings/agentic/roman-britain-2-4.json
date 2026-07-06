@@ -15,15 +15,15 @@
       },
       {
         "role": "developer",
-        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- learningOutcome: generate\n- learningCycles: generate"
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- basedOn: generate\n- learningOutcome: generate\n- learningCycles: generate"
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can describe what happened in Britain after the Roman Empire's withdrawal and explain the cultural and societal changes during that period.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Describe the reasons for the withdrawal of Roman forces from Britain.\",\"Identify the immediate effects on local governance and defence after Roman rule ended.\",\"Explain the cultural adaptations that resulted from the transition from Roman to early mediaeval society.\"]}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/basedOn\",\"value\":null},{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can describe what changed in Britain when Roman rule ended.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Recall the main reasons why Roman rule in Britain ended.\",\"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\"Evaluate the longer-term cultural impacts of the end of Roman rule.\"]}]"
       },
       {
         "role": "developer",
-        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n- basedOn"
       },
       {
         "role": "developer",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -68,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_0f8646a4bc0ca555006a29686647b8819f81ec68d36c61f650",
+    "id": "resp_0511b83432739f9f006a46812876ac819fb2e85e5484dc00d3",
     "object": "response",
-    "created_at": 1781098598,
+    "created_at": 1783005480,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781098599,
+    "completed_at": 1783005481,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0f8646a4bc0ca555006a29686711ac819f97ac6d550a58bf12",
+        "id": "msg_0511b83432739f9f006a468128fa2c819fa3db0992d472e281",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,10 +97,10 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step.\"}}",
+            "text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \\\"based on\\\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed.\"}}",
             "parsed": {
               "value": {
-                "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step."
+                "message": "Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
               }
             }
           }
@@ -109,8 +111,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -151,27 +153,45 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1844,
+      "input_tokens": 1851,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 38,
+      "output_tokens": 52,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1882
+      "total_tokens": 1903
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step.\"}}",
+    "output_text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \\\"based on\\\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed.\"}}",
     "output_parsed": {
       "value": {
-        "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on to the next step."
+        "message": "Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
       }
     }
   }

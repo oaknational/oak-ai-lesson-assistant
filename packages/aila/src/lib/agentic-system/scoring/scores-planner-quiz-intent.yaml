@@ -1,95 +1,95 @@
-generated: 2026-05-20T13:03:08.787Z
+generated: 2026-06-22T09:41:33.046Z
 runsPerCell: 5
 cells:
   - id: prose-action-remove
-    description: Prose 'remove question 3' → REMOVE_QUIZ_QUESTION
+    description: Prose 'remove question 3' → REMOVE_ITEM
     passThreshold: 0.95
     passRate: 1
     runs:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
   - id: prose-action-add
-    description: Prose 'add a question about X' → ADD_QUIZ_QUESTION
+    description: Prose 'add a question about X' → ADD_ITEM
     passThreshold: 0.95
     passRate: 1
     runs:
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
   - id: prose-action-change
-    description: Prose 'rewrite question 2' → CHANGE_QUIZ_QUESTION
+    description: Prose 'rewrite question 2' → CHANGE_ITEM
     passThreshold: 0.95
     passRate: 1
     runs:
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
   - id: prose-position-ordinal-first
     description: Prose 'the first question' → position 1
@@ -99,27 +99,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
   - id: prose-position-ordinal-last
     description: Prose 'the last question' → position = length (6)
@@ -129,27 +129,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 6
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 6
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 6
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 6
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 6
   - id: prose-position-content-ref
     description: Prose 'the photosynthesis question' → position 1 (baseline)
@@ -159,57 +159,57 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 1
   - id: prose-empty-quiz-add-regenerate
-    description: ADD on empty starter quiz → REGENERATE_QUIZ (empty-quiz exception)
+    description: ADD on empty starter quiz → REGENERATE_SECTION (empty-quiz exception)
     passThreshold: 0.95
     passRate: 1
     runs:
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
   - id: prose-button-remove
     description: Button Remove + textarea '3' → buildProse-shape prose, no marker
@@ -219,27 +219,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 3
   - id: prose-button-add
     description: Button Add + textarea 'about prime numbers' → buildProse-shape
@@ -250,27 +250,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
       - pass: true
         reasons: []
         actual:
-          action: ADD_QUIZ_QUESTION
+          action: ADD_ITEM
           position: null
   - id: prose-button-change
     description: Button Change + textarea 'make question 2 easier' → buildProse-shape prose
@@ -280,27 +280,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
       - pass: true
         reasons: []
         actual:
-          action: CHANGE_QUIZ_QUESTION
+          action: CHANGE_ITEM
           position: 2
   - id: prose-button-regenerate
     description: Button Generate-new (no textarea) → buildProse-shape prose, no marker
@@ -310,27 +310,27 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
       - pass: true
         reasons: []
         actual:
-          action: REGENERATE_QUIZ
+          action: REGENERATE_SECTION
           position: null
   - id: prose-button-target-exit
     description:
@@ -342,25 +342,25 @@ cells:
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 4
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 4
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 4
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 4
       - pass: true
         reasons: []
         actual:
-          action: REMOVE_QUIZ_QUESTION
+          action: REMOVE_ITEM
           position: 4
