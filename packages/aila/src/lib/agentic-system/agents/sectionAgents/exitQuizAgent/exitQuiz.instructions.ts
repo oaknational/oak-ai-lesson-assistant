@@ -3,7 +3,7 @@ import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.ins
 export function exitQuizInstructions(keyStage: string): string {
   return `# Task
 
-Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
+Create a multiple-choice quiz with exactly 6 questions to assess pupil understanding of the lesson content.
 
 ## Content Scope
 

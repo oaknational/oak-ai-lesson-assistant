@@ -1,4 +1,5 @@
 import type { LatestQuiz, LatestQuizQuestion } from "../../../protocol/schema";
+import { QUIZ_MAX_QUESTIONS } from "../../../protocol/schemas/quiz/quizV3";
 import type { StructuralItemIntent } from "../schema";
 import { quizOperationDispatcher } from "./quizOperationDispatcher";
 import type { RunSingleQuestionFn } from "./quizOperationDispatcher";
@@ -119,7 +120,9 @@ describe("quizOperationDispatcher", () => {
     });
     it("returns the quiz unchanged with a note when the quiz is already at the maximum size", async () => {
       const quiz = makeQuiz(
-        Array.from({ length: 50 }, (_, i) => makeQuestion(`Question ${i + 1}`)),
+        Array.from({ length: QUIZ_MAX_QUESTIONS }, (_, i) =>
+          makeQuestion(`Question ${i + 1}`),
+        ),
       );
       const agent = jest.fn() as jest.MockedFunction<RunSingleQuestionFn>;
 

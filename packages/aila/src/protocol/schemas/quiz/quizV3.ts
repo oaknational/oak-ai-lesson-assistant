@@ -107,9 +107,31 @@ export type QuizV3QuestionOrder = z.infer<typeof QuizV3QuestionOrderSchema>;
 
 // ********** LLM-SPECIFIC SCHEMAS (MULTIPLE CHOICE ONLY) **********
 
-// LLM can only generate multiple choice questions, so we create specific schemas for that
+// Export templates (Google Slides) have fixed placeholders per quiz: 6 questions,
+// each with 1 correct answer + 2 distractors. Adjust these if the templates change.
+export const QUIZ_MAX_QUESTIONS = 6;
+export const QUIZ_MC_ANSWER_COUNT = 1;
+export const QUIZ_MC_DISTRACTOR_COUNT = 2;
+
+// LLM can only generate multiple choice questions, so we create specific schemas for that.
+// Answer option counts are hard bounds so exports never receive extra options.
 export const QuizV3MultipleChoiceOnlyQuestionSchema =
-  QuizV3QuestionMultipleChoiceSchema;
+  QuizV3QuestionMultipleChoiceSchema.extend({
+    answers: z
+      .array(z.string())
+      .min(QUIZ_MC_ANSWER_COUNT)
+      .max(QUIZ_MC_ANSWER_COUNT)
+      .describe(
+        `Correct answers as markdown. ${minMaxText({ min: QUIZ_MC_ANSWER_COUNT, max: QUIZ_MC_ANSWER_COUNT })}`,
+      ),
+    distractors: z
+      .array(z.string())
+      .min(QUIZ_MC_DISTRACTOR_COUNT)
+      .max(QUIZ_MC_DISTRACTOR_COUNT)
+      .describe(
+        `Incorrect answer options as markdown. ${minMaxText({ min: QUIZ_MC_DISTRACTOR_COUNT, max: QUIZ_MC_DISTRACTOR_COUNT })}`,
+      ),
+  });
 
 export const QuizV3MultipleChoiceOnlySchema = z.object({
   version: z.literal("v3").describe("Schema version identifier"),
@@ -131,7 +153,13 @@ export const QuizV3MultipleChoiceOnlyOptionalSchema =
 
 export const QuizV3MultipleChoiceOnlyStrictMax6Schema =
   QuizV3MultipleChoiceOnlySchema.extend({
-    questions: z.array(QuizV3MultipleChoiceOnlyQuestionSchema).min(1).max(6),
+    questions: z
+      .array(QuizV3MultipleChoiceOnlyQuestionSchema)
+      .min(1)
+      .max(QUIZ_MAX_QUESTIONS)
+      .describe(
+        `Array of multiple choice quiz questions. ${minMaxText({ min: 1, max: QUIZ_MAX_QUESTIONS })}`,
+      ),
   });
 
 // Type exports for LLM-specific schemas

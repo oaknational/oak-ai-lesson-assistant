@@ -12,6 +12,7 @@ import type {
 import {
   CompletedLessonPlanSchema,
   KeywordsSchema,
+  LatestQuizMultipleChoiceOnlyStrictMax6Schema,
   LatestQuizSchema,
   MisconceptionsSchema,
 } from "../../../protocol/schema";
@@ -198,7 +199,7 @@ async function executeGenerateStep(
     context,
     sectionKey: step.sectionKey,
     content: result.data,
-    responseSchema: sectionSchema,
+    responseSchema: correctorResponseSchema(context, step),
   });
 
   const validated = corrected ?? sectionSchema.parse(result.data);
@@ -214,6 +215,29 @@ async function executeGenerateStep(
   });
 
   return { status: "continue" };
+}
+
+/**
+ * Default-agent quizzes are corrected against the strict LLM schema, so the
+ * corrector cannot re-introduce extra answer options or questions; its output
+ * fails validation and falls back to the original content instead. Maths-bank
+ * quizzes and all other sections keep the permissive section schema.
+ */
+function correctorResponseSchema(
+  context: AilaExecutionContext,
+  step: PlanStep,
+) {
+  const { sectionKey } = step;
+  if (sectionKey === "starterQuiz" || sectionKey === "exitQuiz") {
+    const agentId = sectionStepToAgentId(step, {
+      config: context.runtime.config,
+      document: context.currentTurn.document,
+    });
+    if (agentId === `${sectionKey}--default`) {
+      return LatestQuizMultipleChoiceOnlyStrictMax6Schema;
+    }
+  }
+  return CompletedLessonPlanSchema.shape[sectionKey];
 }
 
 function getMissingCycleOutcomeMessage(
@@ -265,11 +289,15 @@ async function executeQuizDispatchStep(
       if (!validateSingleQuestion(question)) return null;
       // Correct only this new question, wrapped as a single-question quiz, so
       // existing questions are never sent to the corrector and stay untouched.
+      // Strict schema for default agents, as in correctorResponseSchema.
       const correctedQuiz = await applyBritishEnglishCorrection({
         context,
         sectionKey,
         content: { ...currentQuiz, questions: [question] },
-        responseSchema: CompletedLessonPlanSchema.shape[sectionKey],
+        responseSchema:
+          agentId === `${sectionKey}--default`
+            ? LatestQuizMultipleChoiceOnlyStrictMax6Schema
+            : CompletedLessonPlanSchema.shape[sectionKey],
       });
       return correctedQuiz?.questions[0] ?? question ?? null;
     },
