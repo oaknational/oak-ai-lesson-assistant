@@ -22,6 +22,7 @@ export const createPlannerAgent = ({
   z.infer<typeof plannerOutputSchema>
 > => {
   return {
+    id: "planner",
     responseSchema: plannerOutputSchema,
     input: [
       {

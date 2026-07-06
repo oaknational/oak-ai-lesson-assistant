@@ -34,6 +34,7 @@ export function createMessageToUserAgent({
   relevantLessonsFetched,
 }: MessageToUserAgentProps): GenericPromptAgent<MessageToUserAgentOutput> {
   return {
+    id: "message-to-user",
     responseSchema: messageToUserAgentSchema,
     input: [
       {

@@ -41,10 +41,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -62,6 +58,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -73,14 +73,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -144,10 +136,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -155,7 +143,7 @@ The following voice definitions are available for this task:
 ### EXPERT_TEACHER
 Speaker: Expert teacher
 Audience: User
-Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice.
+Use this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing.
 
 ### TEACHER_TO_PUPIL_WRITTEN
 Speaker: Teacher
@@ -167,6 +155,10 @@ Use this voice to write the text that will appear on slides or lesson resources.
     "content": "## Voice guidance
 
 Unless otherwise specified, use EXPERT_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
     "role": "developer",
   },
   {
@@ -202,7 +194,7 @@ This is exemplar content from similar Oak Academy lessons, it should be used as 
   {
     "content": "BASED ON CONTENT
 
-Only diverge from this content if necessary to make sense or if the user has specified otherwise. If there's no way to do this without contradiction then return an error, with justification.
+Only diverge from this content if necessary to make sense or if the user has specified otherwise.
 
 Foundation knowledge about plant biology - cell structure, organelles, life processes",
     "role": "developer",
@@ -272,10 +264,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -293,6 +281,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -307,17 +299,9 @@ This is the document in its current state.
     "role": "developer",
   },
   {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
-    "role": "developer",
-  },
-  {
     "content": "BASED ON CONTENT
 
-Only diverge from this content if necessary to make sense or if the user has specified otherwise. If there's no way to do this without contradiction then return an error, with justification.
+Only diverge from this content if necessary to make sense or if the user has specified otherwise.
 
 Plant structure and function basics - leaves, roots, stem",
     "role": "developer",
@@ -383,10 +367,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -401,6 +381,10 @@ Supportive expert, guiding and coaching the teacher to create a high-quality les
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
     "role": "developer",
   },
   {
@@ -423,14 +407,6 @@ This is the document in its current state.
 This is the current value of the section you are creating. Use it as a starting point.
 
 Photosynthesis is the process plants use to make food - chlorophyll, sunlight, water",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -494,10 +470,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -515,6 +487,10 @@ Unless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -526,14 +502,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -597,18 +565,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate comprehensive key learning points for a photosynthesis lesson.
-
-Requirements:
-- Include 3-5 main points
-- Focus on the process, inputs, and outputs
-- Make connections to everyday life
-- Consider common misconceptions
-
-The content should be suitable for Key Stage 3 students.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -626,6 +582,18 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate comprehensive key learning points for a photosynthesis lesson.
+
+Requirements:
+- Include 3-5 main points
+- Focus on the process, inputs, and outputs
+- Make connections to everyday life
+- Consider common misconceptions
+
+The content should be suitable for Key Stage 3 students.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -637,14 +605,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -708,10 +668,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -729,6 +685,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -740,14 +700,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -810,10 +762,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -828,6 +776,10 @@ Supportive expert, guiding and coaching the teacher to create a high-quality les
     "content": "## Voice guidance
 
 Unless otherwise specified, use AILA_TO_TEACHER.",
+    "role": "developer",
+  },
+  {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
     "role": "developer",
   },
   {
@@ -914,10 +866,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -935,6 +883,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -946,14 +898,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -1025,10 +969,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -1051,6 +991,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -1062,14 +1006,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -1133,10 +1069,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -1159,6 +1091,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -1170,14 +1106,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {
@@ -1241,10 +1169,6 @@ Do not mix British and American forms. If unsure, prefer the British form.
     "role": "developer",
   },
   {
-    "content": "Generate key learning points for a science lesson about photosynthesis.",
-    "role": "developer",
-  },
-  {
     "content": "## Voice Definitions
 
 The following voice definitions are available for this task:
@@ -1267,6 +1191,10 @@ Unless otherwise specified, use AILA_TO_TEACHER.",
     "role": "developer",
   },
   {
+    "content": "Generate key learning points for a science lesson about photosynthesis.",
+    "role": "developer",
+  },
+  {
     "content": "CURRENT DOCUMENT
 
 This is the document in its current state.
@@ -1278,14 +1206,6 @@ This is the document in its current state.
   "topic": "Plants and ecosystems",
   "learningOutcome": "Students will understand the process of photosynthesis"
 }",
-    "role": "developer",
-  },
-  {
-    "content": "EXEMPLAR CONTENT
-
-This is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.
-
-",
     "role": "developer",
   },
   {

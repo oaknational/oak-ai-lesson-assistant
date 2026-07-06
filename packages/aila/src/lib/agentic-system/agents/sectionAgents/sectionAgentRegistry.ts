@@ -1,7 +1,16 @@
 import type OpenAI from "openai";
 
-import type { LatestQuiz } from "../../../../protocol/schema";
-import type { SectionAgent, SectionAgentRegistry } from "../../types";
+import type {
+  Cycle,
+  LatestQuiz,
+  PartialLessonPlan,
+} from "../../../../protocol/schema";
+import type {
+  AilaExecutionContext,
+  SectionAgent,
+  SectionAgentRegistry,
+} from "../../types";
+import { isCycleSectionKey } from "../sharedPromptParts/cycleTarget.part";
 import { additionalMaterialsAgent } from "./additionalMaterialsAgent";
 import { basedOnAgent } from "./basedOnAgent";
 import { cycleAgent } from "./cycleAgent";
@@ -103,7 +112,7 @@ export const createSectionAgentRegistry = ({
     id: "cycle--default",
     description: "Generates learning cycle content",
     openai,
-    contentFromDocument: (document) => document.cycle1,
+    contentFromDocument: getCycleContentFromDocument,
   }),
   "exitQuiz--default": exitQuizAgent({
     id: "exitQuiz--default",
@@ -125,3 +134,13 @@ export const createSectionAgentRegistry = ({
       document.additionalMaterials ?? undefined,
   }),
 });
+
+function getCycleContentFromDocument(
+  document: PartialLessonPlan,
+  ctx: AilaExecutionContext,
+): Cycle | undefined {
+  const sectionKey = ctx.currentTurn.currentStep?.sectionKey;
+  if (!isCycleSectionKey(sectionKey)) return undefined;
+
+  return document[sectionKey] ?? undefined;
+}

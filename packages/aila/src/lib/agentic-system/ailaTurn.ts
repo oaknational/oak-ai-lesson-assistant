@@ -1,3 +1,5 @@
+import { aiLogger } from "@oakai/logger";
+
 import { createEmptyCorrectorStats } from "./correctorStats";
 import { executePlanSteps } from "./execution/executePlanSteps";
 import { executePlanningPhase } from "./execution/executePlanningPhase";
@@ -11,6 +13,8 @@ import type {
   AilaTurnArgs,
   AilaTurnOutcome,
 } from "./types";
+
+const log = aiLogger("aila:agents");
 
 export async function ailaTurn({
   persistedState,
@@ -64,6 +68,7 @@ export async function ailaTurn({
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
     };
+    log.error("ailaTurn unhandled exception", errorContext);
     // Open the llmMessage wrapper before shared failure handling.
     if (!context.currentTurn.plannerOutput) {
       context.callbacks.onPlannerComplete({ sectionKeys: [] });

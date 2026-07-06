@@ -19,6 +19,7 @@ import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 export function sectionToGenericPromptAgent<SectionValueType>(
   {
     responseSchema,
+    id,
     instructions,
     messages,
     exemplarContent,
@@ -38,15 +39,12 @@ export function sectionToGenericPromptAgent<SectionValueType>(
   voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
 
   return {
+    id,
     responseSchema: responseSchema,
     input: [
       {
         role: "developer" as const,
         content: identityAndVoice,
-      },
-      {
-        role: "developer" as const,
-        content: instructions,
       },
       voices.length > 0 && {
         role: "developer" as const,
@@ -58,19 +56,21 @@ export function sectionToGenericPromptAgent<SectionValueType>(
       },
       {
         role: "developer" as const,
+        content: instructions,
+      },
+      {
+        role: "developer" as const,
         content: currentDocumentPromptPart(ctx.currentTurn.document),
       },
       currentValue && {
         role: "developer" as const,
         content: currentSectionValuePromptPart(currentValue, contentToString),
       },
-      {
-        role: "developer" as const,
-        content: exemplarContentPromptPart(
-          exemplarContent ?? [],
-          contentToString,
-        ),
-      },
+      exemplarContent &&
+        exemplarContent.length > 0 && {
+          role: "developer" as const,
+          content: exemplarContentPromptPart(exemplarContent, contentToString),
+        },
       basedOnContent && {
         role: "developer" as const,
         content: basedOnContentPromptPart(basedOnContent, contentToString),

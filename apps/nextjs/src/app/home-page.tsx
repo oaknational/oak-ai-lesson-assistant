@@ -20,6 +20,7 @@ import {
   OakQuote,
   OakSecondaryButton,
   OakSmallPrimaryInvertedButton,
+  OakTagFunctional,
   OakTertiaryButton,
   OakUL,
   oakColorTokens,
@@ -30,7 +31,6 @@ import styled from "styled-components";
 
 import oakSupporting from "@/assets/svg/illustration/oak_supporting.svg";
 import type { HomePageQueryResult } from "@/cms/types/aiHomePageType";
-import { BetaTagPage } from "@/components/AppComponents/Chat/beta-tag";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
@@ -143,13 +143,13 @@ function IconInfoCardLink({
   );
 }
 
+function truncateLabel(label: string, maxLength = 15): string {
+  return label.length > maxLength ? `${label.slice(0, maxLength)}…` : label;
+}
+
 const StyledMuxPlayer = styled(MuxPlayer)`
-  width: 600px;
-  height: 334px;
-  @media (max-width: 1100px) {
-    width: 100%;
-    height: fit-content;
-  }
+  aspect-ratio: 16/9;
+  width: 100%;
 `;
 
 const StyledUL = styled(OakUL)`
@@ -190,7 +190,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
       <OakGrid>
         <OakGridArea
           $position={["static", "static", "sticky"]}
-          $colSpan={[0, 0, 5]}
+          $colSpan={[0, 0, 4]}
           $height="fit-content"
           $top={["spacing-0", "spacing-0", "spacing-48"]}
           $alignSelf={"start"}
@@ -202,7 +202,10 @@ export function HomePageContent({ pageData }: HomePageProps) {
         <OakGridArea
           $gap={"spacing-92"}
           $pv={["spacing-64"]}
-          $colSpan={[12, 0, 7]}
+          $colSpan={[12, 6, 7]}
+          $colStart={[1, 4, 5]}
+          $justifyContent={"center"}
+          $alignItems={"center"}
         >
           <HomePageAboutAila pageData={pageData} user={user} track={track} />
         </OakGridArea>
@@ -289,45 +292,59 @@ const OakFlexWithBackground = styled(OakFlex)<{
 function HomePageHero({ pageData }: HomePageProps) {
   return (
     <HeroContainer>
+      <OakBox $mb={"spacing-24"} $width="fit-content">
+        <OakTagFunctional
+          $borderRadius={"border-radius-l"}
+          $background={"bg-decorative3-main"}
+          label={"Beta"}
+          $font={"body-3-bold"}
+          $pv="spacing-4"
+          $ph="spacing-12"
+        />
+      </OakBox>
       <OakFlex
         $flexDirection={["column", "row"]}
         $justifyContent={"space-between"}
-        $alignItems={["center"]}
         $gap={"spacing-20"}
       >
         <OakFlexCustomMaxWidthWithHalfWidth
           $flexDirection={"column"}
-          $gap={"spacing-20"}
-          customMaxWidth={550}
+          $gap={"spacing-24"}
+          customMaxWidth={631}
           $width={"100%"}
         >
-          <OakBox $width="fit-content">
-            <BetaTagPage />
-          </OakBox>
           <OakHeading tag="h1" $font={"heading-4"}>
-            Build tailor-made lessons and teaching materials with AI
+            Create tailored lessons and resources with AI
           </OakHeading>
 
-          <OakBoxCustomMaxWidth
-            $display={["flex", "none"]}
-            $borderColor="border-primary"
-            $borderStyle={"solid"}
-            $ba={"border-solid-xl"}
-            customMaxWidth={600}
-            $height="fit-content"
-          >
-            <StyledMuxPlayer
-              playbackId={pageData?.heroVideo.video.asset.playbackId}
-              thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
-            />
-          </OakBoxCustomMaxWidth>
-
-          <OakP $textAlign="left" $font="body-2">
-            Transform your lesson prep with your free AI-powered lesson
-            assistant, Aila. Whether it&apos;s creating bespoke resources or
-            tailoring content to your class, Aila can help speed things along.
-          </OakP>
-          <HomePageCTA />
+          <OakFlex $flexDirection={"column-reverse"}>
+            <OakBoxCustomMaxWidth
+              $display={["flex", "none"]}
+              $borderColor="border-primary"
+              $borderStyle={"solid"}
+              $ba={"border-solid-xl"}
+              customMaxWidth={629}
+              $height="fit-content"
+            >
+              <StyledMuxPlayer
+                playbackId={pageData?.heroVideo.video.asset.playbackId}
+                thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
+              />
+            </OakBoxCustomMaxWidth>
+            <OakBox $mb={["spacing-32", "spacing-0"]}>
+              <OakP
+                $mb={["spacing-0", "spacing-48"]}
+                $textAlign="left"
+                $font="body-1"
+              >
+                Try Aila, Oak&apos;s AI lesson assistant, built for teachers.
+                Create and adapt lessons and resources that draw on Oak&apos;s
+                national curriculum-aligned content, with you in control every
+                step of the way.
+              </OakP>
+              <HomePageCTA />
+            </OakBox>
+          </OakFlex>
         </OakFlexCustomMaxWidthWithHalfWidth>
 
         <OakFlexCustomMaxWidthWithHalfWidth
@@ -357,229 +374,216 @@ type HomePageAboutAilaProps = {
 
 function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
   return (
-    <OakBox>
-      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
-        <OakHeading id="what-to-expect" $font="heading-5" tag="h3">
-          What to expect
-        </OakHeading>
-        <OakBoxCustomMaxWidth
-          $display={["flex"]}
-          $borderColor="border-primary"
-          $borderStyle={"solid"}
-          $ba={"border-solid-xl"}
-          customMaxWidth={600}
-          $height="fit-content"
-        >
-          <StyledMuxPlayer
-            playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
-            thumbnailTime={pageData?.belowTheFoldVideo.video.asset.thumbTime}
-          />
-        </OakBoxCustomMaxWidth>
-        <OakP $font={"body-2"}>
-          Aila, your AI-powered lesson assistant, can help you create
-          high-quality lessons and teaching materials in minutes. When
-          you&apos;re ready, you can download everything in several editable
-          formats to adapt as you like.
-        </OakP>
-        <OakP $font={"body-2-bold"}>Lessons created with Aila include:</OakP>
+    <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
+      <OakHeading id="what-to-expect" $font="heading-5" tag="h3">
+        What to expect
+      </OakHeading>
 
-        <StyledUL>
-          <OakLI $mb={"spacing-8"}>1 lesson plan</OakLI>
-          <OakLI $mb={"spacing-8"}>1 slide deck</OakLI>
-          <OakLI $mb={"spacing-8"}>2 quizzes</OakLI>
-          <OakLI>1 worksheet</OakLI>
-        </StyledUL>
+      <OakFlex
+        $borderColor="border-primary"
+        $borderStyle={"solid"}
+        $ba={"border-solid-xl"}
+        $grow={1}
+      >
+        <StyledMuxPlayer
+          playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
+          thumbnailTime={pageData?.belowTheFoldVideo.video.asset.thumbTime}
+        />
+      </OakFlex>
+
+      <OakP $font={"body-2"}>
+        Aila is Oak&apos;s AI lesson assistant, built for teachers. It helps you
+        quickly create and adapt lessons and resources that draw on Oak&apos;s
+        national curriculum-aligned content. All fully editable and ready to
+        download.
+      </OakP>
+      <OakP $font={"body-2"}>
+        Work step by step with Aila to create lesson plans, slide decks,
+        quizzes, worksheets and more. You stay in control throughout, reviewing
+        and adapting everything to suit your pupils.
+      </OakP>
+      <OakP $font={"body-2-bold"}>Lessons created with Aila include:</OakP>
+
+      <StyledUL>
+        <OakLI $mb={"spacing-8"}>1 lesson plan</OakLI>
+        <OakLI $mb={"spacing-8"}>1 slide deck</OakLI>
+        <OakLI $mb={"spacing-8"}>2 quizzes</OakLI>
+        <OakLI>1 worksheet</OakLI>
+      </StyledUL>
+
+      <OakSecondaryButton
+        iconName="arrow-right"
+        isTrailingIcon
+        element="a"
+        href={getAilaUrl("start")}
+      >
+        Create with Aila
+      </OakSecondaryButton>
+
+      <OakHeading
+        id="sample-lessons"
+        $mt={"spacing-32"}
+        $font="heading-5"
+        tag="h3"
+      >
+        Sample lessons
+      </OakHeading>
+      <OakP $font={"body-2"}>
+        Explore sample lessons created with Aila by teachers like you to see
+        what&apos;s possible. We don&apos;t currently include images in our AI
+        lessons, but you can add your own once downloaded.
+      </OakP>
+      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
+        {pageData?.sampleLessons?.map((lesson, index) => (
+          <IconInfoCardLink
+            key={`${index}-${lesson.title}`}
+            iconName={lesson.iconName}
+            background={lesson.iconTileBackgroundColour}
+            title={lesson.title}
+            buttonLabel={lesson.fileName}
+            buttonLabelMobile={truncateLabel(
+              lesson.mobileFileName ?? lesson.fileName,
+            )}
+            fileExtension={`.${lesson.file?.asset.extension ?? "zip"}`}
+            href={lesson.file?.asset.url}
+          />
+        ))}
+      </OakFlex>
+      <OakHeading
+        id="creating-a-lesson"
+        $mt={"spacing-32"}
+        $font="heading-5"
+        tag="h3"
+      >
+        Creating a lesson
+      </OakHeading>
+      <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
+        {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
+          <OakFlex
+            $display={["flex"]}
+            $borderColor="border-primary"
+            $borderStyle={"solid"}
+            $ba={"border-solid-xl"}
+            customMaxWidth={600}
+            $height="fit-content"
+          >
+            <StyledMuxPlayer
+              playbackId={pageData?.belowTheFoldVideo2?.video.asset.playbackId}
+              thumbnailTime={
+                pageData?.belowTheFoldVideo2?.video.asset.thumbTime
+              }
+            />
+          </OakFlex>
+        )}
+        <OakP $textAlign="left" $font="body-2">
+          Tell Aila what you want to teach and get step-by-step support to build
+          your lesson. Start with your learning outcome, then adapt as you go -
+          add or remove content, lower the reading age, or change the context to
+          suit your school.
+        </OakP>
+        <OakP $textAlign="left" $font="body-2">
+          Ask for different tasks or activities to suit your pupils, and
+          download fully editable resources ready for your classroom.
+        </OakP>
+        {pageData?.promptExamples?.map((example, index) => (
+          <IconInfoCardLink
+            key={`${index}-${example.title}`}
+            iconName={example.iconName}
+            background={example.iconTileBackgroundColour}
+            buttonLabel={example.fileName}
+            buttonLabelMobile={truncateLabel(
+              example.mobileFileName ?? example.fileName,
+            )}
+            title={example.title}
+            fileExtension={`.${example.file?.asset.extension ?? "pdf"}`}
+            href={example.file?.asset.url}
+          />
+        ))}
 
         <OakSecondaryButton
-          iconName="arrow-right"
-          isTrailingIcon
           element="a"
-          href={getAilaUrl("start")}
+          href={getAilaUrl("lesson")}
+          isTrailingIcon
+          iconName="arrow-right"
+          onClick={() => {
+            track.lessonAssistantAccessed({
+              product: "ai lesson assistant",
+              isLoggedIn: !!user.isSignedIn,
+              componentType: "homepage_secondary_create_a_lesson_button",
+            });
+          }}
         >
-          Start creating with AI
+          Create a lesson
         </OakSecondaryButton>
-
-        <OakHeading
-          id="sample-lessons"
-          $mt={"spacing-32"}
-          $font="heading-5"
-          tag="h3"
-        >
-          Sample lessons
-        </OakHeading>
-        <OakP $font={"body-2"}>
-          Explore sample lessons created with Aila by teachers like you to see
-          what&apos;s possible. We don&apos;t currently include images in our AI
-          lessons, but you can add your own once downloaded.
-        </OakP>
-        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
-          {pageData?.sampleLessons?.map((lesson, index) => (
-            <IconInfoCardLink
-              key={`${index}-${lesson.title}`}
-              iconName={lesson.iconName}
-              background={lesson.iconTileBackgroundColour}
-              title={lesson.title}
-              buttonLabel={lesson.fileName}
-              buttonLabelMobile={lesson.mobileFileName ?? lesson.fileName}
-              fileExtension={`.${lesson.file?.asset.extension ?? "zip"}`}
-              href={lesson.file?.asset.url}
-            />
-          ))}
-        </OakFlex>
-        <OakHeading
-          id="creating-a-lesson"
-          $mt={"spacing-32"}
-          $font="heading-5"
-          tag="h3"
-        >
-          Creating a lesson
-        </OakHeading>
-        <OakFlex $flexDirection={"column"} $gap={"spacing-24"}>
-          {pageData?.belowTheFoldVideo2?.video.asset.playbackId && (
-            <OakBoxCustomMaxWidth
-              $display={["flex"]}
-              $borderColor="border-primary"
-              $borderStyle={"solid"}
-              $ba={"border-solid-xl"}
-              customMaxWidth={600}
-              $height="fit-content"
-            >
-              <StyledMuxPlayer
-                playbackId={
-                  pageData?.belowTheFoldVideo2?.video.asset.playbackId
-                }
-                thumbnailTime={
-                  pageData?.belowTheFoldVideo2?.video.asset.thumbTime
-                }
-              />
-            </OakBoxCustomMaxWidth>
-          )}
-          <OakP $textAlign="left" $font="body-2">
-            Tell Aila what you want to teach and get step-by-step support to
-            build your lesson. Start with your learning outcome, then adapt as
-            you go - add or remove content, lower the reading age, or change the
-            context to suit your school.
-          </OakP>
-          <OakP $textAlign="left" $font="body-2">
-            Ask for different tasks or activities to suit your pupils, and
-            download fully editable resources ready for your classroom.
-          </OakP>
-          {pageData?.promptExamples?.map((example, index) => (
-            <IconInfoCardLink
-              key={`${index}-${example.title}`}
-              iconName={example.iconName}
-              background={example.iconTileBackgroundColour}
-              buttonLabel={example.fileName}
-              buttonLabelMobile={example.mobileFileName ?? example.fileName}
-              title={example.title}
-              fileExtension={`.${example.file?.asset.extension ?? "pdf"}`}
-              href={example.file?.asset.url}
-            />
-          ))}
-
-          <OakSecondaryButton
-            element="a"
-            href={getAilaUrl("lesson")}
-            isTrailingIcon
-            iconName="arrow-right"
-            onClick={() => {
-              track.lessonAssistantAccessed({
-                product: "ai lesson assistant",
-                isLoggedIn: !!user.isSignedIn,
-                componentType: "homepage_secondary_create_a_lesson_button",
-              });
-            }}
-          >
-            Create a lesson
-          </OakSecondaryButton>
-        </OakFlex>
-        <OakFlex
-          $mb={"spacing-24"}
-          $flexDirection={"column"}
-          $gap={"spacing-24"}
-        >
-          <OakHeading
-            id="creating-teaching-materials"
-            $mt={"spacing-32"}
-            $font="heading-5"
-            tag="h3"
-          >
-            Creating teaching materials
-          </OakHeading>
-          <OakP $textAlign="left" $font="body-2">
-            Already planned your lesson? Ask Aila to create glossaries, tasks
-            and quizzes in minutes to enhance an Oak lesson or your own. Then
-            download your tailored resource - or ask Aila to tweak it to suit
-            your pupils.
-          </OakP>
-          <OakSecondaryButton
-            element={"a"}
-            isTrailingIcon
-            iconName="arrow-right"
-            href={getAilaUrl("teaching-materials")}
-          >
-            Create teaching materials
-          </OakSecondaryButton>
-        </OakFlex>
-        <OakFlex
-          $mb={"spacing-24"}
-          $flexDirection={"column"}
-          $gap={"spacing-20"}
-        >
-          <OakHeading id="what-makes-aila-different" $font="heading-5" tag="h3">
-            What makes Aila different
-          </OakHeading>
-          <OakP $textAlign="left" $font="body-2">
-            Aila draws on our extensive library of national curriculum-aligned
-            resources, designed and tested by teachers and subject experts. That
-            means you get high-quality results made for UK pupils and
-            classrooms.
-          </OakP>
-
-          <OakSecondaryButton
-            isTrailingIcon
-            iconName="arrow-right"
-            element={"a"}
-            href="/faqs"
-          >
-            Find out more about Aila
-          </OakSecondaryButton>
-        </OakFlex>
-        <OakFlex
-          $mb={"spacing-24"}
-          $flexDirection={"column"}
-          $gap={"spacing-48"}
-        >
-          <OakQuote
-            quote="Using AI to support my planning and teaching wasn't something I'd really considered until I came across Aila. To say I was blown away would be an understatement!"
-            authorName="Avril"
-            authorTitle="Deputy Headteacher at Bedford Drive Primary School"
-          />
-          <OakQuote
-            quote="Incorporating Aila into my teaching toolkit has the potential to not only save me time - around 30 minutes per lesson - but also enhance the quality and effectiveness of my lessons, ultimately benefiting both myself and my students."
-            color="bg-decorative4-main"
-            authorName="James"
-            authorTitle="Teacher at St Cuthbert Mayne School"
-          />
-        </OakFlex>
-        <OakFlex
-          $mb={"spacing-24"}
-          $flexDirection={"column"}
-          $gap={"spacing-20"}
-        >
-          <OakHeading id="how-our-ai-works" $font="heading-5" tag="h3">
-            How our AI works
-          </OakHeading>
-          <OakP $textAlign="left" $font="body-2">
-            Our AI Experiments explore how AI can help create effective teaching
-            resources and reduce your workload. We combine carefully designed
-            prompts with our high-quality, national curriculum-aligned content
-            to give you reliable results that are safe for your pupils. And your
-            data is always kept secure.
-          </OakP>
-        </OakFlex>
       </OakFlex>
-    </OakBox>
+      <OakFlex $mb={"spacing-24"} $flexDirection={"column"} $gap={"spacing-24"}>
+        <OakHeading
+          id="creating-teaching-materials"
+          $mt={"spacing-32"}
+          $font="heading-5"
+          tag="h3"
+        >
+          Creating teaching materials
+        </OakHeading>
+        <OakP $textAlign="left" $font="body-2">
+          Already planned your lesson? Ask Aila to create glossaries, tasks and
+          quizzes in minutes to enhance an Oak lesson or your own. Then download
+          your tailored resource - or ask Aila to tweak it to suit your pupils.
+        </OakP>
+        <OakSecondaryButton
+          element={"a"}
+          isTrailingIcon
+          iconName="arrow-right"
+          href={getAilaUrl("teaching-materials")}
+        >
+          Create teaching materials
+        </OakSecondaryButton>
+      </OakFlex>
+      <OakFlex $mb={"spacing-24"} $flexDirection={"column"} $gap={"spacing-20"}>
+        <OakHeading id="what-makes-aila-different" $font="heading-5" tag="h3">
+          What makes Aila different
+        </OakHeading>
+        <OakP $textAlign="left" $font="body-2">
+          Aila draws on our extensive library of national curriculum-aligned
+          resources, designed and tested by teachers and subject experts. That
+          means you get high-quality results made for UK pupils and classrooms.
+        </OakP>
+
+        <OakSecondaryButton
+          isTrailingIcon
+          iconName="arrow-right"
+          element={"a"}
+          href="/faqs"
+        >
+          Find out more about Aila
+        </OakSecondaryButton>
+      </OakFlex>
+      <OakFlex $mb={"spacing-24"} $flexDirection={"column"} $gap={"spacing-48"}>
+        <OakQuote
+          quote="Using AI to support my planning and teaching wasn't something I'd really considered until I came across Aila. To say I was blown away would be an understatement!"
+          authorName="Avril"
+          authorTitle="Deputy Headteacher at Bedford Drive Primary School"
+        />
+        <OakQuote
+          quote="Incorporating Aila into my teaching toolkit has the potential to not only save me time - around 30 minutes per lesson - but also enhance the quality and effectiveness of my lessons, ultimately benefiting both myself and my students."
+          color="bg-decorative4-main"
+          authorName="James"
+          authorTitle="Teacher at St Cuthbert Mayne School"
+        />
+      </OakFlex>
+      <OakFlex $mb={"spacing-24"} $flexDirection={"column"} $gap={"spacing-20"}>
+        <OakHeading id="how-our-ai-works" $font="heading-5" tag="h3">
+          How our AI works
+        </OakHeading>
+        <OakP $textAlign="left" $font="body-2">
+          Our AI Experiments explore how AI can help create effective teaching
+          resources and reduce your workload. We combine carefully designed
+          prompts with our high-quality, national curriculum-aligned content to
+          give you reliable results that are safe for your pupils. And your data
+          is always kept secure.
+        </OakP>
+      </OakFlex>
+    </OakFlex>
   );
 }
 

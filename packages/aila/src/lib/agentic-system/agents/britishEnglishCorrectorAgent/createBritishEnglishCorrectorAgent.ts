@@ -47,6 +47,7 @@ export function createBritishEnglishCorrectorAgent({
   responseSchema,
 }: BritishEnglishCorrectorAgentProps): GenericPromptAgent<unknown> {
   return {
+    id: `british-english-corrector--${sectionKey}`,
     responseSchema,
     input: [
       {

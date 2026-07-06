@@ -1,5 +1,6 @@
 import { ailaTurn } from "./ailaTurn";
 import type {
+  AilaExecutionContext,
   AilaPersistedState,
   AilaRuntimeContext,
   AilaTurnCallbacks,
@@ -801,4 +802,232 @@ describe("ailaTurn", () => {
     });
     expect(callbacks.onTurnFailed).not.toHaveBeenCalled();
   });
+
+  it("runs group 4 in canonical order and passes committed cycle context forward", async () => {
+    const callbacks = createCallbacks();
+    const callOrder: string[] = [];
+
+    const starterQuizHandler = jest.fn().mockImplementation(() => {
+      callOrder.push("starterQuiz");
+      return Promise.resolve({ error: null, data: makeQuiz("Starter Q") });
+    });
+    const cycleHandler = jest
+      .fn()
+      .mockImplementation((ctx: AilaExecutionContext) => {
+        const sectionKey = ctx.currentTurn.currentStep?.sectionKey;
+        if (!sectionKey) throw new Error("Expected current step");
+        callOrder.push(sectionKey);
+
+        if (sectionKey === "cycle2") {
+          expect(ctx.currentTurn.document.cycle1?.title).toBe(
+            "Generated cycle 1",
+          );
+        }
+        if (sectionKey === "cycle3") {
+          expect(ctx.currentTurn.document.cycle1?.title).toBe(
+            "Generated cycle 1",
+          );
+          expect(ctx.currentTurn.document.cycle2?.title).toBe(
+            "Generated cycle 2",
+          );
+        }
+
+        return Promise.resolve({
+          error: null,
+          data: makeCycle(
+            sectionKey === "cycle1"
+              ? "Generated cycle 1"
+              : sectionKey === "cycle2"
+                ? "Generated cycle 2"
+                : "Generated cycle 3",
+          ),
+        });
+      });
+    const exitQuizHandler = jest
+      .fn()
+      .mockImplementation((ctx: AilaExecutionContext) => {
+        callOrder.push("exitQuiz");
+        expect(ctx.currentTurn.document.cycle1?.title).toBe(
+          "Generated cycle 1",
+        );
+        expect(ctx.currentTurn.document.cycle2?.title).toBe(
+          "Generated cycle 2",
+        );
+        expect(ctx.currentTurn.document.cycle3?.title).toBe(
+          "Generated cycle 3",
+        );
+        return Promise.resolve({ error: null, data: makeQuiz("Exit Q") });
+      });
+
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Generate lesson body",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "cycle2",
+              action: "generate",
+              sectionInstructions: null,
+            },
+            {
+              type: "section",
+              sectionKey: "exitQuiz",
+              action: "generate",
+              sectionInstructions: null,
+            },
+            {
+              type: "section",
+              sectionKey: "cycle1",
+              action: "generate",
+              sectionInstructions: null,
+            },
+            {
+              type: "section",
+              sectionKey: "starterQuiz",
+              action: "generate",
+              sectionInstructions: null,
+            },
+            {
+              type: "section",
+              sectionKey: "cycle3",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "starterQuiz--default": {
+          id: "starterQuiz--default",
+          description: "starter quiz",
+          handler: starterQuizHandler,
+        },
+        "cycle--default": {
+          id: "cycle--default",
+          description: "cycle",
+          handler: cycleHandler,
+        },
+        "exitQuiz--default": {
+          id: "exitQuiz--default",
+          description: "exit quiz",
+          handler: exitQuizHandler,
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+    });
+
+    await ailaTurn({
+      persistedState: {
+        ...createPersistedState(),
+        initialDocument: {
+          learningCycles: ["Outcome 1", "Outcome 2", "Outcome 3"],
+        },
+      },
+      runtime,
+      callbacks,
+    });
+
+    expect(callOrder).toEqual([
+      "starterQuiz",
+      "cycle1",
+      "cycle2",
+      "cycle3",
+      "exitQuiz",
+    ]);
+    expect(callbacks.onPlannerComplete).toHaveBeenCalledWith({
+      sectionKeys: ["starterQuiz", "cycle1", "cycle2", "cycle3", "exitQuiz"],
+    });
+  });
+
+  it("hard-fails cleanly when a cycle has no matching learning cycle outcome", async () => {
+    const callbacks = createCallbacks();
+    const cycleHandler = jest.fn();
+    const runtime = createRuntime({
+      plannerAgent: jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          decision: "plan",
+          parsedUserMessage: "Generate cycle 2",
+          plan: [
+            {
+              type: "section",
+              sectionKey: "cycle2",
+              action: "generate",
+              sectionInstructions: null,
+            },
+          ],
+        },
+      }),
+      sectionAgents: {
+        "cycle--default": {
+          id: "cycle--default",
+          description: "cycle",
+          handler: cycleHandler,
+        },
+      } as unknown as AilaRuntimeContext["sectionAgents"],
+    });
+
+    const outcome = await ailaTurn({
+      persistedState: {
+        ...createPersistedState(),
+        initialDocument: { learningCycles: ["Only outcome"] },
+      },
+      runtime,
+      callbacks,
+    });
+
+    expect(outcome).toMatchObject({ status: "failed" });
+    expect(cycleHandler).not.toHaveBeenCalled();
+    expect(callbacks.onTurnFailed).toHaveBeenCalledWith({
+      stepsExecuted: [],
+      ailaMessage:
+        "I wasn't able to complete that lesson update. Please try again.",
+    });
+    expect(callbacks.onTurnComplete).not.toHaveBeenCalled();
+  });
 });
+
+function makeQuiz(question: string) {
+  return {
+    version: "v3" as const,
+    questions: [
+      {
+        questionType: "multiple-choice" as const,
+        question,
+        hint: null,
+        answers: ["Correct answer"],
+        distractors: ["Wrong answer 1", "Wrong answer 2"],
+      },
+    ],
+    imageMetadata: [],
+  };
+}
+
+function makeCycle(title: string) {
+  return {
+    title,
+    durationInMinutes: 10,
+    explanation: {
+      spokenExplanation: ["Explain the key idea"],
+      accompanyingSlideDetails: "A supporting diagram",
+      imagePrompt: "supporting diagram",
+      slideText: "Key idea",
+    },
+    checkForUnderstanding: [
+      {
+        question: "Question 1?",
+        answers: ["Answer"],
+        distractors: ["Wrong 1", "Wrong 2"],
+      },
+      {
+        question: "Question 2?",
+        answers: ["Answer"],
+        distractors: ["Wrong 1", "Wrong 2"],
+      },
+    ],
+    practice: "Complete the practice task.",
+    feedback: "Check against the model answer.",
+  };
+}
