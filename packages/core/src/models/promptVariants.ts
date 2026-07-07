@@ -28,10 +28,14 @@ export class PromptVariants {
     this.variant = foundVariant;
   }
 
-  async setCurrent(variant: string, storeAsJson = false) {
+  async setCurrent(
+    variant: string,
+    storeAsJson = false,
+    { stableAcrossDeploys = false }: { stableAcrossDeploys?: boolean } = {},
+  ) {
     const template = this.format({ storeAsJson });
     const { slug } = this.definition;
-    const hash = promptHash({ slug, variant, template });
+    const hash = promptHash({ slug, variant, template, stableAcrossDeploys });
     const existing = await this.prisma.prompt.findFirst({
       where: {
         AND: [{ hash }, { slug }, { variant }, { current: true }],
@@ -55,8 +59,11 @@ export class PromptVariants {
     >`SELECT MAX(version) AS max_version FROM prompts WHERE slug = ${slug}`;
     const maxVersion = maxVersionRow[0]?.max_version ?? 0;
     const version = maxVersion + 1;
-    const created = await this.prisma.prompt.create({
-      data: {
+    const now = new Date().toISOString();
+    // Upsert on the unique hash
+    const created = await this.prisma.prompt.upsert({
+      where: { hash },
+      create: {
         hash,
         appId: app.id,
         name,
@@ -65,8 +72,8 @@ export class PromptVariants {
         inputSchema: JSON.stringify(inputSchema),
         outputSchema: JSON.stringify(outputSchema),
         current: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: now,
+        updatedAt: now,
         variant,
         identifier: promptIdentifier({ slug, variant, version }),
         version,
@@ -75,13 +82,17 @@ export class PromptVariants {
           process.env.CACHED_COMMIT_REF ??
           null, // Vercel- and Netlify-specific environment variable for the latest git commit
       },
+      update: {
+        current: true,
+        updatedAt: now,
+      },
     });
 
     // Mark previous prompts as historic
     await this.prisma.prompt.updateMany({
       data: {
         current: false,
-        updatedAt: new Date().toISOString(),
+        updatedAt: now,
       },
       where: {
         slug: {
@@ -132,12 +143,17 @@ export function promptHash({
   slug,
   variant,
   template,
+  stableAcrossDeploys = false,
 }: {
   slug: string;
   variant: string;
   template: string;
+  stableAcrossDeploys?: boolean; // default false to preserve per-deploy versioning for non-agentic
 }) {
-  return `${slug}-${variant}-${Md5.hashStr(template)}-${process.env.VERCEL_GIT_COMMIT_SHA ?? "dev"}`;
+  const deploySuffix = stableAcrossDeploys
+    ? ""
+    : `-${process.env.VERCEL_GIT_COMMIT_SHA ?? "dev"}`;
+  return `${slug}-${variant}-${Md5.hashStr(template)}${deploySuffix}`;
 }
 
 export function promptIdentifier({
