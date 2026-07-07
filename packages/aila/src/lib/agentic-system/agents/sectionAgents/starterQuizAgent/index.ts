@@ -12,15 +12,31 @@ export const starterQuizAgent = createSectionAgent({
   responseSchema: StarterQuizSchema,
   instructions: (ctx) => {
     const mode = deriveQuizBuildMode(ctx.currentTurn.currentStep);
+    const promptTemplateId = `starterQuiz--default:${mode.kind}`;
+    const promptInputs = {
+      buildMode: mode.kind,
+      ...(mode.kind === "rewriteOne" ? { position: mode.position } : {}),
+    };
     switch (mode.kind) {
       case "fullRegen":
-        return starterQuizInstructions;
+        return {
+          text: starterQuizInstructions,
+          promptTemplateId,
+          promptInputs,
+        };
       case "addOne":
-        return addOneQuizInstructions;
+        return {
+          text: addOneQuizInstructions,
+          promptTemplateId,
+          promptInputs,
+        };
       case "rewriteOne":
-        return rewriteOneQuizInstructions(mode.position);
+        return {
+          text: rewriteOneQuizInstructions(mode.position),
+          promptTemplateId,
+          promptInputs,
+        };
     }
   },
-  defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

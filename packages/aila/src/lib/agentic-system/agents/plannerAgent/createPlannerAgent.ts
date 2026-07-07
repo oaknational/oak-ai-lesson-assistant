@@ -4,15 +4,12 @@ import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
 import type { GenericPromptAgent } from "../../schema";
 import { plannerOutputSchema } from "../../schema";
 import type { PlannerAgentProps } from "../../types";
-import {
-  getVoiceDefinitions,
-  getVoicePrompt,
-} from "../sectionAgents/shared/voices";
+import { AGENTIC_PROMPT_TEMPLATES } from "../agenticPromptTemplates";
+import { staticPromptParts } from "../sectionAgents/shared/staticPromptParts";
 import { currentDocumentPromptPart } from "../sharedPromptParts/currentDocument.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
 import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
 import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
-import { plannerInstructions } from "./plannerAgent.instructions";
 
 export const createPlannerAgent = ({
   messages,
@@ -24,18 +21,7 @@ export const createPlannerAgent = ({
   return {
     responseSchema: plannerOutputSchema,
     input: [
-      {
-        role: "developer",
-        content: plannerInstructions,
-      },
-      {
-        role: "developer" as const,
-        content: getVoiceDefinitions(["AGENT_TO_AGENT"]),
-      },
-      {
-        role: "developer" as const,
-        content: getVoicePrompt("AGENT_TO_AGENT"),
-      },
+      ...staticPromptParts(AGENTIC_PROMPT_TEMPLATES.planner),
       {
         role: "developer" as const,
         content: relevantLessonsPromptPart(

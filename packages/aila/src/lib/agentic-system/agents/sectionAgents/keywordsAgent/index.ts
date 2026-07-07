@@ -8,6 +8,5 @@ export const keywordsAgent = createSectionAgent({
   responseSchema: KeywordsSchema,
   instructions: keywordsInstructions,
   contentToString: stringListToText((k) => `${k.keyword}: ${k.definition}`),
-  defaultVoice: "TEACHER_TO_PUPIL_WRITTEN",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

@@ -3,10 +3,8 @@ import { isTruthy } from "remeda";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
 import type { GenericPromptAgent, SectionKey } from "../../schema";
 import type { MessageToUserAgentProps } from "../../types";
-import {
-  getVoiceDefinitions,
-  getVoicePrompt,
-} from "../sectionAgents/shared/voices";
+import { AGENTIC_PROMPT_TEMPLATES } from "../agenticPromptTemplates";
+import { staticPromptParts } from "../sectionAgents/shared/staticPromptParts";
 import { changesMadePromptPart } from "../sharedPromptParts/changesMade.part";
 import { errorsPromptPart } from "../sharedPromptParts/errors.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
@@ -16,7 +14,6 @@ import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.
 import { stepsExecutedPromptPart } from "../sharedPromptParts/stepsExecuted.part";
 import { unplannedSectionsPromptPart } from "../sharedPromptParts/unplannedSections.part";
 import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
-import { messageToUserAgentInstructions } from "./messageToUserAgent.instructions";
 import {
   type MessageToUserAgentOutput,
   messageToUserAgentSchema,
@@ -36,18 +33,7 @@ export function createMessageToUserAgent({
   return {
     responseSchema: messageToUserAgentSchema,
     input: [
-      {
-        role: "developer" as const,
-        content: messageToUserAgentInstructions,
-      },
-      {
-        role: "developer" as const,
-        content: getVoiceDefinitions(["AILA_TO_TEACHER"]),
-      },
-      {
-        role: "developer" as const,
-        content: getVoicePrompt("AILA_TO_TEACHER"),
-      },
+      ...staticPromptParts(AGENTIC_PROMPT_TEMPLATES.messageToUser),
       errors.length > 0 && {
         role: "developer" as const,
         content: errorsPromptPart(errors),

@@ -6,7 +6,8 @@ import {
 } from "../../../../features/americanisms";
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
 import type { GenericPromptAgent, SectionKey } from "../../schema";
-import { britishEnglishCorrectorAgentInstructions } from "./britishEnglishCorrectorAgent.instructions";
+import { AGENTIC_PROMPT_TEMPLATES } from "../agenticPromptTemplates";
+import { staticPromptParts } from "../sectionAgents/shared/staticPromptParts";
 
 const issueKindLabel = (issue: AmericanismIssue["issue"]): string => {
   switch (issue) {
@@ -49,10 +50,7 @@ export function createBritishEnglishCorrectorAgent({
   return {
     responseSchema,
     input: [
-      {
-        role: "developer" as const,
-        content: britishEnglishCorrectorAgentInstructions,
-      },
+      ...staticPromptParts(AGENTIC_PROMPT_TEMPLATES.britishEnglishCorrector),
       {
         role: "developer" as const,
         content: `Section key: ${sectionKey}`,

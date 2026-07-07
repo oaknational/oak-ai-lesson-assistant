@@ -2,6 +2,7 @@ import type OpenAI from "openai";
 import { z } from "zod";
 
 import type { AilaExecutionContext } from "../../types";
+import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import * as sectionModule from "../sectionToGenericPromptAgent";
 import { createSectionAgent } from "./createSectionAgent";
 
@@ -44,6 +45,10 @@ const buildCtx = (overrides: { mathsQuizEnabled: boolean }) =>
   }) as unknown as AilaExecutionContext;
 
 describe("createSectionAgent", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("passes a static instructions string straight through", async () => {
     const spy = jest.spyOn(sectionModule, "sectionToGenericPromptAgent");
     const factory = createSectionAgent({
@@ -96,6 +101,42 @@ describe("createSectionAgent", () => {
       expect.anything(),
     );
 
+    spy.mockRestore();
+  });
+
+  it("passes resolved prompt template metadata to generation execution", async () => {
+    const spy = jest.spyOn(sectionModule, "sectionToGenericPromptAgent");
+    const factory = createSectionAgent({
+      responseSchema: z.object({ value: z.string() }),
+      instructions: () => ({
+        text: "runtime prompt",
+        promptTemplateId: "starterQuiz--default:addOne",
+        promptInputs: { buildMode: "addOne" },
+      }),
+      modelParams: { model: "gpt-4o-mini" },
+    });
+    const agent = factory({
+      id: "starterQuiz--default",
+      description: "",
+      openai: {} as OpenAI,
+      contentFromDocument: () => undefined,
+    });
+
+    await agent.handler(buildCtx({ mathsQuizEnabled: false }));
+
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({ instructions: "runtime prompt" }),
+      expect.anything(),
+    );
+    expect(executeGenericPromptAgent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentId: "starterQuiz--default",
+        promptTemplateId: "starterQuiz--default:addOne",
+        promptInputs: expect.objectContaining({
+          buildMode: "addOne",
+        }),
+      }),
+    );
     spy.mockRestore();
   });
 });

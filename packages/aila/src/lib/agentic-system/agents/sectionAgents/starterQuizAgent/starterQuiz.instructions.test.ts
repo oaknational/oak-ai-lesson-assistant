@@ -1,6 +1,7 @@
 import {
   addOneQuizInstructions,
   rewriteOneQuizInstructions,
+  rewriteOneQuizInstructionsTemplate,
   starterQuizInstructions,
 } from "./starterQuiz.instructions";
 
@@ -34,6 +35,10 @@ describe("starterQuiz instructions", () => {
 
     it("is distinct from the full-regen instructions", () => {
       expect(rewriteOneQuizInstructions(1)).not.toBe(starterQuizInstructions);
+    });
+
+    it("has a stable template for prompt versioning", () => {
+      expect(rewriteOneQuizInstructionsTemplate).toContain("{position}");
     });
   });
 });

@@ -169,7 +169,14 @@ function createMockChat({
       options: {
         useAgenticAila,
       },
-      prisma: {},
+      prisma: {
+        prompt: {
+          findFirst: jest.fn().mockResolvedValue({ id: "prompt_planner" }),
+        },
+        generation: {
+          createMany: jest.fn().mockResolvedValue({ count: 0 }),
+        },
+      },
       tracing: {
         span: async (
           _step: string,
@@ -255,6 +262,52 @@ describe("AilaStreamHandler", () => {
     expect(chat.enqueue).not.toHaveBeenCalledWith({
       type: "comment",
       value: "CHAT_COMPLETE",
+    });
+  });
+
+  it("does not attach failed agentic generations to the user's message", async () => {
+    mockedCreateOpenAIPlannerAgent.mockImplementationOnce(
+      (_openai, collectGeneration) => () => {
+        collectGeneration?.({
+          agentId: "planner",
+          promptTemplateId: "planner",
+          promptInputs: {
+            agentId: "planner",
+            promptTemplateId: "planner",
+            model: "gpt-test",
+          },
+          status: "FAILED",
+          llmTimeTaken: 100,
+          promptTokensUsed: 1,
+          completionTokensUsed: 2,
+          promptText: "test prompt",
+          response: "planner failed",
+        });
+        return Promise.resolve({ error: { message: "planner failed" } });
+      },
+    );
+    mockedAilaTurn.mockImplementationOnce(async ({ runtime }) => {
+      await runtime.plannerAgent({} as never);
+      return createAilaTurnOutcome("failed");
+    });
+
+    const chat = createMockChat({ useAgenticAila: true });
+    const handler = new AilaStreamHandler(chat as never);
+
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.aila.prisma.generation.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          promptId: "prompt_planner",
+          promptInputs: expect.objectContaining({
+            agentId: "planner",
+          }),
+          status: "FAILED",
+          appSessionId: "chat_123",
+          messageId: undefined,
+        }),
+      ],
     });
   });
 

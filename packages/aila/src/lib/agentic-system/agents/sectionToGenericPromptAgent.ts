@@ -3,11 +3,7 @@ import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
 import type { SectionPromptAgentProps } from "../types";
-import { identityAndVoice } from "./sectionAgents/shared/identityAndVoice";
-import {
-  getVoiceDefinitions,
-  getVoicePrompt,
-} from "./sectionAgents/shared/voices";
+import { staticPromptParts } from "./sectionAgents/shared/staticPromptParts";
 import { basedOnContentPromptPart } from "./sharedPromptParts/basedOnContent.part";
 import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.part";
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
@@ -35,27 +31,15 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     "input" | "text" | "stream"
   >,
 ): GenericPromptAgent<SectionValueType> {
-  voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
-
   return {
     responseSchema: responseSchema,
     input: [
-      {
-        role: "developer" as const,
-        content: identityAndVoice,
-      },
-      {
-        role: "developer" as const,
-        content: instructions,
-      },
-      voices.length > 0 && {
-        role: "developer" as const,
-        content: getVoiceDefinitions(voices),
-      },
-      defaultVoice && {
-        role: "developer" as const,
-        content: getVoicePrompt(defaultVoice),
-      },
+      ...staticPromptParts({
+        includeIdentity: true,
+        instructions,
+        voices,
+        defaultVoice,
+      }),
       {
         role: "developer" as const,
         content: currentDocumentPromptPart(ctx.currentTurn.document),

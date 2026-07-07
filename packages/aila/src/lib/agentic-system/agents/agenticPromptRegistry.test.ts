@@ -1,0 +1,142 @@
+import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+
+import {
+  __clearAgenticPromptIdCache,
+  resolveAgenticPromptIds,
+} from "./agenticPromptRegistry";
+
+function createMockPrisma(promptId: string) {
+  const findFirst = jest.fn().mockResolvedValue({ id: promptId });
+  const findFirstOrThrow = jest
+    .fn()
+    .mockResolvedValue({ id: "lesson-planner" });
+  const upsert = jest.fn().mockResolvedValue({ id: promptId });
+  const updateMany = jest.fn().mockResolvedValue({ count: 0 });
+  const prisma = {
+    prompt: { findFirst, upsert, updateMany },
+    app: { findFirstOrThrow },
+    $queryRaw: jest.fn().mockResolvedValue([{ max_version: 0 }]),
+  } as unknown as PrismaClientWithAccelerate;
+  return { prisma, findFirst, findFirstOrThrow, upsert, updateMany };
+}
+
+describe("resolveAgenticPromptIds", () => {
+  beforeEach(() => {
+    __clearAgenticPromptIdCache();
+  });
+
+  it("resolves each agent to its prompt id", async () => {
+    const { prisma } = createMockPrisma("prompt_x");
+
+    const result = await resolveAgenticPromptIds({
+      prisma,
+      promptTemplateIds: ["planner", "cycle--default"],
+    });
+
+    expect(result).toEqual({
+      planner: "prompt_x",
+      "cycle--default": "prompt_x",
+    });
+  });
+
+  it("deduplicates repeated agent ids within a single call", async () => {
+    const { prisma, findFirst } = createMockPrisma("prompt_x");
+
+    await resolveAgenticPromptIds({
+      prisma,
+      promptTemplateIds: ["planner", "planner", "planner"],
+    });
+
+    expect(findFirst).toHaveBeenCalledTimes(1);
+  });
+
+  it("caches resolution across calls so the db is hit once per agent", async () => {
+    const { prisma, findFirst } = createMockPrisma("prompt_x");
+
+    await resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] });
+    await resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] });
+
+    expect(findFirst).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not cache failures", async () => {
+    const findFirst = jest
+      .fn()
+      .mockRejectedValueOnce(new Error("db down"))
+      .mockResolvedValueOnce({ id: "prompt_recovered" });
+    const prisma = {
+      prompt: { findFirst },
+    } as unknown as PrismaClientWithAccelerate;
+
+    await expect(
+      resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] }),
+    ).rejects.toThrow("db down");
+
+    const result = await resolveAgenticPromptIds({
+      prisma,
+      promptTemplateIds: ["planner"],
+    });
+
+    expect(result).toEqual({ planner: "prompt_recovered" });
+    expect(findFirst).toHaveBeenCalledTimes(2);
+  });
+
+  it("creates a prompt row when no current prompt exists", async () => {
+    const { prisma, findFirst, findFirstOrThrow, upsert, updateMany } =
+      createMockPrisma("prompt_created");
+    findFirst.mockResolvedValueOnce(null);
+
+    const result = await resolveAgenticPromptIds({
+      prisma,
+      promptTemplateIds: ["planner"],
+    });
+
+    expect(result).toEqual({ planner: "prompt_created" });
+    expect(findFirstOrThrow).toHaveBeenCalledWith({
+      where: { slug: "lesson-planner" },
+    });
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          appId: "lesson-planner",
+          slug: "agentic-planner",
+          current: true,
+        }),
+        update: expect.objectContaining({
+          current: true,
+        }),
+      }),
+    );
+    expect(updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          slug: { equals: "agentic-planner" },
+          variant: { equals: "main" },
+        }),
+      }),
+    );
+  });
+
+  it("creates distinct prompt rows for quiz build modes", async () => {
+    const { prisma, findFirst, upsert } = createMockPrisma("prompt_created");
+    findFirst.mockResolvedValueOnce(null);
+
+    const result = await resolveAgenticPromptIds({
+      prisma,
+      promptTemplateIds: ["starterQuiz--default:addOne"],
+    });
+
+    expect(result).toEqual({
+      "starterQuiz--default:addOne": "prompt_created",
+    });
+    expect(upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          name: "Agentic Aila: starterQuiz--default:addOne",
+          // cspell:ignore starterquiz addone
+          slug: "agentic-starterquiz-default-addone",
+        }),
+      }),
+    );
+  });
+});

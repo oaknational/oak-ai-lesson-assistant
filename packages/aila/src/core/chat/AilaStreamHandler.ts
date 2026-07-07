@@ -6,11 +6,15 @@ import type {
 import { aiLogger } from "@oakai/logger";
 import type { getRagLessonPlansByIds } from "@oakai/rag";
 
-import type { AilaGenerationStatus } from "features/generation";
-import type { GenerationPersistencePayload } from "features/persistence/AilaPersistence";
 import type { ReadableStreamDefaultController } from "stream/web";
 
+import { getLastAssistantMessage } from "../../helpers/chat/getLastAssistantMessage";
+import { resolveAgenticPromptIds } from "../../lib/agentic-system/agents/agenticPromptRegistry";
 import { createOpenAIBritishEnglishCorrectorAgent } from "../../lib/agentic-system/agents/britishEnglishCorrectorAgent";
+import type {
+  GenerationCollector,
+  PendingGeneration,
+} from "../../lib/agentic-system/agents/executeGenericPromptAgent";
 import { createOpenAIMessageToUserAgent } from "../../lib/agentic-system/agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../../lib/agentic-system/agents/plannerAgent";
 import { createSectionAgentRegistry } from "../../lib/agentic-system/agents/sectionAgents/sectionAgentRegistry";
@@ -29,8 +33,8 @@ import { AilaChatError } from "../AilaError";
 import { ReportStorage, createQuizTracker } from "../quiz/reporting";
 import type { AilaChat } from "./AilaChat";
 import type { PatchEnqueuer } from "./PatchEnqueuer";
+import { buildAgenticGenerationRows } from "./agenticGenerationPersistence";
 import type { Message } from "./types";
-import { wrapOpenAIWithGenerationCapture } from "./wrapOpenAIWithGenerationCapture";
 
 const log = aiLogger("aila:stream");
 
@@ -49,15 +53,6 @@ type StreamOutcome =
 type MathsQuizAgentHandler = SectionAgent<LatestQuiz>["handler"];
 type MathsQuizAgentContext = Parameters<MathsQuizAgentHandler>[0];
 type MathsQuizAgentResult = Awaited<ReturnType<MathsQuizAgentHandler>>;
-
-export type PendingGeneration = {
-  llmTimeTaken: number;
-  promptTokensUsed: number;
-  completionTokensUsed: number;
-  response: string;
-  promptText: string;
-  status: AilaGenerationStatus;
-};
 
 class ThreatDetectionFailureError extends Error {
   public readonly detectorName: string;
@@ -317,6 +312,10 @@ export class AilaStreamHandler {
       },
     });
 
+    // Capture generations for persistence, except in fixture mode
+    let collectGeneration: GenerationCollector | undefined =
+      this.collectPendingGenerationData;
+
     const { agenticFixture } = this._chat.aila.options;
     if (agenticFixture) {
       log.info(
@@ -325,12 +324,9 @@ export class AilaStreamHandler {
         agenticFixture.fixtureName,
       );
       openai = wrapOpenAIWithFixture(openai, agenticFixture);
+      collectGeneration = undefined;
     } else {
       log.info("No agenticFixture config — using real OpenAI client");
-      openai = wrapOpenAIWithGenerationCapture(
-        openai,
-        this.collectPendingGenerationData,
-      );
     }
 
     const ailaTurnCallbacks = createAilaTurnCallbacks({
@@ -366,14 +362,20 @@ export class AilaStreamHandler {
         config: {
           mathsQuizEnabled: this._chat.aila.options.useMathsQuizRag ?? false,
         },
-        plannerAgent: createOpenAIPlannerAgent(openai),
+        plannerAgent: createOpenAIPlannerAgent(openai, collectGeneration),
         sectionAgents: createSectionAgentRegistry({
           openai,
+          collectGeneration,
           customAgentHandlers: this.createMathsQuizAgentHandlers(),
         }),
-        messageToUserAgent: createOpenAIMessageToUserAgent(openai),
-        britishEnglishCorrectorAgent:
-          createOpenAIBritishEnglishCorrectorAgent(openai),
+        messageToUserAgent: createOpenAIMessageToUserAgent(
+          openai,
+          collectGeneration,
+        ),
+        britishEnglishCorrectorAgent: createOpenAIBritishEnglishCorrectorAgent(
+          openai,
+          collectGeneration,
+        ),
         fetchRelevantLessons: async ({ title, subject, keyStage }) => {
           const {
             getRelevantLessonPlans,
@@ -450,26 +452,30 @@ export class AilaStreamHandler {
       return;
     }
 
-    try {
-      const messageId = this._chat.messages[this._chat.messages.length - 1]?.id;
-      const generationPersistencePayload: GenerationPersistencePayload[] =
-        this._pendingGenerations.map((generation) => ({
-          ...generation,
-          userId: this._chat.userId ?? "",
-          appId: "lesson-planner",
-          promptId: "AGENTIC", // what do we want here ?
-          completedAt: new Date(),
-          appSessionId: this._chat.id,
-          messageId,
-        }));
+    const userId = this._chat.userId;
+    if (!userId) {
+      log.info("No userId found for chat. Not persisting generations.");
+      return;
+    }
 
-      await this._chat.aila.prisma.generation.createMany({
-        data: generationPersistencePayload,
+    try {
+      const messageId = getLastAssistantMessage(this._chat.messages)?.id;
+      const promptIdsByPromptTemplateId = await resolveAgenticPromptIds({
+        prisma: this._chat.aila.prisma,
+        promptTemplateIds: this._pendingGenerations.map(
+          (generation) => generation.promptTemplateId,
+        ),
       });
-      log.info(
-        "Persisted %d agentic generation(s)",
-        generationPersistencePayload.length,
-      );
+      const data = buildAgenticGenerationRows({
+        pendingGenerations: this._pendingGenerations,
+        promptIdsByPromptTemplateId,
+        userId,
+        appSessionId: this._chat.id,
+        messageId,
+      });
+
+      await this._chat.aila.prisma.generation.createMany({ data });
+      log.info("Persisted %d agentic generation(s)", data.length);
     } catch (e) {
       log.error("Error persisting generation data", e);
       this._chat.aila.errorReporter?.reportError(e);

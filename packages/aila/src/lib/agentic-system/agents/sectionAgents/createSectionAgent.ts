@@ -5,24 +5,47 @@ import type { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
 import type { AilaExecutionContext } from "../../types";
-import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
+import { getAgenticPromptTemplate } from "../agenticPromptTemplates";
+import {
+  type GenerationCollector,
+  executeGenericPromptAgent,
+} from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
-import type { VoiceId } from "./shared/voices";
 
-type InstructionsValue = string | ((ctx: AilaExecutionContext) => string);
+type ResolvedInstructions = {
+  text: string;
+  promptTemplateId?: string;
+  promptInputs?: Record<string, unknown>;
+};
+
+type InstructionsValue =
+  | string
+  | ((ctx: AilaExecutionContext) => string | ResolvedInstructions);
+
+function resolveInstructions(
+  instructions: InstructionsValue,
+  ctx: AilaExecutionContext,
+): ResolvedInstructions {
+  const resolved =
+    typeof instructions === "function" ? instructions(ctx) : instructions;
+
+  return typeof resolved === "string" ? { text: resolved } : resolved;
+}
 
 /**
  * This is a factory function for section agents.
  * A section agent is responsible for generating a specific section of the document.
+ *
+ * Voice configuration is sourced from AGENTIC_PROMPT_TEMPLATES (keyed by the
+ * resolved prompt template id) so the runtime prompt and the persisted prompt
+ * template share one definition.
  */
 export function createSectionAgent<ResponseType>({
   responseSchema,
   instructions,
   contentToString = defaultContentToString,
   extraInputFromCtx,
-  defaultVoice,
-  voices,
   modelParams,
 }: {
   responseSchema: z.ZodType<ResponseType>;
@@ -31,8 +54,6 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx?: (
     state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
-  defaultVoice?: VoiceId;
-  voices?: VoiceId[];
   modelParams: Omit<
     ResponseCreateParamsNonStreaming,
     "input" | "text" | "stream"
@@ -43,6 +64,7 @@ export function createSectionAgent<ResponseType>({
     description,
     openai,
     contentFromDocument,
+    collectGeneration,
   }: {
     id: string;
     description: string;
@@ -50,12 +72,13 @@ export function createSectionAgent<ResponseType>({
     contentFromDocument: (
       document: PartialLessonPlan,
     ) => ResponseType | undefined;
+    collectGeneration?: GenerationCollector;
   }) => ({
     id,
     description,
     handler: (ctx: AilaExecutionContext) => {
-      const resolvedInstructions =
-        typeof instructions === "function" ? instructions(ctx) : instructions;
+      const resolvedInstructions = resolveInstructions(instructions, ctx);
+      const promptTemplateId = resolvedInstructions.promptTemplateId ?? id;
 
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
@@ -63,10 +86,11 @@ export function createSectionAgent<ResponseType>({
           contentFromDocument,
         });
 
+      const promptTemplate = getAgenticPromptTemplate(promptTemplateId);
       const genericPromptAgent = sectionToGenericPromptAgent(
         {
           responseSchema,
-          instructions: resolvedInstructions,
+          instructions: resolvedInstructions.text,
           messages: ctx.persistedState.messages,
           contentToString,
           basedOnContent,
@@ -74,15 +98,24 @@ export function createSectionAgent<ResponseType>({
           currentValue,
           ctx,
           extraInputFromCtx,
-          defaultVoice,
-          voices,
+          defaultVoice: promptTemplate?.defaultVoice,
+          voices: promptTemplate?.voices,
         },
         modelParams,
       );
 
       return executeGenericPromptAgent({
         agent: genericPromptAgent,
+        agentId: id,
+        promptTemplateId,
         openai,
+        collectGeneration,
+        promptInputs: {
+          sectionKey: ctx.currentTurn.currentStep?.sectionKey,
+          action: ctx.currentTurn.currentStep?.action,
+          quizIntent: ctx.currentTurn.currentStep?.quizIntent,
+          ...resolvedInstructions.promptInputs,
+        },
       });
     },
   });

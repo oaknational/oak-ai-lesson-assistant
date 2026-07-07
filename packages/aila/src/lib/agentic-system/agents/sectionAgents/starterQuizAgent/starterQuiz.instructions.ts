@@ -25,11 +25,18 @@ Generate exactly ONE new multiple-choice question to ADD to the existing quiz. D
 
 ${quizQuestionDesignInstructions}`;
 
-export const rewriteOneQuizInstructions = (position: number): string =>
-  `# Task
+const rewriteOneQuizInstructionText = (
+  position: number | "{position}",
+) => `# Task
 
 Rewrite question ${position} of the existing quiz. Return only the replacement question. Do not modify or output any of the other questions — they will be preserved by the system.
 
 ## Question Design
 
 ${quizQuestionDesignInstructions}`;
+
+export const rewriteOneQuizInstructionsTemplate =
+  rewriteOneQuizInstructionText("{position}");
+
+export const rewriteOneQuizInstructions = (position: number): string =>
+  rewriteOneQuizInstructionText(position);
