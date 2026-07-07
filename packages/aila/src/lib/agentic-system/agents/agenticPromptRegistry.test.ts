@@ -1,6 +1,7 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
 import {
+  type AgenticPromptTemplate,
   __clearAgenticPromptIdCache,
   resolveAgenticPromptIds,
 } from "./agenticPromptRegistry";
@@ -20,17 +21,21 @@ function createMockPrisma(promptId: string) {
   return { prisma, findFirst, findFirstOrThrow, upsert, updateMany };
 }
 
+function tpl(promptTemplateId: string): AgenticPromptTemplate {
+  return { promptTemplateId, promptTemplate: `body for ${promptTemplateId}` };
+}
+
 describe("resolveAgenticPromptIds", () => {
   beforeEach(() => {
     __clearAgenticPromptIdCache();
   });
 
-  it("resolves each agent to its prompt id", async () => {
+  it("resolves each template to its prompt id", async () => {
     const { prisma } = createMockPrisma("prompt_x");
 
     const result = await resolveAgenticPromptIds({
       prisma,
-      promptTemplateIds: ["planner", "cycle--default"],
+      templates: [tpl("planner"), tpl("cycle--default")],
     });
 
     expect(result).toEqual({
@@ -39,22 +44,22 @@ describe("resolveAgenticPromptIds", () => {
     });
   });
 
-  it("deduplicates repeated agent ids within a single call", async () => {
+  it("deduplicates repeated template ids within a single call", async () => {
     const { prisma, findFirst } = createMockPrisma("prompt_x");
 
     await resolveAgenticPromptIds({
       prisma,
-      promptTemplateIds: ["planner", "planner", "planner"],
+      templates: [tpl("planner"), tpl("planner"), tpl("planner")],
     });
 
     expect(findFirst).toHaveBeenCalledTimes(1);
   });
 
-  it("caches resolution across calls so the db is hit once per agent", async () => {
+  it("caches resolution across calls so the db is hit once per template", async () => {
     const { prisma, findFirst } = createMockPrisma("prompt_x");
 
-    await resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] });
-    await resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] });
+    await resolveAgenticPromptIds({ prisma, templates: [tpl("planner")] });
+    await resolveAgenticPromptIds({ prisma, templates: [tpl("planner")] });
 
     expect(findFirst).toHaveBeenCalledTimes(1);
   });
@@ -69,26 +74,26 @@ describe("resolveAgenticPromptIds", () => {
     } as unknown as PrismaClientWithAccelerate;
 
     await expect(
-      resolveAgenticPromptIds({ prisma, promptTemplateIds: ["planner"] }),
+      resolveAgenticPromptIds({ prisma, templates: [tpl("planner")] }),
     ).rejects.toThrow("db down");
 
     const result = await resolveAgenticPromptIds({
       prisma,
-      promptTemplateIds: ["planner"],
+      templates: [tpl("planner")],
     });
 
     expect(result).toEqual({ planner: "prompt_recovered" });
     expect(findFirst).toHaveBeenCalledTimes(2);
   });
 
-  it("creates a prompt row when no current prompt exists", async () => {
+  it("creates a prompt row from the captured body when none is current", async () => {
     const { prisma, findFirst, findFirstOrThrow, upsert, updateMany } =
       createMockPrisma("prompt_created");
     findFirst.mockResolvedValueOnce(null);
 
     const result = await resolveAgenticPromptIds({
       prisma,
-      promptTemplateIds: ["planner"],
+      templates: [tpl("planner")],
     });
 
     expect(result).toEqual({ planner: "prompt_created" });
@@ -100,6 +105,7 @@ describe("resolveAgenticPromptIds", () => {
         create: expect.objectContaining({
           appId: "lesson-planner",
           slug: "agentic-planner",
+          template: "body for planner",
           current: true,
         }),
         update: expect.objectContaining({
@@ -117,24 +123,24 @@ describe("resolveAgenticPromptIds", () => {
     );
   });
 
-  it("creates distinct prompt rows for quiz build modes", async () => {
+  it("creates distinct prompt rows for compound (mode + key stage) variants", async () => {
     const { prisma, findFirst, upsert } = createMockPrisma("prompt_created");
     findFirst.mockResolvedValueOnce(null);
 
     const result = await resolveAgenticPromptIds({
       prisma,
-      promptTemplateIds: ["starterQuiz--default:addOne"],
+      templates: [tpl("starterQuiz--default:addOne:ks3")],
     });
 
     expect(result).toEqual({
-      "starterQuiz--default:addOne": "prompt_created",
+      "starterQuiz--default:addOne:ks3": "prompt_created",
     });
     expect(upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         create: expect.objectContaining({
-          name: "Agentic Aila: starterQuiz--default:addOne",
+          name: "Agentic Aila: starterQuiz--default:addOne:ks3",
           // cspell:ignore starterquiz addone
-          slug: "agentic-starterquiz-default-addone",
+          slug: "agentic-starterquiz-default-addone-ks3",
         }),
       }),
     );

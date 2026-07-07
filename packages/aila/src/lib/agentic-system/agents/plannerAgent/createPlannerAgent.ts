@@ -4,12 +4,15 @@ import { DEFAULT_AGENT_MODEL_PARAMS } from "../../constants";
 import type { GenericPromptAgent } from "../../schema";
 import { plannerOutputSchema } from "../../schema";
 import type { PlannerAgentProps } from "../../types";
-import { AGENTIC_PROMPT_TEMPLATES } from "../agenticPromptTemplates";
-import { staticPromptParts } from "../sectionAgents/shared/staticPromptParts";
+import {
+  getVoiceDefinitions,
+  getVoicePrompt,
+} from "../sectionAgents/shared/voices";
 import { currentDocumentPromptPart } from "../sharedPromptParts/currentDocument.part";
 import { messageHistoryPromptPart } from "../sharedPromptParts/messageHistory.part";
 import { relevantLessonsPromptPart } from "../sharedPromptParts/relevantLessons.part";
 import { userMessagePromptPart } from "../sharedPromptParts/userMessage.part";
+import { plannerInstructions } from "./plannerAgent.instructions";
 
 export const createPlannerAgent = ({
   messages,
@@ -18,10 +21,22 @@ export const createPlannerAgent = ({
 }: PlannerAgentProps): GenericPromptAgent<
   z.infer<typeof plannerOutputSchema>
 > => {
+  // Static prefix shared between the runtime prompt and the persisted template.
+  const staticParts = [
+    { role: "developer" as const, content: plannerInstructions },
+    {
+      role: "developer" as const,
+      content: getVoiceDefinitions(["AGENT_TO_AGENT"]),
+    },
+    { role: "developer" as const, content: getVoicePrompt("AGENT_TO_AGENT") },
+  ];
+
   return {
+    id: "planner",
+    promptTemplate: staticParts.map((part) => part.content).join("\n\n"),
     responseSchema: plannerOutputSchema,
     input: [
-      ...staticPromptParts(AGENTIC_PROMPT_TEMPLATES.planner),
+      ...staticParts,
       {
         role: "developer" as const,
         content: relevantLessonsPromptPart(

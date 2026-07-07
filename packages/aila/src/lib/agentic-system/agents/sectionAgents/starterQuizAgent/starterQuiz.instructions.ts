@@ -1,6 +1,7 @@
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
 
-export const starterQuizInstructions = `# Task
+export function starterQuizInstructions(keyStage: string): string {
+  return `# Task
 
 Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
 
@@ -15,28 +16,27 @@ Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do n
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
+${quizQuestionDesignInstructions(keyStage)}`;
+}
 
-export const addOneQuizInstructions = `# Task
+export function addOneQuizInstructions(keyStage: string): string {
+  return `# Task
 
 Generate exactly ONE new multiple-choice question to ADD to the existing quiz. Do not output, modify, or restate the existing questions — they will be preserved by the system.
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
+${quizQuestionDesignInstructions(keyStage)}`;
+}
 
-const rewriteOneQuizInstructionText = (
-  position: number | "{position}",
-) => `# Task
+export const rewriteOneQuizInstructions = (
+  position: number,
+  keyStage: string,
+): string =>
+  `# Task
 
 Rewrite question ${position} of the existing quiz. Return only the replacement question. Do not modify or output any of the other questions — they will be preserved by the system.
 
 ## Question Design
 
-${quizQuestionDesignInstructions}`;
-
-export const rewriteOneQuizInstructionsTemplate =
-  rewriteOneQuizInstructionText("{position}");
-
-export const rewriteOneQuizInstructions = (position: number): string =>
-  rewriteOneQuizInstructionText(position);
+${quizQuestionDesignInstructions(keyStage)}`;

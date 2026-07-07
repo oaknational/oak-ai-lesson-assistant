@@ -17,10 +17,6 @@ export const createOpenAIBritishEnglishCorrectorAgent =
   (props: BritishEnglishCorrectorAgentProps): Promise<AgentResult<unknown>> =>
     executeGenericPromptAgent({
       agent: createBritishEnglishCorrectorAgent(props),
-      agentId: "britishEnglishCorrector",
       openai,
       collectGeneration,
-      promptInputs: {
-        sectionKey: props.sectionKey,
-      },
     });

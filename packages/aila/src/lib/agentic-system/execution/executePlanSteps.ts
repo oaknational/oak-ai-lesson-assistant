@@ -1,20 +1,30 @@
 import { aiLogger } from "@oakai/logger";
 
 import { type Draft, enablePatches, produceWithPatches } from "immer";
+import { type ZodType } from "zod";
 
-import type { LatestQuiz, PartialLessonPlan } from "../../../protocol/schema";
+import type {
+  Keyword,
+  LatestQuiz,
+  Misconception,
+  PartialLessonPlan,
+} from "../../../protocol/schema";
 import {
   CompletedLessonPlanSchema,
+  KeywordsSchema,
   LatestQuizSchema,
+  MisconceptionsSchema,
 } from "../../../protocol/schema";
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
+import { sectionListOperationDispatcher } from "../quizOperations/sectionListOperationDispatcher";
 import { validateSingleQuestion } from "../quizOperations/validateSingleQuestion";
 import {
   type PlanStep,
-  type StructuralQuizIntent,
-  structuralQuizIntentSchema,
+  type SectionKey,
+  type StructuralItemIntent,
+  structuralItemIntentSchema,
 } from "../schema";
 import type {
   AgentResult,
@@ -26,11 +36,65 @@ import {
   shouldForceSectionThrow,
 } from "../utils/faultInjection";
 import { applyBritishEnglishCorrection } from "./applyBritishEnglishCorrection";
+import { getCycleIndex, getCycleOutcomeForSection } from "./normalisePlanSteps";
 import { terminateWithFailure } from "./termination";
 
 const log = aiLogger("aila:agents");
 
 enablePatches();
+
+type ListSectionItem = Keyword | Misconception;
+
+type ListSectionConfig<TItem> = {
+  itemNoun: string;
+  min: number;
+  max: number;
+  regenerateSuggestion: string;
+  arraySchema: ZodType<TItem[]>;
+  validateItem: (item: unknown) => boolean;
+};
+
+function hasNonEmptyStrings(item: unknown, keys: string[]): boolean {
+  if (typeof item !== "object" || item === null) return false;
+  const record = item as Record<string, unknown>;
+  return keys.every((key) => {
+    const value = record[key];
+    return typeof value === "string" && value.trim().length > 0;
+  });
+}
+
+/**
+ * List-based sections that support targeted single-item edits. A section absent
+ * from this map is handled by the normal whole-section agent path
+ * (`runSectionAgent`), even if the planner emitted an itemIntent for it.
+ *
+ * `min`/`max` mirror the section schema's array bounds;
+ * executePlanSteps.config.test.ts fails if they drift apart.
+ */
+export const LIST_SECTION_CONFIG: Partial<
+  Record<
+    SectionKey,
+    ListSectionConfig<Keyword> | ListSectionConfig<Misconception>
+  >
+> = {
+  keywords: {
+    itemNoun: "keyword",
+    min: 1,
+    max: 5,
+    regenerateSuggestion: "Generate the keywords again",
+    arraySchema: KeywordsSchema,
+    validateItem: (item) => hasNonEmptyStrings(item, ["keyword", "definition"]),
+  },
+  misconceptions: {
+    itemNoun: "misconception",
+    min: 1,
+    max: 3,
+    regenerateSuggestion: "Generate the misconceptions again",
+    arraySchema: MisconceptionsSchema,
+    validateItem: (item) =>
+      hasNonEmptyStrings(item, ["misconception", "description"]),
+  },
+};
 
 /**
  * Execute each step in the plan sequentially using immer to track changes.
@@ -75,20 +139,38 @@ async function executeGenerateStep(
   context: AilaExecutionContext,
   step: PlanStep,
 ): Promise<AilaTurnPhaseOutcome> {
-  const { quizIntent } = step;
-  if (
-    quizIntent &&
-    quizIntent.action !== "REGENERATE_QUIZ" &&
-    (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz")
-  ) {
-    const parsedQuizIntent = structuralQuizIntentSchema.parse(quizIntent);
-
-    return executeQuizDispatchStep(
+  const missingCycleOutcome = getMissingCycleOutcomeMessage(context, step);
+  if (missingCycleOutcome) {
+    return await terminateWithFailure(
+      { message: missingCycleOutcome },
       context,
-      step,
       step.sectionKey,
-      parsedQuizIntent,
     );
+  }
+
+  const { itemIntent } = step;
+  if (itemIntent && itemIntent.action !== "REGENERATE_SECTION") {
+    const parsedItemIntent = structuralItemIntentSchema.parse(itemIntent);
+
+    if (step.sectionKey === "starterQuiz" || step.sectionKey === "exitQuiz") {
+      return executeQuizDispatchStep(
+        context,
+        step,
+        step.sectionKey,
+        parsedItemIntent,
+      );
+    }
+
+    const listConfig = LIST_SECTION_CONFIG[step.sectionKey];
+    if (listConfig) {
+      return executeSectionListDispatchStep<ListSectionItem>(
+        context,
+        step,
+        step.sectionKey,
+        parsedItemIntent,
+        listConfig,
+      );
+    }
   }
 
   const result = await runSectionAgent(context, step);
@@ -134,11 +216,26 @@ async function executeGenerateStep(
   return { status: "continue" };
 }
 
+function getMissingCycleOutcomeMessage(
+  context: AilaExecutionContext,
+  step: PlanStep,
+): string | null {
+  if (getCycleIndex(step.sectionKey) === null) return null;
+
+  const targetOutcome = getCycleOutcomeForSection(
+    context.currentTurn.document,
+    step.sectionKey,
+  );
+  if (targetOutcome) return null;
+
+  return `Cannot generate ${step.sectionKey}: matching learning cycle outcome is missing.`;
+}
+
 async function executeQuizDispatchStep(
   context: AilaExecutionContext,
   step: PlanStep,
   sectionKey: "starterQuiz" | "exitQuiz",
-  intent: StructuralQuizIntent,
+  intent: StructuralItemIntent,
 ): Promise<AilaTurnPhaseOutcome> {
   const currentQuiz: LatestQuiz = context.currentTurn.document[sectionKey] ?? {
     version: "v3",
@@ -160,8 +257,21 @@ async function executeQuizDispatchStep(
       if (agentResult.error) return null;
       const quizResult = LatestQuizSchema.safeParse(agentResult.data);
       if (!quizResult.success) return null;
-      if (!validateSingleQuestion(quizResult.data.questions[0])) return null;
-      return quizResult.data.questions[0] ?? null;
+      // Decline if more than one question comes back, rather than silently
+      // using the first.
+      const { questions } = quizResult.data;
+      if (questions.length !== 1) return null;
+      const question = questions[0];
+      if (!validateSingleQuestion(question)) return null;
+      // Correct only this new question, wrapped as a single-question quiz, so
+      // existing questions are never sent to the corrector and stay untouched.
+      const correctedQuiz = await applyBritishEnglishCorrection({
+        context,
+        sectionKey,
+        content: { ...currentQuiz, questions: [question] },
+        responseSchema: CompletedLessonPlanSchema.shape[sectionKey],
+      });
+      return correctedQuiz?.questions[0] ?? question ?? null;
     },
   );
 
@@ -178,6 +288,75 @@ async function executeQuizDispatchStep(
     } else {
       draft.exitQuiz = dispatchResult.data;
     }
+  });
+
+  return { status: "continue" };
+}
+
+async function executeSectionListDispatchStep<TItem>(
+  context: AilaExecutionContext,
+  step: PlanStep,
+  sectionKey: SectionKey,
+  intent: StructuralItemIntent,
+  config: ListSectionConfig<TItem>,
+): Promise<AilaTurnPhaseOutcome> {
+  const existing = context.currentTurn.document[sectionKey];
+  const sectionWasAbsent = existing == null;
+  // TS can't correlate document[sectionKey] with the config picked by the same
+  // key, so assert once here; arraySchema and validateItem do the real checks.
+  const currentItems = (existing ?? []) as TItem[];
+
+  const dispatchResult = await sectionListOperationDispatcher(
+    currentItems,
+    intent,
+    async () => {
+      const agentId = sectionStepToAgentId(step, {
+        config: context.runtime.config,
+        document: context.currentTurn.document,
+      });
+      const agent = context.runtime.sectionAgents[agentId];
+      if (!agent) return null;
+      const agentResult = await agent.handler(context);
+      if (agentResult.error) return null;
+      const parsed = config.arraySchema.safeParse(agentResult.data);
+      if (!parsed.success) return null;
+      // The add/change agents must return exactly one item; if more come back,
+      // decline rather than silently using the first (which for a change could
+      // land an unrelated item in the target slot).
+      const data = parsed.data;
+      if (data.length !== 1) return null;
+      const item = data[0];
+      if (!config.validateItem(item)) return null;
+      // Correct only this new item, wrapped as a single-element section, so
+      // existing items are never sent to the corrector and stay untouched.
+      const correctedItems = await applyBritishEnglishCorrection({
+        context,
+        sectionKey,
+        content: [item],
+        responseSchema: config.arraySchema,
+      });
+      return correctedItems?.[0] ?? item ?? null;
+    },
+    {
+      itemNoun: config.itemNoun,
+      min: config.min,
+      max: config.max,
+      regenerateSuggestion: config.regenerateSuggestion,
+    },
+  );
+
+  if (dispatchResult.note) {
+    context.currentTurn.notes.push({
+      message: dispatchResult.note,
+      sectionKey,
+    });
+  }
+
+  commitStepUpdate(context, step, (draft) => {
+    // A declined edit on an absent section would write an empty array (e.g.
+    // `keywords: []`), violating the section's min(1) schema; leave it absent.
+    if (sectionWasAbsent && dispatchResult.data.length === 0) return;
+    (draft as Record<string, unknown>)[sectionKey] = dispatchResult.data;
   });
 
   return { status: "continue" };

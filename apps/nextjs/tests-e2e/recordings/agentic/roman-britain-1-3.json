@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\nGiven the context available, select a subject for the lesson plan.\n\nYou will be given some example subjects for the key stage.\n\nIf none of the example subjects are suitable, you can suggest a new subject. In this case the subject should be sentence case rather than kebab case.\n"
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
       },
       {
@@ -19,11 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\"\n}"
+        "content": "# Task\nGiven the context available, select a subject for the lesson plan.\n\nYou will be given some example subjects for the key stage.\n\nIf none of the example subjects are suitable, you can suggest a new subject. In this case the subject should be sentence case rather than kebab case.\n"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\"\n}"
       },
       {
         "role": "developer",
@@ -31,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nDefine the subject area to align with the topic of 'The end of Roman Britain'."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSelect a subject area that encompasses the topic of the end of Roman Britain."
       },
       {
         "role": "developer",
@@ -45,6 +41,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:subject--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -68,15 +66,15 @@
     }
   },
   "result": {
-    "id": "resp_064898a9ec33d88f006a297dea33508192be8d860a4ff4e2dd",
+    "id": "resp_04b3f36098826404006a46811a7be481a0996d0ae81c4f05a3",
     "object": "response",
-    "created_at": 1781104106,
+    "created_at": 1783005466,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104106,
+    "completed_at": 1783005467,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +85,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_064898a9ec33d88f006a297dea9d648192a1cd8b76f354c185",
+        "id": "msg_04b3f36098826404006a46811b1aec81a09f9663197050e392",
         "type": "message",
         "status": "completed",
         "content": [
@@ -107,8 +105,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:subject--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -141,12 +139,30 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1285,
+      "input_tokens": 1250,
       "input_tokens_details": {
         "cached_tokens": 0
       },
@@ -154,7 +170,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1291
+      "total_tokens": 1256
     },
     "user": null,
     "metadata": {},

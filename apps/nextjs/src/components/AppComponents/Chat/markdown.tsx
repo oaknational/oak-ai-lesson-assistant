@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 
 import { wrapWithUrlSafety } from "./markdown-url-safety";
+import { preserveMathJaxDelimiters } from "./mathjaxMarkdown";
 import { CodeBlock } from "./ui/codeblock";
 
 const MemoizedReactMarkdown: FC<Options> = memo(
@@ -38,16 +39,13 @@ const createComponents = (className?: string): Partial<Components> => ({
   // Disable blockquote rendering to prevent answers like "> 90 degrees" from being styled as quotes
   blockquote: ({ children }) => <>{children}</>,
   code: (props) => {
-    const {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      node,
-      className,
-      children,
-      inline,
-      ...restProps
-    } = props as {
-      node?: React.ReactNode;
-      inline?: boolean;
+    const { node, className, children, ...restProps } = props as {
+      node?: {
+        position?: {
+          start?: { line?: number };
+          end?: { line?: number };
+        };
+      };
       className?: string;
       children?: React.ReactNode;
     };
@@ -60,10 +58,24 @@ const createComponents = (className?: string): Partial<Components> => ({
     }
 
     const match = /language-(\w+)/.exec(className ?? "");
+    const isCodeBlock =
+      Boolean(match) ||
+      node?.position?.start?.line !== node?.position?.end?.line;
 
-    if (inline) {
+    if (!isCodeBlock) {
       return (
-        <code className={className} {...restProps}>
+        <code
+          className={cn(
+            "not-prose rounded px-4 py-1 font-mono text-[0.9em]",
+            className,
+          )}
+          {...restProps}
+          style={{
+            backgroundColor: "#f2f2f2",
+            color: "#1a1a1a",
+            colorScheme: "light",
+          }}
+        >
           {children}
         </code>
       );
@@ -113,13 +125,17 @@ export const MemoizedReactMarkdownWithStyles = ({
       : defaultComponents;
     return wrapWithUrlSafety(merged);
   }, [className, customComponents]);
+  const processedMarkdown = useMemo(
+    () => preserveMathJaxDelimiters(markdown),
+    [markdown],
+  );
   return (
     <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
       <MemoizedReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={components}
       >
-        {markdown}
+        {processedMarkdown}
       </MemoizedReactMarkdown>
     </div>
   );

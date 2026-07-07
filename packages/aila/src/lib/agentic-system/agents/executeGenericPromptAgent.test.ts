@@ -12,6 +12,10 @@ function createFakeOpenAI(parse: jest.Mock): OpenAI {
 }
 
 const agent: GenericPromptAgent<{ title: string }> = {
+  id: "cycle--default",
+  promptTemplateId: "cycle--default:ks3",
+  promptTemplate: "static template body",
+  promptInputs: { keyStage: "KS3" },
   responseSchema: z.object({ title: z.string() }),
   input: [
     { role: "developer", content: "system prompt" },
@@ -20,34 +24,30 @@ const agent: GenericPromptAgent<{ title: string }> = {
   modelParams: { model: "gpt-x" },
 };
 
+const successResult = {
+  output: [],
+  output_parsed: { value: { title: "A lesson" } },
+  usage: { input_tokens: 5, output_tokens: 7 },
+};
+
 describe("executeGenericPromptAgent", () => {
   it("returns the parsed value on success", async () => {
-    const parse = jest.fn().mockResolvedValue({
-      output: [],
-      output_parsed: { value: { title: "A lesson" } },
-      usage: { input_tokens: 5, output_tokens: 7 },
-    });
+    const parse = jest.fn().mockResolvedValue(successResult);
 
     const result = await executeGenericPromptAgent({
       agent,
-      agentId: "planner",
       openai: createFakeOpenAI(parse),
     });
 
     expect(result).toEqual({ error: null, data: { title: "A lesson" } });
   });
 
-  it("captures a SUCCESS generation attributed to the agent", async () => {
+  it("captures a SUCCESS generation with the agent's persistence metadata", async () => {
     const collected: PendingGeneration[] = [];
-    const parse = jest.fn().mockResolvedValue({
-      output: [],
-      output_parsed: { value: { title: "A lesson" } },
-      usage: { input_tokens: 5, output_tokens: 7 },
-    });
+    const parse = jest.fn().mockResolvedValue(successResult);
 
     await executeGenericPromptAgent({
       agent,
-      agentId: "cycle--default",
       openai: createFakeOpenAI(parse),
       collectGeneration: (g) => collected.push(g),
     });
@@ -55,10 +55,12 @@ describe("executeGenericPromptAgent", () => {
     expect(collected).toHaveLength(1);
     expect(collected[0]).toMatchObject({
       agentId: "cycle--default",
-      promptTemplateId: "cycle--default",
+      promptTemplateId: "cycle--default:ks3",
+      promptTemplate: "static template body",
       promptInputs: {
+        keyStage: "KS3",
         agentId: "cycle--default",
-        promptTemplateId: "cycle--default",
+        promptTemplateId: "cycle--default:ks3",
         model: "gpt-x",
       },
       status: "SUCCESS",
@@ -70,38 +72,41 @@ describe("executeGenericPromptAgent", () => {
     });
   });
 
-  it("does not require a collector", async () => {
-    const parse = jest.fn().mockResolvedValue({
-      output: [],
-      output_parsed: { value: { title: "A lesson" } },
+  it("defaults promptTemplateId to the agent id when not set", async () => {
+    const collected: PendingGeneration[] = [];
+    const parse = jest.fn().mockResolvedValue(successResult);
+
+    await executeGenericPromptAgent({
+      agent: { ...agent, promptTemplateId: undefined },
+      openai: createFakeOpenAI(parse),
+      collectGeneration: (g) => collected.push(g),
     });
 
+    expect(collected[0]?.promptTemplateId).toBe("cycle--default");
+  });
+
+  it("does not require a collector", async () => {
+    const parse = jest.fn().mockResolvedValue(successResult);
+
     await expect(
-      executeGenericPromptAgent({
-        agent,
-        agentId: "planner",
-        openai: createFakeOpenAI(parse),
-      }),
+      executeGenericPromptAgent({ agent, openai: createFakeOpenAI(parse) }),
     ).resolves.toMatchObject({ error: null });
   });
 
-  it("captures a FAILED generation and rethrows when the call throws", async () => {
+  it("captures a FAILED generation and returns an error when the call throws", async () => {
     const collected: PendingGeneration[] = [];
     const parse = jest.fn().mockRejectedValue(new Error("boom"));
 
-    await expect(
-      executeGenericPromptAgent({
-        agent,
-        agentId: "planner",
-        openai: createFakeOpenAI(parse),
-        collectGeneration: (g) => collected.push(g),
-      }),
-    ).rejects.toThrow("boom");
+    const result = await executeGenericPromptAgent({
+      agent,
+      openai: createFakeOpenAI(parse),
+      collectGeneration: (g) => collected.push(g),
+    });
 
+    expect(result).toEqual({ error: { message: "boom" } });
     expect(collected).toHaveLength(1);
     expect(collected[0]).toMatchObject({
-      agentId: "planner",
-      promptTemplateId: "planner",
+      agentId: "cycle--default",
       status: "FAILED",
       promptTokensUsed: 0,
       completionTokensUsed: 0,
@@ -124,16 +129,12 @@ describe("executeGenericPromptAgent", () => {
 
     const result = await executeGenericPromptAgent({
       agent,
-      agentId: "planner",
       openai: createFakeOpenAI(parse),
       collectGeneration: (g) => collected.push(g),
     });
 
     expect(result).toEqual({ error: { message: "I can't help with that." } });
-    expect(collected).toHaveLength(1);
     expect(collected[0]).toMatchObject({
-      agentId: "planner",
-      promptTemplateId: "planner",
       status: "FAILED",
       promptTokensUsed: 3,
       completionTokensUsed: 4,
@@ -150,16 +151,12 @@ describe("executeGenericPromptAgent", () => {
 
     const result = await executeGenericPromptAgent({
       agent,
-      agentId: "planner",
       openai: createFakeOpenAI(parse),
       collectGeneration: (g) => collected.push(g),
     });
 
     expect(result.error?.message).toContain("An unknown error occurred");
-    expect(collected).toHaveLength(1);
     expect(collected[0]).toMatchObject({
-      agentId: "planner",
-      promptTemplateId: "planner",
       status: "FAILED",
       promptTokensUsed: 8,
       completionTokensUsed: 9,

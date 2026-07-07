@@ -13,6 +13,7 @@ function pendingGeneration(
   return {
     agentId: "planner",
     promptTemplateId: "planner",
+    promptTemplate: "planner template body",
     promptInputs: {
       agentId: "planner",
       promptTemplateId: "planner",

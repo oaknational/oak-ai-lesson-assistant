@@ -72,9 +72,9 @@ export function ChatStartForm({
           rows={1}
           value={input}
           onChange={handleInputChange}
-          placeholder={"Subject, key stage and title"}
+          placeholder={"Type a subject, key stage and title"}
           spellCheck={false}
-          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-lg focus-within:outline-none"
+          className="min-h-[60px] w-full resize-none bg-transparent px-10 py-[1.3rem] text-base focus-within:outline-none"
           disabled={isSubmitting}
         />
         <div className="absolute bottom-10 right-10 top-10 flex items-center justify-center">

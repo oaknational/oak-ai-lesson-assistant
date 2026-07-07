@@ -12,7 +12,6 @@ export const createOpenAIMessageToUserAgent =
   (props: MessageToUserAgentProps) =>
     executeGenericPromptAgent({
       agent: createMessageToUserAgent(props),
-      agentId: "messageToUser",
       openai,
       collectGeneration,
     });

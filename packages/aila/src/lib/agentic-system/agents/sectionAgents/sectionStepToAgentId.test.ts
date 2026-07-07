@@ -1,4 +1,4 @@
-import type { QuizAction, SectionStep } from "../../schema";
+import type { ItemAction, SectionStep } from "../../schema";
 import { sectionStepToAgentId } from "./sectionStepToAgentId";
 
 const baseProps = {
@@ -13,14 +13,14 @@ const mathsProps = {
 
 function quizStep(
   sectionKey: "starterQuiz" | "exitQuiz",
-  action?: QuizAction,
+  action?: ItemAction,
 ): SectionStep {
   return {
     type: "section",
     sectionKey,
     action: "generate",
     sectionInstructions: null,
-    quizIntent: action ? { action, position: null } : undefined,
+    itemIntent: action ? { action, position: null } : undefined,
   };
 }
 
@@ -38,61 +38,57 @@ describe("sectionStepToAgentId", () => {
   });
 
   describe("starterQuiz", () => {
-    // REMOVE_QUIZ_QUESTION is intentionally excluded: it's handled deterministically
-    // by the dispatcher before any agent is invoked, and deriveQuizBuildMode throws
+    // REMOVE_ITEM is intentionally excluded: it's handled deterministically
+    // by the dispatcher before any agent is invoked, and deriveSectionBuildMode throws
     // on REMOVE inside the agent path.
-    it.each([
-      "ADD_QUIZ_QUESTION",
-      "CHANGE_QUIZ_QUESTION",
-      "REGENERATE_QUIZ",
-    ] as const)("routes %s to --default for non-maths lessons", (action) => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", action), baseProps),
-      ).toBe("starterQuiz--default");
-    });
+    it.each(["ADD_ITEM", "CHANGE_ITEM", "REGENERATE_SECTION"] as const)(
+      "routes %s to --default for non-maths lessons",
+      (action) => {
+        expect(
+          sectionStepToAgentId(quizStep("starterQuiz", action), baseProps),
+        ).toBe("starterQuiz--default");
+      },
+    );
 
-    it("routes a step with no quizIntent to --default", () => {
+    it("routes a step with no itemIntent to --default", () => {
       expect(sectionStepToAgentId(quizStep("starterQuiz"), baseProps)).toBe(
         "starterQuiz--default",
       );
     });
 
-    it("routes a step with no quizIntent to --maths in a maths lesson", () => {
+    it("routes a step with no itemIntent to --maths in a maths lesson", () => {
       expect(sectionStepToAgentId(quizStep("starterQuiz"), mathsProps)).toBe(
         "starterQuiz--maths",
       );
     });
 
-    it.each([
-      "ADD_QUIZ_QUESTION",
-      "CHANGE_QUIZ_QUESTION",
-      "REGENERATE_QUIZ",
-    ] as const)("routes %s to --maths in a maths lesson", (action) => {
-      expect(
-        sectionStepToAgentId(quizStep("starterQuiz", action), mathsProps),
-      ).toBe("starterQuiz--maths");
-    });
+    it.each(["ADD_ITEM", "CHANGE_ITEM", "REGENERATE_SECTION"] as const)(
+      "routes %s to --maths in a maths lesson",
+      (action) => {
+        expect(
+          sectionStepToAgentId(quizStep("starterQuiz", action), mathsProps),
+        ).toBe("starterQuiz--maths");
+      },
+    );
   });
 
   describe("exitQuiz", () => {
-    it.each([
-      "ADD_QUIZ_QUESTION",
-      "CHANGE_QUIZ_QUESTION",
-      "REGENERATE_QUIZ",
-    ] as const)("routes %s to --default for non-maths lessons", (action) => {
-      expect(
-        sectionStepToAgentId(quizStep("exitQuiz", action), baseProps),
-      ).toBe("exitQuiz--default");
-    });
+    it.each(["ADD_ITEM", "CHANGE_ITEM", "REGENERATE_SECTION"] as const)(
+      "routes %s to --default for non-maths lessons",
+      (action) => {
+        expect(
+          sectionStepToAgentId(quizStep("exitQuiz", action), baseProps),
+        ).toBe("exitQuiz--default");
+      },
+    );
 
-    it.each([
-      "ADD_QUIZ_QUESTION",
-      "CHANGE_QUIZ_QUESTION",
-      "REGENERATE_QUIZ",
-    ] as const)("routes %s to --maths in a maths lesson", (action) => {
-      expect(
-        sectionStepToAgentId(quizStep("exitQuiz", action), mathsProps),
-      ).toBe("exitQuiz--maths");
-    });
+    it.each(["ADD_ITEM", "CHANGE_ITEM", "REGENERATE_SECTION"] as const)(
+      "routes %s to --maths in a maths lesson",
+      (action) => {
+        expect(
+          sectionStepToAgentId(quizStep("exitQuiz", action), mathsProps),
+        ).toBe("exitQuiz--maths");
+      },
+    );
   });
 });

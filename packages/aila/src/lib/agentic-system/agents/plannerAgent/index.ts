@@ -12,7 +12,6 @@ export const createOpenAIPlannerAgent =
   (props: PlannerAgentProps) =>
     executeGenericPromptAgent({
       agent: createPlannerAgent(props),
-      agentId: "planner",
       openai,
       collectGeneration,
     });

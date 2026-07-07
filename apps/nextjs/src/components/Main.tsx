@@ -20,12 +20,12 @@ const Main = ({
       as="main"
       $position={"relative"}
       $ph="spacing-16"
-      $pt="spacing-72"
+      $pt="spacing-24"
       $background={backgroundColor ?? "transparent"}
       $overflowX={["hidden", "hidden", "visible"]}
     >
       {defaultMaxWidth ? (
-        <OakMaxWidth $mt="spacing-72">{children}</OakMaxWidth>
+        <OakMaxWidth $mt={["spacing-56", "spacing-72"]}>{children}</OakMaxWidth>
       ) : (
         children
       )}

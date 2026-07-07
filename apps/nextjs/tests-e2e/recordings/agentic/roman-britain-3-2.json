@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList the most important factual things pupils should learn in the lesson.\n\n- Use succinct, knowledge-rich statements\n- Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.\n- Avoid vague or descriptive phrasing\n- Where possible, take these from the English national curriculum and/or the relevant exam boards.\n- Example: \"A plant cell differs from an animal cell because it has a cell wall, chloroplast, and a large vacuole.\" \n- Non-example: \"The unique features of plant cells, including cell walls, chloroplasts, and large vacuoles.\""
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
       },
       {
@@ -19,7 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ]\n}"
+        "content": "# Task\n\nList the most important factual things pupils should learn in the lesson.\n\n- Use succinct, knowledge-rich statements\n- Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.\n- Avoid vague or descriptive phrasing\n- Where possible, take these from the English national curriculum and/or the relevant exam boards.\n- Example: \"A plant cell differs from an animal cell because it has a cell wall, chloroplast, and a large vacuole.\" \n- Non-example: \"The unique features of plant cells, including cell walls, chloroplasts, and large vacuoles.\""
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:keyLearningPoints--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -63,15 +65,15 @@
     }
   },
   "result": {
-    "id": "resp_0245284939b56b54006a296eb7791c819d838f6e2e2244fd6f",
+    "id": "resp_0b292a71a97053e6006a468133d87481a19a0a65795d925dfd",
     "object": "response",
-    "created_at": 1781100215,
+    "created_at": 1783005491,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781100216,
+    "completed_at": 1783005493,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -82,7 +84,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0245284939b56b54006a296eb7da60819d93f34cc43017ab02",
+        "id": "msg_0b292a71a97053e6006a46813446d481a195f9d1897f822d08",
         "type": "message",
         "status": "completed",
         "content": [
@@ -90,14 +92,14 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"]}",
+            "text": "{\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]}",
             "parsed": {
               "value": [
-                "Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.",
-                "The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.",
-                "Political instability within the Roman Empire weakened control over distant provinces like Britain.",
-                "The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.",
-                "Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance."
+                "Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.",
+                "The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.",
+                "The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.",
+                "Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.",
+                "For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences."
               ]
             }
           }
@@ -108,8 +110,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:keyLearningPoints--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -145,31 +147,49 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2047,
+      "input_tokens": 2055,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 104,
+      "output_tokens": 112,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2151
+      "total_tokens": 2167
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"]}",
+    "output_text": "{\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]}",
     "output_parsed": {
       "value": [
-        "Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.",
-        "The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.",
-        "Political instability within the Roman Empire weakened control over distant provinces like Britain.",
-        "The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.",
-        "Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance."
+        "Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.",
+        "The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.",
+        "The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.",
+        "Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.",
+        "For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences."
       ]
     }
   }

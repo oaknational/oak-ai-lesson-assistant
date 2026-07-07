@@ -1,4 +1,12 @@
-export const learningOutcomeInstructions = `# Task
+import {
+  getKeyStageContentSelectionGuidance,
+  getKeyStageLanguageGuidance,
+  normaliseKeyStageForPrompt,
+} from "../shared/keyStageLanguageGuidance";
+
+export function learningOutcomeInstructions(keyStage: string): string {
+  const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
+  return `# Task
 
 The learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.
 
@@ -8,4 +16,9 @@ The learning outcome states what pupils will learn by the end of the lesson. Thi
 - Should be clear, specific, and focused
 
 If the lesson title is broad (e.g. "World War 2"), the learning outcome should narrow it to a specific, teachable focus e.g. "I can explain why the period of 1941-2 was an important turning point of the Second World War.".
-The learning outcome should reflect this specific lesson—not a wider scheme of work.`;
+The learning outcome should reflect this specific lesson—not a wider scheme of work.
+
+${getKeyStageContentSelectionGuidance(normalisedKeyStage)}
+
+${getKeyStageLanguageGuidance(normalisedKeyStage)}`;
+}

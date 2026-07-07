@@ -104,8 +104,13 @@ export type AilaExecutionContext = {
 
 export type SectionPromptAgentProps<ResponseType> = {
   responseSchema: z.ZodType<ResponseType>;
+  id: string;
   messages: ChatMessage[];
   instructions: string;
+  /** Identifies the prompt template for versioning (defaults to `id`). */
+  promptTemplateId?: string;
+  /** Extra telemetry persisted alongside the generation. */
+  promptInputs?: Record<string, unknown>;
   currentValue: ResponseType | undefined;
   exemplarContent: ResponseType[] | undefined;
   basedOnContent: ResponseType | undefined;

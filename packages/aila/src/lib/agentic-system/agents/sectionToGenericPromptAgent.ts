@@ -3,7 +3,11 @@ import { isTruthy } from "remeda";
 
 import type { GenericPromptAgent } from "../schema";
 import type { SectionPromptAgentProps } from "../types";
-import { staticPromptParts } from "./sectionAgents/shared/staticPromptParts";
+import { identityAndVoice } from "./sectionAgents/shared/identityAndVoice";
+import {
+  getVoiceDefinitions,
+  getVoicePrompt,
+} from "./sectionAgents/shared/voices";
 import { basedOnContentPromptPart } from "./sharedPromptParts/basedOnContent.part";
 import { currentDocumentPromptPart } from "./sharedPromptParts/currentDocument.part";
 import { currentSectionValuePromptPart } from "./sharedPromptParts/currentSectionValue.part";
@@ -15,7 +19,10 @@ import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 export function sectionToGenericPromptAgent<SectionValueType>(
   {
     responseSchema,
+    id,
     instructions,
+    promptTemplateId,
+    promptInputs,
     messages,
     exemplarContent,
     basedOnContent,
@@ -31,15 +38,36 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     "input" | "text" | "stream"
   >,
 ): GenericPromptAgent<SectionValueType> {
+  const resolvedVoices = voices.includes(defaultVoice)
+    ? voices
+    : [defaultVoice, ...voices];
+
+  // The static (non-dynamic) prefix, shared between the runtime prompt and the
+  // versioned prompt template so the two cannot drift. Identity and voice come
+  // first (most stable → best prompt-cache prefix), then the instructions.
+  const staticParts = [
+    { role: "developer" as const, content: identityAndVoice },
+    resolvedVoices.length > 0 && {
+      role: "developer" as const,
+      content: getVoiceDefinitions(resolvedVoices),
+    },
+    defaultVoice && {
+      role: "developer" as const,
+      content: getVoicePrompt(defaultVoice),
+    },
+    { role: "developer" as const, content: instructions },
+  ].filter(isTruthy);
+
+  const promptTemplate = staticParts.map((part) => part.content).join("\n\n");
+
   return {
+    id,
+    promptTemplateId,
+    promptTemplate,
+    promptInputs,
     responseSchema: responseSchema,
     input: [
-      ...staticPromptParts({
-        includeIdentity: true,
-        instructions,
-        voices,
-        defaultVoice,
-      }),
+      ...staticParts,
       {
         role: "developer" as const,
         content: currentDocumentPromptPart(ctx.currentTurn.document),
@@ -48,13 +76,11 @@ export function sectionToGenericPromptAgent<SectionValueType>(
         role: "developer" as const,
         content: currentSectionValuePromptPart(currentValue, contentToString),
       },
-      {
-        role: "developer" as const,
-        content: exemplarContentPromptPart(
-          exemplarContent ?? [],
-          contentToString,
-        ),
-      },
+      exemplarContent &&
+        exemplarContent.length > 0 && {
+          role: "developer" as const,
+          content: exemplarContentPromptPart(exemplarContent, contentToString),
+        },
       basedOnContent && {
         role: "developer" as const,
         content: basedOnContentPromptPart(basedOnContent, contentToString),

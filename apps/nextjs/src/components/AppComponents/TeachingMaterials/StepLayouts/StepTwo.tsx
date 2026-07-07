@@ -3,6 +3,7 @@ import { useState } from "react";
 import { getMaterialType } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { OakBox, OakFlex, OakTextInput } from "@oaknational/oak-components";
+import { useRouter, useSearchParams } from "next/navigation";
 import invariant from "tiny-invariant";
 
 import {
@@ -11,6 +12,7 @@ import {
 } from "@/stores/TeachingMaterialsStoreProvider";
 import {
   activeDropdownSelector,
+  sourceSelector,
   subjectSelector,
   titleSelector,
   yearSelector,
@@ -38,8 +40,13 @@ const StepTwo = ({
   const subject = useTeachingMaterialsStore(subjectSelector);
   const title = useTeachingMaterialsStore(titleSelector);
   const year = useTeachingMaterialsStore(yearSelector);
+  const source = useTeachingMaterialsStore(sourceSelector);
   const docType = useTeachingMaterialsStore((state) => state.docType);
   const activeDropdown = useTeachingMaterialsStore(activeDropdownSelector);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isFromAilaLanding =
+    source === "aila" && searchParams.get("docType") !== null;
 
   const [showValidationError, setShowValidationError] = useState("");
   const [validationAttempted, setValidationAttempted] = useState(false);
@@ -144,7 +151,13 @@ const StepTwo = ({
         <SharedNavigationButtons
           backLabel="Back a step"
           nextLabel="Next, review lesson details"
-          onBackClick={() => setStepNumber(0, "back_a_step_button")}
+          onBackClick={() => {
+            if (isFromAilaLanding) {
+              router.push("/aila");
+              return;
+            }
+            setStepNumber(0, "back_a_step_button");
+          }}
           onNextClick={() => {
             setValidationAttempted(true);
             const { isValid } = validateForm(title, year, subject, docTypeName);

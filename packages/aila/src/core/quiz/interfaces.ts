@@ -58,8 +58,8 @@ export type ComposerResult =
 /**
  * How the composer should select questions on this call.
  * - `fullRegen`: pick 1–6 (existing behaviour). Used for first-time generation and full regeneration.
- * - `addOne`: pick exactly one *new* question. Used for ADD_QUIZ_QUESTION; the dispatcher inserts it.
- * - `rewriteOne`: pick exactly one *replacement* for CURRENT-Q{position}. Used for CHANGE_QUIZ_QUESTION.
+ * - `addOne`: pick exactly one *new* question. Used for ADD_ITEM; the dispatcher inserts it.
+ * - `rewriteOne`: pick exactly one *replacement* for CURRENT-Q{position}. Used for CHANGE_ITEM.
  */
 export type QuizBuildMode =
   | { kind: "fullRegen" }

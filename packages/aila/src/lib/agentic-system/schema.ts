@@ -28,32 +28,32 @@ const parsedUserMessageSchema = z
     "A clear and consistent description of the user's intent. E.g. 'The user wants to make the keywords shorter', or 'The user as signalled positive intent, likely they want to continue without steering the lesson plan in a different direction.'",
   );
 
-const quizActionSchema = z.enum([
-  "REGENERATE_QUIZ",
-  "ADD_QUIZ_QUESTION",
-  "REMOVE_QUIZ_QUESTION",
-  "CHANGE_QUIZ_QUESTION",
+const itemActionSchema = z.enum([
+  "REGENERATE_SECTION",
+  "ADD_ITEM",
+  "REMOVE_ITEM",
+  "CHANGE_ITEM",
 ]);
 
-const quizIntentSchema = z.object({
-  action: quizActionSchema,
+const itemIntentSchema = z.object({
+  action: itemActionSchema,
   position: z.number().int().positive().nullable(),
 });
 
-export type QuizAction = z.infer<typeof quizActionSchema>;
-export type QuizIntent = z.infer<typeof quizIntentSchema>;
+export type ItemAction = z.infer<typeof itemActionSchema>;
+export type ItemIntent = z.infer<typeof itemIntentSchema>;
 
-const structuralQuizAction = quizActionSchema.exclude([
-  "REGENERATE_QUIZ",
+const structuralItemAction = itemActionSchema.exclude([
+  "REGENERATE_SECTION",
 ] as const);
 
-export const structuralQuizIntentSchema = quizIntentSchema.extend({
-  action: structuralQuizAction,
+export const structuralItemIntentSchema = itemIntentSchema.extend({
+  action: structuralItemAction,
 });
 
-/** Quiz actions that structurally modify individual questions (not full regeneration). */
-export type StructuralQuizAction = z.infer<typeof structuralQuizAction>;
-export type StructuralQuizIntent = z.infer<typeof structuralQuizIntentSchema>;
+/** Item actions that structurally modify a single list item (not full-section regeneration). */
+export type StructuralItemAction = z.infer<typeof structuralItemAction>;
+export type StructuralItemIntent = z.infer<typeof structuralItemIntentSchema>;
 
 const sectionStepSchema = z
   .object({
@@ -72,7 +72,12 @@ const sectionStepSchema = z
           "Extract from conversation if user has preferences (e.g., 'focus on images', " +
           "'make it harder', 'replace question 3'). Null if no specific instructions.",
       ),
-    quizIntent: quizIntentSchema.nullable().optional(),
+    itemIntent: itemIntentSchema
+      .nullable()
+      .optional()
+      .describe(
+        "Structured single-item edit for list-based sections (starterQuiz, exitQuiz, keywords, misconceptions). See SECTION ITEM INTENT.",
+      ),
   })
   .describe("Section plan step.");
 
@@ -126,6 +131,7 @@ export const errorSchema = z.object({
 });
 
 export type GenericPromptAgent<ResponseType> = {
+  id: string;
   responseSchema: z.ZodType<ResponseType>;
   input: (
     | { role: "developer"; content: string }
@@ -136,6 +142,15 @@ export type GenericPromptAgent<ResponseType> = {
     ResponseCreateParamsNonStreaming,
     "input" | "text" | "stream"
   >;
+  /**
+   * Persistence metadata (optional). `promptTemplateId` identifies which prompt
+   * template this call used for versioning (defaults to `id`); `promptTemplate`
+   * is the version-stable static prompt body stored against the generation; and
+   * `promptInputs` is extra telemetry recorded alongside it.
+   */
+  promptTemplateId?: string;
+  promptTemplate?: string;
+  promptInputs?: Record<string, unknown>;
 };
 
 /**

@@ -1,3 +1,25 @@
+# [1.80.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.79.0...v1.80.0) (2026-07-06)
+
+
+### Bug Fixes
+
+* render MathJax in chat markdown ([#1093](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1093)) ([bcb4eae](https://github.com/oaknational/oak-ai-lesson-assistant/commit/bcb4eae5122ecc31547b7ff8a147fc4ce4eb3c2e))
+
+
+### Features
+
+* [AI-2319] improve prompt caching in agentic aila ([#1096](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1096)) ([7885c4c](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7885c4ce0758e9f4470dc49d117a9beb3c3d1eca))
+* aila expectations - AI-2215 ([#1071](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1071)) ([a083a5f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a083a5f3e76fb4a3d273a8266d61a26c8b3f620f))
+* **aila:** [AI-2320] add age-appropriate language guidance to agentic section agents ([#1099](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1099)) ([c660d84](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c660d84b4064313f4da8a3de3bbf247dbf1a18ef))
+* tighten lesson cohesion in agentic aila [AI-2311] ([#1095](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1095)) ([2f27351](https://github.com/oaknational/oak-ai-lesson-assistant/commit/2f27351b1b177e4c0526319e1483e7f3dcb47a66))
+
+# [1.79.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.78.0...v1.79.0) (2026-07-01)
+
+
+### Features
+
+* configure moderation shadow independently ([093e5c6](https://github.com/oaknational/oak-ai-lesson-assistant/commit/093e5c680ec8a05842771b2d919c05cc25d4febf))
+
 # [1.78.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.77.2...v1.78.0) (2026-06-30)
 
 

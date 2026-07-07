@@ -104,13 +104,13 @@ describe("createSectionAgent", () => {
     spy.mockRestore();
   });
 
-  it("passes resolved prompt template metadata to generation execution", async () => {
+  it("composes the promptTemplateId from the id and variant and carries it on the agent", async () => {
     const spy = jest.spyOn(sectionModule, "sectionToGenericPromptAgent");
     const factory = createSectionAgent({
       responseSchema: z.object({ value: z.string() }),
       instructions: () => ({
         text: "runtime prompt",
-        promptTemplateId: "starterQuiz--default:addOne",
+        variant: "addOne",
         promptInputs: { buildMode: "addOne" },
       }),
       modelParams: { model: "gpt-4o-mini" },
@@ -124,16 +124,21 @@ describe("createSectionAgent", () => {
 
     await agent.handler(buildCtx({ mathsQuizEnabled: false }));
 
+    // The section builder receives the composed id + telemetry...
     expect(spy).toHaveBeenCalledWith(
-      expect.objectContaining({ instructions: "runtime prompt" }),
+      expect.objectContaining({
+        instructions: "runtime prompt",
+        promptTemplateId: "starterQuiz--default:addOne",
+        promptInputs: expect.objectContaining({ buildMode: "addOne" }),
+      }),
       expect.anything(),
     );
+    // ...and the built agent carries it through to execution.
     expect(executeGenericPromptAgent).toHaveBeenCalledWith(
       expect.objectContaining({
-        agentId: "starterQuiz--default",
-        promptTemplateId: "starterQuiz--default:addOne",
-        promptInputs: expect.objectContaining({
-          buildMode: "addOne",
+        agent: expect.objectContaining({
+          id: "starterQuiz--default",
+          promptTemplateId: "starterQuiz--default:addOne",
         }),
       }),
     );
