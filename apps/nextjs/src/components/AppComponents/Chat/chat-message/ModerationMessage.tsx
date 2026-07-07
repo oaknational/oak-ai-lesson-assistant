@@ -5,12 +5,11 @@ import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/sever
 import { OakBox, type OakBoxProps } from "@oaknational/oak-components";
 
 import { ContentGuidanceBanner } from "@/components/AppComponents/Moderation/ContentGuidanceBanner";
-import { useModerationStore } from "@/stores/AilaStoresProvider";
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
 import { isModeration } from "./protocol";
 
-export function getModeration(
+function getMessageModeration(
   message: ParsedMessage,
   persistedModerations: PersistedModerationBase[],
 ) {
@@ -23,20 +22,48 @@ export function getModeration(
   const matchingPersistedModeration: PersistedModerationBase | undefined =
     persistedModerations.find((m) => m.messageId === messageId);
 
-  const moderation = matchingPersistedModeration ?? moderationMessagePart;
-  if (moderation && !isSafe(moderation)) {
-    return moderation;
+  return matchingPersistedModeration ?? moderationMessagePart ?? null;
+}
+
+function moderationSignature(moderation: PersistedModerationBase): string {
+  return getDisplayCategories(moderation)
+    .map((category) => category.code)
+    .sort((a, b) => a.localeCompare(b))
+    .join("|");
+}
+
+export function getModerationsToDisplay(
+  messages: ParsedMessage[],
+  persistedModerations: PersistedModerationBase[],
+): Map<string, PersistedModerationBase> {
+  const moderationsToDisplay = new Map<string, PersistedModerationBase>();
+  let previousSignature: string | null = null;
+
+  for (const message of messages) {
+    const moderation = getMessageModeration(message, persistedModerations);
+    if (!moderation) {
+      continue;
+    }
+
+    if (isSafe(moderation)) {
+      previousSignature = null;
+      continue;
+    }
+
+    const signature = moderationSignature(moderation);
+    if (signature !== previousSignature) {
+      moderationsToDisplay.set(message.id, moderation);
+    }
+    previousSignature = signature;
   }
-  return null;
+
+  return moderationsToDisplay;
 }
 
 export function Moderation({
-  forMessage,
+  moderation,
   ...boxProps
-}: Readonly<{ forMessage: ParsedMessage } & OakBoxProps>) {
-  const persistedModerations = useModerationStore((state) => state.moderations);
-  const moderation = getModeration(forMessage, persistedModerations);
-
+}: Readonly<{ moderation: PersistedModerationBase | null } & OakBoxProps>) {
   if (!moderation) {
     return null;
   }
