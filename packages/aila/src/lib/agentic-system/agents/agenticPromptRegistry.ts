@@ -1,4 +1,7 @@
-import { PromptVariants } from "@oakai/core/src/models/promptVariants";
+import {
+  PromptVariants,
+  promptHash,
+} from "@oakai/core/src/models/promptVariants";
 import type { OakPromptDefinition } from "@oakai/core/src/prompts/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
@@ -44,9 +47,10 @@ function createAgenticPromptDefinition({
 /**
  * A prompt template's body only changes when its instructions or voice change,
  * so the resolved prompt id is stable for the life of the process. We memoise
- * the in-flight promise per promptTemplateId so the lookups happen once per
- * process rather than every turn, and concurrent turns share a single
- * resolution. Failures are not cached, so a transient error retries next turn.
+ * the in-flight promise per promptTemplateId/body pair so unchanged templates
+ * resolve once per process rather than every turn, and concurrent turns share a
+ * single resolution. Failures are not cached, so a transient error retries next
+ * turn.
  */
 const promptIdCache = new Map<string, Promise<string>>();
 
@@ -78,25 +82,37 @@ export async function resolveAgenticPromptIds({
   prisma: PrismaClientWithAccelerate;
   templates: AgenticPromptTemplate[];
 }): Promise<Record<string, string>> {
-  // Each promptTemplateId encodes every body-varying axis, so all templates
-  // sharing an id have the same body; dedupe by id and resolve once.
   const uniqueTemplates = new Map<string, AgenticPromptTemplate>();
   for (const template of templates) {
-    if (!uniqueTemplates.has(template.promptTemplateId)) {
+    const existing = uniqueTemplates.get(template.promptTemplateId);
+    if (!existing) {
       uniqueTemplates.set(template.promptTemplateId, template);
+      continue;
+    }
+
+    if (existing.promptTemplate !== template.promptTemplate) {
+      throw new Error(
+        `Conflicting agentic prompt templates for ${template.promptTemplateId}`,
+      );
     }
   }
 
   const entries = await Promise.all(
     [...uniqueTemplates.values()].map(async (template) => {
       const { promptTemplateId } = template;
-      let idPromise = promptIdCache.get(promptTemplateId);
+      const cacheKey = promptHash({
+        slug: promptTemplateId,
+        variant: VARIANT_SLUG,
+        template: template.promptTemplate,
+        stableAcrossDeploys: true,
+      });
+      let idPromise = promptIdCache.get(cacheKey);
       if (!idPromise) {
         idPromise = resolveSinglePromptId(prisma, template).catch((error) => {
-          promptIdCache.delete(promptTemplateId);
+          promptIdCache.delete(cacheKey);
           throw error;
         });
-        promptIdCache.set(promptTemplateId, idPromise);
+        promptIdCache.set(cacheKey, idPromise);
       }
       return [promptTemplateId, await idPromise] as const;
     }),

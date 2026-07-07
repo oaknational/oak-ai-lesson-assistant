@@ -20,7 +20,7 @@ export class PromptVariants {
   ) {
     this.definition = promptDefinition;
     const foundVariant =
-      promptDefinition.variants.find((v) => (v.slug = variantSlug)) ??
+      promptDefinition.variants.find((v) => v.slug === variantSlug) ??
       promptDefinition.variants.find((v) => v.slug === "main");
     if (!foundVariant) {
       throw new Error("No variant found");

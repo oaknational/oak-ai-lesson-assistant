@@ -25,6 +25,13 @@ function tpl(promptTemplateId: string): AgenticPromptTemplate {
   return { promptTemplateId, promptTemplate: `body for ${promptTemplateId}` };
 }
 
+function tplWithBody(
+  promptTemplateId: string,
+  promptTemplate: string,
+): AgenticPromptTemplate {
+  return { promptTemplateId, promptTemplate };
+}
+
 describe("resolveAgenticPromptIds", () => {
   beforeEach(() => {
     __clearAgenticPromptIdCache();
@@ -62,6 +69,36 @@ describe("resolveAgenticPromptIds", () => {
     await resolveAgenticPromptIds({ prisma, templates: [tpl("planner")] });
 
     expect(findFirst).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not reuse the cached prompt id when the same template id has a new body", async () => {
+    const { prisma, findFirst } = createMockPrisma("prompt_x");
+
+    await resolveAgenticPromptIds({
+      prisma,
+      templates: [tplWithBody("planner", "body v1")],
+    });
+    await resolveAgenticPromptIds({
+      prisma,
+      templates: [tplWithBody("planner", "body v2")],
+    });
+
+    expect(findFirst).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects conflicting bodies for the same template id in one resolution", async () => {
+    const { prisma, findFirst } = createMockPrisma("prompt_x");
+
+    await expect(
+      resolveAgenticPromptIds({
+        prisma,
+        templates: [
+          tplWithBody("planner", "body v1"),
+          tplWithBody("planner", "body v2"),
+        ],
+      }),
+    ).rejects.toThrow("Conflicting agentic prompt templates for planner");
+    expect(findFirst).not.toHaveBeenCalled();
   });
 
   it("does not cache failures", async () => {

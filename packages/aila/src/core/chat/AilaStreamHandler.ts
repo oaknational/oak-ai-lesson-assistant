@@ -205,10 +205,20 @@ export class AilaStreamHandler {
           status,
           chatId: this._chat.id,
         });
+        let currentTurnMessageId: string | undefined;
         if (outcome.status === "success") {
+          const previousAssistantMessageId = getLastAssistantMessage(
+            this._chat.messages,
+          )?.id;
           await this.completeChat();
+          const nextAssistantMessageId = getLastAssistantMessage(
+            this._chat.messages,
+          )?.id;
+          if (nextAssistantMessageId !== previousAssistantMessageId) {
+            currentTurnMessageId = nextAssistantMessageId;
+          }
         }
-        await this.persistPendingGenerations();
+        await this.persistPendingGenerations(currentTurnMessageId);
       } finally {
         this.closeController();
         log.info("Stream closed", this._chat.iteration, this._chat.id);
@@ -447,7 +457,7 @@ export class AilaStreamHandler {
     });
   }
 
-  private async persistPendingGenerations() {
+  private async persistPendingGenerations(messageId?: string) {
     if (this._pendingGenerations.length === 0) {
       return;
     }
@@ -459,7 +469,6 @@ export class AilaStreamHandler {
     }
 
     try {
-      const messageId = getLastAssistantMessage(this._chat.messages)?.id;
       const promptIdsByPromptTemplateId = await resolveAgenticPromptIds({
         prisma: this._chat.aila.prisma,
         templates: this._pendingGenerations.map((generation) => ({
