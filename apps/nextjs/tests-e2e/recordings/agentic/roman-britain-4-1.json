@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nCreate a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.\n\n## Content Scope:\n\n- Use only content from the PRIOR KNOWLEDGE section\n- Do not test or mention any of this lessons key learning points\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the PRIOR KNOWLEDGE required for the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
       },
       {
@@ -19,7 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\n    \"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\n    \"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\n    \"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\n    \"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Roman departure from Britain was a singular event marked by a specific date\",\n      \"description\": \"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"\n    },\n    {\n      \"misconception\": \"Roman infrastructure ceased to exist immediately after their departure\",\n      \"description\": \"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"\n    },\n    {\n      \"misconception\": \"Britain was left uninhabited after the Roman legions left\",\n      \"description\": \"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Withdrawal\",\n      \"definition\": \"The act of removing or taking away forces or presence from a region or place.\"\n    },\n    {\n      \"keyword\": \"Instability\",\n      \"definition\": \"The state of being prone to frequent change or lack of steady conditions.\"\n    },\n    {\n      \"keyword\": \"Province\",\n      \"definition\": \"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"\n    },\n    {\n      \"keyword\": \"Societal\",\n      \"definition\": \"Relating to social groups, communities, and their organisation and structure.\"\n    },\n    {\n      \"keyword\": \"Legion\",\n      \"definition\": \"A large unit or group of soldiers in the Roman army known for their discipline and training.\"\n    }\n  ]\n}"
+        "content": "# Task\n\nCreate a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.\n\n## Content Scope:\n\n- Use only content from the PRIOR KNOWLEDGE section\n- Do not test or mention any of this lessons key learning points\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the PRIOR KNOWLEDGE required for the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\n    \"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\n    \"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\n    \"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\n    \"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Roman Britain ended abruptly when all infrastructure collapsed\",\n      \"description\": \"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"\n    },\n    {\n      \"misconception\": \"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\n      \"description\": \"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"\n    },\n    {\n      \"misconception\": \"The withdrawal of Rome's armies left Britain immediately defenceless\",\n      \"description\": \"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Romanisation\",\n      \"definition\": \"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"\n    },\n    {\n      \"keyword\": \"Province\",\n      \"definition\": \"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"\n    },\n    {\n      \"keyword\": \"Saxons\",\n      \"definition\": \"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"\n    },\n    {\n      \"keyword\": \"Infrastructure\",\n      \"definition\": \"Essential facilities and structures, such as roads and buildings, supporting societal functions\"\n    }\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:starterQuiz--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -494,15 +496,15 @@
     }
   },
   "result": {
-    "id": "resp_03fa47a63b46e204006a296ecb07e481a28aa75410d21ff20e",
+    "id": "resp_036435fd636f5f23006a468143eacc81929732bd9940d2deda",
     "object": "response",
-    "created_at": 1781100235,
+    "created_at": 1783005507,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781100237,
+    "completed_at": 1783005511,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -513,7 +515,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_03fa47a63b46e204006a296ecb9de881a292fbc723a49068ed",
+        "id": "msg_036435fd636f5f23006a46814479408192bae6136aa5d6c6e0",
         "type": "message",
         "status": "completed",
         "content": [
@@ -521,81 +523,81 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Identify the time during which the Romans commenced their rule over Britain.\",\"hint\":\"To provide a clue, consider the events around 43 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"54 BCE\",\"410 CE\"]},{\"question\":\"What term describes the influence of Roman culture and practices on local British populations?\",\"hint\":\"This term reflects the adoption of Roman culture such as language and customs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romanisation\"],\"distractors\":[\"Governance\",\"Civilisation\"]},{\"question\":\"Select the structure Roman governors utilised to manage the territories within Britain.\",\"hint\":\"Think about the administrative divisions of the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Settlements\",\"Colonies\"]},{\"question\":\"Which group from Northern Britain frequently engaged in conflicts with Roman forces?\",\"hint\":\"This group resided in the area now recognised as Scotland.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Gauls\",\"Angles\"]},{\"question\":\"What major infrastructural development did Romans introduce to Britain to connect key settlements?\",\"hint\":\"These provided significant mobility and trade advantages.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Canals\",\"Aqueducts\"]},{\"question\":\"During which century did the Roman forces withdraw from their rule in Britain?\",\"hint\":\"This event occurred approximately around 410 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"5th Century\"],\"distractors\":[\"3rd Century\",\"6th Century\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
             "parsed": {
               "value": {
                 "version": "v3",
                 "questions": [
                   {
-                    "question": "What year did the Roman occupation of Britain begin?",
-                    "hint": "Refer to the timeline between 40 and 50 CE.",
+                    "question": "Identify the time during which the Romans commenced their rule over Britain.",
+                    "hint": "To provide a clue, consider the events around 43 CE.",
                     "questionType": "multiple-choice",
                     "answers": [
                       "43 CE"
                     ],
                     "distractors": [
-                      "50 CE",
-                      "40 CE"
+                      "54 BCE",
+                      "410 CE"
                     ]
                   },
                   {
-                    "question": "Which cultural influence significantly shaped the development of Britain during the Roman occupation?",
-                    "hint": "Think of the empire in control during the time.",
+                    "question": "What term describes the influence of Roman culture and practices on local British populations?",
+                    "hint": "This term reflects the adoption of Roman culture such as language and customs.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Roman"
+                      "Romanisation"
                     ],
                     "distractors": [
-                      "Pictish",
-                      "Scottish"
+                      "Governance",
+                      "Civilisation"
                     ]
                   },
                   {
-                    "question": "Which infrastructure was introduced by the Romans in Britain?",
-                    "hint": "Consider innovations in transportation and connectivity.",
+                    "question": "Select the structure Roman governors utilised to manage the territories within Britain.",
+                    "hint": "Think about the administrative divisions of the Roman Empire.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Roads"
+                      "Provinces"
                     ],
                     "distractors": [
-                      "Castles",
-                      "Cathedrals"
+                      "Settlements",
+                      "Colonies"
                     ]
                   },
                   {
-                    "question": "Name one group that posed a threat to the stability of Roman Britain.",
-                    "hint": "This group was located north of Hadrian's Wall.",
+                    "question": "Which group from Northern Britain frequently engaged in conflicts with Roman forces?",
+                    "hint": "This group resided in the area now recognised as Scotland.",
                     "questionType": "multiple-choice",
                     "answers": [
                       "Picts"
                     ],
                     "distractors": [
-                      "Normans",
-                      "Vikings"
+                      "Gauls",
+                      "Angles"
                     ]
                   },
                   {
-                    "question": "What role does economy play in shaping historical events?",
-                    "hint": "Consider whether resources and trade routes can affect power.",
+                    "question": "What major infrastructural development did Romans introduce to Britain to connect key settlements?",
+                    "hint": "These provided significant mobility and trade advantages.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "It influences the power and stability of societies."
+                      "Roads"
                     ],
                     "distractors": [
-                      "It prevents cultural exchange between nations.",
-                      "It has no long-lasting impact on societies."
+                      "Canals",
+                      "Aqueducts"
                     ]
                   },
                   {
-                    "question": "Which span of years represents the Roman occupation of Britain?",
-                    "hint": "This time frame exceeds three centuries.",
+                    "question": "During which century did the Roman forces withdraw from their rule in Britain?",
+                    "hint": "This event occurred approximately around 410 CE.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "43 CE to 401 CE"
+                      "5th Century"
                     ],
                     "distractors": [
-                      "55 BCE to 410 CE",
-                      "1 CE to 300 CE"
+                      "3rd Century",
+                      "6th Century"
                     ]
                   }
                 ],
@@ -611,8 +613,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:starterQuiz--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -1079,98 +1081,116 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 5724,
+      "input_tokens": 5761,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 347,
+      "output_tokens": 341,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 6071
+      "total_tokens": 6102
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"What year did the Roman occupation of Britain begin?\",\"hint\":\"Refer to the timeline between 40 and 50 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"50 CE\",\"40 CE\"]},{\"question\":\"Which cultural influence significantly shaped the development of Britain during the Roman occupation?\",\"hint\":\"Think of the empire in control during the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Pictish\",\"Scottish\"]},{\"question\":\"Which infrastructure was introduced by the Romans in Britain?\",\"hint\":\"Consider innovations in transportation and connectivity.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Castles\",\"Cathedrals\"]},{\"question\":\"Name one group that posed a threat to the stability of Roman Britain.\",\"hint\":\"This group was located north of Hadrian's Wall.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Normans\",\"Vikings\"]},{\"question\":\"What role does economy play in shaping historical events?\",\"hint\":\"Consider whether resources and trade routes can affect power.\",\"questionType\":\"multiple-choice\",\"answers\":[\"It influences the power and stability of societies.\"],\"distractors\":[\"It prevents cultural exchange between nations.\",\"It has no long-lasting impact on societies.\"]},{\"question\":\"Which span of years represents the Roman occupation of Britain?\",\"hint\":\"This time frame exceeds three centuries.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE to 401 CE\"],\"distractors\":[\"55 BCE to 410 CE\",\"1 CE to 300 CE\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Identify the time during which the Romans commenced their rule over Britain.\",\"hint\":\"To provide a clue, consider the events around 43 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"54 BCE\",\"410 CE\"]},{\"question\":\"What term describes the influence of Roman culture and practices on local British populations?\",\"hint\":\"This term reflects the adoption of Roman culture such as language and customs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romanisation\"],\"distractors\":[\"Governance\",\"Civilisation\"]},{\"question\":\"Select the structure Roman governors utilised to manage the territories within Britain.\",\"hint\":\"Think about the administrative divisions of the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Settlements\",\"Colonies\"]},{\"question\":\"Which group from Northern Britain frequently engaged in conflicts with Roman forces?\",\"hint\":\"This group resided in the area now recognised as Scotland.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Gauls\",\"Angles\"]},{\"question\":\"What major infrastructural development did Romans introduce to Britain to connect key settlements?\",\"hint\":\"These provided significant mobility and trade advantages.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Canals\",\"Aqueducts\"]},{\"question\":\"During which century did the Roman forces withdraw from their rule in Britain?\",\"hint\":\"This event occurred approximately around 410 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"5th Century\"],\"distractors\":[\"3rd Century\",\"6th Century\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
     "output_parsed": {
       "value": {
         "version": "v3",
         "questions": [
           {
-            "question": "What year did the Roman occupation of Britain begin?",
-            "hint": "Refer to the timeline between 40 and 50 CE.",
+            "question": "Identify the time during which the Romans commenced their rule over Britain.",
+            "hint": "To provide a clue, consider the events around 43 CE.",
             "questionType": "multiple-choice",
             "answers": [
               "43 CE"
             ],
             "distractors": [
-              "50 CE",
-              "40 CE"
+              "54 BCE",
+              "410 CE"
             ]
           },
           {
-            "question": "Which cultural influence significantly shaped the development of Britain during the Roman occupation?",
-            "hint": "Think of the empire in control during the time.",
+            "question": "What term describes the influence of Roman culture and practices on local British populations?",
+            "hint": "This term reflects the adoption of Roman culture such as language and customs.",
             "questionType": "multiple-choice",
             "answers": [
-              "Roman"
+              "Romanisation"
             ],
             "distractors": [
-              "Pictish",
-              "Scottish"
+              "Governance",
+              "Civilisation"
             ]
           },
           {
-            "question": "Which infrastructure was introduced by the Romans in Britain?",
-            "hint": "Consider innovations in transportation and connectivity.",
+            "question": "Select the structure Roman governors utilised to manage the territories within Britain.",
+            "hint": "Think about the administrative divisions of the Roman Empire.",
             "questionType": "multiple-choice",
             "answers": [
-              "Roads"
+              "Provinces"
             ],
             "distractors": [
-              "Castles",
-              "Cathedrals"
+              "Settlements",
+              "Colonies"
             ]
           },
           {
-            "question": "Name one group that posed a threat to the stability of Roman Britain.",
-            "hint": "This group was located north of Hadrian's Wall.",
+            "question": "Which group from Northern Britain frequently engaged in conflicts with Roman forces?",
+            "hint": "This group resided in the area now recognised as Scotland.",
             "questionType": "multiple-choice",
             "answers": [
               "Picts"
             ],
             "distractors": [
-              "Normans",
-              "Vikings"
+              "Gauls",
+              "Angles"
             ]
           },
           {
-            "question": "What role does economy play in shaping historical events?",
-            "hint": "Consider whether resources and trade routes can affect power.",
+            "question": "What major infrastructural development did Romans introduce to Britain to connect key settlements?",
+            "hint": "These provided significant mobility and trade advantages.",
             "questionType": "multiple-choice",
             "answers": [
-              "It influences the power and stability of societies."
+              "Roads"
             ],
             "distractors": [
-              "It prevents cultural exchange between nations.",
-              "It has no long-lasting impact on societies."
+              "Canals",
+              "Aqueducts"
             ]
           },
           {
-            "question": "Which span of years represents the Roman occupation of Britain?",
-            "hint": "This time frame exceeds three centuries.",
+            "question": "During which century did the Roman forces withdraw from their rule in Britain?",
+            "hint": "This event occurred approximately around 410 CE.",
             "questionType": "multiple-choice",
             "answers": [
-              "43 CE to 401 CE"
+              "5th Century"
             ],
             "distractors": [
-              "55 BCE to 410 CE",
-              "1 CE to 300 CE"
+              "3rd Century",
+              "6th Century"
             ]
           }
         ],

@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"replace\",\"path\":\"/learningOutcome\",\"value\":\"I can describe different software testing techniques and their purposes, understanding why they are used in the development process.\"}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"replace\",\"path\":\"/learningOutcome\",\"value\":\"I can describe different software testing techniques and say why they are used.\"}]"
       },
       {
         "role": "developer",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -68,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_0bd9218165cc55e8006a297ecb3080819c9d75af257c79522a",
+    "id": "resp_0cd47752daa280d6006a4680ed632881a2957e99c90df8549d",
     "object": "response",
-    "created_at": 1781104331,
+    "created_at": 1783005421,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104333,
+    "completed_at": 1783005422,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0bd9218165cc55e8006a297ecc0638819cbbbaddff26b31a5b",
+        "id": "msg_0cd47752daa280d6006a4680ee548881a29f52a090fad0f617",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,10 +97,10 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required.\"}}",
+            "text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap **Continue** to proceed.\"}}",
             "parsed": {
               "value": {
-                "message": "Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required."
+                "message": "Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap **Continue** to proceed."
               }
             }
           }
@@ -109,8 +111,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:message-to-user",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -151,27 +153,45 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 5327,
+      "input_tokens": 5320,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 36,
+      "output_tokens": 35,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 5363
+      "total_tokens": 5355
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required.\"}}",
+    "output_text": "{\"value\":{\"message\":\"Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap **Continue** to proceed.\"}}",
     "output_parsed": {
       "value": {
-        "message": "Is the updated learning outcome now appropriately suited for your pupils? Tap **Continue** to proceed, or let me know if further adjustments are required."
+        "message": "Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap **Continue** to proceed."
       }
     }
   }

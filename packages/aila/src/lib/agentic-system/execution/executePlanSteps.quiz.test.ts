@@ -75,8 +75,8 @@ function getUpdatedStarterQuiz(
 }
 
 describe("executePlanSteps — quiz dispatch intercept", () => {
-  describe("REGENERATE_QUIZ", () => {
-    it("calls the section agent and replaces the quiz when quizIntent action is REGENERATE_QUIZ", async () => {
+  describe("REGENERATE_SECTION", () => {
+    it("calls the section agent and replaces the quiz when itemIntent action is REGENERATE_SECTION", async () => {
       const regeneratedQuiz = {
         version: "v3" as const,
         questions: [makeQuestion("Completely new question")],
@@ -100,8 +100,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "REGENERATE_QUIZ",
+                itemIntent: {
+                  action: "REGENERATE_SECTION",
                   position: null,
                 },
               },
@@ -129,7 +129,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
     });
   });
 
-  describe("ADD_QUIZ_QUESTION", () => {
+  describe("ADD_ITEM", () => {
     it("calls the section agent and appends the new question at the end", async () => {
       const newQuestion = makeQuestion("What is photosynthesis?");
       const sectionAgent = jest.fn().mockResolvedValue({
@@ -154,8 +154,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "ADD_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "ADD_ITEM",
                   position: null,
                 },
               },
@@ -207,8 +207,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "ADD_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "ADD_ITEM",
                   position: 2,
                 },
               },
@@ -276,8 +276,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "ADD_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "ADD_ITEM",
                   position: null,
                 },
               },
@@ -301,7 +301,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
     });
   });
 
-  describe("CHANGE_QUIZ_QUESTION", () => {
+  describe("CHANGE_ITEM", () => {
     it("calls the section agent and replaces the question at the given 1-indexed position", async () => {
       const replacement = makeQuestion("Harder version of question 2");
       const sectionAgent = jest.fn().mockResolvedValue({
@@ -326,8 +326,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "CHANGE_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "CHANGE_ITEM",
                   position: 2,
                 },
               },
@@ -358,7 +358,138 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
     });
   });
 
-  describe("REMOVE_QUIZ_QUESTION", () => {
+  describe("single-item contract", () => {
+    it("declines when the section agent returns more than one question", async () => {
+      const sectionAgent = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [
+            makeQuestion("First extra question"),
+            makeQuestion("Second extra question"),
+          ],
+          imageMetadata: [],
+        },
+      });
+      const callbacks = makeCallbacks();
+
+      const runtime = makeRuntime({
+        plannerAgent: jest.fn().mockResolvedValue({
+          error: null,
+          data: {
+            decision: "plan",
+            parsedUserMessage: "Add a question to the starter quiz",
+            plan: [
+              {
+                type: "section",
+                sectionKey: "starterQuiz",
+                action: "generate",
+                sectionInstructions: null,
+                itemIntent: {
+                  action: "ADD_ITEM",
+                  position: null,
+                },
+              },
+            ],
+          },
+        }),
+        sectionAgents: {
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
+            handler: sectionAgent,
+          },
+        } as unknown as SectionAgentRegistry,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
+
+      expect(sectionAgent).toHaveBeenCalledTimes(1);
+      expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([q1, q2, q3]);
+    });
+  });
+
+  describe("British English correction", () => {
+    it("corrects an added question that contains an Americanism", async () => {
+      const americanQuestion = makeQuestion("What color is a healthy leaf?");
+      const britishQuestion = makeQuestion("What colour is a healthy leaf?");
+      const sectionAgent = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [americanQuestion],
+          imageMetadata: [],
+        },
+      });
+      let correctedContent: unknown;
+      const corrector = jest.fn().mockImplementation((props: unknown) => {
+        correctedContent = (props as { content: unknown }).content;
+        return Promise.resolve({
+          error: null,
+          data: {
+            version: "v3",
+            questions: [britishQuestion],
+            imageMetadata: [],
+          },
+        });
+      });
+      const callbacks = makeCallbacks();
+
+      const runtime = makeRuntime({
+        plannerAgent: jest.fn().mockResolvedValue({
+          error: null,
+          data: {
+            decision: "plan",
+            parsedUserMessage: "Add a question about colour",
+            plan: [
+              {
+                type: "section",
+                sectionKey: "starterQuiz",
+                action: "generate",
+                sectionInstructions: null,
+                itemIntent: {
+                  action: "ADD_ITEM",
+                  position: null,
+                },
+              },
+            ],
+          },
+        }),
+        sectionAgents: {
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
+            handler: sectionAgent,
+          },
+        } as unknown as SectionAgentRegistry,
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
+
+      expect(corrector).toHaveBeenCalledTimes(1);
+      // only the new question reaches the corrector, never the existing ones
+      expect((correctedContent as { questions: unknown }).questions).toEqual([
+        americanQuestion,
+      ]);
+      expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([
+        q1,
+        q2,
+        q3,
+        britishQuestion,
+      ]);
+    });
+  });
+
+  describe("REMOVE_ITEM", () => {
     it("splices the question at the given position without calling the section agent", async () => {
       const sectionAgent = jest.fn();
       const callbacks = makeCallbacks();
@@ -375,8 +506,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "REMOVE_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "REMOVE_ITEM",
                   position: 2,
                 },
               },
@@ -421,8 +552,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "REMOVE_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "REMOVE_ITEM",
                   position: null,
                 },
               },
@@ -458,8 +589,8 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
                 sectionKey: "starterQuiz",
                 action: "generate",
                 sectionInstructions: null,
-                quizIntent: {
-                  action: "REMOVE_QUIZ_QUESTION",
+                itemIntent: {
+                  action: "REMOVE_ITEM",
                   position: 99,
                 },
               },
@@ -478,7 +609,7 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
       expect(updatedQuiz?.questions).toHaveLength(3);
     });
 
-    it("bypasses the dispatcher when quizIntent is absent", async () => {
+    it("bypasses the dispatcher when itemIntent is absent", async () => {
       const sectionAgent = jest.fn().mockResolvedValue({
         error: null,
         data: {

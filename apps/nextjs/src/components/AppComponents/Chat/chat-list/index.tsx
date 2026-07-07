@@ -1,12 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 
 import scrollIntoView from "scroll-into-view-if-needed";
 
 import { ChatMessage } from "@/components/AppComponents/Chat/chat-message";
+import { getModerationsToDisplay } from "@/components/AppComponents/Chat/chat-message/ModerationMessage";
 import { Message } from "@/components/AppComponents/Chat/chat-message/layout";
-import { useChatStore } from "@/stores/AilaStoresProvider";
+import { useChatStore, useModerationStore } from "@/stores/AilaStoresProvider";
+import type { ParsedMessage } from "@/stores/chatStore/types";
 
 import { DemoLimitMessage } from "./demo-limit-message";
 import {
@@ -91,12 +95,20 @@ export function ChatList({
 
 const StableMessages = () => {
   const stableMessages = useChatStore((state) => state.stableMessages);
+  const persistedModerations = useModerationStore((state) => state.moderations);
+  const moderationsToDisplay = useMemo(
+    () => getModerationsToDisplay(stableMessages, persistedModerations),
+    [stableMessages, persistedModerations],
+  );
 
   return (
     <>
       {stableMessages.map((message) => (
         <Message.Spacing key={message.id}>
-          <ChatMessage message={message} />
+          <ChatMessage
+            message={message}
+            moderation={moderationsToDisplay.get(message.id) ?? null}
+          />
         </Message.Spacing>
       ))}
     </>
@@ -106,6 +118,8 @@ const StableMessages = () => {
 // NOTE: We isolate streamingMessage to reduce rerenders in other components during streaming
 const StreamingMessage = () => {
   const message = useChatStore((state) => state.streamingMessage);
+  const stableMessages = useChatStore((state) => state.stableMessages);
+  const persistedModerations = useModerationStore((state) => state.moderations);
   const ailaStreamingStatus = useChatStore(
     (state) => state.ailaStreamingStatus,
   );
@@ -128,8 +142,39 @@ const StreamingMessage = () => {
   }
 
   return (
-    <Message.Spacing>
-      <ChatMessage key={message.id} message={message} />
-    </Message.Spacing>
+    <StreamingChatMessage
+      message={message}
+      stableMessages={stableMessages}
+      persistedModerations={persistedModerations}
+    />
   );
 };
+
+function StreamingChatMessage({
+  message,
+  stableMessages,
+  persistedModerations,
+}: Readonly<{
+  message: ParsedMessage;
+  stableMessages: ParsedMessage[];
+  persistedModerations: PersistedModerationBase[];
+}>) {
+  const moderationsToDisplay = useMemo(
+    () =>
+      getModerationsToDisplay(
+        [...stableMessages, message],
+        persistedModerations,
+      ),
+    [message, stableMessages, persistedModerations],
+  );
+
+  return (
+    <Message.Spacing>
+      <ChatMessage
+        key={message.id}
+        message={message}
+        moderation={moderationsToDisplay.get(message.id) ?? null}
+      />
+    </Message.Spacing>
+  );
+}

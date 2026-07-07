@@ -7,10 +7,6 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. \n\n- Provide a brief, age-appropriate definition for each\n- Do not include the keyword in its own definition\n- Max 200 characters per definition\n- Where possible, use definitions from the national curriculum and/or exam boards.\n- Example: { keyword: \"Cell membrane\", definition: \"A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell.\" }\n\n## Tier 2 and 3 vocabulary definitions\n\n- Tier 2 = academic vocabulary that occurs frequently in written text for pupils but is not subject specific (e.g. explain, beneficial, required)\n- Tier 3 = subject-specific vocabulary that occurs less frequently (e.g. amplitude, hypotenuse)"
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
       },
       {
@@ -19,7 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can identify reasons why the Roman rule in Britain came to an end.\",\n  \"learningCycles\": [\n    \"Identify the key factors that contributed to the end of Roman rule over Britain.\",\n    \"Explain the role of economic, political, and military influences in the breakdown of Roman authority.\",\n    \"Describe the immediate societal changes in Britain following the withdrawal of Roman forces.\"\n  ],\n  \"priorKnowledge\": [\n    \"Understanding of the timeline and span of Roman occupation in Britain, specifically from 43 CE to 401 CE.\",\n    \"Knowledge that a variety of influences—such as cultural, economic, and military—can shape historical events.\",\n    \"Familiarity with key Roman contributions to infrastructure, governance, and daily life in Britain.\",\n    \"Recognition of the existence and role of tribes such as the Picts and Scots during Roman Britain.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman rule in Britain ended primarily due to several interlinked factors, including economic decline, political instability, and increased external pressures.\",\n    \"The Roman economy in Britain faced challenges such as reduced tax revenue and disruption of trade routes.\",\n    \"Political instability within the Roman Empire weakened control over distant provinces like Britain.\",\n    \"The withdrawal of Roman legions from Britain was influenced by increasing threats elsewhere in the Empire.\",\n    \"Following the Roman exit, Britain experienced significant societal changes, including reduced protection from external invasions and shifts in governance.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Roman departure from Britain was a singular event marked by a specific date\",\n      \"description\": \"The end of Roman Britain occurred as a gradual process influenced by various factors rather than a single event.\"\n    },\n    {\n      \"misconception\": \"Roman infrastructure ceased to exist immediately after their departure\",\n      \"description\": \"Much of the Roman-built infrastructure continued to be used for decades by the inhabitants of Britain post-Roman withdrawal.\"\n    },\n    {\n      \"misconception\": \"Britain was left uninhabited after the Roman legions left\",\n      \"description\": \"Despite the Roman withdrawal, Britain remained a populated and culturally diverse region with evolving societies.\"\n    }\n  ]\n}"
+        "content": "# Task\n\nList key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. \n\n- Provide a brief, age-appropriate definition for each\n- Do not include the keyword in its own definition\n- Max 200 characters per definition\n- Where possible, use definitions from the national curriculum and/or exam boards.\n- Example: { keyword: \"Cell membrane\", definition: \"A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell.\" }\n\n## Tier 2 and 3 vocabulary definitions\n\n- Tier 2 = academic vocabulary that occurs frequently in written text for pupils but is not subject specific (e.g. explain, beneficial, required)\n- Tier 3 = subject-specific vocabulary that occurs less frequently (e.g. amplitude, hypotenuse)"
+      },
+      {
+        "role": "developer",
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\n    \"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\n    \"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\n    \"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\n    \"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Roman Britain ended abruptly when all infrastructure collapsed\",\n      \"description\": \"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"\n    },\n    {\n      \"misconception\": \"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\n      \"description\": \"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"\n    },\n    {\n      \"misconception\": \"The withdrawal of Rome's armies left Britain immediately defenceless\",\n      \"description\": \"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"\n    }\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -37,6 +37,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:keywords--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -81,15 +83,15 @@
     }
   },
   "result": {
-    "id": "resp_0e94d7801df50b32006a296ec0b58881a1a7150bf78cd40112",
+    "id": "resp_02378ba3c5389ca2006a468138ede081a2bba8d6c9913ad8ac",
     "object": "response",
-    "created_at": 1781100224,
+    "created_at": 1783005496,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781100225,
+    "completed_at": 1783005498,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -100,7 +102,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0e94d7801df50b32006a296ec12e1081a1a66cf7f0b6456fe4",
+        "id": "msg_02378ba3c5389ca2006a468139504881a2b9f6ef55305a6325",
         "type": "message",
         "status": "completed",
         "content": [
@@ -108,28 +110,28 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[{\"keyword\":\"Withdrawal\",\"definition\":\"The act of removing or taking away forces or presence from a region or place.\"},{\"keyword\":\"Instability\",\"definition\":\"The state of being prone to frequent change or lack of steady conditions.\"},{\"keyword\":\"Province\",\"definition\":\"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"},{\"keyword\":\"Societal\",\"definition\":\"Relating to social groups, communities, and their organisation and structure.\"},{\"keyword\":\"Legion\",\"definition\":\"A large unit or group of soldiers in the Roman army known for their discipline and training.\"}]}",
+            "text": "{\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}",
             "parsed": {
               "value": [
                 {
-                  "keyword": "Withdrawal",
-                  "definition": "The act of removing or taking away forces or presence from a region or place."
-                },
-                {
-                  "keyword": "Instability",
-                  "definition": "The state of being prone to frequent change or lack of steady conditions."
+                  "keyword": "Romanisation",
+                  "definition": "The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule"
                 },
                 {
                   "keyword": "Province",
-                  "definition": "A geographic area that belonged to the Roman Empire, governed as a part of its territory."
+                  "definition": "A territory governed as a part of the Roman Empire, managed by officials appointed by the empire"
                 },
                 {
-                  "keyword": "Societal",
-                  "definition": "Relating to social groups, communities, and their organisation and structure."
+                  "keyword": "Picts",
+                  "definition": "A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end"
                 },
                 {
-                  "keyword": "Legion",
-                  "definition": "A large unit or group of soldiers in the Roman army known for their discipline and training."
+                  "keyword": "Saxons",
+                  "definition": "A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule"
+                },
+                {
+                  "keyword": "Infrastructure",
+                  "definition": "Essential facilities and structures, such as roads and buildings, supporting societal functions"
                 }
               ]
             }
@@ -141,8 +143,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:keywords--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -196,45 +198,63 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2439,
+      "input_tokens": 2458,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 125,
+      "output_tokens": 134,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2564
+      "total_tokens": 2592
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[{\"keyword\":\"Withdrawal\",\"definition\":\"The act of removing or taking away forces or presence from a region or place.\"},{\"keyword\":\"Instability\",\"definition\":\"The state of being prone to frequent change or lack of steady conditions.\"},{\"keyword\":\"Province\",\"definition\":\"A geographic area that belonged to the Roman Empire, governed as a part of its territory.\"},{\"keyword\":\"Societal\",\"definition\":\"Relating to social groups, communities, and their organisation and structure.\"},{\"keyword\":\"Legion\",\"definition\":\"A large unit or group of soldiers in the Roman army known for their discipline and training.\"}]}",
+    "output_text": "{\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}",
     "output_parsed": {
       "value": [
         {
-          "keyword": "Withdrawal",
-          "definition": "The act of removing or taking away forces or presence from a region or place."
-        },
-        {
-          "keyword": "Instability",
-          "definition": "The state of being prone to frequent change or lack of steady conditions."
+          "keyword": "Romanisation",
+          "definition": "The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule"
         },
         {
           "keyword": "Province",
-          "definition": "A geographic area that belonged to the Roman Empire, governed as a part of its territory."
+          "definition": "A territory governed as a part of the Roman Empire, managed by officials appointed by the empire"
         },
         {
-          "keyword": "Societal",
-          "definition": "Relating to social groups, communities, and their organisation and structure."
+          "keyword": "Picts",
+          "definition": "A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end"
         },
         {
-          "keyword": "Legion",
-          "definition": "A large unit or group of soldiers in the Roman army known for their discipline and training."
+          "keyword": "Saxons",
+          "definition": "A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule"
+        },
+        {
+          "keyword": "Infrastructure",
+          "definition": "Essential facilities and structures, such as roads and buildings, supporting societal functions"
         }
       ]
     }

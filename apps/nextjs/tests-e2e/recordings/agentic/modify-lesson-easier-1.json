@@ -7,15 +7,15 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nThe learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.\n\n- Phrase it from the pupil's view, starting with \"I can…\"\n- Maximum 30 words\n- Must be achievable in a single lesson (typically 40–50 minutes)\n- Should be clear, specific, and focused\n\nIf the lesson title is broad (e.g. \"World War 2\"), the learning outcome should narrow it to a specific, teachable focus e.g. \"I can explain why the period of 1941-2 was an important turning point of the Second World War.\".\nThe learning outcome should reflect this specific lesson—not a wider scheme of work."
-      },
-      {
-        "role": "developer",
         "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### PUPIL\nSpeaker: A pupil\nAudience: other pupils/teacher\nUse this voice for the learning outcome (e.g. \"I can...\") and for any model answers or example pupil work. Match the tone to pupil age."
       },
       {
         "role": "developer",
         "content": "## Voice guidance\n\nUnless otherwise specified, use PUPIL."
+      },
+      {
+        "role": "developer",
+        "content": "# Task\n\nThe learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.\n\n- Phrase it from the pupil's view, starting with \"I can…\"\n- Maximum 30 words\n- Must be achievable in a single lesson (typically 40–50 minutes)\n- Should be clear, specific, and focused\n\nIf the lesson title is broad (e.g. \"World War 2\"), the learning outcome should narrow it to a specific, teachable focus e.g. \"I can explain why the period of 1941-2 was an important turning point of the Second World War.\".\nThe learning outcome should reflect this specific lesson—not a wider scheme of work."
       },
       {
         "role": "developer",
@@ -27,11 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n"
-      },
-      {
-        "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSimplify the existing learning outcome to make it easier to understand. Ensure to retain the focus on explaining software testing techniques and their purposes."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSimplify the language and sentence structure to make the learning outcome easier to understand for the intended audience, while preserving its content."
       },
       {
         "role": "developer",
@@ -45,6 +41,8 @@
     "stream": false,
     "model": "gpt-4o-2024-11-20",
     "reasoning": null,
+    "prompt_cache_key": "aila:learningOutcome--default",
+    "prompt_cache_retention": "24h",
     "text": {
       "format": {
         "type": "json_schema",
@@ -68,15 +66,15 @@
     }
   },
   "result": {
-    "id": "resp_03cc1911df05b12f006a297ec9ff9881a3ab77cc7327f4ca11",
+    "id": "resp_0eb684435d5cb4bd006a4680eb890c81a1a9f794bf0659dad9",
     "object": "response",
-    "created_at": 1781104330,
+    "created_at": 1783005419,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1781104330,
+    "completed_at": 1783005420,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -87,7 +85,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_03cc1911df05b12f006a297eca977481a39faa5e2015685449",
+        "id": "msg_0eb684435d5cb4bd006a4680ec7dec81a185cf157169c23267",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,9 +93,9 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":\"I can describe different software testing techniques and their purposes, understanding why they are used in the development process.\"}",
+            "text": "{\"value\":\"I can describe different software testing techniques and say why they are used.\"}",
             "parsed": {
-              "value": "I can describe different software testing techniques and their purposes, understanding why they are used in the development process."
+              "value": "I can describe different software testing techniques and say why they are used."
             }
           }
         ],
@@ -107,8 +105,8 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": null,
-    "prompt_cache_retention": "in_memory",
+    "prompt_cache_key": "aila:learningOutcome--default",
+    "prompt_cache_retention": "24h",
     "reasoning": {
       "context": null,
       "effort": null,
@@ -141,26 +139,44 @@
       "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+      "image_gen": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "web_search": {
+        "num_requests": 0
+      }
+    },
     "tools": [],
     "top_logprobs": 0,
     "top_p": 1,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 7484,
+      "input_tokens": 7449,
       "input_tokens_details": {
         "cached_tokens": 0
       },
-      "output_tokens": 26,
+      "output_tokens": 19,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 7510
+      "total_tokens": 7468
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":\"I can describe different software testing techniques and their purposes, understanding why they are used in the development process.\"}",
+    "output_text": "{\"value\":\"I can describe different software testing techniques and say why they are used.\"}",
     "output_parsed": {
-      "value": "I can describe different software testing techniques and their purposes, understanding why they are used in the development process."
+      "value": "I can describe different software testing techniques and say why they are used."
     }
   }
 }

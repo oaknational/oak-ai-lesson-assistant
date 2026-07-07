@@ -115,40 +115,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
@@ -356,40 +357,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
@@ -588,40 +590,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
@@ -829,40 +832,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
@@ -1059,40 +1063,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
@@ -1300,40 +1305,41 @@ When planning group 4, always emit section steps in this exact order: \`starterQ
 - **Never include 'basedOn' in the plan** unless RELEVANT LESSONS lists at least one lesson AND the user has explicitly selected one. An empty or absent RELEVANT LESSONS section means basedOn must be omitted.
 - **User intent**: Respect explicit user directions about specific sections
 
-### 🔹 QUIZ INTENT
+### 🔹 SECTION ITEM INTENT
 
-When planning a step for \`starterQuiz\` or \`exitQuiz\`, check whether the user message expresses a structured quiz modification request and, if so, emit a \`quizIntent\` on that step.
+When planning a step for a list-based section — \`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\` — check whether the user message expresses a structured single-item modification request and, if so, emit an \`itemIntent\` on that step. The "items" are the quiz's questions, the individual keywords, or the individual misconceptions.
 
 **Action classification:**
 Classify the user message into one of these actions:
-- \`REMOVE_QUIZ_QUESTION\` — "remove question N", "delete the third question"
-- \`ADD_QUIZ_QUESTION\` — "add a question about X", "add another one". **Before emitting this, check the target quiz's \`questions\` array — if it is empty, emit \`REGENERATE_QUIZ\` instead (see Empty-quiz exception below).**
-- \`CHANGE_QUIZ_QUESTION\` — "change question N", "rewrite question 2", "make question N easier"
-- \`REGENERATE_QUIZ\` — "generate a new quiz", "redo the whole quiz", **or any \`add\`-shaped request when the target quiz has zero existing questions**
+- \`REMOVE_ITEM\` — "remove question N", "delete the third question", "remove the photosynthesis keyword", "drop the osmosis misconception"
+- \`ADD_ITEM\` — "add a question about X", "add another keyword", "add a misconception". **Before emitting this, check the target section in the CURRENT DOCUMENT — if it is empty or absent, emit \`REGENERATE_SECTION\` instead (see Empty-section exception below).**
+- \`CHANGE_ITEM\` — "change question N", "rewrite the second keyword", "make question N easier", "reword the osmosis misconception"
+- \`REGENERATE_SECTION\` — "generate a new quiz", "redo the keywords", "start the misconceptions again", **or any \`add\`-shaped request when the target section has zero existing items**
 
-The step's \`sectionKey\` should be the target quiz (\`starterQuiz\` or \`exitQuiz\`).
+The step's \`sectionKey\` should be the target section (\`starterQuiz\`, \`exitQuiz\`, \`keywords\` or \`misconceptions\`).
 
 **Position resolution:**
-For \`REMOVE_QUIZ_QUESTION\` and \`CHANGE_QUIZ_QUESTION\`, resolve \`position\` (1-indexed) from the message:
+For \`REMOVE_ITEM\` and \`CHANGE_ITEM\`, resolve \`position\` (1-indexed) from the message:
 - Explicit number: "remove question 3" → \`position: 3\`
-- Ordinal: "remove the first question" → \`position: 1\`, "remove the last question" → \`position: currentQuiz.length\`
-- Content reference: "remove the photosynthesis question" → resolve to the matching 1-indexed position
+- Ordinal: "remove the first keyword" → \`position: 1\`, "remove the last question" → \`position: <number of items in the section>\`
+- Content reference: "remove the photosynthesis keyword" → resolve to the matching item's 1-indexed position
 - If position cannot be determined, emit \`position: null\`
 
-For \`ADD_QUIZ_QUESTION\`, emit the requested insert position if given, otherwise \`position: null\` (append).
-For \`REGENERATE_QUIZ\`, emit \`position: null\`.
+For \`ADD_ITEM\`, emit the requested insert position if given, otherwise \`position: null\` (append).
+For \`REGENERATE_SECTION\`, emit \`position: null\`.
 
-**Empty-quiz exception (mandatory check before classifying ADD):**
-Before emitting \`ADD_QUIZ_QUESTION\`, inspect the target quiz in the CURRENT DOCUMENT:
-- If \`starterQuiz.questions\` (or \`exitQuiz.questions\`) is an empty array (length 0), you MUST emit \`REGENERATE_QUIZ\` instead of \`ADD_QUIZ_QUESTION\`. Set \`position: null\`.
-- Adding a single question to a quiz with zero questions is invalid — the user is asking for a quiz to be generated, not for one question to be appended to nothing.
+**Empty-section exception (mandatory check before classifying ADD):**
+Before emitting \`ADD_ITEM\`, count the target section's existing items in the CURRENT DOCUMENT:
+- For \`starterQuiz\`/\`exitQuiz\`, count \`questions\` (e.g. \`starterQuiz.questions\`) — the section is an object wrapping that array.
+- For \`keywords\`/\`misconceptions\`, count the array itself.
+If the section has zero items (or is absent), you MUST emit \`REGENERATE_SECTION\` instead of \`ADD_ITEM\`, with \`position: null\`. Adding a single item to an empty section is invalid — the user is asking for the section to be generated, not for one item appended to nothing.
 
 Example:
 - User message: "For the starter quiz, add a question"
 - Document: \`starterQuiz: { questions: [], ... }\`
-- Correct output: \`action: REGENERATE_QUIZ\`, \`position: null\` (NOT \`ADD_QUIZ_QUESTION\`)
+- Correct output: \`action: REGENERATE_SECTION\`, \`position: null\` (NOT \`ADD_ITEM\`)
 
-If the message is not a quiz modification request, omit \`quizIntent\` (or set it to \`null\`) on the step.
+If the message is not a single-item modification request for a list-based section, omit \`itemIntent\` (or set it to \`null\`) on the step.
 
 ---
 
