@@ -1,3 +1,15 @@
+# [1.81.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.80.0...v1.81.0) (2026-07-07)
+
+
+### Bug Fixes
+
+* [AI-2313] only show content guidance when categories change ([#1100](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1100)) ([211a8a2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/211a8a2f1407ba014e98eafe472ef0fc45fd5d1c))
+
+
+### Features
+
+* targeted edits for keywords and misconceptions ([#1087](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1087)) ([a1c82a9](https://github.com/oaknational/oak-ai-lesson-assistant/commit/a1c82a98601d14c344c028965e8a60614e4af7ed))
+
 # [1.80.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.79.0...v1.80.0) (2026-07-06)
 
 
