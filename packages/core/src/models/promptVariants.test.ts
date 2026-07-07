@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { PromptVariants, promptHash } from "./promptVariants";
 import type { OakPromptDefinition } from "../prompts/types";
+import { PromptVariants, promptHash } from "./promptVariants";
 
 function promptDefinition(): OakPromptDefinition {
   return {
