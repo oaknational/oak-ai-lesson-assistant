@@ -87,6 +87,9 @@ describe("QuizV3MultipleChoiceOnlyStrictMax6Schema", () => {
   });
 });
 
+// This tests the schema for persisted quizzes we already hold: lessons saved
+// in the database, basedOn/RAG quizzes and maths-bank questions. These can
+// have shapes the LLM is not allowed to produce, so it must keep accepting them.
 describe("QuizV3Schema (persisted)", () => {
   it("still accepts questions with four answer options", () => {
     const quiz = strictQuiz([mcQuestion({ distractors: ["1", "3", "4"] })]);

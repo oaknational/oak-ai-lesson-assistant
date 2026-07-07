@@ -21,6 +21,9 @@ const makeQuiz = (questions: LatestQuizQuestion[]): LatestQuiz => ({
 });
 
 describe("toMultipleChoiceOnlyQuiz", () => {
+  // A quiz may be missing because the lesson hasn't reached that section yet,
+  // or an exemplar lesson lacks it. Missing quizzes should be undefined and
+  // not become an empty quiz that would be shown to the LLM as a real example.
   it("returns undefined when there is no quiz", () => {
     expect(toMultipleChoiceOnlyQuiz(undefined)).toBeUndefined();
   });
@@ -85,6 +88,8 @@ describe("toMultipleChoiceOnlyQuiz", () => {
     );
   });
 
+  // reportId points at a maths pipeline generation report. It should be
+  // dropped because the LLM shouldn't see it.
   it("drops reportId", () => {
     const quiz: LatestQuiz = { ...makeQuiz([mcQuestion()]), reportId: "abc" };
 
