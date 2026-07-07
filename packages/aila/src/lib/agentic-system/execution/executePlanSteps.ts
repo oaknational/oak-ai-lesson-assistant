@@ -218,10 +218,9 @@ async function executeGenerateStep(
 }
 
 /**
- * Default-agent quizzes are corrected against the strict LLM schema, so the
- * corrector cannot re-introduce extra answer options or questions; its output
- * fails validation and falls back to the original content instead. Maths-bank
- * quizzes and all other sections keep the permissive section schema.
+ * The corrector validates its output against this schema. Strict for
+ * default-agent quizzes so it cannot re-introduce extra options or questions;
+ * permissive for maths-bank quizzes and every other section.
  */
 function correctorResponseSchema(
   context: AilaExecutionContext,

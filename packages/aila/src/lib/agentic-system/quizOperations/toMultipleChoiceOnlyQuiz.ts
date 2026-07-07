@@ -7,10 +7,9 @@ import {
 } from "../../../protocol/schemas/quiz/quizV3";
 
 /**
- * Shapes a persisted quiz for the LLM-facing multiple-choice-only schema.
- * Persisted quizzes (RAG exemplars, basedOn lessons, maths-bank quizzes) may
- * contain other question types or extra answer options; the LLM should only
- * ever see examples in the exact shape it is asked to produce.
+ * Best-effort shaping of a persisted quiz towards the multiple-choice-only
+ * LLM schema: drops other question types and trims extra answer options.
+ * Prompt context only; never validated against the strict schema.
  */
 export function toMultipleChoiceOnlyQuiz(
   quiz: LatestQuiz | undefined,
