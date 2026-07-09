@@ -5,6 +5,20 @@ import {
 } from "./starterQuiz.instructions";
 
 describe("starterQuiz instructions", () => {
+  describe("starterQuizInstructions", () => {
+    it("binds questions to the prior knowledge to assess section", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+      expect(rewriteOneQuizInstructions(2, "ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+  });
+
   describe("addOneQuizInstructions", () => {
     it("directs the LLM to generate exactly one question", () => {
       expect(addOneQuizInstructions("ks2")).toMatch(/exactly one/i);
