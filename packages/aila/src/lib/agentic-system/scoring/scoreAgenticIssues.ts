@@ -364,6 +364,36 @@ const SCORERS: Scorer[] = [
       };
     },
   },
+  {
+    id: "starter-quiz-grounding",
+    description: "Starter quiz questions vs prior knowledge (grounding review)",
+    fn: ({ finalDocument }) => {
+      const quiz = finalDocument.starterQuiz;
+      if (!quiz) {
+        return { heuristic: "skip", evidence: "No starter quiz present" };
+      }
+      const priorKnowledge = finalDocument.priorKnowledge ?? [];
+      const lines: string[] = [];
+      lines.push("Prior knowledge (questions should assess this):");
+      lines.push(
+        ...(priorKnowledge.length > 0
+          ? priorKnowledge.map((statement) => `  - ${statement}`)
+          : ["  (none)"]),
+      );
+      lines.push("Starter quiz questions:");
+      for (const [qi, q] of (quiz.questions ?? []).entries()) {
+        lines.push(`  Q${qi + 1}: ${q.question}`);
+      }
+      lines.push("Upcoming content (should NOT be tested):");
+      lines.push(
+        ...(finalDocument.keyLearningPoints ?? []).map((klp) => `  - ${klp}`),
+      );
+      return {
+        heuristic: priorKnowledge.length === 0 ? "flag" : "pass",
+        evidence: lines.join("\n"),
+      };
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
