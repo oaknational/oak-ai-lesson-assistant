@@ -1,5 +1,5 @@
-codeHash: 3d0b0345ad18db9c639ebd016fb2a4bb32e1d819b4d1b2d9b4c7456cab24943e
-generated: 2026-07-02T16:15:25.302Z
+codeHash: 7ab2d096e61f1e30e36242f1d2ccaa4c1c948023ac2c4bde3f0aadf462c2812a
+generated: 2026-07-09T11:26:53.147Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -22,6 +22,8 @@ summary:
     americanisms-meanings:
       flag: 3
     quiz-question-count:
+      pass: 3
+    starter-quiz-grounding:
       pass: 3
     americanisms_corrector:
       corrections_attempted: 1
@@ -53,6 +55,8 @@ summary:
     americanisms-meanings:
       flag: 3
     quiz-question-count:
+      pass: 3
+    starter-quiz-grounding:
       pass: 3
     americanisms_corrector:
       corrections_attempted: 0
