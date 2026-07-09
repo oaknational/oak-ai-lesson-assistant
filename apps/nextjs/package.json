@@ -109,7 +109,7 @@
     "openai": "^6.45.0",
     "p-limit": "^7.2.0",
     "partial-json-parser": "^1.2.2",
-    "posthog-js": "^1.201.0",
+    "posthog-js": "^1.388.1",
     "posthog-node": "^5.24.7",
     "pptxgenjs": "^3.12.0",
     "ramda": "^0.30.1",
