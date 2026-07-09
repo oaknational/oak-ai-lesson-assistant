@@ -199,6 +199,20 @@ describe("sectionToGenericPromptAgent", () => {
       expect(agent.input).toMatchSnapshot();
     });
 
+    it("should filter the current document with documentForPrompt", () => {
+      const propsWithDocumentView: SectionPromptAgentProps<MockSchemaType> = {
+        ...baseProps,
+        documentForPrompt: (document) => ({
+          title: document.title,
+          keyStage: document.keyStage,
+        }),
+      };
+
+      const agent = createAgent(propsWithDocumentView);
+
+      expect(agent.input).toMatchSnapshot();
+    });
+
     it("should handle extra input from context", () => {
       const extraInputFromCtx = (_ctx: AilaExecutionContext) => [
         {
