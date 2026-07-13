@@ -16,7 +16,7 @@ export function quizQuestionDesignInstructions(keyStage: string): string {
 ${getKeyStageLanguageGuidance(keyStage)}
 
 ## Answers
-- Include 1 correct answer + 2 high-quality distractors.
+- Every question must have exactly 3 answer options: exactly 1 correct answer + exactly 2 high-quality distractors. Never include more.
 - Mutually exclusive (i.e. only one answer is correct)
 - Do not include 'all/none of the above' as an answer option.
 - Not include words from the question in the answers which may give away the correct answer.

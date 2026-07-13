@@ -1,4 +1,5 @@
 import type { LatestQuiz, LatestQuizQuestion } from "../../../protocol/schema";
+import { QUIZ_MAX_QUESTIONS } from "../../../protocol/schemas/quiz/quizV3";
 import type { StructuralItemIntent } from "../schema";
 import {
   type RunSingleItemFn,
@@ -6,9 +7,6 @@ import {
 } from "./sectionListOperationDispatcher";
 
 export type RunSingleQuestionFn = RunSingleItemFn<LatestQuizQuestion>;
-
-// Sanity cap, not a pedagogical limit; far above any practical quiz size.
-const MAX_QUIZ_QUESTIONS = 50;
 
 export type QuizDispatchResult = {
   data: LatestQuiz;
@@ -31,7 +29,7 @@ export async function quizOperationDispatcher(
     {
       itemNoun: "question",
       min: 0,
-      max: MAX_QUIZ_QUESTIONS,
+      max: QUIZ_MAX_QUESTIONS,
       regenerateSuggestion: "Generate a new quiz",
     },
   );
