@@ -10,16 +10,16 @@ describe("starterQuiz instructions", () => {
       expect(starterQuizInstructions("ks2")).toMatch(
         /PRIOR KNOWLEDGE TO ASSESS/,
       );
-      expect(addOneQuizInstructions("ks2")).toMatch(
-        /PRIOR KNOWLEDGE TO ASSESS/,
-      );
-      expect(rewriteOneQuizInstructions(2, "ks2")).toMatch(
-        /PRIOR KNOWLEDGE TO ASSESS/,
-      );
     });
   });
 
   describe("addOneQuizInstructions", () => {
+    it("binds the new question to the prior knowledge to assess section", () => {
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
     it("directs the LLM to generate exactly one question", () => {
       expect(addOneQuizInstructions("ks2")).toMatch(/exactly one/i);
     });
@@ -42,6 +42,12 @@ describe("starterQuiz instructions", () => {
   });
 
   describe("rewriteOneQuizInstructions", () => {
+    it("binds the replacement question to the prior knowledge to assess section", () => {
+      expect(rewriteOneQuizInstructions(2, "ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
     it("is a function that accepts a 1-indexed position", () => {
       expect(typeof rewriteOneQuizInstructions).toBe("function");
     });
