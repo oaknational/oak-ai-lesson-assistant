@@ -2,6 +2,7 @@ import type OpenAI from "openai";
 
 import { starterQuizAgent } from ".";
 import type { PartialLessonPlan } from "../../../../../protocol/schema";
+import { toMultipleChoiceOnlyQuiz } from "../../../quizOperations/toMultipleChoiceOnlyQuiz";
 import type {
   AilaExecutionContext,
   SectionAgentRegistry,
@@ -85,7 +86,9 @@ const runAgentAndGetPromptContents = async (): Promise<string[]> => {
     description: "Generates starter quiz questions",
     openai: {} as OpenAI,
     contentFromDocument: (doc) =>
-      "starterQuiz" in doc ? doc.starterQuiz : undefined,
+      toMultipleChoiceOnlyQuiz(
+        "starterQuiz" in doc ? doc.starterQuiz : undefined,
+      ),
   });
 
   await agent.handler(buildCtx());

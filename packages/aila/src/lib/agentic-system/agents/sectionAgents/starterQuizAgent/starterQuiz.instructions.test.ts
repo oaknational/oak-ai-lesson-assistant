@@ -11,12 +11,34 @@ describe("starterQuiz instructions", () => {
         /PRIOR KNOWLEDGE TO ASSESS/,
       );
     });
+
+    it("asks for exactly 6 questions", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(/exactly 6 questions/i);
+    });
+
+    it("asks for exactly 1 correct answer and exactly 2 distractors", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /exactly 1 correct answer/i,
+      );
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /exactly 2 high-quality distractors/i,
+      );
+    });
   });
 
   describe("addOneQuizInstructions", () => {
     it("binds the new question to the prior knowledge to assess section", () => {
       expect(addOneQuizInstructions("ks2")).toMatch(
         /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
+    it("asks for exactly 1 correct answer and exactly 2 distractors", () => {
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /exactly 1 correct answer/i,
+      );
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /exactly 2 high-quality distractors/i,
       );
     });
 
