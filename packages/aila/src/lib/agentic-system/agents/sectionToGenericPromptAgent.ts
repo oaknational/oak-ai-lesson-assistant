@@ -31,6 +31,7 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     contentToString,
     ctx,
     extraInputFromCtx,
+    documentForPrompt,
     defaultVoice = "AILA_TO_TEACHER",
     voices = [],
   }: SectionPromptAgentProps<SectionValueType>,
@@ -79,7 +80,10 @@ export function sectionToGenericPromptAgent<SectionValueType>(
       ...staticParts,
       {
         role: "developer" as const,
-        content: currentDocumentPromptPart(ctx.currentTurn.document),
+        content: currentDocumentPromptPart(
+          documentForPrompt?.(ctx.currentTurn.document) ??
+            ctx.currentTurn.document,
+        ),
       },
       currentValue && {
         role: "developer" as const,

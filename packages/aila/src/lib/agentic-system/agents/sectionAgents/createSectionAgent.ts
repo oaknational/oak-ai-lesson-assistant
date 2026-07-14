@@ -111,6 +111,7 @@ export function createSectionAgent<ResponseType>({
   instructions,
   contentToString = defaultContentToString,
   extraInputFromCtx,
+  documentForPrompt,
   defaultVoice,
   voices,
   modelParams,
@@ -121,6 +122,7 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx?: (
     state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
+  documentForPrompt?: (document: PartialLessonPlan) => PartialLessonPlan;
   defaultVoice?: VoiceId;
   voices?: VoiceId[];
   modelParams: Omit<
@@ -177,6 +179,7 @@ export function createSectionAgent<ResponseType>({
           currentValue,
           ctx,
           extraInputFromCtx,
+          documentForPrompt,
           defaultVoice,
           voices,
         },

@@ -6,6 +6,12 @@ import {
 
 describe("starterQuiz instructions", () => {
   describe("starterQuizInstructions", () => {
+    it("binds questions to the prior knowledge to assess section", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
     it("asks for exactly 6 questions", () => {
       expect(starterQuizInstructions("ks2")).toMatch(/exactly 6 questions/i);
     });
@@ -21,6 +27,12 @@ describe("starterQuiz instructions", () => {
   });
 
   describe("addOneQuizInstructions", () => {
+    it("binds the new question to the prior knowledge to assess section", () => {
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
     it("asks for exactly 1 correct answer and exactly 2 distractors", () => {
       expect(addOneQuizInstructions("ks2")).toMatch(
         /exactly 1 correct answer/i,
@@ -52,6 +64,12 @@ describe("starterQuiz instructions", () => {
   });
 
   describe("rewriteOneQuizInstructions", () => {
+    it("binds the replacement question to the prior knowledge to assess section", () => {
+      expect(rewriteOneQuizInstructions(2, "ks2")).toMatch(
+        /PRIOR KNOWLEDGE TO ASSESS/,
+      );
+    });
+
     it("is a function that accepts a 1-indexed position", () => {
       expect(typeof rewriteOneQuizInstructions).toBe("function");
     });

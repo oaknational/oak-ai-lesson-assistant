@@ -364,6 +364,43 @@ const SCORERS: Scorer[] = [
       };
     },
   },
+  {
+    id: "starter-quiz-grounding",
+    description:
+      "Starter quiz vs prior knowledge (evidence for manual review; pass = prior knowledge present)",
+    fn: ({ finalDocument }) => {
+      const quiz = finalDocument.starterQuiz;
+      if (!quiz) {
+        return { heuristic: "skip", evidence: "No starter quiz present" };
+      }
+      const priorKnowledge = finalDocument.priorKnowledge ?? [];
+      const questions = quiz.questions ?? [];
+      const keyLearningPoints = finalDocument.keyLearningPoints ?? [];
+      const lines: string[] = [];
+      lines.push("Prior knowledge (questions should assess this):");
+      lines.push(
+        ...(priorKnowledge.length > 0
+          ? priorKnowledge.map((statement) => `  - ${statement}`)
+          : ["  (none)"]),
+      );
+      lines.push("Starter quiz questions:");
+      lines.push(
+        ...(questions.length > 0
+          ? questions.map((q, qi) => `  Q${qi + 1}: ${q.question}`)
+          : ["  (none)"]),
+      );
+      lines.push("Upcoming content (should NOT be tested):");
+      lines.push(
+        ...(keyLearningPoints.length > 0
+          ? keyLearningPoints.map((klp) => `  - ${klp}`)
+          : ["  (none)"]),
+      );
+      return {
+        heuristic: priorKnowledge.length === 0 ? "flag" : "pass",
+        evidence: lines.join("\n"),
+      };
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------
