@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import type { PersistedModerationBase } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
+
 import type { ParsedMessage } from "@/stores/chatStore/types";
 
 import { ChatMessagePart } from "./ChatMessagePart";
@@ -8,13 +10,17 @@ import { Message } from "./layout";
 
 export interface ChatMessageProps {
   message: ParsedMessage;
+  moderation: PersistedModerationBase | null;
 }
 
 function isActionMessage(message: ParsedMessage) {
   return message.parts.every((part) => part.document.type === "action");
 }
 
-export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
+export function ChatMessage({
+  message,
+  moderation,
+}: Readonly<ChatMessageProps>) {
   const [inspect, setInspect] = useState(false);
 
   const normalParts = message.parts.filter(
@@ -30,7 +36,7 @@ export function ChatMessage({ message }: Readonly<ChatMessageProps>) {
 
   return (
     <>
-      <Moderation forMessage={message} $mt="spacing-48" />
+      <Moderation moderation={moderation} $mt="spacing-48" />
       {normalParts.length > 0 && (
         <Message.Container roleType={message.role === "user" ? "user" : "aila"}>
           <button

@@ -25,7 +25,7 @@ export const handleUpdateModerationState = (
     });
 
     if (lockingMod) {
-      get().actions.updateLockingModeration(lastMod);
+      get().actions.updateLockingModeration(lockingMod);
     }
   };
 };

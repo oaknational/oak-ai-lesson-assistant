@@ -1,1 +1,1 @@
-export { LatestQuizSchema as StarterQuizSchema } from "../../../../../protocol/schema";
+export { LatestQuizMultipleChoiceOnlyStrictMax6Schema as StarterQuizSchema } from "../../../../../protocol/schema";

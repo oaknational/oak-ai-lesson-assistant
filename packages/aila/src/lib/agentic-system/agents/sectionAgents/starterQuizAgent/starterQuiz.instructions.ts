@@ -4,7 +4,7 @@ import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.ins
 export function starterQuizInstructions(keyStage: string): string {
   return `# Task
 
-Create a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
+Create a multiple-choice quiz with exactly 6 questions to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.
 
 ## Content Scope:
 

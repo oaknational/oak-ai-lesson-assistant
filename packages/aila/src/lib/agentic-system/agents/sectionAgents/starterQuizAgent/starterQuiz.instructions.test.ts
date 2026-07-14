@@ -5,7 +5,31 @@ import {
 } from "./starterQuiz.instructions";
 
 describe("starterQuiz instructions", () => {
+  describe("starterQuizInstructions", () => {
+    it("asks for exactly 6 questions", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(/exactly 6 questions/i);
+    });
+
+    it("asks for exactly 1 correct answer and exactly 2 distractors", () => {
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /exactly 1 correct answer/i,
+      );
+      expect(starterQuizInstructions("ks2")).toMatch(
+        /exactly 2 high-quality distractors/i,
+      );
+    });
+  });
+
   describe("addOneQuizInstructions", () => {
+    it("asks for exactly 1 correct answer and exactly 2 distractors", () => {
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /exactly 1 correct answer/i,
+      );
+      expect(addOneQuizInstructions("ks2")).toMatch(
+        /exactly 2 high-quality distractors/i,
+      );
+    });
+
     it("directs the LLM to generate exactly one question", () => {
       expect(addOneQuizInstructions("ks2")).toMatch(/exactly one/i);
     });

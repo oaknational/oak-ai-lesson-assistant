@@ -487,6 +487,152 @@ describe("executePlanSteps — quiz dispatch intercept", () => {
         britishQuestion,
       ]);
     });
+
+    it("falls back to the uncorrected question when the corrector adds extra options", async () => {
+      const americanQuestion = makeQuestion("What color is a healthy leaf?");
+      const overOptioned = {
+        ...americanQuestion,
+        question: "What colour is a healthy leaf?",
+        distractors: ["Wrong A", "Wrong B", "Wrong C"],
+      };
+      const sectionAgent = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [americanQuestion],
+          imageMetadata: [],
+        },
+      });
+      const corrector = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [overOptioned],
+          imageMetadata: [],
+        },
+      });
+      const callbacks = makeCallbacks();
+
+      const runtime = makeRuntime({
+        plannerAgent: jest.fn().mockResolvedValue({
+          error: null,
+          data: {
+            decision: "plan",
+            parsedUserMessage: "Add a question about colour",
+            plan: [
+              {
+                type: "section",
+                sectionKey: "starterQuiz",
+                action: "generate",
+                sectionInstructions: null,
+                itemIntent: {
+                  action: "ADD_ITEM",
+                  position: null,
+                },
+              },
+            ],
+          },
+        }),
+        sectionAgents: {
+          "starterQuiz--default": {
+            id: "starterQuiz--default",
+            description: "starter quiz",
+            handler: sectionAgent,
+          },
+        } as unknown as SectionAgentRegistry,
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({
+        persistedState: makePersistedState(),
+        runtime,
+        callbacks,
+      });
+
+      expect(corrector).toHaveBeenCalledTimes(1);
+      expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([
+        q1,
+        q2,
+        q3,
+        americanQuestion,
+      ]);
+    });
+
+    it("keeps the permissive schema for maths quiz corrections", async () => {
+      const americanQuestion: LatestQuizQuestion = {
+        questionType: "short-answer",
+        question: "What color is a healthy leaf?",
+        hint: null,
+        answers: ["green"],
+      };
+      const britishQuestion = {
+        ...americanQuestion,
+        question: "What colour is a healthy leaf?",
+      };
+      const mathsAgent = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [americanQuestion],
+          imageMetadata: [],
+        },
+      });
+      const corrector = jest.fn().mockResolvedValue({
+        error: null,
+        data: {
+          version: "v3",
+          questions: [britishQuestion],
+          imageMetadata: [],
+        },
+      });
+      const callbacks = makeCallbacks();
+
+      const mathsState: AilaPersistedState = {
+        ...makePersistedState(),
+        initialDocument: { subject: "maths", starterQuiz },
+      };
+
+      const runtime = makeRuntime({
+        config: { mathsQuizEnabled: true },
+        plannerAgent: jest.fn().mockResolvedValue({
+          error: null,
+          data: {
+            decision: "plan",
+            parsedUserMessage: "Add a question about colour",
+            plan: [
+              {
+                type: "section",
+                sectionKey: "starterQuiz",
+                action: "generate",
+                sectionInstructions: null,
+                itemIntent: {
+                  action: "ADD_ITEM",
+                  position: null,
+                },
+              },
+            ],
+          },
+        }),
+        sectionAgents: {
+          "starterQuiz--maths": {
+            id: "starterQuiz--maths",
+            description: "maths starter quiz",
+            handler: mathsAgent,
+          },
+        } as unknown as SectionAgentRegistry,
+        britishEnglishCorrectorAgent: corrector,
+      });
+
+      await ailaTurn({ persistedState: mathsState, runtime, callbacks });
+
+      expect(corrector).toHaveBeenCalledTimes(1);
+      expect(getUpdatedStarterQuiz(callbacks)?.questions).toEqual([
+        q1,
+        q2,
+        q3,
+        britishQuestion,
+      ]);
+    });
   });
 
   describe("REMOVE_ITEM", () => {

@@ -5,6 +5,7 @@ import type {
   LatestQuiz,
   PartialLessonPlan,
 } from "../../../../protocol/schema";
+import { toMultipleChoiceOnlyQuiz } from "../../quizOperations/toMultipleChoiceOnlyQuiz";
 import type {
   AilaExecutionContext,
   SectionAgent,
@@ -115,7 +116,9 @@ export const createSectionAgentRegistry = ({
     openai,
     collectGeneration,
     contentFromDocument: (document) =>
-      "starterQuiz" in document ? document.starterQuiz : undefined,
+      toMultipleChoiceOnlyQuiz(
+        "starterQuiz" in document ? document.starterQuiz : undefined,
+      ),
   }),
   "starterQuiz--maths": {
     id: "starterQuiz--maths",
@@ -135,7 +138,9 @@ export const createSectionAgentRegistry = ({
     openai,
     collectGeneration,
     contentFromDocument: (document) =>
-      "exitQuiz" in document ? document.exitQuiz : undefined,
+      toMultipleChoiceOnlyQuiz(
+        "exitQuiz" in document ? document.exitQuiz : undefined,
+      ),
   }),
   "exitQuiz--maths": {
     id: "exitQuiz--maths",
