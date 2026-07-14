@@ -1,5 +1,5 @@
-codeHash: 48bd234fc51e430abe54da7255e3ea4bc32eaac5decd1f032e493cf0751e1853
-generated: 2026-07-14T08:40:50.040Z
+codeHash: c79239c9993aa670f8663f6e5f371807010a8e94d2f349793dc8594edc960103
+generated: 2026-07-14T15:46:44.801Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -64,4 +64,4 @@ summary:
       correction_rate: 3.0%
       correction_failure_rate: 0.0%
       corrections_by_section:
-        exitQuiz: 1
+        cycle3: 1

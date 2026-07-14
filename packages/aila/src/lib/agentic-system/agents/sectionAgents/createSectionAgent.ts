@@ -32,7 +32,7 @@ export function createSectionAgent<ResponseType>({
   extraInputFromCtx?: (
     state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
-  documentForPrompt?: (document: PartialLessonPlan) => object;
+  documentForPrompt?: (document: PartialLessonPlan) => PartialLessonPlan;
   defaultVoice?: VoiceId;
   voices?: VoiceId[];
   modelParams: Omit<

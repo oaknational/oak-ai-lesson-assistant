@@ -10,7 +10,7 @@ import type { PartialLessonPlan } from "../../../../../protocol/schema";
  */
 export function starterQuizDocumentForPrompt(
   document: PartialLessonPlan,
-): object {
+): PartialLessonPlan {
   return pick(document, [
     "title",
     "subject",

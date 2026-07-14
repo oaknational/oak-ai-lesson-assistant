@@ -116,7 +116,7 @@ export type SectionPromptAgentProps<ResponseType> = {
     ctx: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
   /** Narrows the CURRENT DOCUMENT the agent sees; defaults to the full document. */
-  documentForPrompt?: (document: PartialLessonPlan) => object;
+  documentForPrompt?: (document: PartialLessonPlan) => PartialLessonPlan;
   defaultVoice?: VoiceId;
   voices?: VoiceId[];
 };
