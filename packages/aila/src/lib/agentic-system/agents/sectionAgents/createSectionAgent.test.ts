@@ -4,7 +4,10 @@ import { z } from "zod";
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
 import * as sectionModule from "../sectionToGenericPromptAgent";
-import { createSectionAgent } from "./createSectionAgent";
+import {
+  createSectionAgent,
+  keyStageBuildModeInstructions,
+} from "./createSectionAgent";
 
 jest.mock("../executeGenericPromptAgent", () => ({
   executeGenericPromptAgent: jest.fn().mockResolvedValue({ data: {} }),
@@ -143,5 +146,40 @@ describe("createSectionAgent", () => {
       }),
     );
     spy.mockRestore();
+  });
+});
+
+describe("keyStageBuildModeInstructions", () => {
+  const resolver = keyStageBuildModeInstructions({
+    fullRegen: (keyStage) => `full ${keyStage}`,
+    addOne: (keyStage) => `add ${keyStage}`,
+    rewriteOne: (position, keyStage) => `rewrite ${position} for ${keyStage}`,
+  });
+
+  const ctxForRewrite = (position: number) =>
+    ({
+      currentTurn: {
+        document: { keyStage: "key-stage-3" },
+        currentStep: { itemIntent: { action: "CHANGE_ITEM", position } },
+      },
+    }) as unknown as AilaExecutionContext;
+
+  it("versions rewriteOne once per key stage, treating the position as telemetry only", () => {
+    const q3 = resolver(ctxForRewrite(3));
+    const q5 = resolver(ctxForRewrite(5));
+
+    // Same version regardless of position...
+    expect(q3.variant).toBe("rewriteOne:ks3");
+    expect(q5.variant).toBe("rewriteOne:ks3");
+    expect(q3.templateText).toBe("rewrite {position} for key-stage-3");
+    expect(q5.templateText).toBe(q3.templateText);
+
+    // ...but the runtime prompt and telemetry carry the real position.
+    expect(q3.text).toBe("rewrite 3 for key-stage-3");
+    expect(q5.text).toBe("rewrite 5 for key-stage-3");
+    expect(q3.promptInputs).toMatchObject({
+      buildMode: "rewriteOne",
+      position: 3,
+    });
   });
 });

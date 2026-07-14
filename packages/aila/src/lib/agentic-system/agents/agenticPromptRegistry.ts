@@ -44,14 +44,8 @@ function createAgenticPromptDefinition({
   };
 }
 
-/**
- * A prompt template's body only changes when its instructions or voice change,
- * so the resolved prompt id is stable for the life of the process. We memoise
- * the in-flight promise per promptTemplateId/body pair so unchanged templates
- * resolve once per process rather than every turn, and concurrent turns share a
- * single resolution. Failures are not cached, so a transient error retries next
- * turn.
- */
+// Memoised per template body (keyed by its hash) so unchanged templates resolve
+// once per process, not every turn. Failures aren't cached, so they retry.
 const promptIdCache = new Map<string, Promise<string>>();
 
 async function resolveSinglePromptId(

@@ -1,3 +1,4 @@
+import type { PositionPlaceholder } from "../shared/positionPlaceholder";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
 
 export function exitQuizInstructions(keyStage: string): string {
@@ -34,7 +35,7 @@ ${quizQuestionDesignInstructions(keyStage)}`;
 }
 
 export const rewriteOneQuizInstructions = (
-  position: number,
+  position: number | PositionPlaceholder,
   keyStage: string,
 ): string =>
   `# Task

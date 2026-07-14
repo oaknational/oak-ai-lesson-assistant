@@ -21,6 +21,7 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     responseSchema,
     id,
     instructions,
+    templateText,
     promptTemplateId,
     promptInputs,
     messages,
@@ -42,10 +43,9 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     ? voices
     : [defaultVoice, ...voices];
 
-  // The static (non-dynamic) prefix, shared between the runtime prompt and the
-  // versioned prompt template so the two cannot drift. Identity and voice come
-  // first (most stable → best prompt-cache prefix), then the instructions.
-  const staticParts = [
+  // Identity and voice first (most stable → best prompt-cache prefix), then
+  // instructions; shared between the runtime prompt and the stored template.
+  const voicePrefix = [
     { role: "developer" as const, content: identityAndVoice },
     resolvedVoices.length > 0 && {
       role: "developer" as const,
@@ -55,10 +55,19 @@ export function sectionToGenericPromptAgent<SectionValueType>(
       role: "developer" as const,
       content: getVoicePrompt(defaultVoice),
     },
-    { role: "developer" as const, content: instructions },
   ].filter(isTruthy);
 
-  const promptTemplate = staticParts.map((part) => part.content).join("\n\n");
+  const staticParts = [
+    ...voicePrefix,
+    { role: "developer" as const, content: instructions },
+  ];
+
+  // Stored template prefers `templateText` (version-stable) over the runtime
+  // instructions.
+  const promptTemplate = [
+    ...voicePrefix.map((part) => part.content),
+    templateText ?? instructions,
+  ].join("\n\n");
 
   return {
     id,

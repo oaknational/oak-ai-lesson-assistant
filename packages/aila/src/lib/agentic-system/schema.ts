@@ -142,12 +142,8 @@ export type GenericPromptAgent<ResponseType> = {
     ResponseCreateParamsNonStreaming,
     "input" | "text" | "stream"
   >;
-  /**
-   * Persistence metadata (optional). `promptTemplateId` identifies which prompt
-   * template this call used for versioning (defaults to `id`); `promptTemplate`
-   * is the version-stable static prompt body stored against the generation; and
-   * `promptInputs` is extra telemetry recorded alongside it.
-   */
+  // Optional persistence metadata: which prompt template this call used
+  // (promptTemplateId, defaults to id), its version-stable body, and telemetry.
   promptTemplateId?: string;
   promptTemplate?: string;
   promptInputs?: Record<string, unknown>;

@@ -13,19 +13,18 @@ import {
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
 import { normaliseKeyStageForPrompt } from "./shared/keyStageLanguageGuidance";
+import {
+  POSITION_PLACEHOLDER,
+  type PositionPlaceholder,
+} from "./shared/positionPlaceholder";
 import type { VoiceId } from "./shared/voices";
 
-/**
- * Instructions may resolve to a plain string, or to a richer object when the
- * agent's prompt varies along an axis that should be versioned separately:
- * - `text` — the instructions used in the (runtime and stored) prompt.
- * - `variant` — appended to the agent id to form the promptTemplateId, so each
- *   distinct prompt body gets its own versioned prompt row (e.g. key stage,
- *   build mode, rewrite position).
- * - `promptInputs` — extra telemetry persisted alongside the generation.
- */
 export type ResolvedInstructions = {
+  /** Instructions used in the runtime prompt. */
   text: string;
+  /** Version-stable form stored as the template (defaults to `text`). */
+  templateText?: string;
+  /** Appended to the agent id to version distinct prompt bodies separately. */
   variant?: string;
   promptInputs?: Record<string, unknown>;
 };
@@ -43,10 +42,7 @@ function resolveInstructions(
   return typeof resolved === "string" ? { text: resolved } : resolved;
 }
 
-/**
- * Wraps key-stage-parameterised instructions so the resolved prompt is
- * versioned per key stage.
- */
+/** Versions key-stage-parameterised instructions per key stage. */
 export function keyStageInstructions(
   instructionsForKeyStage: (keyStage: string) => string,
 ): (ctx: AilaExecutionContext) => ResolvedInstructions {
@@ -60,14 +56,14 @@ export function keyStageInstructions(
   };
 }
 
-/**
- * Wraps instructions that vary by both key stage and build mode (full
- * regenerate / add one / rewrite one), versioning the prompt per combination.
- */
+/** Versions instructions that vary by both key stage and build mode. */
 export function keyStageBuildModeInstructions(instructionsByMode: {
   fullRegen: (keyStage: string) => string;
   addOne: (keyStage: string) => string;
-  rewriteOne: (position: number, keyStage: string) => string;
+  rewriteOne: (
+    position: number | PositionPlaceholder,
+    keyStage: string,
+  ) => string;
 }): (ctx: AilaExecutionContext) => ResolvedInstructions {
   return (ctx) => {
     const keyStage = ctx.currentTurn.document.keyStage ?? "";
@@ -87,9 +83,15 @@ export function keyStageBuildModeInstructions(instructionsByMode: {
           promptInputs: { keyStage, buildMode: "addOne" },
         };
       case "rewriteOne":
+        // Position is a runtime input, not a distinct prompt: version once per
+        // key stage (placeholder body), keep the real position as telemetry.
         return {
           text: instructionsByMode.rewriteOne(mode.position, keyStage),
-          variant: `rewriteOne:${mode.position}:${normalisedKeyStage}`,
+          templateText: instructionsByMode.rewriteOne(
+            POSITION_PLACEHOLDER,
+            keyStage,
+          ),
+          variant: `rewriteOne:${normalisedKeyStage}`,
           promptInputs: {
             keyStage,
             buildMode: "rewriteOne",
@@ -161,6 +163,7 @@ export function createSectionAgent<ResponseType>({
           responseSchema,
           id,
           instructions: resolved.text,
+          templateText: resolved.templateText,
           promptTemplateId,
           promptInputs: {
             sectionKey: ctx.currentTurn.currentStep?.sectionKey,
