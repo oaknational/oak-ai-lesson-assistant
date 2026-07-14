@@ -104,7 +104,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-transform-stub": "^2.0.0",
     "languagedetect": "^2.0.0",
-    "next": "16.0.10",
+    "next": "16.2.6",
     "object-hash": "^3.0.0",
     "openai": "^6.45.0",
     "p-limit": "^7.2.0",
