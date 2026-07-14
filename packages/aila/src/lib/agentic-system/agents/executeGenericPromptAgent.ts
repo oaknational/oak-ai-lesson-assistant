@@ -9,18 +9,71 @@ import type { AgentResult } from "../types";
 
 const log = aiLogger("aila:agents:prompts");
 
+/**
+ * Telemetry for a single agent LLM call, captured at the point of execution so
+ * it can later be persisted as a `Generation` row.
+ */
+export type PendingGeneration = {
+  agentId: string;
+  promptTemplateId: string;
+  /** The version-stable static prompt body this call used. */
+  promptTemplate: string;
+  promptInputs?: Record<string, unknown>;
+  status: "SUCCESS" | "FAILED";
+  llmTimeTaken: number;
+  promptTokensUsed: number;
+  completionTokensUsed: number;
+  response: unknown; // originates from JSON, only narrowed to a JSON value at the persistence boundary
+  promptText: string;
+};
+
+export type GenerationCollector = (generation: PendingGeneration) => void;
+
+function inputToText(input: GenericPromptAgent<unknown>["input"]): string {
+  return input.map((item) => item.content).join("\n");
+}
+
 export async function executeGenericPromptAgent<ResponseType>({
   agent,
   openai,
+  collectGeneration,
 }: {
   agent: GenericPromptAgent<ResponseType>;
   openai: OpenAI;
+  collectGeneration?: GenerationCollector;
 }): Promise<AgentResult<ResponseType>> {
   const schemaWrapped = z.object({
     value: agent.responseSchema,
   });
   const responseFormat = zodTextFormat(schemaWrapped, `agent_response_schema`);
   const model = agent.modelParams.model;
+  const promptText = inputToText(agent.input);
+  const promptTemplateId = agent.promptTemplateId ?? agent.id;
+  const startTime = Date.now();
+
+  const collect = (
+    status: PendingGeneration["status"],
+    response: unknown,
+    tokenUsage?: { inputTokens?: number; outputTokens?: number },
+  ) => {
+    collectGeneration?.({
+      agentId: agent.id,
+      promptTemplateId,
+      promptTemplate: agent.promptTemplate ?? "",
+      promptInputs: {
+        ...agent.promptInputs,
+        agentId: agent.id,
+        promptTemplateId,
+        model,
+      },
+      status,
+      llmTimeTaken: Date.now() - startTime,
+      promptTokensUsed: tokenUsage?.inputTokens ?? 0,
+      completionTokensUsed: tokenUsage?.outputTokens ?? 0,
+      response,
+      promptText,
+    });
+  };
 
   let result;
   try {
@@ -38,26 +91,36 @@ export async function executeGenericPromptAgent<ResponseType>({
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     log.error(`OpenAI Responses API error [${agent.id}]: ${message}`);
+    collect("FAILED", message);
     return { error: { message } };
   }
 
   logPromptCacheUsage({ agent, model, usage: result.usage });
 
-  if (
+  const tokenUsage = {
+    inputTokens: result.usage?.input_tokens ?? 0,
+    outputTokens: result.usage?.output_tokens ?? 0,
+  };
+
+  const refusal =
     result.output[0]?.type === "message" &&
     result.output[0]?.content[0]?.type === "refusal"
-  ) {
-    return { error: { message: result.output[0]?.content[0]?.refusal } };
-  }
+      ? result.output[0].content[0].refusal
+      : undefined;
 
-  if (!result.output_parsed || result.output_parsed.value === undefined) {
+  // A refusal or missing/undefined parsed value both mean the agent produced no
+  // usable result: record one FAILED generation and surface the reason.
+  if (refusal !== undefined || result.output_parsed?.value === undefined) {
+    collect("FAILED", result.output_parsed ?? result.output, tokenUsage);
     return {
       error: {
-        message: "An unknown error occurred\n\n" + JSON.stringify(result),
+        message:
+          refusal ?? "An unknown error occurred\n\n" + JSON.stringify(result),
       },
     };
   }
 
+  collect("SUCCESS", result.output_parsed, tokenUsage);
   return { error: null, data: result.output_parsed.value };
 }
 
@@ -82,7 +145,7 @@ function logPromptCacheUsage<ResponseType>({
   usage: OpenAI.Responses.ResponseUsage | null | undefined;
 }) {
   const inputTokens = usage?.input_tokens ?? 0;
-  const cachedInputTokens = usage?.input_tokens_details.cached_tokens ?? 0;
+  const cachedInputTokens = usage?.input_tokens_details?.cached_tokens ?? 0;
   const cacheHitRate =
     inputTokens > 0 ? Number((cachedInputTokens / inputTokens).toFixed(4)) : 0;
 

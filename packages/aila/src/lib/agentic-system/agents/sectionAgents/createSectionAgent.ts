@@ -4,13 +4,103 @@ import type { ResponseCreateParamsNonStreaming } from "openai/resources/response
 import type { z } from "zod";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
+import { deriveSectionBuildMode } from "../../quizOperations/deriveSectionBuildMode";
 import type { AilaExecutionContext } from "../../types";
-import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
+import {
+  type GenerationCollector,
+  executeGenericPromptAgent,
+} from "../executeGenericPromptAgent";
 import { sectionToGenericPromptAgent } from "../sectionToGenericPromptAgent";
 import { getRelevantRAGValues } from "./getRevelantRAGValues";
+import { normaliseKeyStageForPrompt } from "./shared/keyStageLanguageGuidance";
+import {
+  POSITION_PLACEHOLDER,
+  type PositionPlaceholder,
+} from "./shared/positionPlaceholder";
 import type { VoiceId } from "./shared/voices";
 
-type InstructionsValue = string | ((ctx: AilaExecutionContext) => string);
+export type ResolvedInstructions = {
+  /** Instructions used in the runtime prompt. */
+  text: string;
+  /** Version-stable form stored as the template (defaults to `text`). */
+  templateText?: string;
+  /** Appended to the agent id to version distinct prompt bodies separately. */
+  variant?: string;
+  promptInputs?: Record<string, unknown>;
+};
+
+type InstructionsValue =
+  | string
+  | ((ctx: AilaExecutionContext) => string | ResolvedInstructions);
+
+function resolveInstructions(
+  instructions: InstructionsValue,
+  ctx: AilaExecutionContext,
+): ResolvedInstructions {
+  const resolved =
+    typeof instructions === "function" ? instructions(ctx) : instructions;
+  return typeof resolved === "string" ? { text: resolved } : resolved;
+}
+
+/** Versions key-stage-parameterised instructions per key stage. */
+export function keyStageInstructions(
+  instructionsForKeyStage: (keyStage: string) => string,
+): (ctx: AilaExecutionContext) => ResolvedInstructions {
+  return (ctx) => {
+    const keyStage = ctx.currentTurn.document.keyStage ?? "";
+    return {
+      text: instructionsForKeyStage(keyStage),
+      variant: normaliseKeyStageForPrompt(keyStage),
+      promptInputs: { keyStage },
+    };
+  };
+}
+
+/** Versions instructions that vary by both key stage and build mode. */
+export function keyStageBuildModeInstructions(instructionsByMode: {
+  fullRegen: (keyStage: string) => string;
+  addOne: (keyStage: string) => string;
+  rewriteOne: (
+    position: number | PositionPlaceholder,
+    keyStage: string,
+  ) => string;
+}): (ctx: AilaExecutionContext) => ResolvedInstructions {
+  return (ctx) => {
+    const keyStage = ctx.currentTurn.document.keyStage ?? "";
+    const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
+    const mode = deriveSectionBuildMode(ctx.currentTurn.currentStep);
+    switch (mode.kind) {
+      case "fullRegen":
+        return {
+          text: instructionsByMode.fullRegen(keyStage),
+          variant: `fullRegen:${normalisedKeyStage}`,
+          promptInputs: { keyStage, buildMode: "fullRegen" },
+        };
+      case "addOne":
+        return {
+          text: instructionsByMode.addOne(keyStage),
+          variant: `addOne:${normalisedKeyStage}`,
+          promptInputs: { keyStage, buildMode: "addOne" },
+        };
+      case "rewriteOne":
+        // Position is a runtime input, not a distinct prompt: version once per
+        // key stage (placeholder body), keep the real position as telemetry.
+        return {
+          text: instructionsByMode.rewriteOne(mode.position, keyStage),
+          templateText: instructionsByMode.rewriteOne(
+            POSITION_PLACEHOLDER,
+            keyStage,
+          ),
+          variant: `rewriteOne:${normalisedKeyStage}`,
+          promptInputs: {
+            keyStage,
+            buildMode: "rewriteOne",
+            position: mode.position,
+          },
+        };
+    }
+  };
+}
 
 /**
  * This is a factory function for section agents.
@@ -45,6 +135,7 @@ export function createSectionAgent<ResponseType>({
     description,
     openai,
     contentFromDocument,
+    collectGeneration,
   }: {
     id: string;
     description: string;
@@ -53,12 +144,15 @@ export function createSectionAgent<ResponseType>({
       document: PartialLessonPlan,
       ctx: AilaExecutionContext,
     ) => ResponseType | undefined;
+    collectGeneration?: GenerationCollector;
   }) => ({
     id,
     description,
     handler: (ctx: AilaExecutionContext) => {
-      const resolvedInstructions =
-        typeof instructions === "function" ? instructions(ctx) : instructions;
+      const resolved = resolveInstructions(instructions, ctx);
+      const promptTemplateId = resolved.variant
+        ? `${id}:${resolved.variant}`
+        : id;
 
       const { basedOnContent, exemplarContent, currentValue } =
         getRelevantRAGValues({
@@ -69,8 +163,15 @@ export function createSectionAgent<ResponseType>({
       const genericPromptAgent = sectionToGenericPromptAgent(
         {
           responseSchema,
-          instructions: resolvedInstructions,
           id,
+          instructions: resolved.text,
+          templateText: resolved.templateText,
+          promptTemplateId,
+          promptInputs: {
+            sectionKey: ctx.currentTurn.currentStep?.sectionKey,
+            action: ctx.currentTurn.currentStep?.action,
+            ...resolved.promptInputs,
+          },
           messages: ctx.persistedState.messages,
           contentToString,
           basedOnContent,
@@ -88,6 +189,7 @@ export function createSectionAgent<ResponseType>({
       return executeGenericPromptAgent({
         agent: genericPromptAgent,
         openai,
+        collectGeneration,
       });
     },
   });

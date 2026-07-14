@@ -21,6 +21,9 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     responseSchema,
     id,
     instructions,
+    templateText,
+    promptTemplateId,
+    promptInputs,
     messages,
     exemplarContent,
     basedOnContent,
@@ -37,28 +40,44 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     "input" | "text" | "stream"
   >,
 ): GenericPromptAgent<SectionValueType> {
-  voices = voices.includes(defaultVoice) ? voices : [defaultVoice, ...voices];
+  const resolvedVoices = voices.includes(defaultVoice)
+    ? voices
+    : [defaultVoice, ...voices];
+
+  // Identity and voice first (most stable → best prompt-cache prefix), then
+  // instructions; shared between the runtime prompt and the stored template.
+  const voicePrefix = [
+    { role: "developer" as const, content: identityAndVoice },
+    resolvedVoices.length > 0 && {
+      role: "developer" as const,
+      content: getVoiceDefinitions(resolvedVoices),
+    },
+    defaultVoice && {
+      role: "developer" as const,
+      content: getVoicePrompt(defaultVoice),
+    },
+  ].filter(isTruthy);
+
+  const staticParts = [
+    ...voicePrefix,
+    { role: "developer" as const, content: instructions },
+  ];
+
+  // Stored template prefers `templateText` (version-stable) over the runtime
+  // instructions.
+  const promptTemplate = [
+    ...voicePrefix.map((part) => part.content),
+    templateText ?? instructions,
+  ].join("\n\n");
 
   return {
     id,
+    promptTemplateId,
+    promptTemplate,
+    promptInputs,
     responseSchema: responseSchema,
     input: [
-      {
-        role: "developer" as const,
-        content: identityAndVoice,
-      },
-      voices.length > 0 && {
-        role: "developer" as const,
-        content: getVoiceDefinitions(voices),
-      },
-      defaultVoice && {
-        role: "developer" as const,
-        content: getVoicePrompt(defaultVoice),
-      },
-      {
-        role: "developer" as const,
-        content: instructions,
-      },
+      ...staticParts,
       {
         role: "developer" as const,
         content: currentDocumentPromptPart(

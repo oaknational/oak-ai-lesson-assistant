@@ -2,6 +2,7 @@ import {
   getKeyStageLanguageGuidance,
   normaliseKeyStageForPrompt,
 } from "../shared/keyStageLanguageGuidance";
+import type { PositionPlaceholder } from "../shared/positionPlaceholder";
 
 export function misconceptionsInstructions(keyStage: string): string {
   const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
@@ -35,7 +36,7 @@ ${getKeyStageLanguageGuidance(normalisedKeyStage)}`;
 }
 
 export function changeOneMisconceptionInstructions(
-  position: number,
+  position: number | PositionPlaceholder,
   keyStage: string,
 ): string {
   const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);

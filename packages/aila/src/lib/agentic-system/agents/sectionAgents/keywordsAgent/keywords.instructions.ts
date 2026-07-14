@@ -4,6 +4,7 @@ import {
   getKeyStageLanguageGuidance,
   normaliseKeyStageForPrompt,
 } from "../shared/keyStageLanguageGuidance";
+import type { PositionPlaceholder } from "../shared/positionPlaceholder";
 import { tier2And3VocabularyDefinitions } from "../shared/tier2And3VocabularyDefinitions";
 
 export function keywordsInstructions(keyStage: string): string {
@@ -52,7 +53,7 @@ ${getKeyStageLanguageGuidance(normalisedKeyStage)}`;
 }
 
 export function changeOneKeywordInstructions(
-  position: number,
+  position: number | PositionPlaceholder,
   keyStage: string,
 ): string {
   const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);

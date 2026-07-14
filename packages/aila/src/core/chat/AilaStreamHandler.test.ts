@@ -145,6 +145,47 @@ function createThreatDetector(
   };
 }
 
+function collectPlannerGeneration({
+  status,
+  response,
+}: {
+  status: "SUCCESS" | "FAILED";
+  response: unknown;
+}) {
+  mockedCreateOpenAIPlannerAgent.mockImplementationOnce(
+    (_openai, collectGeneration) => () => {
+      collectGeneration?.({
+        agentId: "planner",
+        promptTemplateId: "planner",
+        promptTemplate: "planner template body",
+        promptInputs: {
+          agentId: "planner",
+          promptTemplateId: "planner",
+          model: "gpt-test",
+        },
+        status,
+        llmTimeTaken: 100,
+        promptTokensUsed: 1,
+        completionTokensUsed: 2,
+        promptText: "test prompt",
+        response,
+      });
+      return Promise.resolve(
+        status === "SUCCESS"
+          ? {
+              error: null,
+              data: {
+                decision: "plan" as const,
+                parsedUserMessage: "test prompt",
+                plan: [],
+              },
+            }
+          : { error: { message: String(response) } },
+      );
+    },
+  );
+}
+
 function createMockChat({
   useAgenticAila,
   threatDetectors = [],
@@ -169,7 +210,14 @@ function createMockChat({
       options: {
         useAgenticAila,
       },
-      prisma: {},
+      prisma: {
+        prompt: {
+          findFirst: jest.fn().mockResolvedValue({ id: "prompt_planner" }),
+        },
+        generation: {
+          createMany: jest.fn().mockResolvedValue({ count: 0 }),
+        },
+      },
       tracing: {
         span: async (
           _step: string,
@@ -255,6 +303,119 @@ describe("AilaStreamHandler", () => {
     expect(chat.enqueue).not.toHaveBeenCalledWith({
       type: "comment",
       value: "CHAT_COMPLETE",
+    });
+  });
+
+  it("does not attach failed agentic generations to the user's message", async () => {
+    collectPlannerGeneration({
+      status: "FAILED",
+      response: "planner failed",
+    });
+    mockedAilaTurn.mockImplementationOnce(async ({ runtime }) => {
+      await runtime.plannerAgent({} as never);
+      return createAilaTurnOutcome("failed");
+    });
+
+    const chat = createMockChat({ useAgenticAila: true });
+    const handler = new AilaStreamHandler(chat as never);
+
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.aila.prisma.generation.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          promptId: "prompt_planner",
+          promptInputs: expect.objectContaining({
+            agentId: "planner",
+          }),
+          status: "FAILED",
+          appSessionId: "chat_123",
+          messageId: undefined,
+        }),
+      ],
+    });
+  });
+
+  it("does not attach failed agentic follow-up generations to the previous assistant message", async () => {
+    collectPlannerGeneration({
+      status: "FAILED",
+      response: "planner failed",
+    });
+    mockedAilaTurn.mockImplementationOnce(async ({ runtime }) => {
+      await runtime.plannerAgent({} as never);
+      return createAilaTurnOutcome("failed");
+    });
+
+    const chat = createMockChat({ useAgenticAila: true });
+    chat.messages.push({
+      id: "assistant_previous",
+      role: "assistant",
+      content: "Previous assistant response",
+    });
+    chat.messages.push({
+      id: "user_follow_up",
+      role: "user",
+      content: "Please change question 2",
+    });
+    const handler = new AilaStreamHandler(chat as never);
+
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.aila.prisma.generation.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          status: "FAILED",
+          appSessionId: "chat_123",
+          messageId: undefined,
+        }),
+      ],
+    });
+  });
+
+  it("attaches successful agentic generations to the assistant message from the current turn", async () => {
+    collectPlannerGeneration({
+      status: "SUCCESS",
+      response: { value: {} },
+    });
+    mockedAilaTurn.mockImplementationOnce(async ({ runtime }) => {
+      await runtime.plannerAgent({} as never);
+      return createAilaTurnOutcome("success");
+    });
+
+    const chat = createMockChat({ useAgenticAila: true });
+    chat.messages.push({
+      id: "assistant_previous",
+      role: "assistant",
+      content: "Previous assistant response",
+    });
+    chat.messages.push({
+      id: "user_follow_up",
+      role: "user",
+      content: "Please change question 2",
+    });
+    chat.complete = jest.fn().mockImplementation(async () => {
+      chat.messages.push({
+        id: "assistant_current",
+        role: "assistant",
+        content: "Current assistant response",
+      });
+      await chat.enqueue({
+        type: "comment",
+        value: "CHAT_COMPLETE",
+      });
+    });
+    const handler = new AilaStreamHandler(chat as never);
+
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.aila.prisma.generation.createMany).toHaveBeenCalledWith({
+      data: [
+        expect.objectContaining({
+          status: "SUCCESS",
+          appSessionId: "chat_123",
+          messageId: "assistant_current",
+        }),
+      ],
     });
   });
 

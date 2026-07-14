@@ -47,7 +47,12 @@ export function createBritishEnglishCorrectorAgent({
   responseSchema,
 }: BritishEnglishCorrectorAgentProps): GenericPromptAgent<unknown> {
   return {
+    // The per-section id feeds the prompt cache key; versioning uses a stable
+    // promptTemplateId since the template is identical across sections.
     id: `british-english-corrector--${sectionKey}`,
+    promptTemplateId: "britishEnglishCorrector",
+    promptTemplate: britishEnglishCorrectorAgentInstructions,
+    promptInputs: { sectionKey },
     responseSchema,
     input: [
       {
