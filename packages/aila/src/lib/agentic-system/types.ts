@@ -107,6 +107,11 @@ export type SectionPromptAgentProps<ResponseType> = {
   id: string;
   messages: ChatMessage[];
   instructions: string;
+  /** Version-stable form stored as the template (defaults to `instructions`). */
+  templateText?: string;
+  /** Identifies the prompt template for versioning (defaults to `id`). */
+  promptTemplateId?: string;
+  promptInputs?: Record<string, unknown>;
   currentValue: ResponseType | undefined;
   exemplarContent: ResponseType[] | undefined;
   basedOnContent: ResponseType | undefined;

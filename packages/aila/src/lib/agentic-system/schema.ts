@@ -142,6 +142,11 @@ export type GenericPromptAgent<ResponseType> = {
     ResponseCreateParamsNonStreaming,
     "input" | "text" | "stream"
   >;
+  // Optional persistence metadata: which prompt template this call used
+  // (promptTemplateId, defaults to id), its version-stable body, and telemetry.
+  promptTemplateId?: string;
+  promptTemplate?: string;
+  promptInputs?: Record<string, unknown>;
 };
 
 /**

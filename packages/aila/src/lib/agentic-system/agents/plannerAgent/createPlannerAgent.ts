@@ -21,22 +21,22 @@ export const createPlannerAgent = ({
 }: PlannerAgentProps): GenericPromptAgent<
   z.infer<typeof plannerOutputSchema>
 > => {
+  // Static prefix shared between the runtime prompt and the persisted template.
+  const staticParts = [
+    { role: "developer" as const, content: plannerInstructions },
+    {
+      role: "developer" as const,
+      content: getVoiceDefinitions(["AGENT_TO_AGENT"]),
+    },
+    { role: "developer" as const, content: getVoicePrompt("AGENT_TO_AGENT") },
+  ];
+
   return {
     id: "planner",
+    promptTemplate: staticParts.map((part) => part.content).join("\n\n"),
     responseSchema: plannerOutputSchema,
     input: [
-      {
-        role: "developer",
-        content: plannerInstructions,
-      },
-      {
-        role: "developer" as const,
-        content: getVoiceDefinitions(["AGENT_TO_AGENT"]),
-      },
-      {
-        role: "developer" as const,
-        content: getVoicePrompt("AGENT_TO_AGENT"),
-      },
+      ...staticParts,
       {
         role: "developer" as const,
         content: relevantLessonsPromptPart(

@@ -1,7 +1,10 @@
 import type OpenAI from "openai";
 
 import type { AgentResult } from "../../types";
-import { executeGenericPromptAgent } from "../executeGenericPromptAgent";
+import {
+  type GenerationCollector,
+  executeGenericPromptAgent,
+} from "../executeGenericPromptAgent";
 import {
   type BritishEnglishCorrectorAgentProps,
   createBritishEnglishCorrectorAgent,
@@ -10,9 +13,10 @@ import {
 export type { BritishEnglishCorrectorAgentProps } from "./createBritishEnglishCorrectorAgent";
 
 export const createOpenAIBritishEnglishCorrectorAgent =
-  (openai: OpenAI) =>
+  (openai: OpenAI, collectGeneration?: GenerationCollector) =>
   (props: BritishEnglishCorrectorAgentProps): Promise<AgentResult<unknown>> =>
     executeGenericPromptAgent({
       agent: createBritishEnglishCorrectorAgent(props),
       openai,
+      collectGeneration,
     });
