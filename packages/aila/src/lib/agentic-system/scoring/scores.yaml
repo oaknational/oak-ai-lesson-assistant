@@ -1,5 +1,5 @@
 codeHash: 48bd234fc51e430abe54da7255e3ea4bc32eaac5decd1f032e493cf0751e1853
-generated: 2026-07-13T18:20:45.450Z
+generated: 2026-07-14T08:40:50.040Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -26,13 +26,12 @@ summary:
     starter-quiz-grounding:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 1
-      corrections_not_needed: 32
+      corrections_attempted: 0
+      corrections_not_needed: 33
       corrections_failed: 0
-      correction_rate: 3.0%
+      correction_rate: 0.0%
       correction_failure_rate: 0.0%
-      corrections_by_section:
-        cycle3: 1
+      corrections_by_section: {}
   no-rag-lesson:
     generation-complete:
       pass: 3
@@ -59,9 +58,10 @@ summary:
     starter-quiz-grounding:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 0
-      corrections_not_needed: 33
+      corrections_attempted: 1
+      corrections_not_needed: 32
       corrections_failed: 0
-      correction_rate: 0.0%
+      correction_rate: 3.0%
       correction_failure_rate: 0.0%
-      corrections_by_section: {}
+      corrections_by_section:
+        exitQuiz: 1
