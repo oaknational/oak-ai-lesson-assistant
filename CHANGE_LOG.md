@@ -1,3 +1,12 @@
+# [1.82.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.81.0...v1.82.0) (2026-07-15)
+
+
+### Features
+
+* [AI-2309] persist agentic generations with single-source prompt templates ([#1103](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1103)) ([7dab450](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7dab45080083cc51058d41e4606d000c926b6a06))
+* **aila:** enforce quiz option and question counts in schema ([#1102](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1102)) ([34d4ae2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/34d4ae2e43420d3257f59b0d3d54dab3cc5e5952))
+* **aila:** ground starter quiz in prior knowledge ([#1105](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1105)) ([9b700cf](https://github.com/oaknational/oak-ai-lesson-assistant/commit/9b700cfc9d09bf386b69c2ba0873b5814a4a2e96))
+
 # [1.81.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.80.0...v1.81.0) (2026-07-07)
 
 
