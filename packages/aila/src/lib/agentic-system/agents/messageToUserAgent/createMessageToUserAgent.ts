@@ -33,22 +33,22 @@ export function createMessageToUserAgent({
   relevantLessons,
   relevantLessonsFetched,
 }: MessageToUserAgentProps): GenericPromptAgent<MessageToUserAgentOutput> {
+  // Static prefix shared between the runtime prompt and the persisted template.
+  const staticParts = [
+    { role: "developer" as const, content: messageToUserAgentInstructions },
+    {
+      role: "developer" as const,
+      content: getVoiceDefinitions(["AILA_TO_TEACHER"]),
+    },
+    { role: "developer" as const, content: getVoicePrompt("AILA_TO_TEACHER") },
+  ];
+
   return {
     id: "message-to-user",
+    promptTemplate: staticParts.map((part) => part.content).join("\n\n"),
     responseSchema: messageToUserAgentSchema,
     input: [
-      {
-        role: "developer" as const,
-        content: messageToUserAgentInstructions,
-      },
-      {
-        role: "developer" as const,
-        content: getVoiceDefinitions(["AILA_TO_TEACHER"]),
-      },
-      {
-        role: "developer" as const,
-        content: getVoicePrompt("AILA_TO_TEACHER"),
-      },
+      ...staticParts,
       errors.length > 0 && {
         role: "developer" as const,
         content: errorsPromptPart(errors),

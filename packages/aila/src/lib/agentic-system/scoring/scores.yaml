@@ -1,5 +1,5 @@
-codeHash: 3d0b0345ad18db9c639ebd016fb2a4bb32e1d819b4d1b2d9b4c7456cab24943e
-generated: 2026-07-02T16:15:25.302Z
+codeHash: df430cd3a8582ff31c0d1bcaca104ab7260004794bee698dd93675798bbdc7b7
+generated: 2026-07-14T15:55:45.711Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -23,14 +23,15 @@ summary:
       flag: 3
     quiz-question-count:
       pass: 3
+    starter-quiz-grounding:
+      pass: 3
     americanisms_corrector:
-      corrections_attempted: 1
-      corrections_not_needed: 32
+      corrections_attempted: 0
+      corrections_not_needed: 33
       corrections_failed: 0
-      correction_rate: 3.0%
+      correction_rate: 0.0%
       correction_failure_rate: 0.0%
-      corrections_by_section:
-        starterQuiz: 1
+      corrections_by_section: {}
   no-rag-lesson:
     generation-complete:
       pass: 3
@@ -49,15 +50,19 @@ summary:
     americanisms-spelling:
       pass: 3
     americanisms-phrasing:
-      pass: 3
+      pass: 2
+      flag: 1
     americanisms-meanings:
       flag: 3
     quiz-question-count:
       pass: 3
+    starter-quiz-grounding:
+      pass: 3
     americanisms_corrector:
-      corrections_attempted: 0
-      corrections_not_needed: 33
+      corrections_attempted: 1
+      corrections_not_needed: 32
       corrections_failed: 0
-      correction_rate: 0.0%
+      correction_rate: 3.0%
       correction_failure_rate: 0.0%
-      corrections_by_section: {}
+      corrections_by_section:
+        starterQuiz: 1

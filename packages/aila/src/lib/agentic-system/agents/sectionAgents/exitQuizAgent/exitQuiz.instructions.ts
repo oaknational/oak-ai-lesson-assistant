@@ -1,9 +1,10 @@
+import type { PositionPlaceholder } from "../shared/positionPlaceholder";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
 
 export function exitQuizInstructions(keyStage: string): string {
   return `# Task
 
-Create a 6-question multiple-choice quiz to assess pupil understanding of the lesson content.
+Create a multiple-choice quiz with exactly 6 questions to assess pupil understanding of the lesson content.
 
 ## Content Scope
 
@@ -34,7 +35,7 @@ ${quizQuestionDesignInstructions(keyStage)}`;
 }
 
 export const rewriteOneQuizInstructions = (
-  position: number,
+  position: number | PositionPlaceholder,
   keyStage: string,
 ): string =>
   `# Task
