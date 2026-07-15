@@ -58,6 +58,14 @@ export function DebugOverlay() {
       label: "Stream",
       value: ailaStreamingStatus,
     },
+    {
+      label: "Model",
+      value: overlayState.isLoading
+        ? "checking"
+        : !overlayState.data
+          ? "error"
+          : overlayState.data.model,
+    },
   ];
 
   function toggleCollapsed() {
