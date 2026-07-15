@@ -66,6 +66,14 @@ export function DebugOverlay() {
           ? "error"
           : overlayState.data.model,
     },
+    {
+      label: "Agent",
+      value: overlayState.isLoading
+        ? "checking"
+        : !overlayState.data
+          ? "error"
+          : overlayState.data.agentModel,
+    },
   ];
 
   function toggleCollapsed() {
