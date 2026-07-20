@@ -211,28 +211,46 @@ const SCORERS: Scorer[] = [
     },
   },
   {
-    id: "practice-length",
-    description: "Cycle practice task fits the slide (max 50 words)",
+    id: "cycle-slide-lines",
+    description: "Practice and feedback fit the slide (max 12 lines)",
     fn: ({ finalDocument }) => {
-      const lines: string[] = [];
-      let anyLong = false;
+      // Keep 12 in sync with the line limit in cycle.instructions.ts. Estimate
+      // rendered lines: a long line wraps at ~10 words, a blank line counts as
+      // one, since both take up slide height.
+      const MAX_LINES = 12;
+      const WORDS_PER_LINE = 10;
+      const renderedLines = (text: string) =>
+        text
+          .split("\n")
+          .reduce(
+            (total, line) =>
+              total + Math.max(1, Math.ceil(wordCount(line) / WORDS_PER_LINE)),
+            0,
+          );
+      const evidence: string[] = [];
+      let anyOverflow = false;
+      const check = (label: string, text: string) => {
+        const rendered = renderedLines(text);
+        const overflow = rendered > MAX_LINES;
+        if (overflow) anyOverflow = true;
+        evidence.push(
+          `${label}: ~${rendered} rendered lines${overflow ? " [overflow]" : ""}`,
+        );
+        evidence.push(text);
+        evidence.push("");
+      };
       for (const key of ["cycle1", "cycle2", "cycle3"] as const) {
         const cycle = finalDocument[key];
         if (!cycle) {
-          lines.push(`${key}: not present`);
+          evidence.push(`${key}: not present`);
           continue;
         }
-        const practiceWords = wordCount(cycle.practice ?? "");
-        if (practiceWords > 50) anyLong = true;
-        lines.push(`${key} practice (${practiceWords} words):`);
-        lines.push(cycle.practice ?? "");
-        // Feedback shares the same box; recorded as evidence for a future cap.
-        lines.push(`${key} feedback: ${wordCount(cycle.feedback ?? "")} words`);
-        lines.push("");
+        check(`${key} practice`, cycle.practice ?? "");
+        check(`${key} feedback`, cycle.feedback ?? "");
       }
       return {
-        heuristic: anyLong ? "flag" : "pass",
-        evidence: lines.join("\n"),
+        heuristic: anyOverflow ? "flag" : "pass",
+        evidence: evidence.join("\n"),
       };
     },
   },

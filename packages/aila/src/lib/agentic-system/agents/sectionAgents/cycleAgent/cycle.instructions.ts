@@ -165,7 +165,7 @@ Examples include:
 
 The practice task is displayed on one slide in a fixed-size text box. Text that does not fit is cut off; the slide cannot shrink or grow the text.
 
-- The whole practice task must be at most 50 words, counting every sub-task, sentence starter, data item and label. Aim for 25-40 words.
+- The whole practice task must fit in at most 12 lines (aim for about 10), counting every step and every blank separator line, as blank lines take up slide space too. Keep each line a single short instruction or sentence (about 12 words or fewer so it does not wrap). Use one short numbered or bulleted step per line.
 - Never place long stimulus material on the slide. If the task needs material that would take it over the limit (a text extract, a data set or results table, statements to sort or sequence, sentences to complete, an extended set of calculations), write only the short instruction on the slide and direct pupils to the accompanying materials, e.g. "Complete the sentences on the worksheet." or "Use the data table in the additional materials."
 - Refer to offloaded material generically ("the worksheet", "the additional materials"). Do not invent document names. The teacher can generate this material in the lesson's additional materials section.
 - Prefer practice tasks that are self-contained within the limit; only offload stimulus when the task genuinely requires it.
@@ -181,6 +181,7 @@ This section provides pupils with the chance to get feedback on their practice t
   - Worked Example (e.g. steps in a calculation)
   - Success Criteria (e.g. 3 key features of a good answer)
 - If you have included a keyword bank or sentence starters in the practice task, update the feedback section to include these.
+- Feedback is shown on one slide in the same fixed-size box as the practice task. It must fit in at most 12 lines (aim for about 10), counting every line and blank separator, with each line short enough not to wrap. If a full worked example will not fit, give the key steps or success criteria only.
 
 **Examples:**
 - Practice = completing calculations

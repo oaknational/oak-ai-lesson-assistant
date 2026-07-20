@@ -1,8 +1,8 @@
 import { cyclesInstructions } from "./cycle.instructions";
 
 describe("cycle instructions", () => {
-  it("caps the practice task at 50 words", () => {
-    expect(cyclesInstructions("ks3")).toMatch(/at most 50 words/i);
+  it("caps the practice task at 12 lines", () => {
+    expect(cyclesInstructions("ks3")).toMatch(/at most 12 lines/i);
   });
 
   it("explains that the slide text box is fixed size", () => {
@@ -11,5 +11,11 @@ describe("cycle instructions", () => {
 
   it("directs overlong stimulus to the additional materials", () => {
     expect(cyclesInstructions("ks3")).toMatch(/additional materials/i);
+  });
+
+  it("applies the same slide limit to feedback", () => {
+    expect(cyclesInstructions("ks3")).toMatch(
+      /same fixed-size box as the practice task/i,
+    );
   });
 });
