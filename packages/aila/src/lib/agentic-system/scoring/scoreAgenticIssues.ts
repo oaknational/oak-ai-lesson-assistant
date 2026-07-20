@@ -26,6 +26,8 @@ import {
 import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";
 import {
   CompletedLessonPlanSchema,
+  KEY_LEARNING_POINTS_MAX,
+  KEY_LEARNING_POINTS_MIN,
   type PartialLessonPlan,
 } from "../../../protocol/schema";
 import { createOpenAIBritishEnglishCorrectorAgent } from "../agents/britishEnglishCorrectorAgent";
@@ -205,6 +207,48 @@ const SCORERS: Scorer[] = [
       return {
         heuristic: anyLong ? "flag" : "pass",
         evidence: lines.join("\n"),
+      };
+    },
+  },
+  {
+    id: "practice-length",
+    description: "Cycle practice task fits the slide (max 50 words)",
+    fn: ({ finalDocument }) => {
+      const lines: string[] = [];
+      let anyLong = false;
+      for (const key of ["cycle1", "cycle2", "cycle3"] as const) {
+        const cycle = finalDocument[key];
+        if (!cycle) {
+          lines.push(`${key}: not present`);
+          continue;
+        }
+        const practiceWords = wordCount(cycle.practice ?? "");
+        if (practiceWords > 50) anyLong = true;
+        lines.push(`${key} practice (${practiceWords} words):`);
+        lines.push(cycle.practice ?? "");
+        // Feedback shares the same box; recorded as evidence for a future cap.
+        lines.push(`${key} feedback: ${wordCount(cycle.feedback ?? "")} words`);
+        lines.push("");
+      }
+      return {
+        heuristic: anyLong ? "flag" : "pass",
+        evidence: lines.join("\n"),
+      };
+    },
+  },
+  {
+    id: "klp-count",
+    description: "Key learning point count matches the export template (3-4)",
+    fn: ({ finalDocument }) => {
+      const points = finalDocument.keyLearningPoints;
+      if (!points)
+        return { heuristic: "skip", evidence: "No keyLearningPoints field" };
+      const outOfRange =
+        points.length < KEY_LEARNING_POINTS_MIN ||
+        points.length > KEY_LEARNING_POINTS_MAX;
+      return {
+        heuristic: outOfRange ? "flag" : "pass",
+        evidence: [`${points.length} points`, ...points].join("\n"),
       };
     },
   },

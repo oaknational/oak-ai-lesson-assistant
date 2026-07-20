@@ -97,9 +97,9 @@ Voice: TEACHER_TO_PUPIL_WRITTEN
 
 Write the task as a set of instructions that pupils can follow.
 
-- The instructions should contain all information needed to complete the task e.g. "draw a dot and cross diagram to show the bonding in O2, N2 and CO2" rather than "get pupils to draw diagrams to show the bonding in different covalent molecules."
+- The instructions should contain all information needed to complete the task, within the slide length limit below, e.g. "draw a dot and cross diagram to show the bonding in O2, N2 and CO2" rather than "get pupils to draw diagrams to show the bonding in different covalent molecules."
 - Reflect the command word in the cycle outcome — keep the task at that level (if the outcome says "Describe", pupils should describe, not evaluate or judge significance)
-- Include all content needed e.g. if asking pupils to:
+- Include all content needed on the slide only when it fits within the slide length limit below; otherwise follow the stimulus rule in that section. E.g. if asking pupils to:
   - analyse a set of results, provide them with the results and a set of questions to support analysis.
   - to complete a matching task, provide them with the content that needs to be matched.
   - complete sentences, provide them with the sentences with the gaps marked within them.
@@ -160,6 +160,15 @@ Examples include:
 - Compare/contrast, extract conclusions, reflect on criteria
 - Apply skills or knowledge in context
   (See full list if needed for inspiration.)
+
+#### Slide length limit (hard requirement)
+
+The practice task is displayed on one slide in a fixed-size text box. Text that does not fit is cut off; the slide cannot shrink or grow the text.
+
+- The whole practice task must be at most 50 words, counting every sub-task, sentence starter, data item and label. Aim for 25-40 words.
+- Never place long stimulus material on the slide. If the task needs material that would take it over the limit (a text extract, a data set or results table, statements to sort or sequence, sentences to complete, an extended set of calculations), write only the short instruction on the slide and direct pupils to the accompanying materials, e.g. "Complete the sentences on the worksheet." or "Use the data table in the additional materials."
+- Refer to offloaded material generically ("the worksheet", "the additional materials"). Do not invent document names. The teacher can generate this material in the lesson's additional materials section.
+- Prefer practice tasks that are self-contained within the limit; only offload stimulus when the task genuinely requires it.
 
 ### 5. Feedback
 

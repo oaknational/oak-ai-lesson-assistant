@@ -42,9 +42,8 @@ describe("KeyLearningPointsStrictMax4Schema", () => {
   });
 });
 
-// This tests the schema for persisted lesson plans we already hold: lessons
-// saved in the database and basedOn/RAG lessons routinely carry more key
-// learning points than the LLM is now allowed to produce.
+// Persisted and basedOn/RAG lessons can carry more points
+// than the LLM is now allowed to produce.
 describe("KeyLearningPointsSchema (persisted)", () => {
   it("still accepts ten points", () => {
     expect(KeyLearningPointsSchema.safeParse(points(10)).success).toBe(true);
