@@ -10,6 +10,7 @@ export function keyLearningPointsInstructions(keyStage: string): string {
 
 List the most important factual things pupils should learn in the lesson.
 
+- Produce between 3 and 4 key learning points, never more than 4. The downloadable lesson plan document has space for exactly 4.
 - Use succinct, knowledge-rich statements
 - Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.
 - Avoid vague or descriptive phrasing

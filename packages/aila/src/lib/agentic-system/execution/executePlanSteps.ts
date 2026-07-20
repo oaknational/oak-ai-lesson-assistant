@@ -11,6 +11,7 @@ import type {
 } from "../../../protocol/schema";
 import {
   CompletedLessonPlanSchema,
+  KeyLearningPointsStrictMax4Schema,
   KeywordsSchema,
   LatestQuizMultipleChoiceOnlyStrictMax6Schema,
   LatestQuizSchema,
@@ -219,8 +220,9 @@ async function executeGenerateStep(
 
 /**
  * The corrector validates its output against this schema. Strict for
- * default-agent quizzes so it cannot re-introduce extra options or questions;
- * permissive for maths-bank quizzes and every other section.
+ * default-agent quizzes and key learning points so it cannot re-introduce
+ * extra options, questions or points; permissive for maths-bank quizzes and
+ * every other section.
  */
 function correctorResponseSchema(
   context: AilaExecutionContext,
@@ -235,6 +237,9 @@ function correctorResponseSchema(
     if (agentId === `${sectionKey}--default`) {
       return LatestQuizMultipleChoiceOnlyStrictMax6Schema;
     }
+  }
+  if (sectionKey === "keyLearningPoints") {
+    return KeyLearningPointsStrictMax4Schema;
   }
   return CompletedLessonPlanSchema.shape[sectionKey];
 }
