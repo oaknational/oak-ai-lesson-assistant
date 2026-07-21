@@ -23,7 +23,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nGenerate a title for a lesson focused on the end of Roman Britain suitable for Key Stage 1 students."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nKS1 lesson on the end of Roman Britain"
       },
       {
         "role": "developer",
@@ -35,7 +35,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:title--default",
     "prompt_cache_retention": "24h",
@@ -62,26 +62,26 @@
     }
   },
   "result": {
-    "id": "resp_0ce6e03c60f53926006a4681189dd08191adc70b352e978821",
+    "id": "resp_0d631585b9cf2fc1006a5f5e1518b881a186c30b4dee8d2123",
     "object": "response",
-    "created_at": 1783005464,
+    "created_at": 1784634901,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005465,
+    "completed_at": 1784634902,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_0ce6e03c60f53926006a46811922a08191a8f820d98a145213",
+        "id": "msg_0d631585b9cf2fc1006a5f5e16373081a18baa9d7f4335eca8",
         "type": "message",
         "status": "completed",
         "content": [
@@ -95,6 +95,7 @@
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -104,8 +105,9 @@
     "prompt_cache_key": "aila:title--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -155,18 +157,19 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1311,
+      "input_tokens": 1297,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 10,
+      "output_tokens": 18,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1321
+      "total_tokens": 1315
     },
     "user": null,
     "metadata": {},

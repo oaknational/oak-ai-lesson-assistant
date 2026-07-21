@@ -7,7 +7,7 @@
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing."
       },
       {
         "role": "developer",
@@ -15,19 +15,23 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList the most important factual things pupils should learn in the lesson.\n\n- Use succinct, knowledge-rich statements\n- Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.\n- Avoid vague or descriptive phrasing\n- Where possible, take these from the English national curriculum and/or the relevant exam boards.\n- Example: \"A plant cell differs from an animal cell because it has a cell wall, chloroplast, and a large vacuole.\" \n- Non-example: \"The unique features of plant cells, including cell walls, chloroplasts, and large vacuoles.\""
+        "content": "# Task\n\nList the most important factual things pupils should learn in the lesson.\n\n- Produce 3 or 4 key learning points. The downloadable lesson plan document has room for up to 4, so never write more than 4.\n- Use succinct, knowledge-rich statements\n- Focus on specific things that pupils will know or be able to do rather than the overall concepts or learning outcome.\n- Avoid vague or descriptive phrasing\n- Where possible, take these from the English national curriculum and/or the relevant exam boards.\n- Example: \"A plant cell differs from an animal cell because it has a cell wall, chloroplast, and a large vacuole.\"\n- Non-example: \"The unique features of plant cells, including cell walls, chloroplasts, and large vacuoles.\"\n- Every point must be a fact pupils can learn, not a statement about why the topic matters or what they will understand. Do not write \"Understanding X is…\", \"X is important because…\", or \"X marked the beginning of…\".\n- Non-example: \"Understanding the transition to the early medieval period is key to seeing how societies adapt to change.\" (states significance, teaches no fact)\n\n## KS1 Content Selection Guidance\n\nChoose concrete content pupils can see, name, sort, match, draw, say, or do. Avoid umbrella concepts unless the lesson explicitly teaches them through examples.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?"
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ]\n}"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- Historians are not sure exactly when Christianity was introduced to Britain.\n- In the 4th century CE, after the conversion of Constantine, it became increasingly popular among the elite.\n- Historians know about this rise in popularity from various physical objects that have been found.\n- At Hinton St Mary an early 4th century mosaic appears to show a portrait of Jesus.\n- At Lullingstone, archaeologists unearthed the remains of a chapel within a Roman villa with Christian wall paintings.</example-1>\n<example-2>- Celtic buildings were usually thatched, wattle and daub roundhouses.\n- Archaeologists can look at the remains of buildings to construct arguments about the impact of the Romans in Britain.\n- Evidence of North African Roman soldiers has been found at Hadrian’s Wall, a major Ancient Roman architectural feature.\n- Caerwent, Trimontium and Bath are all places that have examples of the sorts of architecture the Ancient Romans built.\n- Rich Ancient Romans built villas in the British countryside with expensive mosaics and hypocaust systems for heating.</example-2>\n<example-3>- Various major problems affected the Western Roman Empire after its split, leading to many theories about its fall.\n- The Western Roman Empire had many financial, political and military problems after the Empire’s division.\n- The Western Roman Empire was almost destroyed when Alaric and the Visigoths attacked Rome in 410 CE.\n- The Western Roman Empire collapsed in 476 CE when Germanic tribes defeated the last Western Roman Emperor.</example-3>\n<example-4>- Emperor Claudius ordered the invasion of Britain in 43 CE to secure his position as emperor.\n- The invasion was very successful due to the strengths of the Ancient Roman army.\n- Ancient Roman legionaries were highly trained, well equipped and disciplined soldiers.\n- The legionaries used superior tactics alongside fort building to defeat the British tribes.</example-4>\n<example-5>- In 367 CE, the Scots from Ireland and Picts from Scotland came together to attack Roman Britain but were defeated.\n- In 401 CE, the last Roman legionaries left Hadrian’s Wall, built over 200 years before to protect the northern frontier.\n- Much of south-east England and the Midlands had a Romano-British culture.\n- Wales and the north and south-west of England had less Romanisation.\n- Scotland was mostly controlled by the Celtic Picts.</example-5>"
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>- Historians are not sure exactly when Christianity was introduced to Britain.\n- In the 4th century CE, after the conversion of Constantine, it became increasingly popular among the elite.\n- Historians know about this rise in popularity from various physical objects that have been found.\n- At Hinton St Mary an early 4th century mosaic appears to show a portrait of Jesus.</example-1>\n<example-2>- Celtic buildings were usually thatched, wattle and daub roundhouses.\n- Archaeologists can look at the remains of buildings to construct arguments about the impact of the Romans in Britain.\n- Evidence of North African Roman soldiers has been found at Hadrian’s Wall, a major Ancient Roman architectural feature.\n- Caerwent, Trimontium and Bath are all places that have examples of the sorts of architecture the Ancient Romans built.</example-2>\n<example-3>- Various major problems affected the Western Roman Empire after its split, leading to many theories about its fall.\n- The Western Roman Empire had many financial, political and military problems after the Empire’s division.\n- The Western Roman Empire was almost destroyed when Alaric and the Visigoths attacked Rome in 410 CE.\n- The Western Roman Empire collapsed in 476 CE when Germanic tribes defeated the last Western Roman Emperor.</example-3>\n<example-4>- Emperor Claudius ordered the invasion of Britain in 43 CE to secure his position as emperor.\n- The invasion was very successful due to the strengths of the Ancient Roman army.\n- Ancient Roman legionaries were highly trained, well equipped and disciplined soldiers.\n- The legionaries used superior tactics alongside fort building to defeat the British tribes.</example-4>\n<example-5>- In 367 CE, the Scots from Ireland and Picts from Scotland came together to attack Roman Britain but were defeated.\n- In 401 CE, the last Roman legionaries left Hadrian’s Wall, built over 200 years before to protect the northern frontier.\n- Much of south-east England and the Midlands had a Romano-British culture.\n- Wales and the north and south-west of England had less Romanisation.</example-5>"
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -35,7 +39,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:keyLearningPoints--default",
     "prompt_cache_retention": "24h",
@@ -52,7 +56,9 @@
               "items": {
                 "type": "string"
               },
-              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 5 elements"
+              "minItems": 3,
+              "maxItems": 4,
+              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 4 elements"
             }
           },
           "required": [
@@ -65,26 +71,26 @@
     }
   },
   "result": {
-    "id": "resp_0b292a71a97053e6006a468133d87481a19a0a65795d925dfd",
+    "id": "resp_011ece4cc3bbd5fc006a5f5e6aa0d481a2a333bc5768b24d29",
     "object": "response",
-    "created_at": 1783005491,
+    "created_at": 1784634986,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005493,
+    "completed_at": 1784634988,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_0b292a71a97053e6006a46813446d481a195f9d1897f822d08",
+        "id": "msg_011ece4cc3bbd5fc006a5f5e6b06c481a2b53c1a9594fb3d15",
         "type": "message",
         "status": "completed",
         "content": [
@@ -92,18 +98,18 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]}",
+            "text": "{\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]}",
             "parsed": {
               "value": [
-                "Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.",
-                "The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.",
-                "The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.",
-                "Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.",
-                "For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences."
+                "When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.",
+                "Romano-Britons lived mostly in the south and east of Britain after the Romans left.",
+                "Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.",
+                "Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left."
               ]
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -113,8 +119,9 @@
     "prompt_cache_key": "aila:keyLearningPoints--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -134,7 +141,9 @@
               "items": {
                 "type": "string"
               },
-              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 5 elements"
+              "minItems": 3,
+              "maxItems": 4,
+              "description": "An array of learning points, each being a succinct sentence.\nMinimum 3, maximum 4 elements"
             }
           },
           "required": [
@@ -167,29 +176,29 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2055,
+      "input_tokens": 2334,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 112,
+      "output_tokens": 101,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2167
+      "total_tokens": 2435
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]}",
+    "output_text": "{\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]}",
     "output_parsed": {
       "value": [
-        "Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.",
-        "The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.",
-        "The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.",
-        "Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.",
-        "For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences."
+        "When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.",
+        "Romano-Britons lived mostly in the south and east of Britain after the Romans left.",
+        "Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.",
+        "Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left."
       ]
     }
   }

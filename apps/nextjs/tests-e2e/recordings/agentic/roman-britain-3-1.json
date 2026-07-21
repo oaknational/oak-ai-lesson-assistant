@@ -7,7 +7,7 @@
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing."
       },
       {
         "role": "developer",
@@ -15,11 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.\n\n- Max 30 words per statement.\n- Max 5 statements but aim for fewer\n- Use age-appropriate, key stage-relevant concepts and language.\n- Try to be specific with the concepts.\n- Do not start with \"Pupils…\"—just state the concept\n- May include substantive, disciplinary, or procedural concepts\n- Avoid content that's too advanced\n- Examples: \"Familiarity with the characters and plot of a common fairy tale.\" \"Understanding of a 'ruler' and 'city-state'.\" \"Ability to recognise acceptable/unacceptable behaviour when using technology\".\n- Non-example: \"Knowledge of fairy tales\" (too broad)."
+        "content": "# Task\n\nList up to 5 relevant concepts that pupils should already know before this lesson. This knowledge should be necessary for success in the lesson being planned.\n\n- Max 30 words per statement.\n- Max 5 statements but aim for fewer\n- Use age-appropriate, key stage-relevant concepts and language.\n- Try to be specific with the concepts.\n- Do not start with \"Pupils…\"—just state the concept\n- May include substantive, disciplinary, or procedural concepts\n- Avoid content that's too advanced\n- Examples: \"Knowing the main characters and events in a familiar fairy tale.\" \"Knowing what a ruler is.\" \"Being able to recognise safe and unsafe choices when using technology\".\n- Non-example: \"Knowledge of fairy tales\" (too broad).\n- Each statement must describe what pupils need in order to START the lesson — not what they will learn during it. Prior knowledge enables engagement; it does not pre-teach the lesson. A pupil who has all the prior knowledge listed should still have everything to learn. If the lesson introduces a concept or definition, that concept or definition is not prior knowledge.\n  ✓ \"Able to read and write simple sentences.\" (enables engagement with a grammar lesson)\n  ✗ \"Knowing that a noun is a word that names a person, place, thing, or idea.\" (this IS what the lesson teaches)\n\n### Prior knowledge language for KS1 (ages 5–7, Year 1–2)\n\nThis section is teacher-facing, but each statement must describe what pupils already know in terms that reflect how those pupils actually hold that knowledge — not in the language of a textbook or curriculum document. Choose starting points pupils can use directly in the lesson: things they know, can do, have seen, have read, or can explain simply. Do not choose adult analytical categories as prior knowledge. A teacher reading it should think \"yes, my class knows it like that.\" If a pupil could not say the concept in those words, rephrase it.\n\n## KS1 Content Selection Guidance\n\nChoose concrete content pupils can see, name, sort, match, draw, say, or do. Avoid umbrella concepts unless the lesson explicitly teaches them through examples.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?"
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,11 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -35,7 +39,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:priorKnowledge--default",
     "prompt_cache_retention": "24h",
@@ -65,26 +69,26 @@
     }
   },
   "result": {
-    "id": "resp_067405bee651fc1d006a468132367881a388cff9894e62c71f",
+    "id": "resp_095d4986896d0850006a5f5e6835e481a2ba8a6e832527daa2",
     "object": "response",
-    "created_at": 1783005490,
+    "created_at": 1784634984,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005491,
+    "completed_at": 1784634986,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_067405bee651fc1d006a468132c05481a3944845c1bb8f0c4b",
+        "id": "msg_095d4986896d0850006a5f5e68d4dc81a29598b2694b8d6f19",
         "type": "message",
         "status": "completed",
         "content": [
@@ -92,18 +96,19 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]}",
+            "text": "{\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]}",
             "parsed": {
               "value": [
-                "The Roman Empire extended into Britain, impacting its culture and infrastructure.",
-                "The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.",
-                "The concept of Romanisation, highlighting how Roman culture influenced local populations.",
-                "Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.",
-                "Awareness of local tribes and their interactions with Roman settlers."
+                "The Romans used to rule Britain and then they left.",
+                "Britain is the place where people lived in this lesson, and it can be found on a map.",
+                "Some groups of people had names, such as Romans, Picts and Scots.",
+                "People can live in different parts of a country.",
+                "Old stories and objects can help us find out about the past."
               ]
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -113,8 +118,9 @@
     "prompt_cache_key": "aila:priorKnowledge--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -167,29 +173,30 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1851,
+      "input_tokens": 2327,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 86,
+      "output_tokens": 85,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1937
+      "total_tokens": 2412
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]}",
+    "output_text": "{\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]}",
     "output_parsed": {
       "value": [
-        "The Roman Empire extended into Britain, impacting its culture and infrastructure.",
-        "The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.",
-        "The concept of Romanisation, highlighting how Roman culture influenced local populations.",
-        "Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.",
-        "Awareness of local tribes and their interactions with Roman settlers."
+        "The Romans used to rule Britain and then they left.",
+        "Britain is the place where people lived in this lesson, and it can be found on a map.",
+        "Some groups of people had names, such as Romans, Picts and Scots.",
+        "People can live in different parts of a country.",
+        "Old stories and objects can help us find out about the past."
       ]
     }
   }
