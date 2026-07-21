@@ -244,6 +244,14 @@ export type KeywordOptional = z.infer<typeof KeywordOptionalSchema>;
 export type Keyword = z.infer<typeof KeywordSchema>;
 
 // ********** LESSON PLAN **********
+
+// The exported lesson plan document has exactly 4 key learning point
+// placeholders (key_learning_point_1..4 in
+// packages/exports/src/schema/lessonPlanDocsTemplate.schema.ts). Adjust these
+// if the template changes.
+export const KEY_LEARNING_POINTS_MIN = 3;
+export const KEY_LEARNING_POINTS_MAX = 4;
+
 export const LESSON_PLAN_DESCRIPTIONS = {
   title: dedent`The title of the lesson. Lesson titles should be a unique and succinct statement, not a question.
     Can include special characters if appropriate but should not use & sign instead of 'and'.
@@ -284,8 +292,8 @@ export const LESSON_PLAN_DESCRIPTIONS = {
     })}`,
   keyLearningPoints: dedent`An array of learning points, each being a succinct sentence.
     ${minMaxText({
-      min: 3,
-      max: 5,
+      min: KEY_LEARNING_POINTS_MIN,
+      max: KEY_LEARNING_POINTS_MAX,
       entity: "elements",
     })}`,
   starterQuiz: dedent`The starter quiz for the lesson, which tests prior knowledge only, ignoring the content that is delivered in the lesson.
@@ -349,8 +357,9 @@ export const KeyLearningPointsSchema = z
   .array(z.string())
   .describe(LESSON_PLAN_DESCRIPTIONS.keyLearningPoints);
 
-export const KeyLearningPointsStrictMax5Schema =
-  KeyLearningPointsSchema.min(3).max(5);
+export const KeyLearningPointsStrictMax4Schema = KeyLearningPointsSchema.min(
+  KEY_LEARNING_POINTS_MIN,
+).max(KEY_LEARNING_POINTS_MAX);
 
 export const AdditionalMaterialsSchema = z
   .string()

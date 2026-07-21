@@ -26,6 +26,8 @@ import {
 import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";
 import {
   CompletedLessonPlanSchema,
+  KEY_LEARNING_POINTS_MAX,
+  KEY_LEARNING_POINTS_MIN,
   type PartialLessonPlan,
 } from "../../../protocol/schema";
 import { createOpenAIBritishEnglishCorrectorAgent } from "../agents/britishEnglishCorrectorAgent";
@@ -205,6 +207,66 @@ const SCORERS: Scorer[] = [
       return {
         heuristic: anyLong ? "flag" : "pass",
         evidence: lines.join("\n"),
+      };
+    },
+  },
+  {
+    id: "cycle-slide-lines",
+    description: "Practice and feedback fit the slide (max 12 lines)",
+    fn: ({ finalDocument }) => {
+      // Keep 12 in sync with the line limit in cycle.instructions.ts. Estimate
+      // rendered lines: a long line wraps at ~10 words, a blank line counts as
+      // one, since both take up slide height.
+      const MAX_LINES = 12;
+      const WORDS_PER_LINE = 10;
+      const renderedLines = (text: string) =>
+        text
+          .split("\n")
+          .reduce(
+            (total, line) =>
+              total + Math.max(1, Math.ceil(wordCount(line) / WORDS_PER_LINE)),
+            0,
+          );
+      const evidence: string[] = [];
+      let anyOverflow = false;
+      const check = (label: string, text: string) => {
+        const rendered = renderedLines(text);
+        const overflow = rendered > MAX_LINES;
+        if (overflow) anyOverflow = true;
+        evidence.push(
+          `${label}: ~${rendered} rendered lines${overflow ? " [overflow]" : ""}`,
+        );
+        evidence.push(text);
+        evidence.push("");
+      };
+      for (const key of ["cycle1", "cycle2", "cycle3"] as const) {
+        const cycle = finalDocument[key];
+        if (!cycle) {
+          evidence.push(`${key}: not present`);
+          continue;
+        }
+        check(`${key} practice`, cycle.practice ?? "");
+        check(`${key} feedback`, cycle.feedback ?? "");
+      }
+      return {
+        heuristic: anyOverflow ? "flag" : "pass",
+        evidence: evidence.join("\n"),
+      };
+    },
+  },
+  {
+    id: "klp-count",
+    description: "Key learning point count matches the export template (3-4)",
+    fn: ({ finalDocument }) => {
+      const points = finalDocument.keyLearningPoints;
+      if (!points)
+        return { heuristic: "skip", evidence: "No keyLearningPoints field" };
+      const outOfRange =
+        points.length < KEY_LEARNING_POINTS_MIN ||
+        points.length > KEY_LEARNING_POINTS_MAX;
+      return {
+        heuristic: outOfRange ? "flag" : "pass",
+        evidence: [`${points.length} points`, ...points].join("\n"),
       };
     },
   },
