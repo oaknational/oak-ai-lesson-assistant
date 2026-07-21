@@ -1130,9 +1130,6 @@ importers:
       ts-jest:
         specifier: ^29.2.5
         version: 29.2.5(@babel/core@7.28.5)(jest@30.2.0)(typescript@5.9.2)
-      zocker:
-        specifier: ^3.0.0
-        version: 3.0.0(zod@4.4.3)
 
   packages/teaching-materials:
     dependencies:
@@ -4657,11 +4654,6 @@ packages:
       '@playwright/test': 1.51.1
       ansi-to-html: 0.7.2
       marked: 12.0.2
-    dev: true
-
-  /@faker-js/faker@10.5.0:
-    resolution: {integrity: sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg==}
-    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
     dev: true
 
   /@faker-js/faker@9.4.0:
@@ -9639,7 +9631,7 @@ packages:
       '@sentry/react': 10.31.0(react@19.2.1)
       '@sentry/vercel-edge': 10.31.0
       '@sentry/webpack-plugin': 4.6.1(webpack@5.102.1)
-      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.56.1)(react-dom@19.2.1)(react@19.2.1)
+      next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.1)(react@19.2.1)
       resolve: 1.22.8
       rollup: 4.53.5
       stacktrace-parser: 0.1.10
@@ -15016,6 +15008,7 @@ packages:
   /drange@1.1.1:
     resolution: {integrity: sha512-pYxfDYpued//QpnLIm4Avk7rsNtAtQkUES2cwAYSvD/wd2pKD71gN2Ebj3e7klzXwjocvE8c5vx/1fxwpqmSxA==}
     engines: {node: '>=4'}
+    dev: false
 
   /dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -23452,6 +23445,7 @@ packages:
     dependencies:
       drange: 1.1.1
       ret: 0.2.2
+    dev: false
 
   /randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -24209,6 +24203,7 @@ packages:
   /ret@0.2.2:
     resolution: {integrity: sha512-M0b3YWQs7R3Z917WRQy1HHA7Ba7D8hvZg6UE5mLykJxQVE2ju0IXbGlaHPPlkY+WN7wFP+wUMXmBFA0aV6vYGQ==}
     engines: {node: '>=4'}
+    dev: false
 
   /retry-request@7.0.2:
     resolution: {integrity: sha512-dUOvLMJ0/JJYEn8NrpOaGNE7X3vpI5XlZS/u0ANjqtcZVKnIxP7IgCFwrKTxENw29emmwug53awKtaMm4i9g5w==}
@@ -27499,16 +27494,6 @@ packages:
       compress-commons: 6.0.2
       readable-stream: 4.4.2
     dev: false
-
-  /zocker@3.0.0(zod@4.4.3):
-    resolution: {integrity: sha512-xSJz2M9AELZKzgpuuZPbTQdMv9263p/zSHDIj81B58X3334Xl6iJ/C3u6OQiOlsrWAoJSJsveBcIdz1eEPL0EA==}
-    peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
-    dependencies:
-      '@faker-js/faker': 10.5.0
-      randexp: 0.5.3
-      zod: 4.4.3
-    dev: true
 
   /zod-prisma@0.5.4(prisma@6.3.1)(zod@3.25.76):
     resolution: {integrity: sha512-5Ca4Qd1a1jy1T/NqCEpbr0c+EsbjJfJ/7euEHob3zDvtUK2rTuD1Rc/vfzH8q8PtaR2TZbysD88NHmrLwpv3Xg==}
