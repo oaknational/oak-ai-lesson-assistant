@@ -6,7 +6,7 @@ import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { createOpenAILangchainClient } from "../llm/langchain";
 

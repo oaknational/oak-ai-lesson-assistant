@@ -13,7 +13,7 @@ import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/s
 import { performThreatCheck } from "@oakai/teaching-materials/src/threatDetection/performThreatCheck";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 import { generatePartialLessonPlan } from "./generatePartialLessonPlan";
 import { recordSafetyViolation } from "./safetyUtils";

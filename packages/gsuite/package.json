@@ -17,7 +17,7 @@
     "@googleapis/slides": "^1.0.5",
     "dotenv-cli": "^6.0.0",
     "google-auth-library": "^9.7.0",
-    "zod": "3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",

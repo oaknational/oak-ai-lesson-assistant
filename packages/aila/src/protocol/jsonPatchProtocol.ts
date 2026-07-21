@@ -6,8 +6,8 @@ import type { Operation } from "fast-json-patch";
 import { JsonPatchError, applyPatch, deepClone } from "fast-json-patch";
 import * as immer from "immer";
 import untruncateJson from "untruncate-json";
-import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
+import { z } from "zod/v3";
 
 import type { PartialLessonPlan } from "./schema";
 import {

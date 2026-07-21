@@ -8,7 +8,7 @@ import {
 import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { AilaPersistedChat } from "../../../aila/src/protocol/schema";
 import { adminProcedure } from "../middleware/adminAuth";

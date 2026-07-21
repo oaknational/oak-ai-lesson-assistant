@@ -7,7 +7,7 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
-import type { ZodError } from "zod";
+import type { ZodError } from "zod/v3";
 
 import { trpc } from "@/utils/trpc";
 

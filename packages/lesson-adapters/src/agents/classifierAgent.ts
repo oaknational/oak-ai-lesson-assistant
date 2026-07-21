@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Output, generateText } from "ai";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export const intentSchema = z.object({
   intent: z.enum([

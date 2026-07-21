@@ -1,5 +1,5 @@
 import dedent from "dedent";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import type { ImageMetadata } from "../../../protocol/schemas/quiz";

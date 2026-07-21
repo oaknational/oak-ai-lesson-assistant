@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { type Draft, enablePatches, produceWithPatches } from "immer";
-import { type ZodType } from "zod";
+import { type ZodType } from "zod/v3";
 
 import type {
   Keyword,

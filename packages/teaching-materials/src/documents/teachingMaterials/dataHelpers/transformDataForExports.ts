@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 import { comprehensionTaskSchema } from "../comprehension/schema";
 import type { TeachingMaterialType } from "../configSchema";

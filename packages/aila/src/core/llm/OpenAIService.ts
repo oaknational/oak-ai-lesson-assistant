@@ -3,8 +3,8 @@ import { createVercelOpenAIClient } from "@oakai/core/src/llm/openai";
 import { aiLogger } from "@oakai/logger";
 
 import type { OpenAIProvider } from "@ai-sdk/openai";
-import { streamObject, streamText } from "ai";
-import type { ZodSchema } from "zod";
+import { type Schema, streamObject, streamText } from "ai";
+import type { ZodSchema } from "zod/v3";
 
 import type { Message } from "../chat";
 import type { LLMService } from "./LLMService";
@@ -57,7 +57,9 @@ export class OpenAIService implements LLMService {
     const { textStream: stream } = streamObject({
       model: this._openAIProvider(model, { structuredOutputs: true }),
       output: "object",
-      schema,
+      // AI SDK's zod overload references z.ZodTypeDef (removed in Zod 4) so it
+      // no longer matches our Zod 3 schema; cast to the SDK's Schema<T> branch.
+      schema: schema as unknown as Schema<unknown>,
       schemaName,
       messages: messages.map((m) => ({
         role: m.role,

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { CompletedLessonPlanSchemaWithoutLength } from "../../../aila/src/protocol/schema";
 import type { DeepPartial, RagLessonPlanResult } from "../../types";

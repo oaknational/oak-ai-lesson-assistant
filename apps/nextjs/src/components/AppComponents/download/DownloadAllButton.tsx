@@ -7,7 +7,7 @@ import { aiLogger } from "@oakai/logger";
 import { Box } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { trpc } from "@/utils/trpc";

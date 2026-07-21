@@ -4,7 +4,7 @@ import {
   generationPartSchema,
 } from "@oakai/core/src/types";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 // Quiz question schemas for lesson planner quizzes
 const quizAppQuestionSchema = z.object({

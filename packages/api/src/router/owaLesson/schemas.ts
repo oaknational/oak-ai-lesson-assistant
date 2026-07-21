@@ -5,7 +5,7 @@ import {
   syntheticUnitvariantLessonsByKsSchema,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const subjectSchema = z.union([
   subjects,

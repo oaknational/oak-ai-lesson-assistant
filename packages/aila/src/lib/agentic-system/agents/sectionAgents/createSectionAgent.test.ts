@@ -1,5 +1,5 @@
 import type OpenAI from "openai";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { AilaExecutionContext } from "../../types";
 import { executeGenericPromptAgent } from "../executeGenericPromptAgent";

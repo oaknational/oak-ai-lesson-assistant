@@ -3,7 +3,7 @@
  * Each node type has a schema defining what data it should contain when complete.
  * These serve as documentation and contract enforcement.
  */
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { QuizQuestionPool } from "../interfaces";
 

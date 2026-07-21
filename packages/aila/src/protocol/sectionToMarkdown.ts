@@ -1,7 +1,7 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
 import { isArray, isNumber, isObject, isString } from "remeda";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
   // Function to normalize strings by removing *, -, and spaces

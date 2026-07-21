@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const questionCount = 6;
 const answerOptions = ["a", "b", "c"] as const;

@@ -13,7 +13,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import type { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { kv } from "@vercel/kv";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";
 import {

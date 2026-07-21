@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { AilaPersistedChat } from "../../schema";
 import { PartialLessonPlanSchema, chatSchema } from "../../schema";

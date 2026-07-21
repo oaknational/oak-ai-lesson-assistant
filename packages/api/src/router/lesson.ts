@@ -2,7 +2,7 @@ import { Lessons } from "@oakai/core";
 import { LessonWithSnippets } from "@oakai/db";
 
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

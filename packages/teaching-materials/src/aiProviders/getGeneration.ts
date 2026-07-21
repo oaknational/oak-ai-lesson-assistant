@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { ZodError, type ZodType } from "zod";
+import { ZodError, type ZodType } from "zod/v3";
 
 import { type ProviderKey, providers } from ".";
 

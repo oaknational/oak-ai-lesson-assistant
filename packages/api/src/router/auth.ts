@@ -3,7 +3,7 @@ import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBe
 import { demoUsers } from "@oakai/core/src/models/demoUsers";
 
 import { clerkClient } from "@clerk/nextjs/server";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
 import { unpackLessonPlanForPrompt } from "../unpackLessonPlan";

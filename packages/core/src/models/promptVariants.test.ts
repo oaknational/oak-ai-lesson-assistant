@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { OakPromptDefinition } from "../prompts/types";
 import { PromptVariants, promptHash } from "./promptVariants";

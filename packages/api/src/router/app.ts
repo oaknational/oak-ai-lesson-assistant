@@ -6,7 +6,7 @@ import { prisma } from "@oakai/db";
 import { aiLogger, structuredLogger as logger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { publicProcedure, router } from "../trpc";

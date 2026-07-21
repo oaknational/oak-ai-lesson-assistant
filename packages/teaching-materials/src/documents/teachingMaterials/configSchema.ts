@@ -1,4 +1,4 @@
-import { type ZodSchema, type ZodType, z } from "zod";
+import { type ZodSchema, type ZodType, z } from "zod/v3";
 
 import {
   buildComprehensionPrompt,

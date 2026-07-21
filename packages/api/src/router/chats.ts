@@ -3,7 +3,7 @@ import { prisma } from "@oakai/db/client";
 
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

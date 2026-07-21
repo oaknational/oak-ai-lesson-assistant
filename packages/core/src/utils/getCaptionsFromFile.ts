@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { Storage } from "@google-cloud/storage";
 import type { Cue } from "webvtt-parser";
 import { WebVTTParser } from "webvtt-parser";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const log = aiLogger("transcripts");
 

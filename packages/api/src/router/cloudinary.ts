@@ -2,7 +2,7 @@ import { requestImageDescription } from "@oakai/core/src/functions/generation/im
 import { aiLogger } from "@oakai/logger";
 
 import { v2 as cloudinary } from "cloudinary";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

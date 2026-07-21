@@ -8,7 +8,7 @@ import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-material
 
 import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
 import { isArray, isTruthy } from "remeda";
-import z from "zod";
+import z from "zod/v3";
 
 import type {
   LessonBrowseDataByKsSchema,

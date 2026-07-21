@@ -14,7 +14,7 @@ import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { createOpenAILangchainClient } from "../llm/langchain";
 import type { SnippetWithLesson } from "./snippets";

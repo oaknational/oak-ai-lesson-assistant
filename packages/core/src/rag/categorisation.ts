@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod/v3";
 
 // Make a new Zod schema for a response from OpenAI for the categoriseKeyStageAndSubject function
 

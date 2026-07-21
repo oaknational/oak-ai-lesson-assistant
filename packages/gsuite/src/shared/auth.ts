@@ -1,5 +1,5 @@
 import { auth, drive } from "@googleapis/drive";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 /**
  * Environment variables schema for Google Service Account

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { AMERICANISM_ISSUE_KIND } from "../../../features/americanisms";
 import { createEmptyCorrectorStats } from "../correctorStats";
