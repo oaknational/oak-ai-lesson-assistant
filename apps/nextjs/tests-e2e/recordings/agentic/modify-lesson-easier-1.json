@@ -7,7 +7,7 @@
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### PUPIL\nSpeaker: A pupil\nAudience: other pupils/teacher\nUse this voice for the learning outcome (e.g. \"I can...\") and for any model answers or example pupil work. Match the tone to pupil age."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### PUPIL\nSpeaker: A pupil\nAudience: other pupils/teacher\nUse this voice for the learning outcome (e.g. \"I can...\") and for any model answers or example pupil work. Match the vocabulary and tone to the key stage in CURRENT DOCUMENT."
       },
       {
         "role": "developer",
@@ -15,7 +15,7 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nThe learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.\n\n- Phrase it from the pupil's view, starting with \"I can…\"\n- Maximum 30 words\n- Must be achievable in a single lesson (typically 40–50 minutes)\n- Should be clear, specific, and focused\n\nIf the lesson title is broad (e.g. \"World War 2\"), the learning outcome should narrow it to a specific, teachable focus e.g. \"I can explain why the period of 1941-2 was an important turning point of the Second World War.\".\nThe learning outcome should reflect this specific lesson—not a wider scheme of work."
+        "content": "# Task\n\nThe learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.\n\n- Phrase it from the pupil's view, starting with \"I can…\"\n- Maximum 30 words\n- Must be achievable in a single lesson (typically 40–50 minutes)\n- Should be clear, specific, and focused\n\nIf the lesson title is broad (e.g. \"World War 2\"), the learning outcome should narrow it to a specific, teachable focus e.g. \"I can explain why the period of 1941-2 was an important turning point of the Second World War.\".\nThe learning outcome should reflect this specific lesson—not a wider scheme of work.\n\n\n\n## KS4 Language Guidance (ages 14–16, Years 10–11)\n\nFull GCSE register throughout; subject-specific vocabulary is expected and should be used accurately and precisely — not avoided or watered down.\n\nThis is the Oak KS4 register:\n✓ \"Enzymes are proteins that act as catalysts, speeding up chemical reactions. Each enzyme has a 3D shape with an active site that a specific substrate fits into.\"\n✗ \"Enzymes are special things in the body that help reactions go faster.\" (too vague — loses the required subject precision)\n\nUse exam command words precisely — state, identify, describe, explain, analyse, evaluate, justify — and match each to the intended cognitive demand. Test: does this match GCSE assessments for this subject?"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSimplify the language and sentence structure to make the learning outcome easier to understand for the intended audience, while preserving its content."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nMake the learning outcome easier."
       },
       {
         "role": "developer",
@@ -39,7 +39,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:learningOutcome--default",
     "prompt_cache_retention": "24h",
@@ -66,26 +66,26 @@
     }
   },
   "result": {
-    "id": "resp_0eb684435d5cb4bd006a4680eb890c81a1a9f794bf0659dad9",
+    "id": "resp_0735fd22e1351bcb006a5f5efccba8819caf57044972392122",
     "object": "response",
-    "created_at": 1783005419,
+    "created_at": 1784635132,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005420,
+    "completed_at": 1784635133,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_0eb684435d5cb4bd006a4680ec7dec81a185cf157169c23267",
+        "id": "msg_0735fd22e1351bcb006a5f5efd65e4819cbecfb308ff959ea0",
         "type": "message",
         "status": "completed",
         "content": [
@@ -93,12 +93,13 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":\"I can describe different software testing techniques and say why they are used.\"}",
+            "text": "{\"value\":\"I can describe black-box, white-box, manual and automated testing.\"}",
             "parsed": {
-              "value": "I can describe different software testing techniques and say why they are used."
+              "value": "I can describe black-box, white-box, manual and automated testing."
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -108,8 +109,9 @@
     "prompt_cache_key": "aila:learningOutcome--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -159,24 +161,25 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 7449,
+      "input_tokens": 7588,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 19,
+      "output_tokens": 27,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 7468
+      "total_tokens": 7615
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":\"I can describe different software testing techniques and say why they are used.\"}",
+    "output_text": "{\"value\":\"I can describe black-box, white-box, manual and automated testing.\"}",
     "output_parsed": {
-      "value": "I can describe different software testing techniques and say why they are used."
+      "value": "I can describe black-box, white-box, manual and automated testing."
     }
   }
 }

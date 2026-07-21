@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\"Awareness of local tribes and their interactions with Roman settlers.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"Roman Britain ended abruptly when all infrastructure collapsed\",\"description\":\"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"},{\"misconception\":\"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\"description\":\"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"},{\"misconception\":\"The withdrawal of Rome's armies left Britain immediately defenceless\",\"description\":\"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\"description\":\"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"},{\"misconception\":\"The Scots lived in Scotland when Roman rule ended\",\"description\":\"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"},{\"misconception\":\"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\"description\":\"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Roman rule\",\"definition\":\"When the Romans were in charge of Britain\"},{\"keyword\":\"Romano-Britons\",\"definition\":\"People in Britain who kept some Roman ways\"},{\"keyword\":\"Picts\",\"definition\":\"A group of people who lived in the north of Britain\"},{\"keyword\":\"Scots\",\"definition\":\"A group of people who came from Ireland\"},{\"keyword\":\"Anglo-Saxons\",\"definition\":\"A group of people who settled in parts of Britain\"}]}]"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -35,7 +35,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
@@ -70,26 +70,26 @@
     }
   },
   "result": {
-    "id": "resp_09d8ea21ada3ae53006a46813a8d68819ea9ead73736eab0ad",
+    "id": "resp_0d471ee3d14a407a006a5f5e72d1dc81a29ffb0bbfc71c5fd0",
     "object": "response",
-    "created_at": 1783005498,
+    "created_at": 1784634994,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005499,
+    "completed_at": 1784634996,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_09d8ea21ada3ae53006a46813b438c819e8a102cc0672debf9",
+        "id": "msg_0d471ee3d14a407a006a5f5e738c9c81a2b77d7020097f1c29",
         "type": "message",
         "status": "completed",
         "content": [
@@ -97,14 +97,15 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed.\"}}",
+            "text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
             "parsed": {
               "value": {
-                "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
+                "message": "Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
               }
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -114,8 +115,9 @@
     "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -173,25 +175,26 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2309,
+      "input_tokens": 2264,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 40,
+      "output_tokens": 47,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2349
+      "total_tokens": 2311
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed.\"}}",
+    "output_text": "{\"value\":{\"message\":\"Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
     "output_parsed": {
       "value": {
-        "message": "Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
+        "message": "Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       }
     }
   }

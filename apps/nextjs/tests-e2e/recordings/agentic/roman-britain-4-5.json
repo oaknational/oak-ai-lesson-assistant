@@ -7,31 +7,27 @@
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
       },
       {
         "role": "developer",
-        "content": "## Voice guidance\n\nUnless otherwise specified, use EXPERT_TEACHER."
+        "content": "## Voice guidance\n\nUnless otherwise specified, use TEACHER_TO_PUPIL_WRITTEN."
       },
       {
         "role": "developer",
-        "content": "# Task\n\nGenerate a LEARNING CYCLE to structure the main body of the lesson.  These should take approximately 10 minutes to allow time for the teacher to also deliver the quizzes in a 50 minute lesson.\nFor key stage 1 lessons, each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.\nA LEARNING CYCLE is the way that Oak structures the main body of a lesson. The content of the LEARNING CYCLE should enable pupils to achieve the LEARNING CYCLE OUTCOME  \nIt is made up of an EXPLANATION of some KEY LEARNING POINTS, with CHECK FOR UNDERSTANDING questions built into it to ensure pupils have understood the EXPLANATION AND KEY LEARNING POINTS. \nThere should then be a PRACTICE task where pupils practice the KEY LEARNING POINT and check that they can achieve the LEARNING CYCLE OUTCOME.  The FEEDBACK should help pupils to understand whether they have mastered the LEARNING CYCLE OUTCOME.\nEach LEARNING CYCLE should map to one of the LEARNING CYCLE OUTCOMES.\nIf a pupil completes all LEARNING CYCLES, they should have achieved the LEARNING OUTCOME for the lesson.  \n\n## Cycle Structure\n\n### 1. Learning cycle title\n\n- A short, succinct version of the LEARNING CYCLE OUTCOME.\n- Max 50 characters\n- Written in sentence case\n- Example: 'Animal adaptations in extreme environments'\n\n### 2. Explanation\n\nPurpose: \n\n- This is the first phase of a learning cycle.  The teacher will use this to structure how they will explain this concept to their pupils.  \n- There are two elements of an explanation: the spoken teacher explanation and the accompanying visual elements (slide text and slide image).\n- You should break the explanation down into chunks to support them with how to explain a concept.  \n\n**(i) Spoken explanation**:\n- AILA_TO_TEACHER voice\n- 1-5 points that outline what the teacher should explain - try to keep each point to one sentence\n- Include key concepts, models, analogies, examples\n- You should suggest appropriate moments for teachers to model procedures, including appropriate methods or equipment to use tof this\n- Link to prior knowledge\n- Address common misconceptions and mistakes\n- Use clear, concise, age-appropriate language\n- Maximise intrinsic load, minimise extraneous load\n- Minimise cognitive load by:\n  - Starting with concrete ideas before moving onto more abstract ones.\n  - Breaking concepts down into simple steps\n  - Only introducing one concept in each point\n  - Not including extraneous, unnecessary detail.\n- Be as specific as possible\nExample: rather than saying \"Describe the key features of a Seder plate\", say \"Describe the meaning of the hank bone (zeroa), egg (beitzah), bitter herbs (maror), vegetable (karpas) and a sweet paste (haroset) in a Seder plate.\"\n\n**(ii) Accompanying Slide Detail**: describe what should be seen on the slides to support with the spoken explanation e.g. \"a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond\"\n**(iii) Image Search Suggestion**: a phrase that a teacher can use in a search engine to find an appropriate image to go on their slide e.g. 'a diagram showing the covalent bond in a hydrogen molecule'.  \n**(iv) Slide text**: this will be displayed to pupils on the slides during the lesson.  It should be a short, succinct summary of the key point being made in the explanation and should not include any teacher narrative. \n\nExample: 'hydrogen atoms are bonded together with a covalent bond'.\nNon-example: 'now we will look at how hydrogen atoms bond together'.\n\n### 3. Checks for Understanding\n\nContent:\n\n- This should check that pupils have understood the KEY LEARNING POINTS covered in the explanation. \n- You should choose the two highest leverage questions to ask.  \n- They should also test pupils do not hold any common misconceptions. \n- Do not duplicate any questions in the starter quiz.\n\n#### Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess.\n\n### 4. Practice Task\n\nThis is the part of the lesson where you set a task which allows pupils to practice the skills and knowledge that they have learnt in the explanation. \nIt should focus on the key learning points being taught.\nIf a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME and if they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.  \n\nAudience: pupils in the class\nVoice: TEACHER_TO_PUPIL_WRITTEN\n\nWrite the task as a set of instructions that pupils can follow.\n\n- The instructions should contain all information needed to complete the task e.g. \"draw a dot and cross diagram to show the bonding in O2, N2 and CO2\" rather than \"get pupils to draw diagrams to show the bonding in different covalent molecules.\"\n- Reflect the command word in the cycle outcome\n- Include all content needed e.g. if asking pupils to:\n  - analyse a set of results, provide them with the results and a set of questions to support analysis. \n  - to complete a matching task, provide them with the content that needs to be matched.\n  - complete sentences, provide them with the sentences with the gaps marked within them.\n  - put events or statements into order, provide them with the statements in the incorrect order that they will need to sequence.\n  - give an opinion on an extract, provide them with the extract.\n- This could be one longer task or a task with multiple questions or sub tasks.\n- Increase difficulty if using multiple questions/sub tasks\n- Should activate all pupils through speaking, writing, doing\n- Vary task types across cycles\n- Approx. 5–7 mins to complete the task.\n- In key stage one, shorter spoken tasks will be more appropriate. In key stage four, longer, written tasks will be more appropriate.\n- Base your suggestions on other lessons you have seen at Oak National Academy.\n- Practice may look different for different subjects.  E.g.\n  - Maths - completing calculations\n  - Practical subjects (PE, art, music, etc.) -l practising a skill or taking part in a game or performance activity.\n\nExamples include:\n\n- Label a diagram with the provided labels.\n- Sort given items into two or three columns in a table/venn diagram/quadrant\n- Given an incorrect classification, explain why the object has been incorrectly classified.\n- Select an item from a list that matches the key term/definition, justifying choice.\n- Select the equipment/materials needed for an activity.\n- Order items e.g. size, age, number, date, etc.\n- List factors that will have an impact on [insert other variable].\n- List/sequence the steps in a given method.\n- Describe or explain a process, phenomenon, event, situation, pattern or technique or the impact on a place or group of people\n- Decide which of two given descriptions is better, explaining why.\n- Write a speech to explain a concept to someone.\n- Draw and annotate a diagram(s) to explain a process/technique.\n- Apply a given particular skill/technique to a given task.\n- Analyse an example, determining theories, contexts or techniques applied.\n- Extract data from a table or graph and use this to write a conclusion.\n- Complete a series of 4-5 practice calculations (always include a model in the explanation. Then practice should start easy and become more complex e.g. start with just substituting and increase to rearranging, converting units, doing a multi-step process or worded question.)\n- Correct an incorrect worked example\n- Identify two similarities and two differences for two given items, people, period.\n- Present an item and get pupils to compare it to a historical or theoretical example.\n- Create a routine, performance, or work of art for a given scenario for a given user group or audience.\n- Create a set of instructions for solving a problem.\n- For a set of given opinions, decide which are for and against an argument.\n- Plan both sides of a debate on [insert topic].\n- Decide from a set of given opinions which might belong to certain groups of people and why they might hold these opinions.\n- Given the answer to a problem, show the workings-out of the calculation that derived that answer.\n- Draw an annotated sketch of a product.\n- Write a flow chart for the steps you would take to create or carry out [insert product/task/experiment].\n- Identify a mistake or missing step in a given method.\n- Explain which techniques, mediums or quotes have been used and where their inspiration to use these came from (i.e. which pieces of work/artists/periods/movements).\n- Identify the intended audience for a piece of work and explain how you have reached this conclusion.\n- Decide which of two predictions is more likely to be correct, giving reasons for your answer.\n- Explain why a given prediction is unlikely.\n- Watch a short clip of someone performing a particular sport/training/performance, give strengths/weaknesses and suggest improvements.\n- Compare a piece of work to a model and explain similarities, differences and areas for improvement (e.g. pupil work to a model answer/piece of art mimicking work of a great artist and the great artist's original piece).\n- Reflect on the work that you have created and how closely it meets the design brief, identifying strengths and areas for development.\n- Comment on the repeatability, reproducibility, accuracy, precision or validity of a given method, set of results or source of information.\n- Extract data from a table or graph and use this to support a conclusion.\n- Justify the use of a piece of equipment, technique or method, giving reasons for or against using it or other options.\n- Label diagrams, correct errors, match terms, complete sentences\n- Analyse data, justify choices, sequence steps, create outputs\n- Compare/contrast, extract conclusions, reflect on criteria\n- Apply skills or knowledge in context\n  (See full list if needed for inspiration.)\n\n### 5. Feedback\n\nThis section provides pupils with the chance to get feedback on their practice task. This is often done in a class of 30 pupils so consider how you might show the correct answer for this audience. The teacher will not have time to check each pupil's work.\n\n- Must be pupil-facing (it will be shown on slides)\n- Written in the pupil voice.\n- Choose the most appropriate format (indicate this at the start of the feedback)\n  - Model Answer (e.g. sample diagram or response)\n  - Worked Example (e.g. steps in a calculation)\n  - Success Criteria (e.g. 3 key features of a good answer)\n- If you have included a keyword bank or sentence starters in the practice task, update the feedback section to include these.\n\n**Examples:** \n- Practice = completing calculations\n  Feedback = worked examples showing the steps in the calculation with the correct answers.\n- Practice = bouncing a basketball\n  Feedback: success criteria \"1. Bounce the ball with two hands. 2. Bounce the ball to chest height.\"\n- Practice: explaining the type of bonding shown in a molecule\n  Feedback: 'model answer: I can tell that this is a covalent bond because there are two electrons being shared by the pair of atoms.\n\n**Non-example:** \"Get pupils to mark their answer above covalent bonding\""
+        "content": "# Task\n\nCreate a multiple-choice quiz with exactly 6 questions to assess pupil understanding of the lesson content.\n\n## Content Scope\n\nQuestions must cover:\n\n- KEY LEARNING POINTS\n- The generated learning cycles, with coverage across the lesson and no duplication of starter quiz questions or cycle check questions\n- A MISCONCEPTION\n- Understanding of at least one KEYWORD (in context)\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the KEY LEARNING POINTS in the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils\n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 1 and 2, write question stems in plain, everyday language — short sentences, no academic command words.\n- For key stage 3, question stems may use \"explain\", \"describe\", \"identify\", \"suggest\".\n- For key stage 4, question stems must start with exam command words e.g. state, identify, describe, explain.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Answers\n- Every question must have exactly 3 answer options: exactly 1 correct answer + exactly 2 high-quality distractors. Never include more.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\n    \"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\n    \"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\n    \"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\n    \"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Roman Britain ended abruptly when all infrastructure collapsed\",\n      \"description\": \"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"\n    },\n    {\n      \"misconception\": \"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\n      \"description\": \"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"\n    },\n    {\n      \"misconception\": \"The withdrawal of Rome's armies left Britain immediately defenceless\",\n      \"description\": \"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Romanisation\",\n      \"definition\": \"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"\n    },\n    {\n      \"keyword\": \"Province\",\n      \"definition\": \"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"\n    },\n    {\n      \"keyword\": \"Saxons\",\n      \"definition\": \"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"\n    },\n    {\n      \"keyword\": \"Infrastructure\",\n      \"definition\": \"Essential facilities and structures, such as roads and buildings, supporting societal functions\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Identify the time during which the Romans commenced their rule over Britain.\",\n        \"hint\": \"To provide a clue, consider the events around 43 CE.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"43 CE\"\n        ],\n        \"distractors\": [\n          \"54 BCE\",\n          \"410 CE\"\n        ]\n      },\n      {\n        \"question\": \"What term describes the influence of Roman culture and practices on local British populations?\",\n        \"hint\": \"This term reflects the adoption of Roman culture such as language and customs.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romanisation\"\n        ],\n        \"distractors\": [\n          \"Governance\",\n          \"Civilisation\"\n        ]\n      },\n      {\n        \"question\": \"Select the structure Roman governors utilised to manage the territories within Britain.\",\n        \"hint\": \"Think about the administrative divisions of the Roman Empire.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Provinces\"\n        ],\n        \"distractors\": [\n          \"Settlements\",\n          \"Colonies\"\n        ]\n      },\n      {\n        \"question\": \"Which group from Northern Britain frequently engaged in conflicts with Roman forces?\",\n        \"hint\": \"This group resided in the area now recognised as Scotland.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Picts\"\n        ],\n        \"distractors\": [\n          \"Gauls\",\n          \"Angles\"\n        ]\n      },\n      {\n        \"question\": \"What major infrastructural development did Romans introduce to Britain to connect key settlements?\",\n        \"hint\": \"These provided significant mobility and trade advantages.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Roads\"\n        ],\n        \"distractors\": [\n          \"Canals\",\n          \"Aqueducts\"\n        ]\n      },\n      {\n        \"question\": \"During which century did the Roman forces withdraw from their rule in Britain?\",\n        \"hint\": \"This event occurred approximately around 410 CE.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"5th Century\"\n        ],\n        \"distractors\": [\n          \"3rd Century\",\n          \"6th Century\"\n        ]\n      }\n    ],\n    \"imageMetadata\": [],\n    \"reportId\": \"\"\n  },\n  \"cycle1\": {\n    \"title\": \"The fall of Roman rule in Britain\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Explain that in around 410 CE, Roman authority in Britain officially came to an end as the Roman Empire faced significant challenges elsewhere.\",\n        \"Highlight that Emperor Honorius advised the cities of Britain to manage their own defences, effectively ending Roman governance.\",\n        \"Discuss how without Roman military support, Britain became vulnerable to various external invasions and internal strife.\",\n        \"Mention that the infrastructure put in place by the Romans, such as roads and baths, began to deteriorate due to lack of maintenance.\",\n        \"Finally, provide examples of Roman cultural remnants that persisted, such as artefacts and language influences.\"\n      ],\n      \"accompanyingSlideDetails\": \"A timeline marking 410 CE as the end of Roman rule in Britain alongside an illustration of Roman roads and ruins.\",\n      \"imagePrompt\": \"Timeline depicting the collapse of Roman rule in Britain\",\n      \"slideText\": \"Roman authority in Britain ended around 410 CE, leaving local communities to manage independently.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What year is commonly associated with the end of Roman rule in Britain?\",\n        \"answers\": [\n          \"410 CE\"\n        ],\n        \"distractors\": [\n          \"400 CE\",\n          \"450 CE\"\n        ]\n      },\n      {\n        \"question\": \"What advice did Emperor Honorius give to the cities in Britain?\",\n        \"answers\": [\n          \"To defend themselves independently\"\n        ],\n        \"distractors\": [\n          \"To seek aid from neighbouring tribes\",\n          \"To migrate south for safety\"\n        ]\n      }\n    ],\n    \"practice\": \"Create a timeline showing the key events that led to the end of Roman rule in Britain. Include important years, such as 43 CE for the invasion and 410 CE for the withdrawal.\",\n    \"feedback\": \"Model answer: The timeline should start with the Roman invasion of Britain in 43 CE, continue with notable Roman activities, and end with the withdrawal around 410 CE.\"\n  },\n  \"cycle2\": {\n    \"title\": \"The fall of Roman infrastructure and governance\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Introduce how the departure of Roman governance led to changes in administration as Britain lacked a unified leadership.\",\n        \"Explain the neglect of infrastructure, such as roads and buildings, that were no longer maintained.\",\n        \"Discuss how the end of centralised Roman law and order led to increased localism and the rise of regional leaders.\",\n        \"Provide examples of Roman legacies that persisted, like Latin vocabulary in the language and architectural remnants.\"\n      ],\n      \"accompanyingSlideDetails\": \"An illustration displaying Roman roads and ruins alongside a breakdown of administrative changes post-Roman rule.\",\n      \"imagePrompt\": \"A depiction of Roman ruins and maps illustrating localised governance after Roman rule.\",\n      \"slideText\": \"As Roman control ended, Britain saw administrative changes, neglected structures, and a move to local leaderships.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What was a major administrative change when Roman rule ended in Britain?\",\n        \"answers\": [\n          \"The rise of regional leaders.\"\n        ],\n        \"distractors\": [\n          \"Increased Roman military presence.\",\n          \"Introduction of a new written language.\"\n        ]\n      },\n      {\n        \"question\": \"What happened to Roman roads after the Romans left Britain?\",\n        \"answers\": [\n          \"They fell into neglect.\"\n        ],\n        \"distractors\": [\n          \"They were improved upon.\",\n          \"They were destroyed.\"\n        ]\n      }\n    ],\n    \"practice\": \"Think about how Britain might have changed after Roman rule ended. Write two sentences describing how the lack of Roman administration and military affected the landscape and society.\",\n    \"feedback\": \"Model Answer: Without Roman administration, local leaders took on governance. Roman roads and buildings were neglected, changing their appearances and uses over time.\"\n  }\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ],\n  \"keyLearningPoints\": [\n    \"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\n    \"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\n    \"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\n    \"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\n      \"description\": \"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland when Roman rule ended\",\n      \"description\": \"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"\n    },\n    {\n      \"misconception\": \"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\n      \"description\": \"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Roman rule\",\n      \"definition\": \"When the Romans were in charge of Britain\"\n    },\n    {\n      \"keyword\": \"Romano-Britons\",\n      \"definition\": \"People in Britain who kept some Roman ways\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of people who lived in the north of Britain\"\n    },\n    {\n      \"keyword\": \"Scots\",\n      \"definition\": \"A group of people who came from Ireland\"\n    },\n    {\n      \"keyword\": \"Anglo-Saxons\",\n      \"definition\": \"A group of people who settled in parts of Britain\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Where is Britain?\",\n        \"hint\": \"It is a place you can find on a map.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a country\"\n        ],\n        \"distractors\": [\n          \"a river\",\n          \"a room\"\n        ]\n      },\n      {\n        \"question\": \"Who used to rule Britain?\",\n        \"hint\": \"These people lived a long time ago.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romans\"\n        ],\n        \"distractors\": [\n          \"Picts\",\n          \"Scots\"\n        ]\n      },\n      {\n        \"question\": \"What happened after the Romans ruled Britain?\",\n        \"hint\": \"They did not stay in Britain.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They left Britain.\"\n        ],\n        \"distractors\": [\n          \"They built a new country.\",\n          \"They changed its name.\"\n        ]\n      },\n      {\n        \"question\": \"What do we call a group of people like the Romans, Picts or Scots?\",\n        \"hint\": \"They are groups of people with their own names.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a people\"\n        ],\n        \"distractors\": [\n          \"a building\",\n          \"a weather\"\n        ]\n      },\n      {\n        \"question\": \"If people live in different parts of a country, what can this mean?\",\n        \"hint\": \"Think about where people choose or are able to live.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They live in different places.\"\n        ],\n        \"distractors\": [\n          \"They all live together.\",\n          \"They never move home.\"\n        ]\n      },\n      {\n        \"question\": \"How can we find out about the past?\",\n        \"hint\": \"Think about things from long ago that people can study.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"by using old objects and stories\"\n        ],\n        \"distractors\": [\n          \"by guessing every answer\",\n          \"by looking only at new toys\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Name the groups of people\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- When Roman rule ended, Britain did not become empty; different groups of people lived there.\",\n        \"- One group was the Romano-Britons. These were people in Britain who kept some Roman ways.\",\n        \"- Another group was the Picts. The Picts were a group of people living in Britain at this time.\",\n        \"- Another group was the Scots. At this time, the Scots came from Ireland, so do not mix them up with the name Scotland today.\",\n        \"- Another group was the Anglo-Saxons. They began to settle in Britain after the Romans left, so these are the four group names we need to remember: Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show four simple picture cards in a row, each with a clear label: Romano-Britons, Picts, Scots and Anglo-Saxons. Include a small faded picture of Roman soldiers leaving Britain at the side, with a crossed arrow to show that Roman rule ended but people still lived in Britain. Keep the layout uncluttered so pupils can focus on learning and saying the four names.\",\n      \"imagePrompt\": \"simple KS1 history picture cards Romano-Britons Picts Scots Anglo-Saxons Roman Britain illustration\",\n      \"slideText\": \"After Roman rule ended, different groups lived in Britain. Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group kept some Roman ways?\",\n        \"answers\": [\n          \"Romano-Britons\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons\",\n          \"Picts\"\n        ]\n      },\n      {\n        \"question\": \"Which list names the four groups?\",\n        \"answers\": [\n          \"Anglo-Saxons, Picts, Romano-Britons, Scots\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons, Romans, Picts, Scots\",\n          \"Picts, Romans, Romano-Britons, Scots\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Say the four group names with your partner.\\n2. Look at the pictures on the board.\\n3. On your sheet, write each name under the right picture.\\n4. Use these names: Romano-Britons, Picts, Scots, Anglo-Saxons.\\n5. Then circle the name that means people kept some Roman ways.\\n6. Check that you have written all four names.\",\n    \"feedback\": \"Model answer\\n1. The four names are Romano-Britons, Picts, Scots and Anglo-Saxons.\\n2. Circle Romano-Britons.\\n3. I named all four groups.\\n4. I did not write Romans instead of Romano-Britons.\\n5. I did not miss out Anglo-Saxons.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Match groups to where they lived\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- We already know the four group names. Now we match each group to a place on a simple map of Britain.\",\n        \"- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.\",\n        \"- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.\",\n        \"- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.\",\n        \"- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.\",\n      \"imagePrompt\": \"simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south\",\n      \"slideText\": \"Different groups lived in different places. Use the map to match each group to where they lived.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Who lived in the north of Britain?\",\n        \"answers\": [\n          \"Picts\"\n        ],\n        \"distractors\": [\n          \"Scots\",\n          \"Romans\"\n        ]\n      },\n      {\n        \"question\": \"Where did the Scots come from?\",\n        \"answers\": [\n          \"Ireland\"\n        ],\n        \"distractors\": [\n          \"Britain\",\n          \"Scotland\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Look at the map on the worksheet.\\n2. Draw lines to match each group to a place.\\n3. Match Picts to the north of Britain.\\n4. Match Scots to Ireland.\\n5. Match Romano-Britons to the south and east.\\n6. Match Anglo-Saxons to parts of the east and south.\\n7. Then tell your partner one match.\",\n    \"feedback\": \"Model answer\\nPicts → north of Britain\\nScots → Ireland\\nRomano-Britons → south and east\\nAnglo-Saxons → parts of the east and south\\nCheck: Scots are not in Scotland here.\\nCheck: Picts are in the north.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Describe who lived in Britain\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- After the Romans left, Britain still had lots of people living in it; it was not empty.\",\n        \"- We can describe who lived in Britain by naming the groups: Romano-Britons, Picts and Anglo-Saxons lived in Britain, and Scots came from Ireland and some later moved to the north of Britain.\",\n        \"- Romano-Britons were people in Britain who kept some Roman ways, so some Roman ways stayed after Roman rule ended.\",\n        \"- Picts lived in the north of Britain, and Anglo-Saxons settled in parts of the east and south.\",\n        \"- A good history sentence tells who the people were and where they lived, for example: After the Romans left, Romano-Britons lived in the south and east, Picts lived in the north, and Anglo-Saxons settled in parts of the east and south.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a simple map of Britain and Ireland with three clear labelled areas: north for Picts, south and east for Romano-Britons, and parts of the east and south for Anglo-Saxons. Add a small label for Scots coming from Ireland with an arrow towards the north of Britain. Alongside the map, show one short model sentence with key words highlighted: who, where. Keep the visual very clear, with large labels and limited text so pupils can use it to build spoken or written descriptions.\",\n      \"imagePrompt\": \"simple KS1 map Britain Ireland Picts Romano-Britons Anglo-Saxons Scots arrow from Ireland model sentence\",\n      \"slideText\": \"After the Romans left, different groups lived in and near Britain. Describe who they were and where they lived.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which sentence is right?\",\n        \"answers\": [\n          \"After the Romans left, different groups lived in Britain.\"\n        ],\n        \"distractors\": [\n          \"After the Romans left, Britain had no people living in it.\",\n          \"After the Romans left, only Romans lived in Britain.\"\n        ]\n      },\n      {\n        \"question\": \"Which sentence tells who and where?\",\n        \"answers\": [\n          \"Picts lived in the north of Britain.\"\n        ],\n        \"distractors\": [\n          \"Picts were a group of people.\",\n          \"North of Britain.\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Use the map in the additional materials.\\n2. Say one full sentence with your partner.\\n3. Write 3 sentences about who lived in Britain.\\n4. Use these groups: Romano-Britons, Picts, Anglo-Saxons.\\n5. Tell where each group lived.\\n6. You can add Scots came from Ireland.\\n7. Start with: After the Romans left...\\n8. Check each sentence names people and place.\",\n    \"feedback\": \"Model answer\\nAfter the Romans left, different groups lived in Britain.\\nRomano-Britons lived in the south and east.\\nPicts lived in the north of Britain.\\nAnglo-Saxons settled in parts of the east and south.\\nScots came from Ireland.\\nCheck: each sentence names people and place.\"\n  }\n}"
       },
       {
         "role": "developer",
-        "content": "CURRENT SECTION VALUE\n\nThis is the current value of the section you are creating. Use it as a starting point.\n\n{\"title\":\"The fall of Roman rule in Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Explain that in around 410 CE, Roman authority in Britain officially came to an end as the Roman Empire faced significant challenges elsewhere.\",\"Highlight that Emperor Honorius advised the cities of Britain to manage their own defences, effectively ending Roman governance.\",\"Discuss how without Roman military support, Britain became vulnerable to various external invasions and internal strife.\",\"Mention that the infrastructure put in place by the Romans, such as roads and baths, began to deteriorate due to lack of maintenance.\",\"Finally, provide examples of Roman cultural remnants that persisted, such as artefacts and language influences.\"],\"accompanyingSlideDetails\":\"A timeline marking 410 CE as the end of Roman rule in Britain alongside an illustration of Roman roads and ruins.\",\"imagePrompt\":\"Timeline depicting the collapse of Roman rule in Britain\",\"slideText\":\"Roman authority in Britain ended around 410 CE, leaving local communities to manage independently.\"},\"checkForUnderstanding\":[{\"question\":\"What year is commonly associated with the end of Roman rule in Britain?\",\"answers\":[\"410 CE\"],\"distractors\":[\"400 CE\",\"450 CE\"]},{\"question\":\"What advice did Emperor Honorius give to the cities in Britain?\",\"answers\":[\"To defend themselves independently\"],\"distractors\":[\"To seek aid from neighbouring tribes\",\"To migrate south for safety\"]}],\"practice\":\"Create a timeline showing the key events that led to the end of Roman rule in Britain. Include important years, such as 43 CE for the invasion and 410 CE for the withdrawal.\",\"feedback\":\"Model answer: The timeline should start with the Roman invasion of Britain in 43 CE, continue with notable Roman activities, and end with the withdrawal around 410 CE.\"}"
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"Evidence found in Britain suggests Christianity was introduced in the...\",\"hint\":\"The 4th century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"300s CE\"],\"distractors\":[\"100s CE\",\"200s CE\"]},{\"question\":\"What does 'Chi Rho' mean?\",\"hint\":\"They are symbols that look like an X and P in our alphabet.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the beginning of Christ’s name in Greek\"],\"distractors\":[\"the beginning of Christ’s name in Spanish\",\"the beginning of Christ’s name in Italian\"]},{\"question\":\"What was discovered at the Roman villa in Lullingstone?\",\"hint\":\"Archaeologists had to piece thousands of fragments together. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Mosaics\"],\"distractors\":[]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which two of these were materials used by the Celts in their buildings?\",\"hint\":\"The Celts had very different building techniques to the Ancient Romans.\",\"questionType\":\"multiple-choice\",\"answers\":[\"wattle and daub\"],\"distractors\":[\"bricks\",\"concrete\"]},{\"question\":\"Which emperor had a great wall built on Britain's northern border?\",\"hint\":\"The wall is named after him!\",\"questionType\":\"multiple-choice\",\"answers\":[\"Hadrian\"],\"distractors\":[\"Trajan\",\"Nero\"]},{\"question\":\"Soldiers from all over the Roman Empire defended Hadrian's Wall in Britain.\",\"hint\":\"The Empire stretched as far as North Africa and Asia.\",\"questionType\":\"multiple-choice\",\"answers\":[\"True\"],\"distractors\":[\"False\"]},{\"question\":\"Which two of these were found at Chedworth Villa?\",\"hint\":\"The owners of Chedworth Villa wanted to show off to their guests.\",\"questionType\":\"multiple-choice\",\"answers\":[\"mosaics\"],\"distractors\":[\"a temple\",\"swords\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"The Eastern Roman Empire was also known as the __________ Empire.\",\"hint\":\"Constantinople was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"Byzantine\"],\"distractors\":[\"Constantinople\",\"Great Roman\"]},{\"question\":\"The Eastern Roman Empire continued to exist for nearly __________ years after the fall of the Western Roman Empire.\",\"hint\":\"The Eastern Roman Empire existed for a very long time after the Western Roman Empire fell\",\"questionType\":\"multiple-choice\",\"answers\":[\"one thousand\"],\"distractors\":[\"ten\",\"one hundred\"]},{\"question\":\"According to historians' theories, which of the following contributed to the fall of the Western Roman Empire?\",\"hint\":\"The Roman people often did not pay their taxes\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Empire was spending more money than it was getting in from taxes\"],\"distractors\":[\"The Roman citizens paid taxes regularly\",\"The Roman army was able to defend the Empire's borders easily\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"Why did Claudius want to invade Britain?\",\"hint\":\"Roman Emperors proved their strength through conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"He needed to prove his strength.\"],\"distractors\":[\"Britain had attacked the Roman Empire.\",\"Britain was very wealthy.\"]},{\"question\":\"Which of these **best** describes the Celtic tribes of Britain?\",\"hint\":\"The Celtic tribes of Britain fought one another all of the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Warlike and dangerous\"],\"distractors\":[\"Peaceful and united\",\"Disorganised and cowardly\"]},{\"question\":\"A Roman legionary carried which **three** of these things?\",\"hint\":\"Roman legionaries carried the things they needed for battle.\",\"questionType\":\"multiple-choice\",\"answers\":[\"A sword\"],\"distractors\":[\"A saddle\",\"A chariot\"]},{\"question\":\"To protect themselves, Roman legionaries built __________.\",\"hint\":\"At first the Roman legionaries built these structures every day, wherever they ended their march.\",\"questionType\":\"multiple-choice\",\"answers\":[\"forts\"],\"distractors\":[\"castles\",\"towns\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"What tribes attacked Roman Britain in 367 CE?\",\"hint\":\"They attacked from the north.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Iceni\",\"Dumnonii\"]},{\"question\":\"When did the last Roman soldiers leave Hadrian’s Wall?\",\"hint\":\"This was due to troubles elsewhere in the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"401 CE\"],\"distractors\":[\"391 CE\",\"411 CE\"]},{\"question\":\"In which areas was Romano-British culture more popular?\",\"hint\":\"Think about the regions closer to Europe where the Romans came from.\",\"questionType\":\"multiple-choice\",\"answers\":[\"South-East England\"],\"distractors\":[\"Wales\",\"Scotland\"]},{\"question\":\"What does 'Romanisation' mean?\",\"hint\":\"This happened in Britain after the successful Roman conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people started living and acting like the Romans did\"],\"distractors\":[\"how Romans attacked in battle\",\"how a Roman ruler was chosen\"]},{\"question\":\"What examples of Romano-British culture still exist today?\",\"hint\":\"Think about things you can see and hear now that you have learnt about Roman Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"parts of the English language\"],\"distractors\":[\"the harvest festival\",\"sports like football\"]}],\"imageMetadata\":[]}</example-5>"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"title\":\"The origins and spread of Christianity in the Roman Empire\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Christianity originated in Judea around 30 CE, rapidly spreading across the Roman Empire.\",\"The religion was based on the teachings of Jesus Christ, with early converts persevering despite persecution.\",\"The conversion of Constantine in 312 CE marked its acceptance amongst the Roman elite.\",\"Explain Constantine's vision of the cross and its significance in his victory.\",\"Highlight the eventual institutionalisation of Christianity within the Empire.\"],\"accompanyingSlideDetails\":\"A map of the Roman Empire highlighting Judea and the spread of Christianity, alongside an image of Constantine's statue.\",\"imagePrompt\":\"Roman Empire map with Judea highlighted, Constantine's vision of the cross.\",\"slideText\":\"In 312 CE, Constantine converted to Christianity after a significant victory supported by a divine vision.\"},\"checkForUnderstanding\":[{\"question\":\"Where did Christianity originate?\",\"answers\":[\"Judea\"],\"distractors\":[\"Rome\",\"Carthage\"]},{\"question\":\"What significant event led Constantine to convert to Christianity?\",\"answers\":[\"A vision before a battle\"],\"distractors\":[\"A dream of ruling alone\",\"Advice from his generals\"]}],\"practice\":\"List the key events that led to the spread of Christianity in the Roman Empire on a timeline.\",\"feedback\":\"Model answer: A timeline should show: 30 CE - Judea; 312 CE - Constantine's vision and conversion; 325 CE - Edict of Milan.\"}</example-1>\n<example-2>{\"title\":\"Describe the construction and features of Celtic roundhouses\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":\"- Explain how Celtic roundhouses were typically circular in shape, featuring steep thatched roofs and wattle and daub walls.\\n- Detail the water-resistant properties of wattle and daub walls, constructed from wood covered in clay.\\n- Highlight the absence of chimneys in roundhouses, which allowed smoke to escape slowly through the thatched roof.\\n- Discuss how archaeology provides insights into roundhouse sizes and layouts through posthole analysis and soil impressions.\",\"accompanyingSlideDetails\":\"A diagram showing a labelled Celtic roundhouse, including a steep thatched roof and wattle and daub walls.\",\"imagePrompt\":\"Celtic roundhouse reconstruction\",\"slideText\":\"Celtic roundhouses featured wattle and daub walls, thatched roofs, and a circular layout, offering efficient insulation and construction materials readily available in the environment.\"},\"checkForUnderstanding\":[{\"question\":\"What materials were used to construct the walls of Celtic roundhouses?\",\"answers\":[\"Wattle and daub\"],\"distractors\":[\"Bricks and mortar\",\"Stone slabs\"]},{\"question\":\"What was the purpose of the steeply pitched thatched roofs of roundhouses?\",\"answers\":[\"To allow rain and snow to slide off easily\"],\"distractors\":[\"To increase living space\",\"To trap smoke inside the house\"]}],\"practice\":\"Observe the image of a Celtic roundhouse reconstruction and label the key features, such as the roof material, wall material, shape, and heating source.\",\"feedback\":\"Model answer: The roundhouse features a steeply pitched thatched roof made of straw, wattle and daub walls for insulation, a circular layout, and an indoor open fire for heating.\"}</example-2>\n<example-3>{\"title\":\"Theories explaining the fall of the Western Roman Empire\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Discuss the division of the Roman Empire into Eastern and Western Empires in 395 CE.\",\"Explain the significance of this division and its consequence on the stability of the Western Empire.\",\"Introduce the economic, military, and political challenges faced by the Western Roman Empire.\",\"Present how these factors contributed to the decline of the Empire.\",\"Mention key terms important for understanding, such as 'unstable', 'economy', 'politics', and 'theory'.\"],\"accompanyingSlideDetails\":\"A map displaying the Eastern and Western Roman Empires in 395 CE, highlighting major cities and regions.\",\"imagePrompt\":\"map of Roman Empire split into Eastern and Western regions 395 CE\",\"slideText\":\"The Western Roman Empire faced economic, military, and political challenges after its split from the East in 395 CE.\"},\"checkForUnderstanding\":[{\"question\":\"What year was the Roman Empire divided into East and West?\",\"answers\":[\"395 CE\"],\"distractors\":[\"410 CE\",\"476 CE\"]},{\"question\":\"Which of these is an economic theory for the fall of the Western Roman Empire?\",\"answers\":[\"The Empire spent more than its tax income\"],\"distractors\":[\"Soldiers lacked training\",\"Emperors had short reigns\"]}],\"practice\":\"Complete the following table with examples for each causing factor of the Western Roman Empire's decline: Economic issues, Military issues, Political instability.\",\"feedback\":\"Economic issues: Taxation exceeded income. Military issues: Poorly trained soldiers. Political issues: Frequent emperor changes.\"}</example-3>\n<example-4>{\"title\":\"Explain why Emperor Claudius decided to invade Britain\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"The Roman Emperor Caligula's lack of popularity and eventual assassination exemplifies the vulnerability of perceived weak rulers.\",\"To secure his reign after Caligula, Emperor Claudius sought means to project power and strength.\",\"Ancient Roman emperors often demonstrated their power through conquests of new territories.\",\"Claudius identified Britain, a land with a reputation for resistance against Rome, as a suitable target for conquest.\",\"Successful invasion would allow Claudius to hold a triumph, showcasing his strength to the Roman populace.\",\"Britain's conquest would complete previous Roman attempts, leaving a legacy of achieving what predecessors could not.\"],\"accompanyingSlideDetails\":\"A timeline depicting Roman emperors Tiberius, Caligula, and Claudius along with a map highlighting Roman Empire boundaries in 41 CE including Britain.\",\"imagePrompt\":\"Roman Emperor Claudius statue\",\"slideText\":\"Emperor Claudius sought to invade Britain to secure his power and prove his strength as a ruler.\"},\"checkForUnderstanding\":[{\"question\":\"Why did Emperor Claudius consider his position as potentially weak?\",\"answers\":[\"Due to his physical ailments.\"],\"distractors\":[\"Due to lack of military experience.\",\"Due to economic weakness of the empire.\"]},{\"question\":\"What was the purpose of Roman triumphs held after victories?\",\"answers\":[\"To celebrate and show the power of Rome.\"],\"distractors\":[\"To redistribute captured wealth.\",\"To document historical events.\"]}],\"practice\":\"Write two sentences explaining Emperor Claudius' motivation for invading Britain, including terms such as strength, triumph, and Britain.\",\"feedback\":\"Model Answer: Emperor Claudius wanted to invade Britain to assert his strength and hold a triumph, proving his effectiveness as a ruler.\"}</example-4>\n<example-5>{\"title\":\"Explain the circumstances leading to the defeat of the Picts and Scots by the Romans\",\"durationInMinutes\":15,\"explanation\":{\"spokenExplanation\":[\"Introduce the geopolitical scenario in Britain in 367 CE and the origins of the Picts and Scots.\",\"Explain the Roman military superiority in terms of tactics and equipment.\",\"Analyze the attempt by Picts and Scots to unite and its relative inexperience.\",\"Describe the outcome of the conflicts and emphasize Roman resilience.\",\"Relate the historical events corresponding to the key objective of maintaining Roman control.\"],\"accompanyingSlideDetails\":\"Illustration showing Roman soldiers facing Picts and Scots near a fortification.\",\"imagePrompt\":\"Roman soldiers vs Picts illustration\",\"slideText\":\"In 367 CE, the Picts (from Scotland) and the Scots (from Ireland) attacked the Romans but were defeated in battle.\"},\"checkForUnderstanding\":[{\"question\":\"Who were the two groups that attacked Roman Britain in 367 CE?\",\"answers\":[\"Picts, Scots\"],\"distractors\":[\"Jutes, Picts\",\"Saxons, Scots\"]},{\"question\":\"Why were the Romans able to defeat the Picts and Scots?\",\"answers\":[\"Superior tactics and equipment\"],\"distractors\":[\"Greater numbers\",\"Familiarity with the terrain\"]}],\"practice\":\"Write one to two sentences explaining why the Romans were able to defeat the Picts and Scots in 367 CE. Ensure your answer includes both their strengths and their weaknesses.\",\"feedback\":\"Model answer: The Romans managed to defeat the Picts and Scots due to their superior tactics and technology, while the Picts and Scots lacked collaborative experience.\"}</example-5>"
-      },
-      {
-        "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -39,9 +35,9 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
-    "prompt_cache_key": "aila:cycle--default",
+    "prompt_cache_key": "aila:exitQuiz--default",
     "prompt_cache_retention": "24h",
     "text": {
       "format": {
@@ -54,61 +50,28 @@
             "value": {
               "type": "object",
               "properties": {
-                "title": {
+                "version": {
                   "type": "string",
-                  "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                  "const": "v3",
+                  "description": "Schema version identifier"
                 },
-                "durationInMinutes": {
-                  "type": "number",
-                  "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
-                },
-                "explanation": {
-                  "type": "object",
-                  "properties": {
-                    "spokenExplanation": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      ],
-                      "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
-                    },
-                    "accompanyingSlideDetails": {
-                      "type": "string",
-                      "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
-                    },
-                    "imagePrompt": {
-                      "type": "string",
-                      "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
-                    },
-                    "slideText": {
-                      "type": "string",
-                      "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    }
-                  },
-                  "required": [
-                    "spokenExplanation",
-                    "accompanyingSlideDetails",
-                    "imagePrompt",
-                    "slideText"
-                  ],
-                  "additionalProperties": false,
-                  "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                },
-                "checkForUnderstanding": {
+                "questions": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
                       "question": {
                         "type": "string",
-                        "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                        "description": "The question as markdown text"
+                      },
+                      "hint": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional hint to help students"
+                      },
+                      "questionType": {
+                        "type": "string",
+                        "const": "multiple-choice"
                       },
                       "answers": {
                         "type": "array",
@@ -117,7 +80,7 @@
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                        "description": "Correct answers as markdown. Minimum 1, maximum 1 elements"
                       },
                       "distractors": {
                         "type": "array",
@@ -125,34 +88,66 @@
                           "type": "string"
                         },
                         "minItems": 2,
-                        "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                        "maxItems": 2,
+                        "description": "Incorrect answer options as markdown. Minimum 2, maximum 2 elements"
                       }
                     },
                     "required": [
                       "question",
+                      "hint",
+                      "questionType",
                       "answers",
                       "distractors"
                     ],
                     "additionalProperties": false
                   },
-                  "minItems": 2
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "description": "Array of multiple choice quiz questions. Minimum 1, maximum 6 elements"
                 },
-                "practice": {
-                  "type": "string",
-                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                },
-                "feedback": {
-                  "type": "string",
-                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
                 }
               },
               "required": [
-                "title",
-                "durationInMinutes",
-                "explanation",
-                "checkForUnderstanding",
-                "practice",
-                "feedback"
+                "version",
+                "questions",
+                "imageMetadata"
               ],
               "additionalProperties": false
             }
@@ -167,26 +162,26 @@
     }
   },
   "result": {
-    "id": "resp_0aa17fc055de1cda006a468155d3c081a3840376788e35c627",
+    "id": "resp_03b3daff6a2659ca006a5f5eab09748191a49d46d02e02c87a",
     "object": "response",
-    "created_at": 1783005525,
+    "created_at": 1784635051,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005529,
+    "completed_at": 1784635054,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_0aa17fc055de1cda006a4681565a6081a39a7ce6cb15a5508e",
+        "id": "msg_03b3daff6a2659ca006a5f5eabc4808191942724d2eca21359",
         "type": "message",
         "status": "completed",
         "content": [
@@ -194,62 +189,102 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"title\":\"Impact of Roman departure on Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.\",\"Explain the increased vulnerability without a centrally-organised defence force.\",\"Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.\",\"Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.\",\"Relate these changes back to Roman contributions like roads, which were still used but less maintained.\"],\"accompanyingSlideDetails\":\"Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.\",\"imagePrompt\":\"Images of Roman ruins repurposed during the early medieval period for local defence.\",\"slideText\":\"Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles.\"},\"checkForUnderstanding\":[{\"question\":\"What groups posed threats to Britain following the Roman withdrawal?\",\"answers\":[\"Picts, Scots, and Saxons\"],\"distractors\":[\"Gauls, Celts, and Iberians\",\"Franks, Vandals, and Goths\"]},{\"question\":\"How did Britain's political setup change after the Romans left?\",\"answers\":[\"Local leaders assumed control over governance.\"],\"distractors\":[\"Strong centralised governments sprang up.\",\"Neighbouring empires took control.\"]}],\"practice\":\"Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.\",\"feedback\":\"Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated.\"}}",
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group kept some Roman ways after Roman rule ended?\",\"hint\":\"This keyword means people in Britain who kept some Roman ways.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Where did the Picts live?\",\"hint\":\"Think about the top of Britain on the map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the north of Britain\"],\"distractors\":[\"the east of Britain\",\"the south of Britain\"]},{\"question\":\"Where did the Scots come from at this time?\",\"hint\":\"Do not mix this up with Scotland today.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]},{\"question\":\"Which group began to settle in parts of the east and south of Britain after the Romans left?\",\"hint\":\"This group was new to parts of Britain at this time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Anglo-Saxons\"],\"distractors\":[\"Picts\",\"Romano-Britons\"]},{\"question\":\"Which sentence best describes Britain after the Romans left?\",\"hint\":\"Britain still had people living in it.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Different groups lived in Britain.\"],\"distractors\":[\"Britain became empty.\",\"Only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who lived where after the Romans left?\",\"hint\":\"Choose the sentence that names a group and a place correctly.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons lived mostly in the south and east of Britain.\"],\"distractors\":[\"Picts lived in Ireland.\",\"Scots lived in the north and east of Britain.\"]}],\"imageMetadata\":[]}}",
             "parsed": {
               "value": {
-                "title": "Impact of Roman departure on Britain",
-                "durationInMinutes": 8,
-                "explanation": {
-                  "spokenExplanation": [
-                    "Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.",
-                    "Explain the increased vulnerability without a centrally-organised defence force.",
-                    "Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.",
-                    "Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.",
-                    "Relate these changes back to Roman contributions like roads, which were still used but less maintained."
-                  ],
-                  "accompanyingSlideDetails": "Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.",
-                  "imagePrompt": "Images of Roman ruins repurposed during the early medieval period for local defence.",
-                  "slideText": "Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles."
-                },
-                "checkForUnderstanding": [
+                "version": "v3",
+                "questions": [
                   {
-                    "question": "What groups posed threats to Britain following the Roman withdrawal?",
+                    "question": "Which group kept some Roman ways after Roman rule ended?",
+                    "hint": "This keyword means people in Britain who kept some Roman ways.",
+                    "questionType": "multiple-choice",
                     "answers": [
-                      "Picts, Scots, and Saxons"
+                      "Romano-Britons"
                     ],
                     "distractors": [
-                      "Gauls, Celts, and Iberians",
-                      "Franks, Vandals, and Goths"
+                      "Anglo-Saxons",
+                      "Picts"
                     ]
                   },
                   {
-                    "question": "How did Britain's political setup change after the Romans left?",
+                    "question": "Where did the Picts live?",
+                    "hint": "Think about the top of Britain on the map.",
+                    "questionType": "multiple-choice",
                     "answers": [
-                      "Local leaders assumed control over governance."
+                      "the north of Britain"
                     ],
                     "distractors": [
-                      "Strong centralised governments sprang up.",
-                      "Neighbouring empires took control."
+                      "the east of Britain",
+                      "the south of Britain"
+                    ]
+                  },
+                  {
+                    "question": "Where did the Scots come from at this time?",
+                    "hint": "Do not mix this up with Scotland today.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Ireland"
+                    ],
+                    "distractors": [
+                      "Britain",
+                      "Scotland"
+                    ]
+                  },
+                  {
+                    "question": "Which group began to settle in parts of the east and south of Britain after the Romans left?",
+                    "hint": "This group was new to parts of Britain at this time.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Anglo-Saxons"
+                    ],
+                    "distractors": [
+                      "Picts",
+                      "Romano-Britons"
+                    ]
+                  },
+                  {
+                    "question": "Which sentence best describes Britain after the Romans left?",
+                    "hint": "Britain still had people living in it.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Different groups lived in Britain."
+                    ],
+                    "distractors": [
+                      "Britain became empty.",
+                      "Only Romans lived in Britain."
+                    ]
+                  },
+                  {
+                    "question": "Which sentence tells who lived where after the Romans left?",
+                    "hint": "Choose the sentence that names a group and a place correctly.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Romano-Britons lived mostly in the south and east of Britain."
+                    ],
+                    "distractors": [
+                      "Picts lived in Ireland.",
+                      "Scots lived in the north and east of Britain."
                     ]
                   }
                 ],
-                "practice": "Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.",
-                "feedback": "Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated."
+                "imageMetadata": []
               }
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": "aila:cycle--default",
+    "prompt_cache_key": "aila:exitQuiz--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -267,61 +302,28 @@
             "value": {
               "type": "object",
               "properties": {
-                "title": {
+                "version": {
                   "type": "string",
-                  "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                  "const": "v3",
+                  "description": "Schema version identifier"
                 },
-                "durationInMinutes": {
-                  "type": "number",
-                  "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
-                },
-                "explanation": {
-                  "type": "object",
-                  "properties": {
-                    "spokenExplanation": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      ],
-                      "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
-                    },
-                    "accompanyingSlideDetails": {
-                      "type": "string",
-                      "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
-                    },
-                    "imagePrompt": {
-                      "type": "string",
-                      "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
-                    },
-                    "slideText": {
-                      "type": "string",
-                      "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    }
-                  },
-                  "required": [
-                    "spokenExplanation",
-                    "accompanyingSlideDetails",
-                    "imagePrompt",
-                    "slideText"
-                  ],
-                  "additionalProperties": false,
-                  "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                },
-                "checkForUnderstanding": {
+                "questions": {
                   "type": "array",
                   "items": {
                     "type": "object",
                     "properties": {
                       "question": {
                         "type": "string",
-                        "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                        "description": "The question as markdown text"
+                      },
+                      "hint": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional hint to help students"
+                      },
+                      "questionType": {
+                        "type": "string",
+                        "const": "multiple-choice"
                       },
                       "answers": {
                         "type": "array",
@@ -330,7 +332,7 @@
                         },
                         "minItems": 1,
                         "maxItems": 1,
-                        "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                        "description": "Correct answers as markdown. Minimum 1, maximum 1 elements"
                       },
                       "distractors": {
                         "type": "array",
@@ -338,34 +340,66 @@
                           "type": "string"
                         },
                         "minItems": 2,
-                        "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                        "maxItems": 2,
+                        "description": "Incorrect answer options as markdown. Minimum 2, maximum 2 elements"
                       }
                     },
                     "required": [
                       "question",
+                      "hint",
+                      "questionType",
                       "answers",
                       "distractors"
                     ],
                     "additionalProperties": false
                   },
-                  "minItems": 2
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "description": "Array of multiple choice quiz questions. Minimum 1, maximum 6 elements"
                 },
-                "practice": {
-                  "type": "string",
-                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                },
-                "feedback": {
-                  "type": "string",
-                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                "imageMetadata": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image"
+                      },
+                      "attribution": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Attribution text for the image"
+                      },
+                      "width": {
+                        "type": "number",
+                        "description": "Width of the image in pixels"
+                      },
+                      "height": {
+                        "type": "number",
+                        "description": "Height of the image in pixels"
+                      },
+                      "aiDescription": {
+                        "type": "string",
+                        "description": "AI-generated description of the image content for LLM context"
+                      }
+                    },
+                    "required": [
+                      "imageUrl",
+                      "attribution",
+                      "width",
+                      "height",
+                      "aiDescription"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
                 }
               },
               "required": [
-                "title",
-                "durationInMinutes",
-                "explanation",
-                "checkForUnderstanding",
-                "practice",
-                "feedback"
+                "version",
+                "questions",
+                "imageMetadata"
               ],
               "additionalProperties": false
             }
@@ -400,62 +434,101 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 9090,
+      "input_tokens": 6529,
       "input_tokens_details": {
-        "cached_tokens": 6016
+        "cache_write_tokens": 0,
+        "cached_tokens": 0
       },
-      "output_tokens": 363,
+      "output_tokens": 375,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 9453
+      "total_tokens": 6904
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"title\":\"Impact of Roman departure on Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.\",\"Explain the increased vulnerability without a centrally-organised defence force.\",\"Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.\",\"Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.\",\"Relate these changes back to Roman contributions like roads, which were still used but less maintained.\"],\"accompanyingSlideDetails\":\"Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.\",\"imagePrompt\":\"Images of Roman ruins repurposed during the early medieval period for local defence.\",\"slideText\":\"Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles.\"},\"checkForUnderstanding\":[{\"question\":\"What groups posed threats to Britain following the Roman withdrawal?\",\"answers\":[\"Picts, Scots, and Saxons\"],\"distractors\":[\"Gauls, Celts, and Iberians\",\"Franks, Vandals, and Goths\"]},{\"question\":\"How did Britain's political setup change after the Romans left?\",\"answers\":[\"Local leaders assumed control over governance.\"],\"distractors\":[\"Strong centralised governments sprang up.\",\"Neighbouring empires took control.\"]}],\"practice\":\"Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.\",\"feedback\":\"Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated.\"}}",
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group kept some Roman ways after Roman rule ended?\",\"hint\":\"This keyword means people in Britain who kept some Roman ways.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Where did the Picts live?\",\"hint\":\"Think about the top of Britain on the map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the north of Britain\"],\"distractors\":[\"the east of Britain\",\"the south of Britain\"]},{\"question\":\"Where did the Scots come from at this time?\",\"hint\":\"Do not mix this up with Scotland today.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]},{\"question\":\"Which group began to settle in parts of the east and south of Britain after the Romans left?\",\"hint\":\"This group was new to parts of Britain at this time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Anglo-Saxons\"],\"distractors\":[\"Picts\",\"Romano-Britons\"]},{\"question\":\"Which sentence best describes Britain after the Romans left?\",\"hint\":\"Britain still had people living in it.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Different groups lived in Britain.\"],\"distractors\":[\"Britain became empty.\",\"Only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who lived where after the Romans left?\",\"hint\":\"Choose the sentence that names a group and a place correctly.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons lived mostly in the south and east of Britain.\"],\"distractors\":[\"Picts lived in Ireland.\",\"Scots lived in the north and east of Britain.\"]}],\"imageMetadata\":[]}}",
     "output_parsed": {
       "value": {
-        "title": "Impact of Roman departure on Britain",
-        "durationInMinutes": 8,
-        "explanation": {
-          "spokenExplanation": [
-            "Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.",
-            "Explain the increased vulnerability without a centrally-organised defence force.",
-            "Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.",
-            "Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.",
-            "Relate these changes back to Roman contributions like roads, which were still used but less maintained."
-          ],
-          "accompanyingSlideDetails": "Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.",
-          "imagePrompt": "Images of Roman ruins repurposed during the early medieval period for local defence.",
-          "slideText": "Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles."
-        },
-        "checkForUnderstanding": [
+        "version": "v3",
+        "questions": [
           {
-            "question": "What groups posed threats to Britain following the Roman withdrawal?",
+            "question": "Which group kept some Roman ways after Roman rule ended?",
+            "hint": "This keyword means people in Britain who kept some Roman ways.",
+            "questionType": "multiple-choice",
             "answers": [
-              "Picts, Scots, and Saxons"
+              "Romano-Britons"
             ],
             "distractors": [
-              "Gauls, Celts, and Iberians",
-              "Franks, Vandals, and Goths"
+              "Anglo-Saxons",
+              "Picts"
             ]
           },
           {
-            "question": "How did Britain's political setup change after the Romans left?",
+            "question": "Where did the Picts live?",
+            "hint": "Think about the top of Britain on the map.",
+            "questionType": "multiple-choice",
             "answers": [
-              "Local leaders assumed control over governance."
+              "the north of Britain"
             ],
             "distractors": [
-              "Strong centralised governments sprang up.",
-              "Neighbouring empires took control."
+              "the east of Britain",
+              "the south of Britain"
+            ]
+          },
+          {
+            "question": "Where did the Scots come from at this time?",
+            "hint": "Do not mix this up with Scotland today.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Ireland"
+            ],
+            "distractors": [
+              "Britain",
+              "Scotland"
+            ]
+          },
+          {
+            "question": "Which group began to settle in parts of the east and south of Britain after the Romans left?",
+            "hint": "This group was new to parts of Britain at this time.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Anglo-Saxons"
+            ],
+            "distractors": [
+              "Picts",
+              "Romano-Britons"
+            ]
+          },
+          {
+            "question": "Which sentence best describes Britain after the Romans left?",
+            "hint": "Britain still had people living in it.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Different groups lived in Britain."
+            ],
+            "distractors": [
+              "Britain became empty.",
+              "Only Romans lived in Britain."
+            ]
+          },
+          {
+            "question": "Which sentence tells who lived where after the Romans left?",
+            "hint": "Choose the sentence that names a group and a place correctly.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Romano-Britons lived mostly in the south and east of Britain."
+            ],
+            "distractors": [
+              "Picts lived in Ireland.",
+              "Scots lived in the north and east of Britain."
             ]
           }
         ],
-        "practice": "Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.",
-        "feedback": "Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated."
+        "imageMetadata": []
       }
     }
   }

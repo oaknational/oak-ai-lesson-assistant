@@ -3,27 +3,27 @@
     "input": [
       {
         "role": "developer",
-        "content": "# Identity\n\nYou are a content generator within Aila, an AI-powered lesson planning assistant for UK teachers.\nYour output is section content only — it will be inserted directly into the lesson plan document.\nDo not address the user, ask questions, or produce conversational responses. A separate agent handles communication with the user.\n\nYou will be given a specific task and the current state of the lesson plan. You may also receive section-specific instructions extracted from the user's message by the planner agent — follow these when provided.\n\n## Markdown\nDo not use markdown formatting unless specified for a specific section.\n\n## Language — British English (mandatory)\nWrite **British English** throughout the lesson plan: spelling, vocabulary, and phrasing. This is mandatory because our audience is UK teachers and pupils. The only exception is if the user has explicitly set a different primary language for the lesson.\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson).\n\n### Self-check before emitting content\nBefore returning your section, scan your output for these specific patterns and correct them:\n1. Any word ending in **-ize**, **-izes**, **-ized**, **-izing**, **-yze**, **-yzes** → change to the **-ise** / **-yse** form.\n2. Any of: eraser, sidewalk, elevator, trash, cookie, vacation, \"have gotten\", \"on the weekend\", \"period\" (when used as punctuation), \"math\" → replace with the UK term above.\n3. Any **-or** ending in a noun where the **-our** form exists (colour, behaviour, favour, etc.).\n4. Any **-eled** / **-eling** / **-eler** / **-ueled** / **-ueling** / **-odeled** / **-anceled** ending → double the L (*labelled*, *travelling*, *modeller*, *fuelling*, *cancelled*).\n\nDo not mix British and American forms. If unsure, prefer the British form.\n"
+        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### PUPIL\nSpeaker: A pupil\nAudience: other pupils/teacher\nUse this voice for the learning outcome (e.g. \"I can...\") and for any model answers or example pupil work. Match the vocabulary and tone to the key stage in CURRENT DOCUMENT."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
       },
       {
         "role": "developer",
-        "content": "## Voice guidance\n\nUnless otherwise specified, use PUPIL."
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
       },
       {
         "role": "developer",
-        "content": "# Task\n\nThe learning outcome states what pupils will learn by the end of the lesson. This is the starting point that a teacher would use to plan their lesson and you should do the same.\n\n- Phrase it from the pupil's view, starting with \"I can…\"\n- Maximum 30 words\n- Must be achievable in a single lesson (typically 40–50 minutes)\n- Should be clear, specific, and focused\n\nIf the lesson title is broad (e.g. \"World War 2\"), the learning outcome should narrow it to a specific, teachable focus e.g. \"I can explain why the period of 1941-2 was an important turning point of the Second World War.\".\nThe learning outcome should reflect this specific lesson—not a wider scheme of work.\n\n\n\n## KS4 Language Guidance (ages 14–16, Years 10–11)\n\nFull GCSE register throughout; subject-specific vocabulary is expected and should be used accurately and precisely — not avoided or watered down.\n\nThis is the Oak KS4 register:\n✓ \"Enzymes are proteins that act as catalysts, speeding up chemical reactions. Each enzyme has a 3D shape with an active site that a specific substrate fits into.\"\n✗ \"Enzymes are special things in the body that help reactions go faster.\" (too vague — loses the required subject precision)\n\nUse exam command words precisely — state, identify, describe, explain, analyse, evaluate, justify — and match each to the intended cognitive demand. Test: does this match GCSE assessments for this subject?"
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- learningOutcome: generate\n- learningCycles: generate"
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"Software Testing Techniques\",\n  \"keyStage\": \"key-stage-4\",\n  \"subject\": \"computing\",\n  \"topic\": \"Testing methodologies and practices\",\n  \"learningOutcome\": \"I can describe black-box, white-box, manual and automated testing.\",\n  \"learningCycles\": [\n    \"Identify various software testing techniques and their definitions\",\n    \"Explain the purposes of different software testing techniques\",\n    \"Evaluate the effectiveness of different software testing techniques for specific scenarios\"\n  ],\n  \"priorKnowledge\": [\n    \"Understand the software development lifecycle\",\n    \"Recognise the importance of quality assurance in software development\",\n    \"Familiarity with basic programming concepts\",\n    \"Awareness of different types of software applications\",\n    \"Basic knowledge of debugging techniques\"\n  ],\n  \"keyLearningPoints\": [\n    \"Software testing ensures the functionality and reliability of applications\",\n    \"Different testing techniques are used depending on the objectives\",\n    \"Manual and automated testing have distinct advantages and disadvantages\",\n    \"Black-box testing focuses on input and output without considering internal code structure\",\n    \"White-box testing involves testing the internal structures and workings of an application\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Testing is only done after development\",\n      \"description\": \"Testing should occur at multiple stages throughout the software development lifecycle to catch issues early.\"\n    },\n    {\n      \"misconception\": \"Automated testing eliminates the need for manual testing\",\n      \"description\": \"Both automated and manual testing have their roles; manual testing is still necessary for exploratory and usability testing.\"\n    },\n    {\n      \"misconception\": \"Testing guarantees bug-free software\",\n      \"description\": \"Testing reduces the number of bugs but cannot guarantee a completely bug-free application.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Quality assurance\",\n      \"definition\": \"A systematic process to ensure products meet specified requirements and customer expectations.\"\n    },\n    {\n      \"keyword\": \"Black-box testing\",\n      \"definition\": \"A testing technique that examines the functionality without looking into internal structures.\"\n    },\n    {\n      \"keyword\": \"White-box testing\",\n      \"definition\": \"A testing technique that examines the internal structures or workings of an application.\"\n    },\n    {\n      \"keyword\": \"Automated testing\",\n      \"definition\": \"The use of software tools to execute tests automatically, often for repetitive tasks.\"\n    },\n    {\n      \"keyword\": \"Manual testing\",\n      \"definition\": \"The process of manually checking software for defects without the use of tools or scripts.\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"What is the software development lifecycle?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"A series of phases in software development\"\n        ],\n        \"distractors\": [\n          \"A single stage process in software creation\",\n          \"An unrelated sequence of steps\"\n        ]\n      },\n      {\n        \"question\": \"Why is quality assurance important in software development?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To ensure products meet requirements\"\n        ],\n        \"distractors\": [\n          \"To reduce the cost of software\",\n          \"To increase the complexity of software\"\n        ]\n      },\n      {\n        \"question\": \"What is debugging?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Finding and fixing errors in code\"\n        ],\n        \"distractors\": [\n          \"Writing new code\",\n          \"Testing user interfaces\"\n        ]\n      },\n      {\n        \"question\": \"Name a type of software application.\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Web application\"\n        ],\n        \"distractors\": [\n          \"Hardware device\",\n          \"Network cable\"\n        ]\n      },\n      {\n        \"question\": \"What is a basic programming concept?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Loops\"\n        ],\n        \"distractors\": [\n          \"Photoshop filters\",\n          \"Network routers\"\n        ]\n      },\n      {\n        \"question\": \"What is the purpose of testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"To ensure functionality and reliability\"\n        ],\n        \"distractors\": [\n          \"To increase the price\",\n          \"To make the software more colourful\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Identifying Software Testing Techniques\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Explain the role of software testing in ensuring application quality.\",\n        \"Introduce black-box and white-box testing as key techniques.\",\n        \"Define black-box testing: focuses on inputs and outputs without knowledge of internal code.\",\n        \"Define white-box testing: involves testing internal structures of the application.\",\n        \"Discuss manual testing: manually checking the software for defects without tools.\",\n        \"Introduce automated testing: using software tools to execute tests automatically.\"\n      ],\n      \"accompanyingSlideDetails\": \"A diagram comparing black-box and white-box testing techniques.\",\n      \"imagePrompt\": \"black-box vs white-box testing diagram\",\n      \"slideText\": \"Learn about black-box and white-box testing techniques and their roles in software testing.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What is black-box testing?\",\n        \"answers\": [\n          \"Testing based on inputs and outputs\"\n        ],\n        \"distractors\": [\n          \"Testing internal structures\",\n          \"Testing with software tools\"\n        ]\n      },\n      {\n        \"question\": \"What does white-box testing involve?\",\n        \"answers\": [\n          \"Testing internal structures\"\n        ],\n        \"distractors\": [\n          \"Testing inputs and outputs\",\n          \"Testing without tools\"\n        ]\n      }\n    ],\n    \"practice\": \"Match the definitions to the correct testing technique: black-box, white-box, manual, or automated.\",\n    \"feedback\": \"Model answer: Black-box testing is matched with 'testing based on inputs and outputs', white-box with 'testing internal structures', manual with 'checking without tools', and automated with 'using software tools'.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Explaining Purposes of Testing Techniques\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Discuss the purpose of black-box testing: validating software functionality from an end-user perspective.\",\n        \"Explain white-box testing purpose: ensuring internal code correctness and structure integrity.\",\n        \"Introduce the advantages of manual testing: flexibility and human insight in exploratory testing.\",\n        \"Discuss the purpose of automated testing: efficiency in repetitive test cases and regression testing.\",\n        \"Highlight scenarios where each technique is most effective.\"\n      ],\n      \"accompanyingSlideDetails\": \"A table listing testing techniques with their purposes and advantages.\",\n      \"imagePrompt\": \"testing techniques purposes table\",\n      \"slideText\": \"Understand the purposes and advantages of different testing techniques.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"What is the purpose of black-box testing?\",\n        \"answers\": [\n          \"Validating functionality from an end-user perspective\"\n        ],\n        \"distractors\": [\n          \"Ensuring code correctness\",\n          \"Testing with automation tools\"\n        ]\n      },\n      {\n        \"question\": \"Why is manual testing beneficial?\",\n        \"answers\": [\n          \"Provides flexibility and human insight\"\n        ],\n        \"distractors\": [\n          \"Ensures internal code correctness\",\n          \"Automates repetitive tasks\"\n        ]\n      }\n    ],\n    \"practice\": \"Explain, in your own words, when it would be most advantageous to use each testing technique: black-box, white-box, manual, and automated.\",\n    \"feedback\": \"Model answer: Black-box testing is best for testing user interfaces, white-box for code correctness, manual for exploratory tasks, and automated for repetitive tests.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Evaluating Testing Effectiveness\",\n    \"durationInMinutes\": 15,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"Present scenarios where different testing techniques are applied.\",\n        \"Evaluate the effectiveness of black-box testing for user interface scenarios.\",\n        \"Discuss white-box testing's effectiveness for code quality assurance.\",\n        \"Examine manual testing's role in usability testing.\",\n        \"Consider automated testing's efficiency in regression testing.\"\n      ],\n      \"accompanyingSlideDetails\": \"Scenarios with testing techniques applied and their evaluations.\",\n      \"imagePrompt\": \"testing scenarios evaluation\",\n      \"slideText\": \"Evaluate the effectiveness of testing techniques in various scenarios.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"In which scenario is black-box testing most effective?\",\n        \"answers\": [\n          \"User interface testing\"\n        ],\n        \"distractors\": [\n          \"Code quality assurance\",\n          \"Regression testing\"\n        ]\n      },\n      {\n        \"question\": \"Which testing is efficient for regression testing?\",\n        \"answers\": [\n          \"Automated testing\"\n        ],\n        \"distractors\": [\n          \"Manual testing\",\n          \"Black-box testing\"\n        ]\n      }\n    ],\n    \"practice\": \"Given a set of scenarios, evaluate and justify which testing technique would be most effective for each.\",\n    \"feedback\": \"Model answer: User interfaces benefit from black-box testing, code quality from white-box, usability from manual, and regression from automated testing.\"\n  },\n  \"exitQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"What is the main focus of black-box testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Inputs and outputs\"\n        ],\n        \"distractors\": [\n          \"Internal code\",\n          \"Testing tools\"\n        ]\n      },\n      {\n        \"question\": \"Which technique involves testing internal structures?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"White-box testing\"\n        ],\n        \"distractors\": [\n          \"Black-box testing\",\n          \"Manual testing\"\n        ]\n      },\n      {\n        \"question\": \"Why is automated testing used?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"For efficiency in repetitive tasks\"\n        ],\n        \"distractors\": [\n          \"For human insight\",\n          \"For testing inputs and outputs\"\n        ]\n      },\n      {\n        \"question\": \"When is manual testing most beneficial?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"In exploratory tasks\"\n        ],\n        \"distractors\": [\n          \"In repetitive tasks\",\n          \"In regression testing\"\n        ]\n      },\n      {\n        \"question\": \"Which testing technique validates functionality from an end-user perspective?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Black-box testing\"\n        ],\n        \"distractors\": [\n          \"White-box testing\",\n          \"Automated testing\"\n        ]\n      },\n      {\n        \"question\": \"What is the role of white-box testing?\",\n        \"hint\": null,\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Ensuring code correctness\"\n        ],\n        \"distractors\": [\n          \"Testing user interfaces\",\n          \"Automating tasks\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"additionalMaterials\": \"None\"\n}"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"replace\",\"path\":\"/learningCycles/2\",\"value\":\"Evaluate which testing technique is most suitable for a given scenario.\"},{\"op\":\"replace\",\"path\":\"/learningCycles/1\",\"value\":\"Explain when each testing technique is used.\"},{\"op\":\"replace\",\"path\":\"/learningCycles/0\",\"value\":\"Identify black-box, white-box, manual and automated testing.\"},{\"op\":\"replace\",\"path\":\"/learningOutcome\",\"value\":\"I can identify black-box, white-box, manual and automated testing and say when each one is used.\"}]"
       },
       {
         "role": "developer",
-        "content": "CURRENT SECTION VALUE\n\nThis is the current value of the section you are creating. Use it as a starting point.\n\nI can describe black-box, white-box, manual and automated testing."
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
       },
       {
         "role": "developer",
@@ -37,7 +37,7 @@
     "stream": false,
     "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
-    "prompt_cache_key": "aila:learningOutcome--default",
+    "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
     "text": {
       "format": {
@@ -48,8 +48,16 @@
           "type": "object",
           "properties": {
             "value": {
-              "type": "string",
-              "description": "What the pupils will have learnt by the end of the lesson.\nShould start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson.\nWritten in age appropriate language.\nMay include a command word.\nWritten in the PUPIL voice.\nMaximum 190 characters"
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -62,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_067023e7a793a8a8006a5f5f13175881a2935cd07f3995f3b2",
+    "id": "resp_01d8c651e0bbb22e006a5f5f18e734819d9bca909f9b276f79",
     "object": "response",
-    "created_at": 1784635155,
+    "created_at": 1784635160,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784635158,
+    "completed_at": 1784635161,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -81,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_067023e7a793a8a8006a5f5f1466e481a2ad7fb9b8a8bc23e2",
+        "id": "msg_01d8c651e0bbb22e006a5f5f197824819d97183a9bcc8c178c",
         "type": "message",
         "status": "completed",
         "content": [
@@ -89,9 +97,11 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":\"I can identify black-box, white-box, manual and automated testing and say when each one is used.\"}",
+            "text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
             "parsed": {
-              "value": "I can identify black-box, white-box, manual and automated testing and say when each one is used."
+              "value": {
+                "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
+              }
             }
           }
         ],
@@ -102,7 +112,7 @@
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": "aila:learningOutcome--default",
+    "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
     "reasoning": {
       "context": "current_turn",
@@ -123,8 +133,16 @@
           "type": "object",
           "properties": {
             "value": {
-              "type": "string",
-              "description": "What the pupils will have learnt by the end of the lesson.\nShould start with 'I can' and outline what pupils should be able to know/and or be able to do by the end of the lesson.\nWritten in age appropriate language.\nMay include a command word.\nWritten in the PUPIL voice.\nMaximum 190 characters"
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -160,22 +178,24 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 7585,
+      "input_tokens": 5435,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 34,
+      "output_tokens": 41,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 7619
+      "total_tokens": 5476
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":\"I can identify black-box, white-box, manual and automated testing and say when each one is used.\"}",
+    "output_text": "{\"value\":{\"message\":\"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
     "output_parsed": {
-      "value": "I can identify black-box, white-box, manual and automated testing and say when each one is used."
+      "value": {
+        "message": "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
+      }
     }
   }
 }

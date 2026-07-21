@@ -23,7 +23,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSet the Key Stage to 'Key Stage 1' according to the user's instructions."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nKS1"
       },
       {
         "role": "developer",
@@ -35,7 +35,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:keyStage--default",
     "prompt_cache_retention": "24h",
@@ -80,26 +80,26 @@
     }
   },
   "result": {
-    "id": "resp_07c3b1898b003a9e006a468119a1f0819f9d5c29e4c49c5e61",
+    "id": "resp_0e1b6cc26cae76b4006a5f5e17212c819db6cebcbaa6190c48",
     "object": "response",
-    "created_at": 1783005465,
+    "created_at": 1784634903,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005466,
+    "completed_at": 1784634904,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_07c3b1898b003a9e006a46811a1350819fb581efe781211bd4",
+        "id": "msg_0e1b6cc26cae76b4006a5f5e17d64c819da9138e935d276f5f",
         "type": "message",
         "status": "completed",
         "content": [
@@ -113,6 +113,7 @@
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -122,8 +123,9 @@
     "prompt_cache_key": "aila:keyStage--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -191,18 +193,19 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1188,
+      "input_tokens": 1171,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 7,
+      "output_tokens": 15,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1195
+      "total_tokens": 1186
     },
     "user": null,
     "metadata": {},

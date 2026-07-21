@@ -58,6 +58,22 @@ export function DebugOverlay() {
       label: "Stream",
       value: ailaStreamingStatus,
     },
+    {
+      label: "Model",
+      value: overlayState.isLoading
+        ? "checking"
+        : !overlayState.data
+          ? "error"
+          : overlayState.data.model,
+    },
+    {
+      label: "Agent",
+      value: overlayState.isLoading
+        ? "checking"
+        : !overlayState.data
+          ? "error"
+          : overlayState.data.agentModel,
+    },
   ];
 
   function toggleCollapsed() {

@@ -24,12 +24,13 @@ const FIXTURE_MODE = "replay" as FixtureMode;
 // tests-e2e/recordings/agentic/. Re-recording may change these.
 const expected = {
   modifiedLearningOutcome:
-    "I can describe different software testing techniques and say why they are used.",
+    "I can identify black-box, white-box, manual and automated testing and say when each one is used.",
   modifyConfirmation:
-    "Is the updated learning outcome now appropriate for your pupils? Let me know if you have further suggestions, or tap Continue to proceed.",
+    "Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap Continue to proceed.",
   additionalMaterialsConfirmation:
-    "Are the newly added homework task instructions in the additional materials section suitable for assisting your pupils' comprehension? Please share any suggestions for refinement, or tap Continue to proceed.",
-  homeworkTask: "To reinforce the understanding of software testing techniques",
+    "Are the additional materials appropriate for your pupils? If not, suggest an edit. Tap Continue to proceed.",
+  homeworkTask:
+    "practise identifying and choosing suitable software testing techniques",
 };
 
 test.describe("Modify a lesson plan (agentic)", () => {
@@ -89,8 +90,8 @@ test.describe("Modify a lesson plan (agentic)", () => {
       await page.locator("text=Modify section").click();
     });
 
-    // The modification lands on the first turn, so this Continue is answered
-    // with a closing message and exercises the exit path.
+    // In the current recording this Continue is answered by re-planning the
+    // learning outcome and learning cycles rather than a closing message.
     setFixture("modify-lesson-easier-continue");
     await performAndWaitForGeneration(page, generationTimeout, async () => {
       await continueChat(page);
