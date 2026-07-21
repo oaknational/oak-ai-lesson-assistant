@@ -1,3 +1,7 @@
+import {
+  AGENTIC_MODERATION_MODEL,
+  DEFAULT_MODERATION_MODEL,
+} from "../constants";
 import { AilaModeration } from "../features/moderation";
 import { OakModerationServiceModerator } from "../features/moderation/moderators/OakModerationServiceModerator";
 import {
@@ -102,6 +106,32 @@ describe("AilaFeatureFactory.createModeration", () => {
     );
     expect(_moderator).toBeInstanceOf(OpenAiModerator);
     expect(_shadowModerator).toBeUndefined();
+  });
+
+  it("keeps the OpenAI moderator on the default model for non-agentic requests", () => {
+    const moderation = AilaFeatureFactory.createModeration(
+      createAilaServices(),
+      { useModeration: true, useAgenticAila: false },
+      createOpenAiClient(),
+    );
+
+    const { _moderator } = getModerators(moderation as AilaModeration);
+    expect((_moderator as { _model: string })._model).toBe(
+      DEFAULT_MODERATION_MODEL,
+    );
+  });
+
+  it("uses the agentic moderation model for agentic requests", () => {
+    const moderation = AilaFeatureFactory.createModeration(
+      createAilaServices(),
+      { useModeration: true, useAgenticAila: true },
+      createOpenAiClient(),
+    );
+
+    const { _moderator } = getModerators(moderation as AilaModeration);
+    expect((_moderator as { _model: string })._model).toBe(
+      AGENTIC_MODERATION_MODEL,
+    );
   });
 
   it("creates a candidate Oak shadow moderator only when enabled with a URL", () => {
