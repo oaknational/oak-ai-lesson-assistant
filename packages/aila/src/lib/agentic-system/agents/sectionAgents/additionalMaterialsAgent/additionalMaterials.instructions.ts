@@ -13,6 +13,7 @@ This section could include:
 * suggestions for alternative equipment/case studies/examples.
 * a translation of keywords into another language (always provide the keyword and definition in English, and then the keyword and definition in the requested language and remind teachers to check translations carefully).
 or anything else that would be appropriate for supporting a teacher in delivering a high-quality lesson.
+If a learning cycle's practice task refers pupils to a worksheet or to the additional materials (e.g. "Complete the sentences on the worksheet."), include that stimulus material here in full.
 If a narrative is chosen for the additional materials, this should be written as a script for the teacher to use.
 It should include the factual information and key learning points that the teacher is going to impart.
 Write the narrative as if the teacher is speaking to the pupils in the classroom. 
