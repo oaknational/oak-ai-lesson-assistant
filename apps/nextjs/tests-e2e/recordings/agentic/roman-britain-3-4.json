@@ -15,11 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nList key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content. \n\n- Provide a brief, age-appropriate definition for each\n- Do not include the keyword in its own definition\n- Max 200 characters per definition\n- Where possible, use definitions from the national curriculum and/or exam boards.\n- Example: { keyword: \"Cell membrane\", definition: \"A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell.\" }\n\n## Tier 2 and 3 vocabulary definitions\n\n- Tier 2 = academic vocabulary that occurs frequently in written text for pupils but is not subject specific (e.g. explain, beneficial, required)\n- Tier 3 = subject-specific vocabulary that occurs less frequently (e.g. amplitude, hypotenuse)"
+        "content": "# Task\n\nList key Tier 2 or Tier 3 vocabulary pupils need to know to understand the lesson content.\n\n- Provide a brief, age-appropriate definition for each\n- Do not include the keyword in its own definition\n- Max 200 characters per definition\n- Where possible, use definitions from the national curriculum and/or exam boards.\n- Example: { keyword: \"Cell membrane\", definition: \"A semi-permeable membrane that surrounds the cell, controlling the movement of substances in and out of the cell.\" }\n\n## KS1 Content Selection Guidance\n\nChoose concrete content pupils can see, name, sort, match, draw, say, or do. Avoid umbrella concepts unless the lesson explicitly teaches them through examples.\n\n## Keyword Definition Guidance (KS1)\n\nWrite each definition in one short sentence (≤12 words) using only words a 5–7-year-old already knows, as if saying it aloud to the pupil. No technical language in the definition itself.\n✓ \"An animal is a living thing which moves and eats other animals or plants.\"\n\n## Tier 2 and 3 vocabulary definitions\n\n- Tier 2 = academic vocabulary that occurs frequently in written text for pupils but is not subject specific (e.g. explain, beneficial, required)\n- Tier 3 = subject-specific vocabulary that occurs less frequently (e.g. amplitude, hypotenuse)\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?"
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\n    \"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\n    \"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\n    \"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\n    \"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Roman Britain ended abruptly when all infrastructure collapsed\",\n      \"description\": \"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"\n    },\n    {\n      \"misconception\": \"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\n      \"description\": \"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"\n    },\n    {\n      \"misconception\": \"The withdrawal of Rome's armies left Britain immediately defenceless\",\n      \"description\": \"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"\n    }\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ],\n  \"keyLearningPoints\": [\n    \"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\n    \"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\n    \"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\n    \"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\n      \"description\": \"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland when Roman rule ended\",\n      \"description\": \"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"\n    },\n    {\n      \"misconception\": \"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\n      \"description\": \"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"\n    }\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,11 @@
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed."
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -35,7 +39,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:keywords--default",
     "prompt_cache_retention": "24h",
@@ -83,26 +87,26 @@
     }
   },
   "result": {
-    "id": "resp_02378ba3c5389ca2006a468138ede081a2bba8d6c9913ad8ac",
+    "id": "resp_09a88fe014a83251006a5f5e70ae9c819cb163bffe9d4aa82e",
     "object": "response",
-    "created_at": 1783005496,
+    "created_at": 1784634992,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005498,
+    "completed_at": 1784634994,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_02378ba3c5389ca2006a468139504881a2b9f6ef55305a6325",
+        "id": "msg_09a88fe014a83251006a5f5e717ee0819c92ef81001115f9b6",
         "type": "message",
         "status": "completed",
         "content": [
@@ -110,33 +114,34 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}",
+            "text": "{\"value\":[{\"keyword\":\"Roman rule\",\"definition\":\"When the Romans were in charge of Britain\"},{\"keyword\":\"Romano-Britons\",\"definition\":\"People in Britain who kept some Roman ways\"},{\"keyword\":\"Picts\",\"definition\":\"A group of people who lived in the north of Britain\"},{\"keyword\":\"Scots\",\"definition\":\"A group of people who came from Ireland\"},{\"keyword\":\"Anglo-Saxons\",\"definition\":\"A group of people who settled in parts of Britain\"}]}",
             "parsed": {
               "value": [
                 {
-                  "keyword": "Romanisation",
-                  "definition": "The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule"
+                  "keyword": "Roman rule",
+                  "definition": "When the Romans were in charge of Britain"
                 },
                 {
-                  "keyword": "Province",
-                  "definition": "A territory governed as a part of the Roman Empire, managed by officials appointed by the empire"
+                  "keyword": "Romano-Britons",
+                  "definition": "People in Britain who kept some Roman ways"
                 },
                 {
                   "keyword": "Picts",
-                  "definition": "A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end"
+                  "definition": "A group of people who lived in the north of Britain"
                 },
                 {
-                  "keyword": "Saxons",
-                  "definition": "A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule"
+                  "keyword": "Scots",
+                  "definition": "A group of people who came from Ireland"
                 },
                 {
-                  "keyword": "Infrastructure",
-                  "definition": "Essential facilities and structures, such as roads and buildings, supporting societal functions"
+                  "keyword": "Anglo-Saxons",
+                  "definition": "A group of people who settled in parts of Britain"
                 }
               ]
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -146,8 +151,9 @@
     "prompt_cache_key": "aila:keywords--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -218,43 +224,44 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2458,
+      "input_tokens": 2726,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 134,
+      "output_tokens": 105,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2592
+      "total_tokens": 2831
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[{\"keyword\":\"Romanisation\",\"definition\":\"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"},{\"keyword\":\"Province\",\"definition\":\"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"},{\"keyword\":\"Picts\",\"definition\":\"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"},{\"keyword\":\"Saxons\",\"definition\":\"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"},{\"keyword\":\"Infrastructure\",\"definition\":\"Essential facilities and structures, such as roads and buildings, supporting societal functions\"}]}",
+    "output_text": "{\"value\":[{\"keyword\":\"Roman rule\",\"definition\":\"When the Romans were in charge of Britain\"},{\"keyword\":\"Romano-Britons\",\"definition\":\"People in Britain who kept some Roman ways\"},{\"keyword\":\"Picts\",\"definition\":\"A group of people who lived in the north of Britain\"},{\"keyword\":\"Scots\",\"definition\":\"A group of people who came from Ireland\"},{\"keyword\":\"Anglo-Saxons\",\"definition\":\"A group of people who settled in parts of Britain\"}]}",
     "output_parsed": {
       "value": [
         {
-          "keyword": "Romanisation",
-          "definition": "The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule"
+          "keyword": "Roman rule",
+          "definition": "When the Romans were in charge of Britain"
         },
         {
-          "keyword": "Province",
-          "definition": "A territory governed as a part of the Roman Empire, managed by officials appointed by the empire"
+          "keyword": "Romano-Britons",
+          "definition": "People in Britain who kept some Roman ways"
         },
         {
           "keyword": "Picts",
-          "definition": "A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end"
+          "definition": "A group of people who lived in the north of Britain"
         },
         {
-          "keyword": "Saxons",
-          "definition": "A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule"
+          "keyword": "Scots",
+          "definition": "A group of people who came from Ireland"
         },
         {
-          "keyword": "Infrastructure",
-          "definition": "Essential facilities and structures, such as roads and buildings, supporting societal functions"
+          "keyword": "Anglo-Saxons",
+          "definition": "A group of people who settled in parts of Britain"
         }
       ]
     }

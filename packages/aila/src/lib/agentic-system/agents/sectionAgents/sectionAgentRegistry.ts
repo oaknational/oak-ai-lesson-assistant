@@ -5,6 +5,7 @@ import type {
   LatestQuiz,
   PartialLessonPlan,
 } from "../../../../protocol/schema";
+import { KEY_LEARNING_POINTS_MAX } from "../../../../protocol/schema";
 import { toMultipleChoiceOnlyQuiz } from "../../quizOperations/toMultipleChoiceOnlyQuiz";
 import type {
   AilaExecutionContext,
@@ -94,7 +95,10 @@ export const createSectionAgentRegistry = ({
     description: "Generates key learning points",
     openai,
     collectGeneration,
-    contentFromDocument: (document) => document.keyLearningPoints,
+    // Prompt context only (basedOn/exemplar/current value): trim to the count
+    // the strict response schema allows, mirroring toMultipleChoiceOnlyQuiz.
+    contentFromDocument: (document) =>
+      document.keyLearningPoints?.slice(0, KEY_LEARNING_POINTS_MAX),
   }),
   "misconceptions--default": misconceptionsAgent({
     id: "misconceptions--default",

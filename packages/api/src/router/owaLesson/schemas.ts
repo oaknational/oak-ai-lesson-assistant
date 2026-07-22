@@ -64,6 +64,7 @@ export const lessonBrowseDataByKsSchema = syntheticUnitvariantLessonsSchema
     null_unitvariant_id: true,
     unit_data: true,
     programme_fields: true,
+    actions: true,
   })
   .extend({
     lesson_data: z.object({

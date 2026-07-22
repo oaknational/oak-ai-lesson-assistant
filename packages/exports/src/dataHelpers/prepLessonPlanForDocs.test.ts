@@ -125,6 +125,26 @@ describe("prepLessonPlanForDocs", () => {
       expect(result.key_learning_point_3).toBe(" ");
       expect(result.key_learning_point_4).toBe(" ");
     });
+
+    it("should drop points beyond the four template placeholders (legacy plans)", async () => {
+      const result = await prepLessonPlanForDocs(
+        makeBaseLessonPlan({
+          keyLearningPoints: [
+            "KLP 1",
+            "KLP 2",
+            "KLP 3",
+            "KLP 4",
+            "KLP 5",
+            "KLP 6",
+          ],
+        }),
+      );
+
+      expect(result.key_learning_point_4).toBe("4.     KLP 4");
+      const values = Object.values(result).flat().join("\n");
+      expect(values).not.toContain("KLP 5");
+      expect(values).not.toContain("KLP 6");
+    });
   });
 
   describe("learningCycles", () => {

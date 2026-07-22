@@ -37,12 +37,14 @@ describe("getAgenticAilaEnabled", () => {
     await expect(getAgenticAilaEnabled()).resolves.toBe(false);
   });
 
-  it("returns false in production without evaluating the flag", async () => {
+  it("evaluates the flag in production", async () => {
     process.env.NEXT_PUBLIC_ENVIRONMENT = "prd";
     mockedServerSideFeatureFlag.mockResolvedValue(true);
 
-    await expect(getAgenticAilaEnabled()).resolves.toBe(false);
+    await expect(getAgenticAilaEnabled()).resolves.toBe(true);
 
-    expect(mockedServerSideFeatureFlag).not.toHaveBeenCalled();
+    expect(mockedServerSideFeatureFlag).toHaveBeenCalledWith(
+      AGENTIC_AILA_FEATURE_FLAG,
+    );
   });
 });

@@ -3,25 +3,41 @@
     "input": [
       {
         "role": "developer",
-        "content": "# Identity\nYou rewrite a single section of an Oak National Academy lesson plan to remove Americanisms and use standard British English suitable for UK teachers and pupils.\n\n# Task\nYou receive a single lesson-plan section as JSON, plus a list of Americanisms detected in that section with their British alternatives. Return the section corrected into British English, preserving structure and meaning.\n\n# Constraints\n- Do not change keys or structure. Return the same shape you received.\n- Do not change the educational meaning of the content.\n- Preserve case: \"Recognize\" → \"Recognise\", \"RECOGNIZE\" → \"RECOGNISE\".\n- Apply British English consistently across the section, not only to the listed phrases — if you notice closely related Americanisms in the same section, convert those to British English too.\n- Do not add commentary, markdown, or explanations.\n\n# British English rules\n\n### Spelling rules — apply these consistently\n- **Verbs ending in -ise/-yse, not -ize/-yze.** Always write *recognise*, *emphasise*, *utilise*, *organise*, *analyse*, *summarise*, *categorise*, *prioritise*. Never *recognize*, *emphasize*, *utilize*, *organize*, *analyze*. This applies to all tenses: *recognised*, *emphasising*, *utilised*.\n- **-our, not -or:** colour, behaviour, favour, neighbour, honour, labour.\n- **-re, not -er:** centre, metre, theatre, fibre, litre.\n- **Double the final L before suffixes** on verbs ending in a single vowel + L: *labelled*, *labelling* (not labeled/labeling); *travelled*, *travelling* (not traveled/traveling); *modelled*, *modelling*; *cancelled*, *cancelling*; *fuelled*, *fuelling*.\n- **Other common forms:** maths (not math), grey (not gray), aluminium (not aluminum), programme (TV/curriculum) vs program (software), practise (verb) / practice (noun), licence (noun) / license (verb).\n\n### Vocabulary rules — UK terms only\n- **rubber** (not eraser), **pavement** (not sidewalk), **lift** (not elevator), **rubbish** (not trash), **biscuit** (not cookie), **trousers** (not pants), **holiday** (not vacation).\n- **autumn** (not fall — except when meaning \"to drop\"), **at the weekend** (not \"on the weekend\"), **full stop** (not period), **have** / **have got** (not \"have gotten\").\n- **Year 7–13** (not \"7th grade\"), **secondary school** / **sixth form** (not high school), **pupil** (not student where context fits a school lesson)."
+        "content": "# Role\nYou are Aila, a chatbot hosted on Oak National Academy's website, helping a teacher in a UK school to create a lesson plan (unless otherwise specified by the user) in British English about how a particular lesson should be designed and delivered by a teacher in a typical classroom environment.\nThe audience you should be writing for is another teacher in the school with whom you will be sharing your plan.\n\nIf the user asks, the reason you are called Aila is the following:\nThe name is an acronym for AI lesson assistant. Aila means \"oak tree\" in Hebrew, and in Scottish Gaelic, Aila means from the strong place.\nWe believe the rigour and quality of Aila stems from the strong foundation provided by both Oak's strong curriculum principles and the high-quality, teacher-generated content that we have been able to integrate into the lesson development process.\nIf the user asks why we gave you a human name, here is the reason:\nIn Aila's initial testing phases, users reported being unsure of how to \"talk\" to the assistant.\nGiving it a name humanises the chatbot and encourages more natural conversation.\n\n# Task\nYou will be given as input:\n- A JSON diff between the current version and previous version of a document\n- A list of sections remaining to be written\n- A message history between Aila and the user\n\nThe message history includes prior dialogue and shows that Aila (powered by a multi-agent model) has just made edits to the document. Your job is to write Aila's next message to the user.\n\n# Instructions for Responding\n\n**IMPORTANT: Your entire response should be 1-2 sentences. Do not write more.**\n\n## DO NOT SUMMARISE\nThe user can see the changes in the application interface. Do not describe what was done.\n\n## DO NOT EXPLAIN THE CONTENT\nDo not explain or describe the content that was generated.\n\n## DO NOT START WITH \"I've\" OR \"The sections have been\"\nStart directly with \"Are the...\"\n\n**❌ BAD EXAMPLE:**\n> I've generated the learning outcome and learning cycles. The lesson will guide pupils to understand fractions. Are these appropriate?\n\n**✅ GOOD EXAMPLE:**\n> Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\nYour response should follow exactly this pattern:\n> Are the [sections you edited] appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n\n## 3. **Mention Only the Sections That Were Just Edited**\n- Only reference the sections that were updated in the current turn.\n- Do not mention or refer to untouched sections unless explicitly asked by the user — this could be confusing.\n\n**✅ Example:**\n> Are the [section you have generated] and [other section you have generated] appropriate for your pupils? If not, suggest an edit. Otherwise, tap **Continue** to move on to the next step.\n\n**✅ Another example:**\n> Are the [first section], [second section], [third section], and [fourth section] sections suitable for your class? If not, reply with what I should change. Otherwise, tap **Continue** to move on to the next step.\n\n## 4. **Handle Notes from Section Generation**\n- When the NOTES section is present, you MUST communicate these to the user clearly.\n- Notes contain important information and suggested actions from the agent that generated the section.\n- Still start with \"Are the...\" but include the note naturally.\n\n**✅ Good example (with a note):**\n> Are the starter quiz and learning cycles suitable? Note: [include the note from section generation here]. Tap **Continue** to proceed.\n\n**❌ Bad example (ignoring notes):**\n> Are the starter quiz, learning cycles, and exit quiz appropriate for your class?\n\n## 5. **Responding to Edit Requests**\nWhen the user asks for a change (e.g., \"Make it harder\", \"Add more misconceptions\"), confirm the edit was made:\n\n**✅ Good example:**\n> Is the learning outcome now suitable for your class? Tap **Continue** or suggest further changes.\n\n**✅ Another example:**\n> Are the added misconceptions appropriate? Let me know if you'd like more, or tap **Continue** to proceed.\n\n**❌ Bad example:**\n> I've updated the learning outcome to be more challenging. It now focuses on higher-order thinking skills.\n\n## 6. **Guide the User to the Next Step**\n- Assume the user wants to continue unless they say otherwise.\n- End every response with a clear action prompt, such as:\n> Tap **Continue** to move on to the next step.\n\n## 7. **Handling a Refusal**\nWhen the router decides to end the turn instead of creating a plan, you will see a 'Refusal' section below. Respond based on the reason:\n\n- **out_of_scope**: User wants something completely unrelated to lesson planning\n  - Politely redirect them back to lesson planning tasks\n  - Example: \"I'm here to help you create lesson plans. Would you like to work on your lesson instead?\"\n\n- **capability_limitation**: User wants something lesson-related but technically impossible\n  - Acknowledge their valid need but explain the technical limitation\n  - Suggest alternatives where possible\n  - Example: \"I can't email lessons directly, but I can help you perfect the lesson plan so you can copy and share it yourself.\"\n\n- **clarification_needed**: User's request is ambiguous or unclear\n  - Ask specific questions to understand what they want\n  - Example: \"I'd be happy to help! Could you be more specific about which part of the lesson you'd like me to work on?\"\n\n- **ethical_concern**: Request violates content policies or educational standards\n  - Explain why the request isn't appropriate for educational content\n  - Offer alternative approaches that meet educational standards\n\nAlways maintain Aila's helpful, teacher-focused tone and avoid mentioning internal system details.\n\n# Section Groups (by default processed sequentially):  \n1. keyStage, subject, title\n2. basedOn, learningOutcome, learningCycles\n3. priorKnowledge, keyLearningPoints, misconceptions, keywords\n4. starterQuiz, cycle1, cycle2, cycle3, exitQuiz\n5. additionalMaterials\n\n# Examples\n- \"Are the title, subject, and key stage right for your lesson? Tap **Continue** to proceed, or let me know what to change.\"\n- \"Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to move on.\"\n- \"Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your class? Tap **Continue** or tell me what to change.\"\n"
       },
       {
         "role": "developer",
-        "content": "Section key: cycle3"
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### AILA_TO_TEACHER\nSpeaker: Aila\nAudience: User\nSupportive expert, guiding and coaching the teacher to create a high-quality lesson. Always be polite; you can ask the teacher to clarify if needed."
       },
       {
         "role": "developer",
-        "content": "Issues detected in this section:\n- \"medieval\" → mediaeval (spelling)"
+        "content": "## Voice guidance\n\nUnless otherwise specified, use AILA_TO_TEACHER."
+      },
+      {
+        "role": "developer",
+        "content": "STEPS EXECUTED\n\nThese are the steps that were executed during this turn.\n\n- starterQuiz: generate\n- cycle1: generate\n- cycle2: generate\n- cycle3: generate\n- exitQuiz: generate"
+      },
+      {
+        "role": "developer",
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/starterQuiz\",\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where is Britain?\",\"hint\":\"It is a place you can find on a map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a country\"],\"distractors\":[\"a river\",\"a room\"]},{\"question\":\"Who used to rule Britain?\",\"hint\":\"These people lived a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Picts\",\"Scots\"]},{\"question\":\"What happened after the Romans ruled Britain?\",\"hint\":\"They did not stay in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They left Britain.\"],\"distractors\":[\"They built a new country.\",\"They changed its name.\"]},{\"question\":\"What do we call a group of people like the Romans, Picts or Scots?\",\"hint\":\"They are groups of people with their own names.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a people\"],\"distractors\":[\"a building\",\"a weather\"]},{\"question\":\"If people live in different parts of a country, what can this mean?\",\"hint\":\"Think about where people choose or are able to live.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They live in different places.\"],\"distractors\":[\"They all live together.\",\"They never move home.\"]},{\"question\":\"How can we find out about the past?\",\"hint\":\"Think about things from long ago that people can study.\",\"questionType\":\"multiple-choice\",\"answers\":[\"by using old objects and stories\"],\"distractors\":[\"by guessing every answer\",\"by looking only at new toys\"]}],\"imageMetadata\":[]}},{\"op\":\"add\",\"path\":\"/cycle1\",\"value\":{\"title\":\"Name the groups of people\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"- When Roman rule ended, Britain did not become empty; different groups of people lived there.\",\"- One group was the Romano-Britons. These were people in Britain who kept some Roman ways.\",\"- Another group was the Picts. The Picts were a group of people living in Britain at this time.\",\"- Another group was the Scots. At this time, the Scots came from Ireland, so do not mix them up with the name Scotland today.\",\"- Another group was the Anglo-Saxons. They began to settle in Britain after the Romans left, so these are the four group names we need to remember: Romano-Britons, Picts, Scots and Anglo-Saxons.\"],\"accompanyingSlideDetails\":\"Show four simple picture cards in a row, each with a clear label: Romano-Britons, Picts, Scots and Anglo-Saxons. Include a small faded picture of Roman soldiers leaving Britain at the side, with a crossed arrow to show that Roman rule ended but people still lived in Britain. Keep the layout uncluttered so pupils can focus on learning and saying the four names.\",\"imagePrompt\":\"simple KS1 history picture cards Romano-Britons Picts Scots Anglo-Saxons Roman Britain illustration\",\"slideText\":\"After Roman rule ended, different groups lived in Britain. Romano-Britons, Picts, Scots and Anglo-Saxons.\"},\"checkForUnderstanding\":[{\"question\":\"Which group kept some Roman ways?\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Which list names the four groups?\",\"answers\":[\"Anglo-Saxons, Picts, Romano-Britons, Scots\"],\"distractors\":[\"Anglo-Saxons, Romans, Picts, Scots\",\"Picts, Romans, Romano-Britons, Scots\"]}],\"practice\":\"1. Say the four group names with your partner.\\n2. Look at the pictures on the board.\\n3. On your sheet, write each name under the right picture.\\n4. Use these names: Romano-Britons, Picts, Scots, Anglo-Saxons.\\n5. Then circle the name that means people kept some Roman ways.\\n6. Check that you have written all four names.\",\"feedback\":\"Model answer\\n1. The four names are Romano-Britons, Picts, Scots and Anglo-Saxons.\\n2. Circle Romano-Britons.\\n3. I named all four groups.\\n4. I did not write Romans instead of Romano-Britons.\\n5. I did not miss out Anglo-Saxons.\"}},{\"op\":\"add\",\"path\":\"/cycle2\",\"value\":{\"title\":\"Match groups to where they lived\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"- We already know the four group names. Now we match each group to a place on a simple map of Britain.\",\"- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.\",\"- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.\",\"- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.\",\"- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons.\"],\"accompanyingSlideDetails\":\"Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.\",\"imagePrompt\":\"simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south\",\"slideText\":\"Different groups lived in different places. Use the map to match each group to where they lived.\"},\"checkForUnderstanding\":[{\"question\":\"Who lived in the north of Britain?\",\"answers\":[\"Picts\"],\"distractors\":[\"Scots\",\"Romans\"]},{\"question\":\"Where did the Scots come from?\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]}],\"practice\":\"1. Look at the map on the worksheet.\\n2. Draw lines to match each group to a place.\\n3. Match Picts to the north of Britain.\\n4. Match Scots to Ireland.\\n5. Match Romano-Britons to the south and east.\\n6. Match Anglo-Saxons to parts of the east and south.\\n7. Then tell your partner one match.\",\"feedback\":\"Model answer\\nPicts → north of Britain\\nScots → Ireland\\nRomano-Britons → south and east\\nAnglo-Saxons → parts of the east and south\\nCheck: Scots are not in Scotland here.\\nCheck: Picts are in the north.\"}},{\"op\":\"add\",\"path\":\"/cycle3\",\"value\":{\"title\":\"Describe who lived in Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"- After the Romans left, Britain still had lots of people living in it; it was not empty.\",\"- We can describe who lived in Britain by naming the groups: Romano-Britons, Picts and Anglo-Saxons lived in Britain, and Scots came from Ireland and some later moved to the north of Britain.\",\"- Romano-Britons were people in Britain who kept some Roman ways, so some Roman ways stayed after Roman rule ended.\",\"- Picts lived in the north of Britain, and Anglo-Saxons settled in parts of the east and south.\",\"- A good history sentence tells who the people were and where they lived, for example: After the Romans left, Romano-Britons lived in the south and east, Picts lived in the north, and Anglo-Saxons settled in parts of the east and south.\"],\"accompanyingSlideDetails\":\"Show a simple map of Britain and Ireland with three clear labelled areas: north for Picts, south and east for Romano-Britons, and parts of the east and south for Anglo-Saxons. Add a small label for Scots coming from Ireland with an arrow towards the north of Britain. Alongside the map, show one short model sentence with key words highlighted: who, where. Keep the visual very clear, with large labels and limited text so pupils can use it to build spoken or written descriptions.\",\"imagePrompt\":\"simple KS1 map Britain Ireland Picts Romano-Britons Anglo-Saxons Scots arrow from Ireland model sentence\",\"slideText\":\"After the Romans left, different groups lived in and near Britain. Describe who they were and where they lived.\"},\"checkForUnderstanding\":[{\"question\":\"Which sentence is right?\",\"answers\":[\"After the Romans left, different groups lived in Britain.\"],\"distractors\":[\"After the Romans left, Britain had no people living in it.\",\"After the Romans left, only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who and where?\",\"answers\":[\"Picts lived in the north of Britain.\"],\"distractors\":[\"Picts were a group of people.\",\"North of Britain.\"]}],\"practice\":\"1. Use the map in the additional materials.\\n2. Say one full sentence with your partner.\\n3. Write 3 sentences about who lived in Britain.\\n4. Use these groups: Romano-Britons, Picts, Anglo-Saxons.\\n5. Tell where each group lived.\\n6. You can add Scots came from Ireland.\\n7. Start with: After the Romans left...\\n8. Check each sentence names people and place.\",\"feedback\":\"Model answer\\nAfter the Romans left, different groups lived in Britain.\\nRomano-Britons lived in the south and east.\\nPicts lived in the north of Britain.\\nAnglo-Saxons settled in parts of the east and south.\\nScots came from Ireland.\\nCheck: each sentence names people and place.\"}},{\"op\":\"add\",\"path\":\"/exitQuiz\",\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group kept some Roman ways after Roman rule ended?\",\"hint\":\"This keyword means people in Britain who kept some Roman ways.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Where did the Picts live?\",\"hint\":\"Think about the top of Britain on the map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the north of Britain\"],\"distractors\":[\"the east of Britain\",\"the south of Britain\"]},{\"question\":\"Where did the Scots come from at this time?\",\"hint\":\"Do not mix this up with Scotland today.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]},{\"question\":\"Which group began to settle in parts of the east and south of Britain after the Romans left?\",\"hint\":\"This group was new to parts of Britain at this time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Anglo-Saxons\"],\"distractors\":[\"Picts\",\"Romano-Britons\"]},{\"question\":\"Which sentence best describes Britain after the Romans left?\",\"hint\":\"Britain still had people living in it.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Different groups lived in Britain.\"],\"distractors\":[\"Britain became empty.\",\"Only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who lived where after the Romans left?\",\"hint\":\"Choose the sentence that names a group and a place correctly.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons lived mostly in the south and east of Britain.\"],\"distractors\":[\"Picts lived in Ireland.\",\"Scots lived in the north and east of Britain.\"]}],\"imageMetadata\":[]}}]"
+      },
+      {
+        "role": "developer",
+        "content": "UNPLANNED/UNFINISHED SECTIONS\n\nThese are the sections which have not yet been written or are incomplete/invalid\n\n"
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
-        "content": "Original section JSON:\n{\"title\":\"Impact of Roman departure on Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.\",\"Explain the increased vulnerability without a centrally-organised defence force.\",\"Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.\",\"Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.\",\"Relate these changes back to Roman contributions like roads, which were still used but less maintained.\"],\"accompanyingSlideDetails\":\"Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.\",\"imagePrompt\":\"Images of Roman ruins repurposed during the early medieval period for local defence.\",\"slideText\":\"Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles.\"},\"checkForUnderstanding\":[{\"question\":\"What groups posed threats to Britain following the Roman withdrawal?\",\"answers\":[\"Picts, Scots, and Saxons\"],\"distractors\":[\"Gauls, Celts, and Iberians\",\"Franks, Vandals, and Goths\"]},{\"question\":\"How did Britain's political setup change after the Romans left?\",\"answers\":[\"Local leaders assumed control over governance.\"],\"distractors\":[\"Strong centralised governments sprang up.\",\"Neighbouring empires took control.\"]}],\"practice\":\"Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.\",\"feedback\":\"Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated.\"}"
+        "content": "USER's MESSAGE\n\nThis is the most recent message from the user that we've been attempting to process.\n\nContinue"
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
-    "prompt_cache_key": "aila:british-english-corrector--cycle3",
+    "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
     "text": {
       "format": {
@@ -32,117 +48,16 @@
           "type": "object",
           "properties": {
             "value": {
-              "anyOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
-                    },
-                    "durationInMinutes": {
-                      "type": "number",
-                      "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
-                    },
-                    "explanation": {
-                      "type": "object",
-                      "properties": {
-                        "spokenExplanation": {
-                          "anyOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          ],
-                          "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
-                        },
-                        "accompanyingSlideDetails": {
-                          "type": "string",
-                          "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
-                        },
-                        "imagePrompt": {
-                          "type": "string",
-                          "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
-                        },
-                        "slideText": {
-                          "type": "string",
-                          "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                        }
-                      },
-                      "required": [
-                        "spokenExplanation",
-                        "accompanyingSlideDetails",
-                        "imagePrompt",
-                        "slideText"
-                      ],
-                      "additionalProperties": false,
-                      "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    },
-                    "checkForUnderstanding": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string",
-                            "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "minItems": 1,
-                            "maxItems": 1,
-                            "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
-                          },
-                          "distractors": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "minItems": 2,
-                            "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "answers",
-                          "distractors"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "minItems": 2
-                    },
-                    "practice": {
-                      "type": "string",
-                      "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    },
-                    "feedback": {
-                      "type": "string",
-                      "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    }
-                  },
-                  "required": [
-                    "title",
-                    "durationInMinutes",
-                    "explanation",
-                    "checkForUnderstanding",
-                    "practice",
-                    "feedback"
-                  ],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "null"
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
                 }
+              },
+              "required": [
+                "message"
               ],
-              "description": "The third learning cycle"
+              "additionalProperties": false
             }
           },
           "required": [
@@ -155,26 +70,26 @@
     }
   },
   "result": {
-    "id": "resp_0feb2f98fc218c3f006a4681598acc819fb115089d99d90a25",
+    "id": "resp_0b890c84d2b4d0e2006a5f5eaef5a481a1965a05bd28fb8d98",
     "object": "response",
-    "created_at": 1783005529,
+    "created_at": 1784635054,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005532,
+    "completed_at": 1784635056,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_0feb2f98fc218c3f006a468159f15c819f8c03945c99d3f5fa",
+        "id": "msg_0b890c84d2b4d0e2006a5f5eaf941481a1a76b4de6af32d57e",
         "type": "message",
         "status": "completed",
         "content": [
@@ -182,62 +97,27 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"title\":\"Impact of Roman departure on Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.\",\"Explain the increased vulnerability without a centrally-organised defence force.\",\"Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.\",\"Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.\",\"Relate these changes back to Roman contributions like roads, which were still used but less maintained.\"],\"accompanyingSlideDetails\":\"Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.\",\"imagePrompt\":\"Images of Roman ruins repurposed during the early mediaeval period for local defence.\",\"slideText\":\"Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles.\"},\"checkForUnderstanding\":[{\"question\":\"What groups posed threats to Britain following the Roman withdrawal?\",\"answers\":[\"Picts, Scots, and Saxons\"],\"distractors\":[\"Gauls, Celts, and Iberians\",\"Franks, Vandals, and Goths\"]},{\"question\":\"How did Britain's political setup change after the Romans left?\",\"answers\":[\"Local leaders assumed control over governance.\"],\"distractors\":[\"Strong centralised governments sprang up.\",\"Neighbouring empires took control.\"]}],\"practice\":\"Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.\",\"feedback\":\"Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated.\"}}",
+            "text": "{\"value\":{\"message\":\"Are the starter quiz, cycle 1, cycle 2, cycle 3, and exit quiz appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
             "parsed": {
               "value": {
-                "title": "Impact of Roman departure on Britain",
-                "durationInMinutes": 8,
-                "explanation": {
-                  "spokenExplanation": [
-                    "Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.",
-                    "Explain the increased vulnerability without a centrally-organised defence force.",
-                    "Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.",
-                    "Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.",
-                    "Relate these changes back to Roman contributions like roads, which were still used but less maintained."
-                  ],
-                  "accompanyingSlideDetails": "Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.",
-                  "imagePrompt": "Images of Roman ruins repurposed during the early mediaeval period for local defence.",
-                  "slideText": "Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles."
-                },
-                "checkForUnderstanding": [
-                  {
-                    "question": "What groups posed threats to Britain following the Roman withdrawal?",
-                    "answers": [
-                      "Picts, Scots, and Saxons"
-                    ],
-                    "distractors": [
-                      "Gauls, Celts, and Iberians",
-                      "Franks, Vandals, and Goths"
-                    ]
-                  },
-                  {
-                    "question": "How did Britain's political setup change after the Romans left?",
-                    "answers": [
-                      "Local leaders assumed control over governance."
-                    ],
-                    "distractors": [
-                      "Strong centralised governments sprang up.",
-                      "Neighbouring empires took control."
-                    ]
-                  }
-                ],
-                "practice": "Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.",
-                "feedback": "Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated."
+                "message": "Are the starter quiz, cycle 1, cycle 2, cycle 3, and exit quiz appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
               }
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
     "parallel_tool_calls": true,
     "presence_penalty": 0,
     "previous_response_id": null,
-    "prompt_cache_key": "aila:british-english-corrector--cycle3",
+    "prompt_cache_key": "aila:message-to-user",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -253,117 +133,16 @@
           "type": "object",
           "properties": {
             "value": {
-              "anyOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
-                    },
-                    "durationInMinutes": {
-                      "type": "number",
-                      "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
-                    },
-                    "explanation": {
-                      "type": "object",
-                      "properties": {
-                        "spokenExplanation": {
-                          "anyOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "type": "string"
-                              }
-                            }
-                          ],
-                          "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
-                        },
-                        "accompanyingSlideDetails": {
-                          "type": "string",
-                          "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
-                        },
-                        "imagePrompt": {
-                          "type": "string",
-                          "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
-                        },
-                        "slideText": {
-                          "type": "string",
-                          "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                        }
-                      },
-                      "required": [
-                        "spokenExplanation",
-                        "accompanyingSlideDetails",
-                        "imagePrompt",
-                        "slideText"
-                      ],
-                      "additionalProperties": false,
-                      "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    },
-                    "checkForUnderstanding": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string",
-                            "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "minItems": 1,
-                            "maxItems": 1,
-                            "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
-                          },
-                          "distractors": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "minItems": 2,
-                            "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "answers",
-                          "distractors"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "minItems": 2
-                    },
-                    "practice": {
-                      "type": "string",
-                      "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    },
-                    "feedback": {
-                      "type": "string",
-                      "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
-                    }
-                  },
-                  "required": [
-                    "title",
-                    "durationInMinutes",
-                    "explanation",
-                    "checkForUnderstanding",
-                    "practice",
-                    "feedback"
-                  ],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "null"
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
                 }
+              },
+              "required": [
+                "message"
               ],
-              "description": "The third learning cycle"
+              "additionalProperties": false
             }
           },
           "required": [
@@ -396,62 +175,26 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1939,
+      "input_tokens": 4268,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 364,
+      "output_tokens": 54,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2303
+      "total_tokens": 4322
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"title\":\"Impact of Roman departure on Britain\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.\",\"Explain the increased vulnerability without a centrally-organised defence force.\",\"Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.\",\"Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.\",\"Relate these changes back to Roman contributions like roads, which were still used but less maintained.\"],\"accompanyingSlideDetails\":\"Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.\",\"imagePrompt\":\"Images of Roman ruins repurposed during the early mediaeval period for local defence.\",\"slideText\":\"Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles.\"},\"checkForUnderstanding\":[{\"question\":\"What groups posed threats to Britain following the Roman withdrawal?\",\"answers\":[\"Picts, Scots, and Saxons\"],\"distractors\":[\"Gauls, Celts, and Iberians\",\"Franks, Vandals, and Goths\"]},{\"question\":\"How did Britain's political setup change after the Romans left?\",\"answers\":[\"Local leaders assumed control over governance.\"],\"distractors\":[\"Strong centralised governments sprang up.\",\"Neighbouring empires took control.\"]}],\"practice\":\"Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.\",\"feedback\":\"Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated.\"}}",
+    "output_text": "{\"value\":{\"message\":\"Are the starter quiz, cycle 1, cycle 2, cycle 3, and exit quiz appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\"}}",
     "output_parsed": {
       "value": {
-        "title": "Impact of Roman departure on Britain",
-        "durationInMinutes": 8,
-        "explanation": {
-          "spokenExplanation": [
-            "Discuss how, after the Roman military withdrawal around 410 CE, Britain faced external threats from groups such as the Picts, Scots, and Saxons.",
-            "Explain the increased vulnerability without a centrally-organised defence force.",
-            "Highlight the shift in power as local leaders and tribal chiefs undertook defence and governance.",
-            "Present examples of adaptations to protect communities, including the decline of urban life and return to rural self-sufficiency.",
-            "Relate these changes back to Roman contributions like roads, which were still used but less maintained."
-          ],
-          "accompanyingSlideDetails": "Depictions of Roman roads alongside illustrations of tribal communities employing rudimentary fortifications.",
-          "imagePrompt": "Images of Roman ruins repurposed during the early mediaeval period for local defence.",
-          "slideText": "Post-Roman Britain experienced external threats and shifts to localised leaderships and rural lifestyles."
-        },
-        "checkForUnderstanding": [
-          {
-            "question": "What groups posed threats to Britain following the Roman withdrawal?",
-            "answers": [
-              "Picts, Scots, and Saxons"
-            ],
-            "distractors": [
-              "Gauls, Celts, and Iberians",
-              "Franks, Vandals, and Goths"
-            ]
-          },
-          {
-            "question": "How did Britain's political setup change after the Romans left?",
-            "answers": [
-              "Local leaders assumed control over governance."
-            ],
-            "distractors": [
-              "Strong centralised governments sprang up.",
-              "Neighbouring empires took control."
-            ]
-          }
-        ],
-        "practice": "Draw a table listing changes in Britain's governance, defence, and daily life after the Roman departure. For each category, write one example of how communities adapted to these changes.",
-        "feedback": "Model Answer: Governance: Local leaders gained authority. Defence: Communities built rudimentary fortifications. Daily Life: Many towns declined, and rural lifestyles predominated."
+        "message": "Are the starter quiz, cycle 1, cycle 2, cycle 3, and exit quiz appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       }
     }
   }

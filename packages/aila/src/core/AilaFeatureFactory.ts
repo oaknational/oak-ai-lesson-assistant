@@ -3,6 +3,10 @@ import { aiLogger } from "@oakai/logger";
 
 import invariant from "tiny-invariant";
 
+import {
+  AGENTIC_MODERATION_MODEL,
+  DEFAULT_MODERATION_MODEL,
+} from "../constants";
 import type { AnalyticsAdapter } from "../features/analytics";
 import { AilaAnalytics } from "../features/analytics/AilaAnalytics";
 import { SentryErrorReporter } from "../features/errorReporting/reporters/SentryErrorReporter";
@@ -81,6 +85,9 @@ export class AilaFeatureFactory {
           userId: aila.userId,
           chatId: aila.chatId,
           openAiClient,
+          model: options.useAgenticAila
+            ? AGENTIC_MODERATION_MODEL
+            : DEFAULT_MODERATION_MODEL,
         });
 
       const createShadowModerator = () => {

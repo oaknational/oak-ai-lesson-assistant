@@ -1,3 +1,6 @@
+import { DEFAULT_MODEL } from "@oakai/aila/src/constants";
+import { DEFAULT_RESPONSES_MODEL } from "@oakai/aila/src/lib/agentic-system/constants";
+
 import { getAgenticAilaEnabled } from "../utils/getAgenticAilaEnabled";
 import { debugRouter } from "./debug";
 
@@ -49,6 +52,8 @@ describe("debugRouter.getAilaOverlayState", () => {
 
     await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
       agenticEnabled: true,
+      model: DEFAULT_MODEL,
+      agentModel: DEFAULT_RESPONSES_MODEL,
     });
   });
 
@@ -57,6 +62,8 @@ describe("debugRouter.getAilaOverlayState", () => {
 
     await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
       agenticEnabled: false,
+      model: DEFAULT_MODEL,
+      agentModel: DEFAULT_RESPONSES_MODEL,
     });
   });
 

@@ -15,19 +15,23 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nCreate a 6-question multiple-choice quiz to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.\n\n## Content Scope:\n\n- Use only content from the PRIOR KNOWLEDGE section\n- Do not test or mention any of this lessons key learning points\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the PRIOR KNOWLEDGE required for the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils \n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 4, these should start with exam command words e.g. state, identify, select.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a high level of discrimination for the answer choices.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## Answers\n- Include 1 correct answer + 2 high-quality distractors.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
+        "content": "# Task\n\nCreate a multiple-choice quiz with exactly 6 questions to assess PRIOR KNOWLEDGE ONLY — do not include or hint at new lesson content.\n\n## Content Scope:\n\n- Base questions on the PRIOR KNOWLEDGE TO ASSESS section provided below\n- Do not test or mention any of this lesson's key learning points\n- Content should be age-appropriate\n- Questions should increase in difficulty\n- Designed so the average pupil scores 5 out of 6.\n- If a pupil gets all of the questions correct, they should have good understanding of the PRIOR KNOWLEDGE required for the lesson.\n\n## Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils\n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 1 and 2, write question stems in plain, everyday language — short sentences, no academic command words.\n- For key stage 3, question stems may use \"explain\", \"describe\", \"identify\", \"suggest\".\n- For key stage 4, question stems must start with exam command words e.g. state, identify, describe, explain.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Answers\n- Every question must have exactly 3 answer options: exactly 1 correct answer + exactly 2 high-quality distractors. Never include more.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess."
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe what changed in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Recall the main reasons why Roman rule in Britain ended.\",\n    \"List the immediate changes that occurred in Britain following the departure of Roman forces.\",\n    \"Evaluate the longer-term cultural impacts of the end of Roman rule.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Roman Empire extended into Britain, impacting its culture and infrastructure.\",\n    \"The timeline of Roman Britain, including key dates such as the invasion in 43 CE and Roman withdrawal around 410 CE.\",\n    \"The concept of Romanisation, highlighting how Roman culture influenced local populations.\",\n    \"Basic understanding of the hierarchical structure of the Roman Empire, including governors overseeing provinces.\",\n    \"Awareness of local tribes and their interactions with Roman settlers.\"\n  ],\n  \"keyLearningPoints\": [\n    \"Roman Britain ended around 410 CE, marked by Emperor Honorius's decision to withdraw Roman troops from British territories.\",\n    \"The absence of Roman military protection led to increased invasions and raids by groups such as the Picts, Scots, and Saxons.\",\n    \"The departure of Roman governance caused political fragmentation, with local leaders and tribal chiefs gaining control.\",\n    \"Roman infrastructure, including roads, buildings, and baths, became neglected without ongoing maintenance.\",\n    \"For several centuries after Roman rule ended, Britain experienced significant cultural and social transformations blending Roman and native influences.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"Roman Britain ended abruptly when all infrastructure collapsed\",\n      \"description\": \"While Roman authority ceased around 410 CE, many Roman structures continued to be used for centuries, albeit without maintenance.\"\n    },\n    {\n      \"misconception\": \"All cultural aspects of Roman life disappeared from Britain post-410 CE\",\n      \"description\": \"Several Roman cultural practices and artefacts persisted, blending with local traditions to create a unique cultural evolution.\"\n    },\n    {\n      \"misconception\": \"The withdrawal of Rome's armies left Britain immediately defenceless\",\n      \"description\": \"Rome's withdrawal was gradual, and local leaders managed defences, albeit with less coordination than under direct Roman rule.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Romanisation\",\n      \"definition\": \"The adoption of Roman culture, language, and customs by local populations in Britain during Roman rule\"\n    },\n    {\n      \"keyword\": \"Province\",\n      \"definition\": \"A territory governed as a part of the Roman Empire, managed by officials appointed by the empire\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of tribes from present-day Scotland known for their invasions of Roman Britain towards its end\"\n    },\n    {\n      \"keyword\": \"Saxons\",\n      \"definition\": \"A confederation of Germanic tribes that began to settle in Britain following the end of Roman rule\"\n    },\n    {\n      \"keyword\": \"Infrastructure\",\n      \"definition\": \"Essential facilities and structures, such as roads and buildings, supporting societal functions\"\n    }\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"subject\": \"history\",\n  \"keyStage\": \"ks1\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ]\n}"
       },
       {
         "role": "developer",
-        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"When did Christianity begin?\",\"hint\":\"It began around the 1st century. \",\"questionType\":\"multiple-choice\",\"answers\":[\"around 2,000 years ago\"],\"distractors\":[\"around 1,000 years ago\",\"around 3,000 years ago\"]},{\"question\":\"Where did Christianity begin?\",\"hint\":\"A province in the Roman Empire. \",\"questionType\":\"short-answer\",\"answers\":[\"Judea\",\"judea\"]},{\"question\":\"How were the early Christians treated?\",\"hint\":\"Early Christians were persecuted.\",\"questionType\":\"multiple-choice\",\"answers\":[\"unfairly\"],\"distractors\":[\"fairly\",\"kindly\"]},{\"question\":\"When did Constantine convert to Christianity?\",\"hint\":\"It was during the 300s CE.\",\"questionType\":\"short-answer\",\"answers\":[\"313  CE\",\"313 ce\"]},{\"question\":\"Order these events chronologically\",\"hint\":\"Constantine won a battle after seeing a vision of a cross and he became emperor.\",\"questionType\":\"order\",\"items\":[\"Constantine converted to Christianity.\",\"Constantine became the sole emperor of the Roman Empire.\",\"Constantine passed the Edict of Milan to stop the persecution of Christians.\",\"Constantine brought Christian bishops together to agree the first set of rules.\"]},{\"question\":\"Missionaries travelled from the Roman Empire all over {{}} to spread Christianity.\",\"hint\":\"The continent Britain is part of.\",\"questionType\":\"short-answer\",\"answers\":[\"Europe\",\"europe\"]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which statement is true?\",\"hint\":\"The Ancient Romans allowed the worship of Celtic gods as long as the Roman ones were respected. They also combined their own gods with Celtic ones.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Religion in Britain changed somewhat under Ancient Roman rule.\"],\"distractors\":[\"Religion in Britain changed completely under Ancient Roman rule.\",\"Religion in Britain did not change at all under Ancient Roman rule.\"]},{\"question\":\"The religious leaders in Celtic Britain were called the ...\",\"hint\":\"These religious leaders were wiped out on Anglesey.\",\"questionType\":\"short-answer\",\"answers\":[\"druids\",\"Druids\"]},{\"question\":\"Which Celtic leader was taken to Rome in chains following their attempts to resist the Ancient Roman invasion?\",\"hint\":\"One of these names is the name of a goddess.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Caratacus\"],\"distractors\":[\"Boudica\",\"Sulis Minerva\"]},{\"question\":\"Place the events of Boudica's rebellion in order, starting with the earliest.\",\"hint\":\"Colchester was closer to the lands of the Iceni than London.\",\"questionType\":\"order\",\"items\":[\"Boudica grew tired of Ancient Roman rule.\",\"Boudica destroyed the town of Colchester.\",\"Boudica burnt down the city of London.\",\"Boudica was defeated by an Ancient Roman legion from Wales.\"]},{\"question\":\"Which two goddesses were combined and worshipped by the people in Bath?\",\"hint\":\"One of these was Celtic and the other was Ancient Roman.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Minerva\",\"Sulis\"],\"distractors\":[\"Cernunnos\",\"Jupiter\"]},{\"question\":\"Which of these is the correct definition for the word 'polytheism'?\",\"hint\":\"Both the Ancient Romans and the Celts believed in polytheism.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people believe in many gods and goddesses\"],\"distractors\":[\"someone's family member from the past\",\"priests of the Celtic religion\",\"what the Ancient Romans called anyone who did not follow Roman traditions\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"Place these events in the correct order, starting with the earliest.\",\"hint\":\"After the Roman Republic fell, Augustus rose to power, and the Roman Empire was established\",\"questionType\":\"order\",\"items\":[\"According to the myth, Romulus becomes king of Rome\",\"The Roman senators overthrew the last King of Rome, creating the Roman Republic\",\"Julius Caesar rose to power as a general and then as dictator of Rome\",\"Augustus won the civil war and became Rome's first emperor\",\"Diocletian split the Roman Empire in two\",\"Constantine became the capital of the reunited Empire temporarily\"]},{\"question\":\"The Byzantine Empire was also known as the __________ Roman Empire.\",\"hint\":\"Diocletian had split the Roman Empire into Eastern and Western Empires\",\"questionType\":\"multiple-choice\",\"answers\":[\"Eastern\"],\"distractors\":[\"Northern\",\"Southern\",\"Western\"]},{\"question\":\"Which of these statements are true about Constantinople?\",\"hint\":\"It was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"it was named in honour of Constantine\",\"it was the capital of the Byzantine Empire\",\"it was capital of the reunited Eastern and Western Roman Empire temporarily\"],\"distractors\":[\"it was named in honour of Diocletian\",\"it was the capital of the Western Roman Empire\"]},{\"question\":\"Match the words to their meanings.\",\"hint\":\"When Rome captured a territory, it became a province of Rome and was ruled by a Roman governor\",\"questionType\":\"match\",\"pairs\":[{\"left\":\"province\",\"right\":\"an area of land that is part of a country\"},{\"left\":\"republic\",\"right\":\"a country where the leaders are elected\"},{\"left\":\"empire\",\"right\":\"a large area ruled by an emperor\"}]},{\"question\":\"What was the main religion of the people of the Byzantine Empire?\",\"hint\":\"Byzantine art often depicted stories and scenes from the Bible\",\"questionType\":\"multiple-choice\",\"answers\":[\"Christianity\"],\"distractors\":[\"Hinduism\",\"Judaism\",\"Islam\"]},{\"question\":\"The people of the Byzantine Empire referred to themselves as ...\",\"hint\":\"The Byzantine Empire was ruled by an emperor\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Byzantine\",\"emperors\",\"senators\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"When did Rome become an empire?\",\"hint\":\"It was about 20 years after Julius Caesar tried and failed to invade Britain. \",\"questionType\":\"multiple-choice\",\"answers\":[\"27 BCE\"],\"distractors\":[\"264 BCE\",\"55 BCE\",\"1 CE\"]},{\"question\":\"How many times did Caesar try to invade Britain?\",\"hint\":\"The invasions took place between 55 and 54 BCE. \",\"questionType\":\"multiple-choice\",\"answers\":[\"2\"],\"distractors\":[\"1\",\"3\",\"4\"]},{\"question\":\"What does inequality mean?\",\"hint\":\"There was a lot of inequality in the Roman Republic and Roman Empire. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Some people are treated better than others.\"],\"distractors\":[\"The food is of poor quality.\",\"It is the value of Roman coins in other countries.\",\"The voting process is free and fair.\"]},{\"question\":\"Who became the first ruler of the Roman Empire?\",\"hint\":\"He was the first emperor of Rome.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Augustus\"],\"distractors\":[\"Julius Caesar\",\"Romulus\",\"Lucius Tarquinius Superbus\"]},{\"question\":\"What role did the Senate play in the Roman Empire?\",\"hint\":\"It was not the same as the role they had played in the Roman Republic.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Senate had less power than the emperor.\"],\"distractors\":[\"The emperor had to listen to the Senate.\",\"The Senate and the emperor had the same power.\",\"The Senate no longer existed.\"]},{\"question\":\"Roman emperors had strengthened their position through {{  }}.\",\"hint\":\"Roman emperors needed to look strong and powerful to the citizens of Rome.\",\"questionType\":\"multiple-choice\",\"answers\":[\"conquest\"],\"distractors\":[\"trade\",\"parties\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which Roman emperor successfully invaded Britain in 43 CE?\",\"hint\":\"They were not the first emperor to try to invade Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Claudius\"],\"distractors\":[\"Julius Caesar\",\"Nero\"]},{\"question\":\"When was the first (unsuccessful) invasion of Roman Britain?\",\"hint\":\"Julius Caesar was the emperor at the time of this invasion.\",\"questionType\":\"multiple-choice\",\"answers\":[\"55 BCE\"],\"distractors\":[\"40 CE\",\"50 BCE\",\"45 CE\"]},{\"question\":\"Around the time of the Roman invasion, how was Britain ruled?\",\"hint\":\"Think about what Britain was like during Roman rule too.\",\"questionType\":\"multiple-choice\",\"answers\":[\"multiple tribes with their own leaders\"],\"distractors\":[\"a unified kingdom with one king or queen\",\"a structured republic similar to Rome\"]},{\"question\":\"Who was the leader of the Iceni tribe that fought back against Roman rule?\",\"hint\":\"The leader was female.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Boudicca\"],\"distractors\":[\"Hadrian\",\"Brennus\",\"Ambiorix\"]},{\"question\":\"From earliest to latest, order these events in Roman Britain.\",\"hint\":\"Think about what would need to be set up after the conquest and what reasons other things may have been built for.\",\"questionType\":\"order\",\"items\":[\"establishment of Londinium (London)\",\"Boudicca's revolt against Roman rule\",\"building of Hadrian's Wall\",\"the Romans left Britain\"]},{\"question\":\"In Roman settlements, what place was the heart of public social life, where people would shop, talk and conduct business?\",\"hint\":\"It is a word we still use today with a similar meaning.\",\"questionType\":\"short-answer\",\"answers\":[\"Forum\",\"the forum\"]}],\"imageMetadata\":[]}</example-5>"
+        "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"When did Christianity begin?\",\"hint\":\"It began around the 1st century. \",\"questionType\":\"multiple-choice\",\"answers\":[\"around 2,000 years ago\"],\"distractors\":[\"around 1,000 years ago\",\"around 3,000 years ago\"]},{\"question\":\"How were the early Christians treated?\",\"hint\":\"Early Christians were persecuted.\",\"questionType\":\"multiple-choice\",\"answers\":[\"unfairly\"],\"distractors\":[\"fairly\",\"kindly\"]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which statement is true?\",\"hint\":\"The Ancient Romans allowed the worship of Celtic gods as long as the Roman ones were respected. They also combined their own gods with Celtic ones.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Religion in Britain changed somewhat under Ancient Roman rule.\"],\"distractors\":[\"Religion in Britain changed completely under Ancient Roman rule.\",\"Religion in Britain did not change at all under Ancient Roman rule.\"]},{\"question\":\"Which Celtic leader was taken to Rome in chains following their attempts to resist the Ancient Roman invasion?\",\"hint\":\"One of these names is the name of a goddess.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Caratacus\"],\"distractors\":[\"Boudica\",\"Sulis Minerva\"]},{\"question\":\"Which two goddesses were combined and worshipped by the people in Bath?\",\"hint\":\"One of these was Celtic and the other was Ancient Roman.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Minerva\"],\"distractors\":[\"Cernunnos\",\"Jupiter\"]},{\"question\":\"Which of these is the correct definition for the word 'polytheism'?\",\"hint\":\"Both the Ancient Romans and the Celts believed in polytheism.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people believe in many gods and goddesses\"],\"distractors\":[\"someone's family member from the past\",\"priests of the Celtic religion\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"The Byzantine Empire was also known as the __________ Roman Empire.\",\"hint\":\"Diocletian had split the Roman Empire into Eastern and Western Empires\",\"questionType\":\"multiple-choice\",\"answers\":[\"Eastern\"],\"distractors\":[\"Northern\",\"Southern\"]},{\"question\":\"Which of these statements are true about Constantinople?\",\"hint\":\"It was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"it was named in honour of Constantine\"],\"distractors\":[\"it was named in honour of Diocletian\",\"it was the capital of the Western Roman Empire\"]},{\"question\":\"What was the main religion of the people of the Byzantine Empire?\",\"hint\":\"Byzantine art often depicted stories and scenes from the Bible\",\"questionType\":\"multiple-choice\",\"answers\":[\"Christianity\"],\"distractors\":[\"Hinduism\",\"Judaism\"]},{\"question\":\"The people of the Byzantine Empire referred to themselves as ...\",\"hint\":\"The Byzantine Empire was ruled by an emperor\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roman\"],\"distractors\":[\"Byzantine\",\"emperors\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"When did Rome become an empire?\",\"hint\":\"It was about 20 years after Julius Caesar tried and failed to invade Britain. \",\"questionType\":\"multiple-choice\",\"answers\":[\"27 BCE\"],\"distractors\":[\"264 BCE\",\"55 BCE\"]},{\"question\":\"How many times did Caesar try to invade Britain?\",\"hint\":\"The invasions took place between 55 and 54 BCE. \",\"questionType\":\"multiple-choice\",\"answers\":[\"2\"],\"distractors\":[\"1\",\"3\"]},{\"question\":\"What does inequality mean?\",\"hint\":\"There was a lot of inequality in the Roman Republic and Roman Empire. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Some people are treated better than others.\"],\"distractors\":[\"The food is of poor quality.\",\"It is the value of Roman coins in other countries.\"]},{\"question\":\"Who became the first ruler of the Roman Empire?\",\"hint\":\"He was the first emperor of Rome.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Augustus\"],\"distractors\":[\"Julius Caesar\",\"Romulus\"]},{\"question\":\"What role did the Senate play in the Roman Empire?\",\"hint\":\"It was not the same as the role they had played in the Roman Republic.\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Senate had less power than the emperor.\"],\"distractors\":[\"The emperor had to listen to the Senate.\",\"The Senate and the emperor had the same power.\"]},{\"question\":\"Roman emperors had strengthened their position through {{  }}.\",\"hint\":\"Roman emperors needed to look strong and powerful to the citizens of Rome.\",\"questionType\":\"multiple-choice\",\"answers\":[\"conquest\"],\"distractors\":[\"trade\",\"parties\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which Roman emperor successfully invaded Britain in 43 CE?\",\"hint\":\"They were not the first emperor to try to invade Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Claudius\"],\"distractors\":[\"Julius Caesar\",\"Nero\"]},{\"question\":\"When was the first (unsuccessful) invasion of Roman Britain?\",\"hint\":\"Julius Caesar was the emperor at the time of this invasion.\",\"questionType\":\"multiple-choice\",\"answers\":[\"55 BCE\"],\"distractors\":[\"40 CE\",\"50 BCE\"]},{\"question\":\"Around the time of the Roman invasion, how was Britain ruled?\",\"hint\":\"Think about what Britain was like during Roman rule too.\",\"questionType\":\"multiple-choice\",\"answers\":[\"multiple tribes with their own leaders\"],\"distractors\":[\"a unified kingdom with one king or queen\",\"a structured republic similar to Rome\"]},{\"question\":\"Who was the leader of the Iceni tribe that fought back against Roman rule?\",\"hint\":\"The leader was female.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Boudicca\"],\"distractors\":[\"Hadrian\",\"Brennus\"]}],\"imageMetadata\":[]}</example-5>"
       },
       {
         "role": "developer",
-        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles suitable for your lesson? If not, recommend an edit. Note that the \"based on\" section currently needs input and can be updated or finalized later. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords suitable for your lesson? If not, suggest changes. Otherwise, tap **Continue** to proceed."
+        "content": "## PRIOR KNOWLEDGE TO ASSESS\n\nThe starter quiz assesses ONLY knowledge pupils should already have BEFORE this lesson begins.\n\nThe statements below are the lesson's stated prior knowledge and are the primary source for questions:\n\n- The Romans used to rule Britain and then they left.\n- Britain is the place where people lived in this lesson, and it can be found on a map.\n- Some groups of people had names, such as Romans, Picts and Scots.\n- People can live in different parts of a country.\n- Old stories and objects can help us find out about the past.\n\nRules:\n- Base questions on the statements above; topic-appropriate prerequisite knowledge for this key stage may supplement them.\n- Never test or hint at what this lesson itself will teach. Lesson context is for difficulty calibration only, never a source of questions."
+      },
+      {
+        "role": "developer",
+        "content": "MESSAGE HISTORY\n\nThese are the previous messages in the current conversation with the user.\n\n- user: Create a KS1 lesson on the end of Roman Britain\n- assistant: I have fetched the following existing Oak lessons that look relevant:\n\n1. Britain at the end of Roman rule\n2. The Roman invasion of Britain\n3. The fall of the Western Roman Empire\n4. The buildings of Roman Britain\n5. Roman Christianity in Britain\n\nWould you like to base your lesson on one of these? Otherwise we can create one from scratch!\n- user: Continue\n- assistant: Are the learning outcome and learning cycles appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed.\n- user: Continue\n- assistant: Are the prior knowledge, key learning points, misconceptions, and keywords appropriate for your pupils? If not, suggest an edit. Tap **Continue** to proceed."
       },
       {
         "role": "user",
@@ -35,7 +39,7 @@
       }
     ],
     "stream": false,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "reasoning": null,
     "prompt_cache_key": "aila:starterQuiz--default",
     "prompt_cache_retention": "24h",
@@ -58,152 +62,52 @@
                 "questions": {
                   "type": "array",
                   "items": {
-                    "anyOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string",
-                            "description": "The question as markdown text"
-                          },
-                          "hint": {
-                            "type": "string",
-                            "nullable": true,
-                            "description": "Optional hint to help students"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "multiple-choice"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Correct answers as markdown"
-                          },
-                          "distractors": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Incorrect answer options as markdown"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "answers",
-                          "distractors"
-                        ],
-                        "additionalProperties": false
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "type": "string",
+                        "description": "The question as markdown text"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "short-answer"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Acceptable answers as markdown"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "answers"
-                        ],
-                        "additionalProperties": false
+                      "hint": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional hint to help students"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "match"
-                          },
-                          "pairs": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "left": {
-                                  "type": "string",
-                                  "description": "Left side item to match as markdown"
-                                },
-                                "right": {
-                                  "type": "string",
-                                  "description": "Corresponding right side item as markdown"
-                                }
-                              },
-                              "required": [
-                                "left",
-                                "right"
-                              ],
-                              "additionalProperties": false
-                            },
-                            "description": "Pairs of items to match"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "pairs"
-                        ],
-                        "additionalProperties": false
+                      "questionType": {
+                        "type": "string",
+                        "const": "multiple-choice"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "order"
-                          },
-                          "items": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Items to be put in correct order as markdown"
-                          }
+                      "answers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
                         },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "items"
-                        ],
-                        "additionalProperties": false
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "Correct answers as markdown. Minimum 1, maximum 1 elements"
+                      },
+                      "distractors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "description": "Incorrect answer options as markdown. Minimum 2, maximum 2 elements"
                       }
-                    ]
+                    },
+                    "required": [
+                      "question",
+                      "hint",
+                      "questionType",
+                      "answers",
+                      "distractors"
+                    ],
+                    "additionalProperties": false
                   },
-                  "description": "Array of quiz questions"
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "description": "Array of multiple choice quiz questions. Minimum 1, maximum 6 elements"
                 },
                 "imageMetadata": {
                   "type": "array",
@@ -242,17 +146,12 @@
                     "additionalProperties": false
                   },
                   "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
-                },
-                "reportId": {
-                  "type": "string",
-                  "nullable": true
                 }
               },
               "required": [
                 "version",
                 "questions",
-                "imageMetadata",
-                "reportId"
+                "imageMetadata"
               ],
               "additionalProperties": false
             }
@@ -261,261 +160,32 @@
             "value"
           ],
           "additionalProperties": false,
-          "definitions": {
-            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
-              "type": "string",
-              "description": "The question as markdown text"
-            },
-            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
-              "type": "string",
-              "nullable": true,
-              "description": "Optional hint to help students"
-            },
-            "agent_response_schema": {
-              "type": "object",
-              "properties": {
-                "value": {
-                  "type": "object",
-                  "properties": {
-                    "version": {
-                      "type": "string",
-                      "const": "v3",
-                      "description": "Schema version identifier"
-                    },
-                    "questions": {
-                      "type": "array",
-                      "items": {
-                        "anyOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "type": "string",
-                                "description": "The question as markdown text"
-                              },
-                              "hint": {
-                                "type": "string",
-                                "nullable": true,
-                                "description": "Optional hint to help students"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "multiple-choice"
-                              },
-                              "answers": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Correct answers as markdown"
-                              },
-                              "distractors": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Incorrect answer options as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "answers",
-                              "distractors"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "short-answer"
-                              },
-                              "answers": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Acceptable answers as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "answers"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "match"
-                              },
-                              "pairs": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "left": {
-                                      "type": "string",
-                                      "description": "Left side item to match as markdown"
-                                    },
-                                    "right": {
-                                      "type": "string",
-                                      "description": "Corresponding right side item as markdown"
-                                    }
-                                  },
-                                  "required": [
-                                    "left",
-                                    "right"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                "description": "Pairs of items to match"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "pairs"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "order"
-                              },
-                              "items": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Items to be put in correct order as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "items"
-                            ],
-                            "additionalProperties": false
-                          }
-                        ]
-                      },
-                      "description": "Array of quiz questions"
-                    },
-                    "imageMetadata": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "imageUrl": {
-                            "type": "string",
-                            "description": "The URL of the image"
-                          },
-                          "attribution": {
-                            "type": "string",
-                            "nullable": true,
-                            "description": "Attribution text for the image"
-                          },
-                          "width": {
-                            "type": "number",
-                            "description": "Width of the image in pixels"
-                          },
-                          "height": {
-                            "type": "number",
-                            "description": "Height of the image in pixels"
-                          },
-                          "aiDescription": {
-                            "type": "string",
-                            "description": "AI-generated description of the image content for LLM context"
-                          }
-                        },
-                        "required": [
-                          "imageUrl",
-                          "attribution",
-                          "width",
-                          "height",
-                          "aiDescription"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
-                    },
-                    "reportId": {
-                      "type": "string",
-                      "nullable": true
-                    }
-                  },
-                  "required": [
-                    "version",
-                    "questions",
-                    "imageMetadata",
-                    "reportId"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "value"
-              ],
-              "additionalProperties": false
-            }
-          },
           "$schema": "http://json-schema.org/draft-07/schema#"
         }
       }
     }
   },
   "result": {
-    "id": "resp_036435fd636f5f23006a468143eacc81929732bd9940d2deda",
+    "id": "resp_0ae25e5648d403d5006a5f5e8e732c81a09649bef04d500461",
     "object": "response",
-    "created_at": 1783005507,
+    "created_at": 1784635022,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1783005511,
+    "completed_at": 1784635026,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
     "max_tool_calls": null,
-    "model": "gpt-4o-2024-11-20",
+    "model": "gpt-5.4-2026-03-05",
     "moderation": null,
     "output": [
       {
-        "id": "msg_036435fd636f5f23006a46814479408192bae6136aa5d6c6e0",
+        "id": "msg_0ae25e5648d403d5006a5f5e8efefc81a0b79023765313f6e1",
         "type": "message",
         "status": "completed",
         "content": [
@@ -523,90 +193,90 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Identify the time during which the Romans commenced their rule over Britain.\",\"hint\":\"To provide a clue, consider the events around 43 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"54 BCE\",\"410 CE\"]},{\"question\":\"What term describes the influence of Roman culture and practices on local British populations?\",\"hint\":\"This term reflects the adoption of Roman culture such as language and customs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romanisation\"],\"distractors\":[\"Governance\",\"Civilisation\"]},{\"question\":\"Select the structure Roman governors utilised to manage the territories within Britain.\",\"hint\":\"Think about the administrative divisions of the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Settlements\",\"Colonies\"]},{\"question\":\"Which group from Northern Britain frequently engaged in conflicts with Roman forces?\",\"hint\":\"This group resided in the area now recognised as Scotland.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Gauls\",\"Angles\"]},{\"question\":\"What major infrastructural development did Romans introduce to Britain to connect key settlements?\",\"hint\":\"These provided significant mobility and trade advantages.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Canals\",\"Aqueducts\"]},{\"question\":\"During which century did the Roman forces withdraw from their rule in Britain?\",\"hint\":\"This event occurred approximately around 410 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"5th Century\"],\"distractors\":[\"3rd Century\",\"6th Century\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where is Britain?\",\"hint\":\"It is a place you can find on a map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a country\"],\"distractors\":[\"a river\",\"a room\"]},{\"question\":\"Who used to rule Britain?\",\"hint\":\"These people lived a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Picts\",\"Scots\"]},{\"question\":\"What happened after the Romans ruled Britain?\",\"hint\":\"They did not stay in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They left Britain.\"],\"distractors\":[\"They built a new country.\",\"They changed its name.\"]},{\"question\":\"What do we call a group of people like the Romans, Picts or Scots?\",\"hint\":\"They are groups of people with their own names.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a people\"],\"distractors\":[\"a building\",\"a weather\"]},{\"question\":\"If people live in different parts of a country, what can this mean?\",\"hint\":\"Think about where people choose or are able to live.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They live in different places.\"],\"distractors\":[\"They all live together.\",\"They never move home.\"]},{\"question\":\"How can we find out about the past?\",\"hint\":\"Think about things from long ago that people can study.\",\"questionType\":\"multiple-choice\",\"answers\":[\"by using old objects and stories\"],\"distractors\":[\"by guessing every answer\",\"by looking only at new toys\"]}],\"imageMetadata\":[]}}",
             "parsed": {
               "value": {
                 "version": "v3",
                 "questions": [
                   {
-                    "question": "Identify the time during which the Romans commenced their rule over Britain.",
-                    "hint": "To provide a clue, consider the events around 43 CE.",
+                    "question": "Where is Britain?",
+                    "hint": "It is a place you can find on a map.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "43 CE"
+                      "a country"
                     ],
                     "distractors": [
-                      "54 BCE",
-                      "410 CE"
+                      "a river",
+                      "a room"
                     ]
                   },
                   {
-                    "question": "What term describes the influence of Roman culture and practices on local British populations?",
-                    "hint": "This term reflects the adoption of Roman culture such as language and customs.",
+                    "question": "Who used to rule Britain?",
+                    "hint": "These people lived a long time ago.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Romanisation"
+                      "Romans"
                     ],
                     "distractors": [
-                      "Governance",
-                      "Civilisation"
+                      "Picts",
+                      "Scots"
                     ]
                   },
                   {
-                    "question": "Select the structure Roman governors utilised to manage the territories within Britain.",
-                    "hint": "Think about the administrative divisions of the Roman Empire.",
+                    "question": "What happened after the Romans ruled Britain?",
+                    "hint": "They did not stay in Britain.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Provinces"
+                      "They left Britain."
                     ],
                     "distractors": [
-                      "Settlements",
-                      "Colonies"
+                      "They built a new country.",
+                      "They changed its name."
                     ]
                   },
                   {
-                    "question": "Which group from Northern Britain frequently engaged in conflicts with Roman forces?",
-                    "hint": "This group resided in the area now recognised as Scotland.",
+                    "question": "What do we call a group of people like the Romans, Picts or Scots?",
+                    "hint": "They are groups of people with their own names.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Picts"
+                      "a people"
                     ],
                     "distractors": [
-                      "Gauls",
-                      "Angles"
+                      "a building",
+                      "a weather"
                     ]
                   },
                   {
-                    "question": "What major infrastructural development did Romans introduce to Britain to connect key settlements?",
-                    "hint": "These provided significant mobility and trade advantages.",
+                    "question": "If people live in different parts of a country, what can this mean?",
+                    "hint": "Think about where people choose or are able to live.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Roads"
+                      "They live in different places."
                     ],
                     "distractors": [
-                      "Canals",
-                      "Aqueducts"
+                      "They all live together.",
+                      "They never move home."
                     ]
                   },
                   {
-                    "question": "During which century did the Roman forces withdraw from their rule in Britain?",
-                    "hint": "This event occurred approximately around 410 CE.",
+                    "question": "How can we find out about the past?",
+                    "hint": "Think about things from long ago that people can study.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "5th Century"
+                      "by using old objects and stories"
                     ],
                     "distractors": [
-                      "3rd Century",
-                      "6th Century"
+                      "by guessing every answer",
+                      "by looking only at new toys"
                     ]
                   }
                 ],
-                "imageMetadata": [],
-                "reportId": ""
+                "imageMetadata": []
               }
             }
           }
         ],
+        "phase": "final_answer",
         "role": "assistant"
       }
     ],
@@ -616,8 +286,9 @@
     "prompt_cache_key": "aila:starterQuiz--default",
     "prompt_cache_retention": "24h",
     "reasoning": {
-      "context": null,
-      "effort": null,
+      "context": "current_turn",
+      "effort": "none",
+      "mode": "standard",
       "summary": null
     },
     "safety_identifier": null,
@@ -643,152 +314,52 @@
                 "questions": {
                   "type": "array",
                   "items": {
-                    "anyOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string",
-                            "description": "The question as markdown text"
-                          },
-                          "hint": {
-                            "type": "string",
-                            "nullable": true,
-                            "description": "Optional hint to help students"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "multiple-choice"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Correct answers as markdown"
-                          },
-                          "distractors": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Incorrect answer options as markdown"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "answers",
-                          "distractors"
-                        ],
-                        "additionalProperties": false
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "type": "string",
+                        "description": "The question as markdown text"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "short-answer"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Acceptable answers as markdown"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "answers"
-                        ],
-                        "additionalProperties": false
+                      "hint": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Optional hint to help students"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "match"
-                          },
-                          "pairs": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "left": {
-                                  "type": "string",
-                                  "description": "Left side item to match as markdown"
-                                },
-                                "right": {
-                                  "type": "string",
-                                  "description": "Corresponding right side item as markdown"
-                                }
-                              },
-                              "required": [
-                                "left",
-                                "right"
-                              ],
-                              "additionalProperties": false
-                            },
-                            "description": "Pairs of items to match"
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "pairs"
-                        ],
-                        "additionalProperties": false
+                      "questionType": {
+                        "type": "string",
+                        "const": "multiple-choice"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                          },
-                          "hint": {
-                            "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                          },
-                          "questionType": {
-                            "type": "string",
-                            "const": "order"
-                          },
-                          "items": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "description": "Items to be put in correct order as markdown"
-                          }
+                      "answers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
                         },
-                        "required": [
-                          "question",
-                          "hint",
-                          "questionType",
-                          "items"
-                        ],
-                        "additionalProperties": false
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "description": "Correct answers as markdown. Minimum 1, maximum 1 elements"
+                      },
+                      "distractors": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "description": "Incorrect answer options as markdown. Minimum 2, maximum 2 elements"
                       }
-                    ]
+                    },
+                    "required": [
+                      "question",
+                      "hint",
+                      "questionType",
+                      "answers",
+                      "distractors"
+                    ],
+                    "additionalProperties": false
                   },
-                  "description": "Array of quiz questions"
+                  "minItems": 1,
+                  "maxItems": 6,
+                  "description": "Array of multiple choice quiz questions. Minimum 1, maximum 6 elements"
                 },
                 "imageMetadata": {
                   "type": "array",
@@ -827,17 +398,12 @@
                     "additionalProperties": false
                   },
                   "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
-                },
-                "reportId": {
-                  "type": "string",
-                  "nullable": true
                 }
               },
               "required": [
                 "version",
                 "questions",
-                "imageMetadata",
-                "reportId"
+                "imageMetadata"
               ],
               "additionalProperties": false
             }
@@ -845,236 +411,7 @@
           "required": [
             "value"
           ],
-          "additionalProperties": false,
-          "definitions": {
-            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question": {
-              "type": "string",
-              "description": "The question as markdown text"
-            },
-            "agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint": {
-              "type": "string",
-              "nullable": true,
-              "description": "Optional hint to help students"
-            },
-            "agent_response_schema": {
-              "type": "object",
-              "properties": {
-                "value": {
-                  "type": "object",
-                  "properties": {
-                    "version": {
-                      "type": "string",
-                      "const": "v3",
-                      "description": "Schema version identifier"
-                    },
-                    "questions": {
-                      "type": "array",
-                      "items": {
-                        "anyOf": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "type": "string",
-                                "description": "The question as markdown text"
-                              },
-                              "hint": {
-                                "type": "string",
-                                "nullable": true,
-                                "description": "Optional hint to help students"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "multiple-choice"
-                              },
-                              "answers": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Correct answers as markdown"
-                              },
-                              "distractors": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Incorrect answer options as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "answers",
-                              "distractors"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "short-answer"
-                              },
-                              "answers": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Acceptable answers as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "answers"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "match"
-                              },
-                              "pairs": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "left": {
-                                      "type": "string",
-                                      "description": "Left side item to match as markdown"
-                                    },
-                                    "right": {
-                                      "type": "string",
-                                      "description": "Corresponding right side item as markdown"
-                                    }
-                                  },
-                                  "required": [
-                                    "left",
-                                    "right"
-                                  ],
-                                  "additionalProperties": false
-                                },
-                                "description": "Pairs of items to match"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "pairs"
-                            ],
-                            "additionalProperties": false
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "question": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_question"
-                              },
-                              "hint": {
-                                "$ref": "#/definitions/agent_response_schema_properties_value_properties_questions_items_anyOf_0_properties_hint"
-                              },
-                              "questionType": {
-                                "type": "string",
-                                "const": "order"
-                              },
-                              "items": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
-                                },
-                                "description": "Items to be put in correct order as markdown"
-                              }
-                            },
-                            "required": [
-                              "question",
-                              "hint",
-                              "questionType",
-                              "items"
-                            ],
-                            "additionalProperties": false
-                          }
-                        ]
-                      },
-                      "description": "Array of quiz questions"
-                    },
-                    "imageMetadata": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "imageUrl": {
-                            "type": "string",
-                            "description": "The URL of the image"
-                          },
-                          "attribution": {
-                            "type": "string",
-                            "nullable": true,
-                            "description": "Attribution text for the image"
-                          },
-                          "width": {
-                            "type": "number",
-                            "description": "Width of the image in pixels"
-                          },
-                          "height": {
-                            "type": "number",
-                            "description": "Height of the image in pixels"
-                          },
-                          "aiDescription": {
-                            "type": "string",
-                            "description": "AI-generated description of the image content for LLM context"
-                          }
-                        },
-                        "required": [
-                          "imageUrl",
-                          "attribution",
-                          "width",
-                          "height",
-                          "aiDescription"
-                        ],
-                        "additionalProperties": false
-                      },
-                      "description": "Image metadata including attribution and dimensions. DO NOT hallucinate - only use existing data from source."
-                    },
-                    "reportId": {
-                      "type": "string",
-                      "nullable": true
-                    }
-                  },
-                  "required": [
-                    "version",
-                    "questions",
-                    "imageMetadata",
-                    "reportId"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": [
-                "value"
-              ],
-              "additionalProperties": false
-            }
-          }
+          "additionalProperties": false
         },
         "strict": true
       },
@@ -1101,101 +438,101 @@
     },
     "tools": [],
     "top_logprobs": 0,
-    "top_p": 1,
+    "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 5761,
+      "input_tokens": 3862,
       "input_tokens_details": {
+        "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 341,
+      "output_tokens": 334,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 6102
+      "total_tokens": 4196
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Identify the time during which the Romans commenced their rule over Britain.\",\"hint\":\"To provide a clue, consider the events around 43 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"43 CE\"],\"distractors\":[\"54 BCE\",\"410 CE\"]},{\"question\":\"What term describes the influence of Roman culture and practices on local British populations?\",\"hint\":\"This term reflects the adoption of Roman culture such as language and customs.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romanisation\"],\"distractors\":[\"Governance\",\"Civilisation\"]},{\"question\":\"Select the structure Roman governors utilised to manage the territories within Britain.\",\"hint\":\"Think about the administrative divisions of the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Provinces\"],\"distractors\":[\"Settlements\",\"Colonies\"]},{\"question\":\"Which group from Northern Britain frequently engaged in conflicts with Roman forces?\",\"hint\":\"This group resided in the area now recognised as Scotland.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Gauls\",\"Angles\"]},{\"question\":\"What major infrastructural development did Romans introduce to Britain to connect key settlements?\",\"hint\":\"These provided significant mobility and trade advantages.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Roads\"],\"distractors\":[\"Canals\",\"Aqueducts\"]},{\"question\":\"During which century did the Roman forces withdraw from their rule in Britain?\",\"hint\":\"This event occurred approximately around 410 CE.\",\"questionType\":\"multiple-choice\",\"answers\":[\"5th Century\"],\"distractors\":[\"3rd Century\",\"6th Century\"]}],\"imageMetadata\":[],\"reportId\":\"\"}}",
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where is Britain?\",\"hint\":\"It is a place you can find on a map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a country\"],\"distractors\":[\"a river\",\"a room\"]},{\"question\":\"Who used to rule Britain?\",\"hint\":\"These people lived a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Picts\",\"Scots\"]},{\"question\":\"What happened after the Romans ruled Britain?\",\"hint\":\"They did not stay in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They left Britain.\"],\"distractors\":[\"They built a new country.\",\"They changed its name.\"]},{\"question\":\"What do we call a group of people like the Romans, Picts or Scots?\",\"hint\":\"They are groups of people with their own names.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a people\"],\"distractors\":[\"a building\",\"a weather\"]},{\"question\":\"If people live in different parts of a country, what can this mean?\",\"hint\":\"Think about where people choose or are able to live.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They live in different places.\"],\"distractors\":[\"They all live together.\",\"They never move home.\"]},{\"question\":\"How can we find out about the past?\",\"hint\":\"Think about things from long ago that people can study.\",\"questionType\":\"multiple-choice\",\"answers\":[\"by using old objects and stories\"],\"distractors\":[\"by guessing every answer\",\"by looking only at new toys\"]}],\"imageMetadata\":[]}}",
     "output_parsed": {
       "value": {
         "version": "v3",
         "questions": [
           {
-            "question": "Identify the time during which the Romans commenced their rule over Britain.",
-            "hint": "To provide a clue, consider the events around 43 CE.",
+            "question": "Where is Britain?",
+            "hint": "It is a place you can find on a map.",
             "questionType": "multiple-choice",
             "answers": [
-              "43 CE"
+              "a country"
             ],
             "distractors": [
-              "54 BCE",
-              "410 CE"
+              "a river",
+              "a room"
             ]
           },
           {
-            "question": "What term describes the influence of Roman culture and practices on local British populations?",
-            "hint": "This term reflects the adoption of Roman culture such as language and customs.",
+            "question": "Who used to rule Britain?",
+            "hint": "These people lived a long time ago.",
             "questionType": "multiple-choice",
             "answers": [
-              "Romanisation"
+              "Romans"
             ],
             "distractors": [
-              "Governance",
-              "Civilisation"
+              "Picts",
+              "Scots"
             ]
           },
           {
-            "question": "Select the structure Roman governors utilised to manage the territories within Britain.",
-            "hint": "Think about the administrative divisions of the Roman Empire.",
+            "question": "What happened after the Romans ruled Britain?",
+            "hint": "They did not stay in Britain.",
             "questionType": "multiple-choice",
             "answers": [
-              "Provinces"
+              "They left Britain."
             ],
             "distractors": [
-              "Settlements",
-              "Colonies"
+              "They built a new country.",
+              "They changed its name."
             ]
           },
           {
-            "question": "Which group from Northern Britain frequently engaged in conflicts with Roman forces?",
-            "hint": "This group resided in the area now recognised as Scotland.",
+            "question": "What do we call a group of people like the Romans, Picts or Scots?",
+            "hint": "They are groups of people with their own names.",
             "questionType": "multiple-choice",
             "answers": [
-              "Picts"
+              "a people"
             ],
             "distractors": [
-              "Gauls",
-              "Angles"
+              "a building",
+              "a weather"
             ]
           },
           {
-            "question": "What major infrastructural development did Romans introduce to Britain to connect key settlements?",
-            "hint": "These provided significant mobility and trade advantages.",
+            "question": "If people live in different parts of a country, what can this mean?",
+            "hint": "Think about where people choose or are able to live.",
             "questionType": "multiple-choice",
             "answers": [
-              "Roads"
+              "They live in different places."
             ],
             "distractors": [
-              "Canals",
-              "Aqueducts"
+              "They all live together.",
+              "They never move home."
             ]
           },
           {
-            "question": "During which century did the Roman forces withdraw from their rule in Britain?",
-            "hint": "This event occurred approximately around 410 CE.",
+            "question": "How can we find out about the past?",
+            "hint": "Think about things from long ago that people can study.",
             "questionType": "multiple-choice",
             "answers": [
-              "5th Century"
+              "by using old objects and stories"
             ],
             "distractors": [
-              "3rd Century",
-              "6th Century"
+              "by guessing every answer",
+              "by looking only at new toys"
             ]
           }
         ],
-        "imageMetadata": [],
-        "reportId": ""
+        "imageMetadata": []
       }
     }
   }
