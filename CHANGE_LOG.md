@@ -1,3 +1,11 @@
+## [1.82.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.0...v1.82.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* **aila:** cap key learning points and practice tasks to fit exports ([#1111](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1111)) ([574b6a4](https://github.com/oaknational/oak-ai-lesson-assistant/commit/574b6a4149e7e31b2d0451e7f0f6fd127831ab40))
+* exclude required actions with related slug ([#1113](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1113)) ([01c34fc](https://github.com/oaknational/oak-ai-lesson-assistant/commit/01c34fc7a405b1c8d6071d847d7c4e20238d76ce))
+
 # [1.82.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.81.0...v1.82.0) (2026-07-15)
 
 
