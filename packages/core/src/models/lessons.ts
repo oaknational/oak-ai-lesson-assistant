@@ -14,7 +14,7 @@ import { aiLogger } from "@oakai/logger";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { PromptTemplate } from "langchain/prompts";
 import { RunnableSequence } from "langchain/schema/runnable";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { createOpenAILangchainClient } from "../llm/langchain";
 import type { SnippetWithLesson } from "./snippets";
@@ -122,41 +122,48 @@ export class Lessons {
       ],
     });
 
-    const parser = StructuredOutputParser.fromZodSchema(
-      z.object({
-        summary: z.string().describe("An overall summary of the lesson"),
-        topics: z
-          .array(z.string())
-          .describe(
-            "An array of strings representing the main topics covered by the lesson",
-          ),
-        learningObjectives: z
-          .array(z.string())
-          .describe(
-            "An array of strings representing the learning objectives of the lesson",
-          ),
-        concepts: z
-          .array(z.string())
-          .describe(
-            "An array of strings representing the main concepts discussed within the lesson",
-          ),
+    const summarySchema = z.object({
+      summary: z.string().describe("An overall summary of the lesson"),
+      topics: z
+        .array(z.string())
+        .describe(
+          "An array of strings representing the main topics covered by the lesson",
+        ),
+      learningObjectives: z
+        .array(z.string())
+        .describe(
+          "An array of strings representing the learning objectives of the lesson",
+        ),
+      concepts: z
+        .array(z.string())
+        .describe(
+          "An array of strings representing the main concepts discussed within the lesson",
+        ),
 
-        keywords: z
-          .array(z.string())
-          .describe(
-            "A set of keywords which could be used to categorise the lesson to appear in search results",
-          ),
-      }),
+      keywords: z
+        .array(z.string())
+        .describe(
+          "A set of keywords which could be used to categorise the lesson to appear in search results",
+        ),
+    });
+    // `zod/v3` (from zod 4) and langchain's own nested zod are two distinct
+    // copies of zod's recursive types, so letting `fromZodSchema` infer the
+    // schema type triggers TS2589. Erase the generic to langchain's expected
+    // input type and recover our result type via `z.infer` below.
+    const parser = StructuredOutputParser.fromZodSchema(
+      summarySchema as unknown as Parameters<
+        typeof StructuredOutputParser.fromZodSchema
+      >[0],
     );
 
     const chain = RunnableSequence.from([prompt, model, parser]);
 
-    const response = await chain.invoke({
+    const response = (await chain.invoke({
       title: lesson.title,
       description: description,
       transcript: transcript,
       format_instructions: parser.getFormatInstructions(),
-    });
+    })) as z.infer<typeof summarySchema>;
 
     log.info(response);
 

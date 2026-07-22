@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 // Simple block types - only title and placeholders are used now
 const title = z.object({

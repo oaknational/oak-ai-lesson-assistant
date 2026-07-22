@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/node";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { router } from "../trpc";

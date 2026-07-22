@@ -1,4 +1,4 @@
-import { date, z } from "zod";
+import { date, z } from "zod/v3";
 
 export const sideBarChatItemSchema = z
   .object({

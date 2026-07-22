@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 import { teachingMaterialTypeEnum } from "@oakai/teaching-materials/src/documents/teachingMaterials/configSchema";
 
 import invariant from "tiny-invariant";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { TrpcUtils } from "@/utils/trpc";
 

@@ -10,7 +10,7 @@ import type {
 import { LessonPlanPartStatus, LessonPlanStatus } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { LLMResponseJsonSchema } from "../../../aila/src/protocol/jsonPatchProtocol";
 import { LessonPlanJsonSchema } from "../../../aila/src/protocol/schema";

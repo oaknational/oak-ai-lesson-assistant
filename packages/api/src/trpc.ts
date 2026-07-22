@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/node";
 import { initTRPC } from "@trpc/server";
-import { ZodError } from "zod";
+import { ZodError } from "zod/v3";
 
 import { transformer } from "../transformer";
 import type { Context } from "./context";

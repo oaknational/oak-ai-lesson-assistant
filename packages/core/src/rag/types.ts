@@ -1,5 +1,5 @@
 import type { KeyStage, LessonPlan, Subject } from "@prisma/client";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export interface FilterOptions {
   key_stage_id?: object;

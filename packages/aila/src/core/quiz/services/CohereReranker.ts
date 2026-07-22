@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import { CohereClient } from "cohere-ai";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { SimplifiedResult } from "../interfaces";
 import type { Task } from "../reporting";

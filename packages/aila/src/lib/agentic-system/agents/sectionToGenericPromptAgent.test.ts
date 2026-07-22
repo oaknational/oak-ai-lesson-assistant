@@ -1,5 +1,5 @@
 import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { PartialLessonPlan } from "../../../protocol/schema";
 import type {

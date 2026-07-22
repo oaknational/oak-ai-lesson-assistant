@@ -26,7 +26,7 @@
     "@oakai/logger": "*",
     "ai": "npm:ai@^6.0.48",
     "openai": "^6.45.0",
-    "zod": "3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@oakai/eslint-config": "*",

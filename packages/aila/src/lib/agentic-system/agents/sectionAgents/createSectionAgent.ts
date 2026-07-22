@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import type OpenAI from "openai";
 import type { ResponseCreateParamsNonStreaming } from "openai/resources/responses/responses";
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 import type { PartialLessonPlan } from "../../../../protocol/schema";
 import { deriveSectionBuildMode } from "../../quizOperations/deriveSectionBuildMode";

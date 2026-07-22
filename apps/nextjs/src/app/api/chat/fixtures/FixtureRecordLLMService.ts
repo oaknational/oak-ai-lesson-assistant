@@ -4,7 +4,7 @@ import { OpenAIService } from "@oakai/aila/src/core/llm/OpenAIService";
 import { aiLogger } from "@oakai/logger";
 
 import fs from "fs/promises";
-import type { ZodSchema } from "zod";
+import type { ZodSchema } from "zod/v3";
 
 const log = aiLogger("fixtures");
 

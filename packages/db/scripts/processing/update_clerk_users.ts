@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { prisma } from "../../";
 

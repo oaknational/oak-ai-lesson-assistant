@@ -2,7 +2,7 @@ import type { moderationResponseSchema } from "@oakai/core/src/utils/ailaModerat
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 // Shared mock data
 export const mockGlossaryResult = {

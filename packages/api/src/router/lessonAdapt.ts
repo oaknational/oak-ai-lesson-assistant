@@ -12,7 +12,7 @@ import { aiLogger } from "@oakai/logger";
 import { TRPCError } from "@trpc/server";
 import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { adminProcedure } from "../middleware/adminAuth";
 import { protectedProcedure } from "../middleware/auth";

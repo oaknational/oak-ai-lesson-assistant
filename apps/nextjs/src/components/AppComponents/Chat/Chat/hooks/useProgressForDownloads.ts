@@ -6,7 +6,7 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import { lessonPlanSectionsSchema } from "@oakai/exports/src/schema/input.schema";
 
-import type { ZodIssue } from "zod";
+import type { ZodIssue } from "zod/v3";
 
 export type ProgressForDownloads = {
   sections: ProgressSection[];

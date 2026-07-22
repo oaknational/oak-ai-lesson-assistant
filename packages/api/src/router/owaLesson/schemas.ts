@@ -5,6 +5,9 @@ import {
   syntheticUnitvariantLessonsByKsSchema,
   syntheticUnitvariantLessonsSchema,
 } from "@oaknational/oak-curriculum-schema";
+// oak-curriculum-schema emits zod 4 schemas (imports bare "zod"), so this file
+// composes them with the matching bare "zod" import rather than the "zod/v3"
+// shim used elsewhere. Mixing the two produces TS2589 / ZodType mismatches.
 import { z } from "zod";
 
 const subjectSchema = z.union([

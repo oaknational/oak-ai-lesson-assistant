@@ -1,6 +1,6 @@
 import { dedent } from "ts-dedent";
-import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { z } from "zod/v3";
 
 import { MessageSchema } from "../core/chat/types";
 import { minMaxText } from "./schemaHelpers";
@@ -420,6 +420,8 @@ export const LessonPlanKeySchema = z.enum([
   ...allSectionsInOrder,
 ]);
 
+// TODO: when this schema migrates to Zod 4, drop zod-to-json-schema in favour
+// of the native z.toJSONSchema().
 export const LessonPlanJsonSchema = zodToJsonSchema(
   CompletedLessonPlanSchema,
   "lessonPlanSchema",

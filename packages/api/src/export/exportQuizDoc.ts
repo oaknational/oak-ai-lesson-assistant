@@ -5,7 +5,7 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import * as Sentry from "@sentry/nextjs";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { OutputSchema } from "../router/exports";
 import { ailaSaveExport, reportErrorResult } from "../router/exports";

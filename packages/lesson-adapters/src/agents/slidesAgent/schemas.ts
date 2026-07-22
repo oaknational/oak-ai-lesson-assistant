@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { SlideContent } from "../../slides/extraction/types";
 import { SUPPORTED_EDIT_TYPES } from "./intents";

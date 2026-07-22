@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 const log = aiLogger("ui");
 

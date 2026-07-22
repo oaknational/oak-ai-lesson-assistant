@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 import { AMERICANISM_ISSUE_KIND } from "../../../features/americanisms";
 import { AilaAmericanisms } from "../../../features/americanisms/AilaAmericanisms";

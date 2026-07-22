@@ -1,5 +1,5 @@
 import { GoogleAuth } from "google-auth-library";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { createWorkloadIdentityAccessTokenProvider } from "./ModelArmorClient";
 

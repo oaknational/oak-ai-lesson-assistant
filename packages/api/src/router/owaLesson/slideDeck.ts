@@ -6,7 +6,7 @@ import {
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { LessonOverviewResponse } from "./types";
 

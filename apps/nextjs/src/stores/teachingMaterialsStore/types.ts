@@ -6,7 +6,7 @@ import type {
 import type { RefinementOption } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 import type { StoreApi } from "zustand";
 
 import type { TeachingMaterialsPageProps } from "@/app/aila/teaching-materials/teachingMaterialsView";

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 // Question Source Types
 export const QuestionSourceTypeSchema = z.enum([

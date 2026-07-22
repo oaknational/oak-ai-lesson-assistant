@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { type ZodTypeAny, z } from "zod";
+import { type ZodTypeAny, z } from "zod/v3";
 
 import { CompletedLessonPlanSchemaWithoutLength } from "../../schema";
 import type { LatestQuiz } from "../quiz";

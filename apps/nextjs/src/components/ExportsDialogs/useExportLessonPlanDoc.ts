@@ -5,7 +5,7 @@ import type { LessonPlanDocInputData } from "@oakai/exports/src/schema/input.sch
 
 import * as Sentry from "@sentry/nextjs";
 import { useDebounce } from "@uidotdev/usehooks";
-import type { ZodError } from "zod";
+import type { ZodError } from "zod/v3";
 
 import { trpc } from "@/utils/trpc";
 

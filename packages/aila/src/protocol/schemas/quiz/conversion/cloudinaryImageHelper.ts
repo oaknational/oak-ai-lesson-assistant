@@ -7,7 +7,10 @@ const sizeConstraints = "c_limit,h_1200,w_1200";
  * Constrains image size by adding Cloudinary transformations to limit dimensions to 1200x1200
  * Preserves version numbers and existing transformations
  */
-export function constrainImageUrl(url: string): string {
+export function constrainImageUrl(url: string | undefined): string {
+  if (!url) {
+    return "";
+  }
   if (!url.includes("cloudinary.com/image/upload")) {
     return url;
   }

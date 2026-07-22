@@ -14,9 +14,9 @@
     "db-export": "DB_ENV=dev doppler run --config dev -- bash scripts/import-export/db_export.sh",
     "db-export:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_export.sh",
     "db-export:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_export.sh",
-    "db-generate": "echo 'Running db-generate...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --schema=./prisma/schema.prisma",
-    "db-generate:dev": "rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate",
-    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
+    "db-generate": "echo 'Running db-generate...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --schema=./prisma/schema.prisma && node scripts/rewrite-generated-zod-import.mjs",
+    "db-generate:dev": "rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate && node scripts/rewrite-generated-zod-import.mjs",
+    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma && node scripts/rewrite-generated-zod-import.mjs",
     "db-migrate": "pnpm with-env prisma migrate dev",
     "db-migrate-deploy": "pnpm with-env prisma migrate deploy",
     "db-migrate-resolve-applied:prd": "doppler run --config prd -- prisma migrate resolve --applied",
@@ -82,7 +82,8 @@
     "p-queue": "^7.4.1",
     "p-queue-compat": "^1.0.225",
     "ts-node": "^10.9.2",
-    "yaml": "^2.4.1"
+    "yaml": "^2.4.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@oakai/eslint-config": "*",

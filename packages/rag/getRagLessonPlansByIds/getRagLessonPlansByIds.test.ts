@@ -1,11 +1,11 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { generateMock } from "@anatine/zod-mock";
 import * as Sentry from "@sentry/nextjs";
 
 import { CompletedLessonPlanSchema } from "../../aila/src/protocol/schema";
 import { QuizV1Schema } from "../../aila/src/protocol/schemas/quiz/quizV1";
 import { QuizV2Schema } from "../../aila/src/protocol/schemas/quiz/quizV2";
+import { generateMock } from "../testUtils/generateMock";
 import { getRagLessonPlansByIds } from "./getRagLessonPlansByIds";
 
 jest.mock("@sentry/nextjs", () => ({

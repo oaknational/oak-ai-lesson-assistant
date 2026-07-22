@@ -3,7 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { clerkClient } from "@clerk/nextjs/server";
 import { waitUntil } from "@vercel/functions";
 import os from "os";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { publicProcedure } from "../../trpc";
 import { personaNames, personas } from "./personas";

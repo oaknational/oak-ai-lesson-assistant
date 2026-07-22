@@ -1,8 +1,7 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { generateMock } from "@anatine/zod-mock";
-
 import { CompletedLessonPlanSchemaWithoutLength } from "../../../aila/src/protocol/schema";
+import { generateMock } from "../../testUtils/generateMock";
 import type { RagLogger } from "../../types";
 import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
 import { vectorSearch } from "./search";

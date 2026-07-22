@@ -1,5 +1,5 @@
 import type { JsonValue } from "@prisma/client/runtime/library";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export type ModerationBase = {
   categories: JsonValue[];

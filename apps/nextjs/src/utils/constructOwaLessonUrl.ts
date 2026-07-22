@@ -3,7 +3,7 @@
  * NOTE: This constructs urls for the legacy content, once new content is introduced the syntheticProgrammeSlug will need to be updated. Tiers and exam boards will also need to be considered
  *
  */
-import { z } from "zod";
+import { z } from "zod/v3";
 
 export function constructOwaLessonUrl(
   keyStageSlug: string,

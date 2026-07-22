@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Output, generateText } from "ai";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { slideTypeSchema } from "../slides/extraction/schemas";
 import type { SlideContent } from "../slides/extraction/types";

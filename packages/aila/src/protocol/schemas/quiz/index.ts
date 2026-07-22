@@ -7,7 +7,7 @@
  * - V3: V2 + imageMetadata with dimensions (latest)
  * - Latest: Aliases pointing to current version (V3) - update these when V4 releases
  */
-import { z } from "zod";
+import { z } from "zod/v3";
 
 // Import V3 exports for aliases
 import type { QuizV3, QuizV3Optional, QuizV3Question } from "./quizV3";

@@ -2,7 +2,11 @@ import type {
   subjectSlugs,
   yearSlugs,
 } from "@oaknational/oak-curriculum-schema";
-import { type ZodType, type z } from "zod";
+// `z` must use the bare "zod" specifier to match how oak-curriculum-schema
+// imports zod, so z.infer can read its schema types. `ZodType` uses "zod/v3"
+// to match the Zod 3 material schemas assigned below.
+import { type z } from "zod";
+import { type ZodType } from "zod/v3";
 
 import type { PartialLessonPlanFieldKeyArray } from "../partialLessonPlan/schema";
 import {

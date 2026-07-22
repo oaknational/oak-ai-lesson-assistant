@@ -29,7 +29,7 @@ import { captureException } from "@sentry/nextjs";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import invariant from "tiny-invariant";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";

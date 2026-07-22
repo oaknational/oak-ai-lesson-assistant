@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import * as Sentry from "@sentry/nextjs";
 import { waitUntil } from "@vercel/functions";
-import type { z } from "zod";
+import type { z } from "zod/v3";
 
 import { notifyModeration } from "../functions/slack/notifyModeration";
 import {

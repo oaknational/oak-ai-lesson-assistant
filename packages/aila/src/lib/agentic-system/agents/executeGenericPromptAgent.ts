@@ -2,7 +2,7 @@ import { aiLogger, structuredLogger } from "@oakai/logger";
 
 import type OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import type { GenericPromptAgent } from "../schema";
 import type { AgentResult } from "../types";

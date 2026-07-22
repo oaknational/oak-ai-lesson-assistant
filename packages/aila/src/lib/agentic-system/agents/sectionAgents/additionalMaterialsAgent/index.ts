@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { DEFAULT_AGENT_MODEL_PARAMS } from "../../../constants";
 import { createSectionAgent } from "../createSectionAgent";

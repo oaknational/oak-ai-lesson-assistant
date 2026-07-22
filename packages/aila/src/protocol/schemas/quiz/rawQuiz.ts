@@ -1,6 +1,6 @@
 import type {
   imageItemSchema,
-  quizQuestionSchema,
+  questionSchema,
   textItemSchema,
 } from "@oaknational/oak-curriculum-schema";
 import {
@@ -13,9 +13,9 @@ import { z } from "zod";
 
 // Direct types from Oak's schema without any conversion
 
-export type QuizQuestion = z.infer<typeof quizQuestionSchema>;
+export type QuizQuestion = z.infer<typeof questionSchema>;
 export type QuizQuestionAnswers = NonNullable<
-  z.infer<typeof quizQuestionSchema>["answers"]
+  z.infer<typeof questionSchema>["answers"]
 >;
 
 export type MCAnswer = z.infer<typeof multipleChoiceSchema>;
@@ -37,17 +37,19 @@ export type StemTextObject = z.infer<typeof stemTextObjectSchema>;
 const stemImageObjectSchema = z.object({
   image_object: z.object({
     format: z.enum(["png", "jpg", "jpeg", "webp", "gif", "svg"]).optional(),
-    secure_url: z.string().url(),
-    url: z.string().url().optional(),
+    secure_url: z.url().optional(),
+    url: z.url().optional(),
     height: z.number().optional(),
     width: z.number().optional(),
-    metadata: z.union([
-      z.array(z.unknown()),
-      z.object({
-        attribution: z.string().optional(),
-        usageRestriction: z.string().optional(),
-      }),
-    ]),
+    metadata: z
+      .union([
+        z.array(z.unknown()),
+        z.object({
+          attribution: z.string().optional(),
+          usageRestriction: z.string().optional(),
+        }),
+      ])
+      .optional(),
     context: z
       .object({
         custom: z

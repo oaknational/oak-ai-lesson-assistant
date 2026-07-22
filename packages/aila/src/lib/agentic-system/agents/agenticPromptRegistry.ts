@@ -5,7 +5,7 @@ import {
 import type { OakPromptDefinition } from "@oakai/core/src/prompts/types";
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 const VARIANT_SLUG = "main";
 

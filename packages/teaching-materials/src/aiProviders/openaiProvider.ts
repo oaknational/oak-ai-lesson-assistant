@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
-import { generateObject } from "ai";
-import type { ZodSchema } from "zod";
+import { type Schema, generateObject } from "ai";
+import type { ZodSchema } from "zod/v3";
 
 export const OpenAIProvider = {
   async generateObject<T>({
@@ -14,7 +14,10 @@ export const OpenAIProvider = {
   }): Promise<T> {
     const { object } = await generateObject({
       prompt,
-      schema,
+      // The AI SDK's zod overload references z.ZodTypeDef, removed in Zod 4, so
+      // it no longer matches a Zod 3 schema. Cast to the SDK's own Schema<T>
+      // union branch instead; at runtime the SDK accepts the zod schema as-is.
+      schema: schema as unknown as Schema<T>,
       model: openai("gpt-4o"),
       system: systemMessage,
       mode: "json",

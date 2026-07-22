@@ -55,7 +55,7 @@
     "unique-names-generator": "^4.7.1",
     "untruncate-json": "^0.0.1",
     "webvtt-parser": "^2.2.0",
-    "zod": "3.25.76",
+    "zod": "^4.4.3",
     "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
@@ -64,5 +64,10 @@
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5"
+  },
+  "overrides": {
+    "@langchain/community": {
+      "zod": "3.25.67"
+    }
   }
 }

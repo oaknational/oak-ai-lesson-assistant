@@ -2,7 +2,7 @@ import { ReportStorage } from "@oakai/aila/src/core/quiz/reporting";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { aiLogger } from "@oakai/logger";
 
-import { z } from "zod";
+import { z } from "zod/v3";
 
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";

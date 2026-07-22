@@ -22,7 +22,7 @@
     "@oakai/logger": "*",
     "@oakai/prettier-config": "*",
     "@sentry/nextjs": "^10.29.0",
-    "zod": "3.25.76"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@oakai/test-support": "workspace:*",

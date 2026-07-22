@@ -12,7 +12,7 @@ import {
 import { clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
 import { TRPCError } from "@trpc/server";
-import { ZodError, z } from "zod";
+import { ZodError, z } from "zod/v3";
 
 import { protectedProcedure } from "../middleware/auth";
 import { teachingMaterialUserBasedRateLimitProcedure } from "../middleware/rateLimiter";
