@@ -64,5 +64,10 @@
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5"
+  },
+  "overrides": {
+    "@langchain/community": {
+      "zod": "3.25.67"
+    }
   }
 }

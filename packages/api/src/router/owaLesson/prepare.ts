@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import type { z } from "zod/v3";
+import type { z } from "zod";
 
 import {
   checkForRestrictedContentGuidance,

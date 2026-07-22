@@ -10,6 +10,7 @@ describe("transformQuiz", () => {
         order: 1,
         question_uid: "q1",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [{ type: "text", text: "What is 2 + 2?" }],
         answers: {
           "multiple-choice": [
@@ -51,6 +52,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [
           { type: "text", text: "Look at this image: " },
           {
@@ -76,6 +78,7 @@ describe("transformQuiz", () => {
         question_id: 2,
         question_uid: "q2",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [{ type: "text", text: "Valid question?" }],
         answers: {
           "multiple-choice": [
@@ -106,6 +109,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [{ type: "text", text: "What do you see?" }],
         answers: {
           "multiple-choice": [
@@ -135,6 +139,7 @@ describe("transformQuiz", () => {
         question_id: 2,
         question_uid: "q2",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [{ type: "text", text: "Valid question?" }],
         answers: {
           "multiple-choice": [
@@ -165,6 +170,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "short-answer",
+        _state: "published",
         question_stem: [{ type: "text", text: "Describe this image:" }],
         answers: {
           "short-answer": [
@@ -172,6 +178,7 @@ describe("transformQuiz", () => {
               answer: [
                 { type: "text", text: "It shows" },
                 {
+                  // @ts-expect-error: 'image' is not assignable to short-answer answer type 'text'
                   type: "image",
                   image_object: {
                     secure_url: "https://example.com/image.png",
@@ -191,6 +198,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "short-answer",
+        _state: "published",
         question_stem: [{ type: "text", text: "What is water?" }],
         answers: {
           "short-answer": [
@@ -221,6 +229,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [
           { type: "text", text: "Part 1" },
           // @ts-expect-error: 'video' is not assignable to 'text' | 'image'
@@ -259,6 +268,7 @@ describe("transformQuiz", () => {
         question_uid: "q1",
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         question_type: "essay" as any,
+        _state: "published",
         question_stem: [{ type: "text", text: "Write an essay about..." }],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         answers: {} as any,
@@ -278,6 +288,7 @@ describe("transformQuiz", () => {
         question_id: 1,
         question_uid: "q1",
         question_type: "multiple-choice",
+        _state: "published",
         question_stem: [{ type: "text", text: "What is the answer?" }],
         answers: {
           "multiple-choice": [

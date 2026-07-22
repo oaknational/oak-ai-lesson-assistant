@@ -132,12 +132,19 @@ export class Transcripts {
 
     log.info(template);
 
+    const snippetsSchema = z.object({
+      snippets: z
+        .array(z.string())
+        .describe("snippets of the transcript to be summarised"),
+    });
+    // `zod/v3` (from zod 4) and langchain's own nested zod are two distinct
+    // copies of zod's recursive types, so letting `fromZodSchema` infer the
+    // schema type triggers TS2589. Erase the generic to langchain's expected
+    // input type and recover our result type via `z.infer` below.
     const parser = StructuredOutputParser.fromZodSchema(
-      z.object({
-        snippets: z
-          .array(z.string())
-          .describe("snippets of the transcript to be summarised"),
-      }),
+      snippetsSchema as unknown as Parameters<
+        typeof StructuredOutputParser.fromZodSchema
+      >[0],
     );
 
     const openAi = createOpenAILangchainClient({
@@ -156,10 +163,10 @@ export class Transcripts {
 
     const transcript_text = (transcript.content as unknown as TranscriptWithRaw)
       .raw;
-    const response = await chain.invoke({
+    const response = (await chain.invoke({
       transcript_text,
       format_instructions,
-    });
+    })) as z.infer<typeof snippetsSchema>;
 
     log.info("Got response", { response });
 
