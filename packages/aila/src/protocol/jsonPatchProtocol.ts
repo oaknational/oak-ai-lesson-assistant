@@ -116,7 +116,9 @@ export const PatchCycleForLLM = z.object({
     z.literal("/cycle2"),
     z.literal("/cycle3"),
   ]),
-  value: CycleSchemaWithoutLength.describe(
+  // practiceSlideText is composed by the agentic pipeline, never written by
+  // the LLM, and its optionality is rejected by OpenAI structured outputs.
+  value: CycleSchemaWithoutLength.omit({ practiceSlideText: true }).describe(
     "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
   ),
 });
