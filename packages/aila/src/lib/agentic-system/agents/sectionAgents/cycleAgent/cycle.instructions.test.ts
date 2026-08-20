@@ -5,12 +5,7 @@ describe("cycle instructions", () => {
   const instructions = cyclesInstructions("ks3");
 
   it("describes the four practice task parts", () => {
-    for (const part of [
-      "INSTRUCTION",
-      "CHUNKING",
-      "STIMULUS",
-      "SCAFFOLDING",
-    ]) {
+    for (const part of ["INSTRUCTION", "CHUNKING", "STIMULUS", "SCAFFOLDING"]) {
       expect(instructions).toContain(part);
     }
   });
@@ -44,8 +39,6 @@ describe("cycle instructions", () => {
   });
 
   it("applies the slide limit to feedback", () => {
-    expect(instructions).toMatch(
-      /same fixed-size box as the practice task/i,
-    );
+    expect(instructions).toMatch(/same fixed-size box as the practice task/i);
   });
 });

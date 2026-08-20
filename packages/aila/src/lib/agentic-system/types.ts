@@ -17,8 +17,8 @@ import type {
   SubjectSchema,
 } from "../../protocol/schema";
 import type { BritishEnglishCorrectorAgentProps } from "./agents/britishEnglishCorrectorAgent";
-import type { CycleAgentResponseSchema } from "./agents/sectionAgents/cycleAgent/cycle.schema";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
+import type { CycleAgentResponseSchema } from "./agents/sectionAgents/cycleAgent/cycle.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type { JsonPatchOperation } from "./compatibility/helpers/immerPatchToJsonPatch";
 import type {

@@ -216,7 +216,8 @@ const SCORERS: Scorer[] = [
   },
   {
     id: "cycle-slide-lines",
-    description: "Practice slide text and feedback fit the slide (max 12 lines)",
+    description:
+      "Practice slide text and feedback fit the slide (max 12 lines)",
     fn: ({ finalDocument }) => {
       // The practice slide version is composed deterministically by
       // composePracticeTask using the same estimator, so an overflow here
