@@ -1005,6 +1005,8 @@ function makeQuiz(question: string) {
   };
 }
 
+// Shaped like the cycle agent's response: practice as structured parts,
+// composed into strings by executePlanSteps before commit.
 function makeCycle(title: string) {
   return {
     title,
@@ -1027,7 +1029,12 @@ function makeCycle(title: string) {
         distractors: ["Wrong 1", "Wrong 2"],
       },
     ],
-    practice: "Complete the practice task.",
+    practice: {
+      instruction: "Complete the practice task.",
+      chunking: [],
+      stimulus: null,
+      scaffolding: null,
+    },
     feedback: "Check against the model answer.",
   };
 }

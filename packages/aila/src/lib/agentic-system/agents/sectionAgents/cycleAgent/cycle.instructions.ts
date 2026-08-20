@@ -3,6 +3,11 @@ import {
   normaliseKeyStageForPrompt,
 } from "../shared/keyStageLanguageGuidance";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
+import {
+  MAX_SLIDE_LINES,
+  STIMULUS_TYPES,
+  WORDS_PER_LINE,
+} from "./practiceTask";
 
 export function cyclesInstructions(keyStage: string): string {
   const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
@@ -88,87 +93,68 @@ ${quizQuestionDesignInstructions(normalisedKeyStage)}
 
 ### 4. Practice Task
 
-This is the part of the lesson where you set a task which allows pupils to practice the skills and knowledge that they have learnt in the explanation.
-It should focus on the key learning points being taught.
-If a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME and if they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.
+A practice task is placed at the end of each learning cycle.
+It enables pupils to practice the skills and knowledge related to key learning points that they have learnt in the explanation and have checked in the checks for understanding.
+If a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME.
+If they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.
 
 Audience: pupils in the class
 Voice: TEACHER_TO_PUPIL_WRITTEN
 
-Write the task as a set of instructions that pupils can follow.
+#### Task type (hard requirement)
 
-- The instructions should contain all information needed to complete the task, within the slide length limit below, e.g. "draw a dot and cross diagram to show the bonding in O2, N2 and CO2" rather than "get pupils to draw diagrams to show the bonding in different covalent molecules."
-- Reflect the command word in the cycle outcome — keep the task at that level (if the outcome says "Describe", pupils should describe, not evaluate or judge significance)
-- Include all content needed on the slide only when it fits within the slide length limit below; otherwise follow the stimulus rule in that section. E.g. if asking pupils to:
-  - analyse a set of results, provide them with the results and a set of questions to support analysis.
-  - to complete a matching task, provide them with the content that needs to be matched.
-  - complete sentences, provide them with the sentences with the gaps marked within them.
-  - put events or statements into order, provide them with the statements in the incorrect order that they will need to sequence.
-  - give an opinion on an extract, provide them with the extract.
-- This could be one longer task or a task with multiple questions or sub tasks.
-- Increase difficulty if using multiple questions/sub tasks
-- Should activate all pupils through speaking, writing, doing
-- Vary task types across cycles
-- Approx. 5–7 mins to complete the task.
-- Base your suggestions on other lessons you have seen at Oak National Academy.
-- Practice may look different for different subjects.  E.g.
-  - Maths - completing calculations
-  - Practical subjects (PE, art, music, etc.) - practising a skill or taking part in a game or performance activity.
+- task types should be relevant to the subject and the phase
+- no multiple choice questions or quick recall questions should be used
+- they must activate pupils through speaking, writing or doing
+- they should take pupils approx. 5-7 mins to complete the task
+- base your suggestions on other lessons you have seen at Oak National Academy
 
-Examples include:
+#### Cognitive demand
 
-- Label a diagram with the provided labels.
-- Sort given items into two or three columns in a table/venn diagram/quadrant
-- Given an incorrect classification, explain why the object has been incorrectly classified.
-- Select an item from a list that matches the key term/definition, justifying choice.
-- Select the equipment/materials needed for an activity.
-- Order items e.g. size, age, number, date, etc.
-- List factors that will have an impact on [insert other variable].
-- List/sequence the steps in a given method.
-- Describe or explain a process, phenomenon, event, situation, pattern or technique or the impact on a place or group of people
-- Decide which of two given descriptions is better, explaining why.
-- Write a speech to explain a concept to someone.
-- Draw and annotate a diagram(s) to explain a process/technique.
-- Apply a given particular skill/technique to a given task.
-- Analyse an example, determining theories, contexts or techniques applied.
-- Extract data from a table or graph and use this to write a conclusion.
-- Complete a series of 4-5 practice calculations (always include a model in the explanation. Then practice should start easy and become more complex e.g. start with just substituting and increase to rearranging, converting units, doing a multi-step process or worded question.)
-- Correct an incorrect worked example
-- Identify two similarities and two differences for two given items, people, period.
-- Present an item and get pupils to compare it to a historical or theoretical example.
-- Create a routine, performance, or work of art for a given scenario for a given user group or audience.
-- Create a set of instructions for solving a problem.
-- For a set of given opinions, decide which are for and against an argument.
-- Plan both sides of a debate on [insert topic].
-- Decide from a set of given opinions which might belong to certain groups of people and why they might hold these opinions.
-- Given the answer to a problem, show the workings-out of the calculation that derived that answer.
-- Draw an annotated sketch of a product.
-- Write a flow chart for the steps you would take to create or carry out [insert product/task/experiment].
-- Identify a mistake or missing step in a given method.
-- Explain which techniques, mediums or quotes have been used and where their inspiration to use these came from (i.e. which pieces of work/artists/periods/movements).
-- Identify the intended audience for a piece of work and explain how you have reached this conclusion.
-- Decide which of two predictions is more likely to be correct, giving reasons for your answer.
-- Explain why a given prediction is unlikely.
-- Watch a short clip of someone performing a particular sport/training/performance, give strengths/weaknesses and suggest improvements.
-- Compare a piece of work to a model and explain similarities, differences and areas for improvement (e.g. pupil work to a model answer/piece of art mimicking work of a great artist and the great artist's original piece).
-- Reflect on the work that you have created and how closely it meets the design brief, identifying strengths and areas for development.
-- Comment on the repeatability, reproducibility, accuracy, precision or validity of a given method, set of results or source of information.
-- Extract data from a table or graph and use this to support a conclusion.
-- Justify the use of a piece of equipment, technique or method, giving reasons for or against using it or other options.
-- Label diagrams, correct errors, match terms, complete sentences
-- Analyse data, justify choices, sequence steps, create outputs
-- Compare/contrast, extract conclusions, reflect on criteria
-- Apply skills or knowledge in context
-  (See full list if needed for inspiration.)
+- focus the cognitive demand of the task on the key learning points taught and checked in the learning cycle
+- avoid including unrelated knowledge or skills that shifts cognitive demand away from pupils practising the knowledge from the key learning point taught in the preceding explanation
+- tasks should require pupils to think progressively more deeply as they move through it. This can be via numbered sub-questions or embedded within one continuous activity
+- tasks that require multiple steps can include CHUNKING: smaller, sequential steps to support cognitive load
+- cognitive demand should be age and phase appropriate
+- they should vary across learning cycles
 
-#### Slide length limit (hard requirement)
+#### How to write tasks
 
-The practice task is displayed on one slide in a fixed-size text box. Text that does not fit is cut off; the slide cannot shrink or grow the text.
+Return the practice task as four named parts. They are rendered into the lesson plan, the worksheet and the slides automatically.
 
-- The whole practice task must fit in at most 12 lines (aim for about 10), counting every step and every blank separator line, as blank lines take up slide space too. Keep each line a single short instruction or sentence (about 12 words or fewer so it does not wrap). Use one short numbered or bulleted step per line.
-- Never place long stimulus material on the slide. If the task needs material that would take it over the limit (a text extract, a data set or results table, statements to sort or sequence, sentences to complete, an extended set of calculations), write only the short instruction on the slide and direct pupils to the accompanying materials, e.g. "Complete the sentences on the worksheet." or "Use the data table in the additional materials."
-- Refer to offloaded material generically ("the worksheet", "the additional materials"). Do not invent document names. The teacher can generate this material in the lesson's additional materials section.
-- Prefer practice tasks that are self-contained within the limit; only offload stimulus when the task genuinely requires it.
+**INSTRUCTION**: the first line of the task, a clear instruction. It must start with a phase-appropriate command word. Do not include any superfluous or extraneous information that could distract the pupils. Do not add orientation steps such as "Look at the pictures" or "Read the text below"; the instruction implies them. The instruction may be followed by numbered sub-questions (1. 2. 3.), each on its own line, requiring pupils to think progressively more deeply.
+
+Example: 'Design a letterform that expresses a chosen idea or emotion.'
+Non-example: 'A letterform is the term used when designing the shape of a letter. Design a letterform that expresses a chosen idea or emotion.'
+
+**CHUNKING**: if the task requires multiple steps, provide them as chunking steps. They are rendered as bullet points automatically, so do not include bullet markers or numbers.
+
+Example, for the letterform instruction above:
+choose one letter to design
+choose an idea or emotion to express
+choose colours and shapes that communicate your choice
+draw the outline of your letterform
+add colours and shapes
+evaluate your design
+
+**STIMULUS**: material the pupil works from, such as a text extract, a data set or results table. Label its type as one of: ${STIMULUS_TYPES.join(", ")}. No bullet points in the content.
+
+**SCAFFOLDING**: support included at the end of the task, for example a word bank. No bullet points.
+
+#### Formatting rules (hard requirement)
+
+- Numbers must only be used within the INSTRUCTION, for its numbered sub-questions. They must not be used in the CHUNKING, STIMULUS or SCAFFOLDING.
+- Do not include bullet markers anywhere; CHUNKING steps are rendered as bullets automatically.
+
+#### Where the task appears (for context - you do not need to trim anything)
+
+- The full task (INSTRUCTION, CHUNKING, STIMULUS, SCAFFOLDING) always appears in the lesson plan and on the worksheet. There is no length limit on the full task.
+- The slide shows a version of the same task, built automatically from your parts. The slide is a fixed-size box holding at most ${MAX_SLIDE_LINES} lines, counting blank separator lines; the box cannot shrink or grow the text.
+- If the full task is over the slide limit, parts are removed from the slide automatically, in this order: first the STIMULUS is replaced with the line "You will find the [stimulus type] on the worksheet."; if it is still over, the SCAFFOLDING is removed; as a last resort the CHUNKING is replaced with "You will find the steps on the worksheet." The INSTRUCTION always appears and is identical in all three places.
+- Pupils always have the full task on the worksheet, so nothing you write is lost.
+- Keep the INSTRUCTION and CHUNKING compact: one step per line, and each line short (about ${WORDS_PER_LINE} words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.
+- Do not refer to the worksheet, the slides or any other document in the task text, and do not invent document names. Pointer lines are added automatically when needed.
+- Prefer tasks whose parts all fit on the slide; only include a large STIMULUS when the task genuinely requires it.
 
 ### 5. Feedback
 

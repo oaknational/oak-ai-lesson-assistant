@@ -3,7 +3,6 @@ import type { z } from "zod";
 import type {
   AdditionalMaterialsSchema,
   BasedOnSchema,
-  CycleSchema,
   KeyLearningPointsSchema,
   KeyStageSchema,
   KeywordsSchema,
@@ -18,6 +17,7 @@ import type {
   SubjectSchema,
 } from "../../protocol/schema";
 import type { BritishEnglishCorrectorAgentProps } from "./agents/britishEnglishCorrectorAgent";
+import type { CycleAgentResponseSchema } from "./agents/sectionAgents/cycleAgent/cycle.schema";
 import type { MessageToUserAgentOutput } from "./agents/messageToUserAgent/messageToUserAgent.schema";
 import type { VoiceId } from "./agents/sectionAgents/shared/voices";
 import type { JsonPatchOperation } from "./compatibility/helpers/immerPatchToJsonPatch";
@@ -102,7 +102,14 @@ export type AilaExecutionContext = {
   callbacks: AilaTurnCallbacks;
 };
 
-export type SectionPromptAgentProps<ResponseType> = {
+// PromptValue is the shape of section values rendered INTO the prompt
+// (current value, exemplars, basedOn), which come from the document. It
+// defaults to ResponseType and only differs when an agent's response shape
+// diverges from the document's (e.g. the cycle agent's structured practice).
+export type SectionPromptAgentProps<
+  ResponseType,
+  PromptValue = ResponseType,
+> = {
   responseSchema: z.ZodType<ResponseType>;
   id: string;
   messages: ChatMessage[];
@@ -112,10 +119,10 @@ export type SectionPromptAgentProps<ResponseType> = {
   /** Identifies the prompt template for versioning (defaults to `id`). */
   promptTemplateId?: string;
   promptInputs?: Record<string, unknown>;
-  currentValue: ResponseType | undefined;
-  exemplarContent: ResponseType[] | undefined;
-  basedOnContent: ResponseType | undefined;
-  contentToString: (content: ResponseType) => string;
+  currentValue: PromptValue | undefined;
+  exemplarContent: PromptValue[] | undefined;
+  basedOnContent: PromptValue | undefined;
+  contentToString: (content: PromptValue) => string;
   ctx: AilaExecutionContext;
   extraInputFromCtx?: (
     ctx: AilaExecutionContext,
@@ -145,7 +152,7 @@ export type SectionAgentResponseMap = {
   "keywords--default": z.infer<typeof KeywordsSchema>;
   "starterQuiz--default": z.infer<typeof LatestQuizSchema>;
   "starterQuiz--maths": z.infer<typeof LatestQuizSchema>;
-  "cycle--default": z.infer<typeof CycleSchema>;
+  "cycle--default": z.infer<typeof CycleAgentResponseSchema>;
   "exitQuiz--default": z.infer<typeof LatestQuizSchema>;
   "exitQuiz--maths": z.infer<typeof LatestQuizSchema>;
   "additionalMaterials--default": z.infer<typeof AdditionalMaterialsSchema>;

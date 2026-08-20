@@ -17,7 +17,10 @@ import {
   LatestQuizSchema,
   MisconceptionsSchema,
 } from "../../../protocol/schema";
+import { CycleAgentResponseSchema } from "../agents/sectionAgents/cycleAgent/cycle.schema";
+import { composeCycleFromResponse } from "../agents/sectionAgents/cycleAgent/practiceTask";
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
+import { isCycleSectionKey } from "../agents/sharedPromptParts/cycleTarget.part";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
 import { sectionListOperationDispatcher } from "../quizOperations/sectionListOperationDispatcher";
@@ -203,7 +206,17 @@ async function executeGenerateStep(
     responseSchema: correctorResponseSchema(context, step),
   });
 
-  const validated = corrected ?? sectionSchema.parse(result.data);
+  // Cycle agents return the practice task as structured parts; the stored
+  // `practice` and `practiceSlideText` strings are composed here, after
+  // correction, so the corrector edits the parts and can never desynchronise
+  // the two composed renderings.
+  const validated = isCycleSectionKey(step.sectionKey)
+    ? sectionSchema.parse(
+        composeCycleFromResponse(
+          CycleAgentResponseSchema.parse(corrected ?? result.data),
+        ),
+      )
+    : (corrected ?? sectionSchema.parse(result.data));
 
   // We use immer to generate JSON patches at the granularity we control.
   // Patches are generated at the exact path we mutate:
@@ -240,6 +253,13 @@ function correctorResponseSchema(
   }
   if (sectionKey === "keyLearningPoints") {
     return KeyLearningPointsStrictMax4Schema;
+  }
+  // Cycles are corrected in the agent's parts shape, before composition. The
+  // document CycleSchema would break the corrector's structured-output call
+  // (its optional practiceSlideText is unsupported) and would let the
+  // corrector edit one composed rendering without the other.
+  if (isCycleSectionKey(sectionKey)) {
+    return CycleAgentResponseSchema;
   }
   return CompletedLessonPlanSchema.shape[sectionKey];
 }
