@@ -34,10 +34,7 @@ import type { HomePageQueryResult } from "@/cms/types/aiHomePageType";
 import HeroContainer from "@/components/HeroContainer";
 import { HomePageCTA } from "@/components/Home/HomePageCTA";
 import Layout from "@/components/Layout";
-import {
-  OakBoxCustomMaxWidth,
-  OakFlexCustomMaxWidth,
-} from "@/components/OakBoxCustomMaxWidth";
+import { OakFlexCustomMaxWidth } from "@/components/OakBoxCustomMaxWidth";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
@@ -147,7 +144,10 @@ function truncateLabel(label: string, maxLength = 15): string {
   return label.length > maxLength ? `${label.slice(0, maxLength)}…` : label;
 }
 
-const StyledMuxPlayer = styled(MuxPlayer)`
+// preload="none" keeps the player from fetching the manifest or any segments
+// until a visitor presses play. This also prevents reporting aborted preload
+// fetches to Mux as fatal MEDIA_ERR_NETWORK on every page load.
+const StyledMuxPlayer = styled(MuxPlayer).attrs({ preload: "none" })`
   aspect-ratio: 16/9;
   width: 100%;
 `;
@@ -317,38 +317,26 @@ function HomePageHero({ pageData }: HomePageProps) {
             Create tailored lessons and resources with AI
           </OakHeading>
 
-          <OakFlex $flexDirection={"column-reverse"}>
-            <OakBoxCustomMaxWidth
-              $display={["flex", "none"]}
-              $borderColor="border-primary"
-              $borderStyle={"solid"}
-              $ba={"border-solid-xl"}
-              customMaxWidth={629}
-              $height="fit-content"
+          <OakBox $mb={["spacing-12", "spacing-0"]}>
+            <OakP
+              $mb={["spacing-0", "spacing-48"]}
+              $textAlign="left"
+              $font="body-1"
             >
-              <StyledMuxPlayer
-                playbackId={pageData?.heroVideo.video.asset.playbackId}
-                thumbnailTime={pageData?.heroVideo.video.asset.thumbTime}
-              />
-            </OakBoxCustomMaxWidth>
-            <OakBox $mb={["spacing-32", "spacing-0"]}>
-              <OakP
-                $mb={["spacing-0", "spacing-48"]}
-                $textAlign="left"
-                $font="body-1"
-              >
-                Try Aila, Oak&apos;s AI lesson assistant, built for teachers.
-                Create and adapt lessons and resources that draw on Oak&apos;s
-                national curriculum-aligned content, with you in control every
-                step of the way.
-              </OakP>
-              <HomePageCTA />
-            </OakBox>
-          </OakFlex>
+              Try Aila, Oak&apos;s AI lesson assistant, built for teachers.
+              Create and adapt lessons and resources that draw on Oak&apos;s
+              national curriculum-aligned content, with you in control every
+              step of the way.
+            </OakP>
+            <HomePageCTA />
+          </OakBox>
         </OakFlexCustomMaxWidthWithHalfWidth>
 
+        {/* One player at every width. The parent flex switches from column to
+            row at the first breakpoint, which puts the video below the copy on
+            mobile and beside it on desktop. Rendering a second copy behind
+            `display: none` would still mount and start downloading. */}
         <OakFlexCustomMaxWidthWithHalfWidth
-          $display={["none", "flex"]}
           $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
