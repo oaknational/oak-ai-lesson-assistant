@@ -4,62 +4,86 @@ import type { Cycle } from "../../../../../protocol/schema";
 
 /**
  * The stimulus types a practice task may include. Single source of truth for
- * the cycle prompt and the pointer sentence shown on slides, so the label the
+ * the cycle prompt and the pointer sentences shown on slides, so the label the
  * model picks and the sentence pupils read can never disagree.
  */
 export const STIMULUS_TYPES = [
   "text extract",
   "data table",
-  "statements to sort",
+  "items to sort",
   "sentences to complete",
   "calculations",
 ] as const;
 
 export type StimulusType = (typeof STIMULUS_TYPES)[number];
 
+const StimulusSchema = z.object({
+  label: z
+    .enum(STIMULUS_TYPES)
+    .describe(
+      "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide.",
+    ),
+  content: z
+    .string()
+    .describe(
+      "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name.",
+    ),
+});
+
+export type Stimulus = z.infer<typeof StimulusSchema>;
+
 export const PracticeTaskPartsSchema = z.object({
   instruction: z.string()
-    .describe(`The first line of the task: a clear instruction starting with a phase-appropriate command word.
-May be followed by numbered sub-questions (1. 2. 3.), each on its own line, that require pupils to think progressively more deeply.
-No orientation steps, stimulus material or scaffolding here.
-Written in the TEACHER_TO_PUPIL_WRITTEN voice.`),
-  chunking: z.array(z.string())
-    .describe(`Smaller sequential steps that break one activity down to support cognitive load.
-One short step per line. Do not include bullet markers; steps are rendered as bullet points automatically.
-Use an empty array when the task needs no steps.`),
-  stimulus: z
-    .object({
-      label: z
-        .enum(STIMULUS_TYPES)
-        .describe(
-          "The type of stimulus. Used to direct pupils to the worksheet when the stimulus cannot fit on the slide.",
-        ),
-      content: z
-        .string()
-        .describe(
-          "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points.",
-        ),
-    })
-    .nullable()
-    .describe("Material the pupil works from. Null when not needed."),
-  scaffolding: z
-    .string()
-    .nullable()
-    .describe(
-      `Optional support included at the end of the task, e.g. a word bank: "Use these words: rate, reactant, used up." No bullet points. Null when not needed.`,
-    ),
+    .describe(`The un-numbered TASK INSTRUCTION: the first line of the task, a single clear sentence telling pupils what to produce now.
+Must start with a command word that is phase-appropriate and matched to the cognitive demand of the work pupils actually do.
+Do not restate the learning cycle outcome, add orientation steps, or include superfluous information.`),
+  statements: z.array(
+    z.object({
+      text: z.string()
+        .describe(`One numbered STATEMENT that chunks up the main task. An imperative starting with a command word matched to its own cognitive demand.
+Do not include the number; numbering is added automatically. One short line (about 12 words or fewer).
+A statement that introduces its own stimulus should end with a colon.`),
+      stimulus: StimulusSchema.nullable().describe(
+        "The stimulus this statement works from, shown directly beneath it. Null when the statement needs none.",
+      ),
+    }),
+  )
+    .describe(`The numbered STATEMENTS, in order, requiring progressively deeper thinking.
+Only include statements when the task genuinely has multiple steps; use an empty array for one continuous activity.`),
+  sharedStimulus: StimulusSchema.nullable()
+    .describe(`A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown after the statements.
+Null when there is none. A task should use either per-statement stimuli or this shared stimulus, not both.`),
 });
 
 export type PracticeTaskParts = z.infer<typeof PracticeTaskPartsSchema>;
 
 /**
- * Slide rendering constraints. The practice task slide is a fixed-size box:
- * text that does not fit is silently clipped by Google Slides, so the slide
- * version is trimmed to this budget. Lines longer than WORDS_PER_LINE wrap
- * and count as two.
+ * Slide rendering constraints. The practice task slide and the stimulus slide
+ * are fixed-size boxes: text that does not fit is silently clipped by Google
+ * Slides, so slide versions are trimmed to this budget. Lines longer than
+ * WORDS_PER_LINE wrap and count as two.
  */
 export const MAX_SLIDE_LINES = 12;
 export const WORDS_PER_LINE = 12;
+
+/** Where trimmed material is sent; the wording pupils read on the slide. */
+type PointerDestination = "next slide" | "worksheet";
+
+export function stimulusPointerLine(
+  label: string,
+  destination: PointerDestination,
+): string {
+  return `You will find the ${label} on the ${destination}.`;
+}
+
+export const STEPS_POINTER_LINE = "You will find the steps on the worksheet.";
+
+/** Heading attributing a moved stimulus to its statement on the stimulus slide. */
+export function stimulusHeadingLine(statementNumber: number): string {
+  return `For step ${statementNumber}:`;
+}
+
+const SHARED_STIMULUS_HEADING = "For all steps:";
 
 function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
@@ -76,70 +100,163 @@ export function estimateRenderedLines(text: string): number {
     );
 }
 
-function renderBlocks(blocks: (string | undefined)[]): string {
-  return blocks
-    .map((block) => block?.trim())
-    .filter((block): block is string => Boolean(block))
+/** Joins non-empty segments with a blank separator line. */
+function renderSegments(segments: (string | undefined)[]): string {
+  return segments
+    .map((segment) => segment?.trim())
+    .filter((segment): segment is string => Boolean(segment))
     .join("\n\n");
 }
 
+// A statement's stimulus is keyed by its index; the shared stimulus by "shared".
+type StimulusKey = number | "shared";
+
 /**
- * Composes the two stored renderings of a practice task from its parts.
+ * Renders the task with the given stimuli replaced by pointer lines. The
+ * segment structure mirrors the prompt's examples: consecutive stimulus-less
+ * statements sit on adjacent lines; a stimulus (or its pointer) is a
+ * blank-separated block directly beneath its statement; the shared stimulus
+ * follows the statements.
+ */
+function renderTask(
+  parts: PracticeTaskParts,
+  moved: Set<StimulusKey>,
+  destination: PointerDestination,
+): string {
+  const segments: (string | undefined)[] = [parts.instruction];
+  let statementRun: string[] = [];
+
+  const flushRun = () => {
+    if (statementRun.length > 0) {
+      segments.push(statementRun.join("\n"));
+      statementRun = [];
+    }
+  };
+
+  parts.statements.forEach((statement, index) => {
+    statementRun.push(`${index + 1}. ${statement.text.trim()}`);
+    if (statement.stimulus) {
+      flushRun();
+      segments.push(
+        moved.has(index)
+          ? stimulusPointerLine(statement.stimulus.label, destination)
+          : statement.stimulus.content,
+      );
+    }
+  });
+  flushRun();
+
+  if (parts.sharedStimulus) {
+    segments.push(
+      moved.has("shared")
+        ? stimulusPointerLine(parts.sharedStimulus.label, destination)
+        : parts.sharedStimulus.content,
+    );
+  }
+
+  return renderSegments(segments);
+}
+
+/** Renders the stimulus slide: moved stimuli in statement order, each attributed. */
+function renderStimulusSlide(
+  parts: PracticeTaskParts,
+  moved: Set<StimulusKey>,
+): string {
+  const segments: string[] = [];
+  parts.statements.forEach((statement, index) => {
+    if (statement.stimulus && moved.has(index)) {
+      segments.push(
+        `${stimulusHeadingLine(index + 1)}\n${statement.stimulus.content.trim()}`,
+      );
+    }
+  });
+  if (parts.sharedStimulus && moved.has("shared")) {
+    // A heading is only needed to disambiguate from per-statement stimuli.
+    const heading = moved.size > 1 ? `${SHARED_STIMULUS_HEADING}\n` : "";
+    segments.push(`${heading}${parts.sharedStimulus.content.trim()}`);
+  }
+  return renderSegments(segments);
+}
+
+const fits = (text: string) => estimateRenderedLines(text) <= MAX_SLIDE_LINES;
+
+/**
+ * Composes the stored renderings of a practice task from its parts.
  *
  * `practice` is the full task (lesson plan and worksheet, no length limit).
- * `practiceSlideText` is the slide version: parts are dropped in a fixed
- * ladder until the task fits the slide box, each dropped part replaced by a
- * pointer to the worksheet, which always carries the full task. Omitted when
- * the full task already fits.
+ * The slide versions follow a two-tier ladder:
+ *   1. the full task fits the task slide: no slide fields at all;
+ *   2. stimuli are moved to the stimulus slide, largest first, until the task
+ *      fits, each replaced by a "next slide" pointer;
+ *   3. if the moved stimuli overflow the stimulus slide too, they all go to
+ *      the worksheet instead (one destination per task, never split);
+ *   4. if the instruction and statements alone overflow, the statements are
+ *      replaced by a worksheet pointer. The instruction is never dropped.
  */
 export function composePracticeTask(parts: PracticeTaskParts): {
   practice: string;
   practiceSlideText?: string;
+  practiceStimulusSlideText?: string;
 } {
-  const { instruction, chunking, stimulus, scaffolding } = parts;
-  const chunkingBlock =
-    chunking.length > 0
-      ? chunking.map((step) => `- ${step.trim()}`).join("\n")
-      : undefined;
-  const stimulusPointer = stimulus
-    ? `You will find the ${stimulus.label} on the worksheet.`
-    : undefined;
-  const stepsPointer =
-    chunkingBlock !== undefined
-      ? "You will find the steps on the worksheet."
-      : undefined;
+  const practice = renderTask(parts, new Set(), "worksheet");
+  if (fits(practice)) {
+    return { practice };
+  }
 
-  const practice = renderBlocks([
-    instruction,
-    chunkingBlock,
-    stimulus?.content,
-    scaffolding ?? undefined,
-  ]);
+  // Movable stimuli, largest first; ties keep statement order, shared last.
+  const movable: { key: StimulusKey; size: number }[] = [
+    ...parts.statements.flatMap((statement, index) =>
+      statement.stimulus
+        ? [
+            {
+              key: index as StimulusKey,
+              size: estimateRenderedLines(statement.stimulus.content),
+            },
+          ]
+        : [],
+    ),
+    ...(parts.sharedStimulus
+      ? [
+          {
+            key: "shared" as StimulusKey,
+            size: estimateRenderedLines(parts.sharedStimulus.content),
+          },
+        ]
+      : []),
+  ].sort((a, b) => b.size - a.size);
 
-  // The trim ladder: full task, then stimulus swapped for its pointer, then
-  // scaffolding dropped, then chunking swapped for its pointer. The
-  // instruction is never dropped; if even the last stage is over budget it is
-  // used anyway (the scorer flags it).
-  const candidates = [
-    practice,
-    renderBlocks([
-      instruction,
-      chunkingBlock,
-      stimulusPointer,
-      scaffolding ?? undefined,
-    ]),
-    renderBlocks([instruction, chunkingBlock, stimulusPointer]),
-    renderBlocks([instruction, stepsPointer, stimulusPointer]),
-  ];
+  const moved = new Set<StimulusKey>();
+  let taskSlide = practice;
+  for (const stimulus of movable) {
+    moved.add(stimulus.key);
+    taskSlide = renderTask(parts, moved, "next slide");
+    if (fits(taskSlide)) break;
+  }
 
-  const slide =
-    candidates.find(
-      (candidate) => estimateRenderedLines(candidate) <= MAX_SLIDE_LINES,
-    ) ?? candidates[candidates.length - 1];
+  if (!fits(taskSlide)) {
+    // The instruction and statements alone overflow. Replace the statements
+    // (and everything under them) with the worksheet pointer; with no
+    // statements there is nothing left to drop, so overflow stands and the
+    // cycle-slide-lines scorer flags it.
+    const lastResort =
+      parts.statements.length > 0
+        ? renderSegments([parts.instruction, STEPS_POINTER_LINE])
+        : renderTask(parts, moved, "worksheet");
+    return { practice, practiceSlideText: lastResort };
+  }
 
-  return slide === practice || slide === undefined
-    ? { practice }
-    : { practice, practiceSlideText: slide };
+  const stimulusSlide = renderStimulusSlide(parts, moved);
+  if (fits(stimulusSlide)) {
+    return {
+      practice,
+      practiceSlideText: taskSlide,
+      practiceStimulusSlideText: stimulusSlide,
+    };
+  }
+
+  // The moved stimuli do not fit their own slide: send them all to the
+  // worksheet instead, one destination per task.
+  return { practice, practiceSlideText: renderTask(parts, moved, "worksheet") };
 }
 
 /** Maps the cycle agent's parts-shaped response to the document's cycle shape. */
@@ -148,12 +265,20 @@ export function composeCycleFromResponse<
 >(
   response: T,
 ): Omit<T, "practice"> &
-  Pick<Cycle, "practice"> & { practiceSlideText?: string } {
-  const { practice, practiceSlideText } = composePracticeTask(
-    response.practice,
-  );
-  // Omit the key entirely when the full task fits, rather than storing undefined.
-  return practiceSlideText === undefined
-    ? { ...response, practice }
-    : { ...response, practice, practiceSlideText };
+  Pick<Cycle, "practice"> & {
+    practiceSlideText?: string;
+    practiceStimulusSlideText?: string;
+  } {
+  const { practice, practiceSlideText, practiceStimulusSlideText } =
+    composePracticeTask(response.practice);
+  // Absent keys, not undefined values: absence of the stimulus-slide text is
+  // what tells the export to delete that cycle's stimulus slide.
+  return {
+    ...response,
+    practice,
+    ...(practiceSlideText !== undefined && { practiceSlideText }),
+    ...(practiceStimulusSlideText !== undefined && {
+      practiceStimulusSlideText,
+    }),
+  };
 }

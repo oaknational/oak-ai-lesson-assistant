@@ -174,6 +174,8 @@ export const CYCLE_DESCRIPTIONS = {
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   practiceSlideText: dedent`A version of the practice task trimmed to fit the fixed-size box on the lesson slides.
     Composed automatically from the practice task; absent when the full task already fits.`,
+  practiceStimulusSlideText: dedent`Stimulus material moved off the practice task slide onto its own slide.
+    Composed automatically; absent when nothing was moved, which also removes that cycle's stimulus slide from the exported deck.`,
   feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
     This should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -191,6 +193,10 @@ export const CycleSchemaWithoutLength = z.object({
     .string()
     .optional()
     .describe(CYCLE_DESCRIPTIONS.practiceSlideText),
+  practiceStimulusSlideText: z
+    .string()
+    .optional()
+    .describe(CYCLE_DESCRIPTIONS.practiceStimulusSlideText),
   feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
 });
 

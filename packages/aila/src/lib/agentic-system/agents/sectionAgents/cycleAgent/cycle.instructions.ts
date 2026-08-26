@@ -5,8 +5,10 @@ import {
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
 import {
   MAX_SLIDE_LINES,
+  STEPS_POINTER_LINE,
   STIMULUS_TYPES,
   WORDS_PER_LINE,
+  stimulusPointerLine,
 } from "./practiceTask";
 
 export function cyclesInstructions(keyStage: string): string {
@@ -101,58 +103,110 @@ If they complete all PRACTICE TASKS in the lesson, they should have achieved the
 Audience: pupils in the class
 Voice: TEACHER_TO_PUPIL_WRITTEN
 
-#### Task type (hard requirement)
+#### Task type (hard requirements)
 
 - task types should be relevant to the subject and the phase
 - no multiple choice questions or quick recall questions should be used
 - they must activate pupils through speaking, writing or doing
-- they should take pupils approx. 5-7 mins to complete the task
+- tasks should take pupils approx. 5-7 mins to complete
 - base your suggestions on other lessons you have seen at Oak National Academy
 
-#### Cognitive demand
+#### Cognitive demand (hard requirements)
 
 - focus the cognitive demand of the task on the key learning points taught and checked in the learning cycle
 - avoid including unrelated knowledge or skills that shifts cognitive demand away from pupils practising the knowledge from the key learning point taught in the preceding explanation
-- tasks should require pupils to think progressively more deeply as they move through it. This can be via numbered sub-questions or embedded within one continuous activity
-- tasks that require multiple steps can include CHUNKING: smaller, sequential steps to support cognitive load
+- tasks should require pupils to think progressively more deeply as they move through it. This can be via numbered statements, or embedded within one continuous activity
 - cognitive demand should be age and phase appropriate
 - they should vary across learning cycles
+- no part of the task may answer another part of the task. Check that nothing in the STIMULUS gives away the answer to a later statement.
+- every word in the task must be everyday language, the lesson's keywords, vocabulary taught earlier in this lesson, or anything named in prior knowledge. Do not introduce a new abstract term to compress a longer phrase.
+
+#### The three parts of a task
+
+A task is built from three kinds of parts:
+
+- an un-numbered TASK INSTRUCTION, always the first line
+- numbered STATEMENTS that chunk up the main task
+- a STIMULUS, where a statement needs one
+
+The TASK INSTRUCTION comes first, then the STATEMENTS in order.
+
+A STIMULUS can be one of two configurations. It can either sit directly beneath the STATEMENT it belongs to, as in Example 1. Or it can be a single STIMULUS that belongs to multiple STATEMENTS as seen in Example 2.
+
+Example 1:
+
+Identify how Roman settlement changed daily life in Britain.
+
+1. Complete the sentences:
+
+Roman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Roman ______ carried clean water into some towns.
+
+2. Explain another change that Roman settlement brought to daily life:
+
+The Romans built long, straight roads across Britain. Carts, soldiers and traders could travel quickly between towns. News and new goods arrived faster than before.
+
+3. Explain, using the examples, why daily life changed more in some places than in others:
+
+In a town: a family buys bread at the market, pays with coins, and visits the baths. On a farm far from a road: a family grows its own food and lives in a roundhouse, as their grandparents did.
+
+Another configuration that a task can be specified in is with a STIMULUS that applies to all statements.
+
+Example 2:
+
+Explain what impact the use of figurative language in the passage has on the reader.
+
+1. Identify the adjectives and adverbs
+2. Identify any personification
+3. Use full sentences to explain the impact on the reader
+
+Trapped in a sterile room, she longed to see her family again. Where plush grass adorned with flowers used to grow, skyscrapers now towered into the polluted sky. Hastily, he scanned the surroundings for any threat.
 
 #### How to write tasks
 
-Return the practice task as four named parts. They are rendered into the lesson plan, the worksheet and the slides automatically.
+The first line of a task should be a clear, un-numbered TASK INSTRUCTION. It must start with a command word that is both phase-appropriate and matched to the cognitive demand of the work pupils actually do. If the task asks pupils to give reasons, the command word must be an explaining word, not a describing or identifying one. The same applies to the command word in each numbered statement.
+The TASK INSTRUCTION is not the learning cycle outcome. The outcome describes what pupils will know; the TASK INSTRUCTION tells pupils what to produce now. Do not restate the outcome as the TASK INSTRUCTION.
+Do not include any superfluous or extraneous information that could distract the pupils.
+Refer to a STIMULUS by name ("the passage", "the examples", "the data table"), never by position ("below", "above", "on the next line"). The stimulus may be shown on the slide, on a later slide, or on the worksheet, so words like "below" can become untrue.
 
-**INSTRUCTION**: the first line of the task, a clear instruction. It must start with a phase-appropriate command word. Do not include any superfluous or extraneous information that could distract the pupils. Do not add orientation steps such as "Look at the pictures" or "Read the text below"; the instruction implies them. The instruction may be followed by numbered sub-questions (1. 2. 3.), each on its own line, requiring pupils to think progressively more deeply.
+Example:
+Design a letterform that expresses a chosen idea or emotion.
 
-Example: 'Design a letterform that expresses a chosen idea or emotion.'
-Non-example: 'A letterform is the term used when designing the shape of a letter. Design a letterform that expresses a chosen idea or emotion.'
+Non-example (extraneous information):
+A letterform is the term used when designing the shape of a letter. Design a letterform that expresses a chosen idea or emotion.
 
-**CHUNKING**: if the task requires multiple steps, provide them as chunking steps. They are rendered as bullet points automatically, so do not include bullet markers or numbers.
+After the TASK INSTRUCTION, if the task requires multiple steps use numbered STATEMENTS.
 
-Example, for the letterform instruction above:
-choose one letter to design
-choose an idea or emotion to express
-choose colours and shapes that communicate your choice
-draw the outline of your letterform
-add colours and shapes
-evaluate your design
+Example:
+Write a paragraph explaining why meditation matters to many Buddhists.
+1. Write one way meditation helps Buddhists in daily life
+2. Write one way meditation follows the Buddha's teachings
+3. Join your two ideas to say why meditation matters
 
-**STIMULUS**: material the pupil works from, such as a text extract, a data set or results table. Label its type as one of: ${STIMULUS_TYPES.join(", ")}. No bullet points in the content.
+After the TASK INSTRUCTION and any numbered STATEMENTS if any require a STIMULUS (${STIMULUS_TYPES.join(", ")}) this must follow it directly. A STIMULUS does not require bullet points or numbers.
 
-**SCAFFOLDING**: support included at the end of the task, for example a word bank. No bullet points.
+Non-example (a STIMULUS that belongs to ONE statement must sit directly beneath it, not at the end of the task):
 
-#### Formatting rules (hard requirement)
+Identify how Roman settlement changed daily life in Britain.
 
-- Numbers must only be used within the INSTRUCTION, for its numbered sub-questions. They must not be used in the CHUNKING, STIMULUS or SCAFFOLDING.
-- Do not include bullet markers anywhere; CHUNKING steps are rendered as bullets automatically.
+1. Complete the sentences
+2. Explain another change that Roman settlement brought to daily life.
+3. Explain using examples why daily life changed more in some places than in others.
+Roman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Some people kept older ______, especially in the countryside.
+
+#### Formatting rules for writing tasks (hard requirements)
+
+- Numbers must only be used for STATEMENTS. Bullet points must never be used.
+- The items inside a STIMULUS (items to sort, sentences to complete, calculations) are not STATEMENTS: never number them.
 
 #### Where the task appears (for context - you do not need to trim anything)
 
-- The full task (INSTRUCTION, CHUNKING, STIMULUS, SCAFFOLDING) always appears in the lesson plan and on the worksheet. There is no length limit on the full task.
-- The slide shows a version of the same task, built automatically from your parts. The slide is a fixed-size box holding at most ${MAX_SLIDE_LINES} lines, counting blank separator lines; the box cannot shrink or grow the text.
-- If the full task is over the slide limit, parts are removed from the slide automatically, in this order: first the STIMULUS is replaced with the line "You will find the [stimulus type] on the worksheet."; if it is still over, the SCAFFOLDING is removed; as a last resort the CHUNKING is replaced with "You will find the steps on the worksheet." The INSTRUCTION always appears and is identical in all three places.
+- The full task (TASK INSTRUCTION, STATEMENTS, STIMULUS) always appears in the lesson plan and on the worksheet. There is no length limit on the full task.
+- The slide shows a version of the same task, built automatically from your text. The slide is a fixed-size box holding at most ${MAX_SLIDE_LINES} lines, counting blank separator lines; the box cannot shrink or grow the text.
+- If the full task is over the slide limit, stimuli are moved off the slide automatically, largest first, until the task fits. Moved stimuli appear together on the next slide, and each is replaced in the task by the line "You will find the [stimulus type] on the next slide." (e.g. "${stimulusPointerLine("data table", "next slide")}")
+- The next slide is a fixed-size box of the same size, and each moved stimulus gets a short heading naming the statement it belongs to. If the moved stimuli do not all fit on that slide, they appear on the worksheet instead and the line says "on the worksheet".
+- If the TASK INSTRUCTION and STATEMENTS alone are still over the limit, the STATEMENTS are replaced with the line "${STEPS_POINTER_LINE}" The TASK INSTRUCTION always appears on the slide and is identical everywhere.
 - Pupils always have the full task on the worksheet, so nothing you write is lost.
-- Keep the INSTRUCTION and CHUNKING compact: one step per line, and each line short (about ${WORDS_PER_LINE} words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.
+- Keep the TASK INSTRUCTION and STATEMENTS compact: one step per line, and each line short (about ${WORDS_PER_LINE} words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.
 - Do not refer to the worksheet, the slides or any other document in the task text, and do not invent document names. Pointer lines are added automatically when needed.
 - Prefer tasks whose parts all fit on the slide; only include a large STIMULUS when the task genuinely requires it.
 

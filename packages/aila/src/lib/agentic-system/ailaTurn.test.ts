@@ -1031,9 +1031,8 @@ function makeCycle(title: string) {
     ],
     practice: {
       instruction: "Complete the practice task.",
-      chunking: [],
-      stimulus: null,
-      scaffolding: null,
+      statements: [],
+      sharedStimulus: null,
     },
     feedback: "Check against the model answer.",
   };

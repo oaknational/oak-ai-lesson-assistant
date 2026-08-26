@@ -14,6 +14,7 @@ export { CycleSchema };
 export const CycleAgentResponseSchema = CycleSchema.omit({
   practice: true,
   practiceSlideText: true,
+  practiceStimulusSlideText: true,
 }).extend({
   practice: PracticeTaskPartsSchema,
 });
