@@ -245,6 +245,9 @@ const SCORERS: Scorer[] = [
           `${key} practice slide`,
           cycle.practiceSlideText ?? cycle.practice ?? "",
         );
+        if (cycle.practiceStimulusSlideText !== undefined) {
+          check(`${key} stimulus slide`, cycle.practiceStimulusSlideText);
+        }
         check(`${key} feedback`, cycle.feedback ?? "");
       }
       return {
