@@ -33,6 +33,10 @@ import {
 import { createOpenAIBritishEnglishCorrectorAgent } from "../agents/britishEnglishCorrectorAgent";
 import { createOpenAIMessageToUserAgent } from "../agents/messageToUserAgent";
 import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
+import {
+  MAX_SLIDE_LINES,
+  estimateRenderedLines,
+} from "../agents/sectionAgents/cycleAgent/practiceTask";
 import { createSectionAgentRegistry } from "../agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../ailaTurn";
 import type { JsonPatchOperation } from "../compatibility/helpers/immerPatchToJsonPatch";
@@ -212,26 +216,18 @@ const SCORERS: Scorer[] = [
   },
   {
     id: "cycle-slide-lines",
-    description: "Practice and feedback fit the slide (max 12 lines)",
+    description:
+      "Practice slide text and feedback fit the slide (max 12 lines)",
     fn: ({ finalDocument }) => {
-      // Keep 12 in sync with the line limit in cycle.instructions.ts. Estimate
-      // rendered lines: a long line wraps at ~10 words, a blank line counts as
-      // one, since both take up slide height.
-      const MAX_LINES = 12;
-      const WORDS_PER_LINE = 10;
-      const renderedLines = (text: string) =>
-        text
-          .split("\n")
-          .reduce(
-            (total, line) =>
-              total + Math.max(1, Math.ceil(wordCount(line) / WORDS_PER_LINE)),
-            0,
-          );
+      // The practice slide version is composed deterministically by
+      // composePracticeTask using the same estimator, so an overflow here
+      // means the composer's last-resort stage (instruction plus pointers)
+      // was still over budget, or the model over-ran on feedback.
       const evidence: string[] = [];
       let anyOverflow = false;
       const check = (label: string, text: string) => {
-        const rendered = renderedLines(text);
-        const overflow = rendered > MAX_LINES;
+        const rendered = estimateRenderedLines(text);
+        const overflow = rendered > MAX_SLIDE_LINES;
         if (overflow) anyOverflow = true;
         evidence.push(
           `${label}: ~${rendered} rendered lines${overflow ? " [overflow]" : ""}`,
@@ -245,7 +241,13 @@ const SCORERS: Scorer[] = [
           evidence.push(`${key}: not present`);
           continue;
         }
-        check(`${key} practice`, cycle.practice ?? "");
+        check(
+          `${key} practice slide`,
+          cycle.practiceSlideText ?? cycle.practice ?? "",
+        );
+        if (cycle.practiceStimulusSlideText !== undefined) {
+          check(`${key} stimulus slide`, cycle.practiceStimulusSlideText);
+        }
         check(`${key} feedback`, cycle.feedback ?? "");
       }
       return {

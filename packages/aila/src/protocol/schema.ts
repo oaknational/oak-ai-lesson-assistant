@@ -167,11 +167,15 @@ export const CYCLE_DESCRIPTIONS = {
   Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
   checkForUnderstanding: dedent`Two or more questions to check that students have understood the content of this cycle.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
-  practice: dedent`The activity that the pupils are asked to do to practice what they have learnt.
+  practice: dedent`The full practice task that the pupils are asked to do to practice what they have learnt: an instruction starting with a phase-appropriate command word, then any chunked steps, stimulus material and scaffolding.
     Should be pupil facing and include all details that the pupils need to complete the task.
-    Should be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.
-    Should include calculations if this is appropriate.
+    Should enable pupils to practice the key learning points that have been taught during this learning cycle.
+    Shown in full in the lesson plan and on the worksheet.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  practiceSlideText: dedent`A version of the practice task trimmed to fit the fixed-size box on the lesson slides.
+    Composed automatically from the practice task; absent when the full task already fits.`,
+  practiceStimulusSlideText: dedent`Stimulus material moved off the practice task slide onto its own slide.
+    Composed automatically; absent when nothing was moved, which also removes that cycle's stimulus slide from the exported deck.`,
   feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
     This should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.
     Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
@@ -185,6 +189,14 @@ export const CycleSchemaWithoutLength = z.object({
     .array(CheckForUnderstandingSchemaWithoutLength)
     .describe(CYCLE_DESCRIPTIONS.checkForUnderstanding),
   practice: z.string().describe(CYCLE_DESCRIPTIONS.practice),
+  practiceSlideText: z
+    .string()
+    .optional()
+    .describe(CYCLE_DESCRIPTIONS.practiceSlideText),
+  practiceStimulusSlideText: z
+    .string()
+    .optional()
+    .describe(CYCLE_DESCRIPTIONS.practiceStimulusSlideText),
   feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
 });
 

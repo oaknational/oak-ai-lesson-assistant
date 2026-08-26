@@ -67,6 +67,7 @@ export const lessonSlidesTemplateSchema = z.object({
   learning_cycle_1_question_2_check_answer_3: z.string(),
 
   learning_cycle_1_practise: z.string().nullish(),
+  learning_cycle_1_practise_stimulus: z.string().nullish(),
   learning_cycle_1_feedback: z.string().nullish(),
 
   learning_cycle_2_explanation: z.string().nullish(),
@@ -83,6 +84,7 @@ export const lessonSlidesTemplateSchema = z.object({
   learning_cycle_2_question_2_check_answer_3: z.string().nullish(),
 
   learning_cycle_2_practise: z.string().nullish(),
+  learning_cycle_2_practise_stimulus: z.string().nullish(),
   learning_cycle_2_feedback: z.string().nullish(),
 
   learning_cycle_3_explanation: z.string().nullish(),
@@ -125,6 +127,7 @@ export const lessonSlidesTemplateSchema = z.object({
   eq_q6_answer_3: z.string(),
 
   learning_cycle_3_practise: z.string().nullish(),
+  learning_cycle_3_practise_stimulus: z.string().nullish(),
   learning_cycle_3_feedback: z.string().nullish(),
 
   lc1_q1_answer_1_tick: z.string(),

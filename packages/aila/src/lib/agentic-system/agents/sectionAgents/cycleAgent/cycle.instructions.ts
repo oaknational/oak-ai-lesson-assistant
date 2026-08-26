@@ -3,6 +3,13 @@ import {
   normaliseKeyStageForPrompt,
 } from "../shared/keyStageLanguageGuidance";
 import { quizQuestionDesignInstructions } from "../shared/quizQuestionDesign.instructions";
+import {
+  MAX_SLIDE_LINES,
+  STEPS_POINTER_LINE,
+  STIMULUS_TYPES,
+  WORDS_PER_LINE,
+  stimulusPointerLine,
+} from "./practiceTask";
 
 export function cyclesInstructions(keyStage: string): string {
   const normalisedKeyStage = normaliseKeyStageForPrompt(keyStage);
@@ -88,87 +95,120 @@ ${quizQuestionDesignInstructions(normalisedKeyStage)}
 
 ### 4. Practice Task
 
-This is the part of the lesson where you set a task which allows pupils to practice the skills and knowledge that they have learnt in the explanation.
-It should focus on the key learning points being taught.
-If a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME and if they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.
+A practice task is placed at the end of each learning cycle.
+It enables pupils to practice the skills and knowledge related to key learning points that they have learnt in the explanation and have checked in the checks for understanding.
+If a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME.
+If they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.
 
 Audience: pupils in the class
 Voice: TEACHER_TO_PUPIL_WRITTEN
 
-Write the task as a set of instructions that pupils can follow.
+#### Task type (hard requirements)
 
-- The instructions should contain all information needed to complete the task, within the slide length limit below, e.g. "draw a dot and cross diagram to show the bonding in O2, N2 and CO2" rather than "get pupils to draw diagrams to show the bonding in different covalent molecules."
-- Reflect the command word in the cycle outcome — keep the task at that level (if the outcome says "Describe", pupils should describe, not evaluate or judge significance)
-- Include all content needed on the slide only when it fits within the slide length limit below; otherwise follow the stimulus rule in that section. E.g. if asking pupils to:
-  - analyse a set of results, provide them with the results and a set of questions to support analysis.
-  - to complete a matching task, provide them with the content that needs to be matched.
-  - complete sentences, provide them with the sentences with the gaps marked within them.
-  - put events or statements into order, provide them with the statements in the incorrect order that they will need to sequence.
-  - give an opinion on an extract, provide them with the extract.
-- This could be one longer task or a task with multiple questions or sub tasks.
-- Increase difficulty if using multiple questions/sub tasks
-- Should activate all pupils through speaking, writing, doing
-- Vary task types across cycles
-- Approx. 5–7 mins to complete the task.
-- Base your suggestions on other lessons you have seen at Oak National Academy.
-- Practice may look different for different subjects.  E.g.
-  - Maths - completing calculations
-  - Practical subjects (PE, art, music, etc.) - practising a skill or taking part in a game or performance activity.
+- task types should be relevant to the subject and the phase
+- no multiple choice questions or quick recall questions should be used
+- they must activate pupils through speaking, writing or doing
+- tasks should take pupils approx. 5-7 mins to complete
+- base your suggestions on other lessons you have seen at Oak National Academy
 
-Examples include:
+#### Cognitive demand (hard requirements)
 
-- Label a diagram with the provided labels.
-- Sort given items into two or three columns in a table/venn diagram/quadrant
-- Given an incorrect classification, explain why the object has been incorrectly classified.
-- Select an item from a list that matches the key term/definition, justifying choice.
-- Select the equipment/materials needed for an activity.
-- Order items e.g. size, age, number, date, etc.
-- List factors that will have an impact on [insert other variable].
-- List/sequence the steps in a given method.
-- Describe or explain a process, phenomenon, event, situation, pattern or technique or the impact on a place or group of people
-- Decide which of two given descriptions is better, explaining why.
-- Write a speech to explain a concept to someone.
-- Draw and annotate a diagram(s) to explain a process/technique.
-- Apply a given particular skill/technique to a given task.
-- Analyse an example, determining theories, contexts or techniques applied.
-- Extract data from a table or graph and use this to write a conclusion.
-- Complete a series of 4-5 practice calculations (always include a model in the explanation. Then practice should start easy and become more complex e.g. start with just substituting and increase to rearranging, converting units, doing a multi-step process or worded question.)
-- Correct an incorrect worked example
-- Identify two similarities and two differences for two given items, people, period.
-- Present an item and get pupils to compare it to a historical or theoretical example.
-- Create a routine, performance, or work of art for a given scenario for a given user group or audience.
-- Create a set of instructions for solving a problem.
-- For a set of given opinions, decide which are for and against an argument.
-- Plan both sides of a debate on [insert topic].
-- Decide from a set of given opinions which might belong to certain groups of people and why they might hold these opinions.
-- Given the answer to a problem, show the workings-out of the calculation that derived that answer.
-- Draw an annotated sketch of a product.
-- Write a flow chart for the steps you would take to create or carry out [insert product/task/experiment].
-- Identify a mistake or missing step in a given method.
-- Explain which techniques, mediums or quotes have been used and where their inspiration to use these came from (i.e. which pieces of work/artists/periods/movements).
-- Identify the intended audience for a piece of work and explain how you have reached this conclusion.
-- Decide which of two predictions is more likely to be correct, giving reasons for your answer.
-- Explain why a given prediction is unlikely.
-- Watch a short clip of someone performing a particular sport/training/performance, give strengths/weaknesses and suggest improvements.
-- Compare a piece of work to a model and explain similarities, differences and areas for improvement (e.g. pupil work to a model answer/piece of art mimicking work of a great artist and the great artist's original piece).
-- Reflect on the work that you have created and how closely it meets the design brief, identifying strengths and areas for development.
-- Comment on the repeatability, reproducibility, accuracy, precision or validity of a given method, set of results or source of information.
-- Extract data from a table or graph and use this to support a conclusion.
-- Justify the use of a piece of equipment, technique or method, giving reasons for or against using it or other options.
-- Label diagrams, correct errors, match terms, complete sentences
-- Analyse data, justify choices, sequence steps, create outputs
-- Compare/contrast, extract conclusions, reflect on criteria
-- Apply skills or knowledge in context
-  (See full list if needed for inspiration.)
+- focus the cognitive demand of the task on the key learning points taught and checked in the learning cycle
+- avoid including unrelated knowledge or skills that shifts cognitive demand away from pupils practising the knowledge from the key learning point taught in the preceding explanation
+- tasks should require pupils to think progressively more deeply as they move through it. This can be via numbered statements, or embedded within one continuous activity
+- cognitive demand should be age and phase appropriate
+- they should vary across learning cycles
+- no part of the task may answer another part of the task. Check that nothing in the STIMULUS gives away the answer to a later statement.
+- every word in the task must be everyday language, the lesson's keywords, vocabulary taught earlier in this lesson, or anything named in prior knowledge. Do not introduce a new abstract term to compress a longer phrase.
 
-#### Slide length limit (hard requirement)
+#### The three parts of a task
 
-The practice task is displayed on one slide in a fixed-size text box. Text that does not fit is cut off; the slide cannot shrink or grow the text.
+A task is built from three kinds of parts:
 
-- The whole practice task must fit in at most 12 lines (aim for about 10), counting every step and every blank separator line, as blank lines take up slide space too. Keep each line a single short instruction or sentence (about 12 words or fewer so it does not wrap). Use one short numbered or bulleted step per line.
-- Never place long stimulus material on the slide. If the task needs material that would take it over the limit (a text extract, a data set or results table, statements to sort or sequence, sentences to complete, an extended set of calculations), write only the short instruction on the slide and direct pupils to the accompanying materials, e.g. "Complete the sentences on the worksheet." or "Use the data table in the additional materials."
-- Refer to offloaded material generically ("the worksheet", "the additional materials"). Do not invent document names. The teacher can generate this material in the lesson's additional materials section.
-- Prefer practice tasks that are self-contained within the limit; only offload stimulus when the task genuinely requires it.
+- an un-numbered TASK INSTRUCTION, always the first line
+- numbered STATEMENTS that chunk up the main task
+- a STIMULUS, where a statement needs one
+
+The TASK INSTRUCTION comes first, then the STATEMENTS in order.
+
+A STIMULUS can be one of two configurations. It can either sit directly beneath the STATEMENT it belongs to, as in Example 1. Or it can be a single STIMULUS that belongs to multiple STATEMENTS as seen in Example 2.
+
+Example 1:
+
+Identify how Roman settlement changed daily life in Britain.
+
+1. Complete the sentences:
+
+Roman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Roman ______ carried clean water into some towns.
+
+2. Explain another change that Roman settlement brought to daily life:
+
+The Romans built long, straight roads across Britain. Carts, soldiers and traders could travel quickly between towns. News and new goods arrived faster than before.
+
+3. Explain, using the examples, why daily life changed more in some places than in others:
+
+In a town: a family buys bread at the market, pays with coins, and visits the baths. On a farm far from a road: a family grows its own food and lives in a roundhouse, as their grandparents did.
+
+Another configuration that a task can be specified in is with a STIMULUS that applies to all statements.
+
+Example 2:
+
+Explain what impact the use of figurative language in the passage has on the reader.
+
+1. Identify the adjectives and adverbs
+2. Identify any personification
+3. Use full sentences to explain the impact on the reader
+
+Trapped in a sterile room, she longed to see her family again. Where plush grass adorned with flowers used to grow, skyscrapers now towered into the polluted sky. Hastily, he scanned the surroundings for any threat.
+
+#### How to write tasks
+
+The first line of a task should be a clear, un-numbered TASK INSTRUCTION. It must start with a command word that is both phase-appropriate and matched to the cognitive demand of the work pupils actually do. If the task asks pupils to give reasons, the command word must be an explaining word, not a describing or identifying one. The same applies to the command word in each numbered statement.
+The TASK INSTRUCTION is not the learning cycle outcome. The outcome describes what pupils will know; the TASK INSTRUCTION tells pupils what to produce now. Do not restate the outcome as the TASK INSTRUCTION.
+Do not include any superfluous or extraneous information that could distract the pupils.
+Refer to a STIMULUS by name ("the passage", "the examples", "the data table"), never by position ("below", "above", "on the next line"). The stimulus may be shown on the slide, on a later slide, or on the worksheet, so words like "below" can become untrue.
+
+Example:
+Design a letterform that expresses a chosen idea or emotion.
+
+Non-example (extraneous information):
+A letterform is the term used when designing the shape of a letter. Design a letterform that expresses a chosen idea or emotion.
+
+After the TASK INSTRUCTION, if the task requires multiple steps use numbered STATEMENTS.
+
+Example:
+Write a paragraph explaining why meditation matters to many Buddhists.
+1. Write one way meditation helps Buddhists in daily life
+2. Write one way meditation follows the Buddha's teachings
+3. Join your two ideas to say why meditation matters
+
+After the TASK INSTRUCTION and any numbered STATEMENTS if any require a STIMULUS (${STIMULUS_TYPES.join(", ")}) this must follow it directly. A STIMULUS does not require bullet points or numbers.
+
+Non-example (a STIMULUS that belongs to ONE statement must sit directly beneath it, not at the end of the task):
+
+Identify how Roman settlement changed daily life in Britain.
+
+1. Complete the sentences
+2. Explain another change that Roman settlement brought to daily life.
+3. Explain using examples why daily life changed more in some places than in others.
+Roman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Some people kept older ______, especially in the countryside.
+
+#### Formatting rules for writing tasks (hard requirements)
+
+- Numbers must only be used for STATEMENTS. Bullet points must never be used.
+- The items inside a STIMULUS (items to sort, sentences to complete, calculations) are not STATEMENTS: never number them.
+
+#### Where the task appears (for context - you do not need to trim anything)
+
+- The full task (TASK INSTRUCTION, STATEMENTS, STIMULUS) always appears in the lesson plan and on the worksheet. There is no length limit on the full task.
+- The slide shows a version of the same task, built automatically from your text. The slide is a fixed-size box holding at most ${MAX_SLIDE_LINES} lines, counting blank separator lines; the box cannot shrink or grow the text.
+- If the full task is over the slide limit, stimuli are moved off the slide automatically, largest first, until the task fits. Moved stimuli appear together on the next slide, and each is replaced in the task by the line "You will find the [stimulus type] on the next slide." (e.g. "${stimulusPointerLine("data table", "next slide")}")
+- The next slide is a fixed-size box of the same size, and each moved stimulus gets a short heading naming the statement it belongs to. If the moved stimuli do not all fit on that slide, they appear on the worksheet instead and the line says "on the worksheet".
+- If the TASK INSTRUCTION and STATEMENTS alone are still over the limit, the STATEMENTS are replaced with the line "${STEPS_POINTER_LINE}" The TASK INSTRUCTION always appears on the slide and is identical everywhere.
+- Pupils always have the full task on the worksheet, so nothing you write is lost.
+- Keep the TASK INSTRUCTION and STATEMENTS compact: one step per line, and each line short (about ${WORDS_PER_LINE} words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.
+- Do not refer to the worksheet, the slides or any other document in the task text, and do not invent document names. Pointer lines are added automatically when needed.
+- Prefer tasks whose parts all fit on the slide; only include a large STIMULUS when the task genuinely requires it.
 
 ### 5. Feedback
 

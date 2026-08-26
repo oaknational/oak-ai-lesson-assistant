@@ -105,8 +105,13 @@ export function keyStageBuildModeInstructions(instructionsByMode: {
 /**
  * This is a factory function for section agents.
  * A section agent is responsible for generating a specific section of the document.
+ *
+ * `PromptValue` is the shape of section values rendered into the prompt
+ * (current value, exemplars, basedOn), all sourced from the document. It only
+ * differs from `ResponseType` when an agent's response shape diverges from
+ * the document's (e.g. the cycle agent's structured practice task).
  */
-export function createSectionAgent<ResponseType>({
+export function createSectionAgent<ResponseType, PromptValue = ResponseType>({
   responseSchema,
   instructions,
   contentToString = defaultContentToString,
@@ -118,7 +123,7 @@ export function createSectionAgent<ResponseType>({
 }: {
   responseSchema: z.ZodType<ResponseType>;
   instructions: InstructionsValue;
-  contentToString?: (content: ResponseType) => string;
+  contentToString?: (content: PromptValue) => string;
   extraInputFromCtx?: (
     state: AilaExecutionContext,
   ) => { role: "user" | "developer"; content: string }[];
@@ -143,7 +148,7 @@ export function createSectionAgent<ResponseType>({
     contentFromDocument: (
       document: PartialLessonPlan,
       ctx: AilaExecutionContext,
-    ) => ResponseType | undefined;
+    ) => PromptValue | undefined;
     collectGeneration?: GenerationCollector;
   }) => ({
     id,
@@ -160,7 +165,10 @@ export function createSectionAgent<ResponseType>({
           contentFromDocument,
         });
 
-      const genericPromptAgent = sectionToGenericPromptAgent(
+      const genericPromptAgent = sectionToGenericPromptAgent<
+        ResponseType,
+        PromptValue
+      >(
         {
           responseSchema,
           id,
