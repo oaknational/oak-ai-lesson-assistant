@@ -65,6 +65,18 @@ describe("prepLessonForSlides practice slide text", () => {
     );
   });
 
+  it("fills the stimulus slide placeholder when the composer produced one", async () => {
+    const lessonPlan = makeLessonPlan();
+    lessonPlan.cycle1.practiceStimulusSlideText = "For step 1:\nTime 0 20 40";
+
+    const result = await prepLessonForSlides(lessonPlan);
+
+    expect(result.learning_cycle_1_practise_stimulus).toBe(
+      "For step 1:\nTime 0 20 40",
+    );
+    expect(result.learning_cycle_2_practise_stimulus).toBe("");
+  });
+
   it("falls back to the full practice text when absent (older lessons)", async () => {
     const result = await prepLessonForSlides(makeLessonPlan());
 

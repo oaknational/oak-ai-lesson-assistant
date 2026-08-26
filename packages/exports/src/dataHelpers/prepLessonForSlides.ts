@@ -592,6 +592,8 @@ export async function prepLessonForSlides(
       )[2] ?? "",
     learning_cycle_1_practise:
       data.cycle1.practiceSlideText ?? data.cycle1.practice,
+    learning_cycle_1_practise_stimulus:
+      data.cycle1.practiceStimulusSlideText ?? "",
     learning_cycle_1_feedback: data.cycle1.feedback,
 
     learning_cycle_2_text: data.cycle2?.explanation.slideText ?? "",
@@ -639,6 +641,8 @@ export async function prepLessonForSlides(
 
     learning_cycle_2_practise:
       data.cycle2?.practiceSlideText ?? data.cycle2?.practice ?? "",
+    learning_cycle_2_practise_stimulus:
+      data.cycle2?.practiceStimulusSlideText ?? "",
     learning_cycle_2_feedback: data.cycle2?.feedback ?? "",
 
     learning_cycle_3_text: data.cycle3?.explanation?.slideText ?? "",
@@ -686,6 +690,8 @@ export async function prepLessonForSlides(
 
     learning_cycle_3_practise:
       data.cycle3?.practiceSlideText ?? data.cycle3?.practice ?? "",
+    learning_cycle_3_practise_stimulus:
+      data.cycle3?.practiceStimulusSlideText ?? "",
     learning_cycle_3_feedback: data.cycle3?.feedback ?? "",
 
     learning_cycle_3_explanation: Array.isArray(
