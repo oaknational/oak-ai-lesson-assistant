@@ -1,7 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
+import {
+  OakThemeProvider,
+  installMockResizeObserver,
+  oakDefaultTheme,
+} from "@oaknational/oak-components";
 import { render, screen } from "@testing-library/react";
 
 import {
@@ -16,6 +20,26 @@ jest.mock("@/components/ContextProviders/FeatureFlagProvider", () => ({
   useBootstrappedFeatureFlag: jest.fn(),
   useBootstrappedPayload: jest.fn(),
 }));
+
+// jsdom doesn't provide ResizeObserver. The design system ships a no-op stand-in,
+// which is enough here: these tests never resize anything.
+installMockResizeObserver();
+
+// jsdom reports every element as zero height, so give it one to measure. Put it back
+// afterwards so it can't confuse any later test in this file.
+const BANNER_HEIGHT = 48;
+beforeAll(() => {
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    value: BANNER_HEIGHT,
+  });
+});
+afterAll(() => {
+  Reflect.deleteProperty(HTMLElement.prototype, "offsetHeight");
+});
+
+const heightVar = () =>
+  document.documentElement.style.getPropertyValue("--status-banner-height");
 
 const mockFlag = jest.mocked(useBootstrappedFeatureFlag);
 const mockPayload = jest.mocked(useBootstrappedPayload);
@@ -98,5 +122,34 @@ describe("StatusBanner", () => {
     const status = screen.getByRole("status");
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+  });
+  it("publishes its height so layouts can make room for it", () => {
+    mockFlag.mockReturnValue(true);
+    mockPayload.mockReturnValue(undefined);
+
+    renderBanner();
+
+    expect(heightVar()).toBe(`${BANNER_HEIGHT}px`);
+  });
+
+  it("publishes no height when the flag is off, leaving spacing untouched", () => {
+    mockFlag.mockReturnValue(false);
+    mockPayload.mockReturnValue(undefined);
+
+    renderBanner();
+
+    expect(heightVar()).toBe("");
+  });
+
+  it("clears its height on unmount", () => {
+    mockFlag.mockReturnValue(true);
+    mockPayload.mockReturnValue(undefined);
+
+    const { unmount } = renderBanner();
+    expect(heightVar()).toBe(`${BANNER_HEIGHT}px`);
+
+    unmount();
+
+    expect(heightVar()).toBe("");
   });
 });
