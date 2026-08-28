@@ -1,3 +1,10 @@
+## [1.82.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.1...v1.82.2) (2026-08-24)
+
+
+### Bug Fixes
+
+* prevent automatic preload on homepage videos ([#1129](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1129)) ([29b43c2](https://github.com/oaknational/oak-ai-lesson-assistant/commit/29b43c2398fd9861244f6e9f0b5fd7ad77fb64a4))
+
 ## [1.82.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.0...v1.82.1) (2026-07-22)
 
 
