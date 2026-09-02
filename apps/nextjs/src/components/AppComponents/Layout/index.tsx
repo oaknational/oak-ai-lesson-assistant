@@ -19,9 +19,7 @@ const Layout = ({ children, includeFooter, feature }: LayoutProps) => {
         <Header page={feature} />
         <StatusBannerSpacer />
 
-        <main className="flex h-full flex-1 flex-col bg-white">
-          {children}
-        </main>
+        <main className="flex h-full flex-1 flex-col bg-white">{children}</main>
         {includeFooter && <Footer />}
       </div>
     </DialogProvider>
