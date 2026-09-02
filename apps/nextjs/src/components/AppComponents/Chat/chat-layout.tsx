@@ -17,8 +17,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
     useMobileLessonPullOutControl({ lessonPlan });
   return (
-    // The chat is pinned to the viewport, so nothing above it can push it down.
-    // Its top edge moves instead, by 0 when the banner is hidden.
+    // Pinned to the viewport, so its top edge moves rather than being pushed down.
     <div
       className={cn("fixed bottom-0 left-0 right-0 z-30", className)}
       style={{ top: STATUS_BANNER_OFFSET }}

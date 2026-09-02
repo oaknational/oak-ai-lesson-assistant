@@ -1,6 +1,7 @@
-"use server";
-
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import {
+  posthogAiBetaServerClient,
+  refreshFlagDefinitionsIfStale,
+} from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
 import { auth } from "@clerk/nextjs/server";
@@ -42,8 +43,10 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
     : undefined;
 
-  // We ask for payloads as well as values, so a flag can carry text we can edit in
-  // PostHog without deploying. The status banner's message works this way.
+  await refreshFlagDefinitionsIfStale();
+
+  // Payloads as well as values, so a flag can carry text we edit in PostHog rather
+  // than deploy. The status banner's message works this way.
   const { featureFlags, featureFlagPayloads } =
     await posthogAiBetaServerClient.getAllFlagsAndPayloads(distinctId, {
       // Only evaluate locally - no server fallback. We only pass properties available

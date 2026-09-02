@@ -7,9 +7,9 @@ const log = aiLogger("feature-flags");
 export const STATUS_BANNER_FLAG = "aila-status-banner";
 
 /**
- * The text is split either side of the link so it reads as one sentence:
- * `messageBefore` then the link then `messageAfter`. We link real words rather than
- * a bare URL, which screen readers read out one character at a time.
+ * Split either side of the link so it reads as one sentence: `messageBefore`, the
+ * link, then `messageAfter`. The link wraps real words rather than a bare URL, which
+ * screen readers read out one character at a time.
  */
 export const statusBannerPayloadSchema = z.object({
   messageBefore: z.string().min(1),
@@ -20,12 +20,7 @@ export const statusBannerPayloadSchema = z.object({
 
 export type StatusBannerPayload = z.infer<typeof statusBannerPayloadSchema>;
 
-/**
- * Shown when the flag is on but its payload is missing or broken.
- *
- * Someone will be editing that payload in a hurry while an incident is live, so a
- * typo should still leave users with a warning rather than no banner at all.
- */
+/** Shown when the flag is on but its payload is missing or broken. */
 export const DEFAULT_STATUS_BANNER_PAYLOAD: StatusBannerPayload = {
   messageBefore: "We're currently experiencing some issues, see",
   linkText: "our status page",

@@ -18,18 +18,37 @@ import {
   parseStatusBannerPayload,
 } from "@/lib/feature-flags/statusBanner";
 
-/**
- * How tall the banner currently is, in a CSS variable so layouts can move their
- * content down to make room for it. It is unset when the banner is hidden, so
- * `var(--status-banner-height, 0px)` gives 0 and nothing moves.
- */
+/** The banner's current height. Unset while it's hidden, so the offset below is 0. */
 const HEIGHT_CSS_VAR = "--status-banner-height";
 
-/**
- * How far down to move something to clear the banner. Use this rather than writing
- * the variable name out again, so renaming it can't silently leave a layout behind.
- */
+/** How far to move something down to clear the banner. */
 export const STATUS_BANNER_OFFSET = `var(${HEIGHT_CSS_VAR}, 0px)`;
+
+/**
+ * Every mounted banner's height. A route change mounts the next page's banner before
+ * unmounting the current one, so the variable is derived from all of them - otherwise
+ * the old banner's cleanup would clear the height the new one had just set.
+ */
+const heights = new Map<Element, number>();
+let published = "";
+
+function syncHeight() {
+  const root = document.documentElement;
+
+  if (heights.size === 0) {
+    published = "";
+    root.style.removeProperty(HEIGHT_CSS_VAR);
+    return;
+  }
+
+  // Writing to the root restyles the whole document, and the observer fires on every
+  // width change, so skip the writes that wouldn't change anything.
+  const next = `${Math.max(...heights.values())}px`;
+  if (next !== published) {
+    published = next;
+    root.style.setProperty(HEIGHT_CSS_VAR, next);
+  }
+}
 
 type StatusBannerProps = {
   "data-testid"?: string;
@@ -41,8 +60,8 @@ type StatusBannerProps = {
  * Switched on and off from PostHog, so nobody has to deploy to put it up or take it
  * down. There is no dismiss button on purpose: it disappears when the flag goes off.
  *
- * Both the flag and the message come from the server, not the browser's PostHog
- * client, so the banner still reaches people who declined cookies.
+ * Both the flag and the message are evaluated on the server, so the banner still
+ * reaches people who declined cookies.
  */
 export function StatusBanner({
   "data-testid": testId = "status-banner",
@@ -65,29 +84,23 @@ export function StatusBanner({
       return;
     }
 
-    const root = document.documentElement;
-    let published = "";
-    // Writing to the root restyles the whole document, and the observer also fires
-    // on every width change, so skip the writes that wouldn't change anything.
-    const publish = (height: number) => {
-      const next = `${height}px`;
-      if (next === published) {
-        return;
-      }
-      published = next;
-      root.style.setProperty(HEIGHT_CSS_VAR, next);
-    };
+    heights.set(element, element.offsetHeight);
+    syncHeight();
 
-    publish(element.offsetHeight);
     const observer = new ResizeObserver(([entry]) => {
-      // From the entry, not a fresh offsetHeight read, which would force a reflow.
-      publish(entry?.borderBoxSize[0]?.blockSize ?? element.offsetHeight);
+      // From the entry, not a fresh offsetHeight read, which would force a re-layout.
+      heights.set(
+        element,
+        entry?.borderBoxSize[0]?.blockSize ?? element.offsetHeight,
+      );
+      syncHeight();
     });
     observer.observe(element);
 
     return () => {
       observer.disconnect();
-      root.style.removeProperty(HEIGHT_CSS_VAR);
+      heights.delete(element);
+      syncHeight();
     };
   }, [isVisible]);
 
@@ -125,8 +138,8 @@ export function StatusBanner({
 const SPACER_STYLE = { height: STATUS_BANNER_OFFSET };
 
 /**
- * An empty div the same height as the banner. Drop it above a layout's content to
- * push that content down. It has no height when the banner is hidden.
+ * Sits above a layout's content to push it clear of the banner. Zero height when the
+ * banner is hidden.
  */
 export function StatusBannerSpacer() {
   return <div aria-hidden style={SPACER_STYLE} />;

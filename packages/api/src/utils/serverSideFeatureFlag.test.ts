@@ -1,4 +1,7 @@
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import {
+  posthogAiBetaServerClient,
+  refreshFlagDefinitionsIfStale,
+} from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { kv } from "@vercel/kv";
@@ -21,6 +24,7 @@ jest.mock("@oakai/core/src/analytics/posthogAiBetaServerClient", () => ({
   posthogAiBetaServerClient: {
     isFeatureEnabled: jest.fn(),
   },
+  refreshFlagDefinitionsIfStale: jest.fn(),
 }));
 
 const mockedAuth = jest.mocked(auth);
@@ -30,6 +34,7 @@ const mockedKvSet = jest.mocked(kv.set);
 const mockedIsFeatureEnabled = jest.mocked(
   posthogAiBetaServerClient.isFeatureEnabled,
 );
+const mockedRefresh = jest.mocked(refreshFlagDefinitionsIfStale);
 
 describe("serverSideFeatureFlag", () => {
   beforeEach(() => {
@@ -51,6 +56,8 @@ describe("serverSideFeatureFlag", () => {
     );
     expect(mockedIsFeatureEnabled).not.toHaveBeenCalled();
     expect(mockedClerkClient).not.toHaveBeenCalled();
+    // No point refreshing definitions we aren't going to evaluate against.
+    expect(mockedRefresh).not.toHaveBeenCalled();
   });
 
   it("returns false for boolean false cache hits", async () => {
@@ -83,6 +90,25 @@ describe("serverSideFeatureFlag", () => {
       "feature_flag:agentic-aila-nov-25:user_123",
       true,
       { ex: 60 },
+    );
+  });
+
+  it("refreshes stale flag definitions before evaluating on a cache miss", async () => {
+    mockedKvGet.mockResolvedValue(null);
+    mockedIsFeatureEnabled.mockResolvedValue(true);
+    mockedClerkClient.mockResolvedValue({
+      users: {
+        getUser: jest.fn().mockResolvedValue({
+          emailAddresses: [{ emailAddress: "test@example.com" }],
+        }),
+      },
+    } as unknown as Awaited<ReturnType<typeof clerkClient>>);
+
+    await serverSideFeatureFlag("agentic-aila-nov-25");
+
+    expect(mockedRefresh).toHaveBeenCalledTimes(1);
+    expect(mockedRefresh.mock.invocationCallOrder[0]).toBeLessThan(
+      mockedIsFeatureEnabled.mock.invocationCallOrder[0]!,
     );
   });
 });

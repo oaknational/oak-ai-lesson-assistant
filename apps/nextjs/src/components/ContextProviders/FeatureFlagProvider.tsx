@@ -86,14 +86,11 @@ export const useClientSideFeatureFlag = (flag: string) => {
 };
 
 /**
- * Reads a flag's value as worked out on the server when the page was rendered.
+ * A flag's value as evaluated on the server for this render.
  *
- * Reach for this instead of useClientSideFeatureFlag when a flag has to work for
- * everyone. That hook needs the browser's PostHog client, which never starts up for
- * people who declined cookies, and it reports every flag as on when
- * NEXT_PUBLIC_POSTHOG_DEBUG is set.
- *
- * The catch: the value here only changes on a full page reload.
+ * Prefer this to useClientSideFeatureFlag for flags that must work for everyone: that
+ * hook needs the browser's PostHog client, which never starts up for people who
+ * declined cookies. Only changes on a full page reload.
  */
 export const useBootstrappedFeatureFlag = (flag: string): boolean => {
   const { bootstrappedFeatures } = useContext(FeatureFlagContext);
@@ -102,7 +99,7 @@ export const useBootstrappedFeatureFlag = (flag: string): boolean => {
 
 /**
  * The JSON attached to a flag in PostHog, or undefined if it has none. Validate it
- * before use: anyone with PostHog access can edit it, so it may be any shape.
+ * before use - anyone with PostHog access can edit it.
  */
 export const useBootstrappedPayload = (flag: string): unknown => {
   const { bootstrappedPayloads } = useContext(FeatureFlagContext);

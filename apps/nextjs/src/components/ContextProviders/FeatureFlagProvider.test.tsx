@@ -11,8 +11,8 @@ import {
   useBootstrappedPayload,
 } from "./FeatureFlagProvider";
 
-// Importing this file drags in Clerk via the analytics provider, which jest can't
-// load. The hooks we're testing here don't use it, so stub it out.
+// The analytics provider drags in Clerk, which jest can't load. These hooks don't
+// use it.
 jest.mock("@/lib/analytics/useAnalytics", () => ({
   __esModule: true,
   default: () => ({
@@ -62,8 +62,8 @@ describe("useBootstrappedFeatureFlag", () => {
     expect(result.current).toBe(false);
   });
 
-  // The older hook reports every flag as on when this is set, which would make the
-  // banner impossible to check in its off state locally. This hook ignores it.
+  // useClientSideFeatureFlag reports every flag as on when this is set, which would
+  // make the banner impossible to check in its off state locally.
   it("ignores NEXT_PUBLIC_POSTHOG_DEBUG", () => {
     const original = process.env.NEXT_PUBLIC_POSTHOG_DEBUG;
     process.env.NEXT_PUBLIC_POSTHOG_DEBUG = "true";

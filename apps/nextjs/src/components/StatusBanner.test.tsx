@@ -21,12 +21,10 @@ jest.mock("@/components/ContextProviders/FeatureFlagProvider", () => ({
   useBootstrappedPayload: jest.fn(),
 }));
 
-// jsdom doesn't provide ResizeObserver. The design system ships a no-op stand-in,
-// which is enough here: these tests never resize anything.
+// jsdom has no ResizeObserver; these tests never resize, so a no-op will do.
 installMockResizeObserver();
 
-// jsdom reports every element as zero height, so give it one to measure. Put it back
-// afterwards so it can't confuse any later test in this file.
+// jsdom reports every element as zero height, so give it one to measure.
 const BANNER_HEIGHT = 48;
 beforeAll(() => {
   Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
@@ -123,6 +121,7 @@ describe("StatusBanner", () => {
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(screen.queryByRole("banner")).not.toBeInTheDocument();
   });
+
   it("publishes its height so layouts can make room for it", () => {
     mockFlag.mockReturnValue(true);
     mockPayload.mockReturnValue(undefined);
@@ -149,6 +148,23 @@ describe("StatusBanner", () => {
     expect(heightVar()).toBe(`${BANNER_HEIGHT}px`);
 
     unmount();
+
+    expect(heightVar()).toBe("");
+  });
+
+  // A route change mounts the next page's banner before unmounting the current one.
+  it("keeps its height when an overlapping banner unmounts", () => {
+    mockFlag.mockReturnValue(true);
+    mockPayload.mockReturnValue(undefined);
+
+    const outgoing = renderBanner();
+    const incoming = renderBanner();
+
+    outgoing.unmount();
+
+    expect(heightVar()).toBe(`${BANNER_HEIGHT}px`);
+
+    incoming.unmount();
 
     expect(heightVar()).toBe("");
   });
