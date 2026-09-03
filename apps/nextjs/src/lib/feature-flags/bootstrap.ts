@@ -1,6 +1,7 @@
-"use server";
-
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import {
+  posthogAiBetaServerClient,
+  refreshFlagDefinitionsIfStale,
+} from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
 import { auth } from "@clerk/nextjs/server";
@@ -42,16 +43,24 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
     : undefined;
 
-  const features = await posthogAiBetaServerClient.getAllFlags(distinctId, {
-    // Only evaluate locally - no server fallback. We only pass properties available
-    // from session claims (e.g. featureFlagGroup), not properties like email that
-    // would require an extra Clerk API call on every page load. Flags that filter
-    // on email will return false here - use serverSideFeatureFlag() for runtime
-    // checks that need email-based targeting.
-    onlyEvaluateLocally: true,
-    personProperties,
-  });
+  await refreshFlagDefinitionsIfStale();
+
+  // Payloads as well as values, so a flag can carry text we edit in PostHog rather
+  // than deploy. The status banner's message works this way.
+  const { featureFlags, featureFlagPayloads } =
+    await posthogAiBetaServerClient.getAllFlagsAndPayloads(distinctId, {
+      // Only evaluate locally - no server fallback. We only pass properties available
+      // from session claims (e.g. featureFlagGroup), not properties like email that
+      // would require an extra Clerk API call on every page load. Flags that filter
+      // on email will return false here - use serverSideFeatureFlag() for runtime
+      // checks that need email-based targeting.
+      onlyEvaluateLocally: true,
+      personProperties,
+    });
+
+  const features = featureFlags ?? {};
+  const payloads = featureFlagPayloads ?? {};
 
   log.info("Bootstrapped flags", features);
-  return features;
+  return { features, payloads };
 }

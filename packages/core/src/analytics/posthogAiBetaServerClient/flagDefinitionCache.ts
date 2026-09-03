@@ -7,7 +7,8 @@ import type {
 } from "posthog-node/experimental";
 
 const KV_KEY = "posthog-feature-flag-definitions";
-const CACHE_TTL_SECONDS = 60;
+// Half of the propagation budget described on REFRESH_INTERVAL_MS in ./index.ts.
+const CACHE_TTL_SECONDS = 30;
 
 const log = aiLogger("feature-flags");
 
