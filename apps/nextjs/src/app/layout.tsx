@@ -89,7 +89,8 @@ export default async function RootLayout({
     return redirect("/not-found");
   }
 
-  const bootstrappedFeatures = await getBootstrappedFeatures(headersList);
+  const { features: bootstrappedFeatures, payloads: bootstrappedPayloads } =
+    await getBootstrappedFeatures(headersList);
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>
@@ -133,6 +134,7 @@ export default async function RootLayout({
                       <GleapProvider>
                         <FeatureFlagProvider
                           bootstrappedFeatures={bootstrappedFeatures}
+                          bootstrappedPayloads={bootstrappedPayloads}
                         >
                           {children}
                         </FeatureFlagProvider>

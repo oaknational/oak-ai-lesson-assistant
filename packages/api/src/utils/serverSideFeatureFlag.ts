@@ -1,4 +1,7 @@
-import { posthogAiBetaServerClient } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import {
+  posthogAiBetaServerClient,
+  refreshFlagDefinitionsIfStale,
+} from "@oakai/core/src/analytics/posthogAiBetaServerClient";
 import { aiLogger } from "@oakai/logger";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
@@ -25,7 +28,8 @@ function parseCachedFeatureFlagValue(value: unknown): boolean | null {
  * this fetches email from Clerk and passes it for local evaluation, enabling
  * flags with email-based targeting rules.
  *
- * Results are cached for 60s to avoid repeated Clerk API calls.
+ * Results are cached for 60s to avoid repeated Clerk API calls, so a change in
+ * PostHog takes that long to reach a user on top of the flag definition refresh.
  */
 export async function serverSideFeatureFlag(
   featureFlagId: string,
@@ -45,6 +49,8 @@ export async function serverSideFeatureFlag(
   }
 
   try {
+    await refreshFlagDefinitionsIfStale();
+
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
     const email = user.emailAddresses?.[0]?.emailAddress;
