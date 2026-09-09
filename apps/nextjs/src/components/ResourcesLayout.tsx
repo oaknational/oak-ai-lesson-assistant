@@ -8,6 +8,7 @@ import {
 
 import { Header } from "./AppComponents/Chat/header";
 import { useDemoUser } from "./ContextProviders/Demo";
+import { StatusBannerSpacer } from "./StatusBanner";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -34,6 +35,7 @@ const TeachingMaterialsLayout = ({
       >
         <Header page={"teachingMaterials"} />
       </OakBox>
+      <StatusBannerSpacer />
       <OakFlex
         as="main"
         $alignItems="center"

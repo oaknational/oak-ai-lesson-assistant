@@ -9,6 +9,7 @@ import { useDemoUser } from "./ContextProviders/Demo";
 import HeaderAuth from "./HeaderAuth";
 import { Logo } from "./Logo";
 import OakIconLogo from "./OakIconLogo";
+import { StatusBanner } from "./StatusBanner";
 
 type HeaderProps = {
   menuOpen: boolean;
@@ -36,6 +37,7 @@ const Header = ({ menuOpen, setMenuOpen, page }: Readonly<HeaderProps>) => {
       $zIndex="fixed-header"
       $bb={"border-solid-m"}
     >
+      <StatusBanner />
       {clerkMetadata.isSet && isDemoUser && page && (
         <DemoBanner
           page={page}

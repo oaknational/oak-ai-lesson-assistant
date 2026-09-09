@@ -1,3 +1,10 @@
+# [1.83.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.2...v1.83.0) (2026-09-07)
+
+
+### Features
+
+* add a PostHog-switchable service status banner ([#1131](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1131)) ([acf204f](https://github.com/oaknational/oak-ai-lesson-assistant/commit/acf204f06fc8f1476c7ed91d437e5a5cd13cbb69))
+
 ## [1.82.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.1...v1.82.2) (2026-08-24)
 
 

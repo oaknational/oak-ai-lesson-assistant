@@ -1,4 +1,5 @@
 import { useDemoUser } from "@/components/ContextProviders/Demo";
+import { STATUS_BANNER_OFFSET } from "@/components/StatusBanner";
 import { useMobileLessonPullOutControl } from "@/hooks/useMobileLessonPullOutControl";
 import { cn } from "@/lib/utils";
 import { useLessonPlanStore } from "@/stores/AilaStoresProvider";
@@ -16,7 +17,11 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   const { showLessonMobile, setShowLessonMobile, closeMobileLessonPullOut } =
     useMobileLessonPullOutControl({ lessonPlan });
   return (
-    <div className={cn("fixed bottom-0 left-0 right-0 top-0 z-30", className)}>
+    // Pinned to the viewport, so its top edge moves rather than being pushed down.
+    <div
+      className={cn("fixed bottom-0 left-0 right-0 z-30", className)}
+      style={{ top: STATUS_BANNER_OFFSET }}
+    >
       <div
         className={`flex h-full flex-row justify-start ${demo.isDemoUser ? "pt-22" : ""}`}
       >
