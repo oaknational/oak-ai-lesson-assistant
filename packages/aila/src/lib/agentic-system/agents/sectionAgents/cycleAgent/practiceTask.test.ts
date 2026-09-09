@@ -87,7 +87,7 @@ describe("composePracticeTask rendering", () => {
     );
   });
 
-  it("renders a shared stimulus after the statements", () => {
+  it("renders a shared stimulus above the statements", () => {
     const { practice } = composePracticeTask({
       instruction:
         "Explain the impact of the figurative language in the passage.",
@@ -101,11 +101,16 @@ describe("composePracticeTask rendering", () => {
           "Trapped in a sterile room, she longed to see her family again.",
       },
     });
-    expect(
-      practice.endsWith(
-        "1. Identify the adjectives\n2. Explain the impact on the reader\n\nTrapped in a sterile room, she longed to see her family again.",
-      ),
-    ).toBe(true);
+    expect(practice).toBe(
+      [
+        "Explain the impact of the figurative language in the passage.",
+        "",
+        "Trapped in a sterile room, she longed to see her family again.",
+        "",
+        "1. Identify the adjectives",
+        "2. Explain the impact on the reader",
+      ].join("\n"),
+    );
   });
 
   it("renders both configurations gracefully when the model emits both", () => {
@@ -123,7 +128,10 @@ describe("composePracticeTask rendering", () => {
       sharedStimulus: { label: "data table", content: "Time 0 20 40" },
     });
     expect(practice).toContain("The rate is ______.");
-    expect(practice.endsWith("Time 0 20 40")).toBe(true);
+    // shared stimulus sits above the statements, after the instruction
+    expect(practice.indexOf("Time 0 20 40")).toBeLessThan(
+      practice.indexOf("1. Complete the sentences:"),
+    );
   });
 });
 
@@ -252,11 +260,20 @@ describe("composeCycleFromResponse", () => {
     const composed = composeCycleFromResponse({
       title: "Rates of reaction",
       practice: meditationTask,
+      feedback: [
+        {
+          type: "Success criteria" as const,
+          content: "two ways meditation matters are joined into a paragraph.",
+        },
+      ],
     });
     expect(composed.title).toBe("Rates of reaction");
     expect(typeof composed.practice).toBe("string");
     expect(composed).not.toHaveProperty("practiceSlideText");
     expect(composed).not.toHaveProperty("practiceStimulusSlideText");
+    expect(composed.feedback).toBe(
+      "Success criteria: two ways meditation matters are joined into a paragraph.",
+    );
   });
 
   it("includes the slide fields only when composition produced them", () => {
@@ -274,6 +291,12 @@ describe("composeCycleFromResponse", () => {
         ],
         sharedStimulus: null,
       },
+      feedback: [
+        {
+          type: "Completed answer" as const,
+          content: "The rate is fastest at the start.",
+        },
+      ],
     });
     expect(composed.practiceSlideText).toContain("on the next slide");
     expect(composed.practiceStimulusSlideText).toContain("For step 1:");

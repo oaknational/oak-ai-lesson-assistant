@@ -1034,6 +1034,11 @@ function makeCycle(title: string) {
       statements: [],
       sharedStimulus: null,
     },
-    feedback: "Check against the model answer.",
+    feedback: [
+      {
+        type: "Model answer",
+        content: "Check against the model answer.",
+      },
+    ],
   };
 }

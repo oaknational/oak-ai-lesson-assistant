@@ -1,4 +1,5 @@
 import { cyclesInstructions } from "./cycle.instructions";
+import { FEEDBACK_TYPES } from "./feedback";
 import {
   MAX_SLIDE_LINES,
   STEPS_POINTER_LINE,
@@ -56,7 +57,32 @@ describe("cycle instructions", () => {
     expect(instructions).not.toMatch(/in the additional materials/i);
   });
 
-  it("applies the slide limit to feedback", () => {
-    expect(instructions).toMatch(/same fixed-size box as the practice task/i);
+  it("marks stimulus openers with the ellipsis convention", () => {
+    expect(instructions).toContain(
+      'a sentence ending in "…" is an opener for pupils to complete',
+    );
+  });
+
+  it("lists every feedback type", () => {
+    for (const type of FEEDBACK_TYPES) {
+      expect(instructions).toContain(type);
+    }
+  });
+
+  it("tells the model that feedback labels and numbering are automatic", () => {
+    expect(instructions).toMatch(
+      /type label, the colon and any numbering are added automatically/i,
+    );
+  });
+
+  it("caps feedback at the slide limit with a compression fallback", () => {
+    expect(instructions).toMatch(/feedback must fit within the slide limit/i);
+    expect(instructions).toMatch(
+      /give the key steps or success criteria only/i,
+    );
+  });
+
+  it("carries no trace of the old feedback rules", () => {
+    expect(instructions).not.toMatch(/keyword bank|covalent bonding/i);
   });
 });

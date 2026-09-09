@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { Cycle } from "../../../../../protocol/schema";
+import { type FeedbackPieces, composeFeedback } from "./feedback";
 
 /**
  * The stimulus types a practice task may include. Single source of truth for
@@ -51,7 +52,7 @@ A statement that introduces its own stimulus should end with a colon.`),
     .describe(`The numbered STATEMENTS, in order, requiring progressively deeper thinking.
 Only include statements when the task genuinely has multiple steps; use an empty array for one continuous activity.`),
   sharedStimulus: StimulusSchema.nullable()
-    .describe(`A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown after the statements.
+    .describe(`A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown above the statements, directly after the task instruction.
 Null when there is none. A task should use either per-statement stimuli or this shared stimulus, not both.`),
 });
 
@@ -116,7 +117,7 @@ type StimulusKey = number | "shared";
  * segment structure mirrors the prompt's examples: consecutive stimulus-less
  * statements sit on adjacent lines; a stimulus (or its pointer) is a
  * blank-separated block directly beneath its statement; the shared stimulus
- * follows the statements.
+ * sits above the statements, directly after the instruction.
  */
 function renderTask(
   parts: PracticeTaskParts,
@@ -124,6 +125,15 @@ function renderTask(
   destination: PointerDestination,
 ): string {
   const segments: (string | undefined)[] = [parts.instruction];
+
+  if (parts.sharedStimulus) {
+    segments.push(
+      moved.has("shared")
+        ? stimulusPointerLine(parts.sharedStimulus.label, destination)
+        : parts.sharedStimulus.content,
+    );
+  }
+
   let statementRun: string[] = [];
 
   const flushRun = () => {
@@ -146,14 +156,6 @@ function renderTask(
   });
   flushRun();
 
-  if (parts.sharedStimulus) {
-    segments.push(
-      moved.has("shared")
-        ? stimulusPointerLine(parts.sharedStimulus.label, destination)
-        : parts.sharedStimulus.content,
-    );
-  }
-
   return renderSegments(segments);
 }
 
@@ -163,6 +165,11 @@ function renderStimulusSlide(
   moved: Set<StimulusKey>,
 ): string {
   const segments: string[] = [];
+  if (parts.sharedStimulus && moved.has("shared")) {
+    // A heading is only needed to disambiguate from per-statement stimuli.
+    const heading = moved.size > 1 ? `${SHARED_STIMULUS_HEADING}\n` : "";
+    segments.push(`${heading}${parts.sharedStimulus.content.trim()}`);
+  }
   parts.statements.forEach((statement, index) => {
     if (statement.stimulus && moved.has(index)) {
       segments.push(
@@ -170,11 +177,6 @@ function renderStimulusSlide(
       );
     }
   });
-  if (parts.sharedStimulus && moved.has("shared")) {
-    // A heading is only needed to disambiguate from per-statement stimuli.
-    const heading = moved.size > 1 ? `${SHARED_STIMULUS_HEADING}\n` : "";
-    segments.push(`${heading}${parts.sharedStimulus.content.trim()}`);
-  }
   return renderSegments(segments);
 }
 
@@ -261,11 +263,11 @@ export function composePracticeTask(parts: PracticeTaskParts): {
 
 /** Maps the cycle agent's parts-shaped response to the document's cycle shape. */
 export function composeCycleFromResponse<
-  T extends { practice: PracticeTaskParts },
+  T extends { practice: PracticeTaskParts; feedback: FeedbackPieces },
 >(
   response: T,
-): Omit<T, "practice"> &
-  Pick<Cycle, "practice"> & {
+): Omit<T, "practice" | "feedback"> &
+  Pick<Cycle, "practice" | "feedback"> & {
     practiceSlideText?: string;
     practiceStimulusSlideText?: string;
   } {
@@ -276,6 +278,7 @@ export function composeCycleFromResponse<
   return {
     ...response,
     practice,
+    feedback: composeFeedback(response.feedback),
     ...(practiceSlideText !== undefined && { practiceSlideText }),
     ...(practiceStimulusSlideText !== undefined && {
       practiceStimulusSlideText,

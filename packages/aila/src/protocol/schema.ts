@@ -176,9 +176,8 @@ export const CYCLE_DESCRIPTIONS = {
     Composed automatically from the practice task; absent when the full task already fits.`,
   practiceStimulusSlideText: dedent`Stimulus material moved off the practice task slide onto its own slide.
     Composed automatically; absent when nothing was moved, which also removes that cycle's stimulus slide from the exported deck.`,
-  feedback: dedent`Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.
-    This should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.
-    Written in the TEACHER_TO_PUPIL_SLIDES voice.`,
+  feedback: dedent`Pupil-facing feedback on the practice task, shown on a slide after it: typed pieces (model answer, success criteria, worked example or completed answer) composed into one text, numbered to match the task's statements when there is one piece per statement.
+    Written in the TEACHER_TO_PUPIL_WRITTEN voice.`,
 } as const;
 
 export const CycleSchemaWithoutLength = z.object({

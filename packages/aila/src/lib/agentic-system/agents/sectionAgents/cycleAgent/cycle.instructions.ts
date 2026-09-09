@@ -131,7 +131,7 @@ A task is built from three kinds of parts:
 
 The TASK INSTRUCTION comes first, then the STATEMENTS in order.
 
-A STIMULUS can be one of two configurations. It can either sit directly beneath the STATEMENT it belongs to, as in Example 1. Or it can be a single STIMULUS that belongs to multiple STATEMENTS as seen in Example 2.
+A STIMULUS can be one of two configurations. It can either sit directly beneath the STATEMENT it belongs to, as in Example 1. Or it can be a single STIMULUS that belongs to all STATEMENTS, shown above them directly after the TASK INSTRUCTION, as seen in Example 2.
 
 Example 1:
 
@@ -147,7 +147,8 @@ The Romans built long, straight roads across Britain. Carts, soldiers and trader
 
 3. Explain, using the examples, why daily life changed more in some places than in others:
 
-In a town: a family buys bread at the market, pays with coins, and visits the baths. On a farm far from a road: a family grows its own food and lives in a roundhouse, as their grandparents did.
+In a town…
+On a farm far from a road…
 
 Another configuration that a task can be specified in is with a STIMULUS that applies to all statements.
 
@@ -155,11 +156,11 @@ Example 2:
 
 Explain what impact the use of figurative language in the passage has on the reader.
 
+Trapped in a sterile room, she longed to see her family again. Where plush grass adorned with flowers used to grow, skyscrapers now towered into the polluted sky. Hastily, he scanned the surroundings for any threat.
+
 1. Identify the adjectives and adverbs
 2. Identify any personification
 3. Use full sentences to explain the impact on the reader
-
-Trapped in a sterile room, she longed to see her family again. Where plush grass adorned with flowers used to grow, skyscrapers now towered into the polluted sky. Hastily, he scanned the surroundings for any threat.
 
 #### How to write tasks
 
@@ -183,6 +184,7 @@ Write a paragraph explaining why meditation matters to many Buddhists.
 3. Join your two ideas to say why meditation matters
 
 After the TASK INSTRUCTION and any numbered STATEMENTS if any require a STIMULUS (${STIMULUS_TYPES.join(", ")}) this must follow it directly. A STIMULUS does not require bullet points or numbers.
+In a STIMULUS, a sentence ending in "…" is an opener for pupils to complete. Only use "…" for this purpose.
 
 Non-example (a STIMULUS that belongs to ONE statement must sit directly beneath it, not at the end of the task):
 
@@ -214,22 +216,42 @@ Roman settlement brought more ______ where people could buy and sell goods. Some
 
 This section provides pupils with the chance to get feedback on their practice task. This is often done in a class of 30 pupils so consider how you might show the correct answer for this audience. The teacher will not have time to check each pupil's work.
 
-- Must be pupil-facing (it will be shown on slides)
-- Written in the pupil voice.
-- Choose the most appropriate format (indicate this at the start of the feedback)
-  - Model Answer (e.g. sample diagram or response)
-  - Worked Example (e.g. steps in a calculation)
-  - Success Criteria (e.g. 3 key features of a good answer)
-- If you have included a keyword bank or sentence starters in the practice task, update the feedback section to include these.
-- Feedback is shown on one slide in the same fixed-size box as the practice task. It must fit in at most 12 lines (aim for about 10), counting every line and blank separator, with each line short enough not to wrap. If a full worked example will not fit, give the key steps or success criteria only.
+Audience: pupils in the class
+Voice: TEACHER_TO_PUPIL_WRITTEN
 
-**Examples:**
-- Practice = completing calculations
-  Feedback = worked examples showing the steps in the calculation with the correct answers.
-- Practice = bouncing a basketball
-  Feedback: success criteria "1. Bounce the ball with two hands. 2. Bounce the ball to chest height."
-- Practice: explaining the type of bonding shown in a molecule
-  Feedback: 'model answer: I can tell that this is a covalent bond because there are two electrons being shared by the pair of atoms.
+Feedback is always placed after the practice task.
 
-**Non-example:** "Get pupils to mark their answer above covalent bonding"`;
+FEEDBACK can be one of two configurations. Either one piece of feedback per numbered STATEMENT, in the same order, as in Example 1; the pieces are numbered to match the statements automatically. Or a single piece of FEEDBACK that covers the whole task, as in Example 2, which gets no number.
+
+Return each piece as its type plus its content. The type label, the colon and any numbering are added automatically; never write them into the content, and never write a heading.
+
+Example 1 (feedback pupils see for the Roman settlement task above):
+
+1. Completed answer: Roman settlement brought more markets where people could buy and sell goods. Some people started using coins to pay for things. Roman baths gave people a new place to wash and meet. Roman aqueducts carried clean water into some towns.
+2. Success criteria: at least one change is identified with an explanation of how it changed daily life.
+3. Completed answer: In a town, a family buys bread at the market, pays with coins, and visits the baths. On a farm far from a road, a family grows its own food and lives in a roundhouse, as their grandparents did.
+
+Example 2 (a single piece of feedback for the figurative language task above):
+
+Success criteria: at least one adjective, adverb and example of personification is identified and the impact of them explained using full sentences.
+
+Types of feedback to be used:
+
+- Model answer (e.g. sample diagram or response)
+- Success criteria (e.g. key features needed to be included for a good answer)
+- Worked example (e.g. showing the steps in the calculation with the correct answers)
+- Completed answer (e.g. completed question stems or cloze activity)
+
+Choose the most appropriate form of feedback for the task. A non-example would be "Swap with a partner and mark each other's answers", as this is an instruction to the class, not feedback pupils can check their work against.
+
+How to write feedback:
+
+- Do not include any superfluous or extraneous information that could distract the teacher or the pupils.
+- When the feedback includes an itemised list, separate list items with a comma. If multiple equations or calculations are present, render them on separate lines.
+
+Slides:
+
+- Feedback appears on one slide in a fixed-size box holding at most ${MAX_SLIDE_LINES} lines, counting every line and blank separator line; the box cannot shrink or grow the text, and anything over the limit is cut off.
+- Feedback must fit within the slide limit. Keep each line short (about ${WORDS_PER_LINE} words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.
+- If a full worked example or model answer will not fit, give the key steps or success criteria only.`;
 }
