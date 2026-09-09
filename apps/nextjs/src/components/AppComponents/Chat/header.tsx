@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 
 import { useDemoUser } from "@/components/ContextProviders/Demo";
 import OakIconLogo from "@/components/OakIconLogo";
+import { StatusBanner } from "@/components/StatusBanner";
 import { useClerkDemoMetadata } from "@/hooks/useClerkDemoMetadata";
 
 import { useDialog } from "../DialogContext";
@@ -36,6 +37,7 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
       $zIndex={"banner"}
       $width={"100%"}
     >
+      <StatusBanner />
       {clerkMetadata.isSet && isDemoUser && page && (
         <DemoBanner
           page={page}
