@@ -36,6 +36,7 @@ import { createOpenAIPlannerAgent } from "../agents/plannerAgent";
 import {
   MAX_SLIDE_LINES,
   estimateRenderedLines,
+  wordCount,
 } from "../agents/sectionAgents/cycleAgent/practiceTask";
 import { createSectionAgentRegistry } from "../agents/sectionAgents/sectionAgentRegistry";
 import { ailaTurn } from "../ailaTurn";
@@ -105,10 +106,6 @@ type RunCapture = ScorerInput & {
 // ---------------------------------------------------------------------------
 // Scorers
 // ---------------------------------------------------------------------------
-
-function wordCount(text: string): number {
-  return text.split(/\s+/).filter(Boolean).length;
-}
 
 const SCORERS: Scorer[] = [
   {

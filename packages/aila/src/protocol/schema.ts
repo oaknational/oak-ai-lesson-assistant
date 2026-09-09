@@ -199,6 +199,15 @@ export const CycleSchemaWithoutLength = z.object({
   feedback: z.string().describe(CYCLE_DESCRIPTIONS.feedback),
 });
 
+/**
+ * Cycle fields composed by code, never written by a model. Every schema sent
+ * to an LLM must omit them: OpenAI structured outputs reject optional fields.
+ */
+export const CYCLE_COMPOSED_SLIDE_FIELDS = {
+  practiceSlideText: true,
+  practiceStimulusSlideText: true,
+} as const;
+
 export const CycleSchema = CycleSchemaWithoutLength.extend({
   checkForUnderstanding: z.array(CheckForUnderstandingSchema).min(2),
 });

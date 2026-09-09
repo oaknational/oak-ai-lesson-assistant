@@ -1,6 +1,9 @@
 import type { z } from "zod";
 
-import { CycleSchema } from "../../../../../protocol/schema";
+import {
+  CYCLE_COMPOSED_SLIDE_FIELDS,
+  CycleSchema,
+} from "../../../../../protocol/schema";
 import { FeedbackPiecesSchema } from "./feedback";
 import { PracticeTaskPartsSchema } from "./practiceTask";
 
@@ -12,12 +15,9 @@ export { CycleSchema };
  * strings from the parts (see practiceTask.ts and feedback.ts), so the model
  * never writes derived slide text, numbering, or type labels itself.
  */
-export const CycleAgentResponseSchema = CycleSchema.omit({
-  practice: true,
-  practiceSlideText: true,
-  practiceStimulusSlideText: true,
-  feedback: true,
-}).extend({
+export const CycleAgentResponseSchema = CycleSchema.omit(
+  CYCLE_COMPOSED_SLIDE_FIELDS,
+).extend({
   practice: PracticeTaskPartsSchema,
   feedback: FeedbackPiecesSchema,
 });

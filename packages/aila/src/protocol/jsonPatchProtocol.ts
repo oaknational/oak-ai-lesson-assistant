@@ -13,6 +13,7 @@ import type { PartialLessonPlan } from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
+  CYCLE_COMPOSED_SLIDE_FIELDS,
   CycleOptionalSchema,
   CycleSchema,
   CycleSchemaWithoutLength,
@@ -116,12 +117,7 @@ export const PatchCycleForLLM = z.object({
     z.literal("/cycle2"),
     z.literal("/cycle3"),
   ]),
-  // The composed slide fields are written by the agentic pipeline, never by
-  // the LLM, and their optionality is rejected by OpenAI structured outputs.
-  value: CycleSchemaWithoutLength.omit({
-    practiceSlideText: true,
-    practiceStimulusSlideText: true,
-  }).describe(
+  value: CycleSchemaWithoutLength.omit(CYCLE_COMPOSED_SLIDE_FIELDS).describe(
     "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
   ),
 });

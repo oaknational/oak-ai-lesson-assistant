@@ -80,14 +80,14 @@ export function stimulusPointerLine(
 export const STEPS_POINTER_LINE = "You will find the steps on the worksheet.";
 
 /** Heading attributing a moved stimulus to its statement on the stimulus slide. */
-export function stimulusHeadingLine(statementNumber: number): string {
+function stimulusHeadingLine(statementNumber: number): string {
   return `For step ${statementNumber}:`;
 }
 
 const SHARED_STIMULUS_HEADING = "For all steps:";
 
-function wordCount(text: string): number {
-  return text.trim().split(/\s+/).filter(Boolean).length;
+export function wordCount(text: string): number {
+  return text.split(/\s+/).filter(Boolean).length;
 }
 
 /** Estimates rendered slide lines: blank lines count as one, long lines wrap. */
@@ -102,10 +102,10 @@ export function estimateRenderedLines(text: string): number {
 }
 
 /** Joins non-empty segments with a blank separator line. */
-function renderSegments(segments: (string | undefined)[]): string {
+function renderSegments(segments: string[]): string {
   return segments
-    .map((segment) => segment?.trim())
-    .filter((segment): segment is string => Boolean(segment))
+    .map((segment) => segment.trim())
+    .filter(Boolean)
     .join("\n\n");
 }
 
@@ -124,7 +124,7 @@ function renderTask(
   moved: Set<StimulusKey>,
   destination: PointerDestination,
 ): string {
-  const segments: (string | undefined)[] = [parts.instruction];
+  const segments: string[] = [parts.instruction];
 
   if (parts.sharedStimulus) {
     segments.push(

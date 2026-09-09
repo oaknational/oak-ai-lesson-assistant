@@ -211,10 +211,8 @@ async function executeGenerateStep(
   // correction, so the corrector edits the parts and can never desynchronise
   // the two composed renderings.
   const validated = isCycleSectionKey(step.sectionKey)
-    ? sectionSchema.parse(
-        composeCycleFromResponse(
-          CycleAgentResponseSchema.parse(corrected ?? result.data),
-        ),
+    ? composeCycleFromResponse(
+        CycleAgentResponseSchema.parse(corrected ?? result.data),
       )
     : (corrected ?? sectionSchema.parse(result.data));
 

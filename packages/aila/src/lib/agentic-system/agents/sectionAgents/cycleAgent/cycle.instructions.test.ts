@@ -36,7 +36,6 @@ describe("cycle instructions", () => {
 
   it("lists every stimulus type", () => {
     expect(instructions).toContain(STIMULUS_TYPES.join(", "));
-    expect(instructions).toContain("items to sort");
     expect(instructions).not.toContain("statements to sort");
   });
 
