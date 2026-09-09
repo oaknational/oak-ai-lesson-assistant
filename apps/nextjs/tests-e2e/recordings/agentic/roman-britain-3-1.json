@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"learningCycles\": [\n    \"Name the groups who lived in Britain after the Romans left.\",\n    \"Match each group to where they lived in Britain.\",\n    \"Describe how the groups in Britain were different.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/null"
       },
       {
         "role": "developer",
@@ -69,15 +69,15 @@
     }
   },
   "result": {
-    "id": "resp_095d4986896d0850006a5f5e6835e481a2ba8a6e832527daa2",
+    "id": "resp_09027600cb01efc8006aa1846d2f6c87d29700e1bfe262c73c",
     "object": "response",
-    "created_at": 1784634984,
+    "created_at": 1788970093,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634986,
+    "completed_at": 1788970095,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -88,7 +88,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_095d4986896d0850006a5f5e68d4dc81a29598b2694b8d6f19",
+        "id": "msg_09027600cb01efc8006aa1846e439087d28a0e286ec4e1f2ba",
         "type": "message",
         "status": "completed",
         "content": [
@@ -96,14 +96,14 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]}",
+            "text": "{\"value\":[\"The Romans ruled Britain a long time ago.\",\"Britain is the place where we live now.\",\"A map shows where places are.\",\"Different groups of people can live in different places.\",\"Things from the past can be different from life today.\"]}",
             "parsed": {
               "value": [
-                "The Romans used to rule Britain and then they left.",
-                "Britain is the place where people lived in this lesson, and it can be found on a map.",
-                "Some groups of people had names, such as Romans, Picts and Scots.",
-                "People can live in different parts of a country.",
-                "Old stories and objects can help us find out about the past."
+                "The Romans ruled Britain a long time ago.",
+                "Britain is the place where we live now.",
+                "A map shows where places are.",
+                "Different groups of people can live in different places.",
+                "Things from the past can be different from life today."
               ]
             }
           }
@@ -176,27 +176,27 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2327,
+      "input_tokens": 2325,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 85,
+      "output_tokens": 61,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2412
+      "total_tokens": 2386
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]}",
+    "output_text": "{\"value\":[\"The Romans ruled Britain a long time ago.\",\"Britain is the place where we live now.\",\"A map shows where places are.\",\"Different groups of people can live in different places.\",\"Things from the past can be different from life today.\"]}",
     "output_parsed": {
       "value": [
-        "The Romans used to rule Britain and then they left.",
-        "Britain is the place where people lived in this lesson, and it can be found on a map.",
-        "Some groups of people had names, such as Romans, Picts and Scots.",
-        "People can live in different parts of a country.",
-        "Old stories and objects can help us find out about the past."
+        "The Romans ruled Britain a long time ago.",
+        "Britain is the place where we live now.",
+        "A map shows where places are.",
+        "Different groups of people can live in different places.",
+        "Things from the past can be different from life today."
       ]
     }
   }

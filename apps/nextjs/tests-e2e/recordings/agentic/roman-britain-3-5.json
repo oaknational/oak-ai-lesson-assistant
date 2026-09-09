@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"The Romans used to rule Britain and then they left.\",\"Britain is the place where people lived in this lesson, and it can be found on a map.\",\"Some groups of people had names, such as Romans, Picts and Scots.\",\"People can live in different parts of a country.\",\"Old stories and objects can help us find out about the past.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\"description\":\"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"},{\"misconception\":\"The Scots lived in Scotland when Roman rule ended\",\"description\":\"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"},{\"misconception\":\"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\"description\":\"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Roman rule\",\"definition\":\"When the Romans were in charge of Britain\"},{\"keyword\":\"Romano-Britons\",\"definition\":\"People in Britain who kept some Roman ways\"},{\"keyword\":\"Picts\",\"definition\":\"A group of people who lived in the north of Britain\"},{\"keyword\":\"Scots\",\"definition\":\"A group of people who came from Ireland\"},{\"keyword\":\"Anglo-Saxons\",\"definition\":\"A group of people who settled in parts of Britain\"}]}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/priorKnowledge\",\"value\":[\"The Romans ruled Britain a long time ago.\",\"Britain is the place where we live now.\",\"A map shows where places are.\",\"Different groups of people can live in different places.\",\"Things from the past can be different from life today.\"]},{\"op\":\"add\",\"path\":\"/keyLearningPoints\",\"value\":[\"After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.\",\"The Britons were the people already living in Britain when Roman rule ended.\",\"The Picts and Scots attacked Roman Britain from the north and from Ireland.\",\"A map can show where each group lived in Britain at the end of Roman rule.\"]},{\"op\":\"add\",\"path\":\"/misconceptions\",\"value\":[{\"misconception\":\"The Romans left and then only one new group lived in Britain\",\"description\":\"After the Romans left, several groups lived in and around Britain. Pupils should name the Britons, Picts, Scots and Anglo-Saxons.\"},{\"misconception\":\"The Scots lived in Scotland at this time\",\"description\":\"At the end of Roman rule, the Scots came from Ireland. Later, some Scots settled in the north of Britain.\"},{\"misconception\":\"The Britons were the same as the Romans\",\"description\":\"The Britons were the people already living in Britain. The Romans had ruled Britain, but they were not the same group.\"}]},{\"op\":\"add\",\"path\":\"/keywords\",\"value\":[{\"keyword\":\"Roman rule\",\"definition\":\"When the Romans were in charge of Britain\"},{\"keyword\":\"Britons\",\"definition\":\"The people already living in Britain\"},{\"keyword\":\"Picts\",\"definition\":\"A group of people who lived in the north of Britain\"},{\"keyword\":\"Scots\",\"definition\":\"A group of people who came from Ireland\"},{\"keyword\":\"Anglo-Saxons\",\"definition\":\"Groups of people who settled in the east and south of Britain\"}]}]"
       },
       {
         "role": "developer",
@@ -70,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_0d471ee3d14a407a006a5f5e72d1dc81a29ffb0bbfc71c5fd0",
+    "id": "resp_0e6c6e636d3531c1006aa184788ee887d2bcba429c7a51ce21",
     "object": "response",
-    "created_at": 1784634994,
+    "created_at": 1788970104,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634996,
+    "completed_at": 1788970105,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -89,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0d471ee3d14a407a006a5f5e738c9c81a2b77d7020097f1c29",
+        "id": "msg_0e6c6e636d3531c1006aa18479438087d2842fb226f3cc8a98",
         "type": "message",
         "status": "completed",
         "content": [
@@ -178,7 +178,7 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2264,
+      "input_tokens": 2210,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
@@ -187,7 +187,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2311
+      "total_tokens": 2257
     },
     "user": null,
     "metadata": {},

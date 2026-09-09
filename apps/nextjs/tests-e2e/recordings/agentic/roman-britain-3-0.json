@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"learningCycles\": [\n    \"Name the groups who lived in Britain after the Romans left.\",\n    \"Match each group to where they lived in Britain.\",\n    \"Describe how the groups in Britain were different.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -407,15 +407,15 @@
     }
   },
   "result": {
-    "id": "resp_0c3485c07cedb645006a5f5e65d694819f8a93ec805ce3052b",
+    "id": "resp_07924914f6f76b8f006aa1846ab09c87d2ac374c658846c05d",
     "object": "response",
-    "created_at": 1784634981,
+    "created_at": 1788970090,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634983,
+    "completed_at": 1788970092,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -426,7 +426,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0c3485c07cedb645006a5f5e665e60819fb67114d42260136a",
+        "id": "msg_07924914f6f76b8f006aa1846ba73087d28a66fc71debdb3ea",
         "type": "message",
         "status": "completed",
         "content": [
@@ -434,38 +434,38 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to continue with the lesson without specifying any changes, so the next incomplete group should be planned.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"priorKnowledge\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyLearningPoints\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"misconceptions\",\"action\":\"generate\",\"sectionInstructions\":\":null,\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keywords\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null}]}}",
+            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user has signalled positive intent to continue, so the next incomplete group should be planned.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"priorKnowledge\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyLearningPoints\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"misconceptions\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keywords\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null}]}}",
             "parsed": {
               "value": {
                 "decision": "plan",
-                "parsedUserMessage": "The user wants to continue with the lesson without specifying any changes, so the next incomplete group should be planned.",
+                "parsedUserMessage": "The user has signalled positive intent to continue, so the next incomplete group should be planned.",
                 "plan": [
                   {
                     "type": "section",
                     "sectionKey": "priorKnowledge",
                     "action": "generate",
-                    "sectionInstructions": ":null",
+                    "sectionInstructions": "/null",
                     "itemIntent": null
                   },
                   {
                     "type": "section",
                     "sectionKey": "keyLearningPoints",
                     "action": "generate",
-                    "sectionInstructions": ":null",
+                    "sectionInstructions": "/null",
                     "itemIntent": null
                   },
                   {
                     "type": "section",
                     "sectionKey": "misconceptions",
                     "action": "generate",
-                    "sectionInstructions": ":null,",
+                    "sectionInstructions": "/null",
                     "itemIntent": null
                   },
                   {
                     "type": "section",
                     "sectionKey": "keywords",
                     "action": "generate",
-                    "sectionInstructions": ":null",
+                    "sectionInstructions": "/null",
                     "itemIntent": null
                   }
                 ]
@@ -887,51 +887,51 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 4171,
+      "input_tokens": 4168,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 2816
       },
-      "output_tokens": 148,
+      "output_tokens": 144,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 4319
+      "total_tokens": 4312
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to continue with the lesson without specifying any changes, so the next incomplete group should be planned.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"priorKnowledge\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyLearningPoints\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"misconceptions\",\"action\":\"generate\",\"sectionInstructions\":\":null,\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keywords\",\"action\":\"generate\",\"sectionInstructions\":\":null\",\"itemIntent\":null}]}}",
+    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user has signalled positive intent to continue, so the next incomplete group should be planned.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"priorKnowledge\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyLearningPoints\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"misconceptions\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keywords\",\"action\":\"generate\",\"sectionInstructions\":\"/null\",\"itemIntent\":null}]}}",
     "output_parsed": {
       "value": {
         "decision": "plan",
-        "parsedUserMessage": "The user wants to continue with the lesson without specifying any changes, so the next incomplete group should be planned.",
+        "parsedUserMessage": "The user has signalled positive intent to continue, so the next incomplete group should be planned.",
         "plan": [
           {
             "type": "section",
             "sectionKey": "priorKnowledge",
             "action": "generate",
-            "sectionInstructions": ":null",
+            "sectionInstructions": "/null",
             "itemIntent": null
           },
           {
             "type": "section",
             "sectionKey": "keyLearningPoints",
             "action": "generate",
-            "sectionInstructions": ":null",
+            "sectionInstructions": "/null",
             "itemIntent": null
           },
           {
             "type": "section",
             "sectionKey": "misconceptions",
             "action": "generate",
-            "sectionInstructions": ":null,",
+            "sectionInstructions": "/null",
             "itemIntent": null
           },
           {
             "type": "section",
             "sectionKey": "keywords",
             "action": "generate",
-            "sectionInstructions": ":null",
+            "sectionInstructions": "/null",
             "itemIntent": null
           }
         ]
