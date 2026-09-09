@@ -1,5 +1,5 @@
-codeHash: a11ae9e95af20c1029ca4a3b1800910fcb691c85defc7a7923eb5f3fda8d5041
-generated: 2026-09-09T15:03:22.328Z
+codeHash: ad38d2ed0867b58d777d06330c19890883372b775f6299f69dc8edfb2c3959b5
+generated: 2026-09-09T16:25:24.407Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -44,7 +44,8 @@ summary:
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
-      flag: 3
+      pass: 2
+      flag: 1
     cycle-slide-lines:
       pass: 3
     klp-count:
@@ -58,8 +59,7 @@ summary:
     americanisms-spelling:
       pass: 3
     americanisms-phrasing:
-      flag: 1
-      pass: 2
+      pass: 3
     americanisms-meanings:
       flag: 3
     quiz-question-count:
@@ -67,10 +67,9 @@ summary:
     starter-quiz-grounding:
       pass: 3
     americanisms_corrector:
-      corrections_attempted: 1
-      corrections_not_needed: 32
+      corrections_attempted: 0
+      corrections_not_needed: 33
       corrections_failed: 0
-      correction_rate: 3.0%
+      correction_rate: 0.0%
       correction_failure_rate: 0.0%
-      corrections_by_section:
-        starterQuiz: 1
+      corrections_by_section: {}
