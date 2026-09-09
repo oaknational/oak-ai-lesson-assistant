@@ -216,10 +216,9 @@ const SCORERS: Scorer[] = [
     description:
       "Practice slide text and feedback fit the slide (max 12 lines)",
     fn: ({ finalDocument }) => {
-      // The practice slide version is composed deterministically by
-      // composePracticeTask using the same estimator, so an overflow here
-      // means the composer's last-resort stage (instruction plus pointers)
-      // was still over budget, or the model over-ran on feedback.
+      // composePracticeTask trims the slide version using this same
+      // estimator, so an overflow here means even its last resort
+      // (instruction plus pointers) was too long, or the feedback was.
       const evidence: string[] = [];
       let anyOverflow = false;
       const check = (label: string, text: string) => {

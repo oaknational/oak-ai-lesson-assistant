@@ -106,10 +106,11 @@ export function keyStageBuildModeInstructions(instructionsByMode: {
  * This is a factory function for section agents.
  * A section agent is responsible for generating a specific section of the document.
  *
- * `PromptValue` is the shape of section values rendered into the prompt
- * (current value, exemplars, basedOn), all sourced from the document. It only
- * differs from `ResponseType` when an agent's response shape diverges from
- * the document's (e.g. the cycle agent's structured practice task).
+ * `PromptValue` is the shape of the section values shown in the prompt
+ * (current value, exemplars, basedOn), which all come from the stored
+ * document. It only differs from `ResponseType` when an agent returns a
+ * different shape from the one we store (e.g. the cycle agent's structured
+ * practice task).
  */
 export function createSectionAgent<ResponseType, PromptValue = ResponseType>({
   responseSchema,

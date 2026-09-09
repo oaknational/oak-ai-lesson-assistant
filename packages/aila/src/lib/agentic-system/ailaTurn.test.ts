@@ -1005,8 +1005,8 @@ function makeQuiz(question: string) {
   };
 }
 
-// Shaped like the cycle agent's response: practice as structured parts,
-// composed into strings by executePlanSteps before commit.
+// Matches the cycle agent's response shape: practice as structured parts,
+// turned into strings by executePlanSteps before saving.
 function makeCycle(title: string) {
   return {
     title,

@@ -2,10 +2,10 @@ import zodToJsonSchema from "zod-to-json-schema";
 
 import { LLMMessageSchema } from "./jsonPatchProtocol";
 
-// The legacy chat path sends LLMMessageSchema to OpenAI structured outputs,
-// which rejects optional fields. The composed slide fields on CycleSchema are
-// optional and pipeline-written, so they must never leak into this schema.
-// A leak here breaks every legacy lesson generation at request time.
+// The legacy chat sends LLMMessageSchema to OpenAI structured outputs, which
+// rejects optional fields. The composed slide fields are optional and written
+// by our code, never by the model, so they must never appear in this schema.
+// If one leaks in, every legacy lesson generation fails at request time.
 describe("legacy LLM message schema", () => {
   it("contains no composed slide fields", () => {
     const json = JSON.stringify(zodToJsonSchema(LLMMessageSchema));

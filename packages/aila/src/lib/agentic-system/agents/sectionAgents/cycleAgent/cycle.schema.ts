@@ -10,10 +10,10 @@ import { PracticeTaskPartsSchema } from "./practiceTask";
 export { CycleSchema };
 
 /**
- * What the cycle agent returns: the document's cycle shape, but with the
- * practice task and feedback as structured parts. Code composes the stored
- * strings from the parts (see practiceTask.ts and feedback.ts), so the model
- * never writes derived slide text, numbering, or type labels itself.
+ * What the cycle agent returns: the stored cycle shape, but with the practice
+ * task and feedback as structured parts. Our code builds the stored strings
+ * from those parts (see practiceTask.ts and feedback.ts), so the model never
+ * writes slide text, numbering, or labels itself.
  */
 export const CycleAgentResponseSchema = CycleSchema.omit(
   CYCLE_COMPOSED_SLIDE_FIELDS,

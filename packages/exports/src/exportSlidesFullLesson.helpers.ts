@@ -6,9 +6,9 @@ type CycleStimulusFields =
   | undefined;
 
 /**
- * Slides the template carries for every lesson but this lesson does not need.
- * Maths lessons drop the quiz slides; each cycle's stimulus slide is dropped
- * unless the composer moved stimulus material onto it.
+ * The template slides this lesson does not need, to be deleted from its deck.
+ * Maths lessons drop the quiz slides; a cycle's stimulus slide is dropped
+ * unless material was moved onto it.
  */
 export function speakerNotesTagsToDelete(lesson: {
   subject: string;

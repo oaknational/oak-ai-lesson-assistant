@@ -9,8 +9,9 @@ import { cyclesInstructions } from "./cycle.instructions";
 import type { CycleAgentResponse } from "./cycle.schema";
 import { CycleAgentResponseSchema } from "./cycle.schema";
 
-// PromptValue is the document Cycle: current values and exemplars come from
-// stored lessons, where practice is a composed string rather than parts.
+// The examples and current values shown in the prompt come from stored
+// lessons, where practice is already a composed string rather than parts,
+// so the prompt side uses the stored Cycle type.
 export const cycleAgent = createSectionAgent<CycleAgentResponse, Cycle>({
   responseSchema: CycleAgentResponseSchema,
   instructions: keyStageInstructions(cyclesInstructions),

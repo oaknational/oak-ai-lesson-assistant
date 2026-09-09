@@ -102,10 +102,10 @@ export type AilaExecutionContext = {
   callbacks: AilaTurnCallbacks;
 };
 
-// PromptValue is the shape of section values rendered INTO the prompt
-// (current value, exemplars, basedOn), which come from the document. It
-// defaults to ResponseType and only differs when an agent's response shape
-// diverges from the document's (e.g. the cycle agent's structured practice).
+// PromptValue is the shape of the section values shown in the prompt
+// (current value, exemplars, basedOn), which come from the stored document.
+// It defaults to ResponseType and only differs when an agent returns a
+// different shape from the one we store (e.g. the cycle agent).
 export type SectionPromptAgentProps<
   ResponseType,
   PromptValue = ResponseType,

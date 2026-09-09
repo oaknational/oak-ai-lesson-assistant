@@ -206,10 +206,9 @@ async function executeGenerateStep(
     responseSchema: correctorResponseSchema(context, step),
   });
 
-  // Cycle agents return the practice task as structured parts; the stored
-  // `practice` and `practiceSlideText` strings are composed here, after
-  // correction, so the corrector edits the parts and can never desynchronise
-  // the two composed renderings.
+  // Cycle agents return the practice task as structured parts. The stored
+  // strings are built here, after correction, so the corrector edits the
+  // parts once and the composed strings cannot drift apart.
   const validated = isCycleSectionKey(step.sectionKey)
     ? composeCycleFromResponse(
         CycleAgentResponseSchema.parse(corrected ?? result.data),
@@ -252,10 +251,10 @@ function correctorResponseSchema(
   if (sectionKey === "keyLearningPoints") {
     return KeyLearningPointsStrictMax4Schema;
   }
-  // Cycles are corrected in the agent's parts shape, before composition. The
-  // document CycleSchema would break the corrector's structured-output call
-  // (its optional practiceSlideText is unsupported) and would let the
-  // corrector edit one composed rendering without the other.
+  // Cycles are corrected as parts, before the strings are built. Using the
+  // stored CycleSchema here would crash the corrector's structured-output
+  // call (OpenAI rejects its optional practiceSlideText) and would let the
+  // corrector edit one composed string but not the other.
   if (isCycleSectionKey(sectionKey)) {
     return CycleAgentResponseSchema;
   }

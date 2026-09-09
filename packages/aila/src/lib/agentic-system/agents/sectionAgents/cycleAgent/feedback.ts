@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 /**
- * The feedback types a practice task's feedback may use. Single source of
- * truth for the cycle prompt and the rendered labels, so the type the model
- * picks and the label pupils read can never disagree.
+ * The forms feedback can take. Both the prompt and the rendered labels use
+ * this list, so the type the model picks always matches the label pupils
+ * read.
  */
 export const FEEDBACK_TYPES = [
   "Model answer",
@@ -32,9 +32,8 @@ Either one piece per numbered STATEMENT, in the same order (they are numbered to
 export type FeedbackPieces = z.infer<typeof FeedbackPiecesSchema>;
 
 /**
- * Composes the stored feedback string. A single piece renders un-numbered;
- * multiple pieces are numbered to match the statements they respond to, one
- * per line.
+ * Builds the stored feedback string. One piece gets no number; several
+ * pieces are numbered to match the statements, one per line.
  */
 export function composeFeedback(pieces: FeedbackPieces): string {
   if (pieces.length === 1) {
