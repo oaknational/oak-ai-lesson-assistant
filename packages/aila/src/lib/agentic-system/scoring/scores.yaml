@@ -1,5 +1,5 @@
-codeHash: 5310ef4a0e7b6b431aae9fd50caba440038c7f9dddcb4e2ff19074575fd70478
-generated: 2026-09-09T12:53:16.110Z
+codeHash: a11ae9e95af20c1029ca4a3b1800910fcb691c85defc7a7923eb5f3fda8d5041
+generated: 2026-09-09T15:03:22.328Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -58,7 +58,8 @@ summary:
     americanisms-spelling:
       pass: 3
     americanisms-phrasing:
-      pass: 3
+      flag: 1
+      pass: 2
     americanisms-meanings:
       flag: 3
     quiz-question-count:
