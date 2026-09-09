@@ -106,7 +106,7 @@ Voice: TEACHER_TO_PUPIL_WRITTEN
 #### Task type (hard requirements)
 
 - task types should be relevant to the subject and the phase
-- no multiple choice questions or quick recall questions should be used
+- no multiple choice questions, match questions or other quick recall questions should be used
 - they must activate pupils through speaking, writing or doing
 - tasks should take pupils approx. 5-7 mins to complete
 - base your suggestions on other lessons you have seen at Oak National Academy

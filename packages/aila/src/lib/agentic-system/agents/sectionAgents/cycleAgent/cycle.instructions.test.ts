@@ -15,6 +15,12 @@ describe("cycle instructions", () => {
     }
   });
 
+  it("bans match questions alongside multiple choice and quick recall", () => {
+    expect(instructions).toMatch(
+      /no multiple choice questions, match questions or other quick recall/i,
+    );
+  });
+
   it("carries no trace of the old anatomy", () => {
     // Uppercase-only for the old part names: the key stage guidance uses
     // lowercase "scaffolding" in its everyday pedagogical sense.
