@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can name the different groups of people living in Britain when Roman rule ended.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Name the groups of people living in Britain when Roman rule ended.\",\"Match the groups of people to where they lived in Britain.\",\"Describe who lived in Britain after the Romans left.\"]}]"
+        "content": "CHANGES MADE\n\nThese are the changes made to the document during this turn. It will be a json patch diff between the previous and current versions of the document\n\n[{\"op\":\"add\",\"path\":\"/learningOutcome\",\"value\":\"I can describe the different groups who lived in Britain at the end of Roman rule.\"},{\"op\":\"add\",\"path\":\"/learningCycles\",\"value\":[\"Name the groups who lived in Britain after the Romans left.\",\"Match each group to where they lived in Britain.\",\"Describe how the groups in Britain were different.\"]}]"
       },
       {
         "role": "developer",
@@ -70,15 +70,15 @@
     }
   },
   "result": {
-    "id": "resp_0c44669795356f1f006a5f5e44a248819e95e086e1217e664e",
+    "id": "resp_06a97a369e30ff95006aa18460f1e487d2bb07df3d579fd68e",
     "object": "response",
-    "created_at": 1784634948,
+    "created_at": 1788970080,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634950,
+    "completed_at": 1788970082,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -89,7 +89,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0c44669795356f1f006a5f5e454f9c819e82ed00e9d602b47e",
+        "id": "msg_06a97a369e30ff95006aa18461b1b487d2be82f06846e30b2a",
         "type": "message",
         "status": "completed",
         "content": [
@@ -178,7 +178,7 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1826,
+      "input_tokens": 1823,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
@@ -187,7 +187,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1867
+      "total_tokens": 1864
     },
     "user": null,
     "metadata": {},

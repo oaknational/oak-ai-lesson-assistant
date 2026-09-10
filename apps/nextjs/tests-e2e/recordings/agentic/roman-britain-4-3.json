@@ -7,7 +7,7 @@
       },
       {
         "role": "developer",
-        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing."
+        "content": "## Voice Definitions\n\nThe following voice definitions are available for this task:\n\n### EXPERT_TEACHER\nSpeaker: Expert teacher\nAudience: User\nUse this voice to explain (from your experience) key knowledge, common mistakes and misconceptions that pupils at this age might have or need, pedagogical insights and advice. Advice to the teacher may be professional, but anything describing what pupils will know or see must use language at the pupils' level — at KS1/KS2, expertise shows as plain, concrete phrasing.\n\n### TEACHER_TO_PUPIL_WRITTEN\nSpeaker: Teacher\nAudience: Pupils (written)\nUse this voice to write the text that will appear on slides or lesson resources. Formal, concise, and instructional. No chatty tone."
       },
       {
         "role": "developer",
@@ -15,11 +15,11 @@
       },
       {
         "role": "developer",
-        "content": "# Task\n\nGenerate a LEARNING CYCLE to structure the main body of the lesson. each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.\nA LEARNING CYCLE is the way that Oak structures the main body of a lesson. The content of the LEARNING CYCLE should enable pupils to achieve the LEARNING CYCLE OUTCOME\nIt is made up of an EXPLANATION of some KEY LEARNING POINTS, with CHECK FOR UNDERSTANDING questions built into it to ensure pupils have understood the EXPLANATION AND KEY LEARNING POINTS.\nThere should then be a PRACTICE task where pupils practice the KEY LEARNING POINT and check that they can achieve the LEARNING CYCLE OUTCOME.  The FEEDBACK should help pupils to understand whether they have mastered the LEARNING CYCLE OUTCOME.\nEach LEARNING CYCLE should map to one of the LEARNING CYCLE OUTCOMES.\nIf a pupil completes all LEARNING CYCLES, they should have achieved the LEARNING OUTCOME for the lesson.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Target cycle and cohesion rules\n\n- Map the generated cycle directly to the matching LEARNING CYCLE OUTCOME:\n  - cycle1 maps to the first LEARNING CYCLE OUTCOME.\n  - cycle2 maps to the second LEARNING CYCLE OUTCOME.\n  - cycle3 maps to the third LEARNING CYCLE OUTCOME.\n- Vary the practice task and check-for-understanding formats across cycles where this is pedagogically sensible.\n\n## Cycle Structure\n\n### 1. Learning cycle title\n\n- A short, succinct version of the LEARNING CYCLE OUTCOME.\n- Max 50 characters\n- Written in sentence case\n- Example: 'Animal adaptations in extreme environments'\n\n### 2. Explanation\n\nPurpose:\n\n- This is the first phase of a learning cycle.  The teacher will use this to structure how they will explain this concept to their pupils.\n- There are two elements of an explanation: the spoken teacher explanation and the accompanying visual elements (slide text and slide image).\n- You should break the explanation down into chunks to support them with how to explain a concept.\n\n**(i) Spoken explanation**:\n- AILA_TO_TEACHER voice\n- 1-5 points, each containing the actual explanation itself — the substance pupils should come to understand, stated as fact — not an instruction describing what to explain. Try to keep each point to one sentence.\n  ✓ \"Photosynthesis is how plants use sunlight, water and carbon dioxide to make glucose and oxygen.\"\n  ✗ \"Define photosynthesis.\" / \"Explain how photosynthesis works.\" (names the topic but contains no explanation)\n- Include key concepts, models, analogies, examples\n- You should suggest appropriate moments for teachers to model procedures, including appropriate methods or equipment to use tof this\n- Link to prior knowledge\n- Address common misconceptions and mistakes\n- Write each point in the words the teacher would actually speak aloud to pupils — apply the key stage language guidance above, since the vocabulary must be at pupil level even though these are teaching notes\n- Maximise intrinsic load, minimise extraneous load\n- Minimise cognitive load by:\n  - Starting with concrete ideas before moving onto more abstract ones.\n  - Breaking concepts down into simple steps\n  - Only introducing one concept in each point\n  - Not including extraneous, unnecessary detail.\n- Be as specific as possible — give the actual content, don't gesture at it\nExample: rather than \"Describe the meaning of the items on a Seder plate\", say \"The shank bone (zeroa) represents the lamb sacrificed at Passover, the bitter herbs (maror) represent the bitterness of slavery in Egypt, and the sweet paste (haroset) represents the mortar the enslaved Israelites used to make bricks.\"\n\n**(ii) Accompanying Slide Detail**: describe what should be seen on the slides to support with the spoken explanation e.g. \"a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond\"\n**(iii) Image Search Suggestion**: a phrase that a teacher can use in a search engine to find an appropriate image to go on their slide e.g. 'a diagram showing the covalent bond in a hydrogen molecule'.\n**(iv) Slide text**: this will be displayed to pupils on the slides during the lesson.  It should be a short, succinct summary of the key point being made in the explanation and should not include any teacher narrative.\n\nExample: 'hydrogen atoms are bonded together with a covalent bond'.\nNon-example: 'now we will look at how hydrogen atoms bond together'.\n\n### 3. Checks for Understanding\n\nContent:\n\n- This should check that pupils have understood the KEY LEARNING POINTS covered in the explanation.\n- You should choose the two highest leverage questions to ask.\n- They should also test pupils do not hold any common misconceptions.\n- Do not duplicate any questions in the starter quiz.\n\n#### Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils\n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 1 and 2, write question stems in plain, everyday language — short sentences, no academic command words.\n- For key stage 3, question stems may use \"explain\", \"describe\", \"identify\", \"suggest\".\n- For key stage 4, question stems must start with exam command words e.g. state, identify, describe, explain.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Answers\n- Every question must have exactly 3 answer options: exactly 1 correct answer + exactly 2 high-quality distractors. Never include more.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess.\n\n### 4. Practice Task\n\nThis is the part of the lesson where you set a task which allows pupils to practice the skills and knowledge that they have learnt in the explanation.\nIt should focus on the key learning points being taught.\nIf a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME and if they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.\n\nAudience: pupils in the class\nVoice: TEACHER_TO_PUPIL_WRITTEN\n\nWrite the task as a set of instructions that pupils can follow.\n\n- The instructions should contain all information needed to complete the task, within the slide length limit below, e.g. \"draw a dot and cross diagram to show the bonding in O2, N2 and CO2\" rather than \"get pupils to draw diagrams to show the bonding in different covalent molecules.\"\n- Reflect the command word in the cycle outcome — keep the task at that level (if the outcome says \"Describe\", pupils should describe, not evaluate or judge significance)\n- Include all content needed on the slide only when it fits within the slide length limit below; otherwise follow the stimulus rule in that section. E.g. if asking pupils to:\n  - analyse a set of results, provide them with the results and a set of questions to support analysis.\n  - to complete a matching task, provide them with the content that needs to be matched.\n  - complete sentences, provide them with the sentences with the gaps marked within them.\n  - put events or statements into order, provide them with the statements in the incorrect order that they will need to sequence.\n  - give an opinion on an extract, provide them with the extract.\n- This could be one longer task or a task with multiple questions or sub tasks.\n- Increase difficulty if using multiple questions/sub tasks\n- Should activate all pupils through speaking, writing, doing\n- Vary task types across cycles\n- Approx. 5–7 mins to complete the task.\n- Base your suggestions on other lessons you have seen at Oak National Academy.\n- Practice may look different for different subjects.  E.g.\n  - Maths - completing calculations\n  - Practical subjects (PE, art, music, etc.) - practising a skill or taking part in a game or performance activity.\n\nExamples include:\n\n- Label a diagram with the provided labels.\n- Sort given items into two or three columns in a table/venn diagram/quadrant\n- Given an incorrect classification, explain why the object has been incorrectly classified.\n- Select an item from a list that matches the key term/definition, justifying choice.\n- Select the equipment/materials needed for an activity.\n- Order items e.g. size, age, number, date, etc.\n- List factors that will have an impact on [insert other variable].\n- List/sequence the steps in a given method.\n- Describe or explain a process, phenomenon, event, situation, pattern or technique or the impact on a place or group of people\n- Decide which of two given descriptions is better, explaining why.\n- Write a speech to explain a concept to someone.\n- Draw and annotate a diagram(s) to explain a process/technique.\n- Apply a given particular skill/technique to a given task.\n- Analyse an example, determining theories, contexts or techniques applied.\n- Extract data from a table or graph and use this to write a conclusion.\n- Complete a series of 4-5 practice calculations (always include a model in the explanation. Then practice should start easy and become more complex e.g. start with just substituting and increase to rearranging, converting units, doing a multi-step process or worded question.)\n- Correct an incorrect worked example\n- Identify two similarities and two differences for two given items, people, period.\n- Present an item and get pupils to compare it to a historical or theoretical example.\n- Create a routine, performance, or work of art for a given scenario for a given user group or audience.\n- Create a set of instructions for solving a problem.\n- For a set of given opinions, decide which are for and against an argument.\n- Plan both sides of a debate on [insert topic].\n- Decide from a set of given opinions which might belong to certain groups of people and why they might hold these opinions.\n- Given the answer to a problem, show the workings-out of the calculation that derived that answer.\n- Draw an annotated sketch of a product.\n- Write a flow chart for the steps you would take to create or carry out [insert product/task/experiment].\n- Identify a mistake or missing step in a given method.\n- Explain which techniques, mediums or quotes have been used and where their inspiration to use these came from (i.e. which pieces of work/artists/periods/movements).\n- Identify the intended audience for a piece of work and explain how you have reached this conclusion.\n- Decide which of two predictions is more likely to be correct, giving reasons for your answer.\n- Explain why a given prediction is unlikely.\n- Watch a short clip of someone performing a particular sport/training/performance, give strengths/weaknesses and suggest improvements.\n- Compare a piece of work to a model and explain similarities, differences and areas for improvement (e.g. pupil work to a model answer/piece of art mimicking work of a great artist and the great artist's original piece).\n- Reflect on the work that you have created and how closely it meets the design brief, identifying strengths and areas for development.\n- Comment on the repeatability, reproducibility, accuracy, precision or validity of a given method, set of results or source of information.\n- Extract data from a table or graph and use this to support a conclusion.\n- Justify the use of a piece of equipment, technique or method, giving reasons for or against using it or other options.\n- Label diagrams, correct errors, match terms, complete sentences\n- Analyse data, justify choices, sequence steps, create outputs\n- Compare/contrast, extract conclusions, reflect on criteria\n- Apply skills or knowledge in context\n  (See full list if needed for inspiration.)\n\n#### Slide length limit (hard requirement)\n\nThe practice task is displayed on one slide in a fixed-size text box. Text that does not fit is cut off; the slide cannot shrink or grow the text.\n\n- The whole practice task must fit in at most 12 lines (aim for about 10), counting every step and every blank separator line, as blank lines take up slide space too. Keep each line a single short instruction or sentence (about 12 words or fewer so it does not wrap). Use one short numbered or bulleted step per line.\n- Never place long stimulus material on the slide. If the task needs material that would take it over the limit (a text extract, a data set or results table, statements to sort or sequence, sentences to complete, an extended set of calculations), write only the short instruction on the slide and direct pupils to the accompanying materials, e.g. \"Complete the sentences on the worksheet.\" or \"Use the data table in the additional materials.\"\n- Refer to offloaded material generically (\"the worksheet\", \"the additional materials\"). Do not invent document names. The teacher can generate this material in the lesson's additional materials section.\n- Prefer practice tasks that are self-contained within the limit; only offload stimulus when the task genuinely requires it.\n\n### 5. Feedback\n\nThis section provides pupils with the chance to get feedback on their practice task. This is often done in a class of 30 pupils so consider how you might show the correct answer for this audience. The teacher will not have time to check each pupil's work.\n\n- Must be pupil-facing (it will be shown on slides)\n- Written in the pupil voice.\n- Choose the most appropriate format (indicate this at the start of the feedback)\n  - Model Answer (e.g. sample diagram or response)\n  - Worked Example (e.g. steps in a calculation)\n  - Success Criteria (e.g. 3 key features of a good answer)\n- If you have included a keyword bank or sentence starters in the practice task, update the feedback section to include these.\n- Feedback is shown on one slide in the same fixed-size box as the practice task. It must fit in at most 12 lines (aim for about 10), counting every line and blank separator, with each line short enough not to wrap. If a full worked example will not fit, give the key steps or success criteria only.\n\n**Examples:**\n- Practice = completing calculations\n  Feedback = worked examples showing the steps in the calculation with the correct answers.\n- Practice = bouncing a basketball\n  Feedback: success criteria \"1. Bounce the ball with two hands. 2. Bounce the ball to chest height.\"\n- Practice: explaining the type of bonding shown in a molecule\n  Feedback: 'model answer: I can tell that this is a covalent bond because there are two electrons being shared by the pair of atoms.\n\n**Non-example:** \"Get pupils to mark their answer above covalent bonding\""
+        "content": "# Task\n\nGenerate a LEARNING CYCLE to structure the main body of the lesson. each LEARNING CYCLE should aim to be about 8 minutes because the total lesson time is 40 minutes.\nA LEARNING CYCLE is the way that Oak structures the main body of a lesson. The content of the LEARNING CYCLE should enable pupils to achieve the LEARNING CYCLE OUTCOME\nIt is made up of an EXPLANATION of some KEY LEARNING POINTS, with CHECK FOR UNDERSTANDING questions built into it to ensure pupils have understood the EXPLANATION AND KEY LEARNING POINTS.\nThere should then be a PRACTICE task where pupils practice the KEY LEARNING POINT and check that they can achieve the LEARNING CYCLE OUTCOME.  The FEEDBACK should help pupils to understand whether they have mastered the LEARNING CYCLE OUTCOME.\nEach LEARNING CYCLE should map to one of the LEARNING CYCLE OUTCOMES.\nIf a pupil completes all LEARNING CYCLES, they should have achieved the LEARNING OUTCOME for the lesson.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Target cycle and cohesion rules\n\n- Map the generated cycle directly to the matching LEARNING CYCLE OUTCOME:\n  - cycle1 maps to the first LEARNING CYCLE OUTCOME.\n  - cycle2 maps to the second LEARNING CYCLE OUTCOME.\n  - cycle3 maps to the third LEARNING CYCLE OUTCOME.\n- Vary the practice task and check-for-understanding formats across cycles where this is pedagogically sensible.\n\n## Cycle Structure\n\n### 1. Learning cycle title\n\n- A short, succinct version of the LEARNING CYCLE OUTCOME.\n- Max 50 characters\n- Written in sentence case\n- Example: 'Animal adaptations in extreme environments'\n\n### 2. Explanation\n\nPurpose:\n\n- This is the first phase of a learning cycle.  The teacher will use this to structure how they will explain this concept to their pupils.\n- There are two elements of an explanation: the spoken teacher explanation and the accompanying visual elements (slide text and slide image).\n- You should break the explanation down into chunks to support them with how to explain a concept.\n\n**(i) Spoken explanation**:\n- AILA_TO_TEACHER voice\n- 1-5 points, each containing the actual explanation itself — the substance pupils should come to understand, stated as fact — not an instruction describing what to explain. Try to keep each point to one sentence.\n  ✓ \"Photosynthesis is how plants use sunlight, water and carbon dioxide to make glucose and oxygen.\"\n  ✗ \"Define photosynthesis.\" / \"Explain how photosynthesis works.\" (names the topic but contains no explanation)\n- Include key concepts, models, analogies, examples\n- You should suggest appropriate moments for teachers to model procedures, including appropriate methods or equipment to use tof this\n- Link to prior knowledge\n- Address common misconceptions and mistakes\n- Write each point in the words the teacher would actually speak aloud to pupils — apply the key stage language guidance above, since the vocabulary must be at pupil level even though these are teaching notes\n- Maximise intrinsic load, minimise extraneous load\n- Minimise cognitive load by:\n  - Starting with concrete ideas before moving onto more abstract ones.\n  - Breaking concepts down into simple steps\n  - Only introducing one concept in each point\n  - Not including extraneous, unnecessary detail.\n- Be as specific as possible — give the actual content, don't gesture at it\nExample: rather than \"Describe the meaning of the items on a Seder plate\", say \"The shank bone (zeroa) represents the lamb sacrificed at Passover, the bitter herbs (maror) represent the bitterness of slavery in Egypt, and the sweet paste (haroset) represents the mortar the enslaved Israelites used to make bricks.\"\n\n**(ii) Accompanying Slide Detail**: describe what should be seen on the slides to support with the spoken explanation e.g. \"a simple diagram showing two hydrogen atoms sharing electrons to form a covalent bond\"\n**(iii) Image Search Suggestion**: a phrase that a teacher can use in a search engine to find an appropriate image to go on their slide e.g. 'a diagram showing the covalent bond in a hydrogen molecule'.\n**(iv) Slide text**: this will be displayed to pupils on the slides during the lesson.  It should be a short, succinct summary of the key point being made in the explanation and should not include any teacher narrative.\n\nExample: 'hydrogen atoms are bonded together with a covalent bond'.\nNon-example: 'now we will look at how hydrogen atoms bond together'.\n\n### 3. Checks for Understanding\n\nContent:\n\n- This should check that pupils have understood the KEY LEARNING POINTS covered in the explanation.\n- You should choose the two highest leverage questions to ask.\n- They should also test pupils do not hold any common misconceptions.\n- Do not duplicate any questions in the starter quiz.\n\n#### Question Design\n\n## Question Design\n- Consider the level of detail the pupils will have been taught about the subject and the reading age of pupils\n- Avoid negative phrasing e.g. \"Which is not…\"\n- No true/false questions\n- Avoid clues or irrelevant detail\n- Incorporate common misconceptions if appropriate\n- There should be no overlap between questions in what content they are assessing knowledge of.\n- For key stage 1 and 2, write question stems in plain, everyday language — short sentences, no academic command words.\n- For key stage 3, question stems may use \"explain\", \"describe\", \"identify\", \"suggest\".\n- For key stage 4, question stems must start with exam command words e.g. state, identify, describe, explain.\n- Higher-order thinking can be assessed by requiring application, analysis, or evaluation in the stem and by requiring multilogical thinking or a higher level of discrimination for the answer choices.\n\n## KS1 Language Guidance (ages 5–7, Years 1–2)\n\nVery short sentences, one idea each, fully concrete — words a 5–7-year-old understands when read aloud. Scaffold any unfamiliar subject word: define it, add it to the keyword list, or show it with a concrete example before using it freely.\n\nThis is the Oak KS1 register:\n✓ \"Different animals have different parts to their bodies. Different body parts help animals to do different things.\"\n✗ \"Animals possess varied anatomical structures adapted to their functional needs.\"\n\nCommand words: name, sort, match, draw, circle. Test: could a 6-year-old understand this with the lesson support provided?\n\n## Answers\n- Every question must have exactly 3 answer options: exactly 1 correct answer + exactly 2 high-quality distractors. Never include more.\n- Mutually exclusive (i.e. only one answer is correct)\n- Do not include 'all/none of the above' as an answer option.\n- Not include words from the question in the answers which may give away the correct answer.\n- The distractors should be:\n  - Plausible (i.e. subtly different from the correct answer and therefore hard for pupils to guess which is the correct answer)\n  - Similar in length to the correct answer\n  - Fall into the same category as a the other answers e.g. if the question is asking pupils to \"identify the sub-cellular organelle responsible for photosynthesis\", all of the answer options should be sub-cellular organelles.\n  - Have similar grammatical structures to the correct answer\n- Write the answers in alphabetical order\n\n## Example\nWhat is the periodic table?\n- a table that lists all chemical compounds\n- a table that shows all chemical reactions\n- a table that shows all known elements\n\n## Non-example\nWhat is the periodic table?\n- a table that lists periods\n- a an old wooden table\n- a table that shows every known element that has been discovered\n\nHere, the answers are not within the same category or the same length, making it very easy for the pupils to guess.\n\n### 4. Practice Task\n\nA practice task is placed at the end of each learning cycle.\nIt enables pupils to practice the skills and knowledge related to key learning points that they have learnt in the explanation and have checked in the checks for understanding.\nIf a pupil completes the PRACTICE TASK successfully, they should have achieved the LEARNING CYCLE OUTCOME.\nIf they complete all PRACTICE TASKS in the lesson, they should have achieved the LEARNING OUTCOME.\n\nAudience: pupils in the class\nVoice: TEACHER_TO_PUPIL_WRITTEN\n\n#### Task type (hard requirements)\n\n- task types should be relevant to the subject and the phase\n- no multiple choice questions, match questions or other quick recall questions should be used\n- they must activate pupils through speaking, writing or doing\n- tasks should take pupils approx. 5-7 mins to complete\n- base your suggestions on other lessons you have seen at Oak National Academy\n\n#### Cognitive demand (hard requirements)\n\n- focus the cognitive demand of the task on the key learning points taught and checked in the learning cycle\n- avoid including unrelated knowledge or skills that shifts cognitive demand away from pupils practising the knowledge from the key learning point taught in the preceding explanation\n- tasks should require pupils to think progressively more deeply as they move through it. This can be via numbered statements, or embedded within one continuous activity\n- cognitive demand should be age and phase appropriate\n- they should vary across learning cycles\n- no part of the task may answer another part of the task. Check that nothing in the STIMULUS gives away the answer to a later statement.\n- every word in the task must be everyday language, the lesson's keywords, vocabulary taught earlier in this lesson, or anything named in prior knowledge. Do not introduce a new abstract term to compress a longer phrase.\n\n#### The three parts of a task\n\nA task is built from three kinds of parts:\n\n- an un-numbered TASK INSTRUCTION, always the first line\n- numbered STATEMENTS that chunk up the main task\n- a STIMULUS, where a statement needs one\n\nThe TASK INSTRUCTION comes first, then the STATEMENTS in order.\n\nA STIMULUS can be one of two configurations. It can either sit directly beneath the STATEMENT it belongs to, as in Example 1. Or it can be a single STIMULUS that belongs to all STATEMENTS, shown above them directly after the TASK INSTRUCTION, as seen in Example 2.\n\nExample 1:\n\nIdentify how Roman settlement changed daily life in Britain.\n\n1. Complete the sentences:\n\nRoman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Roman ______ carried clean water into some towns.\n\n2. Explain another change that Roman settlement brought to daily life:\n\nThe Romans built long, straight roads across Britain. Carts, soldiers and traders could travel quickly between towns. News and new goods arrived faster than before.\n\n3. Explain, using the examples, why daily life changed more in some places than in others:\n\nIn a town…\nOn a farm far from a road…\n\nAnother configuration that a task can be specified in is with a STIMULUS that applies to all statements.\n\nExample 2:\n\nExplain what impact the use of figurative language in the passage has on the reader.\n\nTrapped in a sterile room, she longed to see her family again. Where plush grass adorned with flowers used to grow, skyscrapers now towered into the polluted sky. Hastily, he scanned the surroundings for any threat.\n\n1. Identify the adjectives and adverbs\n2. Identify any personification\n3. Use full sentences to explain the impact on the reader\n\n#### How to write tasks\n\nThe first line of a task should be a clear, un-numbered TASK INSTRUCTION. It must start with a command word that is both phase-appropriate and matched to the cognitive demand of the work pupils actually do. If the task asks pupils to give reasons, the command word must be an explaining word, not a describing or identifying one. The same applies to the command word in each numbered statement.\nThe TASK INSTRUCTION is not the learning cycle outcome. The outcome describes what pupils will know; the TASK INSTRUCTION tells pupils what to produce now. Do not restate the outcome as the TASK INSTRUCTION.\nDo not include any superfluous or extraneous information that could distract the pupils.\nRefer to a STIMULUS by name (\"the passage\", \"the examples\", \"the data table\"), never by position (\"below\", \"above\", \"on the next line\"). The stimulus may be shown on the slide, on a later slide, or on the worksheet, so words like \"below\" can become untrue.\n\nExample:\nDesign a letterform that expresses a chosen idea or emotion.\n\nNon-example (extraneous information):\nA letterform is the term used when designing the shape of a letter. Design a letterform that expresses a chosen idea or emotion.\n\nAfter the TASK INSTRUCTION, if the task requires multiple steps use numbered STATEMENTS.\n\nExample:\nWrite a paragraph explaining why meditation matters to many Buddhists.\n1. Write one way meditation helps Buddhists in daily life\n2. Write one way meditation follows the Buddha's teachings\n3. Join your two ideas to say why meditation matters\n\nAfter the TASK INSTRUCTION and any numbered STATEMENTS if any require a STIMULUS (text extract, data table, items to sort, sentences to complete, calculations) this must follow it directly. A STIMULUS does not require bullet points or numbers.\nIn a STIMULUS, a sentence ending in \"…\" is an opener for pupils to complete. Only use \"…\" for this purpose.\n\nNon-example (a STIMULUS that belongs to ONE statement must sit directly beneath it, not at the end of the task):\n\nIdentify how Roman settlement changed daily life in Britain.\n\n1. Complete the sentences\n2. Explain another change that Roman settlement brought to daily life.\n3. Explain using examples why daily life changed more in some places than in others.\nRoman settlement brought more ______ where people could buy and sell goods. Some people started using ______ to pay for things. Roman ______ gave people a new place to wash and meet. Some people kept older ______, especially in the countryside.\n\n#### Formatting rules for writing tasks (hard requirements)\n\n- Numbers must only be used for STATEMENTS. Bullet points must never be used.\n- The items inside a STIMULUS (items to sort, sentences to complete, calculations) are not STATEMENTS: never number them.\n\n#### Where the task appears (for context - you do not need to trim anything)\n\n- The full task (TASK INSTRUCTION, STATEMENTS, STIMULUS) always appears in the lesson plan and on the worksheet. There is no length limit on the full task.\n- The slide shows a version of the same task, built automatically from your text. The slide is a fixed-size box holding at most 12 lines, counting blank separator lines; the box cannot shrink or grow the text.\n- If the full task is over the slide limit, stimuli are moved off the slide automatically, largest first, until the task fits. Moved stimuli appear together on the next slide, and each is replaced in the task by the line \"You will find the [stimulus type] on the next slide.\" (e.g. \"You will find the data table on the next slide.\")\n- The next slide is a fixed-size box of the same size, and each moved stimulus gets a short heading naming the statement it belongs to. If the moved stimuli do not all fit on that slide, they appear on the worksheet instead and the line says \"on the worksheet\".\n- If the TASK INSTRUCTION and STATEMENTS alone are still over the limit, the STATEMENTS are replaced with the line \"You will find the steps on the worksheet.\" The TASK INSTRUCTION always appears on the slide and is identical everywhere.\n- Pupils always have the full task on the worksheet, so nothing you write is lost.\n- Keep the TASK INSTRUCTION and STATEMENTS compact: one step per line, and each line short (about 12 words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.\n- Do not refer to the worksheet, the slides or any other document in the task text, and do not invent document names. Pointer lines are added automatically when needed.\n- Prefer tasks whose parts all fit on the slide; only include a large STIMULUS when the task genuinely requires it.\n\n### 5. Feedback\n\nThis section provides pupils with the chance to get feedback on their practice task. This is often done in a class of 30 pupils so consider how you might show the correct answer for this audience. The teacher will not have time to check each pupil's work.\n\nAudience: pupils in the class\nVoice: TEACHER_TO_PUPIL_WRITTEN\n\nFeedback is always placed after the practice task.\n\nFEEDBACK can be one of two configurations. Either one piece of feedback per numbered STATEMENT, in the same order, as in Example 1; the pieces are numbered to match the statements automatically. Or a single piece of FEEDBACK that covers the whole task, as in Example 2, which gets no number.\n\nReturn each piece as its type plus its content. The type label, the colon and any numbering are added automatically; never write them into the content, and never write a heading.\n\nExample 1 (feedback pupils see for the Roman settlement task above):\n\n1. Completed answer: Roman settlement brought more markets where people could buy and sell goods. Some people started using coins to pay for things. Roman baths gave people a new place to wash and meet. Roman aqueducts carried clean water into some towns.\n2. Success criteria: at least one change is identified with an explanation of how it changed daily life.\n3. Completed answer: In a town, a family buys bread at the market, pays with coins, and visits the baths. On a farm far from a road, a family grows its own food and lives in a roundhouse, as their grandparents did.\n\nExample 2 (a single piece of feedback for the figurative language task above):\n\nSuccess criteria: at least one adjective, adverb and example of personification is identified and the impact of them explained using full sentences.\n\nTypes of feedback to be used:\n\n- Model answer (e.g. sample diagram or response)\n- Success criteria (e.g. key features needed to be included for a good answer)\n- Worked example (e.g. showing the steps in the calculation with the correct answers)\n- Completed answer (e.g. completed question stems or cloze activity)\n\nChoose the most appropriate form of feedback for the task. A non-example would be \"Swap with a partner and mark each other's answers\", as this is an instruction to the class, not feedback pupils can check their work against.\n\nHow to write feedback:\n\n- Do not include any superfluous or extraneous information that could distract the teacher or the pupils.\n- When the feedback includes an itemised list, separate list items with a comma. If multiple equations or calculations are present, render them on separate lines.\n\nSlides:\n\n- Feedback appears on one slide in a fixed-size box holding at most 12 lines, counting every line and blank separator line; the box cannot shrink or grow the text, and anything over the limit is cut off.\n- Feedback must fit within the slide limit. Keep each line short (about 12 words or fewer) so it does not wrap in the slide box - a wrapped line counts as two.\n- If a full worked example or model answer will not fit, give the key steps or success criteria only."
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ],\n  \"keyLearningPoints\": [\n    \"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\n    \"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\n    \"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\n    \"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\n      \"description\": \"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland when Roman rule ended\",\n      \"description\": \"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"\n    },\n    {\n      \"misconception\": \"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\n      \"description\": \"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Roman rule\",\n      \"definition\": \"When the Romans were in charge of Britain\"\n    },\n    {\n      \"keyword\": \"Romano-Britons\",\n      \"definition\": \"People in Britain who kept some Roman ways\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of people who lived in the north of Britain\"\n    },\n    {\n      \"keyword\": \"Scots\",\n      \"definition\": \"A group of people who came from Ireland\"\n    },\n    {\n      \"keyword\": \"Anglo-Saxons\",\n      \"definition\": \"A group of people who settled in parts of Britain\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Where is Britain?\",\n        \"hint\": \"It is a place you can find on a map.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a country\"\n        ],\n        \"distractors\": [\n          \"a river\",\n          \"a room\"\n        ]\n      },\n      {\n        \"question\": \"Who used to rule Britain?\",\n        \"hint\": \"These people lived a long time ago.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romans\"\n        ],\n        \"distractors\": [\n          \"Picts\",\n          \"Scots\"\n        ]\n      },\n      {\n        \"question\": \"What happened after the Romans ruled Britain?\",\n        \"hint\": \"They did not stay in Britain.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They left Britain.\"\n        ],\n        \"distractors\": [\n          \"They built a new country.\",\n          \"They changed its name.\"\n        ]\n      },\n      {\n        \"question\": \"What do we call a group of people like the Romans, Picts or Scots?\",\n        \"hint\": \"They are groups of people with their own names.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a people\"\n        ],\n        \"distractors\": [\n          \"a building\",\n          \"a weather\"\n        ]\n      },\n      {\n        \"question\": \"If people live in different parts of a country, what can this mean?\",\n        \"hint\": \"Think about where people choose or are able to live.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They live in different places.\"\n        ],\n        \"distractors\": [\n          \"They all live together.\",\n          \"They never move home.\"\n        ]\n      },\n      {\n        \"question\": \"How can we find out about the past?\",\n        \"hint\": \"Think about things from long ago that people can study.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"by using old objects and stories\"\n        ],\n        \"distractors\": [\n          \"by guessing every answer\",\n          \"by looking only at new toys\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Name the groups of people\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- When Roman rule ended, Britain did not become empty; different groups of people lived there.\",\n        \"- One group was the Romano-Britons. These were people in Britain who kept some Roman ways.\",\n        \"- Another group was the Picts. The Picts were a group of people living in Britain at this time.\",\n        \"- Another group was the Scots. At this time, the Scots came from Ireland, so do not mix them up with the name Scotland today.\",\n        \"- Another group was the Anglo-Saxons. They began to settle in Britain after the Romans left, so these are the four group names we need to remember: Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show four simple picture cards in a row, each with a clear label: Romano-Britons, Picts, Scots and Anglo-Saxons. Include a small faded picture of Roman soldiers leaving Britain at the side, with a crossed arrow to show that Roman rule ended but people still lived in Britain. Keep the layout uncluttered so pupils can focus on learning and saying the four names.\",\n      \"imagePrompt\": \"simple KS1 history picture cards Romano-Britons Picts Scots Anglo-Saxons Roman Britain illustration\",\n      \"slideText\": \"After Roman rule ended, different groups lived in Britain. Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group kept some Roman ways?\",\n        \"answers\": [\n          \"Romano-Britons\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons\",\n          \"Picts\"\n        ]\n      },\n      {\n        \"question\": \"Which list names the four groups?\",\n        \"answers\": [\n          \"Anglo-Saxons, Picts, Romano-Britons, Scots\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons, Romans, Picts, Scots\",\n          \"Picts, Romans, Romano-Britons, Scots\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Say the four group names with your partner.\\n2. Look at the pictures on the board.\\n3. On your sheet, write each name under the right picture.\\n4. Use these names: Romano-Britons, Picts, Scots, Anglo-Saxons.\\n5. Then circle the name that means people kept some Roman ways.\\n6. Check that you have written all four names.\",\n    \"feedback\": \"Model answer\\n1. The four names are Romano-Britons, Picts, Scots and Anglo-Saxons.\\n2. Circle Romano-Britons.\\n3. I named all four groups.\\n4. I did not write Romans instead of Romano-Britons.\\n5. I did not miss out Anglo-Saxons.\"\n  }\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"learningCycles\": [\n    \"Name the groups who lived in Britain after the Romans left.\",\n    \"Match each group to where they lived in Britain.\",\n    \"Describe how the groups in Britain were different.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans ruled Britain a long time ago.\",\n    \"Britain is the place where we live now.\",\n    \"A map shows where places are.\",\n    \"Different groups of people can live in different places.\",\n    \"Things from the past can be different from life today.\"\n  ],\n  \"keyLearningPoints\": [\n    \"After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.\",\n    \"The Britons were the people already living in Britain when Roman rule ended.\",\n    \"The Picts and Scots attacked Roman Britain from the north and from Ireland.\",\n    \"A map can show where each group lived in Britain at the end of Roman rule.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Romans left and then only one new group lived in Britain\",\n      \"description\": \"After the Romans left, several groups lived in and around Britain. Pupils should name the Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland at this time\",\n      \"description\": \"At the end of Roman rule, the Scots came from Ireland. Later, some Scots settled in the north of Britain.\"\n    },\n    {\n      \"misconception\": \"The Britons were the same as the Romans\",\n      \"description\": \"The Britons were the people already living in Britain. The Romans had ruled Britain, but they were not the same group.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Roman rule\",\n      \"definition\": \"When the Romans were in charge of Britain\"\n    },\n    {\n      \"keyword\": \"Britons\",\n      \"definition\": \"The people already living in Britain\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of people who lived in the north of Britain\"\n    },\n    {\n      \"keyword\": \"Scots\",\n      \"definition\": \"A group of people who came from Ireland\"\n    },\n    {\n      \"keyword\": \"Anglo-Saxons\",\n      \"definition\": \"Groups of people who settled in the east and south of Britain\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Where do we live now?\",\n        \"hint\": \"Think about the country named in our history lessons.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Britain\"\n        ],\n        \"distractors\": [\n          \"Egypt\",\n          \"Rome\"\n        ]\n      },\n      {\n        \"question\": \"What does a map show?\",\n        \"hint\": \"A map helps us find places.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"where places are\"\n        ],\n        \"distractors\": [\n          \"what people eat\",\n          \"when things happened\"\n        ]\n      },\n      {\n        \"question\": \"Who ruled Britain a long time ago?\",\n        \"hint\": \"This group lived a long time in the past.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romans\"\n        ],\n        \"distractors\": [\n          \"Saxons\",\n          \"Victorians\"\n        ]\n      },\n      {\n        \"question\": \"What can different groups of people do?\",\n        \"hint\": \"Think about where groups might make their homes.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"live in different places\"\n        ],\n        \"distractors\": [\n          \"all wear the same clothes\",\n          \"only live in one country\"\n        ]\n      },\n      {\n        \"question\": \"Which is from the past?\",\n        \"hint\": \"The past means a long time ago.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a Roman road\"\n        ],\n        \"distractors\": [\n          \"a school lunch today\",\n          \"the weather this morning\"\n        ]\n      },\n      {\n        \"question\": \"A map of Britain would help you find a place in which country?\",\n        \"hint\": \"Use what you know about where we live now.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Britain\"\n        ],\n        \"distractors\": [\n          \"India\",\n          \"Italy\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Groups after the Romans left\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"After the Romans left Britain, more than one group lived here and nearby.\",\n        \"The Britons were the people already living in Britain.\",\n        \"The Picts, the Scots and the Anglo-Saxons were other groups at this time.\",\n        \"Scots at this time came from Ireland, so they were not living in Scotland yet.\",\n        \"We are naming the groups today: Britons, Picts, Scots and Anglo-Saxons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a simple picture card for each group with the name clearly labelled: Britons, Picts, Scots and Anglo-Saxons. Include a small timeline marker saying 'after the Romans left' to place the groups in time, but do not show a map yet because location is taught later.\",\n      \"imagePrompt\": \"simple classroom history image cards Britons Picts Scots Anglo-Saxons labelled for KS1\",\n      \"slideText\": \"After the Romans left, four groups are important to know: Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group were the people already living in Britain?\",\n        \"answers\": [\n          \"Britons\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons\",\n          \"Picts\"\n        ]\n      },\n      {\n        \"question\": \"Which group came from Ireland at this time?\",\n        \"answers\": [\n          \"Scots\"\n        ],\n        \"distractors\": [\n          \"Britons\",\n          \"Picts\"\n        ]\n      }\n    ],\n    \"practice\": \"Say and write the four group names.\\n\\n1. Write the groups you can remember.\\n2. Circle the name for people already in Britain.\\n\\nBritons Picts Scots Anglo-Saxons\\n\\n3. Add one more name if you missed one.\",\n    \"feedback\": \"1. Completed answer: Britons, Picts, Scots, Anglo-Saxons\\n2. Completed answer: Britons\\n3. Success criteria: all four group names are written, Britons is circled, spellings are close enough to read\"\n  }\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,11 @@
       },
       {
         "role": "developer",
-        "content": "## Target learning cycle\n\nYou are generating cycle2, learning cycle 2.\n\nTarget learning cycle outcome:\n- Match the groups of people to where they lived in Britain.\n\nRules for this cycle:\n- Generate only cycle2.\n- This cycle must directly teach and practise the target learning cycle outcome above.\n- Do not repeat the explanation, checks for understanding, practice task, or feedback from earlier cycles.\n- Do not teach content reserved for later learning cycle outcomes, except for brief prerequisite links.\n- If previous cycles are listed below, use them as context for progression and contrast.\n\nPrevious completed cycles:\n- cycle1, learning cycle 1\n  Title: Name the groups of people\n  Practice: 1. Say the four group names with your partner.\n2. Look at the pictures on the board.\n3. On your sheet, write each name under the right picture.\n4. Use these names: Romano-Britons, Picts, Scots, Anglo-Saxons.\n5. Then circle the name that means people kept some Roman ways.\n6. Check that you have written all four names.\n  Checks: Which group kept some Roman ways? | Which list names the four groups?\n\nLater learning cycle outcomes to reserve:\n- cycle3: Describe who lived in Britain after the Romans left."
+        "content": "## Target learning cycle\n\nYou are generating cycle2, learning cycle 2.\n\nTarget learning cycle outcome:\n- Match each group to where they lived in Britain.\n\nRules for this cycle:\n- Generate only cycle2.\n- This cycle must directly teach and practise the target learning cycle outcome above.\n- Do not repeat the explanation, checks for understanding, practice task, or feedback from earlier cycles.\n- Do not teach content reserved for later learning cycle outcomes, except for brief prerequisite links.\n- If previous cycles are listed below, use them as context for progression and contrast.\n\nPrevious completed cycles:\n- cycle1, learning cycle 1\n  Title: Groups after the Romans left\n  Practice: Say and write the four group names.\n\n1. Write the groups you can remember.\n2. Circle the name for people already in Britain.\n\nBritons Picts Scots Anglo-Saxons\n\n3. Add one more name if you missed one.\n  Checks: Which group were the people already living in Britain? | Which group came from Ireland at this time?\n\nLater learning cycle outcomes to reserve:\n- cycle3: Describe how the groups in Britain were different."
+      },
+      {
+        "role": "developer",
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/null"
       },
       {
         "role": "developer",
@@ -138,12 +142,109 @@
                   "minItems": 2
                 },
                 "practice": {
-                  "type": "string",
-                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                  "type": "object",
+                  "properties": {
+                    "instruction": {
+                      "type": "string",
+                      "description": "The un-numbered TASK INSTRUCTION: the first line of the task, a single clear sentence telling pupils what to produce now.\nMust start with a command word that is phase-appropriate and matched to the cognitive demand of the work pupils actually do.\nDo not restate the learning cycle outcome, add orientation steps, or include superfluous information."
+                    },
+                    "statements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string",
+                            "description": "One numbered STATEMENT that chunks up the main task. An imperative starting with a command word matched to its own cognitive demand.\nDo not include the number; numbering is added automatically. One short line (about 12 words or fewer).\nA statement that introduces its own stimulus should end with a colon."
+                          },
+                          "stimulus": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "label": {
+                                    "type": "string",
+                                    "enum": [
+                                      "text extract",
+                                      "data table",
+                                      "items to sort",
+                                      "sentences to complete",
+                                      "calculations"
+                                    ],
+                                    "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+                                  },
+                                  "content": {
+                                    "type": "string",
+                                    "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+                                  }
+                                },
+                                "required": [
+                                  "label",
+                                  "content"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "description": "The stimulus this statement works from, shown directly beneath it. Null when the statement needs none."
+                          }
+                        },
+                        "required": [
+                          "text",
+                          "stimulus"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "The numbered STATEMENTS, in order, requiring progressively deeper thinking.\nOnly include statements when the task genuinely has multiple steps; use an empty array for one continuous activity."
+                    },
+                    "sharedStimulus": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown above the statements, directly after the task instruction.\nNull when there is none. A task should use either per-statement stimuli or this shared stimulus, not both."
+                    }
+                  },
+                  "required": [
+                    "instruction",
+                    "statements",
+                    "sharedStimulus"
+                  ],
+                  "additionalProperties": false
                 },
                 "feedback": {
-                  "type": "string",
-                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Model answer",
+                          "Success criteria",
+                          "Worked example",
+                          "Completed answer"
+                        ],
+                        "description": "The form of this piece of feedback. Choose the most appropriate for the work pupils produced."
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "The feedback itself, without the type label or a number; both are added automatically.\nWritten so a class of 30 can check their own work against it; the teacher will not have time to check each pupil's.\nSeparate items in a list with commas. Put each equation or calculation on its own line."
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "content"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "The feedback on the practice task, shown to pupils after it.\nEither one piece per numbered STATEMENT, in the same order (they are numbered to match automatically), or a single piece that covers the whole task."
                 }
               },
               "required": [
@@ -161,21 +262,265 @@
             "value"
           ],
           "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_label"
+                },
+                "content": {
+                  "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_content"
+                }
+              },
+              "required": [
+                "label",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_label": {
+              "type": "string",
+              "enum": [
+                "text extract",
+                "data table",
+                "items to sort",
+                "sentences to complete",
+                "calculations"
+              ],
+              "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+            },
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_content": {
+              "type": "string",
+              "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                    },
+                    "durationInMinutes": {
+                      "type": "number",
+                      "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
+                    },
+                    "explanation": {
+                      "type": "object",
+                      "properties": {
+                        "spokenExplanation": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
+                        },
+                        "accompanyingSlideDetails": {
+                          "type": "string",
+                          "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
+                        },
+                        "imagePrompt": {
+                          "type": "string",
+                          "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
+                        },
+                        "slideText": {
+                          "type": "string",
+                          "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                        }
+                      },
+                      "required": [
+                        "spokenExplanation",
+                        "accompanyingSlideDetails",
+                        "imagePrompt",
+                        "slideText"
+                      ],
+                      "additionalProperties": false,
+                      "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                    },
+                    "checkForUnderstanding": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 1,
+                            "maxItems": 1,
+                            "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 2,
+                            "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "minItems": 2
+                    },
+                    "practice": {
+                      "type": "object",
+                      "properties": {
+                        "instruction": {
+                          "type": "string",
+                          "description": "The un-numbered TASK INSTRUCTION: the first line of the task, a single clear sentence telling pupils what to produce now.\nMust start with a command word that is phase-appropriate and matched to the cognitive demand of the work pupils actually do.\nDo not restate the learning cycle outcome, add orientation steps, or include superfluous information."
+                        },
+                        "statements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "text": {
+                                "type": "string",
+                                "description": "One numbered STATEMENT that chunks up the main task. An imperative starting with a command word matched to its own cognitive demand.\nDo not include the number; numbering is added automatically. One short line (about 12 words or fewer).\nA statement that introduces its own stimulus should end with a colon."
+                              },
+                              "stimulus": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "label": {
+                                        "type": "string",
+                                        "enum": [
+                                          "text extract",
+                                          "data table",
+                                          "items to sort",
+                                          "sentences to complete",
+                                          "calculations"
+                                        ],
+                                        "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+                                      }
+                                    },
+                                    "required": [
+                                      "label",
+                                      "content"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ],
+                                "description": "The stimulus this statement works from, shown directly beneath it. Null when the statement needs none."
+                              }
+                            },
+                            "required": [
+                              "text",
+                              "stimulus"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "description": "The numbered STATEMENTS, in order, requiring progressively deeper thinking.\nOnly include statements when the task genuinely has multiple steps; use an empty array for one continuous activity."
+                        },
+                        "sharedStimulus": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown above the statements, directly after the task instruction.\nNull when there is none. A task should use either per-statement stimuli or this shared stimulus, not both."
+                        }
+                      },
+                      "required": [
+                        "instruction",
+                        "statements",
+                        "sharedStimulus"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "feedback": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "Model answer",
+                              "Success criteria",
+                              "Worked example",
+                              "Completed answer"
+                            ],
+                            "description": "The form of this piece of feedback. Choose the most appropriate for the work pupils produced."
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "The feedback itself, without the type label or a number; both are added automatically.\nWritten so a class of 30 can check their own work against it; the teacher will not have time to check each pupil's.\nSeparate items in a list with commas. Put each equation or calculation on its own line."
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "content"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "The feedback on the practice task, shown to pupils after it.\nEither one piece per numbered STATEMENT, in the same order (they are numbered to match automatically), or a single piece that covers the whole task."
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "durationInMinutes",
+                    "explanation",
+                    "checkForUnderstanding",
+                    "practice",
+                    "feedback"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          },
           "$schema": "http://json-schema.org/draft-07/schema#"
         }
       }
     }
   },
   "result": {
-    "id": "resp_0b2d217f39e505a7006a5f5e9c28d0819c84d1a71757b9b9bc",
+    "id": "resp_043800294b27a2c6006aa1848e2fa887d2a050bd8dc9d37cac",
     "object": "response",
-    "created_at": 1784635036,
+    "created_at": 1788970126,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784635042,
+    "completed_at": 1788970130,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -186,7 +531,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0b2d217f39e505a7006a5f5e9cb9c0819ca73a3bb5d9d6b9ba",
+        "id": "msg_043800294b27a2c6006aa1848ee8f087d2827cf1ff6e73c305",
         "type": "message",
         "status": "completed",
         "content": [
@@ -194,47 +539,80 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"title\":\"Match groups to where they lived\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"- We already know the four group names. Now we match each group to a place on a simple map of Britain.\",\"- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.\",\"- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.\",\"- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.\",\"- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons.\"],\"accompanyingSlideDetails\":\"Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.\",\"imagePrompt\":\"simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south\",\"slideText\":\"Different groups lived in different places. Use the map to match each group to where they lived.\"},\"checkForUnderstanding\":[{\"question\":\"Who lived in the north of Britain?\",\"answers\":[\"Picts\"],\"distractors\":[\"Scots\",\"Romans\"]},{\"question\":\"Where did the Scots come from?\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]}],\"practice\":\"1. Look at the map on the worksheet.\\n2. Draw lines to match each group to a place.\\n3. Match Picts to the north of Britain.\\n4. Match Scots to Ireland.\\n5. Match Romano-Britons to the south and east.\\n6. Match Anglo-Saxons to parts of the east and south.\\n7. Then tell your partner one match.\",\"feedback\":\"Model answer\\nPicts → north of Britain\\nScots → Ireland\\nRomano-Britons → south and east\\nAnglo-Saxons → parts of the east and south\\nCheck: Scots are not in Scotland here.\\nCheck: Picts are in the north.\"}}",
+            "text": "{\"value\":{\"title\":\"Where the groups lived\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"After the Romans left, different groups lived in different places around Britain.\",\"The Picts lived in the north of Britain.\",\"The Scots came from Ireland at this time.\",\"The Anglo-Saxons settled in the east and south of Britain.\",\"The Britons lived in the west of Britain, and we can use a map to match each group to its place.\"],\"accompanyingSlideDetails\":\"Show a simple map of Britain and Ireland with four coloured areas and clear labels: north for Picts, Ireland for Scots, east and south for Anglo-Saxons, and west for Britons. Keep the map very simple, with sea and land easy to tell apart, and use arrows or colour patches rather than too much text.\",\"imagePrompt\":\"simple KS1 map of Britain and Ireland showing Picts north Britons west Anglo-Saxons east and south Scots Ireland\",\"slideText\":\"A map can show where groups lived. Picts lived in the north, Britons in the west, Anglo-Saxons in the east and south, and Scots in Ireland.\"},\"checkForUnderstanding\":[{\"question\":\"Which group lived in the north of Britain?\",\"answers\":[\"Picts\"],\"distractors\":[\"Britons\",\"Scots\"]},{\"question\":\"Where did the Anglo-Saxons settle?\",\"answers\":[\"east and south\"],\"distractors\":[\"north and west\",\"west and Ireland\"]}],\"practice\":{\"instruction\":\"Match each group to where it lived.\",\"statements\":[{\"text\":\"Draw a line from each group to its place:\",\"stimulus\":{\"label\":\"items to sort\",\"content\":\"Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\"}},{\"text\":\"Circle the group from Ireland.\",\"stimulus\":null},{\"text\":\"Name the group in the west of Britain.\",\"stimulus\":null}],\"sharedStimulus\":null},\"feedback\":[{\"type\":\"Completed answer\",\"content\":\"Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\"},{\"type\":\"Completed answer\",\"content\":\"Scots\"},{\"type\":\"Completed answer\",\"content\":\"Britons\"}]}}",
             "parsed": {
               "value": {
-                "title": "Match groups to where they lived",
+                "title": "Where the groups lived",
                 "durationInMinutes": 8,
                 "explanation": {
                   "spokenExplanation": [
-                    "- We already know the four group names. Now we match each group to a place on a simple map of Britain.",
-                    "- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.",
-                    "- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.",
-                    "- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.",
-                    "- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons."
+                    "After the Romans left, different groups lived in different places around Britain.",
+                    "The Picts lived in the north of Britain.",
+                    "The Scots came from Ireland at this time.",
+                    "The Anglo-Saxons settled in the east and south of Britain.",
+                    "The Britons lived in the west of Britain, and we can use a map to match each group to its place."
                   ],
-                  "accompanyingSlideDetails": "Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.",
-                  "imagePrompt": "simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south",
-                  "slideText": "Different groups lived in different places. Use the map to match each group to where they lived."
+                  "accompanyingSlideDetails": "Show a simple map of Britain and Ireland with four coloured areas and clear labels: north for Picts, Ireland for Scots, east and south for Anglo-Saxons, and west for Britons. Keep the map very simple, with sea and land easy to tell apart, and use arrows or colour patches rather than too much text.",
+                  "imagePrompt": "simple KS1 map of Britain and Ireland showing Picts north Britons west Anglo-Saxons east and south Scots Ireland",
+                  "slideText": "A map can show where groups lived. Picts lived in the north, Britons in the west, Anglo-Saxons in the east and south, and Scots in Ireland."
                 },
                 "checkForUnderstanding": [
                   {
-                    "question": "Who lived in the north of Britain?",
+                    "question": "Which group lived in the north of Britain?",
                     "answers": [
                       "Picts"
                     ],
                     "distractors": [
-                      "Scots",
-                      "Romans"
+                      "Britons",
+                      "Scots"
                     ]
                   },
                   {
-                    "question": "Where did the Scots come from?",
+                    "question": "Where did the Anglo-Saxons settle?",
                     "answers": [
-                      "Ireland"
+                      "east and south"
                     ],
                     "distractors": [
-                      "Britain",
-                      "Scotland"
+                      "north and west",
+                      "west and Ireland"
                     ]
                   }
                 ],
-                "practice": "1. Look at the map on the worksheet.\n2. Draw lines to match each group to a place.\n3. Match Picts to the north of Britain.\n4. Match Scots to Ireland.\n5. Match Romano-Britons to the south and east.\n6. Match Anglo-Saxons to parts of the east and south.\n7. Then tell your partner one match.",
-                "feedback": "Model answer\nPicts → north of Britain\nScots → Ireland\nRomano-Britons → south and east\nAnglo-Saxons → parts of the east and south\nCheck: Scots are not in Scotland here.\nCheck: Picts are in the north."
+                "practice": {
+                  "instruction": "Match each group to where it lived.",
+                  "statements": [
+                    {
+                      "text": "Draw a line from each group to its place:",
+                      "stimulus": {
+                        "label": "items to sort",
+                        "content": "Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain"
+                      }
+                    },
+                    {
+                      "text": "Circle the group from Ireland.",
+                      "stimulus": null
+                    },
+                    {
+                      "text": "Name the group in the west of Britain.",
+                      "stimulus": null
+                    }
+                  ],
+                  "sharedStimulus": null
+                },
+                "feedback": [
+                  {
+                    "type": "Completed answer",
+                    "content": "Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain"
+                  },
+                  {
+                    "type": "Completed answer",
+                    "content": "Scots"
+                  },
+                  {
+                    "type": "Completed answer",
+                    "content": "Britons"
+                  }
+                ]
               }
             }
           }
@@ -353,12 +731,109 @@
                   "minItems": 2
                 },
                 "practice": {
-                  "type": "string",
-                  "description": "The activity that the pupils are asked to do to practice what they have learnt.\nShould be pupil facing and include all details that the pupils need to complete the task.\nShould be linked to the learning cycle command word and should enable pupils to practice the key learning points that have been taught during this learning cycle.\nShould include calculations if this is appropriate.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                  "type": "object",
+                  "properties": {
+                    "instruction": {
+                      "type": "string",
+                      "description": "The un-numbered TASK INSTRUCTION: the first line of the task, a single clear sentence telling pupils what to produce now.\nMust start with a command word that is phase-appropriate and matched to the cognitive demand of the work pupils actually do.\nDo not restate the learning cycle outcome, add orientation steps, or include superfluous information."
+                    },
+                    "statements": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "text": {
+                            "type": "string",
+                            "description": "One numbered STATEMENT that chunks up the main task. An imperative starting with a command word matched to its own cognitive demand.\nDo not include the number; numbering is added automatically. One short line (about 12 words or fewer).\nA statement that introduces its own stimulus should end with a colon."
+                          },
+                          "stimulus": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "label": {
+                                    "type": "string",
+                                    "enum": [
+                                      "text extract",
+                                      "data table",
+                                      "items to sort",
+                                      "sentences to complete",
+                                      "calculations"
+                                    ],
+                                    "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+                                  },
+                                  "content": {
+                                    "type": "string",
+                                    "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+                                  }
+                                },
+                                "required": [
+                                  "label",
+                                  "content"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ],
+                            "description": "The stimulus this statement works from, shown directly beneath it. Null when the statement needs none."
+                          }
+                        },
+                        "required": [
+                          "text",
+                          "stimulus"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "The numbered STATEMENTS, in order, requiring progressively deeper thinking.\nOnly include statements when the task genuinely has multiple steps; use an empty array for one continuous activity."
+                    },
+                    "sharedStimulus": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown above the statements, directly after the task instruction.\nNull when there is none. A task should use either per-statement stimuli or this shared stimulus, not both."
+                    }
+                  },
+                  "required": [
+                    "instruction",
+                    "statements",
+                    "sharedStimulus"
+                  ],
+                  "additionalProperties": false
                 },
                 "feedback": {
-                  "type": "string",
-                  "description": "Student-facing feedback which will be presented on a slide, giving the correct answer to the practice task.\nThis should adhere to the rules as specified in the LEARNING CYCLES: FEEDBACK section of the lesson plan guidance.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "Model answer",
+                          "Success criteria",
+                          "Worked example",
+                          "Completed answer"
+                        ],
+                        "description": "The form of this piece of feedback. Choose the most appropriate for the work pupils produced."
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "The feedback itself, without the type label or a number; both are added automatically.\nWritten so a class of 30 can check their own work against it; the teacher will not have time to check each pupil's.\nSeparate items in a list with commas. Put each equation or calculation on its own line."
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "content"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "description": "The feedback on the practice task, shown to pupils after it.\nEither one piece per numbered STATEMENT, in the same order (they are numbered to match automatically), or a single piece that covers the whole task."
                 }
               },
               "required": [
@@ -375,7 +850,251 @@
           "required": [
             "value"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "definitions": {
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_label"
+                },
+                "content": {
+                  "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_content"
+                }
+              },
+              "required": [
+                "label",
+                "content"
+              ],
+              "additionalProperties": false
+            },
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_label": {
+              "type": "string",
+              "enum": [
+                "text extract",
+                "data table",
+                "items to sort",
+                "sentences to complete",
+                "calculations"
+              ],
+              "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+            },
+            "agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0_properties_content": {
+              "type": "string",
+              "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+            },
+            "agent_response_schema": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "The title of the learning cycle written in sentence case starting with a capital letter and not ending with a full stop."
+                    },
+                    "durationInMinutes": {
+                      "type": "number",
+                      "description": "An estimated duration for how long it would take the teacher to deliver this part of the lesson."
+                    },
+                    "explanation": {
+                      "type": "object",
+                      "properties": {
+                        "spokenExplanation": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          ],
+                          "description": "The spoken teacher explanation in the EXPERT_TEACHER voice.\nAbout five or six sentences or 5-12 markdown list items.\nIn the spoken explanation, give guidance to the teacher on which key points should be covered in their explanation to students.\nThis should be teacher facing and not include a script or narrative for the teacher.\nShould bear in mind the following requirements:\n- teacher facing\n- outline the key points that the teacher should address during their explanation\n- include as much detail as possible\n- written in bullet points\n- break concepts into small, manageable chunks\n- if appropriate, the method for explanation should be included for e.g. demonstrate to pupils how to set up the apparatus for the experiment or model how to complete the pass for students or use a bar model to show the addition of these three numbers.\n- abstract concepts are made concrete\n- the explanation should be clear\n- images will be used to support dual coding for pupils"
+                        },
+                        "accompanyingSlideDetails": {
+                          "type": "string",
+                          "description": "A description of the image or video to be used.\nShould describe what should be displayed on the slides for pupils to look at during the explanation.\nThis is to enable dual coding of a visual image and the teachers explanation being given verbally.\nWritten in the EXPERT_TEACHER voice."
+                        },
+                        "imagePrompt": {
+                          "type": "string",
+                          "description": "A prompt to generate an image, or a search term to use to find an image or video.\nShould tell the teacher what images to search for to display on the slides.\nWritten in the EXPERT_TEACHER voice."
+                        },
+                        "slideText": {
+                          "type": "string",
+                          "description": "The slide text would appear on the slide when the teacher delivers this part of the lesson.\nIt should be a short, succinct summary of the content in the explanation.\nIt should be no longer than 2 sentences.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                        }
+                      },
+                      "required": [
+                        "spokenExplanation",
+                        "accompanyingSlideDetails",
+                        "imagePrompt",
+                        "slideText"
+                      ],
+                      "additionalProperties": false,
+                      "description": "An object describing how the teacher would explain the content of this cycle to the students.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                    },
+                    "checkForUnderstanding": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string",
+                            "description": "A multiple choice question to ask as a check to see if the students have understood the content of this cycle.\nWritten in the TEACHER_TO_PUPIL_SLIDES voice."
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 1,
+                            "maxItems": 1,
+                            "description": "The correct answer to the question.\nIf this is of length ANSWER_LENGTH, then all distractor strings should be very close in length to ANSWER_LENGTH."
+                          },
+                          "distractors": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 2,
+                            "description": "Two incorrect distractors which could be the answer to the question but are not correct.\nThese strings should be of similar length to ANSWER_LENGTH so that the correct answer does not stand out because it is obviously longer than the distractors."
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "answers",
+                          "distractors"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "minItems": 2
+                    },
+                    "practice": {
+                      "type": "object",
+                      "properties": {
+                        "instruction": {
+                          "type": "string",
+                          "description": "The un-numbered TASK INSTRUCTION: the first line of the task, a single clear sentence telling pupils what to produce now.\nMust start with a command word that is phase-appropriate and matched to the cognitive demand of the work pupils actually do.\nDo not restate the learning cycle outcome, add orientation steps, or include superfluous information."
+                        },
+                        "statements": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "text": {
+                                "type": "string",
+                                "description": "One numbered STATEMENT that chunks up the main task. An imperative starting with a command word matched to its own cognitive demand.\nDo not include the number; numbering is added automatically. One short line (about 12 words or fewer).\nA statement that introduces its own stimulus should end with a colon."
+                              },
+                              "stimulus": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "label": {
+                                        "type": "string",
+                                        "enum": [
+                                          "text extract",
+                                          "data table",
+                                          "items to sort",
+                                          "sentences to complete",
+                                          "calculations"
+                                        ],
+                                        "description": "The type of stimulus. Used to direct pupils to it when it cannot fit on the task slide."
+                                      },
+                                      "content": {
+                                        "type": "string",
+                                        "description": "The stimulus material itself that pupils work from, e.g. the rows of a data table or the text extract. No bullet points and no numbers. Never refer to it by position (below, above); refer to it by name."
+                                      }
+                                    },
+                                    "required": [
+                                      "label",
+                                      "content"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ],
+                                "description": "The stimulus this statement works from, shown directly beneath it. Null when the statement needs none."
+                              }
+                            },
+                            "required": [
+                              "text",
+                              "stimulus"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "description": "The numbered STATEMENTS, in order, requiring progressively deeper thinking.\nOnly include statements when the task genuinely has multiple steps; use an empty array for one continuous activity."
+                        },
+                        "sharedStimulus": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/definitions/agent_response_schema_properties_value_properties_practice_properties_statements_items_properties_stimulus_anyOf_0"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "description": "A single STIMULUS that applies to all statements (e.g. a passage every statement works from), shown above the statements, directly after the task instruction.\nNull when there is none. A task should use either per-statement stimuli or this shared stimulus, not both."
+                        }
+                      },
+                      "required": [
+                        "instruction",
+                        "statements",
+                        "sharedStimulus"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "feedback": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "Model answer",
+                              "Success criteria",
+                              "Worked example",
+                              "Completed answer"
+                            ],
+                            "description": "The form of this piece of feedback. Choose the most appropriate for the work pupils produced."
+                          },
+                          "content": {
+                            "type": "string",
+                            "description": "The feedback itself, without the type label or a number; both are added automatically.\nWritten so a class of 30 can check their own work against it; the teacher will not have time to check each pupil's.\nSeparate items in a list with commas. Put each equation or calculation on its own line."
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "content"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "description": "The feedback on the practice task, shown to pupils after it.\nEither one piece per numbered STATEMENT, in the same order (they are numbered to match automatically), or a single piece that covers the whole task."
+                    }
+                  },
+                  "required": [
+                    "title",
+                    "durationInMinutes",
+                    "explanation",
+                    "checkForUnderstanding",
+                    "practice",
+                    "feedback"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "value"
+              ],
+              "additionalProperties": false
+            }
+          }
         },
         "strict": true
       },
@@ -405,60 +1124,93 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 9469,
+      "input_tokens": 11906,
       "input_tokens_details": {
         "cache_write_tokens": 0,
-        "cached_tokens": 0
+        "cached_tokens": 8960
       },
-      "output_tokens": 513,
+      "output_tokens": 478,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 9982
+      "total_tokens": 12384
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"title\":\"Match groups to where they lived\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"- We already know the four group names. Now we match each group to a place on a simple map of Britain.\",\"- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.\",\"- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.\",\"- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.\",\"- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons.\"],\"accompanyingSlideDetails\":\"Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.\",\"imagePrompt\":\"simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south\",\"slideText\":\"Different groups lived in different places. Use the map to match each group to where they lived.\"},\"checkForUnderstanding\":[{\"question\":\"Who lived in the north of Britain?\",\"answers\":[\"Picts\"],\"distractors\":[\"Scots\",\"Romans\"]},{\"question\":\"Where did the Scots come from?\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]}],\"practice\":\"1. Look at the map on the worksheet.\\n2. Draw lines to match each group to a place.\\n3. Match Picts to the north of Britain.\\n4. Match Scots to Ireland.\\n5. Match Romano-Britons to the south and east.\\n6. Match Anglo-Saxons to parts of the east and south.\\n7. Then tell your partner one match.\",\"feedback\":\"Model answer\\nPicts → north of Britain\\nScots → Ireland\\nRomano-Britons → south and east\\nAnglo-Saxons → parts of the east and south\\nCheck: Scots are not in Scotland here.\\nCheck: Picts are in the north.\"}}",
+    "output_text": "{\"value\":{\"title\":\"Where the groups lived\",\"durationInMinutes\":8,\"explanation\":{\"spokenExplanation\":[\"After the Romans left, different groups lived in different places around Britain.\",\"The Picts lived in the north of Britain.\",\"The Scots came from Ireland at this time.\",\"The Anglo-Saxons settled in the east and south of Britain.\",\"The Britons lived in the west of Britain, and we can use a map to match each group to its place.\"],\"accompanyingSlideDetails\":\"Show a simple map of Britain and Ireland with four coloured areas and clear labels: north for Picts, Ireland for Scots, east and south for Anglo-Saxons, and west for Britons. Keep the map very simple, with sea and land easy to tell apart, and use arrows or colour patches rather than too much text.\",\"imagePrompt\":\"simple KS1 map of Britain and Ireland showing Picts north Britons west Anglo-Saxons east and south Scots Ireland\",\"slideText\":\"A map can show where groups lived. Picts lived in the north, Britons in the west, Anglo-Saxons in the east and south, and Scots in Ireland.\"},\"checkForUnderstanding\":[{\"question\":\"Which group lived in the north of Britain?\",\"answers\":[\"Picts\"],\"distractors\":[\"Britons\",\"Scots\"]},{\"question\":\"Where did the Anglo-Saxons settle?\",\"answers\":[\"east and south\"],\"distractors\":[\"north and west\",\"west and Ireland\"]}],\"practice\":{\"instruction\":\"Match each group to where it lived.\",\"statements\":[{\"text\":\"Draw a line from each group to its place:\",\"stimulus\":{\"label\":\"items to sort\",\"content\":\"Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\"}},{\"text\":\"Circle the group from Ireland.\",\"stimulus\":null},{\"text\":\"Name the group in the west of Britain.\",\"stimulus\":null}],\"sharedStimulus\":null},\"feedback\":[{\"type\":\"Completed answer\",\"content\":\"Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\"},{\"type\":\"Completed answer\",\"content\":\"Scots\"},{\"type\":\"Completed answer\",\"content\":\"Britons\"}]}}",
     "output_parsed": {
       "value": {
-        "title": "Match groups to where they lived",
+        "title": "Where the groups lived",
         "durationInMinutes": 8,
         "explanation": {
           "spokenExplanation": [
-            "- We already know the four group names. Now we match each group to a place on a simple map of Britain.",
-            "- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.",
-            "- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.",
-            "- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.",
-            "- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons."
+            "After the Romans left, different groups lived in different places around Britain.",
+            "The Picts lived in the north of Britain.",
+            "The Scots came from Ireland at this time.",
+            "The Anglo-Saxons settled in the east and south of Britain.",
+            "The Britons lived in the west of Britain, and we can use a map to match each group to its place."
           ],
-          "accompanyingSlideDetails": "Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.",
-          "imagePrompt": "simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south",
-          "slideText": "Different groups lived in different places. Use the map to match each group to where they lived."
+          "accompanyingSlideDetails": "Show a simple map of Britain and Ireland with four coloured areas and clear labels: north for Picts, Ireland for Scots, east and south for Anglo-Saxons, and west for Britons. Keep the map very simple, with sea and land easy to tell apart, and use arrows or colour patches rather than too much text.",
+          "imagePrompt": "simple KS1 map of Britain and Ireland showing Picts north Britons west Anglo-Saxons east and south Scots Ireland",
+          "slideText": "A map can show where groups lived. Picts lived in the north, Britons in the west, Anglo-Saxons in the east and south, and Scots in Ireland."
         },
         "checkForUnderstanding": [
           {
-            "question": "Who lived in the north of Britain?",
+            "question": "Which group lived in the north of Britain?",
             "answers": [
               "Picts"
             ],
             "distractors": [
-              "Scots",
-              "Romans"
+              "Britons",
+              "Scots"
             ]
           },
           {
-            "question": "Where did the Scots come from?",
+            "question": "Where did the Anglo-Saxons settle?",
             "answers": [
-              "Ireland"
+              "east and south"
             ],
             "distractors": [
-              "Britain",
-              "Scotland"
+              "north and west",
+              "west and Ireland"
             ]
           }
         ],
-        "practice": "1. Look at the map on the worksheet.\n2. Draw lines to match each group to a place.\n3. Match Picts to the north of Britain.\n4. Match Scots to Ireland.\n5. Match Romano-Britons to the south and east.\n6. Match Anglo-Saxons to parts of the east and south.\n7. Then tell your partner one match.",
-        "feedback": "Model answer\nPicts → north of Britain\nScots → Ireland\nRomano-Britons → south and east\nAnglo-Saxons → parts of the east and south\nCheck: Scots are not in Scotland here.\nCheck: Picts are in the north."
+        "practice": {
+          "instruction": "Match each group to where it lived.",
+          "statements": [
+            {
+              "text": "Draw a line from each group to its place:",
+              "stimulus": {
+                "label": "items to sort",
+                "content": "Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain"
+              }
+            },
+            {
+              "text": "Circle the group from Ireland.",
+              "stimulus": null
+            },
+            {
+              "text": "Name the group in the west of Britain.",
+              "stimulus": null
+            }
+          ],
+          "sharedStimulus": null
+        },
+        "feedback": [
+          {
+            "type": "Completed answer",
+            "content": "Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain"
+          },
+          {
+            "type": "Completed answer",
+            "content": "Scots"
+          },
+          {
+            "type": "Completed answer",
+            "content": "Britons"
+          }
+        ]
       }
     }
   }

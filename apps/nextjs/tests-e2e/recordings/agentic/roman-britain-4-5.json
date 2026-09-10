@@ -19,11 +19,15 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ],\n  \"keyLearningPoints\": [\n    \"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\n    \"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\n    \"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\n    \"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"All the Romans left Britain, so no people with Roman ways lived here after Roman rule ended\",\n      \"description\": \"Some people stayed in Britain after the Romans left. These people are often called Romano-Britons because they lived in Britain and kept some Roman ways.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland when Roman rule ended\",\n      \"description\": \"At this time, the Scots came from Ireland. Some later moved to the north of Britain, and the name Scotland came later.\"\n    },\n    {\n      \"misconception\": \"The Picts, Scots and Anglo-Saxons all lived in the same part of Britain\",\n      \"description\": \"These groups lived in different places. Pupils should use a simple map to match Picts to the north, Scots to Ireland, and Anglo-Saxons to parts of the east and south.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Roman rule\",\n      \"definition\": \"When the Romans were in charge of Britain\"\n    },\n    {\n      \"keyword\": \"Romano-Britons\",\n      \"definition\": \"People in Britain who kept some Roman ways\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of people who lived in the north of Britain\"\n    },\n    {\n      \"keyword\": \"Scots\",\n      \"definition\": \"A group of people who came from Ireland\"\n    },\n    {\n      \"keyword\": \"Anglo-Saxons\",\n      \"definition\": \"A group of people who settled in parts of Britain\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Where is Britain?\",\n        \"hint\": \"It is a place you can find on a map.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a country\"\n        ],\n        \"distractors\": [\n          \"a river\",\n          \"a room\"\n        ]\n      },\n      {\n        \"question\": \"Who used to rule Britain?\",\n        \"hint\": \"These people lived a long time ago.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romans\"\n        ],\n        \"distractors\": [\n          \"Picts\",\n          \"Scots\"\n        ]\n      },\n      {\n        \"question\": \"What happened after the Romans ruled Britain?\",\n        \"hint\": \"They did not stay in Britain.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They left Britain.\"\n        ],\n        \"distractors\": [\n          \"They built a new country.\",\n          \"They changed its name.\"\n        ]\n      },\n      {\n        \"question\": \"What do we call a group of people like the Romans, Picts or Scots?\",\n        \"hint\": \"They are groups of people with their own names.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a people\"\n        ],\n        \"distractors\": [\n          \"a building\",\n          \"a weather\"\n        ]\n      },\n      {\n        \"question\": \"If people live in different parts of a country, what can this mean?\",\n        \"hint\": \"Think about where people choose or are able to live.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"They live in different places.\"\n        ],\n        \"distractors\": [\n          \"They all live together.\",\n          \"They never move home.\"\n        ]\n      },\n      {\n        \"question\": \"How can we find out about the past?\",\n        \"hint\": \"Think about things from long ago that people can study.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"by using old objects and stories\"\n        ],\n        \"distractors\": [\n          \"by guessing every answer\",\n          \"by looking only at new toys\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Name the groups of people\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- When Roman rule ended, Britain did not become empty; different groups of people lived there.\",\n        \"- One group was the Romano-Britons. These were people in Britain who kept some Roman ways.\",\n        \"- Another group was the Picts. The Picts were a group of people living in Britain at this time.\",\n        \"- Another group was the Scots. At this time, the Scots came from Ireland, so do not mix them up with the name Scotland today.\",\n        \"- Another group was the Anglo-Saxons. They began to settle in Britain after the Romans left, so these are the four group names we need to remember: Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show four simple picture cards in a row, each with a clear label: Romano-Britons, Picts, Scots and Anglo-Saxons. Include a small faded picture of Roman soldiers leaving Britain at the side, with a crossed arrow to show that Roman rule ended but people still lived in Britain. Keep the layout uncluttered so pupils can focus on learning and saying the four names.\",\n      \"imagePrompt\": \"simple KS1 history picture cards Romano-Britons Picts Scots Anglo-Saxons Roman Britain illustration\",\n      \"slideText\": \"After Roman rule ended, different groups lived in Britain. Romano-Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group kept some Roman ways?\",\n        \"answers\": [\n          \"Romano-Britons\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons\",\n          \"Picts\"\n        ]\n      },\n      {\n        \"question\": \"Which list names the four groups?\",\n        \"answers\": [\n          \"Anglo-Saxons, Picts, Romano-Britons, Scots\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons, Romans, Picts, Scots\",\n          \"Picts, Romans, Romano-Britons, Scots\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Say the four group names with your partner.\\n2. Look at the pictures on the board.\\n3. On your sheet, write each name under the right picture.\\n4. Use these names: Romano-Britons, Picts, Scots, Anglo-Saxons.\\n5. Then circle the name that means people kept some Roman ways.\\n6. Check that you have written all four names.\",\n    \"feedback\": \"Model answer\\n1. The four names are Romano-Britons, Picts, Scots and Anglo-Saxons.\\n2. Circle Romano-Britons.\\n3. I named all four groups.\\n4. I did not write Romans instead of Romano-Britons.\\n5. I did not miss out Anglo-Saxons.\"\n  },\n  \"cycle2\": {\n    \"title\": \"Match groups to where they lived\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- We already know the four group names. Now we match each group to a place on a simple map of Britain.\",\n        \"- Romano-Britons lived mostly in the south and east of Britain, so point to the bottom and right side of the map.\",\n        \"- Picts lived in the north of Britain, so point to the top of the map where Scotland is now.\",\n        \"- Scots came from Ireland, which is the island next to Britain on the left, so do not put them in Scotland yet.\",\n        \"- Anglo-Saxons began to settle in parts of the east and south of Britain, so they match some of the same broad areas as the Romano-Britons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a very simple map with Britain and Ireland clearly outlined. Shade or add arrows to four broad areas: north of Britain for Picts, Ireland for Scots, south and east of Britain for Romano-Britons, and parts of the east and south for Anglo-Saxons. Use clear labels and different colours, with no extra place names except Britain, Ireland, north, east and south.\",\n      \"imagePrompt\": \"simple KS1 map of Britain and Ireland showing Picts north, Scots Ireland, Romano-Britons south east, Anglo-Saxons east south\",\n      \"slideText\": \"Different groups lived in different places. Use the map to match each group to where they lived.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Who lived in the north of Britain?\",\n        \"answers\": [\n          \"Picts\"\n        ],\n        \"distractors\": [\n          \"Scots\",\n          \"Romans\"\n        ]\n      },\n      {\n        \"question\": \"Where did the Scots come from?\",\n        \"answers\": [\n          \"Ireland\"\n        ],\n        \"distractors\": [\n          \"Britain\",\n          \"Scotland\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Look at the map on the worksheet.\\n2. Draw lines to match each group to a place.\\n3. Match Picts to the north of Britain.\\n4. Match Scots to Ireland.\\n5. Match Romano-Britons to the south and east.\\n6. Match Anglo-Saxons to parts of the east and south.\\n7. Then tell your partner one match.\",\n    \"feedback\": \"Model answer\\nPicts → north of Britain\\nScots → Ireland\\nRomano-Britons → south and east\\nAnglo-Saxons → parts of the east and south\\nCheck: Scots are not in Scotland here.\\nCheck: Picts are in the north.\"\n  },\n  \"cycle3\": {\n    \"title\": \"Describe who lived in Britain\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"- After the Romans left, Britain still had lots of people living in it; it was not empty.\",\n        \"- We can describe who lived in Britain by naming the groups: Romano-Britons, Picts and Anglo-Saxons lived in Britain, and Scots came from Ireland and some later moved to the north of Britain.\",\n        \"- Romano-Britons were people in Britain who kept some Roman ways, so some Roman ways stayed after Roman rule ended.\",\n        \"- Picts lived in the north of Britain, and Anglo-Saxons settled in parts of the east and south.\",\n        \"- A good history sentence tells who the people were and where they lived, for example: After the Romans left, Romano-Britons lived in the south and east, Picts lived in the north, and Anglo-Saxons settled in parts of the east and south.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a simple map of Britain and Ireland with three clear labelled areas: north for Picts, south and east for Romano-Britons, and parts of the east and south for Anglo-Saxons. Add a small label for Scots coming from Ireland with an arrow towards the north of Britain. Alongside the map, show one short model sentence with key words highlighted: who, where. Keep the visual very clear, with large labels and limited text so pupils can use it to build spoken or written descriptions.\",\n      \"imagePrompt\": \"simple KS1 map Britain Ireland Picts Romano-Britons Anglo-Saxons Scots arrow from Ireland model sentence\",\n      \"slideText\": \"After the Romans left, different groups lived in and near Britain. Describe who they were and where they lived.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which sentence is right?\",\n        \"answers\": [\n          \"After the Romans left, different groups lived in Britain.\"\n        ],\n        \"distractors\": [\n          \"After the Romans left, Britain had no people living in it.\",\n          \"After the Romans left, only Romans lived in Britain.\"\n        ]\n      },\n      {\n        \"question\": \"Which sentence tells who and where?\",\n        \"answers\": [\n          \"Picts lived in the north of Britain.\"\n        ],\n        \"distractors\": [\n          \"Picts were a group of people.\",\n          \"North of Britain.\"\n        ]\n      }\n    ],\n    \"practice\": \"1. Use the map in the additional materials.\\n2. Say one full sentence with your partner.\\n3. Write 3 sentences about who lived in Britain.\\n4. Use these groups: Romano-Britons, Picts, Anglo-Saxons.\\n5. Tell where each group lived.\\n6. You can add Scots came from Ireland.\\n7. Start with: After the Romans left...\\n8. Check each sentence names people and place.\",\n    \"feedback\": \"Model answer\\nAfter the Romans left, different groups lived in Britain.\\nRomano-Britons lived in the south and east.\\nPicts lived in the north of Britain.\\nAnglo-Saxons settled in parts of the east and south.\\nScots came from Ireland.\\nCheck: each sentence names people and place.\"\n  }\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"learningCycles\": [\n    \"Name the groups who lived in Britain after the Romans left.\",\n    \"Match each group to where they lived in Britain.\",\n    \"Describe how the groups in Britain were different.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans ruled Britain a long time ago.\",\n    \"Britain is the place where we live now.\",\n    \"A map shows where places are.\",\n    \"Different groups of people can live in different places.\",\n    \"Things from the past can be different from life today.\"\n  ],\n  \"keyLearningPoints\": [\n    \"After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.\",\n    \"The Britons were the people already living in Britain when Roman rule ended.\",\n    \"The Picts and Scots attacked Roman Britain from the north and from Ireland.\",\n    \"A map can show where each group lived in Britain at the end of Roman rule.\"\n  ],\n  \"misconceptions\": [\n    {\n      \"misconception\": \"The Romans left and then only one new group lived in Britain\",\n      \"description\": \"After the Romans left, several groups lived in and around Britain. Pupils should name the Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    {\n      \"misconception\": \"The Scots lived in Scotland at this time\",\n      \"description\": \"At the end of Roman rule, the Scots came from Ireland. Later, some Scots settled in the north of Britain.\"\n    },\n    {\n      \"misconception\": \"The Britons were the same as the Romans\",\n      \"description\": \"The Britons were the people already living in Britain. The Romans had ruled Britain, but they were not the same group.\"\n    }\n  ],\n  \"keywords\": [\n    {\n      \"keyword\": \"Roman rule\",\n      \"definition\": \"When the Romans were in charge of Britain\"\n    },\n    {\n      \"keyword\": \"Britons\",\n      \"definition\": \"The people already living in Britain\"\n    },\n    {\n      \"keyword\": \"Picts\",\n      \"definition\": \"A group of people who lived in the north of Britain\"\n    },\n    {\n      \"keyword\": \"Scots\",\n      \"definition\": \"A group of people who came from Ireland\"\n    },\n    {\n      \"keyword\": \"Anglo-Saxons\",\n      \"definition\": \"Groups of people who settled in the east and south of Britain\"\n    }\n  ],\n  \"starterQuiz\": {\n    \"version\": \"v3\",\n    \"questions\": [\n      {\n        \"question\": \"Where do we live now?\",\n        \"hint\": \"Think about the country named in our history lessons.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Britain\"\n        ],\n        \"distractors\": [\n          \"Egypt\",\n          \"Rome\"\n        ]\n      },\n      {\n        \"question\": \"What does a map show?\",\n        \"hint\": \"A map helps us find places.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"where places are\"\n        ],\n        \"distractors\": [\n          \"what people eat\",\n          \"when things happened\"\n        ]\n      },\n      {\n        \"question\": \"Who ruled Britain a long time ago?\",\n        \"hint\": \"This group lived a long time in the past.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Romans\"\n        ],\n        \"distractors\": [\n          \"Saxons\",\n          \"Victorians\"\n        ]\n      },\n      {\n        \"question\": \"What can different groups of people do?\",\n        \"hint\": \"Think about where groups might make their homes.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"live in different places\"\n        ],\n        \"distractors\": [\n          \"all wear the same clothes\",\n          \"only live in one country\"\n        ]\n      },\n      {\n        \"question\": \"Which is from the past?\",\n        \"hint\": \"The past means a long time ago.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"a Roman road\"\n        ],\n        \"distractors\": [\n          \"a school lunch today\",\n          \"the weather this morning\"\n        ]\n      },\n      {\n        \"question\": \"A map of Britain would help you find a place in which country?\",\n        \"hint\": \"Use what you know about where we live now.\",\n        \"questionType\": \"multiple-choice\",\n        \"answers\": [\n          \"Britain\"\n        ],\n        \"distractors\": [\n          \"India\",\n          \"Italy\"\n        ]\n      }\n    ],\n    \"imageMetadata\": []\n  },\n  \"cycle1\": {\n    \"title\": \"Groups after the Romans left\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"After the Romans left Britain, more than one group lived here and nearby.\",\n        \"The Britons were the people already living in Britain.\",\n        \"The Picts, the Scots and the Anglo-Saxons were other groups at this time.\",\n        \"Scots at this time came from Ireland, so they were not living in Scotland yet.\",\n        \"We are naming the groups today: Britons, Picts, Scots and Anglo-Saxons.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a simple picture card for each group with the name clearly labelled: Britons, Picts, Scots and Anglo-Saxons. Include a small timeline marker saying 'after the Romans left' to place the groups in time, but do not show a map yet because location is taught later.\",\n      \"imagePrompt\": \"simple classroom history image cards Britons Picts Scots Anglo-Saxons labelled for KS1\",\n      \"slideText\": \"After the Romans left, four groups are important to know: Britons, Picts, Scots and Anglo-Saxons.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group were the people already living in Britain?\",\n        \"answers\": [\n          \"Britons\"\n        ],\n        \"distractors\": [\n          \"Anglo-Saxons\",\n          \"Picts\"\n        ]\n      },\n      {\n        \"question\": \"Which group came from Ireland at this time?\",\n        \"answers\": [\n          \"Scots\"\n        ],\n        \"distractors\": [\n          \"Britons\",\n          \"Picts\"\n        ]\n      }\n    ],\n    \"practice\": \"Say and write the four group names.\\n\\n1. Write the groups you can remember.\\n2. Circle the name for people already in Britain.\\n\\nBritons Picts Scots Anglo-Saxons\\n\\n3. Add one more name if you missed one.\",\n    \"feedback\": \"1. Completed answer: Britons, Picts, Scots, Anglo-Saxons\\n2. Completed answer: Britons\\n3. Success criteria: all four group names are written, Britons is circled, spellings are close enough to read\"\n  },\n  \"cycle2\": {\n    \"title\": \"Where the groups lived\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"After the Romans left, different groups lived in different places around Britain.\",\n        \"The Picts lived in the north of Britain.\",\n        \"The Scots came from Ireland at this time.\",\n        \"The Anglo-Saxons settled in the east and south of Britain.\",\n        \"The Britons lived in the west of Britain, and we can use a map to match each group to its place.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show a simple map of Britain and Ireland with four coloured areas and clear labels: north for Picts, Ireland for Scots, east and south for Anglo-Saxons, and west for Britons. Keep the map very simple, with sea and land easy to tell apart, and use arrows or colour patches rather than too much text.\",\n      \"imagePrompt\": \"simple KS1 map of Britain and Ireland showing Picts north Britons west Anglo-Saxons east and south Scots Ireland\",\n      \"slideText\": \"A map can show where groups lived. Picts lived in the north, Britons in the west, Anglo-Saxons in the east and south, and Scots in Ireland.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group lived in the north of Britain?\",\n        \"answers\": [\n          \"Picts\"\n        ],\n        \"distractors\": [\n          \"Britons\",\n          \"Scots\"\n        ]\n      },\n      {\n        \"question\": \"Where did the Anglo-Saxons settle?\",\n        \"answers\": [\n          \"east and south\"\n        ],\n        \"distractors\": [\n          \"north and west\",\n          \"west and Ireland\"\n        ]\n      }\n    ],\n    \"practice\": \"Match each group to where it lived.\\n\\n1. Draw a line from each group to its place:\\n\\nBritons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\\n\\n2. Circle the group from Ireland.\\n3. Name the group in the west of Britain.\",\n    \"feedback\": \"1. Completed answer: Britons — west of Britain, Picts — north of Britain, Scots — Ireland, Anglo-Saxons — east and south of Britain\\n2. Completed answer: Scots\\n3. Completed answer: Britons\"\n  },\n  \"cycle3\": {\n    \"title\": \"How the groups were different\",\n    \"durationInMinutes\": 8,\n    \"explanation\": {\n      \"spokenExplanation\": [\n        \"These groups were different because they were not all the same people.\",\n        \"The Britons were the people already living in Britain, but the Anglo-Saxons came to settle in Britain.\",\n        \"The Picts lived in the north of Britain, and the Scots came from Ireland.\",\n        \"So we can describe each group by saying who they were and where they lived or came from.\",\n        \"Be careful not to mix them up: Britons were not Romans, and Scots at this time came from Ireland, not Scotland.\"\n      ],\n      \"accompanyingSlideDetails\": \"Show four simple picture cards in a row with labels and one short fact on each: Britons — already living in Britain, Picts — lived in the north, Scots — came from Ireland, Anglo-Saxons — settled in the east and south. Add simple symbols such as a house for 'already living', a compass arrow for 'north', a small outline of Ireland, and small arrows into Britain for 'settled'.\",\n      \"imagePrompt\": \"KS1 history simple labelled cards Britons Picts Scots Anglo-Saxons with one fact each\",\n      \"slideText\": \"The groups were different people. We can say who they were and where they lived or came from.\"\n    },\n    \"checkForUnderstanding\": [\n      {\n        \"question\": \"Which group were already living in Britain?\",\n        \"answers\": [\n          \"Britons\"\n        ],\n        \"distractors\": [\n          \"Picts\",\n          \"Scots\"\n        ]\n      },\n      {\n        \"question\": \"Which sentence tells one way the groups were different?\",\n        \"answers\": [\n          \"Scots came from Ireland.\"\n        ],\n        \"distractors\": [\n          \"Britons came from Rome.\",\n          \"Picts lived in the south.\"\n        ]\n      }\n    ],\n    \"practice\": \"Write one sentence to tell how the groups were different.\\n\\n1. Complete the sentences:\\n\\nThe Britons were already living in Britain. The Picts lived in the ______ of Britain. The Scots came from ______. The Anglo-Saxons settled in the east and south.\\n\\n2. Write one full sentence about a different group.\",\n    \"feedback\": \"1. Completed answer: The Britons were already living in Britain. The Picts lived in the north of Britain. The Scots came from Ireland. The Anglo-Saxons settled in the east and south.\\n2. Success criteria: one full sentence, names one group, tells how that group was different, uses the right place or fact\"\n  }\n}"
       },
       {
         "role": "developer",
         "content": "EXEMPLAR CONTENT\n\nThis is exemplar content from similar Oak Academy lessons, it should be used as a guide for the section you are creating.\n\n<example-1>{\"version\":\"v3\",\"questions\":[{\"question\":\"Evidence found in Britain suggests Christianity was introduced in the...\",\"hint\":\"The 4th century.\",\"questionType\":\"multiple-choice\",\"answers\":[\"300s CE\"],\"distractors\":[\"100s CE\",\"200s CE\"]},{\"question\":\"What does 'Chi Rho' mean?\",\"hint\":\"They are symbols that look like an X and P in our alphabet.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the beginning of Christ’s name in Greek\"],\"distractors\":[\"the beginning of Christ’s name in Spanish\",\"the beginning of Christ’s name in Italian\"]},{\"question\":\"What was discovered at the Roman villa in Lullingstone?\",\"hint\":\"Archaeologists had to piece thousands of fragments together. \",\"questionType\":\"multiple-choice\",\"answers\":[\"Mosaics\"],\"distractors\":[]}],\"imageMetadata\":[]}</example-1>\n<example-2>{\"version\":\"v3\",\"questions\":[{\"question\":\"Which two of these were materials used by the Celts in their buildings?\",\"hint\":\"The Celts had very different building techniques to the Ancient Romans.\",\"questionType\":\"multiple-choice\",\"answers\":[\"wattle and daub\"],\"distractors\":[\"bricks\",\"concrete\"]},{\"question\":\"Which emperor had a great wall built on Britain's northern border?\",\"hint\":\"The wall is named after him!\",\"questionType\":\"multiple-choice\",\"answers\":[\"Hadrian\"],\"distractors\":[\"Trajan\",\"Nero\"]},{\"question\":\"Soldiers from all over the Roman Empire defended Hadrian's Wall in Britain.\",\"hint\":\"The Empire stretched as far as North Africa and Asia.\",\"questionType\":\"multiple-choice\",\"answers\":[\"True\"],\"distractors\":[\"False\"]},{\"question\":\"Which two of these were found at Chedworth Villa?\",\"hint\":\"The owners of Chedworth Villa wanted to show off to their guests.\",\"questionType\":\"multiple-choice\",\"answers\":[\"mosaics\"],\"distractors\":[\"a temple\",\"swords\"]}],\"imageMetadata\":[]}</example-2>\n<example-3>{\"version\":\"v3\",\"questions\":[{\"question\":\"The Eastern Roman Empire was also known as the __________ Empire.\",\"hint\":\"Constantinople was the capital of the Eastern Roman Empire\",\"questionType\":\"multiple-choice\",\"answers\":[\"Byzantine\"],\"distractors\":[\"Constantinople\",\"Great Roman\"]},{\"question\":\"The Eastern Roman Empire continued to exist for nearly __________ years after the fall of the Western Roman Empire.\",\"hint\":\"The Eastern Roman Empire existed for a very long time after the Western Roman Empire fell\",\"questionType\":\"multiple-choice\",\"answers\":[\"one thousand\"],\"distractors\":[\"ten\",\"one hundred\"]},{\"question\":\"According to historians' theories, which of the following contributed to the fall of the Western Roman Empire?\",\"hint\":\"The Roman people often did not pay their taxes\",\"questionType\":\"multiple-choice\",\"answers\":[\"The Empire was spending more money than it was getting in from taxes\"],\"distractors\":[\"The Roman citizens paid taxes regularly\",\"The Roman army was able to defend the Empire's borders easily\"]}],\"imageMetadata\":[]}</example-3>\n<example-4>{\"version\":\"v3\",\"questions\":[{\"question\":\"Why did Claudius want to invade Britain?\",\"hint\":\"Roman Emperors proved their strength through conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"He needed to prove his strength.\"],\"distractors\":[\"Britain had attacked the Roman Empire.\",\"Britain was very wealthy.\"]},{\"question\":\"Which of these **best** describes the Celtic tribes of Britain?\",\"hint\":\"The Celtic tribes of Britain fought one another all of the time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Warlike and dangerous\"],\"distractors\":[\"Peaceful and united\",\"Disorganised and cowardly\"]},{\"question\":\"A Roman legionary carried which **three** of these things?\",\"hint\":\"Roman legionaries carried the things they needed for battle.\",\"questionType\":\"multiple-choice\",\"answers\":[\"A sword\"],\"distractors\":[\"A saddle\",\"A chariot\"]},{\"question\":\"To protect themselves, Roman legionaries built __________.\",\"hint\":\"At first the Roman legionaries built these structures every day, wherever they ended their march.\",\"questionType\":\"multiple-choice\",\"answers\":[\"forts\"],\"distractors\":[\"castles\",\"towns\"]}],\"imageMetadata\":[]}</example-4>\n<example-5>{\"version\":\"v3\",\"questions\":[{\"question\":\"What tribes attacked Roman Britain in 367 CE?\",\"hint\":\"They attacked from the north.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Picts\"],\"distractors\":[\"Iceni\",\"Dumnonii\"]},{\"question\":\"When did the last Roman soldiers leave Hadrian’s Wall?\",\"hint\":\"This was due to troubles elsewhere in the Roman Empire.\",\"questionType\":\"multiple-choice\",\"answers\":[\"401 CE\"],\"distractors\":[\"391 CE\",\"411 CE\"]},{\"question\":\"In which areas was Romano-British culture more popular?\",\"hint\":\"Think about the regions closer to Europe where the Romans came from.\",\"questionType\":\"multiple-choice\",\"answers\":[\"South-East England\"],\"distractors\":[\"Wales\",\"Scotland\"]},{\"question\":\"What does 'Romanisation' mean?\",\"hint\":\"This happened in Britain after the successful Roman conquest.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when people started living and acting like the Romans did\"],\"distractors\":[\"how Romans attacked in battle\",\"how a Roman ruler was chosen\"]},{\"question\":\"What examples of Romano-British culture still exist today?\",\"hint\":\"Think about things you can see and hear now that you have learnt about Roman Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"parts of the English language\"],\"distractors\":[\"the harvest festival\",\"sports like football\"]}],\"imageMetadata\":[]}</example-5>"
+      },
+      {
+        "role": "developer",
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/null"
       },
       {
         "role": "developer",
@@ -162,15 +166,15 @@
     }
   },
   "result": {
-    "id": "resp_03b3daff6a2659ca006a5f5eab09748191a49d46d02e02c87a",
+    "id": "resp_06a7e6c7db67b8a9006aa18498cb2887d29eff5fe886b38f7d",
     "object": "response",
-    "created_at": 1784635051,
+    "created_at": 1788970136,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784635054,
+    "completed_at": 1788970141,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -181,7 +185,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_03b3daff6a2659ca006a5f5eabc4808191942724d2eca21359",
+        "id": "msg_06a7e6c7db67b8a9006aa184998f7c87d28c46f943ec7bd21a",
         "type": "message",
         "status": "completed",
         "content": [
@@ -189,17 +193,41 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group kept some Roman ways after Roman rule ended?\",\"hint\":\"This keyword means people in Britain who kept some Roman ways.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Where did the Picts live?\",\"hint\":\"Think about the top of Britain on the map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the north of Britain\"],\"distractors\":[\"the east of Britain\",\"the south of Britain\"]},{\"question\":\"Where did the Scots come from at this time?\",\"hint\":\"Do not mix this up with Scotland today.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]},{\"question\":\"Which group began to settle in parts of the east and south of Britain after the Romans left?\",\"hint\":\"This group was new to parts of Britain at this time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Anglo-Saxons\"],\"distractors\":[\"Picts\",\"Romano-Britons\"]},{\"question\":\"Which sentence best describes Britain after the Romans left?\",\"hint\":\"Britain still had people living in it.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Different groups lived in Britain.\"],\"distractors\":[\"Britain became empty.\",\"Only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who lived where after the Romans left?\",\"hint\":\"Choose the sentence that names a group and a place correctly.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons lived mostly in the south and east of Britain.\"],\"distractors\":[\"Picts lived in Ireland.\",\"Scots lived in the north and east of Britain.\"]}],\"imageMetadata\":[]}}",
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group were the people already living in Britain when Roman rule ended?\",\"hint\":\"This group was already there before the other groups settled or attacked.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Scots\"]},{\"question\":\"On a map, where did the Picts live?\",\"hint\":\"Think about the top part of Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"north of Britain\"],\"distractors\":[\"east and south of Britain\",\"west of Britain\"]},{\"question\":\"Which group came from Ireland at this time?\",\"hint\":\"Be careful: this is a common mix-up.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Scots\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"What does the keyword \\\"Roman rule\\\" mean?\",\"hint\":\"It means who was in charge.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when the Romans were in charge of Britain\"],\"distractors\":[\"when the Romans first came to Britain\",\"when the Romans lived in Ireland\"]},{\"question\":\"Which sentence tells how two groups were different at the end of Roman rule?\",\"hint\":\"Choose the sentence with two correct facts.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britons were already in Britain, and Anglo-Saxons settled in the east and south.\"],\"distractors\":[\"Picts were already in Britain, and Scots settled in the west.\",\"Scots lived in Scotland, and Britons came from Rome.\"]},{\"question\":\"A child says, \\\"After the Romans left, only the Anglo-Saxons lived in Britain.\\\" Which answer is best?\",\"hint\":\"Think about all the groups you learnt.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain had more than one group, including Britons, Picts and Anglo-Saxons.\"],\"distractors\":[\"Britain had one group, but it changed its name later.\",\"Britons and Romans were the same group of people.\"]}],\"imageMetadata\":[]}}",
             "parsed": {
               "value": {
                 "version": "v3",
                 "questions": [
                   {
-                    "question": "Which group kept some Roman ways after Roman rule ended?",
-                    "hint": "This keyword means people in Britain who kept some Roman ways.",
+                    "question": "Which group were the people already living in Britain when Roman rule ended?",
+                    "hint": "This group was already there before the other groups settled or attacked.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Romano-Britons"
+                      "Britons"
+                    ],
+                    "distractors": [
+                      "Anglo-Saxons",
+                      "Scots"
+                    ]
+                  },
+                  {
+                    "question": "On a map, where did the Picts live?",
+                    "hint": "Think about the top part of Britain.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "north of Britain"
+                    ],
+                    "distractors": [
+                      "east and south of Britain",
+                      "west of Britain"
+                    ]
+                  },
+                  {
+                    "question": "Which group came from Ireland at this time?",
+                    "hint": "Be careful: this is a common mix-up.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "Scots"
                     ],
                     "distractors": [
                       "Anglo-Saxons",
@@ -207,63 +235,39 @@
                     ]
                   },
                   {
-                    "question": "Where did the Picts live?",
-                    "hint": "Think about the top of Britain on the map.",
+                    "question": "What does the keyword \"Roman rule\" mean?",
+                    "hint": "It means who was in charge.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "the north of Britain"
+                      "when the Romans were in charge of Britain"
                     ],
                     "distractors": [
-                      "the east of Britain",
-                      "the south of Britain"
+                      "when the Romans first came to Britain",
+                      "when the Romans lived in Ireland"
                     ]
                   },
                   {
-                    "question": "Where did the Scots come from at this time?",
-                    "hint": "Do not mix this up with Scotland today.",
+                    "question": "Which sentence tells how two groups were different at the end of Roman rule?",
+                    "hint": "Choose the sentence with two correct facts.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Ireland"
+                      "Britons were already in Britain, and Anglo-Saxons settled in the east and south."
                     ],
                     "distractors": [
-                      "Britain",
-                      "Scotland"
+                      "Picts were already in Britain, and Scots settled in the west.",
+                      "Scots lived in Scotland, and Britons came from Rome."
                     ]
                   },
                   {
-                    "question": "Which group began to settle in parts of the east and south of Britain after the Romans left?",
-                    "hint": "This group was new to parts of Britain at this time.",
+                    "question": "A child says, \"After the Romans left, only the Anglo-Saxons lived in Britain.\" Which answer is best?",
+                    "hint": "Think about all the groups you learnt.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "Anglo-Saxons"
+                      "Britain had more than one group, including Britons, Picts and Anglo-Saxons."
                     ],
                     "distractors": [
-                      "Picts",
-                      "Romano-Britons"
-                    ]
-                  },
-                  {
-                    "question": "Which sentence best describes Britain after the Romans left?",
-                    "hint": "Britain still had people living in it.",
-                    "questionType": "multiple-choice",
-                    "answers": [
-                      "Different groups lived in Britain."
-                    ],
-                    "distractors": [
-                      "Britain became empty.",
-                      "Only Romans lived in Britain."
-                    ]
-                  },
-                  {
-                    "question": "Which sentence tells who lived where after the Romans left?",
-                    "hint": "Choose the sentence that names a group and a place correctly.",
-                    "questionType": "multiple-choice",
-                    "answers": [
-                      "Romano-Britons lived mostly in the south and east of Britain."
-                    ],
-                    "distractors": [
-                      "Picts lived in Ireland.",
-                      "Scots lived in the north and east of Britain."
+                      "Britain had one group, but it changed its name later.",
+                      "Britons and Romans were the same group of people."
                     ]
                   }
                 ],
@@ -437,30 +441,54 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 6529,
+      "input_tokens": 6125,
       "input_tokens_details": {
         "cache_write_tokens": 0,
-        "cached_tokens": 0
+        "cached_tokens": 1792
       },
-      "output_tokens": 375,
+      "output_tokens": 431,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 6904
+      "total_tokens": 6556
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group kept some Roman ways after Roman rule ended?\",\"hint\":\"This keyword means people in Britain who kept some Roman ways.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"Where did the Picts live?\",\"hint\":\"Think about the top of Britain on the map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"the north of Britain\"],\"distractors\":[\"the east of Britain\",\"the south of Britain\"]},{\"question\":\"Where did the Scots come from at this time?\",\"hint\":\"Do not mix this up with Scotland today.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Ireland\"],\"distractors\":[\"Britain\",\"Scotland\"]},{\"question\":\"Which group began to settle in parts of the east and south of Britain after the Romans left?\",\"hint\":\"This group was new to parts of Britain at this time.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Anglo-Saxons\"],\"distractors\":[\"Picts\",\"Romano-Britons\"]},{\"question\":\"Which sentence best describes Britain after the Romans left?\",\"hint\":\"Britain still had people living in it.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Different groups lived in Britain.\"],\"distractors\":[\"Britain became empty.\",\"Only Romans lived in Britain.\"]},{\"question\":\"Which sentence tells who lived where after the Romans left?\",\"hint\":\"Choose the sentence that names a group and a place correctly.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romano-Britons lived mostly in the south and east of Britain.\"],\"distractors\":[\"Picts lived in Ireland.\",\"Scots lived in the north and east of Britain.\"]}],\"imageMetadata\":[]}}",
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Which group were the people already living in Britain when Roman rule ended?\",\"hint\":\"This group was already there before the other groups settled or attacked.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britons\"],\"distractors\":[\"Anglo-Saxons\",\"Scots\"]},{\"question\":\"On a map, where did the Picts live?\",\"hint\":\"Think about the top part of Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"north of Britain\"],\"distractors\":[\"east and south of Britain\",\"west of Britain\"]},{\"question\":\"Which group came from Ireland at this time?\",\"hint\":\"Be careful: this is a common mix-up.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Scots\"],\"distractors\":[\"Anglo-Saxons\",\"Picts\"]},{\"question\":\"What does the keyword \\\"Roman rule\\\" mean?\",\"hint\":\"It means who was in charge.\",\"questionType\":\"multiple-choice\",\"answers\":[\"when the Romans were in charge of Britain\"],\"distractors\":[\"when the Romans first came to Britain\",\"when the Romans lived in Ireland\"]},{\"question\":\"Which sentence tells how two groups were different at the end of Roman rule?\",\"hint\":\"Choose the sentence with two correct facts.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britons were already in Britain, and Anglo-Saxons settled in the east and south.\"],\"distractors\":[\"Picts were already in Britain, and Scots settled in the west.\",\"Scots lived in Scotland, and Britons came from Rome.\"]},{\"question\":\"A child says, \\\"After the Romans left, only the Anglo-Saxons lived in Britain.\\\" Which answer is best?\",\"hint\":\"Think about all the groups you learnt.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain had more than one group, including Britons, Picts and Anglo-Saxons.\"],\"distractors\":[\"Britain had one group, but it changed its name later.\",\"Britons and Romans were the same group of people.\"]}],\"imageMetadata\":[]}}",
     "output_parsed": {
       "value": {
         "version": "v3",
         "questions": [
           {
-            "question": "Which group kept some Roman ways after Roman rule ended?",
-            "hint": "This keyword means people in Britain who kept some Roman ways.",
+            "question": "Which group were the people already living in Britain when Roman rule ended?",
+            "hint": "This group was already there before the other groups settled or attacked.",
             "questionType": "multiple-choice",
             "answers": [
-              "Romano-Britons"
+              "Britons"
+            ],
+            "distractors": [
+              "Anglo-Saxons",
+              "Scots"
+            ]
+          },
+          {
+            "question": "On a map, where did the Picts live?",
+            "hint": "Think about the top part of Britain.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "north of Britain"
+            ],
+            "distractors": [
+              "east and south of Britain",
+              "west of Britain"
+            ]
+          },
+          {
+            "question": "Which group came from Ireland at this time?",
+            "hint": "Be careful: this is a common mix-up.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "Scots"
             ],
             "distractors": [
               "Anglo-Saxons",
@@ -468,63 +496,39 @@
             ]
           },
           {
-            "question": "Where did the Picts live?",
-            "hint": "Think about the top of Britain on the map.",
+            "question": "What does the keyword \"Roman rule\" mean?",
+            "hint": "It means who was in charge.",
             "questionType": "multiple-choice",
             "answers": [
-              "the north of Britain"
+              "when the Romans were in charge of Britain"
             ],
             "distractors": [
-              "the east of Britain",
-              "the south of Britain"
+              "when the Romans first came to Britain",
+              "when the Romans lived in Ireland"
             ]
           },
           {
-            "question": "Where did the Scots come from at this time?",
-            "hint": "Do not mix this up with Scotland today.",
+            "question": "Which sentence tells how two groups were different at the end of Roman rule?",
+            "hint": "Choose the sentence with two correct facts.",
             "questionType": "multiple-choice",
             "answers": [
-              "Ireland"
+              "Britons were already in Britain, and Anglo-Saxons settled in the east and south."
             ],
             "distractors": [
-              "Britain",
-              "Scotland"
+              "Picts were already in Britain, and Scots settled in the west.",
+              "Scots lived in Scotland, and Britons came from Rome."
             ]
           },
           {
-            "question": "Which group began to settle in parts of the east and south of Britain after the Romans left?",
-            "hint": "This group was new to parts of Britain at this time.",
+            "question": "A child says, \"After the Romans left, only the Anglo-Saxons lived in Britain.\" Which answer is best?",
+            "hint": "Think about all the groups you learnt.",
             "questionType": "multiple-choice",
             "answers": [
-              "Anglo-Saxons"
+              "Britain had more than one group, including Britons, Picts and Anglo-Saxons."
             ],
             "distractors": [
-              "Picts",
-              "Romano-Britons"
-            ]
-          },
-          {
-            "question": "Which sentence best describes Britain after the Romans left?",
-            "hint": "Britain still had people living in it.",
-            "questionType": "multiple-choice",
-            "answers": [
-              "Different groups lived in Britain."
-            ],
-            "distractors": [
-              "Britain became empty.",
-              "Only Romans lived in Britain."
-            ]
-          },
-          {
-            "question": "Which sentence tells who lived where after the Romans left?",
-            "hint": "Choose the sentence that names a group and a place correctly.",
-            "questionType": "multiple-choice",
-            "answers": [
-              "Romano-Britons lived mostly in the south and east of Britain."
-            ],
-            "distractors": [
-              "Picts lived in Ireland.",
-              "Scots lived in the north and east of Britain."
+              "Britain had one group, but it changed its name later.",
+              "Britons and Romans were the same group of people."
             ]
           }
         ],

@@ -17,7 +17,10 @@ import {
   LatestQuizSchema,
   MisconceptionsSchema,
 } from "../../../protocol/schema";
+import { CycleAgentResponseSchema } from "../agents/sectionAgents/cycleAgent/cycle.schema";
+import { composeCycleFromResponse } from "../agents/sectionAgents/cycleAgent/practiceTask";
 import { sectionStepToAgentId } from "../agents/sectionAgents/sectionStepToAgentId";
+import { isCycleSectionKey } from "../agents/sharedPromptParts/cycleTarget.part";
 import { immerPatchToJsonPatch } from "../compatibility/helpers/immerPatchToJsonPatch";
 import { quizOperationDispatcher } from "../quizOperations/quizOperationDispatcher";
 import { sectionListOperationDispatcher } from "../quizOperations/sectionListOperationDispatcher";
@@ -203,7 +206,14 @@ async function executeGenerateStep(
     responseSchema: correctorResponseSchema(context, step),
   });
 
-  const validated = corrected ?? sectionSchema.parse(result.data);
+  // Cycle agents return the practice task as structured parts. The stored
+  // strings are built here, after correction, so the corrector edits the
+  // parts once and the composed strings cannot drift apart.
+  const validated = isCycleSectionKey(step.sectionKey)
+    ? composeCycleFromResponse(
+        CycleAgentResponseSchema.parse(corrected ?? result.data),
+      )
+    : (corrected ?? sectionSchema.parse(result.data));
 
   // We use immer to generate JSON patches at the granularity we control.
   // Patches are generated at the exact path we mutate:
@@ -240,6 +250,13 @@ function correctorResponseSchema(
   }
   if (sectionKey === "keyLearningPoints") {
     return KeyLearningPointsStrictMax4Schema;
+  }
+  // Cycles are corrected as parts, before the strings are built. Using the
+  // stored CycleSchema here would crash the corrector's structured-output
+  // call (OpenAI rejects its optional practiceSlideText) and would let the
+  // corrector edit one composed string but not the other.
+  if (isCycleSectionKey(sectionKey)) {
+    return CycleAgentResponseSchema;
   }
   return CompletedLessonPlanSchema.shape[sectionKey];
 }

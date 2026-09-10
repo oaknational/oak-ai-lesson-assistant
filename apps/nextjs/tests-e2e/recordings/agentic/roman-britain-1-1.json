@@ -23,7 +23,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nKS1 lesson on the end of Roman Britain"
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nCreate a title for a KS1 lesson on the end of Roman Britain."
       },
       {
         "role": "developer",
@@ -62,15 +62,15 @@
     }
   },
   "result": {
-    "id": "resp_0d631585b9cf2fc1006a5f5e1518b881a186c30b4dee8d2123",
+    "id": "resp_0ed7996bef5cb20c006aa18446c75c87d29f14e8b4bdd91013",
     "object": "response",
-    "created_at": 1784634901,
+    "created_at": 1788970054,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634902,
+    "completed_at": 1788970055,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -81,7 +81,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0d631585b9cf2fc1006a5f5e16373081a18baa9d7f4335eca8",
+        "id": "msg_0ed7996bef5cb20c006aa18447d71c87d2bf63678d2c82b1b7",
         "type": "message",
         "status": "completed",
         "content": [
@@ -160,7 +160,7 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1297,
+      "input_tokens": 1303,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
@@ -169,7 +169,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1315
+      "total_tokens": 1321
     },
     "user": null,
     "metadata": {},

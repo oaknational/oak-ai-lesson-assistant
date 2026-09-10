@@ -89,6 +89,11 @@ export const cycleSchema = z.object({
   }),
   checkForUnderstanding: z.array(quizQADSchema),
   practice: z.string(),
+  // The practice task trimmed to fit its slide; older lessons do not have it.
+  practiceSlideText: z.string().optional(),
+  // Material moved onto the cycle's stimulus slide; missing when that slide
+  // is unused (and should be deleted from the deck).
+  practiceStimulusSlideText: z.string().optional(),
   feedback: z.string(),
 });
 export type Cycle = z.infer<typeof cycleSchema>;

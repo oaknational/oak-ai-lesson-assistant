@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"subject\": \"history\",\n  \"keyStage\": \"ks1\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"subject\": \"history\",\n  \"keyStage\": \"ks1\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"priorKnowledge\": [\n    \"The Romans ruled Britain a long time ago.\",\n    \"Britain is the place where we live now.\",\n    \"A map shows where places are.\",\n    \"Different groups of people can live in different places.\",\n    \"Things from the past can be different from life today.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,11 @@
       },
       {
         "role": "developer",
-        "content": "## PRIOR KNOWLEDGE TO ASSESS\n\nThe starter quiz assesses ONLY knowledge pupils should already have BEFORE this lesson begins.\n\nThe statements below are the lesson's stated prior knowledge and are the primary source for questions:\n\n- The Romans used to rule Britain and then they left.\n- Britain is the place where people lived in this lesson, and it can be found on a map.\n- Some groups of people had names, such as Romans, Picts and Scots.\n- People can live in different parts of a country.\n- Old stories and objects can help us find out about the past.\n\nRules:\n- Base questions on the statements above; topic-appropriate prerequisite knowledge for this key stage may supplement them.\n- Never test or hint at what this lesson itself will teach. Lesson context is for difficulty calibration only, never a source of questions."
+        "content": "## PRIOR KNOWLEDGE TO ASSESS\n\nThe starter quiz assesses ONLY knowledge pupils should already have BEFORE this lesson begins.\n\nThe statements below are the lesson's stated prior knowledge and are the primary source for questions:\n\n- The Romans ruled Britain a long time ago.\n- Britain is the place where we live now.\n- A map shows where places are.\n- Different groups of people can live in different places.\n- Things from the past can be different from life today.\n\nRules:\n- Base questions on the statements above; topic-appropriate prerequisite knowledge for this key stage may supplement them.\n- Never test or hint at what this lesson itself will teach. Lesson context is for difficulty calibration only, never a source of questions."
+      },
+      {
+        "role": "developer",
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/null"
       },
       {
         "role": "developer",
@@ -166,15 +170,15 @@
     }
   },
   "result": {
-    "id": "resp_0ae25e5648d403d5006a5f5e8e732c81a09649bef04d500461",
+    "id": "resp_0efd17a9abdcda38006aa18481fc3887d2be0b13ebf3e16386",
     "object": "response",
-    "created_at": 1784635022,
+    "created_at": 1788970114,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784635026,
+    "completed_at": 1788970119,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -185,7 +189,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0ae25e5648d403d5006a5f5e8efefc81a0b79023765313f6e1",
+        "id": "msg_0efd17a9abdcda38006aa18482c40087d2898bacc112faa0fe",
         "type": "message",
         "status": "completed",
         "content": [
@@ -193,81 +197,81 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where is Britain?\",\"hint\":\"It is a place you can find on a map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a country\"],\"distractors\":[\"a river\",\"a room\"]},{\"question\":\"Who used to rule Britain?\",\"hint\":\"These people lived a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Picts\",\"Scots\"]},{\"question\":\"What happened after the Romans ruled Britain?\",\"hint\":\"They did not stay in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They left Britain.\"],\"distractors\":[\"They built a new country.\",\"They changed its name.\"]},{\"question\":\"What do we call a group of people like the Romans, Picts or Scots?\",\"hint\":\"They are groups of people with their own names.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a people\"],\"distractors\":[\"a building\",\"a weather\"]},{\"question\":\"If people live in different parts of a country, what can this mean?\",\"hint\":\"Think about where people choose or are able to live.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They live in different places.\"],\"distractors\":[\"They all live together.\",\"They never move home.\"]},{\"question\":\"How can we find out about the past?\",\"hint\":\"Think about things from long ago that people can study.\",\"questionType\":\"multiple-choice\",\"answers\":[\"by using old objects and stories\"],\"distractors\":[\"by guessing every answer\",\"by looking only at new toys\"]}],\"imageMetadata\":[]}}",
+            "text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where do we live now?\",\"hint\":\"Think about the country named in our history lessons.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain\"],\"distractors\":[\"Egypt\",\"Rome\"]},{\"question\":\"What does a map show?\",\"hint\":\"A map helps us find places.\",\"questionType\":\"multiple-choice\",\"answers\":[\"where places are\"],\"distractors\":[\"what people eat\",\"when things happened\"]},{\"question\":\"Who ruled Britain a long time ago?\",\"hint\":\"This group lived a long time in the past.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Saxons\",\"Victorians\"]},{\"question\":\"What can different groups of people do?\",\"hint\":\"Think about where groups might make their homes.\",\"questionType\":\"multiple-choice\",\"answers\":[\"live in different places\"],\"distractors\":[\"all wear the same clothes\",\"only live in one country\"]},{\"question\":\"Which is from the past?\",\"hint\":\"The past means a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a Roman road\"],\"distractors\":[\"a school lunch today\",\"the weather this morning\"]},{\"question\":\"A map of Britain would help you find a place in which country?\",\"hint\":\"Use what you know about where we live now.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain\"],\"distractors\":[\"India\",\"Italy\"]}],\"imageMetadata\":[]}}",
             "parsed": {
               "value": {
                 "version": "v3",
                 "questions": [
                   {
-                    "question": "Where is Britain?",
-                    "hint": "It is a place you can find on a map.",
+                    "question": "Where do we live now?",
+                    "hint": "Think about the country named in our history lessons.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "a country"
+                      "Britain"
                     ],
                     "distractors": [
-                      "a river",
-                      "a room"
+                      "Egypt",
+                      "Rome"
                     ]
                   },
                   {
-                    "question": "Who used to rule Britain?",
-                    "hint": "These people lived a long time ago.",
+                    "question": "What does a map show?",
+                    "hint": "A map helps us find places.",
+                    "questionType": "multiple-choice",
+                    "answers": [
+                      "where places are"
+                    ],
+                    "distractors": [
+                      "what people eat",
+                      "when things happened"
+                    ]
+                  },
+                  {
+                    "question": "Who ruled Britain a long time ago?",
+                    "hint": "This group lived a long time in the past.",
                     "questionType": "multiple-choice",
                     "answers": [
                       "Romans"
                     ],
                     "distractors": [
-                      "Picts",
-                      "Scots"
+                      "Saxons",
+                      "Victorians"
                     ]
                   },
                   {
-                    "question": "What happened after the Romans ruled Britain?",
-                    "hint": "They did not stay in Britain.",
+                    "question": "What can different groups of people do?",
+                    "hint": "Think about where groups might make their homes.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "They left Britain."
+                      "live in different places"
                     ],
                     "distractors": [
-                      "They built a new country.",
-                      "They changed its name."
+                      "all wear the same clothes",
+                      "only live in one country"
                     ]
                   },
                   {
-                    "question": "What do we call a group of people like the Romans, Picts or Scots?",
-                    "hint": "They are groups of people with their own names.",
+                    "question": "Which is from the past?",
+                    "hint": "The past means a long time ago.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "a people"
+                      "a Roman road"
                     ],
                     "distractors": [
-                      "a building",
-                      "a weather"
+                      "a school lunch today",
+                      "the weather this morning"
                     ]
                   },
                   {
-                    "question": "If people live in different parts of a country, what can this mean?",
-                    "hint": "Think about where people choose or are able to live.",
+                    "question": "A map of Britain would help you find a place in which country?",
+                    "hint": "Use what you know about where we live now.",
                     "questionType": "multiple-choice",
                     "answers": [
-                      "They live in different places."
+                      "Britain"
                     ],
                     "distractors": [
-                      "They all live together.",
-                      "They never move home."
-                    ]
-                  },
-                  {
-                    "question": "How can we find out about the past?",
-                    "hint": "Think about things from long ago that people can study.",
-                    "questionType": "multiple-choice",
-                    "answers": [
-                      "by using old objects and stories"
-                    ],
-                    "distractors": [
-                      "by guessing every answer",
-                      "by looking only at new toys"
+                      "India",
+                      "Italy"
                     ]
                   }
                 ],
@@ -441,94 +445,94 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 3862,
+      "input_tokens": 3847,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 334,
+      "output_tokens": 308,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 4196
+      "total_tokens": 4155
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where is Britain?\",\"hint\":\"It is a place you can find on a map.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a country\"],\"distractors\":[\"a river\",\"a room\"]},{\"question\":\"Who used to rule Britain?\",\"hint\":\"These people lived a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Picts\",\"Scots\"]},{\"question\":\"What happened after the Romans ruled Britain?\",\"hint\":\"They did not stay in Britain.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They left Britain.\"],\"distractors\":[\"They built a new country.\",\"They changed its name.\"]},{\"question\":\"What do we call a group of people like the Romans, Picts or Scots?\",\"hint\":\"They are groups of people with their own names.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a people\"],\"distractors\":[\"a building\",\"a weather\"]},{\"question\":\"If people live in different parts of a country, what can this mean?\",\"hint\":\"Think about where people choose or are able to live.\",\"questionType\":\"multiple-choice\",\"answers\":[\"They live in different places.\"],\"distractors\":[\"They all live together.\",\"They never move home.\"]},{\"question\":\"How can we find out about the past?\",\"hint\":\"Think about things from long ago that people can study.\",\"questionType\":\"multiple-choice\",\"answers\":[\"by using old objects and stories\"],\"distractors\":[\"by guessing every answer\",\"by looking only at new toys\"]}],\"imageMetadata\":[]}}",
+    "output_text": "{\"value\":{\"version\":\"v3\",\"questions\":[{\"question\":\"Where do we live now?\",\"hint\":\"Think about the country named in our history lessons.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain\"],\"distractors\":[\"Egypt\",\"Rome\"]},{\"question\":\"What does a map show?\",\"hint\":\"A map helps us find places.\",\"questionType\":\"multiple-choice\",\"answers\":[\"where places are\"],\"distractors\":[\"what people eat\",\"when things happened\"]},{\"question\":\"Who ruled Britain a long time ago?\",\"hint\":\"This group lived a long time in the past.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Romans\"],\"distractors\":[\"Saxons\",\"Victorians\"]},{\"question\":\"What can different groups of people do?\",\"hint\":\"Think about where groups might make their homes.\",\"questionType\":\"multiple-choice\",\"answers\":[\"live in different places\"],\"distractors\":[\"all wear the same clothes\",\"only live in one country\"]},{\"question\":\"Which is from the past?\",\"hint\":\"The past means a long time ago.\",\"questionType\":\"multiple-choice\",\"answers\":[\"a Roman road\"],\"distractors\":[\"a school lunch today\",\"the weather this morning\"]},{\"question\":\"A map of Britain would help you find a place in which country?\",\"hint\":\"Use what you know about where we live now.\",\"questionType\":\"multiple-choice\",\"answers\":[\"Britain\"],\"distractors\":[\"India\",\"Italy\"]}],\"imageMetadata\":[]}}",
     "output_parsed": {
       "value": {
         "version": "v3",
         "questions": [
           {
-            "question": "Where is Britain?",
-            "hint": "It is a place you can find on a map.",
+            "question": "Where do we live now?",
+            "hint": "Think about the country named in our history lessons.",
             "questionType": "multiple-choice",
             "answers": [
-              "a country"
+              "Britain"
             ],
             "distractors": [
-              "a river",
-              "a room"
+              "Egypt",
+              "Rome"
             ]
           },
           {
-            "question": "Who used to rule Britain?",
-            "hint": "These people lived a long time ago.",
+            "question": "What does a map show?",
+            "hint": "A map helps us find places.",
+            "questionType": "multiple-choice",
+            "answers": [
+              "where places are"
+            ],
+            "distractors": [
+              "what people eat",
+              "when things happened"
+            ]
+          },
+          {
+            "question": "Who ruled Britain a long time ago?",
+            "hint": "This group lived a long time in the past.",
             "questionType": "multiple-choice",
             "answers": [
               "Romans"
             ],
             "distractors": [
-              "Picts",
-              "Scots"
+              "Saxons",
+              "Victorians"
             ]
           },
           {
-            "question": "What happened after the Romans ruled Britain?",
-            "hint": "They did not stay in Britain.",
+            "question": "What can different groups of people do?",
+            "hint": "Think about where groups might make their homes.",
             "questionType": "multiple-choice",
             "answers": [
-              "They left Britain."
+              "live in different places"
             ],
             "distractors": [
-              "They built a new country.",
-              "They changed its name."
+              "all wear the same clothes",
+              "only live in one country"
             ]
           },
           {
-            "question": "What do we call a group of people like the Romans, Picts or Scots?",
-            "hint": "They are groups of people with their own names.",
+            "question": "Which is from the past?",
+            "hint": "The past means a long time ago.",
             "questionType": "multiple-choice",
             "answers": [
-              "a people"
+              "a Roman road"
             ],
             "distractors": [
-              "a building",
-              "a weather"
+              "a school lunch today",
+              "the weather this morning"
             ]
           },
           {
-            "question": "If people live in different parts of a country, what can this mean?",
-            "hint": "Think about where people choose or are able to live.",
+            "question": "A map of Britain would help you find a place in which country?",
+            "hint": "Use what you know about where we live now.",
             "questionType": "multiple-choice",
             "answers": [
-              "They live in different places."
+              "Britain"
             ],
             "distractors": [
-              "They all live together.",
-              "They never move home."
-            ]
-          },
-          {
-            "question": "How can we find out about the past?",
-            "hint": "Think about things from long ago that people can study.",
-            "questionType": "multiple-choice",
-            "answers": [
-              "by using old objects and stories"
-            ],
-            "distractors": [
-              "by guessing every answer",
-              "by looking only at new toys"
+              "India",
+              "Italy"
             ]
           }
         ],

@@ -16,7 +16,10 @@ import { messageHistoryPromptPart } from "./sharedPromptParts/messageHistory.par
 import { sectionInstructionsPromptPart } from "./sharedPromptParts/sectionInstructions.part";
 import { userMessagePromptPart } from "./sharedPromptParts/userMessage.part";
 
-export function sectionToGenericPromptAgent<SectionValueType>(
+export function sectionToGenericPromptAgent<
+  SectionValueType,
+  PromptValue = SectionValueType,
+>(
   {
     responseSchema,
     id,
@@ -34,7 +37,7 @@ export function sectionToGenericPromptAgent<SectionValueType>(
     documentForPrompt,
     defaultVoice = "AILA_TO_TEACHER",
     voices = [],
-  }: SectionPromptAgentProps<SectionValueType>,
+  }: SectionPromptAgentProps<SectionValueType, PromptValue>,
   modelParams: Omit<
     ResponseCreateParamsNonStreaming,
     "input" | "text" | "stream"

@@ -23,7 +23,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nKS1"
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\nSet this to KS1."
       },
       {
         "role": "developer",
@@ -80,15 +80,15 @@
     }
   },
   "result": {
-    "id": "resp_0e1b6cc26cae76b4006a5f5e17212c819db6cebcbaa6190c48",
+    "id": "resp_02344bc3e711462c006aa18448859c87d2be21ea72329105b3",
     "object": "response",
-    "created_at": 1784634903,
+    "created_at": 1788970056,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634904,
+    "completed_at": 1788970058,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -99,7 +99,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_0e1b6cc26cae76b4006a5f5e17d64c819da9138e935d276f5f",
+        "id": "msg_02344bc3e711462c006aa18449ee3c87d287d6b5fbf9251bd1",
         "type": "message",
         "status": "completed",
         "content": [
@@ -196,7 +196,7 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1171,
+      "input_tokens": 1175,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
@@ -205,7 +205,7 @@
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 1186
+      "total_tokens": 1190
     },
     "user": null,
     "metadata": {},
