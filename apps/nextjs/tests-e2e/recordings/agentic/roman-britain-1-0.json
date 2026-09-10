@@ -407,15 +407,15 @@
     }
   },
   "result": {
-    "id": "resp_07feaa0c3cb4da5b006a5f5e12c37081a08bc190b9aa9a1fa2",
+    "id": "resp_067a7645498c4fc0006aa1844379d487d2b97bb847a9e5d4f3",
     "object": "response",
-    "created_at": 1784634898,
+    "created_at": 1788970051,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634900,
+    "completed_at": 1788970054,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -426,7 +426,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_07feaa0c3cb4da5b006a5f5e139d0881a0bedb94bb804a5812",
+        "id": "msg_067a7645498c4fc0006aa18445683487d283be45b222ab7516",
         "type": "message",
         "status": "completed",
         "content": [
@@ -434,31 +434,31 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to create a KS1 lesson on the end of Roman Britain.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"title\",\"action\":\"generate\",\"sectionInstructions\":\"KS1 lesson on the end of Roman Britain\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyStage\",\"action\":\"generate\",\"sectionInstructions\":\"KS1\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"subject\",\"action\":\"generate\",\"sectionInstructions\":\"History\",\"itemIntent\":null}]}}",
+            "text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to create a new KS1 lesson on the end of Roman Britain.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"title\",\"action\":\"generate\",\"sectionInstructions\":\"Create a title for a KS1 lesson on the end of Roman Britain.\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyStage\",\"action\":\"generate\",\"sectionInstructions\":\"Set this to KS1.\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"subject\",\"action\":\"generate\",\"sectionInstructions\":\"Choose the appropriate subject for a lesson on the end of Roman Britain.\",\"itemIntent\":null}]}}",
             "parsed": {
               "value": {
                 "decision": "plan",
-                "parsedUserMessage": "The user wants to create a KS1 lesson on the end of Roman Britain.",
+                "parsedUserMessage": "The user wants to create a new KS1 lesson on the end of Roman Britain.",
                 "plan": [
                   {
                     "type": "section",
                     "sectionKey": "title",
                     "action": "generate",
-                    "sectionInstructions": "KS1 lesson on the end of Roman Britain",
+                    "sectionInstructions": "Create a title for a KS1 lesson on the end of Roman Britain.",
                     "itemIntent": null
                   },
                   {
                     "type": "section",
                     "sectionKey": "keyStage",
                     "action": "generate",
-                    "sectionInstructions": "KS1",
+                    "sectionInstructions": "Set this to KS1.",
                     "itemIntent": null
                   },
                   {
                     "type": "section",
                     "sectionKey": "subject",
                     "action": "generate",
-                    "sectionInstructions": "History",
+                    "sectionInstructions": "Choose the appropriate subject for a lesson on the end of Roman Britain.",
                     "itemIntent": null
                   }
                 ]
@@ -883,41 +883,41 @@
       "input_tokens": 3920,
       "input_tokens_details": {
         "cache_write_tokens": 0,
-        "cached_tokens": 0
+        "cached_tokens": 2816
       },
-      "output_tokens": 119,
+      "output_tokens": 140,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 4039
+      "total_tokens": 4060
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to create a KS1 lesson on the end of Roman Britain.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"title\",\"action\":\"generate\",\"sectionInstructions\":\"KS1 lesson on the end of Roman Britain\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyStage\",\"action\":\"generate\",\"sectionInstructions\":\"KS1\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"subject\",\"action\":\"generate\",\"sectionInstructions\":\"History\",\"itemIntent\":null}]}}",
+    "output_text": "{\"value\":{\"decision\":\"plan\",\"parsedUserMessage\":\"The user wants to create a new KS1 lesson on the end of Roman Britain.\",\"plan\":[{\"type\":\"section\",\"sectionKey\":\"title\",\"action\":\"generate\",\"sectionInstructions\":\"Create a title for a KS1 lesson on the end of Roman Britain.\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"keyStage\",\"action\":\"generate\",\"sectionInstructions\":\"Set this to KS1.\",\"itemIntent\":null},{\"type\":\"section\",\"sectionKey\":\"subject\",\"action\":\"generate\",\"sectionInstructions\":\"Choose the appropriate subject for a lesson on the end of Roman Britain.\",\"itemIntent\":null}]}}",
     "output_parsed": {
       "value": {
         "decision": "plan",
-        "parsedUserMessage": "The user wants to create a KS1 lesson on the end of Roman Britain.",
+        "parsedUserMessage": "The user wants to create a new KS1 lesson on the end of Roman Britain.",
         "plan": [
           {
             "type": "section",
             "sectionKey": "title",
             "action": "generate",
-            "sectionInstructions": "KS1 lesson on the end of Roman Britain",
+            "sectionInstructions": "Create a title for a KS1 lesson on the end of Roman Britain.",
             "itemIntent": null
           },
           {
             "type": "section",
             "sectionKey": "keyStage",
             "action": "generate",
-            "sectionInstructions": "KS1",
+            "sectionInstructions": "Set this to KS1.",
             "itemIntent": null
           },
           {
             "type": "section",
             "sectionKey": "subject",
             "action": "generate",
-            "sectionInstructions": "History",
+            "sectionInstructions": "Choose the appropriate subject for a lesson on the end of Roman Britain.",
             "itemIntent": null
           }
         ]

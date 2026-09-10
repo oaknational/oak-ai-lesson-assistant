@@ -1,11 +1,9 @@
 import { prepLessonForSlides } from "./dataHelpers/prepLessonForSlides";
 import { exportGeneric } from "./exportGeneric";
+import { speakerNotesTagsToDelete } from "./exportSlidesFullLesson.helpers";
 import { clearSpeakerNoteTags } from "./gSuite/slides/clearSpeakerNoteTags";
 import { googleSlides } from "./gSuite/slides/client";
-import {
-  type SpeakerNotesTag,
-  deleteSlides,
-} from "./gSuite/slides/deleteSlides";
+import { deleteSlides } from "./gSuite/slides/deleteSlides";
 import { populateSlides } from "./gSuite/slides/populateSlides";
 import type { LessonSlidesInputData } from "./schema/input.schema";
 import { getSlidesTemplateIdFullLesson } from "./templates";
@@ -23,8 +21,7 @@ export const exportSlidesFullLesson = async ({
   onStateChange: (state: State<OutputData>) => void;
 }): Promise<Result<OutputData>> => {
   try {
-    const speakerNotesTagsToDelete: SpeakerNotesTag[] =
-      lesson.subject === "maths" ? ["starterQuiz", "exitQuiz"] : [];
+    const tagsToDelete = speakerNotesTagsToDelete(lesson);
 
     const result = await exportGeneric({
       newFileName: `${lesson.title} - ${snapshotId} - Lesson slides`,
@@ -35,7 +32,7 @@ export const exportSlidesFullLesson = async ({
         await deleteSlides({
           googleSlides,
           presentationId: templateCopyId,
-          speakerNotesTagsToDelete,
+          speakerNotesTagsToDelete: tagsToDelete,
         });
       },
       populateTemplate: async ({ data, templateCopyId }) => {

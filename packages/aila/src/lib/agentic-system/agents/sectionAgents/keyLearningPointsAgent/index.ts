@@ -10,7 +10,7 @@ import { KeyLearningPointsSchema } from "./keyLearningPoints.schema";
 export const keyLearningPointsAgent = createSectionAgent({
   responseSchema: KeyLearningPointsSchema,
   instructions: keyStageInstructions(keyLearningPointsInstructions),
-  contentToString: stringListToText(),
+  contentToString: stringListToText<string>(),
   defaultVoice: "EXPERT_TEACHER",
   modelParams: DEFAULT_AGENT_MODEL_PARAMS,
 });

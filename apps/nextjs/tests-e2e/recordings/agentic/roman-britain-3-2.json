@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\",\n  \"learningCycles\": [\n    \"Name the groups of people living in Britain when Roman rule ended.\",\n    \"Match the groups of people to where they lived in Britain.\",\n    \"Describe who lived in Britain after the Romans left.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans used to rule Britain and then they left.\",\n    \"Britain is the place where people lived in this lesson, and it can be found on a map.\",\n    \"Some groups of people had names, such as Romans, Picts and Scots.\",\n    \"People can live in different parts of a country.\",\n    \"Old stories and objects can help us find out about the past.\"\n  ]\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\",\n  \"learningCycles\": [\n    \"Name the groups who lived in Britain after the Romans left.\",\n    \"Match each group to where they lived in Britain.\",\n    \"Describe how the groups in Britain were different.\"\n  ],\n  \"priorKnowledge\": [\n    \"The Romans ruled Britain a long time ago.\",\n    \"Britain is the place where we live now.\",\n    \"A map shows where places are.\",\n    \"Different groups of people can live in different places.\",\n    \"Things from the past can be different from life today.\"\n  ]\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/null"
       },
       {
         "role": "developer",
@@ -71,15 +71,15 @@
     }
   },
   "result": {
-    "id": "resp_011ece4cc3bbd5fc006a5f5e6aa0d481a2a333bc5768b24d29",
+    "id": "resp_0f4e1e2608220a70006aa1846f962087d2a9b318eea770fdfc",
     "object": "response",
-    "created_at": 1784634986,
+    "created_at": 1788970095,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634988,
+    "completed_at": 1788970098,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -90,7 +90,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_011ece4cc3bbd5fc006a5f5e6b06c481a2b53c1a9594fb3d15",
+        "id": "msg_0f4e1e2608220a70006aa18470462487d2bf4e6b486d04aa53",
         "type": "message",
         "status": "completed",
         "content": [
@@ -98,13 +98,13 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]}",
+            "text": "{\"value\":[\"After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.\",\"The Britons were the people already living in Britain when Roman rule ended.\",\"The Picts and Scots attacked Roman Britain from the north and from Ireland.\",\"A map can show where each group lived in Britain at the end of Roman rule.\"]}",
             "parsed": {
               "value": [
-                "When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.",
-                "Romano-Britons lived mostly in the south and east of Britain after the Romans left.",
-                "Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.",
-                "Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left."
+                "After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.",
+                "The Britons were the people already living in Britain when Roman rule ended.",
+                "The Picts and Scots attacked Roman Britain from the north and from Ireland.",
+                "A map can show where each group lived in Britain at the end of Roman rule."
               ]
             }
           }
@@ -179,26 +179,26 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 2334,
+      "input_tokens": 2308,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 101,
+      "output_tokens": 105,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2435
+      "total_tokens": 2413
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.\",\"Romano-Britons lived mostly in the south and east of Britain after the Romans left.\",\"Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.\",\"Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left.\"]}",
+    "output_text": "{\"value\":[\"After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.\",\"The Britons were the people already living in Britain when Roman rule ended.\",\"The Picts and Scots attacked Roman Britain from the north and from Ireland.\",\"A map can show where each group lived in Britain at the end of Roman rule.\"]}",
     "output_parsed": {
       "value": [
-        "When Roman rule ended, different groups lived in Britain, including Romano-Britons, Picts, Scots and Anglo-Saxons.",
-        "Romano-Britons lived mostly in the south and east of Britain after the Romans left.",
-        "Picts lived in the north of Britain, in what is now Scotland, and Scots came from Ireland.",
-        "Anglo-Saxons began to settle in parts of eastern and southern Britain after the Romans left."
+        "After the Romans left Britain, different groups lived in different places: the Picts in the north, the Scots in Ireland, the Anglo-Saxons in the east and south, and the Britons in the west.",
+        "The Britons were the people already living in Britain when Roman rule ended.",
+        "The Picts and Scots attacked Roman Britain from the north and from Ireland.",
+        "A map can show where each group lived in Britain at the end of Roman rule."
       ]
     }
   }

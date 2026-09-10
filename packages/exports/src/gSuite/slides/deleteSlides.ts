@@ -4,7 +4,12 @@ import type { Result } from "../../types";
 
 // This type reflects the values available in the "speaker notes" of the template slides document
 // eg: <!-- INTERNAL_TAG: starterQuiz -->
-export type SpeakerNotesTag = "starterQuiz" | "exitQuiz";
+export type SpeakerNotesTag =
+  | "starterQuiz"
+  | "exitQuiz"
+  | "cycle1Stimulus"
+  | "cycle2Stimulus"
+  | "cycle3Stimulus";
 
 function buildInternalTag(tag: SpeakerNotesTag): string {
   return `<!-- INTERNAL_TAG: ${tag} -->`;

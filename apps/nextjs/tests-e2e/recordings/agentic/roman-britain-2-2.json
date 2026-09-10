@@ -19,7 +19,7 @@
       },
       {
         "role": "developer",
-        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can name the different groups of people living in Britain when Roman rule ended.\"\n}"
+        "content": "CURRENT DOCUMENT\n\nThis is the document in its current state.\n\n{\n  \"title\": \"The end of Roman Britain\",\n  \"keyStage\": \"ks1\",\n  \"subject\": \"history\",\n  \"learningOutcome\": \"I can describe the different groups who lived in Britain at the end of Roman rule.\"\n}"
       },
       {
         "role": "developer",
@@ -27,7 +27,7 @@
       },
       {
         "role": "developer",
-        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n:null"
+        "content": "## Section-specific instructions\n\nThe following instructions were extracted from the user's message by the planner agent. Apply these when generating this section:\n\n/No user preference/ continue progression from current lesson context."
       },
       {
         "role": "developer",
@@ -69,15 +69,15 @@
     }
   },
   "result": {
-    "id": "resp_00767aabaffe989d006a5f5e42b11c819e875ff346d02d4f3a",
+    "id": "resp_0b30791305e7e23a006aa1845f049887d2a2acfd78b9a44e5e",
     "object": "response",
-    "created_at": 1784634946,
+    "created_at": 1788970079,
     "status": "completed",
     "background": false,
     "billing": {
       "payer": "developer"
     },
-    "completed_at": 1784634947,
+    "completed_at": 1788970080,
     "error": null,
     "frequency_penalty": 0,
     "incomplete_details": null,
@@ -88,7 +88,7 @@
     "moderation": null,
     "output": [
       {
-        "id": "msg_00767aabaffe989d006a5f5e433b80819e9f1dadaaa4b987f9",
+        "id": "msg_0b30791305e7e23a006aa1845ff20c87d2b56be3e3b5ba998c",
         "type": "message",
         "status": "completed",
         "content": [
@@ -96,12 +96,12 @@
             "type": "output_text",
             "annotations": [],
             "logprobs": [],
-            "text": "{\"value\":[\"Name the groups of people living in Britain when Roman rule ended.\",\"Match the groups of people to where they lived in Britain.\",\"Describe who lived in Britain after the Romans left.\"]}",
+            "text": "{\"value\":[\"Name the groups who lived in Britain after the Romans left.\",\"Match each group to where they lived in Britain.\",\"Describe how the groups in Britain were different.\"]}",
             "parsed": {
               "value": [
-                "Name the groups of people living in Britain when Roman rule ended.",
-                "Match the groups of people to where they lived in Britain.",
-                "Describe who lived in Britain after the Romans left."
+                "Name the groups who lived in Britain after the Romans left.",
+                "Match each group to where they lived in Britain.",
+                "Describe how the groups in Britain were different."
               ]
             }
           }
@@ -174,25 +174,25 @@
     "top_p": 0.98,
     "truncation": "disabled",
     "usage": {
-      "input_tokens": 1977,
+      "input_tokens": 1989,
       "input_tokens_details": {
         "cache_write_tokens": 0,
         "cached_tokens": 0
       },
-      "output_tokens": 49,
+      "output_tokens": 45,
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 2026
+      "total_tokens": 2034
     },
     "user": null,
     "metadata": {},
-    "output_text": "{\"value\":[\"Name the groups of people living in Britain when Roman rule ended.\",\"Match the groups of people to where they lived in Britain.\",\"Describe who lived in Britain after the Romans left.\"]}",
+    "output_text": "{\"value\":[\"Name the groups who lived in Britain after the Romans left.\",\"Match each group to where they lived in Britain.\",\"Describe how the groups in Britain were different.\"]}",
     "output_parsed": {
       "value": [
-        "Name the groups of people living in Britain when Roman rule ended.",
-        "Match the groups of people to where they lived in Britain.",
-        "Describe who lived in Britain after the Romans left."
+        "Name the groups who lived in Britain after the Romans left.",
+        "Match each group to where they lived in Britain.",
+        "Describe how the groups in Britain were different."
       ]
     }
   }
