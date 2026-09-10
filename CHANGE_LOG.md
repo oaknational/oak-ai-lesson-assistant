@@ -1,3 +1,10 @@
+# [1.84.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.83.0...v1.84.0) (2026-09-10)
+
+
+### Features
+
+* **aila:** practice task prompt update ([#1128](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1128)) ([b1e7b3e](https://github.com/oaknational/oak-ai-lesson-assistant/commit/b1e7b3e914d557b22b2022e3b354293a0a432da8))
+
 # [1.83.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.82.2...v1.83.0) (2026-09-07)
 
 
