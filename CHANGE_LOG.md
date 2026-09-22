@@ -1,3 +1,10 @@
+## [1.84.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.0...v1.84.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* improve Prisma diagnostics and export error recovery ([#1134](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1134)) ([5d4d266](https://github.com/oaknational/oak-ai-lesson-assistant/commit/5d4d266f1fe9202dfc7c591242708f47d54752eb))
+
 # [1.84.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.83.0...v1.84.0) (2026-09-10)
 
 
