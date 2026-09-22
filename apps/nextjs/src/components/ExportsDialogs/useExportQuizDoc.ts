@@ -13,6 +13,7 @@ import type { ZodError } from "zod";
 import { trpc } from "@/utils/trpc";
 
 import type { ExportsHookProps } from "./exports.types";
+import { selectExportData } from "./selectExportData";
 import { useExportsExistenceCheck } from "./useExportsExistenceCheck";
 
 function extractQuizFromLesson(
@@ -130,7 +131,7 @@ export function useExportQuizDoc({
       dialogOpen,
       closeDialog,
       status: query.status,
-      data: checkForSnapShotAndPreloadQuery.data ?? query.data,
+      data: selectExportData(checkForSnapShotAndPreloadQuery.data, query.data),
     }),
     [
       checkForSnapShotAndPreloadQuery.data,
