@@ -2,7 +2,6 @@ import { prisma } from "@oakai/db";
 import { googleDrive } from "@oakai/exports/src/gSuite/drive/client";
 import { aiLogger } from "@oakai/logger";
 
-import type { drive_v3 } from "@googleapis/drive";
 import * as Sentry from "@sentry/node";
 import type { NextRequest } from "next/server";
 import { isTruthy } from "remeda";
@@ -11,21 +10,18 @@ const log = aiLogger("cron");
 
 export const dynamic = "force-dynamic";
 
-const requiredEnvVars = ["CRON_SECRET", "GOOGLE_DRIVE_OUTPUT_FOLDER_ID"];
-
-requiredEnvVars.forEach((envVar) => {
-  if (!process.env[envVar]) {
-    throw new Error(`Environment variable ${envVar} is not set.`);
-  }
-});
+/** Bounds the scan size; Vercel separately enforces the 300s timeout. */
+const MAX_PAGES = 10;
 
 async function updateExpiredAtAndDelete(fileIds: string[]) {
   if (fileIds.length === 0) {
     log.info("No file IDs to update.");
-    return;
+    return { deletedCount: 0, orphanedCount: 0 };
   }
 
   const failedIds: string[] = [];
+  const orphanedIds: string[] = [];
+  let deletedCount = 0;
 
   for (const id of fileIds) {
     try {
@@ -34,8 +30,8 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
       });
 
       if (!record) {
-        log.warn(`No database record found for gdriveFileId: ${id}`);
-        failedIds.push(id);
+        // Leave files without a matching export untouched for investigation.
+        orphanedIds.push(id);
         continue;
       }
 
@@ -53,12 +49,21 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
       log.info(`Successfully updated expiredAt for file: ${id}`);
 
       await googleDrive.files.delete({ fileId: id, supportsAllDrives: true });
+      deletedCount += 1;
       log.info(`Successfully deleted file: ${id}`);
     } catch (error) {
       log.error(`Error processing file with gdriveFileId: ${id}`, error);
       failedIds.push(id);
     }
   }
+  if (orphanedIds.length > 0) {
+    log.warn(
+      `Skipped ${orphanedIds.length} file(s) with no matching database record: ${orphanedIds.join(
+        ", ",
+      )}`,
+    );
+  }
+
   if (failedIds.length > 0) {
     const errorMessage = `Failed to process the following file IDs: ${failedIds.join(
       ", ",
@@ -66,6 +71,8 @@ async function updateExpiredAtAndDelete(fileIds: string[]) {
     log.error(errorMessage);
     throw new Error(errorMessage);
   }
+
+  return { deletedCount, orphanedCount: orphanedIds.length };
 }
 
 interface FetchExpiredExportsOptions {
@@ -77,37 +84,37 @@ async function fetchExpiredExports({
   folderId,
   daysAgo,
 }: FetchExpiredExportsOptions) {
-  try {
-    const currentDate = new Date();
-    const targetDate = new Date(
-      currentDate.setDate(currentDate.getDate() - daysAgo),
-    ).toISOString();
+  const currentDate = new Date();
+  const targetDate = new Date(
+    currentDate.setDate(currentDate.getDate() - daysAgo),
+  ).toISOString();
+  const query = `modifiedTime < '${targetDate}' and '${folderId}' in parents`;
+  const fileIds = new Set<string>();
+  let pageToken: string | undefined;
 
-    const query = `modifiedTime < '${targetDate}' and '${folderId}' in parents`;
-
+  // Finish listing before deleting: mutating the result set while paging can
+  // change which files Drive returns on subsequent pages.
+  for (let page = 0; page < MAX_PAGES; page++) {
     const res = await googleDrive.files.list({
       q: query,
-      fields: "files(id, name, modifiedTime, ownedByMe )",
+      fields: "nextPageToken, files(id, ownedByMe)",
       pageSize: 1000,
+      pageToken,
       supportsAllDrives: true,
     });
-
-    const files =
-      res.data.files?.filter((file) => file.ownedByMe === true) ?? [];
-
-    if (files.length === 0) {
-      log.info(
-        "No files found that are older than one month in the specified folder.",
-      );
-      return null;
+    const ids = (res.data.files ?? [])
+      .filter((file) => file.ownedByMe === true)
+      .map((file) => file.id)
+      .filter(isTruthy);
+    ids.forEach((id) => fileIds.add(id));
+    pageToken = res.data.nextPageToken ?? undefined;
+    if (!pageToken) {
+      break;
     }
-
-    log.info(`Found ${files.length} files older than one month in folder:`);
-    return files;
-  } catch (error) {
-    log.error("Error fetching old files from folder:", error);
-    return null;
   }
+
+  log.info(`Found ${fileIds.size} owned files older than ${daysAgo} days.`);
+  return { fileIds: [...fileIds], hasMore: Boolean(pageToken) };
 }
 
 export async function GET(request: NextRequest) {
@@ -131,30 +138,20 @@ export async function GET(request: NextRequest) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    let files: drive_v3.Schema$File[] | null;
-    let hasMoreFiles = true;
+    const { fileIds, hasMore } = await fetchExpiredExports({
+      folderId,
+      daysAgo: 14,
+    });
+    const result = await updateExpiredAtAndDelete(fileIds);
 
-    while (hasMoreFiles) {
-      files = await fetchExpiredExports({ folderId, daysAgo: 14 });
-
-      if (!files || files.length === 0) {
-        log.info("No expired files found.");
-        break;
-      }
-
-      const validFileIds = files.map((file) => file.id).filter(isTruthy);
-
-      if (validFileIds.length === 0) {
-        log.info("No valid file IDs to process.");
-        break;
-      }
-
-      await updateExpiredAtAndDelete(validFileIds);
+    if (hasMore) {
+      // Make a bounded, incomplete scan visible instead of reporting success.
+      throw new Error(
+        `Expired export cleanup incomplete: reached ${MAX_PAGES} pages.`,
+      );
     }
 
-    return new Response("All expired files processed successfully.", {
-      status: 200,
-    });
+    return Response.json(result);
   } catch (error) {
     Sentry.captureException(error);
     log.error("An error occurred during the cron job execution:", error);

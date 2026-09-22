@@ -19,6 +19,7 @@ export const healthRouter = router({
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Prisma connection failed",
+        cause: error,
       });
     }
   }),

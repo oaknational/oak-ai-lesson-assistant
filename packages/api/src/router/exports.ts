@@ -44,13 +44,8 @@ function getValidLink(
     return data.link;
   }
   if ("error" in data && "message" in data) {
-    Sentry.captureException(data.error, {
-      extra: {
-        error: data.error,
-        message: data.message,
-      },
-    });
-    throw new Error(data.message);
+    // The aggregate handler reports this failure; retain its original cause.
+    throw new Error(data.message, { cause: data.error });
   }
 }
 
@@ -177,6 +172,7 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -207,6 +203,7 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -259,6 +256,7 @@ export const exportsRouter = router({
         log.error("Error checking if download exists:", error);
         const message =
           "Failed to check if additional materials download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -309,6 +307,7 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -363,6 +362,7 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -384,6 +384,7 @@ export const exportsRouter = router({
       } catch (error) {
         log.error("Error checking if download exists:", error);
         const message = "Failed to check if download exists";
+        reportErrorResult({ error, message }, { chatId: input.chatId });
         return {
           error,
           message,
@@ -452,6 +453,10 @@ export const exportsRouter = router({
         return allExports;
       } catch (error) {
         log.error("Error generating all asset exports:", error);
+        reportErrorResult(
+          { error, message: "Failed to generate all asset exports" },
+          { chatId: input.chatId },
+        );
         return {
           error,
           message: "Failed to generate all asset exports",
