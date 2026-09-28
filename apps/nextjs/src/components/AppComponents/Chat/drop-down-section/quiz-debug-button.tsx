@@ -1,5 +1,7 @@
 "use client";
 
+import { hasVerifiedOakEmail } from "@oakai/core/src/utils/isOakEmail";
+
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -20,11 +22,7 @@ export function QuizDebugButton({ quizType }: Readonly<QuizDebugButtonProps>) {
       : state.lessonPlan.exitQuiz,
   );
 
-  const isAdmin =
-    isLoaded &&
-    user?.emailAddresses.some((email) =>
-      email.emailAddress.endsWith("@thenational.academy"),
-    );
+  const isAdmin = isLoaded && !!user && hasVerifiedOakEmail(user);
 
   if (!isAdmin) return null;
   if (subject !== "maths") return null;
