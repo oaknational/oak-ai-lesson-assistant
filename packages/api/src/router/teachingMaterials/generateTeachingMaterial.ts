@@ -172,7 +172,7 @@ export async function generateTeachingMaterial({
     });
 
     interaction = await prisma.additionalMaterialInteraction.update({
-      where: { id: resourceId },
+      where: { id: resourceId, userId },
       data: {
         adaptsOutputId: adaptsOutputId ?? null,
         output: result,
