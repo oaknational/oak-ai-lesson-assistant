@@ -1,3 +1,11 @@
+## [1.84.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.1...v1.84.2) (2026-09-28)
+
+
+### Bug Fixes
+
+* consolidate Oak user checks and scope material updates ([#1138](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1138)) ([88a84ef](https://github.com/oaknational/oak-ai-lesson-assistant/commit/88a84ef373e95edcc0e4734071da03f68119bb8d))
+* reduce homepage response time on idle instances ([#1136](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1136)) ([5111929](https://github.com/oaknational/oak-ai-lesson-assistant/commit/511192919e6872972851d10d702f41844ab37e6c))
+
 ## [1.84.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.0...v1.84.1) (2026-09-22)
 
 
