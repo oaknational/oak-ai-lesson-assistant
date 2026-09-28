@@ -7,6 +7,7 @@ import { aiLogger } from "@oakai/logger";
 import { auth } from "@clerk/nextjs/server";
 import cookie from "cookie";
 import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
+import { after } from "next/server";
 
 const log = aiLogger("feature-flags");
 
@@ -43,7 +44,11 @@ export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
     : undefined;
 
-  await refreshFlagDefinitionsIfStale();
+  // Refresh after the response rather than before it, so a stale check doesn't
+  // add KV/PostHog latency to the render. A warm instance serves its current
+  // definitions for this one request. A cold instance is unaffected: the SDK
+  // waits for its first load before evaluating.
+  after(refreshFlagDefinitionsIfStale);
 
   // Payloads as well as values, so a flag can carry text we edit in PostHog rather
   // than deploy. The status banner's message works this way.
