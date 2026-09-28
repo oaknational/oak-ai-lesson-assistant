@@ -8,6 +8,7 @@ import type {
   PartialLessonPlan,
   QuizPath,
 } from "@oakai/aila/src/protocol/schema";
+import { hasVerifiedOakEmail } from "@oakai/core/src/utils/isOakEmail";
 import { prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import {
@@ -26,9 +27,7 @@ const log = aiLogger("admin");
 async function isAdmin(userId: string): Promise<boolean> {
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
-  return user.emailAddresses.some((email) =>
-    email.emailAddress.endsWith("@thenational.academy"),
-  );
+  return hasVerifiedOakEmail(user);
 }
 
 export async function POST(request: Request) {

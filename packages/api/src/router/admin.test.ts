@@ -37,6 +37,7 @@ describe("adminRouter", () => {
           emailAddresses: [
             {
               emailAddress: "admin@thenational.academy",
+              verification: { status: "verified" },
             },
           ],
         }),
@@ -101,4 +102,40 @@ describe("adminRouter", () => {
 
     expect(markFalsePositive).toHaveBeenCalledWith("threat-123");
   });
+
+  it.each([
+    ["unverified", { status: "unverified" }],
+    ["expired", { status: "expired" }],
+    ["missing", null],
+  ])(
+    "rejects a user whose Oak email verification is %s",
+    async (_label, verification) => {
+      (clerkClient as jest.Mock).mockResolvedValue({
+        users: {
+          getUser: jest.fn().mockResolvedValue({
+            emailAddresses: [
+              {
+                emailAddress: "teacher@example.com",
+                verification: { status: "verified" },
+              },
+              { emailAddress: "someone@thenational.academy", verification },
+            ],
+          }),
+        },
+      });
+
+      const caller = adminRouter.createCaller({
+        auth: { userId: "teacher-user" },
+        prisma: {},
+        req: { url: "http://localhost/admin" },
+      } as never);
+
+      await expect(
+        caller.markThreatDetectionFalsePositive({
+          threatDetectionId: "threat-123",
+        }),
+      ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+      expect(markFalsePositive).not.toHaveBeenCalled();
+    },
+  );
 });
