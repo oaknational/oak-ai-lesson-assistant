@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { hasVerifiedOakEmail } from "@oakai/core/src/utils/isOakEmail";
+
 import { useUser } from "@clerk/nextjs";
 
 import { useChatStore } from "@/stores/AilaStoresProvider";
@@ -21,11 +23,7 @@ export function DebugOverlay() {
   const isAutomatedBrowser =
     typeof navigator !== "undefined" && navigator.webdriver;
   const { user, isLoaded } = useUser();
-  const isAdmin =
-    isLoaded &&
-    user?.emailAddresses.some((email) =>
-      email.emailAddress.endsWith("@thenational.academy"),
-    );
+  const isAdmin = isLoaded && !!user && hasVerifiedOakEmail(user);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const overlayState = trpc.debug.getAilaOverlayState.useQuery(undefined, {

@@ -22,7 +22,7 @@ export const sanityClient = createClient({
   projectId: projectId,
   dataset: dataset,
   token: token,
-  // Don't use CDN for these infrequent (build time) queries
+  // Responses are cached by Next (see cms/data/cmsCache.ts), so the Sanity CDN adds little
   useCdn: false,
   apiVersion: "2023-02-27",
 });

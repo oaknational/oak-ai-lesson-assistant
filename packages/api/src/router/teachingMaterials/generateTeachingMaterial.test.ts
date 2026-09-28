@@ -141,7 +141,13 @@ describe("generateTeachingMaterial", () => {
 
     const result = await generateTeachingMaterial(params);
 
-    expect(mockPrisma.additionalMaterialInteraction.update).toHaveBeenCalled();
+    expect(
+      mockPrisma.additionalMaterialInteraction.update,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "existing-resource", userId: "test-user" },
+      }),
+    );
     expect(result.resource).toEqual(mockGlossaryResult);
     expect(result.moderation).toEqual(mockModerationResult);
     expect(result.resourceId).toBe("mock-interaction-id");

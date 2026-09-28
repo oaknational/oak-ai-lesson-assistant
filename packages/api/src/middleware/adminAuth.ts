@@ -1,3 +1,4 @@
+import { hasVerifiedOakEmail } from "@oakai/core/src/utils/isOakEmail";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -10,7 +11,7 @@ const log = aiLogger("auth");
 
 /**
  * Currently this is (1) an expensive check that makes a round trip to Clerk,
- * and (2) a naive check that checks email domain matches Oak's.
+ * and (2) a naive check that checks for a verified email on Oak's domain.
  * We might want to move to having a role in the Metadata, or at least consider
  * other approaches longer term.
  */
@@ -26,11 +27,7 @@ const isAdminMiddleware = t.middleware(async ({ next, ctx }) => {
   const client = await clerkClient();
   const user = await client.users.getUser(ctx.auth.userId);
 
-  if (
-    !user.emailAddresses.some((email) =>
-      email.emailAddress.endsWith("@thenational.academy"),
-    )
-  ) {
+  if (!hasVerifiedOakEmail(user)) {
     log.info({ auth: ctx.auth, url: ctx.req.url }, "User not an admin");
     throw new TRPCError({
       code: "UNAUTHORIZED",
