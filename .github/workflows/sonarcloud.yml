@@ -31,13 +31,6 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Inject Doppler env vars
-        uses: dopplerhq/secrets-fetch-action@v1.2.0
-        id: doppler
-        with:
-          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          inject-env-vars: true
-
       - name: Get App Version
         id: app-version
         run: |
@@ -48,7 +41,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ steps.doppler.outputs.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.app-version.outputs.version }}
