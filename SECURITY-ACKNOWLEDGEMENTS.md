@@ -1,6 +1,6 @@
-# Security Acknowledgments
+# Security Acknowledgements
 
-We thank the following researchers for reporting vulnerabilities to Oak National Academy in line with [`SECURITY.md`](SECURITY.md) 
+We thank the following researchers for reporting vulnerabilities to Oak National Academy in line with [`SECURITY.md`](SECURITY.md)
 
 ```
 - 27-09-2026 — kta1kri
