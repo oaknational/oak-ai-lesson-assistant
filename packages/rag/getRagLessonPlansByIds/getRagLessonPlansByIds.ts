@@ -2,7 +2,6 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 import { isTruthy } from "remeda";
-import invariant from "tiny-invariant";
 
 import {
   type CompletedLessonPlan,
@@ -36,11 +35,12 @@ export async function getRagLessonPlansByIds({
       id: {
         in: lessonPlanIds,
       },
+      isPublished: true,
     },
   });
 
   const results = await Promise.all(
-    lessonPlans.map(async (lp, i) => {
+    lessonPlans.map(async (lp) => {
       try {
         const { lessonPlan: migratedLessonPlan } = await migrateLessonPlan({
           lessonPlan: lp.lessonPlan as unknown as Record<string, unknown>,
@@ -48,11 +48,8 @@ export async function getRagLessonPlansByIds({
           outputSchema: CompletedLessonPlanSchema,
         });
 
-        const id = lessonPlanIds[i];
-        invariant(id, "No id found for lesson plan, this should be impossible");
-
         return {
-          ragLessonPlanId: lp.ingestLessonId ?? id,
+          ragLessonPlanId: lp.id,
           oakLessonId: lp.oakLessonId,
           oakLessonSlug: lp.oakLessonSlug,
           lessonPlan: migratedLessonPlan,
