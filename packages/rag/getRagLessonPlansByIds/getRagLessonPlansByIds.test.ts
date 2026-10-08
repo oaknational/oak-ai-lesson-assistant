@@ -134,7 +134,7 @@ describe("getRagLessonPlansByIds", () => {
       expect(result[0]?.ragLessonPlanId).toBe("rag-y");
     });
 
-    it("pairs each row with its own id when rows come back in a different order", async () => {
+    it("keeps each row's fields paired when restoring requested order", async () => {
       findManyMock.mockResolvedValue([
         makeRow({ id: "rag-b", oakLessonSlug: "slug-b" }),
         makeRow({ id: "rag-a", oakLessonSlug: "slug-a" }),
@@ -146,8 +146,27 @@ describe("getRagLessonPlansByIds", () => {
       });
 
       expect(result.map((r) => [r.ragLessonPlanId, r.oakLessonSlug])).toEqual([
-        ["rag-b", "slug-b"],
         ["rag-a", "slug-a"],
+        ["rag-b", "slug-b"],
+      ]);
+    });
+
+    it("returns lesson plans in the requested order", async () => {
+      findManyMock.mockResolvedValue([
+        makeRow({ id: "7717" }),
+        makeRow({ id: "7752" }),
+        makeRow({ id: "rlp_20261007T153929Z_3516" }),
+      ]);
+
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rlp_20261007T153929Z_3516", "7717", "7752"],
+        prisma,
+      });
+
+      expect(result.map((row) => row.ragLessonPlanId)).toEqual([
+        "rlp_20261007T153929Z_3516",
+        "7717",
+        "7752",
       ]);
     });
 
