@@ -1,5 +1,84 @@
 version: 2
 updates:
+  # Track npm updates across the pnpm workspace (root + apps/* + packages/*).
+  #
+  # Security-update PRs are deliberately left ungrouped: Dependabot's groups
+  # have no severity filter, so grouping security updates would bundle
+  # criticals in with everything else. Leaving them alone keeps every
+  # vulnerability - critical or not - on its own PR, same as today.
+  #
+  # Version updates are grouped below. Several packages are duplicated
+  # across workspaces (e.g. "next" is a direct dep in root, apps/nextjs and
+  # packages/api; "jest" in six packages), which is why PRs like #1118-1120
+  # showed the same bump three times. `group-by: dependency-name` collapses
+  # those into one PR per dependency instead of one per directory. First
+  # matching group wins, so the coupled-dependency groups are listed before
+  # the catch-all.
+  - package-ecosystem: "npm"
+    directories: ["/", "apps/*", "packages/*"]
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # Next.js: a mismatched version between workspaces isn't necessarily
+      # broken, but there's no reason to review the same bump three times.
+      next:
+        patterns:
+          - next
+          - "@next/*"
+        update-types: [major, minor, patch]
+        group-by: dependency-name
+      # tRPC client/server/react-query packages share a major version contract.
+      trpc:
+        patterns:
+          - "@trpc/*"
+        update-types: [major, minor, patch]
+        group-by: dependency-name
+      # Prisma client, CLI and extensions must stay in lockstep.
+      prisma:
+        patterns:
+          - prisma
+          - "@prisma/*"
+          - zod-prisma
+        update-types: [major, minor, patch]
+        group-by: dependency-name
+      # Storybook core, addons and its eslint/msw integrations track one major.
+      storybook:
+        patterns:
+          - storybook
+          - "@storybook/*"
+          - "@chromatic-com/storybook"
+          - eslint-plugin-storybook
+          - msw-storybook-addon
+        update-types: [major, minor, patch]
+        group-by: dependency-name
+      # jest + ts-jest + @types/jest break on mismatched majors, and jest
+      # itself is a direct dep in six separate packages.
+      jest:
+        patterns:
+          - jest
+          - "jest-*"
+          - "@types/jest"
+          - ts-jest
+          - "@testing-library/*"
+          - setup-polly-jest
+        update-types: [major, minor, patch]
+        group-by: dependency-name
+      # Everything else: batch routine minor/patch noise. Majors are left
+      # ungrouped so they still surface individually for review.
+      minor-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+        group-by: dependency-name
+
   # Track updates for Github Actions workflows from oak-terraform-actions repository.
   - package-ecosystem: "github-actions"
     directory: "/"
