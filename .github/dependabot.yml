@@ -1,5 +1,24 @@
 version: 2
 updates:
+  # Track npm updates across the pnpm workspace (root + apps/* + packages/*),
+  # grouping minor/patch version updates and security updates into one PR per
+  # ecosystem instead of one PR per dependency. Major version bumps are left
+  # ungrouped so they still get individual review.
+  - package-ecosystem: "npm"
+    directories: ["/", "apps/*", "packages/*"]
+    schedule:
+      interval: "weekly"
+    groups:
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - "*"
+
   # Track updates for Github Actions workflows from oak-terraform-actions repository.
   - package-ecosystem: "github-actions"
     directory: "/"
