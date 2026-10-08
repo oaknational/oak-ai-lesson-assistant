@@ -39,6 +39,16 @@ export async function getRagLessonPlansByIds({
     },
   });
 
+  // findMany returns rows in database order, not lessonPlanIds order.
+  // Callers number lessons in search order ("1. ..."), so keep that order.
+  const position = new Map(
+    lessonPlanIds.map((lessonPlanId, index) => [lessonPlanId, index]),
+  );
+  lessonPlans.sort(
+    (first, second) =>
+      (position.get(first.id) ?? 0) - (position.get(second.id) ?? 0),
+  );
+
   const results = await Promise.all(
     lessonPlans.map(async (lp) => {
       try {
