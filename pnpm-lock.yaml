@@ -22775,8 +22775,8 @@ packages:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
 
-  /piscina@4.9.2:
-    resolution: {integrity: sha512-Fq0FERJWFEUpB4eSY59wSNwXD4RYqR+nR/WiEVcZW8IWfVBxJJafcgTEZDQo8k3w0sUarJ8RyVbbUF4GQ2LGbQ==}
+  /piscina@4.9.4:
+    resolution: {integrity: sha512-RyBDr2VheQ8ZfH3N8SzQZHztqVyOtadTwLnUYof6gdj5161/eu2wNhCbGl5GHnNKDpnkicJYpKtL2J+y/gk6XA==}
     optionalDependencies:
       '@napi-rs/nice': 1.1.1
     dev: true
@@ -24041,7 +24041,7 @@ packages:
       log-update: 6.1.0
       minimatch: 10.0.1
       picocolors: 1.1.1
-      piscina: 4.9.2
+      piscina: 4.9.4
       strip-comments: 2.0.1
       strip-json-comments: 5.0.1
       tiktoken: 1.0.20

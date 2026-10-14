@@ -45,7 +45,7 @@ describe("getRagLessonPlansByIds", () => {
   });
 
   describe("query construction", () => {
-    it("queries findMany with id IN lessonPlanIds", async () => {
+    it("queries findMany for published rows with id IN lessonPlanIds", async () => {
       findManyMock.mockResolvedValue([]);
 
       await getRagLessonPlansByIds({
@@ -55,7 +55,7 @@ describe("getRagLessonPlansByIds", () => {
 
       expect(findManyMock).toHaveBeenCalledTimes(1);
       expect(findManyMock).toHaveBeenCalledWith({
-        where: { id: { in: ["a", "b", "c"] } },
+        where: { id: { in: ["a", "b", "c"] }, isPublished: true },
       });
     });
 
@@ -101,14 +101,14 @@ describe("getRagLessonPlansByIds", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
-        ragLessonPlanId: "ingest-1",
+        ragLessonPlanId: "rag-1",
         oakLessonId: 100,
         oakLessonSlug: "slug-1",
       });
       expect(result[0]?.lessonPlan).toBeDefined();
     });
 
-    it("uses ingestLessonId for ragLessonPlanId when present", async () => {
+    it("uses the row's own id for ragLessonPlanId when ingestLessonId is present", async () => {
       findManyMock.mockResolvedValue([
         makeRow({ id: "rag-x", ingestLessonId: "ingest-x" }),
       ]);
@@ -118,10 +118,10 @@ describe("getRagLessonPlansByIds", () => {
         prisma,
       });
 
-      expect(result[0]?.ragLessonPlanId).toBe("ingest-x");
+      expect(result[0]?.ragLessonPlanId).toBe("rag-x");
     });
 
-    it("falls back to the input id for ragLessonPlanId when ingestLessonId is null", async () => {
+    it("uses the row's own id for ragLessonPlanId when ingestLessonId is null", async () => {
       findManyMock.mockResolvedValue([
         makeRow({ id: "rag-y", ingestLessonId: null }),
       ]);
@@ -132,6 +132,56 @@ describe("getRagLessonPlansByIds", () => {
       });
 
       expect(result[0]?.ragLessonPlanId).toBe("rag-y");
+    });
+
+    it("keeps each row's fields paired when restoring requested order", async () => {
+      findManyMock.mockResolvedValue([
+        makeRow({ id: "rag-b", oakLessonSlug: "slug-b" }),
+        makeRow({ id: "rag-a", oakLessonSlug: "slug-a" }),
+      ]);
+
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-a", "rag-b"],
+        prisma,
+      });
+
+      expect(result.map((r) => [r.ragLessonPlanId, r.oakLessonSlug])).toEqual([
+        ["rag-a", "slug-a"],
+        ["rag-b", "slug-b"],
+      ]);
+    });
+
+    it("returns lesson plans in the requested order", async () => {
+      findManyMock.mockResolvedValue([
+        makeRow({ id: "7717" }),
+        makeRow({ id: "7752" }),
+        makeRow({ id: "rlp_20261007T153929Z_3516" }),
+      ]);
+
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rlp_20261007T153929Z_3516", "7717", "7752"],
+        prisma,
+      });
+
+      expect(result.map((row) => row.ragLessonPlanId)).toEqual([
+        "rlp_20261007T153929Z_3516",
+        "7717",
+        "7752",
+      ]);
+    });
+
+    it("pairs each row with its own id when an earlier requested id is missing", async () => {
+      findManyMock.mockResolvedValue([
+        makeRow({ id: "rag-present", oakLessonSlug: "slug-present" }),
+      ]);
+
+      const result = await getRagLessonPlansByIds({
+        lessonPlanIds: ["rag-unpublished", "rag-present"],
+        prisma,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]?.ragLessonPlanId).toBe("rag-present");
     });
 
     it("preserves a null oakLessonId", async () => {

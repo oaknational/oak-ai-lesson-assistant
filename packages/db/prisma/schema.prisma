@@ -1053,6 +1053,7 @@ model RagLessonPlanPart {
   // The following index is not supported by prisma so is applied manually in ./additions/rag_lesson_plans_ivfflat_index.sql
   //  ivfflat index on embedding vector_cosine_ops WITH (lists = 100)
 
+  @@index([ragLessonPlanId], name: "idx_rag_lesson_plan_parts_rag_lesson_plan_id")
   @@map("rag_lesson_plan_parts")
   @@schema("rag")
 }
