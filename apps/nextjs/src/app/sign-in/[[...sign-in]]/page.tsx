@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { SignIn, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { Show, SignIn, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 import SignUpSignInLayout from "@/components/SignUpSignInLayout";
@@ -14,12 +14,12 @@ const SignInPage = () => {
   return (
     <>
       <SignUpSignInLayout loaded={true}>
-        <SignedOut>
+        <Show when="signed-out">
           <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
-        </SignedOut>
-        <SignedIn>
+        </Show>
+        <Show when="signed-in">
           <RedirectToHome />
-        </SignedIn>
+        </Show>
       </SignUpSignInLayout>
       <DetectStuckBannedUser />
       <DetectEmailLinkBannedUser />

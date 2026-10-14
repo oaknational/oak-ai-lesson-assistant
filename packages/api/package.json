@@ -23,7 +23,8 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.39.7",
+    "@clerk/backend": "^3.23.2",
+    "@clerk/nextjs": "7.9.15",
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",

@@ -86,11 +86,11 @@ importers:
   apps/nextjs:
     dependencies:
       '@clerk/nextjs':
-        specifier: 6.39.7
-        version: 6.39.7(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
+        specifier: 7.9.15
+        version: 7.9.15(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
       '@clerk/testing':
-        specifier: ^1.14.10
-        version: 1.14.10(@playwright/test@1.51.1)(react-dom@19.2.8)(react@19.2.8)
+        specifier: ^2.2.45
+        version: 2.2.45(@playwright/test@1.51.1)(react-dom@19.2.8)(react@19.2.8)
       '@cloudinary/react':
         specifier: ^1.11.2
         version: 1.11.2(react@19.2.8)
@@ -489,8 +489,8 @@ importers:
         specifier: ^3.13.4
         version: 3.13.4(@faker-js/faker@9.4.0)(zod@3.25.76)
       '@clerk/nextjs':
-        specifier: 6.39.7
-        version: 6.39.7(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
+        specifier: 7.9.15
+        version: 7.9.15(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
       '@faker-js/faker':
         specifier: ^9.4.0
         version: 9.4.0
@@ -612,9 +612,12 @@ importers:
 
   packages/api:
     dependencies:
+      '@clerk/backend':
+        specifier: ^3.23.2
+        version: 3.23.2(react-dom@19.2.8)(react@19.2.8)
       '@clerk/nextjs':
-        specifier: 6.39.7
-        version: 6.39.7(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
+        specifier: 7.9.15
+        version: 7.9.15(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
       '@oakai/aila':
         specifier: '*'
         version: link:../aila
@@ -1146,8 +1149,8 @@ importers:
   packages/teaching-materials:
     dependencies:
       '@clerk/nextjs':
-        specifier: 6.39.7
-        version: 6.39.7(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
+        specifier: 7.9.15
+        version: 7.9.15(next@16.0.10)(react-dom@19.2.8)(react@19.2.8)
       '@oakai/core':
         specifier: '*'
         version: link:../core
@@ -3695,12 +3698,11 @@ packages:
       sisteransi: 1.0.5
     dev: false
 
-  /@clerk/backend@2.33.7(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-I5Lkui1cPweLGlXCRBQJv1UY8wugD1iXtJDXzERQ0xYjBXGUbKgVh7/lu+v81TA6N0rG9m4+Wo6aFadFcJnSkg==}
-    engines: {node: '>=18.17.0'}
+  /@clerk/backend@3.23.2(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-QW2qJPY7xQyn5SrNWJ+xO7o6va60X9/v4nX8y5zq8OJFS10X7GlEz8s5PDKTgo6W6SWb8L3APhrZH+LTp7yuNw==}
+    engines: {node: '>=20.9.0'}
     dependencies:
-      '@clerk/shared': 3.48.0(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/types': 4.101.27(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/shared': 4.40.0(react-dom@19.2.8)(react@19.2.8)
       standardwebhooks: 1.0.0
       tslib: 2.8.1
     transitivePeerDependencies:
@@ -3708,32 +3710,17 @@ packages:
       - react-dom
     dev: false
 
-  /@clerk/clerk-react@5.61.10(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-jF8sbOGDnEbeyxTTjd2/FrfytbUz2iQoe5/+sKP5U7gBvvF2iAItfVxvXcyZg+bnua4KkJUKa3sLyT4xjCUf7g==}
-    engines: {node: '>=18.17.0'}
-    deprecated: 'This package is no longer supported. Please use @clerk/react instead. See the upgrade guide for more info: https://clerk.com/docs/guides/development/upgrading/upgrade-guides/core-3'
+  /@clerk/nextjs@7.9.15(next@16.0.10)(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-Qu3LdVycMjOoUeK8v8+GgSvQQnOnP/IRf+TMvHe7HexNveKnZpJJwrbjZmlwn1Sy79bEdpsmF1OAxbD9VI2SqA==}
+    engines: {node: '>=20.9.0'}
     peerDependencies:
+      next: ^15.2.8 || ^15.3.8 || ^15.4.10 || ^15.5.9 || ^15.6.0-0 || ^16.0.10 || ^16.1.0-0
       react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
       react-dom: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
     dependencies:
-      '@clerk/shared': 3.48.0(react-dom@19.2.8)(react@19.2.8)
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-      tslib: 2.8.1
-    dev: false
-
-  /@clerk/nextjs@6.39.7(next@16.0.10)(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-J5884xWcNs+/kV4HQAjUVnMw+XR67B8qPveO7yWwrPrYmzARcQC3gxewlROL1dHXzWlx0cqgSvJbolm8KpEppg==}
-    engines: {node: '>=18.17.0'}
-    peerDependencies:
-      next: ^13.5.7 || ^14.2.25 || ^15.2.3 || ^16
-      react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
-      react-dom: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
-    dependencies:
-      '@clerk/backend': 2.33.7(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/clerk-react': 5.61.10(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/shared': 3.48.0(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/types': 4.101.27(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/backend': 3.23.2(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/react': 6.17.8(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/shared': 4.40.0(react-dom@19.2.8)(react@19.2.8)
       next: 16.0.10(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.51.1)(react-dom@19.2.8)(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
@@ -3741,10 +3728,22 @@ packages:
       tslib: 2.8.1
     dev: false
 
-  /@clerk/shared@3.48.0(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-4VBHItiLUZJGptWNwLazcOvz4yAFBzrjuJaf1yF35KGZWSNg3FrDCNsn8PZdPs5l4kJjx6aIGSmoRZmbOruuSg==}
-    engines: {node: '>=18.17.0'}
-    requiresBuild: true
+  /@clerk/react@6.17.8(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-sNeMe+5ArLshOJgNtqUGHb7cLHjDjRhumBHBN2ovg4uHpL49kQ2UfDUTtxpRUdMNikUg0Oc1CwzLFBlUv1umXA==}
+    engines: {node: '>=20.9.0'}
+    peerDependencies:
+      react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
+      react-dom: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
+    dependencies:
+      '@clerk/shared': 4.40.0(react-dom@19.2.8)(react@19.2.8)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+      tslib: 2.8.1
+    dev: false
+
+  /@clerk/shared@4.40.0(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-80KM/uw5ZseYTKwJjIhJj7jsHqX6rFem6cwcFJVCUriE3R4tpzkhXsfbhtdho6cG2pQD3NVqKspxTVbSjATzPg==}
+    engines: {node: '>=20.9.0'}
     peerDependencies:
       react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
       react-dom: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
@@ -3754,44 +3753,30 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      csstype: 3.1.3
+      '@tanstack/query-core': 5.104.2
       dequal: 2.0.3
       glob-to-regexp: 0.4.1
-      js-cookie: 3.0.7
+      js-cookie: 3.0.8
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
-      std-env: 3.9.0
-      swr: 2.3.4(react@19.2.8)
     dev: false
 
-  /@clerk/testing@1.14.10(@playwright/test@1.51.1)(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-pXVDrKs4UCC4oJTS40luuIoomQJwuKaxdv4NecVGPRPqHHmRFGFZS2EDGkQxnETqhZlaKlVX+LwI6axiTaTMqQ==}
-    engines: {node: '>=18.17.0'}
+  /@clerk/testing@2.2.45(@playwright/test@1.51.1)(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-fYig7nFIMNP12yPT1mS6NvEgmheJlWvPDB3fn4DZ0fHULOP90qVWsDtlF94DS9CVfyzrGU5prOrOj2dWzzbPCQ==}
+    engines: {node: '>=20.9.0'}
     peerDependencies:
       '@playwright/test': ^1
-      cypress: ^13 || ^14
+      cypress: ^13 || ^14 || ^15
     peerDependenciesMeta:
       '@playwright/test':
         optional: true
       cypress:
         optional: true
     dependencies:
-      '@clerk/backend': 2.33.7(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/shared': 3.48.0(react-dom@19.2.8)(react@19.2.8)
-      '@clerk/types': 4.101.27(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/backend': 3.23.2(react-dom@19.2.8)(react@19.2.8)
+      '@clerk/shared': 4.40.0(react-dom@19.2.8)(react@19.2.8)
       '@playwright/test': 1.51.1
       dotenv: 17.2.2
-    transitivePeerDependencies:
-      - react
-      - react-dom
-    dev: false
-
-  /@clerk/types@4.101.27(react-dom@19.2.8)(react@19.2.8):
-    resolution: {integrity: sha512-nTZ9XCvjY6X13itkakAw3RRB2hgATAGWR57Mjk6+Ov0cyhs5qFN7oYQcs6NLd40wP8Zuo7dI9QqaprlB+LHYUA==}
-    engines: {node: '>=18.17.0'}
-    deprecated: 'This package is no longer supported. Please import types from @clerk/shared/types instead. See the upgrade guide for more info: https://clerk.com/docs/guides/development/upgrading/upgrade-guides/core-3'
-    dependencies:
-      '@clerk/shared': 3.48.0(react-dom@19.2.8)(react@19.2.8)
     transitivePeerDependencies:
       - react
       - react-dom
@@ -10582,6 +10567,10 @@ packages:
       tailwindcss: 3.4.1(ts-node@10.9.2)
     dev: true
 
+  /@tanstack/query-core@5.104.2:
+    resolution: {integrity: sha512-/qbsxJK5c3Ve1aFIULWYNcT2jeRUAiD4HME6Eu2ZdpofHoVgAjpkQhLg5xHuOoBkTPQUJLfP7zOxy0qsBcqROA==}
+    dev: false
+
   /@tanstack/query-core@5.90.12:
     resolution: {integrity: sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg==}
     dev: false
@@ -14367,6 +14356,7 @@ packages:
 
   /csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
+    dev: true
 
   /csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
@@ -19735,9 +19725,8 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
-  /js-cookie@3.0.7:
-    resolution: {integrity: sha512-z/wZZgDrkNV1eA0ULjM/F9/50Ya8fbzgKneSpoPsXSGd0KnpdtHfOZWK+GcwLk+EZbS4F9RBhU+K2RgzuDaItw==}
-    engines: {node: '>=20'}
+  /js-cookie@3.0.8:
+    resolution: {integrity: sha512-yeJd4aNAdYZQjaon2bpD/Gb0B/omw7HQOsynXXcOiWVCacbBcPlgn8S/d1X6blFSaHao7ozqtW7NZW19xpCtIw==}
     dev: false
 
   /js-tiktoken@1.0.10:
@@ -25046,10 +25035,6 @@ packages:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
     dev: true
-
-  /std-env@3.9.0:
-    resolution: {integrity: sha512-UGvjygr6F6tpH7o2qyqR6QYpwraIjKSdtzyBdyytFOHmPZY917kwdwLG0RbOjWOnKmnm3PeHjaoLLMie7kPLQw==}
-    dev: false
 
   /stdin-discarder@0.1.0:
     resolution: {integrity: sha512-xhV7w8S+bUwlPTb4bAOUQhv8/cSS5offJuX8GQGq32ONF0ZtDWKfkdomM3HMRA+LhX6um/FZ0COqlwsjD53LeQ==}

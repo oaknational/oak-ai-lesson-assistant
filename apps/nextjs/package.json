@@ -37,8 +37,8 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.39.7",
-    "@clerk/testing": "^1.14.10",
+    "@clerk/nextjs": "7.9.15",
+    "@clerk/testing": "^2.2.45",
     "@cloudinary/react": "^1.11.2",
     "@cloudinary/url-gen": "^1.14.0",
     "@datadog/browser-rum": "^5.24.0",
