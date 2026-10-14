@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { aiLogger } from "@oakai/logger";
 
-import { useSignIn } from "@clerk/nextjs";
+import { useSignIn } from "@clerk/nextjs/legacy";
 import * as Sentry from "@sentry/nextjs";
 
 const log = aiLogger("auth");

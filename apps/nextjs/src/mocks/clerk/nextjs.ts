@@ -8,8 +8,7 @@ export {
   useUser,
   useClerk,
   useSession,
-  SignedIn,
-  SignedOut,
+  Show,
   ClerkProvider,
   UserButton,
 } from "./nextjsComponents";
