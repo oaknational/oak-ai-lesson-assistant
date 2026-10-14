@@ -23,7 +23,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.36.1",
+    "@clerk/nextjs": "6.39.7",
     "@oakai/core": "*",
     "@oakai/logger": "*",
     "@oaknational/oak-curriculum-schema": "1.61.0",
@@ -41,6 +41,8 @@
     "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "ts-jest": "^29.2.5",
     "typescript": "5.9.2"
   },
