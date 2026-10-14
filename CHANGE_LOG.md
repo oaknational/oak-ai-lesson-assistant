@@ -1,3 +1,16 @@
+# [1.85.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.2...v1.85.0) (2026-10-14)
+
+
+### Bug Fixes
+
+* lesson plans in requested order for rag ([#1145](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1145)) ([c71bc07](https://github.com/oaknational/oak-ai-lesson-assistant/commit/c71bc07766ea3c633018842477ae7044e67a67f1))
+* use org-level sonar token ([#1141](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1141)) ([025ac23](https://github.com/oaknational/oak-ai-lesson-assistant/commit/025ac23b70c1387fb3e87ecc3582bd5950b98131))
+
+
+### Features
+
+* fix id error and set index ([#1144](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1144)) ([8603c9d](https://github.com/oaknational/oak-ai-lesson-assistant/commit/8603c9d85861b5eae839bc458bdcacc4545d8768))
+
 ## [1.84.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.1...v1.84.2) (2026-09-28)
 
 
