@@ -6,21 +6,7 @@ export const accessibilityStatementFixture: { pageData: PolicyDocument } = {
     slug: "accessibility-statement",
     body: [
       {
-        style: "h1",
-        _key: "a1",
-        markDefs: [],
-        children: [
-          {
-            _type: "span",
-            marks: [],
-            text: "Accessibility Statement",
-            _key: "a1a",
-          },
-        ],
-        _type: "block",
-      },
-      {
-        style: "h2",
+        style: "heading2",
         _key: "a2",
         markDefs: [],
         children: [
@@ -127,7 +113,7 @@ export const accessibilityStatementFixture: { pageData: PolicyDocument } = {
         ],
       },
       {
-        style: "h2",
+        style: "heading2",
         _key: "a9",
         markDefs: [],
         children: [
@@ -171,6 +157,197 @@ export const accessibilityStatementFixture: { pageData: PolicyDocument } = {
         ],
         _type: "block",
         style: "normal",
+      },
+      {
+        _type: "block",
+        style: "heading2",
+        _key: "a11",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Technical information about this website’s accessibility",
+            _key: "a11a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading3",
+        _key: "a12",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Compliance status",
+            _key: "a12a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a13",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "This website is partially compliant with the Web Content Accessibility Guidelines version 2.2 AA standard, due to the non-compliances listed below.",
+            _key: "a13a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading3",
+        _key: "a14",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Non-accessible content",
+            _key: "a14a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading4",
+        _key: "a15",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Non-compliance with the accessibility regulations",
+            _key: "a15a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a16",
+        listItem: "bullet",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: ["strong"],
+            text: "Missing labels:",
+            _key: "a16a",
+          },
+          {
+            _type: "span",
+            marks: [],
+            text: " Some buttons and links lack appropriate accessible names, impacting screen reader users.",
+            _key: "a16b",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading4",
+        _key: "a17",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Disproportionate burden",
+            _key: "a17a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading5",
+        _key: "a18",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Navigation and accessing information",
+            _key: "a18a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a19",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "It’s not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content.",
+            _key: "a19a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "heading2",
+        _key: "a20",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "What we’re doing to improve accessibility",
+            _key: "a20a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a21",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "We plan to fix these issues in this order:",
+            _key: "a21a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a22",
+        listItem: "number",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Add accessible names to buttons and links.",
+            _key: "a22a",
+          },
+        ],
+      },
+      {
+        _type: "block",
+        style: "normal",
+        _key: "a23",
+        listItem: "number",
+        markDefs: [],
+        children: [
+          {
+            _type: "span",
+            marks: [],
+            text: "Add headings and landmarks to every page.",
+            _key: "a23a",
+          },
+        ],
       },
     ],
   },
