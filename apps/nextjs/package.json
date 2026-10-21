@@ -37,8 +37,8 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.36.1",
-    "@clerk/testing": "^1.13.22",
+    "@clerk/nextjs": "7.9.15",
+    "@clerk/testing": "^2.2.45",
     "@cloudinary/react": "^1.11.2",
     "@cloudinary/url-gen": "^1.14.0",
     "@datadog/browser-rum": "^5.24.0",
@@ -113,8 +113,8 @@
     "posthog-node": "^5.24.7",
     "pptxgenjs": "^3.12.0",
     "ramda": "^0.30.1",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.6.0",

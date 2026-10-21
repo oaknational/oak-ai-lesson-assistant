@@ -23,7 +23,8 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "6.36.1",
+    "@clerk/backend": "^3.23.2",
+    "@clerk/nextjs": "7.9.15",
     "@oakai/aila": "*",
     "@oakai/core": "*",
     "@oakai/db": "*",
@@ -45,6 +46,8 @@
     "@oakai/prettier-config": "*",
     "@oakai/test-support": "workspace:*",
     "@types/archiver": "^6.0.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "typescript": "5.9.2"
   },
   "engines": {

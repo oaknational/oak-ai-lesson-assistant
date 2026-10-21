@@ -1,7 +1,7 @@
 import { aiLogger } from "@oakai/logger";
 
+import { isClerkAPIResponseError } from "@clerk/backend/errors";
 import { clerkClient } from "@clerk/nextjs/server";
-import { isClerkAPIResponseError } from "@clerk/shared";
 
 const log = aiLogger("testing");
 
