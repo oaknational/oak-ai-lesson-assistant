@@ -1,9 +1,6 @@
 name: Playwright
 on:
   deployment_status:
-  push:
-    branches:
-      - production
 jobs:
   test-e2e:
     timeout-minutes: 20
@@ -55,6 +52,8 @@ jobs:
       - name: Deploy Playwright report
         id: deploy-report
         if: ${{ !cancelled() }}
+        # Hosting the report is a convenience; a failure here shouldn't fail the test run
+        continue-on-error: true
         run: |
           npx vercel link \
             --cwd=apps/nextjs/playwright-report \
@@ -65,6 +64,21 @@ jobs:
 
           DEPLOYMENT_URL=$(npx vercel deploy --cwd=apps/nextjs/playwright-report --yes --token=${{ secrets.TEST_REPORT_VERCEL_TOKEN }})
           echo "deployment-url=${DEPLOYMENT_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Warn if Playwright report deploy failed
+        id: report-warning
+        if: ${{ !cancelled() && steps.deploy-report.outcome == 'failure' }}
+        run: |
+          echo "::warning title=Playwright report not deployed::Uploading the HTML report to Vercel failed, so this run has no report link. Check the 'Deploy Playwright report' step logs and the TEST_REPORT_VERCEL_* secrets."
+
+          WARNING="> [!WARNING]
+          > The Playwright HTML report could not be deployed to Vercel, so there is no report link for this run. Check the 'Deploy Playwright report' step logs."
+          echo "$WARNING" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "comment<<EOF"
+            echo "$WARNING"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Generate PR comment
         id: generate-pr-comment
@@ -79,5 +93,8 @@ jobs:
         if: ${{ !cancelled() && steps.ref_from_sha.outputs.pr_number }}
         with:
           pr_number: ${{ steps.ref_from_sha.outputs.pr_number }}
-          message: ${{ steps.generate-pr-comment.outputs.summary }}
+          message: |
+            ${{ steps.generate-pr-comment.outputs.summary }}
+
+            ${{ steps.report-warning.outputs.comment }}
           comment_tag: playwright-report
