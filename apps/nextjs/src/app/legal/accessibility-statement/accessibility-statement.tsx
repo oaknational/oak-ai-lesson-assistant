@@ -1,6 +1,6 @@
 "use client";
 
-import { OakBox } from "@oaknational/oak-components";
+import { OakBox, OakHeading } from "@oaknational/oak-components";
 import { PortableText } from "@portabletext/react";
 
 import type { PolicyDocument } from "@/cms/types/policyDocument";
@@ -16,6 +16,14 @@ export const AccessibilityStatementContent = ({
 }: AccessibilityStatementContentProps) => {
   return (
     <OakBox $ph="spacing-24">
+      <OakHeading
+        tag="h1"
+        $mb="spacing-16"
+        $font={["heading-4", "heading-3"]}
+        $mt="spacing-24"
+      >
+        {pageData.title}
+      </OakHeading>
       <PortableText value={pageData.body} components={portableTextComponents} />
     </OakBox>
   );
