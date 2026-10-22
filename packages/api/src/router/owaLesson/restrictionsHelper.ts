@@ -2,10 +2,15 @@ import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
 
-import { restrictedLessonIds } from "./restrictedLessonIds";
-import type {
-  LessonBrowseDataByKsSchema,
-  LessonContentSchema,
+import {
+  type LessonRestriction,
+  getLessonRestrictions,
+  isSubjectExcluded,
+  shouldExcludeLesson,
+} from "./lessonRestrictions";
+import {
+  type LessonContentSchema,
+  lessonRestrictionLevelsSchema,
 } from "./schemas";
 import type { TRPCWorksResponse } from "./types";
 
@@ -72,30 +77,55 @@ export function checkForRestrictedWorks(tcpData: TRPCWorksResponse): boolean {
   return hasRestrictedWorks;
 }
 
-export function checkForRestrictedLessonId(lessonId: string) {
-  if (restrictedLessonIds.includes(lessonId)) {
-    log.error("Restricted lesson detected", { lessonId });
+export function checkForRestrictedSubject(subjectSlugs: string[]): void {
+  const excludedSubjectSlugs = subjectSlugs.filter((subjectSlug) =>
+    isSubjectExcluded(subjectSlug),
+  );
+
+  if (subjectSlugs.length === 0 || excludedSubjectSlugs.length > 0) {
     throw new TRPCError({
       code: "FORBIDDEN",
-      message:
-        "restricted-third-party-content: This lesson is restricted and cannot be exported.",
+      message: "restricted-subject",
     });
   }
 }
 
-export const checkForRestrictedTranscript = (
-  parsedBrowseData: LessonBrowseDataByKsSchema,
-): boolean => {
-  if (
-    parsedBrowseData.programme_fields.subject === "English" ||
-    (parsedBrowseData.programme_fields.subject === "Geography" &&
-      parsedBrowseData.programme_fields.phase === "primary")
-  ) {
-    log.info("Transcript is restricted for English or primary Geography", {
-      subject: parsedBrowseData.programme_fields.subject,
-      phase: parsedBrowseData.programme_fields.phase,
+/**
+ * Throws if the lesson's restriction levels exclude it, otherwise returns its restrictions.
+ * A lesson with no published restriction levels is excluded
+ */
+export function checkForRestrictionLevels(
+  tcpData: TRPCWorksResponse,
+): LessonRestriction[] {
+  const parsedLevels = lessonRestrictionLevelsSchema.safeParse(
+    tcpData.data?.restrictionLevels?.[0],
+  );
+  if (!parsedLevels.success && tcpData.data?.restrictionLevels?.[0]) {
+    log.error("Failed to parse lesson restriction levels", {
+      error: parsedLevels.error,
     });
-    return true;
   }
-  return false;
-};
+
+  const restrictions = getLessonRestrictions(
+    parsedLevels.success
+      ? {
+          tpcWorksMaxRestriction: parsedLevels.data.tpc_works_max_restriction,
+          tpcMediaMaxRestriction: parsedLevels.data.tpc_media_max_restriction,
+          features: parsedLevels.data.features,
+        }
+      : undefined,
+  );
+
+  if (shouldExcludeLesson(restrictions)) {
+    log.error("Restricted lesson detected from restriction levels", {
+      restrictions,
+    });
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "restricted-third-party-content: This lesson contains restricted content and cannot be exported.",
+    });
+  }
+
+  return restrictions;
+}

@@ -96,6 +96,12 @@ export type LessonBrowseDataByKsSchema = LessonBrowseDataByKsSchemaBase & {
 
 export type LessonContentSchema = z.infer<typeof lessonContentSchema>;
 
+export const lessonRestrictionLevelsSchema = z.object({
+  tpc_works_max_restriction: z.string().nullish(),
+  tpc_media_max_restriction: z.string().nullish(),
+  features: z.record(z.unknown()).nullish(),
+});
+
 export const unitDataSchema = z.array(syntheticUnitvariantLessonsByKsSchema);
 
 export type UnitDataSchema = z.infer<typeof unitDataSchema>;
