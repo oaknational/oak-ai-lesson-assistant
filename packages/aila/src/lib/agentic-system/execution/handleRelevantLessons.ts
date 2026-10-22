@@ -11,6 +11,42 @@ import { terminateWithResponse } from "./termination";
 
 enablePatches();
 
+function getPreviousSearchIdentity(
+  context: AilaExecutionContext,
+): RagFetched["searchIdentity"] {
+  const { ragFetched, initialDocument } = context.persistedState;
+  const { title, subject, keyStage } = initialDocument;
+
+  return (
+    ragFetched.searchIdentity ??
+    (title && subject && keyStage ? { title, subject, keyStage } : null)
+  );
+}
+
+function isBasedOnStale(
+  previousSearchIdentity: RagFetched["searchIdentity"],
+  nextSearchIdentity: RagFetched["searchIdentity"],
+): boolean {
+  return (
+    previousSearchIdentity != null &&
+    nextSearchIdentity != null &&
+    hasSearchIdentityChangedSignificantly(
+      previousSearchIdentity,
+      nextSearchIdentity,
+    )
+  );
+}
+
+function isBasedOnLessonRemoved(
+  relevantLessons: AilaExecutionContext["persistedState"]["relevantLessons"],
+  basedOnId: string,
+): boolean {
+  return (
+    relevantLessons != null &&
+    !relevantLessons.some((lesson) => lesson.ragLessonPlanId === basedOnId)
+  );
+}
+
 function searchIdentityEqual(
   a: RagFetched["searchIdentity"],
   b: RagFetched["searchIdentity"],
@@ -55,33 +91,17 @@ export async function handleRelevantLessons(
     // identity changed in the same turn.
     const basedOnSetThisTurn = basedOn !== initialDocument.basedOn;
 
-    // Chats from the legacy pipeline have no recorded search identity, so fall
-    // back to the document as it stood at the start of the turn.
-    const prevSearchIdentity =
-      ragFetched.searchIdentity ??
-      (initialDocument.title &&
-      initialDocument.subject &&
-      initialDocument.keyStage
-        ? {
-            title: initialDocument.title,
-            subject: initialDocument.subject,
-            keyStage: initialDocument.keyStage,
-          }
-        : null);
+    const prevSearchIdentity = getPreviousSearchIdentity(context);
 
     const basedOnIsStale =
       !basedOnSetThisTurn &&
-      prevSearchIdentity != null &&
-      nextSearchIdentity != null &&
-      hasSearchIdentityChangedSignificantly(
-        prevSearchIdentity,
-        nextSearchIdentity,
-      );
+      isBasedOnStale(prevSearchIdentity, nextSearchIdentity);
 
-    if (basedOnIsStale) {
-      // The lesson metadata changed significantly, so a basedOn carried over
-      // from a previous lesson no longer applies. A wrong attribution is
-      // cleared even on a complete lesson, where fetching stays blocked below.
+    const relevantLessons = context.persistedState.relevantLessons;
+    const basedOnLessonRemoved =
+      !basedOnSetThisTurn &&
+      isBasedOnLessonRemoved(relevantLessons, basedOn.id);
+    if (basedOnIsStale || basedOnLessonRemoved) {
       clearBasedOn(context);
     }
   }
