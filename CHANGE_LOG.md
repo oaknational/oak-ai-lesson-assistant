@@ -1,3 +1,17 @@
+# [1.86.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.85.0...v1.86.0) (2026-10-22)
+
+
+### Bug Fixes
+
+* **ci:** don't fail Playwright run when report deploy fails ([#1159](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1159)) ([7c5f608](https://github.com/oaknational/oak-ai-lesson-assistant/commit/7c5f60858aa7bcf26ae54e81fdce1f5a68cd33c7))
+* show accessibility statement headings and lists ([#1156](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1156)) ([d33c4ce](https://github.com/oaknational/oak-ai-lesson-assistant/commit/d33c4cea6623cbcc28740eeef6e238f6ab7eaf0d))
+
+
+### Features
+
+* filter lessons according to the restriction-levels MV ([#1161](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1161)) ([aaece99](https://github.com/oaknational/oak-ai-lesson-assistant/commit/aaece99ecdfb4ede99f6010fbc437e5fd9d11578))
+* remove based on for removed rag lesson ([#1160](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1160)) ([8365dec](https://github.com/oaknational/oak-ai-lesson-assistant/commit/8365dec747f20ed7bbdec59033282d2ffc146f0d))
+
 # [1.85.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.84.2...v1.85.0) (2026-10-14)
 
 
