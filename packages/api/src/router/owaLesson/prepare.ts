@@ -1,11 +1,12 @@
 import { TRPCError } from "@trpc/server";
 import type { z } from "zod";
 
+import { shouldExcludeTranscript } from "./lessonRestrictions";
 import {
   checkForRestrictedContentGuidance,
-  checkForRestrictedLessonId,
-  checkForRestrictedTranscript,
+  checkForRestrictedSubject,
   checkForRestrictedWorks,
+  checkForRestrictionLevels,
 } from "./restrictionsHelper";
 import { lessonBrowseDataByKsSchema, lessonContentSchema } from "./schemas";
 import type { UnitDataSchema } from "./schemas";
@@ -60,11 +61,23 @@ export function prepareAndCheckRestrictions({
 
   const parsedBrowseData = lessonBrowseDataByKsSchema.parse(browseData);
 
+  // A lesson can sit in more than one subject, so check all of them whichever link was used
+  const subjectSlugs = Array.from(
+    new Set(
+      (lessonData.data!.subjectMemberships ?? []).flatMap(
+        (membership) => membership.subject_slug ?? [],
+      ),
+    ),
+  );
+
+  checkForRestrictedSubject(subjectSlugs);
   checkForRestrictedContentGuidance(parsedLesson.content_guidance);
-  checkForRestrictedLessonId(browseData.lesson_data.lesson_uid);
   const hasRestrictedWorks = checkForRestrictedWorks(tcpData);
-  const hasRestrictedTranscript =
-    checkForRestrictedTranscript(parsedBrowseData);
+  const restrictions = checkForRestrictionLevels(tcpData);
+  const hasRestrictedTranscript = shouldExcludeTranscript({
+    restrictions,
+    subjectSlugs,
+  });
 
   if (parsedLesson.is_legacy) {
     throw new TRPCError({

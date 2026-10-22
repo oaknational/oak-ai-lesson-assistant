@@ -19,6 +19,11 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
     features
     order_in_unit
   }
+  subjectMemberships: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0(
+    where: { lesson_slug: { _eq: $lesson_slug } }
+  ) {
+    subject_slug: programme_fields(path: "subject_slug")
+  }
   content: published_mv_lesson_content_published_5_0_0(
     where: { lesson_slug: { _eq: $lesson_slug } }
   ) {
@@ -61,6 +66,11 @@ $browseDataWhere: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0_
     features
     order_in_unit
   }
+  subjectMemberships: published_mv_synthetic_unitvariant_lessons_by_keystage_13_1_0(
+    where: { lesson_slug: { _eq: $lesson_slug } }
+  ) {
+    subject_slug: programme_fields(path: "subject_slug")
+  }
   content: published_mv_lesson_content_published_5_0_0(
     where: { lesson_slug: { _eq: $lesson_slug } }
   ) {
@@ -91,5 +101,15 @@ export const tcpWorksByLessonSlugQuery = `
             slug
             lesson_id
             works_list
+          }
+          restrictionLevels: published_mv_lesson_restriction_levels_2(where: {
+            slug: {_eq: $lesson_slug}
+            _state: {_eq: "published"}
+          }) {
+            slug
+            lesson_id
+            tpc_works_max_restriction
+            tpc_media_max_restriction
+            features
           }
         }`;

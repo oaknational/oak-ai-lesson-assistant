@@ -1,6 +1,7 @@
 import { materialTypesConfig } from "@oakai/teaching-materials/src/documents/teachingMaterials/materialTypes";
 
 import { OakFlex, OakP, OakPrimaryButton } from "@oaknational/oak-components";
+import { usePathname, useRouter } from "next/navigation";
 
 import {
   useTeachingMaterialsActions,
@@ -23,6 +24,8 @@ const TeachingMaterialsError = ({
     : null;
 
   const { resetToDefault } = useTeachingMaterialsActions();
+  const router = useRouter();
+  const pathname = usePathname();
   return (
     <OakFlex
       $width="100%"
@@ -50,6 +53,8 @@ const TeachingMaterialsError = ({
           iconName="chevron-right"
           isTrailingIcon
           onClick={() => {
+            // Drop the lesson link so the URL matches the reset state
+            router.replace(pathname, { scroll: false });
             resetToDefault();
             closeDialog();
           }}
