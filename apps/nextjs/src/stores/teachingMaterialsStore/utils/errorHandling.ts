@@ -51,6 +51,8 @@ export const handleStoreError = (
     errorType = "restrictedThirdPartyContent";
     errorMessage =
       "This lesson contains restricted third-party content and cannot be generated.";
+  } else if (errorMessage.includes("restricted-subject")) {
+    errorMessage = "";
   }
 
   // Update store with error information

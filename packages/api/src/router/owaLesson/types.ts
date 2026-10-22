@@ -12,6 +12,8 @@ export type LessonOverviewResponse = {
   data?: {
     content?: LessonContentSchema[];
     browseData?: SyntheticUnitvariantLessonsByKs[];
+    /** Every subject the lesson is taught in, whichever programme was requested */
+    subjectMemberships?: { subject_slug?: string | null }[];
   };
 };
 
@@ -31,5 +33,6 @@ export type TRPCWorksResponse = {
         [key: string]: unknown;
       }[];
     }[];
+    restrictionLevels?: unknown[];
   };
 };

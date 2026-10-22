@@ -35,6 +35,14 @@ describe("handleStoreError", () => {
     expect(sentrySpy).toHaveBeenCalledWith(error);
   });
 
+  it("handles TRPCClientError with restricted-subject", () => {
+    const error = new TRPCClientError("restricted-subject");
+    handleStoreError(set, error);
+    expect(set).toHaveBeenCalledWith({
+      error: { type: "unknown", message: "" },
+    });
+  });
+
   it("handles generic TRPCClientError", () => {
     const error = new TRPCClientError("Some other error");
     handleStoreError(set, error);
