@@ -1,5 +1,5 @@
-codeHash: ad38d2ed0867b58d777d06330c19890883372b775f6299f69dc8edfb2c3959b5
-generated: 2026-09-09T16:25:24.407Z
+codeHash: 7cdcb08dad8ac0c02aa9e7ba340507489685a9798e54bf0dd9733aa2fd47868f
+generated: 2026-10-22T10:54:15.016Z
 runsPerScenario: 3
 summary:
   full-lesson:
@@ -44,8 +44,7 @@ summary:
     additional-materials-tone:
       skip: 3
     cycle-verbosity:
-      pass: 2
-      flag: 1
+      pass: 3
     cycle-slide-lines:
       pass: 3
     klp-count:

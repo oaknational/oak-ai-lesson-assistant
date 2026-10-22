@@ -78,10 +78,19 @@ export async function handleRelevantLessons(
         nextSearchIdentity,
       );
 
-    if (basedOnIsStale) {
-      // The lesson metadata changed significantly, so a basedOn carried over
-      // from a previous lesson no longer applies. A wrong attribution is
-      // cleared even on a complete lesson, where fetching stays blocked below.
+    // Relevant lessons are re-read from RAG each turn and unpublished ones
+    // drop out, so a carried-over basedOn missing from them has been removed.
+    // null means the lessons are unknown, so leave the basedOn alone.
+    const relevantLessons = context.persistedState.relevantLessons;
+    const basedOnLessonRemoved =
+      !basedOnSetThisTurn &&
+      relevantLessons != null &&
+      !relevantLessons.some((lesson) => lesson.ragLessonPlanId === basedOn.id);
+
+    if (basedOnIsStale || basedOnLessonRemoved) {
+      // A basedOn that no longer applies, because the lesson metadata changed
+      // significantly or the source lesson is gone, is cleared even on a
+      // complete lesson, where fetching stays blocked below.
       clearBasedOn(context);
     }
   }

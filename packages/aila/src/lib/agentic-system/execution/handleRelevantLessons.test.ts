@@ -18,13 +18,14 @@ function createContext(
     initialDocument?: PartialLessonPlan;
     ragFetched?: AilaExecutionContext["persistedState"]["ragFetched"];
     fetchResult?: AgenticRagLessonPlanResult[];
+    relevantLessons?: AgenticRagLessonPlanResult[] | null;
   } = {},
 ): AilaExecutionContext {
   return {
     persistedState: {
       messages: [],
       initialDocument: overrides.initialDocument ?? {},
-      relevantLessons: null,
+      relevantLessons: overrides.relevantLessons ?? null,
       ragFetched: overrides.ragFetched ?? {
         status: "not_fetched",
         searchIdentity: null,
@@ -463,5 +464,120 @@ describe("handleRelevantLessons", () => {
     expect(ctx.runtime.fetchRelevantLessons).toHaveBeenCalled();
     expect(terminateWithResponse).toHaveBeenCalledWith(ctx);
     expect(ctx.persistedState.ragFetched.status).toBe("shown");
+  });
+
+  describe("when the basedOn lesson has been removed from RAG", () => {
+    const photosynthesisIdentity = {
+      title: "Photosynthesis",
+      subject: "science",
+      keyStage: "key-stage-3",
+    };
+    const removedBasedOn = { id: "removed-1", title: "Photosynthesis" };
+
+    it("clears a carried-over basedOn that is missing from the relevant lessons", async () => {
+      const ctx = createContext({
+        document: { basedOn: removedBasedOn },
+        initialDocument: { basedOn: removedBasedOn },
+        ragFetched: {
+          status: "selected",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: fakeLessons,
+      });
+
+      const result = await handleRelevantLessons(ctx);
+
+      expect(result).toEqual({ status: "continue" });
+      expect(ctx.currentTurn.document.basedOn).toBeUndefined();
+      expect(ctx.callbacks.onSectionComplete).toHaveBeenCalledWith([
+        { op: "remove", path: "/basedOn" },
+      ]);
+    });
+
+    it("clears it when every relevant lesson has been removed", async () => {
+      const ctx = createContext({
+        document: { basedOn: removedBasedOn },
+        initialDocument: { basedOn: removedBasedOn },
+        ragFetched: {
+          status: "selected",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: [],
+      });
+
+      await handleRelevantLessons(ctx);
+
+      expect(ctx.currentTurn.document.basedOn).toBeUndefined();
+    });
+
+    it("clears it on a complete lesson without refetching", async () => {
+      const ctx = createContext({
+        document: { ...completedOverrides, basedOn: removedBasedOn },
+        initialDocument: { basedOn: removedBasedOn },
+        ragFetched: {
+          status: "selected",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: fakeLessons,
+      });
+
+      const result = await handleRelevantLessons(ctx);
+
+      expect(result).toEqual({ status: "continue" });
+      expect(ctx.currentTurn.document.basedOn).toBeUndefined();
+      expect(ctx.runtime.fetchRelevantLessons).not.toHaveBeenCalled();
+    });
+
+    it("keeps a carried-over basedOn that is still in the relevant lessons", async () => {
+      const presentBasedOn = { id: "lp1", title: "Photosynthesis" };
+      const ctx = createContext({
+        document: { basedOn: presentBasedOn },
+        initialDocument: { basedOn: presentBasedOn },
+        ragFetched: {
+          status: "selected",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: fakeLessons,
+      });
+
+      await handleRelevantLessons(ctx);
+
+      expect(ctx.currentTurn.document.basedOn).toEqual(presentBasedOn);
+      expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
+    });
+
+    it("keeps the basedOn when relevant lessons are unknown", async () => {
+      const ctx = createContext({
+        document: { basedOn: removedBasedOn },
+        initialDocument: { basedOn: removedBasedOn },
+        ragFetched: {
+          status: "selected",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: null,
+      });
+
+      await handleRelevantLessons(ctx);
+
+      expect(ctx.currentTurn.document.basedOn).toEqual(removedBasedOn);
+      expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
+    });
+
+    it("keeps a basedOn chosen this turn", async () => {
+      const ctx = createContext({
+        document: { basedOn: removedBasedOn },
+        initialDocument: {},
+        ragFetched: {
+          status: "shown",
+          searchIdentity: photosynthesisIdentity,
+        },
+        relevantLessons: fakeLessons,
+      });
+
+      await handleRelevantLessons(ctx);
+
+      expect(ctx.currentTurn.document.basedOn).toEqual(removedBasedOn);
+      expect(ctx.callbacks.onSectionComplete).not.toHaveBeenCalled();
+    });
   });
 });
