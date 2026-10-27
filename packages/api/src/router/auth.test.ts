@@ -35,7 +35,7 @@ jest.mock("@clerk/nextjs/server", () => ({
   clerkClient: jest.fn(),
 }));
 
-jest.mock("@clerk/shared", () => ({
+jest.mock("@clerk/backend/errors", () => ({
   isClerkAPIResponseError: jest.fn((error: unknown) => {
     return (
       typeof error === "object" &&

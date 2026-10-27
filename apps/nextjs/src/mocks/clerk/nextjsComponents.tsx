@@ -102,22 +102,16 @@ export const useSession = () => {
   };
 };
 
-export const SignedIn = ({
+export const Show = ({
+  when,
   children,
 }: {
+  readonly when: "signed-in" | "signed-out";
   readonly children: React.ReactNode;
 }) => {
   const context = React.useContext(ClerkContext);
-  return context.isSignedIn ? children : null;
-};
-
-export const SignedOut = ({
-  children,
-}: {
-  readonly children: React.ReactNode;
-}) => {
-  const context = React.useContext(ClerkContext);
-  return context.isSignedIn ? null : children;
+  const isSignedIn = Boolean(context.isSignedIn);
+  return isSignedIn === (when === "signed-in") ? children : null;
 };
 
 export const UserButton = () => {
