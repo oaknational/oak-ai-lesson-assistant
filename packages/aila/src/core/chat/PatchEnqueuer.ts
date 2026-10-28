@@ -25,11 +25,7 @@ function isControllerClosed(error: unknown): boolean {
 
 // Paths that PatchString schema accepts
 type StringPatchPath =
-  | "/title"
-  | "/keyStage"
-  | "/topic"
-  | "/subject"
-  | "/learningOutcome";
+  "/title" | "/keyStage" | "/topic" | "/subject" | "/learningOutcome";
 
 export class PatchEnqueuer {
   private controller?: ReadableStreamDefaultController;

@@ -37,10 +37,10 @@
     "sonar": "dotenv -e ./.env -- sonar-scanner",
     "storybook": "turbo storybook",
     "test": "turbo test -- --maxWorkers=33%",
+    "test:seq": "turbo test:seq --concurrency=1 --",
     "test-coverage": "COLLECT_TEST_COVERAGE=true turbo test-coverage -- --maxWorkers=33%",
     "test-e2e": "turbo test-e2e --",
     "test-e2e-ui": "turbo test-e2e-ui --",
-    "test:seq": "turbo test:seq --concurrency=1 --",
     "type-check": "turbo type-check",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -55,8 +55,8 @@
     "@cspell/dict-en-gb": "^5.0.14",
     "@manypkg/cli": "^0.25.1",
     "@next/env": "14.2.18",
-    "@oakai/eslint-config": "*",
-    "@oakai/prettier-config": "*",
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
@@ -65,7 +65,7 @@
     "cursor-tools": "latest",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.1",
-    "next": "16.0.10",
+    "next": "16.4.2",
     "postcss": "^8.5.6",
     "semantic-release": "^24.2.9",
     "serialize-error": "^12.0.0",
@@ -73,16 +73,9 @@
     "turbo": "^2.5.8",
     "typescript": "5.9.2"
   },
-  "packageManager": "pnpm@8.6.12",
+  "packageManager": "pnpm@11.28.6",
   "engines": {
-    "node": ">=22.18.0",
-    "pnpm": ">=8"
-  },
-  "pnpm": {
-    "overrides": {
-      "@types/estree@1.0.x": "1.0.6",
-      "body-parser@2.2.0": ">=2.2.1",
-      "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5 <7.1.0"
-    }
+    "node": ">=24.22.1 <25",
+    "pnpm": ">=11"
   }
 }

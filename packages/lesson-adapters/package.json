@@ -20,17 +20,17 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "npm:@ai-sdk/openai@^3.0.0",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/gsuite": "*",
-    "@oakai/logger": "*",
+    "@oakai/core": "workspace:*",
+    "@oakai/db": "workspace:*",
+    "@oakai/gsuite": "workspace:*",
+    "@oakai/logger": "workspace:*",
     "ai": "npm:ai@^6.0.48",
     "openai": "^6.45.0",
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@oakai/eslint-config": "*",
-    "@oakai/prettier-config": "*",
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
     "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",

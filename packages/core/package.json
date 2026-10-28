@@ -31,8 +31,8 @@
     "@googleapis/drive": "^8.7.0",
     "@googleapis/slides": "^1.0.5",
     "@hubspot/api-client": "^11.2.0",
-    "@oakai/db": "*",
-    "@oakai/logger": "*",
+    "@oakai/db": "workspace:*",
+    "@oakai/logger": "workspace:*",
     "@slack/web-api": "^7.10.0",
     "@types/json-stringify-safe": "^5.0.3",
     "@upstash/ratelimit": "^2.0.1",
@@ -59,7 +59,7 @@
     "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
-    "@oakai/prettier-config": "*",
+    "@oakai/prettier-config": "workspace:*",
     "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",

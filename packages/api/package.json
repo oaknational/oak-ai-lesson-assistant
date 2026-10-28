@@ -25,25 +25,25 @@
   "dependencies": {
     "@clerk/backend": "^3.23.2",
     "@clerk/nextjs": "7.9.15",
-    "@oakai/aila": "*",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/exports": "*",
-    "@oakai/gsuite": "*",
-    "@oakai/lesson-adapters": "*",
-    "@oakai/logger": "*",
-    "@oakai/teaching-materials": "*",
+    "@oakai/aila": "workspace:*",
+    "@oakai/core": "workspace:*",
+    "@oakai/db": "workspace:*",
+    "@oakai/exports": "workspace:*",
+    "@oakai/gsuite": "workspace:*",
+    "@oakai/lesson-adapters": "workspace:*",
+    "@oakai/logger": "workspace:*",
+    "@oakai/teaching-materials": "workspace:*",
     "@trpc/server": "11.8.0",
     "@vercel/kv": "^0.2.2",
     "cloudinary": "^1.41.1",
-    "next": "16.0.10",
+    "next": "16.4.2",
     "remeda": "^1.29.0",
     "superjson": "^1.9.1",
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@oakai/eslint-config": "*",
-    "@oakai/prettier-config": "*",
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
     "@oakai/test-support": "workspace:*",
     "@types/archiver": "^6.0.3",
     "react": "19.2.8",
@@ -51,7 +51,7 @@
     "typescript": "5.9.2"
   },
   "engines": {
-    "node": ">=20.9.0",
+    "node": ">=24.22.1 <25",
     "pnpm": ">=8"
   }
 }

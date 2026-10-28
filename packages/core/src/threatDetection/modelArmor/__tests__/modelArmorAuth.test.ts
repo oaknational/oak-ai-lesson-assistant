@@ -10,8 +10,7 @@ describe("createModelArmorAccessTokenProvider", () => {
   let mockCreateWorkloadIdentityAccessTokenProvider: jest.Mock;
   let mockGetRuntimeSubjectToken: jest.Mock;
   let workloadIdentityConfig:
-    | WorkloadIdentityAccessTokenProviderConfig
-    | undefined;
+    WorkloadIdentityAccessTokenProviderConfig | undefined;
 
   beforeEach(() => {
     mockGoogleAuthGetAccessToken = jest

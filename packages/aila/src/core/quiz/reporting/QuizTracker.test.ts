@@ -7,9 +7,8 @@ import type { ReportNode, RootReportNode } from "./Report";
 const mockSpan = (name: string) => ({ name }) as unknown as Span;
 
 jest.mock("@sentry/nextjs", () => ({
-  startSpan: jest.fn(
-    <T>(opts: { name: string }, fn: (span: Span) => T): T =>
-      fn(mockSpan(opts.name)),
+  startSpan: jest.fn(<T>(opts: { name: string }, fn: (span: Span) => T): T =>
+    fn(mockSpan(opts.name)),
   ),
 }));
 

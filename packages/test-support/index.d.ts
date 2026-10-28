@@ -1,8 +1,5 @@
 export type ConsoleCallMatcher =
-  | string
-  | RegExp
-  | readonly unknown[]
-  | ((args: unknown[]) => boolean);
+  string | RegExp | readonly unknown[] | ((args: unknown[]) => boolean);
 
 export type ConsoleAllowanceOptions = {
   times?: number;

@@ -10,9 +10,9 @@
     "clean": "rm -rf .turbo node_modules",
     "lint": "eslint .",
     "test": "pnpm with-env jest --config jest.config.mjs",
+    "test:seq": "pnpm with-env jest --config jest.config.mjs --verbose --runInBand",
     "test-coverage": "COLLECT_TEST_COVERAGE=true pnpm with-env jest --config jest.config.mjs --coverage",
     "test-file": "pnpm with-env jest --config jest.config.mjs --runTestsByPath TEST_FILEPATH",
-    "test:seq": "pnpm with-env jest --config jest.config.mjs --verbose --runInBand",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e ../../.env --"
   },
@@ -27,11 +27,11 @@
     "@anatine/zod-mock": "^3.13.4",
     "@clerk/nextjs": "7.9.15",
     "@faker-js/faker": "^9.4.0",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/exports": "*",
-    "@oakai/logger": "*",
-    "@oakai/rag": "*",
+    "@oakai/core": "workspace:*",
+    "@oakai/db": "workspace:*",
+    "@oakai/exports": "workspace:*",
+    "@oakai/logger": "workspace:*",
+    "@oakai/rag": "workspace:*",
     "@sentry/nextjs": "^10.29.0",
     "@vercel/kv": "^0.2.2",
     "@vercel/oidc": "^3.1.0",
@@ -52,8 +52,8 @@
     "zod-to-json-schema": "^3.23.0"
   },
   "devDependencies": {
-    "@oakai/eslint-config": "*",
-    "@oakai/prettier-config": "*",
+    "@oakai/eslint-config": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
     "@oakai/test-support": "workspace:*",
     "@pollyjs/adapter-fetch": "^6.0.6",
     "@pollyjs/adapter-node-http": "^6.0.6",
@@ -69,7 +69,7 @@
     "typescript": "5.9.2"
   },
   "engines": {
-    "node": ">=20.9.0",
+    "node": ">=24.22.1 <25",
     "pnpm": ">=8"
   }
 }

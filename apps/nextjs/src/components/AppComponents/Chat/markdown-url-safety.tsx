@@ -8,8 +8,7 @@ export function wrapWithUrlSafety(
 ): Partial<Components> {
   const A = components.a as ComponentType<ComponentProps<"a">> | undefined;
   const Img = components.img as
-    | ComponentType<ComponentProps<"img">>
-    | undefined;
+    ComponentType<ComponentProps<"img">> | undefined;
 
   return {
     ...components,

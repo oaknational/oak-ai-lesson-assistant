@@ -1,3 +1,44 @@
 packages:
   - apps/*
   - packages/*
+
+# Fail install when the running Node or pnpm does not satisfy engines
+engineStrict: true
+
+# Don't resolve versions published less than 7 days ago (in minutes)
+minimumReleaseAge: 10080
+
+# Some packages import dependencies they don't declare (e.g. cohere-ai in
+# packages/core), which only resolve because node_modules is hoisted
+nodeLinker: hoisted
+
+# In order to cache Prisma correctly
+publicHoistPattern:
+  - "*prisma*"
+
+# FIXME: @prisma/client is required by the @oakai/auth,
+# but we don't want it installed there since it's already
+# installed in the @oakai/db package
+strictPeerDependencies: false
+
+# Dependencies allowed to run install scripts; pnpm errors on any not listed
+allowBuilds:
+  "@parcel/watcher": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  "@sentry/cli": true
+  esbuild: true
+  msw: true # copies mockServiceWorker.js to workerDirectory
+  prisma: true
+  sharp: true
+  unrs-resolver: true
+  avo: false # install telemetry only
+  core-js: false # funding banner only
+  core-js-pure: false
+
+overrides:
+  # One copy, otherwise next (an optional peer) is installed once per version
+  "@opentelemetry/api": "1.10.0"
+  "@types/estree@1.0.x": "1.0.6"
+  "body-parser@2.2.0": ">=2.2.1"
+  "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5 <7.1.0"

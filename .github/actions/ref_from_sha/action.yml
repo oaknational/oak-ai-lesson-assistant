@@ -12,5 +12,5 @@ outputs:
   pr_number:
     description: "The number of the PR if one is found"
 runs:
-  using: "node20"
+  using: "node24"
   main: "index.cjs"

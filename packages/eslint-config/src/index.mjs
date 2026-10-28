@@ -6,7 +6,7 @@ import tsParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier";
 import importPlugin from "eslint-plugin-import";
 import jestPlugin from "eslint-plugin-jest";
-import packageJsonRecommended from "eslint-plugin-package-json/configs/recommended";
+import packageJsonPlugin from "eslint-plugin-package-json";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
@@ -48,7 +48,6 @@ const packageConfigs = packages.map((pkg) => ({
       ecmaVersion: "latest",
       sourceType: "module",
       projectService: true,
-      project: [`${pkg.dir}/tsconfig.json`],
       tsconfigRootDir: projectRoot,
       warnOnUnsupportedTypeScriptVersion: false,
     },
@@ -109,7 +108,14 @@ const config = [
   ignores,
   eslint.configs.recommended,
   prettierConfig,
-  packageJsonRecommended,
+  packageJsonPlugin.configs.recommended,
+  {
+    // prettier-plugin-packagejson owns key order, and sorts scripts differently
+    files: ["**/package.json"],
+    rules: {
+      "package-json/sort-collections": "off",
+    },
+  },
   {
     files: ["**/*.json"],
     languageOptions: {
@@ -203,7 +209,6 @@ const config = [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: ["packages/db/tsconfig.json"],
         tsconfigRootDir: projectRoot,
       },
     },
