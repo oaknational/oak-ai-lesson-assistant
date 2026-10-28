@@ -150,8 +150,7 @@ export type SlidesAgentResponse = z.infer<typeof slidesAgentResponseSchema>;
  */
 function addChangeIds(
   response:
-    | z.infer<typeof bulkChangesSchema>
-    | z.infer<typeof targetedChangesSchema>,
+    z.infer<typeof bulkChangesSchema> | z.infer<typeof targetedChangesSchema>,
 ): SlidesAgentResponse {
   return {
     analysis: response.analysis,
@@ -187,8 +186,7 @@ function addChangeIds(
  */
 export function normalizeAgentResponse(
   response:
-    | z.infer<typeof bulkChangesSchema>
-    | z.infer<typeof targetedChangesSchema>,
+    z.infer<typeof bulkChangesSchema> | z.infer<typeof targetedChangesSchema>,
 ): SlidesAgentResponse {
   // Transform LLM response to include changeIds
   // Bulk responses have no reasoning on changes (will be undefined)

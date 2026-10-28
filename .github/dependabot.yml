@@ -1,21 +1,22 @@
 version: 2
 updates:
-  # Track npm updates across the pnpm workspace (root + apps/* + packages/*).
+  # Track npm updates across the pnpm workspace. Scanning the root is enough:
+  # Dependabot reads pnpm-workspace.yaml and bumps every package that
+  # declares a dependency, in one PR against the single lockfile. Scanning
+  # apps/* and packages/* as well raised the same bump once per directory.
   #
   # Security-update PRs are deliberately left ungrouped: Dependabot's groups
   # have no severity filter, so grouping security updates would bundle
   # criticals in with everything else. Leaving them alone keeps every
-  # vulnerability - critical or not - on its own PR, same as today.
+  # vulnerability - critical or not - on its own PR.
   #
-  # Version updates are grouped below. Several packages are duplicated
-  # across workspaces (e.g. "next" is a direct dep in root, apps/nextjs and
-  # packages/api; "jest" in six packages), which is why PRs like #1118-1120
-  # showed the same bump three times. `group-by: dependency-name` collapses
-  # those into one PR per dependency instead of one per directory. First
-  # matching group wins, so the coupled-dependency groups are listed before
-  # the catch-all.
+  # A dependency joins the first group whose patterns match, whatever that
+  # group's update-types, and updates the group excludes arrive as separate
+  # PRs. So majors outside storybook and jest arrive one PR per package
+  # (@trpc/* and prisma/@prisma/* included): push the other bumps onto one
+  # PR and close the rest.
   - package-ecosystem: "npm"
-    directories: ["/", "apps/*", "packages/*"]
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -28,28 +29,6 @@ updates:
       prefix: chore
       include: scope
     groups:
-      # Next.js: a mismatched version between workspaces isn't necessarily
-      # broken, but there's no reason to review the same bump three times.
-      next:
-        patterns:
-          - next
-          - "@next/*"
-        update-types: [major, minor, patch]
-        group-by: dependency-name
-      # tRPC client/server/react-query packages share a major version contract.
-      trpc:
-        patterns:
-          - "@trpc/*"
-        update-types: [major, minor, patch]
-        group-by: dependency-name
-      # Prisma client, CLI and extensions must stay in lockstep.
-      prisma:
-        patterns:
-          - prisma
-          - "@prisma/*"
-          - zod-prisma
-        update-types: [major, minor, patch]
-        group-by: dependency-name
       # Storybook core, addons and its eslint/msw integrations track one major.
       storybook:
         patterns:
@@ -59,7 +38,6 @@ updates:
           - eslint-plugin-storybook
           - msw-storybook-addon
         update-types: [major, minor, patch]
-        group-by: dependency-name
       # jest + ts-jest + @types/jest break on mismatched majors, and jest
       # itself is a direct dep in six separate packages.
       jest:
@@ -71,22 +49,32 @@ updates:
           - "@testing-library/*"
           - setup-polly-jest
         update-types: [major, minor, patch]
-        group-by: dependency-name
-      # Everything else: batch routine minor/patch noise. Majors are left
-      # ungrouped so they still surface individually for review.
-      minor-patch:
+      # Everything else: routine minor and patch updates in one PR. Majors
+      # are left ungrouped so they surface individually for review.
+      npm:
         patterns: ["*"]
         update-types: [minor, patch]
-        group-by: dependency-name
 
-  # Track updates for Github Actions workflows from oak-terraform-actions repository.
+  # Track updates for every GitHub Action. They're pinned to commit SHAs, so
+  # without this nothing updates them, security fixes included. Dependabot
+  # bumps the SHA and its version comment together.
   - package-ecosystem: "github-actions"
     directory: "/"
-    allow:
-      - dependency-name: "oaknational/oak-terraform-actions"
-      - dependency-name: "oaknational/oak-release-actions"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/London"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci
+    groups:
+      # Minor and patch in one PR. Majors arrive one PR per action, as they
+      # can change inputs or the Node runtime.
+      github-actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
 
   # Track updates for Terraform modules from oak-terraform-modules repository.
   - package-ecosystem: "terraform"

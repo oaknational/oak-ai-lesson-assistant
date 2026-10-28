@@ -17,10 +17,10 @@
   "dependencies": {
     "@anatine/zod-mock": "^3.13.4",
     "@faker-js/faker": "^9.4.0",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/logger": "*",
-    "@oakai/prettier-config": "*",
+    "@oakai/core": "workspace:*",
+    "@oakai/db": "workspace:*",
+    "@oakai/logger": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
     "@sentry/nextjs": "^10.29.0",
     "zod": "3.25.76"
   },

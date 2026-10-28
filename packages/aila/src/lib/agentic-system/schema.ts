@@ -134,8 +134,7 @@ export type GenericPromptAgent<ResponseType> = {
   id: string;
   responseSchema: z.ZodType<ResponseType>;
   input: (
-    | { role: "developer"; content: string }
-    | { role: "user"; content: string }
+    { role: "developer"; content: string } | { role: "user"; content: string }
   )[];
   // OpenAI Responses API model params to use for this agent
   modelParams: Omit<

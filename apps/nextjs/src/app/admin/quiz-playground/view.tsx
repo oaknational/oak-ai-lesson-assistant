@@ -317,8 +317,7 @@ export function QuizPlaygroundView({
                   const selectedCount =
                     (
                       composerLlmNode?.data.selectedQuestions as
-                        | RagQuizQuestion[]
-                        | undefined
+                        RagQuizQuestion[] | undefined
                     )?.length ?? 0;
                   return `${totalCandidates} candidates, ${selectedCount} selected, ${formatSeconds(composerNode.durationMs ?? 0)}`;
                 })()

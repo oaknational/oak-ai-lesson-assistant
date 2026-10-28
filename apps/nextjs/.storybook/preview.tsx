@@ -2,11 +2,7 @@ import React from "react";
 
 import { OakThemeProvider, oakDefaultTheme } from "@oaknational/oak-components";
 import type { Decorator, Preview } from "@storybook/nextjs";
-import {
-  MswParameters,
-  initialize as initializeMsw,
-  mswLoader,
-} from "msw-storybook-addon";
+import { mswLoader } from "msw-storybook-addon/csf3";
 import { Lexend } from "next/font/google";
 
 import { TooltipProvider } from "../src/components/AppComponents/Chat/ui/tooltip";
@@ -31,14 +27,6 @@ const lexend = Lexend({
 const GlobalFontStyle = () => (
   <style>{`:root { --font-lexend: ${lexend.style.fontFamily}; }`}</style>
 );
-
-declare module "@storybook/nextjs" {
-  interface Parameters {
-    msw?: MswParameters["msw"];
-  }
-}
-
-initializeMsw();
 
 const preview: Preview = {
   parameters: {
@@ -69,7 +57,7 @@ const preview: Preview = {
       },
     },
   },
-  loaders: [mswLoader],
+  loaders: [mswLoader()],
 };
 
 // NOTE: See ./decorators for more decorators available to use in stories

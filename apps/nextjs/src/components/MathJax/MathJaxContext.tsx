@@ -26,5 +26,10 @@ export const OakMathJaxContext = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <MathJaxContext config={mathJaxConfig}>{children}</MathJaxContext>;
+  // Pin MathJax 3, which mathJaxConfig is written for (the library defaults to 4)
+  return (
+    <MathJaxContext version={3} config={mathJaxConfig}>
+      {children}
+    </MathJaxContext>
+  );
 };

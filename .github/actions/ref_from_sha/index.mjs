@@ -4,12 +4,11 @@
  * Intended for use with Vercel `deployment_status` events which incorrectly
  * set the GITHUB_REF to the commit SHA value.
  */
+import * as core from "@actions/core";
+import * as github from "@actions/github";
 
-const core = require("@actions/core");
-const github = require("@actions/github");
-
-const prFromSha = require("./pr_from_sha.cjs");
-const branchFromSha = require("./branch_from_sha.cjs");
+import branchFromSha from "./branch_from_sha.cjs";
+import prFromSha from "./pr_from_sha.cjs";
 
 async function run() {
   try {
@@ -33,7 +32,7 @@ async function run() {
     // Get the *first* PR that has the given SHA as the head of the feature branch.
     const pullRequest = await prFromSha(octokit, { owner, repo }, sha);
     let headRef;
-    let prNumber = undefined;
+    let prNumber;
     if (pullRequest !== null) {
       // There is a PR with this SHA as the head of the feature branch
       headRef = pullRequest.head.ref;
@@ -67,4 +66,4 @@ async function run() {
   }
 }
 
-run();
+await run();

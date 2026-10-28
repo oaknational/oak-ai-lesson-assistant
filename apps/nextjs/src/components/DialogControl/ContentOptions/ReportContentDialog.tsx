@@ -46,7 +46,7 @@ const ReportContentDialog = ({
   const onSubmit = useCallback(
     (
       e?:
-        | React.FormEvent<HTMLFormElement>
+        | React.SubmitEvent<HTMLFormElement>
         | React.MouseEvent<HTMLButtonElement>,
     ) => {
       log.info("submitting");
