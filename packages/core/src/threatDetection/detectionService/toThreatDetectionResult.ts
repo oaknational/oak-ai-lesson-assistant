@@ -1,5 +1,4 @@
-import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
-
+import type { ThreatDetectionResult } from "../types";
 import type { DetectionServiceResponse } from "./schema";
 
 /**

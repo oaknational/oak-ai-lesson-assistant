@@ -1,6 +1,6 @@
-import { threatDetectionResultSchema } from "@oakai/core/src/threatDetection/types";
-
 import { z } from "zod";
+
+import { threatDetectionResultSchema } from "../types";
 
 /**
  * The standalone service's v1 response, which is

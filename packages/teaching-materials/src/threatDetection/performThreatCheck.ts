@@ -4,6 +4,7 @@ import type {
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
 
+import { performDetectionServiceThreatCheck } from "./detectionServiceThreatCheck";
 import { performLakeraThreatCheck } from "./lakeraThreatCheck";
 import { performModelArmorThreatCheck } from "./modelArmorThreatCheck";
 
@@ -19,5 +20,7 @@ export async function performThreatCheck({
       return performLakeraThreatCheck({ messages });
     case "model_armor":
       return performModelArmorThreatCheck({ messages });
+    case "detection_service":
+      return performDetectionServiceThreatCheck({ messages });
   }
 }
