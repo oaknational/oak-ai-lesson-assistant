@@ -27,7 +27,6 @@ export async function warmVercelPreview(page: Page) {
 
   for (const path of ["/", "/aila"]) {
     await page.goto(`${TEST_BASE_URL}${path}`, {
-      // cspell:disable-next-line
       waitUntil: "domcontentloaded",
       timeout: 60000,
     });
