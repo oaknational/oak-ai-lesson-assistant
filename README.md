@@ -7,7 +7,7 @@
 
 Oak AI Lesson Assistant is a project focused on experimenting with AI models and their applications. This repository contains several components designed to facilitate AI research and development.
 
-## Table of contents
+#### Table of contents
 
 - [Oak AI Lesson Assistant](#oak-ai-lesson-assistant)
   - [Table of contents](#table-of-contents)
