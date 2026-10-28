@@ -12,7 +12,7 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
 import turboPlugin from "eslint-plugin-turbo";
 import globals from "globals";
-import jsonParser from "jsonc-eslint-parser";
+import * as jsonParser from "jsonc-eslint-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -114,6 +114,16 @@ const config = [
     files: ["**/package.json"],
     rules: {
       "package-json/sort-collections": "off",
+      // Workspace packages aren't published, so publishing metadata isn't needed
+      "package-json/require-attribution": "off",
+      "package-json/require-description": "off",
+      "package-json/require-exports": "off",
+      "package-json/require-files": "off",
+      "package-json/require-repository": "off",
+      "package-json/require-sideEffects": "off",
+      "package-json/require-type": "off",
+      "package-json/valid-author": "off",
+      "package-json/valid-description": "off",
     },
   },
   {

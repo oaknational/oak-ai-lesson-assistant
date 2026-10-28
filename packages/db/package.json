@@ -71,15 +71,12 @@
   },
   "dependencies": {
     "@oakai/logger": "workspace:*",
-    "@prisma/client": "6.3.1",
+    "@prisma/client": "6.19.3",
     "@prisma/extension-accelerate": "^1.2.1",
     "@types/chunk-text": "^1.0.0",
-    "cheerio": "1.0.0-rc.12",
     "chunk-text": "^2.0.1",
     "csv-parser": "^3.0.0",
-    "graphql-request": "^6.1.0",
     "openai": "^6.45.0",
-    "p-queue": "^7.4.1",
     "p-queue-compat": "^1.0.225",
     "ts-node": "^10.9.2",
     "yaml": "^2.4.1"
@@ -87,9 +84,9 @@
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
     "@oakai/prettier-config": "workspace:*",
-    "dotenv-cli": "^6.0.0",
-    "prisma": "6.3.1",
-    "typescript": "5.9.2",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "6.19.3",
+    "typescript": "5.9.3",
     "zod-prisma": "^0.5.4"
   },
   "engines": {

@@ -1,7 +1,7 @@
 import { downloadDriveFile } from "@oakai/exports";
 import { aiLogger } from "@oakai/logger";
 
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 import { PassThrough } from "stream";
 
 export const ext = ["pdf", "docx", "pptx"] as const;
@@ -25,7 +25,7 @@ export async function getDriveDocsZipStream({
 }) {
   log.info("Zipping files", fileId, fileIds, ext);
   const zipStream = new PassThrough();
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
   archive.pipe(zipStream);
 
   // Use fileIds array if provided, otherwise use single fileId

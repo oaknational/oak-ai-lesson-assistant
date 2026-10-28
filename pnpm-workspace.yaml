@@ -5,7 +5,8 @@ packages:
 # Fail install when the running Node or pnpm does not satisfy engines
 engineStrict: true
 
-# Don't resolve versions published less than 7 days ago (in minutes)
+# Don't resolve versions published less than 7 days ago (in minutes). Keep
+# in step with the Dependabot cooldown in .github/dependabot.yml
 minimumReleaseAge: 10080
 
 # Some packages import dependencies they don't declare (e.g. cohere-ai in
@@ -28,13 +29,15 @@ allowBuilds:
   "@prisma/engines": true
   "@sentry/cli": true
   esbuild: true
-  msw: true # copies mockServiceWorker.js to workerDirectory
   prisma: true
   sharp: true
   unrs-resolver: true
   avo: false # install telemetry only
   core-js: false # funding banner only
   core-js-pure: false
+  # msw 3 has no install script, but upgrading an install where msw 2 was
+  # allowed to build leaves pnpm reporting an ignored build until it's denied
+  msw: false
 
 overrides:
   # One copy, otherwise next (an optional peer) is installed once per version
@@ -42,3 +45,9 @@ overrides:
   "@types/estree@1.0.x": "1.0.6"
   "body-parser@2.2.0": ">=2.2.1"
   "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5 <7.1.0"
+  # Security fixes for transitive dependencies, within the same major
+  "@xmldom/xmldom@0.9": "^0.9.12"
+  "axios@1": "^1.20.0"
+  "postcss-selector-parser@6": "^6.1.5"
+  "prismjs@1": "^1.30.0"
+  "zod@4": "^4.6.6"

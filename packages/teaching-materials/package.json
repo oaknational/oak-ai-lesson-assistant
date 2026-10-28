@@ -23,15 +23,15 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/nextjs": "7.9.15",
+    "@clerk/nextjs": "7.9.18",
     "@oakai/core": "workspace:*",
     "@oakai/logger": "workspace:*",
     "@oaknational/oak-curriculum-schema": "1.61.0",
     "@sentry/nextjs": "^10.29.0",
     "ai": "^4.1.00",
-    "dotenv-cli": "^6.0.0",
+    "dotenv-cli": "^11.0.0",
     "openai": "^6.45.0",
-    "serialize-error": "^12.0.0",
+    "serialize-error": "^13.0.2",
     "zod": "3.25.76",
     "zod-to-json-schema": "^3.23.0"
   },
@@ -41,10 +41,10 @@
     "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "ts-jest": "^29.2.5",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=24.22.1 <25",

@@ -26,14 +26,14 @@
     "@oakai/teaching-materials": "workspace:*",
     "@resvg/resvg-js": "^2.6.2",
     "mathjax-full": "^3.2.2",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   },
   "devDependencies": {
     "@oakai/test-support": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/mathjax": "^0.0.40",
     "dedent": "^1.5.3",
-    "dotenv-cli": "^6.0.0",
+    "dotenv-cli": "^11.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5"
   }
