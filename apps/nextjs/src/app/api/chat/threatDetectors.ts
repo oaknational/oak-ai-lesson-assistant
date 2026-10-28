@@ -1,4 +1,5 @@
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
+import { DetectionServiceThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/detectionService/DetectionServiceThreatDetector";
 import { LakeraThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector";
 import { ModelArmorThreatDetector } from "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector";
 import { getThreatDetectionProvider } from "@oakai/core/src/threatDetection/provider";
@@ -9,5 +10,7 @@ export function getThreatDetectors(): AilaThreatDetector[] {
       return [new LakeraThreatDetector()];
     case "model_armor":
       return [new ModelArmorThreatDetector()];
+    case "detection_service":
+      return [new DetectionServiceThreatDetector()];
   }
 }

@@ -24,11 +24,23 @@ jest.mock(
   }),
 );
 
+jest.mock(
+  "@oakai/aila/src/features/threatDetection/detectors/detectionService/DetectionServiceThreatDetector",
+  () => ({
+    DetectionServiceThreatDetector: jest.fn().mockImplementation(() => ({
+      detectThreat: jest.fn(),
+    })),
+  }),
+);
+
 const { LakeraThreatDetector } = jest.requireMock(
   "@oakai/aila/src/features/threatDetection/detectors/lakera/LakeraThreatDetector",
 );
 const { ModelArmorThreatDetector } = jest.requireMock(
   "@oakai/aila/src/features/threatDetection/detectors/modelArmor/ModelArmorThreatDetector",
+);
+const { DetectionServiceThreatDetector } = jest.requireMock(
+  "@oakai/aila/src/features/threatDetection/detectors/detectionService/DetectionServiceThreatDetector",
 );
 
 describe("getThreatDetectors", () => {
@@ -58,5 +70,16 @@ describe("getThreatDetectors", () => {
     expect(detectors).toHaveLength(1);
     expect(LakeraThreatDetector).toHaveBeenCalledTimes(1);
     expect(ModelArmorThreatDetector).not.toHaveBeenCalled();
+  });
+
+  it("builds the detection service detector", () => {
+    mockGetThreatDetectionProvider.mockReturnValue("detection_service");
+
+    const detectors = getThreatDetectors();
+
+    expect(detectors).toHaveLength(1);
+    expect(DetectionServiceThreatDetector).toHaveBeenCalledTimes(1);
+    expect(ModelArmorThreatDetector).not.toHaveBeenCalled();
+    expect(LakeraThreatDetector).not.toHaveBeenCalled();
   });
 });
