@@ -2,7 +2,7 @@ import { aiLogger } from "@oakai/logger";
 
 import { clerkClient } from "@clerk/nextjs/server";
 import type { User } from "@clerk/nextjs/server";
-import { difference, equals } from "remeda";
+import { difference, isDeepEqual } from "remeda";
 
 type MetadataArgs = {
   isOnboarded: boolean;
@@ -60,7 +60,8 @@ export const setClerkMetadata = async (
     privateMetadata: user.privateMetadata,
   };
 
-  if (equals(proposedMetadata, currentMetadata)) {
+  // Compared as unknown: the type-guard overload would narrow the metadata
+  if (isDeepEqual<unknown>(proposedMetadata, currentMetadata)) {
     log.info("Clerk metadata is already correct");
   } else {
     log.info(

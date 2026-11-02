@@ -1,3 +1,4 @@
+import { kv } from "@oakai/core/src/utils/kv";
 import { getPresentation, getSlideThumbnails } from "@oakai/gsuite";
 import {
   type SlideContent,
@@ -10,7 +11,6 @@ import {
 import { aiLogger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
-import { kv } from "@vercel/kv";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 

@@ -2,8 +2,8 @@ import { aiLogger } from "@oakai/logger";
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
-import { kv } from "@vercel/kv";
 
+import { kv } from "../kv";
 import { RateLimitExceededError } from "./errors";
 import type { RateLimitDuration, RateLimiter } from "./types";
 

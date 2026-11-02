@@ -4,9 +4,9 @@ import { type User } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { waitUntil } from "@vercel/functions";
-import { kv } from "@vercel/kv";
 
 import { isVerifiedOakEmail } from "../isOakEmail";
+import { kv } from "../kv";
 import { RateLimitExceededError } from "./errors";
 import type { RateLimitDuration, RateLimiter } from "./types";
 

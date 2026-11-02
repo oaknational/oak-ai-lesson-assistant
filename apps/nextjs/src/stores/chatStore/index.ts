@@ -31,7 +31,7 @@ export const createChatStore = (
     id,
     moderationActions: undefined, // Passed in the provider
     ailaStreamingStatus: "Idle",
-    initialMessages: [],
+    initialMessages: null,
     stableMessages: [],
     streamingMessage: null,
     queuedUserAction: null,
@@ -41,6 +41,7 @@ export const createChatStore = (
 
     // From AI SDK
     aiSdkActions: {
+      initializeMessages: () => {},
       stop: () => {},
       reload: () => Promise.resolve(),
       append: () => Promise.resolve(),

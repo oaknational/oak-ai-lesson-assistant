@@ -13,10 +13,9 @@
     "test": "jest --config jest.config.mjs"
   },
   "dependencies": {
-    "@googleapis/drive": "^8.7.0",
-    "@googleapis/slides": "^1.0.5",
+    "@googleapis/drive": "^27.0.0",
+    "@googleapis/slides": "^10.1.1",
     "dotenv-cli": "^11.0.0",
-    "google-auth-library": "^9.7.0",
     "zod": "3.25.76"
   },
   "devDependencies": {

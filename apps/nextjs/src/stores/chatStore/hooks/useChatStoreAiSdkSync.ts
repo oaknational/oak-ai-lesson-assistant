@@ -9,6 +9,7 @@ export const useChatStoreAiSdkSync = (
   stop: AiSdkActions["stop"],
   append: AiSdkActions["append"],
   reload: AiSdkActions["reload"],
+  initializeMessages: AiSdkActions["initializeMessages"],
 ) => {
   const { setMessages, setAiSdkActions } = useChatActions();
 
@@ -17,7 +18,7 @@ export const useChatStoreAiSdkSync = (
   }, [messages, isLoading, setMessages]);
 
   useEffect(() => {
-    setAiSdkActions({ stop, append, reload });
+    setAiSdkActions({ stop, append, reload, initializeMessages });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

@@ -19,6 +19,7 @@ export type ChatAction =
   | { type: "regenerate" };
 
 export type AiSdkActions = {
+  initializeMessages: (messages: AiMessage[]) => void;
   stop: () => void;
   reload: () => Promise<void>;
   append: (message: { content: string; role: "user" }) => Promise<void>;
@@ -38,7 +39,8 @@ export type ChatState = {
   streamingError: boolean;
   streamingFailedTurn: boolean;
 
-  initialMessages: AiMessage[];
+  // null means the saved history has not loaded yet; [] is a new chat.
+  initialMessages: AiMessage[] | null;
   stableMessages: ParsedMessage[];
   streamingMessage: ParsedMessage | null;
   queuedUserAction: ChatAction | null;

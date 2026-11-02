@@ -20,6 +20,9 @@ function isValidMessageRole(role: unknown): role is AiMessage["role"] {
 export const handleFetchInitialMessages =
   (set: ChatSetter, get: ChatGetter, getStore: GetStore, trpc: TrpcUtils) =>
   async () => {
+    if (get().initialMessages !== null) {
+      return;
+    }
     log.info("Fetching initial messages");
     try {
       const id = get().id;
@@ -27,10 +30,19 @@ export const handleFetchInitialMessages =
       invariant(result, "result should not be null");
       const { messages, startingMessage } = result;
 
+      // Another request may have finished while this one was pending. Never
+      // replace a live conversation or send its starting message twice.
+      if (get().initialMessages !== null) {
+        return;
+      }
+
       const initialMessages = messages.filter((m) =>
         isValidMessageRole(m.role),
       ) as AiMessage[];
 
+      // Set the SDK's history before enabling submission or sending the
+      // starting message. A React effect would run too late for that send.
+      get().aiSdkActions.initializeMessages(initialMessages);
       set({ initialMessages });
 
       if (startingMessage) {

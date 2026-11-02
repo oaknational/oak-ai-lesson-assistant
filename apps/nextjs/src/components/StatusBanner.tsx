@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import type { RefObject } from "react";
 
 import {
   OakFlex,
@@ -112,7 +113,8 @@ export function StatusBanner({
 
   return (
     <OakFlex
-      ref={ref}
+      // oak-components types refs for React 18, where a ref object can't hold null
+      ref={ref as RefObject<HTMLDivElement>}
       role="status"
       aria-live="polite"
       data-testid={testId}

@@ -2,10 +2,10 @@ import {
   posthogAiBetaServerClient,
   refreshFlagDefinitionsIfStale,
 } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { kv } from "@oakai/core/src/utils/kv";
 import { aiLogger } from "@oakai/logger";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { kv } from "@vercel/kv";
 
 const log = aiLogger("feature-flags");
 

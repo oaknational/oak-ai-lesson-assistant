@@ -11,8 +11,6 @@ import { TextStreamChatTransport } from "ai";
 import type { UIMessage } from "ai";
 import { nanoid } from "nanoid";
 import { usePathname } from "next/navigation";
-import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
-import { useLessonPlanStoreAiSdkSync } from "src/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import {
@@ -20,7 +18,9 @@ import {
   useChatStore,
   useLessonPlanActions,
 } from "@/stores/AilaStoresProvider";
+import { useChatStoreAiSdkSync } from "@/stores/chatStore/hooks/useChatStoreAiSdkSync";
 import type { AiMessage, AiSdkActions } from "@/stores/chatStore/types";
+import { useLessonPlanStoreAiSdkSync } from "@/stores/lessonPlanStore/hooks/useLessonPlanStoreAiSdkSync";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { findMessageIdFromContent } from "./Chat/utils";
@@ -124,10 +124,11 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
     regenerate,
     stop: stopStreaming,
     status,
+    setMessages: setSdkMessages,
   } = useChat({
     id,
     // NOTE: these initial messages are used by the chat endpoint
-    messages: initialMessages.flatMap(toUIMessage),
+    messages: (initialMessages ?? []).flatMap(toUIMessage),
     generateId: () => generateMessageId({ role: "user" }),
     transport,
     onError(error) {
@@ -155,6 +156,15 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
       lessonPlanActions.messageFinished();
     },
   });
+
+  const hasInitializedMessages = useRef(initialMessages !== null);
+  const initializeMessages: AiSdkActions["initializeMessages"] = (history) => {
+    if (hasInitializedMessages.current) {
+      return;
+    }
+    setSdkMessages(history.flatMap(toUIMessage));
+    hasInitializedMessages.current = true;
+  };
 
   /**
    * This is a hack to ensure that the assistant messages have a stable id
@@ -193,7 +203,14 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const reload: AiSdkActions["reload"] = () => regenerate();
 
   // Hooks to update the Zustand stores
-  useChatStoreAiSdkSync(messages, isLoading, stop, append, reload);
+  useChatStoreAiSdkSync(
+    messages,
+    isLoading,
+    stop,
+    append,
+    reload,
+    initializeMessages,
+  );
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
   return null;

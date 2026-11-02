@@ -19,6 +19,7 @@ describe("handleAppend", () => {
   test("should not append when canAppend is false", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
       ailaStreamingStatus: "StreamingChatResponse",
+      initialMessages: [],
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
@@ -30,6 +31,7 @@ describe("handleAppend", () => {
   test("should queue action when streaming is not idle", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
       ailaStreamingStatus: "Moderating",
+      initialMessages: [],
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
@@ -45,6 +47,7 @@ describe("handleAppend", () => {
   test("should append message when streaming is idle and canAppend is true", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
       ailaStreamingStatus: "Idle",
+      initialMessages: [],
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
@@ -59,6 +62,7 @@ describe("handleAppend", () => {
   test("should handle continue action when streaming is idle", () => {
     const store = createChatStore(id, getStore, trpcUtils, {
       ailaStreamingStatus: "Idle",
+      initialMessages: [],
       aiSdkActions: mockAiSdkActions as unknown as AiSdkActions,
     });
 
@@ -79,6 +83,7 @@ describe("handleAppend", () => {
 
     const store = createChatStore(id, getStore, trpcUtils, {
       ailaStreamingStatus: "Idle",
+      initialMessages: [],
       aiSdkActions: mockAiSdkActionsWithReload as unknown as AiSdkActions,
     });
 

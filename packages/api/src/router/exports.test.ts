@@ -12,7 +12,7 @@ import { exportsRouter } from "./exports";
 
 jest.mock("@oakai/core/src/utils/sendEmail", () => ({ sendEmail: jest.fn() }));
 jest.mock("@clerk/nextjs/server", () => ({ clerkClient: jest.fn() }));
-jest.mock("@vercel/kv", () => ({ kv: {} }));
+jest.mock("@oakai/core/src/utils/kv", () => ({ kv: {} }));
 jest.mock("@oakai/exports", () => {
   const { z } = jest.requireActual<typeof Zod>("zod");
   return {
