@@ -518,13 +518,14 @@ describe("AilaStreamHandler", () => {
       new Error("DB connection failed"),
     );
     const chat = createMockChat({
-      useAgenticAila: false,
+      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
 
+    expect(mockedAilaTurn).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
@@ -534,7 +535,7 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockRejectedValue(detectorError),
     );
     const chat = createMockChat({
-      useAgenticAila: false,
+      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     chat.enqueue.mockImplementation((msg: { value?: string }) => {
@@ -546,6 +547,7 @@ describe("AilaStreamHandler", () => {
 
     await consumeStream(handler.startStreaming());
 
+    expect(mockedAilaTurn).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
@@ -563,7 +565,7 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockResolvedValue(threatDetection),
     );
     const chat = createMockChat({
-      useAgenticAila: false,
+      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -584,7 +586,7 @@ describe("AilaStreamHandler", () => {
       value: "Threat detected",
       message: "Threat was detected",
     });
-    expect(chat.createChatCompletionObjectStream).not.toHaveBeenCalled();
+    expect(mockedAilaTurn).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
     expect(chat.generationFailed).not.toHaveBeenCalled();
   });
@@ -594,7 +596,7 @@ describe("AilaStreamHandler", () => {
       detectThreat = jest.fn().mockRejectedValue(new Error("detector failed"));
     }
     const chat = createMockChat({
-      useAgenticAila: false,
+      useAgenticAila: true,
       threatDetectors: [new NamedTestDetector() as never],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -618,7 +620,7 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockRejectedValue("non-error rejection"),
     );
     const chat = createMockChat({
-      useAgenticAila: false,
+      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -777,10 +779,36 @@ describe("AilaStreamHandler", () => {
     expect(chat.complete).not.toHaveBeenCalled();
   });
 
+  it("reports the recovery error and skips complete when the retry message cannot be sent after ailaTurn throws", async () => {
+    const turnError = new Error("ailaTurn threw unexpectedly");
+    const enqueueError = new Error("enqueue failed");
+    mockedAilaTurn.mockRejectedValueOnce(turnError);
+    const chat = createMockChat({ useAgenticAila: true });
+    chat.enqueue.mockImplementation((message: { value?: string }) => {
+      if (
+        message.value ===
+        "Something went wrong. Please try sending your message again."
+      ) {
+        throw enqueueError;
+      }
+      return Promise.resolve();
+    });
+
+    const handler = new AilaStreamHandler(chat as never);
+    await consumeStream(handler.startStreaming());
+
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
+      enqueueError,
+    );
+    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(turnError);
+    expect(chat.complete).not.toHaveBeenCalled();
+  });
+
   it("closes cleanly when completion and its fallback error message both fail", async () => {
     const completionError = new Error("complete failed");
     const enqueueError = new Error("enqueue failed");
-    const chat = createMockChat({ useAgenticAila: false });
+    mockedAilaTurn.mockResolvedValueOnce(createAilaTurnOutcome("success"));
+    const chat = createMockChat({ useAgenticAila: true });
     chat.complete = jest.fn().mockRejectedValue(completionError);
     chat.enqueue.mockImplementation((message: { value?: string }) => {
       if (

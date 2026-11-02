@@ -5,7 +5,11 @@ import { getAilaUrl } from "@/utils/getAilaUrl";
 import { TEST_BASE_URL } from "../config/config";
 import { prepareUser } from "../helpers/auth";
 import { bypassVercelProtection } from "../helpers/vercel";
+import type { FixtureMode } from "./aila-chat/helpers";
 import { applyLlmFixtures } from "./aila-chat/helpers";
+
+// CHANGE "replay" TO "record" TO RECORD A NEW FIXTURE
+const FIXTURE_MODE = "replay" as FixtureMode;
 
 const TOXIC_TAG = "oak-tox";
 
@@ -18,8 +22,12 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
-  // NOTE: Change "replay" to "record" to record a new fixture
-  const { setFixture } = await applyLlmFixtures(page, "replay");
+  const { setFixture } = await applyLlmFixtures(
+    page,
+    FIXTURE_MODE,
+    "clean",
+    "agentic",
+  );
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");

@@ -26,7 +26,12 @@ test("User is restricted after message rate limit is reached", async ({
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
-  const { setFixture } = await applyLlmFixtures(page, "replay");
+  const { setFixture } = await applyLlmFixtures(
+    page,
+    "replay",
+    "clean",
+    "agentic",
+  );
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");
@@ -50,10 +55,11 @@ test("User is restricted after message rate limit is reached", async ({
     await expect(
       page.getByTestId("chat-message-wrapper-error"),
     ).not.toBeAttached();
-    await expect(page.getByTestId("chat-message-wrapper-aila")).toContainText(
-      "Are the learning outcome and learning cycles appropriate for your pupils?",
-      { timeout: 10000 },
-    );
+    // The reply depends on which RAG lessons exist in the environment, so
+    // only check that the turn completed
+    await expect(page.getByTestId("chat-message-wrapper-aila")).not.toBeEmpty({
+      timeout: 10000,
+    });
   });
 
   await test.step("Send second message", async () => {
