@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    // baseUrl and moduleResolution "node" are deprecated in TypeScript 6
+    // and removed in 7. Replace them before upgrading to 7
+    "ignoreDeprecations": "6.0",
     "target": "esnext",
     "module": "esnext",
     "lib": ["esnext"],

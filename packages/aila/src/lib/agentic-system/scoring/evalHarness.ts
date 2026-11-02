@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 /**
  * Shared scaffolding for the scoring eval harnesses (scoreMathsComposer,
  * scorePlannerQuizIntent). Each harness supplies its own cells, per-run scorer

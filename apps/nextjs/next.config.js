@@ -23,7 +23,6 @@ const getConfig = async (phase) => {
   let releaseStage;
   /** @type string */
   let appVersion;
-  let isProductionBuild = false;
   const isTestBuild = phase === PHASE_TEST || process.env.NODE_ENV === "test";
 
   if (isTestBuild) {
@@ -36,7 +35,7 @@ const getConfig = async (phase) => {
         process.env.NEXT_PUBLIC_ENVIRONMENT,
     );
 
-    isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
+    const isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
     appVersion = getAppVersion({ isProductionBuild });
   }
 

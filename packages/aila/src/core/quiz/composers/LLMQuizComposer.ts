@@ -141,7 +141,7 @@ export class LLMComposer implements QuizComposer {
       return parsed;
     } catch (error) {
       log.error("Failed to compose quiz with OpenAI:", error);
-      throw new Error("Quiz composition failed");
+      throw new Error("Quiz composition failed", { cause: error });
     }
   }
 

@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    // baseUrl and moduleResolution "node" are deprecated in TypeScript 6
+    // and removed in 7. Replace them before upgrading to 7
+    "ignoreDeprecations": "6.0",
+    // TypeScript 6 needs an explicit rootDir when emitting, which ts-jest does
+    "rootDir": ".",
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

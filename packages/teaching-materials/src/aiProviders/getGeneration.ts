@@ -26,8 +26,9 @@ export const getLLMGeneration = async <T>(
     if (error instanceof ZodError) {
       throw new Error(
         `Context schema validation failed: ${JSON.stringify(error.issues, null, 2)}`,
+        { cause: error },
       );
     }
-    throw new Error(`Failed to generate : ${String(error)}`);
+    throw new Error(`Failed to generate : ${String(error)}`, { cause: error });
   }
 };

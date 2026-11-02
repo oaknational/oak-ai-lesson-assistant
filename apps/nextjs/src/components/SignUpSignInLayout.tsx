@@ -38,6 +38,7 @@ const SignUpSignInLayout = ({
               $minHeight="100vh"
             >
               <Transition
+                as="div"
                 show={Boolean(loaded)}
                 enter="transition-opacity duration-500"
                 enterFrom="opacity-0"

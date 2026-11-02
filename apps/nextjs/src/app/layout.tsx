@@ -84,7 +84,7 @@ export default async function RootLayout({
   }
 
   const { features: bootstrappedFeatures, payloads: bootstrappedPayloads } =
-    await getBootstrappedFeatures(headersList);
+    await getBootstrappedFeatures();
 
   return (
     <html lang="en" suppressHydrationWarning className={lexend.variable}>

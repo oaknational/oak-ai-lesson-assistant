@@ -327,7 +327,7 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await startSpan("chat-api", {}, async (span: TracingSpan) => {
-    let chatId = "unknown";
+    let chatId: string;
     let aila: Aila | undefined;
     let userId: string | undefined;
     try {

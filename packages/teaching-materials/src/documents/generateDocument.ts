@@ -41,6 +41,7 @@ export const generateDocument = async <S, P>({
     Sentry.captureException(serialized);
     throw new Error(
       `Failed to generate document of type: ${documentType}. Error: ${JSON.stringify(serialized)}`,
+      { cause: error },
     );
   }
 };

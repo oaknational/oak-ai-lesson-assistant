@@ -5,8 +5,7 @@ import {
 import { aiLogger } from "@oakai/logger";
 
 import { auth } from "@clerk/nextjs/server";
-import cookie from "cookie";
-import type { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
+import { cookies } from "next/headers";
 import { after } from "next/server";
 
 const log = aiLogger("feature-flags");
@@ -21,24 +20,19 @@ const log = aiLogger("feature-flags");
  * https://posthog.com/docs/feature-flags/bootstrapping
  */
 
-function getDistinctIdFromCookie(headers: ReadonlyHeaders) {
-  const cookieHeader = headers.get("cookie");
-  if (!cookieHeader) {
-    return null;
-  }
-  const cookies = cookie.parse(cookieHeader);
+async function getDistinctIdFromCookie() {
   const phCookieKey = `ph_${process.env.NEXT_PUBLIC_POSTHOG_API_KEY}_posthog`;
-  const phCookie = cookies[phCookieKey];
+  const phCookie = (await cookies()).get(phCookieKey)?.value;
   if (!phCookie) {
     return null;
   }
   return (JSON.parse(phCookie) as { distinct_id: string })["distinct_id"];
 }
 
-export async function getBootstrappedFeatures(headers: ReadonlyHeaders) {
+export async function getBootstrappedFeatures() {
   const { userId, sessionClaims } = await auth();
 
-  const distinctId = userId ?? getDistinctIdFromCookie(headers) ?? "0";
+  const distinctId = userId ?? (await getDistinctIdFromCookie()) ?? "0";
 
   const personProperties = sessionClaims?.labs?.featureFlagGroup
     ? { featureFlagGroup: sessionClaims.labs.featureFlagGroup }
