@@ -75,7 +75,14 @@ const getConfig = async (phase) => {
         },
       ],
     },
-    transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
+    transpilePackages: [
+      "@oakai/api",
+      "@oakai/db",
+      "@oakai/exports",
+      // Generate stable styled-component IDs for Oak's published components
+      // so server and browser import order cannot change their class names.
+      "@oaknational/oak-components",
+    ],
     compiler: {
       styledComponents: true,
     },
