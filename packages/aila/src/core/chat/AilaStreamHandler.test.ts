@@ -104,7 +104,6 @@ type MockThreatDetector = {
 };
 
 type MockChatOptions = {
-  useAgenticAila: boolean;
   threatDetectors?: MockThreatDetector[];
   plugins?: Partial<AilaPlugin>[];
 };
@@ -127,15 +126,6 @@ const mockedCreateOpenAIPlannerAgent = jest.mocked(createOpenAIPlannerAgent);
 const mockedCreateSectionAgentRegistry = jest.mocked(
   createSectionAgentRegistryFactory,
 );
-
-function createObjectStreamReader(chunks: string[] = ["stream chunk"]) {
-  return new ReadableStream<string>({
-    start(controller) {
-      chunks.forEach((chunk) => controller.enqueue(chunk));
-      controller.close();
-    },
-  }).getReader();
-}
 
 function createThreatDetector(
   detectThreat: MockThreatDetector["detectThreat"],
@@ -187,10 +177,9 @@ function collectPlannerGeneration({
 }
 
 function createMockChat({
-  useAgenticAila,
   threatDetectors = [],
   plugins = [],
-}: MockChatOptions) {
+}: MockChatOptions = {}) {
   const enqueue = jest.fn().mockResolvedValue(undefined);
   const complete = jest.fn().mockImplementation(async () => {
     await enqueue({
@@ -205,11 +194,8 @@ function createMockChat({
     iteration: 1,
     messages: [{ id: "u1", role: "user", content: "test prompt" }] as Message[],
     relevantLessons: null,
-    generation: useAgenticAila ? undefined : { status: "REQUESTED" },
     aila: {
-      options: {
-        useAgenticAila,
-      },
+      options: {},
       prisma: {
         prompt: {
           findFirst: jest.fn().mockResolvedValue({ id: "prompt_planner" }),
@@ -241,20 +227,7 @@ function createMockChat({
     }),
     initialiseChunks: jest.fn(),
     appendChunk: jest.fn(),
-    setupGeneration: jest.fn().mockImplementation(() => {
-      chat.generation = { status: "REQUESTED" };
-      return Promise.resolve();
-    }),
-    handleSettingInitialState: jest.fn().mockResolvedValue(undefined),
-    handleSubjectWarning: jest.fn().mockResolvedValue(undefined),
-    completionMessages: jest
-      .fn()
-      .mockReturnValue([{ id: "u1", role: "user", content: "test prompt" }]),
-    createChatCompletionObjectStream: jest
-      .fn()
-      .mockResolvedValue(createObjectStreamReader()),
     persistChat: jest.fn().mockResolvedValue(undefined),
-    generationFailed: jest.fn(),
     complete,
     enqueue,
   };
@@ -294,7 +267,7 @@ describe("AilaStreamHandler", () => {
   it("skips completion for failed agentic turns", async () => {
     mockedAilaTurn.mockResolvedValue(createAilaTurnOutcome("failed"));
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
@@ -316,7 +289,7 @@ describe("AilaStreamHandler", () => {
       return createAilaTurnOutcome("failed");
     });
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
@@ -346,7 +319,7 @@ describe("AilaStreamHandler", () => {
       return createAilaTurnOutcome("failed");
     });
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     chat.messages.push({
       id: "assistant_previous",
       role: "assistant",
@@ -382,7 +355,7 @@ describe("AilaStreamHandler", () => {
       return createAilaTurnOutcome("success");
     });
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     chat.messages.push({
       id: "assistant_previous",
       role: "assistant",
@@ -422,7 +395,7 @@ describe("AilaStreamHandler", () => {
   it("enqueues an error message when ailaTurn throws (agentic)", async () => {
     mockedAilaTurn.mockRejectedValue(new Error("ailaTurn threw unexpectedly"));
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
@@ -434,47 +407,12 @@ describe("AilaStreamHandler", () => {
     });
   });
 
-  it("shows a retry error and skips generation when non-agentic threat detection fails", async () => {
-    const detectorError = new Error("Threat detector unavailable");
-    const threatDetector = createThreatDetector(
-      jest.fn().mockRejectedValue(detectorError),
-    );
-    const chat = createMockChat({
-      useAgenticAila: false,
-      threatDetectors: [threatDetector],
-    });
-    const handler = new AilaStreamHandler(chat as never);
-
-    await expect(consumeStream(handler.startStreaming())).resolves.toBe(
-      undefined,
-    );
-
-    expect(threatDetector.detectThreat).toHaveBeenCalledWith(chat.messages);
-    expect(chat.enqueue).toHaveBeenCalledWith({
-      type: "error",
-      value: "Threat detection failed",
-      message:
-        "I wasn't able to check your message for safety. Please try again in a moment.",
-    });
-    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: "ThreatDetectionFailureError",
-      }),
-      "Threat detection failed",
-      "error",
-    );
-    expect(chat.createChatCompletionObjectStream).not.toHaveBeenCalled();
-    expect(chat.complete).not.toHaveBeenCalled();
-    expect(chat.generationFailed).not.toHaveBeenCalled();
-  });
-
   it("shows a retry error and skips generation when agentic threat detection fails", async () => {
     const detectorError = new Error("Threat detector unavailable");
     const threatDetector = createThreatDetector(
       jest.fn().mockRejectedValue(detectorError),
     );
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -499,7 +437,6 @@ describe("AilaStreamHandler", () => {
     );
     expect(mockedAilaTurn).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
-    expect(chat.generationFailed).not.toHaveBeenCalled();
   });
 
   it("does not call complete when threat response handling throws", async () => {
@@ -518,7 +455,6 @@ describe("AilaStreamHandler", () => {
       new Error("DB connection failed"),
     );
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -535,7 +471,6 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockRejectedValue(detectorError),
     );
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     chat.enqueue.mockImplementation((msg: { value?: string }) => {
@@ -565,7 +500,6 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockResolvedValue(threatDetection),
     );
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -588,7 +522,6 @@ describe("AilaStreamHandler", () => {
     });
     expect(mockedAilaTurn).not.toHaveBeenCalled();
     expect(chat.complete).not.toHaveBeenCalled();
-    expect(chat.generationFailed).not.toHaveBeenCalled();
   });
 
   it("includes the failing detector name in the ThreatDetectionFailureError", async () => {
@@ -596,7 +529,6 @@ describe("AilaStreamHandler", () => {
       detectThreat = jest.fn().mockRejectedValue(new Error("detector failed"));
     }
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [new NamedTestDetector() as never],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -620,7 +552,6 @@ describe("AilaStreamHandler", () => {
       jest.fn().mockRejectedValue("non-error rejection"),
     );
     const chat = createMockChat({
-      useAgenticAila: true,
       threatDetectors: [threatDetector],
     });
     const handler = new AilaStreamHandler(chat as never);
@@ -658,7 +589,7 @@ describe("AilaStreamHandler", () => {
       return createAilaTurnOutcome("success");
     });
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
@@ -702,7 +633,7 @@ describe("AilaStreamHandler", () => {
       return createAilaTurnOutcome("success");
     });
 
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     const handler = new AilaStreamHandler(chat as never);
 
     await consumeStream(handler.startStreaming());
@@ -728,62 +659,11 @@ describe("AilaStreamHandler", () => {
     });
   });
 
-  it("calls generationFailed and skips complete when non-agentic stream errors", async () => {
-    const chat = createMockChat({ useAgenticAila: false });
-    chat.createChatCompletionObjectStream = jest
-      .fn()
-      .mockRejectedValue(new Error("LLM stream failed"));
-    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
-
-    const handler = new AilaStreamHandler(chat as never);
-    await consumeStream(handler.startStreaming());
-
-    expect(chat.generationFailed).toHaveBeenCalledTimes(1);
-    expect(chat.complete).not.toHaveBeenCalled();
-  });
-
-  it("skips complete after a non-agentic stream error even if generation status is unchanged", async () => {
-    const chat = createMockChat({ useAgenticAila: false });
-    chat.createChatCompletionObjectStream = jest
-      .fn()
-      .mockRejectedValue(new Error("LLM stream failed"));
-    chat.generationFailed = jest.fn().mockResolvedValue(undefined);
-
-    const handler = new AilaStreamHandler(chat as never);
-    await consumeStream(handler.startStreaming());
-
-    expect(chat.generation?.status).toBe("REQUESTED");
-    expect(chat.generationFailed).toHaveBeenCalledTimes(1);
-    expect(chat.complete).not.toHaveBeenCalled();
-  });
-
-  it("skips complete when generationFailed rejects", async () => {
-    const streamError = new Error("LLM stream failed");
-    const recoveryError = new Error("generationFailed failed");
-    const chat = createMockChat({ useAgenticAila: false });
-    chat.createChatCompletionObjectStream = jest
-      .fn()
-      .mockRejectedValue(streamError);
-    chat.generationFailed = jest.fn().mockRejectedValue(recoveryError);
-
-    const handler = new AilaStreamHandler(chat as never);
-    await consumeStream(handler.startStreaming());
-
-    expect(chat.generationFailed).toHaveBeenCalledTimes(1);
-    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
-      recoveryError,
-    );
-    expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
-      streamError,
-    );
-    expect(chat.complete).not.toHaveBeenCalled();
-  });
-
   it("reports the recovery error and skips complete when the retry message cannot be sent after ailaTurn throws", async () => {
     const turnError = new Error("ailaTurn threw unexpectedly");
     const enqueueError = new Error("enqueue failed");
     mockedAilaTurn.mockRejectedValueOnce(turnError);
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     chat.enqueue.mockImplementation((message: { value?: string }) => {
       if (
         message.value ===
@@ -808,7 +688,7 @@ describe("AilaStreamHandler", () => {
     const completionError = new Error("complete failed");
     const enqueueError = new Error("enqueue failed");
     mockedAilaTurn.mockResolvedValueOnce(createAilaTurnOutcome("success"));
-    const chat = createMockChat({ useAgenticAila: true });
+    const chat = createMockChat();
     chat.complete = jest.fn().mockRejectedValue(completionError);
     chat.enqueue.mockImplementation((message: { value?: string }) => {
       if (
@@ -831,47 +711,5 @@ describe("AilaStreamHandler", () => {
     expect(chat.aila.errorReporter.reportError).toHaveBeenCalledWith(
       enqueueError,
     );
-  });
-
-  it("skips complete when non-agentic setup fails before generation exists", async () => {
-    const chat = createMockChat({ useAgenticAila: false });
-    chat.generation = undefined;
-    chat.setupGeneration = jest
-      .fn()
-      .mockRejectedValue(new Error("Generation setup failed"));
-
-    const handler = new AilaStreamHandler(chat as never);
-    await consumeStream(handler.startStreaming());
-
-    expect(chat.generationFailed).not.toHaveBeenCalled();
-    expect(chat.complete).not.toHaveBeenCalled();
-  });
-
-  it("keeps non-agentic completion behavior unchanged", async () => {
-    const chat = createMockChat({ useAgenticAila: false });
-    const handler = new AilaStreamHandler(chat as never);
-
-    await consumeStream(handler.startStreaming());
-
-    expect(chat.setupGeneration).toHaveBeenCalledTimes(1);
-    expect(chat.createChatCompletionObjectStream).toHaveBeenCalledTimes(1);
-    expect(chat.appendChunk).toHaveBeenCalledWith("stream chunk");
-    expect(chat.complete).toHaveBeenCalledTimes(1);
-    expect(chat.enqueue).toHaveBeenCalledWith({
-      type: "comment",
-      value: "CHAT_COMPLETE",
-    });
-  });
-
-  it("skips completion when the abort controller is signalled (client disconnect)", async () => {
-    const abortController = new AbortController();
-    const chat = createMockChat({ useAgenticAila: false });
-    // Abort before streaming starts so readFromStream exits immediately
-    abortController.abort();
-
-    const handler = new AilaStreamHandler(chat as never);
-    await consumeStream(handler.startStreaming(abortController));
-
-    expect(chat.complete).not.toHaveBeenCalled();
   });
 });

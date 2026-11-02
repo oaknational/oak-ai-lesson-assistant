@@ -40,8 +40,7 @@ test.describe("Modify a lesson plan (agentic)", () => {
     await test.step("Setup", async () => {
       await bypassVercelProtection(page);
       // A dedicated persona gives this spec its own user and seeded chat, so
-      // it can run in a parallel worker alongside the megaprompt spec without
-      // the two prepareUser calls re-seeding each other's chat mid-test.
+      // other specs' prepareUser calls can't re-seed it mid-test.
       const login = await prepareUser(page, "modify-lesson-plan-agentic");
       await page.goto(
         `${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`,
@@ -55,12 +54,7 @@ test.describe("Modify a lesson plan (agentic)", () => {
     { tag: ["@agentic"] },
     async ({ page }) => {
       test.setTimeout(generationTimeout * 3);
-      const { setFixture } = await applyLlmFixtures(
-        page,
-        FIXTURE_MODE,
-        "clean",
-        "agentic",
-      );
+      const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
       await test.step("Modify a lesson", async () => {
         await modifyLessonResource(page, setFixture);

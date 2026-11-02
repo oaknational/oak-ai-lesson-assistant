@@ -22,12 +22,7 @@ test("Users are banned after 3 toxic lessons", async ({ page }) => {
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
-  const { setFixture } = await applyLlmFixtures(
-    page,
-    FIXTURE_MODE,
-    "clean",
-    "agentic",
-  );
+  const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");

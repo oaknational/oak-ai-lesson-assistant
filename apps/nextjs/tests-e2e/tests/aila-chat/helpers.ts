@@ -120,20 +120,7 @@ export async function getSectionsComplete(page: Page): Promise<number> {
   }
 }
 
-export async function expectSectionsComplete(
-  page: Page,
-  numberOfSections: number,
-) {
-  const locator = page.getByTestId("chat-progress");
-  await expect(locator).toHaveText(
-    `${numberOfSections} of 10 sections complete`,
-    { timeout: 10000 },
-  );
-}
-
 export type FixtureMode = "record" | "replay";
-
-export type AilaSystem = "agentic" | "megaprompt";
 
 export type OakModerationFixture =
   "clean" | "guidance" | "toxic" | "highly-sensitive";
@@ -142,7 +129,6 @@ export const applyLlmFixtures = async (
   page: Page,
   fixtureMode: FixtureMode,
   oakModerationFixture: OakModerationFixture = "clean",
-  ailaSystem: AilaSystem = "megaprompt",
 ) => {
   let fixtureName = "";
 
@@ -151,13 +137,12 @@ export const applyLlmFixtures = async (
     headers["x-e2e-fixture-name"] = fixtureName;
     headers["x-e2e-fixture-mode"] = fixtureMode;
     headers["x-e2e-oak-moderation-fixture"] = oakModerationFixture;
-    headers["x-e2e-aila-system"] = ailaSystem;
     await route.fallback({ headers });
   });
 
   return {
     setFixture: (name: string) => {
-      fixtureName = ailaSystem === "agentic" ? `agentic/${name}` : name;
+      fixtureName = `agentic/${name}`;
     },
   };
 };

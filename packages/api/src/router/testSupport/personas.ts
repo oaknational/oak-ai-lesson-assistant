@@ -9,7 +9,6 @@ export const personaNames = [
   "nearly-banned",
   "nearly-rate-limited",
   "sharing-chat",
-  "modify-lesson-plan",
   "modify-lesson-plan-agentic",
   "needs-onboarding",
   "needs-demo-status",
@@ -64,14 +63,6 @@ export const personas: Record<PersonaName, Persona> = {
   },
   // Allows `chat.isShared` to be set/reset without leaking between tests/retries
   "sharing-chat": {
-    isOnboarded: true,
-    isDemoUser: false,
-    region: "GB",
-    chatFixture: "typical",
-    safetyViolations: 0,
-    rateLimitTokens: 0,
-  },
-  "modify-lesson-plan": {
     isOnboarded: true,
     isDemoUser: false,
     region: "GB",

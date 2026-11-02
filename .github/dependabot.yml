@@ -47,7 +47,6 @@ updates:
           - "@types/jest"
           - ts-jest
           - "@testing-library/*"
-          - setup-polly-jest
         update-types: [major, minor, patch]
       # Everything else: routine minor and patch updates in one PR. Majors
       # are left ungrouped so they surface individually for review.

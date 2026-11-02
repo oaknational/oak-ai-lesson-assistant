@@ -4,11 +4,7 @@ import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
 import { ailaTurn } from "@oakai/aila/src/lib/agentic-system/ailaTurn";
 import type { JsonPatchDocumentOptional } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
-import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
-import {
-  createOpenAIClient,
-  createVercelOpenAIClient,
-} from "@oakai/core/src/llm/openai";
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
@@ -55,14 +51,9 @@ jest.mock("@oakai/api/src/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn(),
 }));
 
-jest.mock("@oakai/api/src/utils/getAgenticAilaEnabled", () => ({
-  getAgenticAilaEnabled: jest.fn(),
-}));
-
 jest.mock("@oakai/core/src/llm/openai", () => ({
   ...jest.requireActual<object>("@oakai/core/src/llm/openai"),
   createOpenAIClient: jest.fn(),
-  createVercelOpenAIClient: jest.fn(),
 }));
 
 jest.mock("@oakai/aila/src/lib/agentic-system/ailaTurn", () => ({
@@ -120,16 +111,9 @@ describe("Chat API Route", () => {
 
     // resetMocks clears factory implementations, so set them here
     jest.mocked(fetchAndCheckUser).mockResolvedValue(userId);
-    jest.mocked(getAgenticAilaEnabled).mockResolvedValue(true);
     jest
       .mocked(createOpenAIClient)
       .mockImplementation(() => new OpenAI({ apiKey: "test" }));
-    jest.mocked(createVercelOpenAIClient).mockImplementation(
-      () =>
-        (() => {
-          throw new Error("The mega prompt path must not run in this test");
-        }) as never,
-    );
 
     // The callback sequence a real turn produces: the planner opens the
     // message, the section emits its patch, and the final document is the
@@ -176,7 +160,6 @@ describe("Chat API Route", () => {
                 useModeration: false,
                 useErrorReporting: false,
                 useThreatDetection: false,
-                useAgenticAila: options.options?.useAgenticAila,
               },
               chat: options.chat!,
               document: options.document,

@@ -1,22 +1,18 @@
-import { DEFAULT_MODEL } from "@oakai/aila/src/constants";
 import { DEFAULT_RESPONSES_MODEL } from "@oakai/aila/src/lib/agentic-system/constants";
 
 import { TRPCError } from "@trpc/server";
 
 import { adminProcedure } from "../middleware/adminAuth";
 import { router } from "../trpc";
-import { getAgenticAilaEnabled } from "../utils/getAgenticAilaEnabled";
 
 export const debugRouter = router({
-  getAilaOverlayState: adminProcedure.query(async () => {
+  getAilaOverlayState: adminProcedure.query(() => {
     if (process.env.NEXT_PUBLIC_ENVIRONMENT === "prd") {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
 
     return {
-      agenticEnabled: await getAgenticAilaEnabled(),
-      model: DEFAULT_MODEL,
-      agentModel: DEFAULT_RESPONSES_MODEL,
+      model: DEFAULT_RESPONSES_MODEL,
     };
   }),
 });

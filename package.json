@@ -49,13 +49,11 @@
   "devDependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
-    "@ai-sdk/openai": "^0.0.72",
     "@cspell/dict-en-gb": "^5.0.14",
     "@manypkg/cli": "^0.25.1",
     "@oakai/eslint-config": "workspace:*",
     "@oakai/prettier-config": "workspace:*",
     "@semantic-release/changelog": "^7.0.0",
-    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^11.0.1",
     "@types/jest": "^30.0.0",
     "autoprefixer": "^10.4.21",

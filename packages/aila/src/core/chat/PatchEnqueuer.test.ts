@@ -10,27 +10,18 @@ const message = {
 } as unknown as JsonPatchDocumentOptional;
 
 describe("PatchEnqueuer", () => {
-  // enqueueInitialField should encode and enqueue a valid patch
-  it("should encode and enqueue a valid patch when value is provided", async () => {
+  it("encodes and enqueues a message between record separators", async () => {
     const controller = {
       enqueue: jest.fn(),
     } as unknown as ReadableStreamDefaultController;
 
     const patchEnqueuer = new PatchEnqueuer(controller);
-    const path = "/title" as const;
-    const value = "Test Lesson";
 
-    await patchEnqueuer.enqueueInitialField(path, value);
+    await patchEnqueuer.enqueueMessage(message);
 
-    expect(controller.enqueue).toHaveBeenCalled();
-    const expectedPatch = `\n␞\n${JSON.stringify({
-      type: "patch",
-      reasoning: "generated",
-      value: { op: "add", path, value },
-      status: "complete",
-    })}\n␞\n`;
-
-    expect(controller.enqueue).toHaveBeenCalledWith(expectedPatch);
+    expect(controller.enqueue).toHaveBeenCalledWith(
+      `\n␞\n${JSON.stringify(message)}\n␞\n`,
+    );
   });
 
   it("skips the write when the client has disconnected and the controller is closed", async () => {

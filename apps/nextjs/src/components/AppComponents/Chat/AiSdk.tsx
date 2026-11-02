@@ -70,10 +70,6 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
     id,
     body: {
       id,
-      options: {
-        useRag: true,
-        temperature: 0.7,
-      },
     },
     fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
       lessonPlanActions.messageStarted();

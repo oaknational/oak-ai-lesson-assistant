@@ -26,12 +26,7 @@ test("User is restricted after message rate limit is reached", async ({
     await expect(page.getByTestId("chat-h1")).toBeInViewport();
   });
 
-  const { setFixture } = await applyLlmFixtures(
-    page,
-    "replay",
-    "clean",
-    "agentic",
-  );
+  const { setFixture } = await applyLlmFixtures(page, "replay");
 
   await test.step("Fill in the chat box", async () => {
     const textbox = page.getByTestId("chat-input");

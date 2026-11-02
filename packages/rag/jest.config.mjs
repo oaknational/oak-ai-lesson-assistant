@@ -16,7 +16,7 @@ const config = {
     "^@oakai/test-support/jest$": "<rootDir>/../test-support/jest.cjs",
   },
   extensionsToTreatAsEsm: [".ts"],
-  testEnvironment: "setup-polly-jest/jest-environment-node",
+  testEnvironment: "node",
   testMatch: ["**/*.test.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",

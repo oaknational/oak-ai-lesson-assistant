@@ -1,13 +1,8 @@
 import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 import { getRagLessonPlansByIds } from "@oakai/rag";
-import { allowConsoleWarn } from "@oakai/test-support";
 
-import type { Polly } from "@pollyjs/core";
 import OpenAI from "openai";
 
-import { setupPolly } from "../../tests/mocks/setupPolly";
-import type { AilaCategorisation } from "../features/categorisation";
-import { MockCategoriser } from "../features/categorisation/categorisers/MockCategoriser";
 import type { ChatPersistencePayload } from "../features/persistence/AilaPersistence";
 import { MockThreatDetector } from "../features/threatDetection/detectors/MockThreatDetector";
 import { ailaTurn } from "../lib/agentic-system/ailaTurn";
@@ -22,7 +17,6 @@ import { Aila } from "./Aila";
 import { AilaAuthenticationError } from "./AilaError";
 import type { AilaChat } from "./chat/AilaChat";
 import type { Message } from "./chat/types";
-import { MockLLMService } from "./llm/MockLLMService";
 import { CircleTheoremLesson } from "./quiz/fixtures/CircleTheoremsExampleOutput";
 
 jest.mock("../utils/threatDetection/threatDetectionHandling", () => ({
@@ -43,30 +37,6 @@ jest.mock("@oakai/rag", () => ({
 }));
 
 describe("Aila", () => {
-  let polly: Polly;
-
-  const createPromptPrisma = () =>
-    ({
-      prompt: {
-        findFirst: jest.fn().mockResolvedValue({ id: "prompt_1" }),
-      },
-      lessonSchema: {
-        findFirst: jest.fn().mockResolvedValue({ id: "lesson_schema_1" }),
-        create: jest.fn(),
-      },
-      lessonSnapshot: {
-        create: jest.fn().mockResolvedValue({ id: "lesson_snapshot_1" }),
-      },
-    }) as never;
-
-  beforeAll(() => {
-    polly = setupPolly();
-  });
-
-  afterAll(async () => {
-    await polly.stop();
-  });
-
   describe("constructing", () => {
     it("should initialise Aila instance with persistence", () => {
       const ailaInstance = new Aila({
@@ -79,7 +49,6 @@ describe("Aila", () => {
           useAnalytics: false,
           useModeration: false,
           usePersistence: true,
-          useRag: false,
         },
         plugins: [],
       });
@@ -98,7 +67,6 @@ describe("Aila", () => {
           useAnalytics: true,
           useModeration: false,
           usePersistence: false,
-          useRag: false,
         },
         plugins: [],
       });
@@ -121,7 +89,6 @@ describe("Aila", () => {
         chat: { id: "123", userId: "user123" },
         options: {
           usePersistence: false,
-          useRag: false,
           useAnalytics: false,
           useModeration: false,
           useThreatDetection: false,
@@ -137,105 +104,8 @@ describe("Aila", () => {
       expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
     });
 
-    it("should use the categoriser to determine the lesson plan from user input if the lesson plan is not already set up", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          keyStage: "key-stage-2",
-          subject: "history",
-          title: "Roman Britain",
-          topic: "The Roman Empire",
-        }),
-      };
-
-      const ailaInstance = new Aila({
-        prisma: {} as never,
-        document: {
-          content: {},
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
-            },
-          ],
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        plugins: [],
-        services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
-        },
-      });
-
-      await ailaInstance.initialise();
-
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(1);
-      expect(ailaInstance.document.content.title).toBe("Roman Britain");
-      expect(ailaInstance.document.content.subject).toBe("history");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
-    });
-
-    it("should not use the categoriser to determine the lesson plan from user input if the lesson plan is already set up", async () => {
-      const mockCategoriser = {
-        categorise: jest.fn().mockResolvedValue({
-          keyStage: "key-stage-2",
-          subject: "history",
-          title: "Roman Britain",
-          topic: "The Roman Empire",
-        }),
-      };
-      const ailaInstance = new Aila({
-        prisma: {} as never,
-        document: {
-          content: {
-            title: "Roman Britain",
-            subject: "history",
-            keyStage: "key-stage-2",
-          },
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-          messages: [
-            {
-              id: "1",
-              role: "user",
-              content:
-                "Create a lesson about Roman Britain for Key Stage 2 History",
-            },
-          ],
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        plugins: [],
-        services: {
-          chatCategoriser: mockCategoriser as unknown as AilaCategorisation,
-        },
-      });
-
-      await ailaInstance.initialise();
-      expect(mockCategoriser.categorise).toHaveBeenCalledTimes(0);
-      expect(ailaInstance.document.content.title).toBe("Roman Britain");
-      expect(ailaInstance.document.content.subject).toBe("history");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-2");
-    });
-
     // Calling initialise method successfully initializes the Aila instance
     it("should successfully initialize the Aila instance when calling the initialise method, and by default not set the lesson plan to initial values", async () => {
-      allowConsoleWarn(/\[Polly\]/, { optional: true });
       const ailaInstance = new Aila({
         prisma: {} as never,
         document: {
@@ -246,14 +116,8 @@ describe("Aila", () => {
           useAnalytics: false,
           usePersistence: false,
           useModeration: false,
-          useRag: false,
         },
         plugins: [],
-        services: {
-          chatCategoriser: {
-            categorise: jest.fn().mockResolvedValue(undefined),
-          } as unknown as AilaCategorisation,
-        },
       });
 
       await ailaInstance.initialise();
@@ -366,56 +230,6 @@ describe("Aila", () => {
     });
   });
 
-  describe("generateSync", () => {
-    // Should return a stream when generating a lesson plan with valid input
-    it("should set the initial title, subject and key stage when presented with a valid initial user input", async () => {
-      const mockChatCategoriser = new MockCategoriser({
-        mockedContent: {
-          title: "Glaciation",
-          topic: "The Landscapes of the UK",
-          subject: "geography",
-          keyStage: "key-stage-3",
-        },
-      });
-      const mockLLMService = new MockLLMService();
-
-      const ailaInstance = new Aila({
-        prisma: createPromptPrisma(),
-        document: {
-          content: {},
-        },
-        chat: { id: "123", userId: "user123" },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-          useThreatDetection: false,
-          useErrorReporting: false,
-        },
-        plugins: [],
-        services: {
-          chatLlmService: mockLLMService,
-          chatCategoriser: mockChatCategoriser,
-        },
-      });
-
-      expect(ailaInstance.document.content.title).not.toBeDefined();
-      expect(ailaInstance.document.content.subject).not.toBeDefined();
-      expect(ailaInstance.document.content.keyStage).not.toBeDefined();
-
-      await ailaInstance.initialise();
-
-      await ailaInstance.generateSync({
-        input: "Glaciation",
-      });
-
-      expect(ailaInstance.document.content.title).toBeDefined();
-      expect(ailaInstance.document.content.subject).toBeDefined();
-      expect(ailaInstance.document.content.keyStage).toBeDefined();
-    }, 20000);
-  });
-
   describe("agentic threat detection", () => {
     afterEach(() => {
       jest.restoreAllMocks();
@@ -441,14 +255,11 @@ describe("Aila", () => {
         chat: { id: "123", userId: "user123" },
         options: {
           usePersistence: false,
-          useRag: false,
           useAnalytics: false,
           useModeration: false,
-          useAgenticAila: true,
         },
         plugins: [],
         services: {
-          chatLlmService: new MockLLMService(),
           threatDetectors: () => [new MockThreatDetector({ response: true })],
         },
       });
@@ -578,7 +389,6 @@ describe("Aila", () => {
           useModeration: false,
           useThreatDetection: false,
           useErrorReporting: false,
-          useAgenticAila: true,
         },
         plugins: [],
       });
@@ -719,7 +529,6 @@ describe("Aila", () => {
             useModeration: false,
             useThreatDetection: false,
             useErrorReporting: false,
-            useAgenticAila: true,
           },
           plugins: [],
         });
@@ -823,151 +632,5 @@ describe("Aila", () => {
       await ailaInstance.ensureShutdown();
       expect(shutdownMock).toHaveBeenCalledTimes(1);
     });
-  });
-
-  describe("patching", () => {
-    it("should apply patches to a lesson plan", async () => {
-      const newTitle = "The Fall of the Roman Empire in Britain";
-      const mockedResponse = {
-        type: "patch",
-        reasoning: "Testing",
-        value: {
-          op: "replace",
-          path: "/title",
-          value: newTitle,
-        },
-      };
-      const chatLlmService = new MockLLMService([
-        JSON.stringify(mockedResponse),
-      ]);
-      const ailaInstance = new Aila({
-        prisma: createPromptPrisma(),
-        document: {
-          content: {
-            title: "Roman Britain",
-            subject: "history",
-            keyStage: "key-stage-2",
-            topic: "Roman Britain",
-          },
-        },
-        chat: {
-          id: "123",
-          userId: "user123",
-        },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-          useThreatDetection: false,
-        },
-        plugins: [],
-        services: {
-          chatLlmService,
-        },
-      });
-
-      await ailaInstance.initialise();
-
-      await ailaInstance.generateSync({
-        input:
-          "Change the title to 'This should be ignored by the mocked service'",
-      });
-
-      expect(ailaInstance.document.content.title).toBe(newTitle);
-    }, 20000);
-  });
-
-  describe("categorisation", () => {
-    it("should use the provided MockCategoriser", async () => {
-      const mockedContent = {
-        title: "Mocked Lesson Plan",
-        subject: "Mocked Subject",
-        keyStage: "key-stage-3",
-      };
-
-      const mockCategoriser = new MockCategoriser({ mockedContent });
-
-      const ailaInstance = new Aila({
-        prisma: {} as never,
-        document: {
-          content: {},
-        },
-        chat: { id: "123", userId: "user123" },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        services: {
-          chatLlmService: new MockLLMService(),
-          chatCategoriser: mockCategoriser,
-        },
-        plugins: [],
-      });
-
-      await ailaInstance.initialise();
-
-      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-    }, 8000);
-  });
-
-  describe("categorisation and LLM service", () => {
-    it("should use both MockCategoriser and MockLLMService", async () => {
-      const mockedContent = {
-        title: "Mocked Lesson Plan",
-        subject: "Mocked Subject",
-        keyStage: "key-stage-3",
-      };
-
-      const mockCategoriser = new MockCategoriser({ mockedContent });
-
-      const mockLLMResponse = [
-        '{"type":"patch","reasoning":"Update title","value":{"op":"replace","path":"/title","value":"Updated Mocked Lesson Plan"}}␞\n',
-
-        '{"type":"patch","reasoning":"Update subject","value":{"op":"replace","path":"/subject","value":"Updated Mocked Subject"}}␞\n',
-      ];
-      const mockLLMService = new MockLLMService(mockLLMResponse);
-
-      const ailaInstance = new Aila({
-        prisma: createPromptPrisma(),
-        document: {
-          content: {},
-        },
-        chat: { id: "123", userId: "user123" },
-        options: {
-          usePersistence: false,
-          useRag: false,
-          useAnalytics: false,
-          useModeration: false,
-        },
-        services: {
-          chatCategoriser: mockCategoriser,
-          chatLlmService: mockLLMService,
-        },
-        plugins: [],
-      });
-
-      await ailaInstance.initialise();
-
-      // Check if MockCategoriser was used
-      expect(ailaInstance.document.content.title).toBe("Mocked Lesson Plan");
-      expect(ailaInstance.document.content.subject).toBe("Mocked Subject");
-      expect(ailaInstance.document.content.keyStage).toBe("key-stage-3");
-
-      // Use MockLLMService to generate a response
-      await ailaInstance.generateSync({ input: "Test input" });
-
-      // Check if MockLLMService updates were applied
-      expect(ailaInstance.document.content.title).toBe(
-        "Updated Mocked Lesson Plan",
-      );
-      expect(ailaInstance.document.content.subject).toBe(
-        "Updated Mocked Subject",
-      );
-    }, 8000);
   });
 });

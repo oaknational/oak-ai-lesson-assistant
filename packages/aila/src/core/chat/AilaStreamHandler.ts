@@ -46,7 +46,6 @@ type ThreatCheckOutcome =
 type StreamOutcome =
   | { status: "success" }
   | { status: "failed" }
-  | { status: "aborted" }
   | { status: "threat_detected" }
   | { status: "threat_check_failed" };
 
@@ -68,7 +67,6 @@ export class AilaStreamHandler {
   private readonly _chat: AilaChat;
   private _controller?: ReadableStreamDefaultController;
   private readonly _patchEnqueuer: PatchEnqueuer;
-  private _streamReader?: ReadableStreamDefaultReader<string>;
   private _pendingGenerations: PendingGeneration[] = [];
 
   constructor(chat: AilaChat) {
@@ -76,10 +74,10 @@ export class AilaStreamHandler {
     this._patchEnqueuer = chat.getPatchEnqueuer();
   }
 
-  public startStreaming(abortController?: AbortController): ReadableStream {
+  public startStreaming(): ReadableStream {
     return new ReadableStream({
       start: (controller) => {
-        this.stream(controller, abortController).catch((error) => {
+        this.stream(controller).catch((error) => {
           log.error("Error in stream:", error);
           try {
             controller.error(error);
@@ -158,10 +156,9 @@ export class AilaStreamHandler {
     return { status: "safe" };
   }
 
-  private async stream(
-    controller: ReadableStreamDefaultController,
-    abortController?: AbortController,
-  ) {
+  // Client disconnects aren't watched for. Once the client has gone, the next
+  // update streamed to it throws, so the turn fails there and isn't saved
+  private async stream(controller: ReadableStreamDefaultController) {
     log.info("Starting stream", { chatId: this._chat.id });
     this.setupController(controller);
     let outcome: StreamOutcome = { status: "failed" };
@@ -183,7 +180,7 @@ export class AilaStreamHandler {
         return;
       }
 
-      outcome = await this.runTurn(abortController);
+      outcome = await this.runAgenticTurn();
 
       log.info(
         "Finished reading from stream",
@@ -199,10 +196,8 @@ export class AilaStreamHandler {
       await this.handleStreamError(e);
     } finally {
       try {
-        const status = this._chat.generation?.status;
         log.info("In finally block", {
           outcome,
-          status,
           chatId: this._chat.id,
         });
         let currentTurnMessageId: string | undefined;
@@ -227,13 +222,6 @@ export class AilaStreamHandler {
   }
 
   private async setupStreamMode() {
-    if (!this._chat.aila.options.useAgenticAila) {
-      await this.span("set-up-generation", async () => {
-        await this._chat.setupGeneration();
-      });
-      return;
-    }
-
     await this.span("initialise-chunks", () => {
       this._chat.initialiseChunks();
       return Promise.resolve();
@@ -262,40 +250,12 @@ export class AilaStreamHandler {
     return null;
   }
 
-  private async runTurn(
-    abortController?: AbortController,
-  ): Promise<StreamOutcome> {
-    if (this._chat.aila.options.useAgenticAila) {
-      return await this.runAgenticTurn();
-    }
-
-    return await this.runNonAgenticTurn(abortController);
-  }
-
   private async runAgenticTurn(): Promise<StreamOutcome> {
     return await this.span("start-agent-stream", async () => {
       const agenticTurnOutcome = await this.startAgentStream();
       return agenticTurnOutcome.status === "success"
         ? { status: "success" }
         : { status: "failed" };
-    });
-  }
-
-  private async runNonAgenticTurn(
-    abortController?: AbortController,
-  ): Promise<StreamOutcome> {
-    await this.span("set-initial-state", async () => {
-      await this._chat.handleSettingInitialState();
-    });
-
-    await this.span("handle-subject-warning", async () => {
-      await this._chat.handleSubjectWarning();
-    });
-    await this.span("start-llm-stream", async () => {
-      await this.startLLMStream();
-    });
-    return await this.span("read-from-stream", async () => {
-      return await this.readFromStream(abortController);
     });
   }
 
@@ -413,13 +373,9 @@ export class AilaStreamHandler {
 
   private async onStreamFailed(error: unknown) {
     try {
-      if (this._chat.aila.options.useAgenticAila) {
-        // ailaTurn threw rather than returning; its internal failure path never
-        // completed, so the client has not received an error message.
-        await this.enqueueGenericRetryError();
-      } else if (this._chat.generation) {
-        await this._chat.generationFailed(error);
-      }
+      // ailaTurn threw rather than returning; its internal failure path never
+      // completed, so the client has not received an error message.
+      await this.enqueueGenericRetryError();
     } catch (recoveryError) {
       log.error("Error while handling stream failure", {
         error: recoveryError,
@@ -547,51 +503,6 @@ export class AilaStreamHandler {
           message: failureMessage,
         },
       };
-    }
-  }
-
-  private async startLLMStream() {
-    await this._chat.enqueue({
-      type: "comment",
-      value: "CHAT_START",
-    });
-    const messages = this._chat.completionMessages();
-    this._streamReader =
-      await this._chat.createChatCompletionObjectStream(messages);
-  }
-
-  private async readFromStream(
-    abortController?: AbortController,
-  ): Promise<{ status: "success" | "aborted" }> {
-    if (!this._streamReader) {
-      throw new Error("Stream reader is not defined");
-    }
-    log.info("Starting to read from stream");
-    try {
-      while (abortController ? !abortController?.signal.aborted : true) {
-        const { done, value } = await this._streamReader.read();
-        if (done) {
-          log.info("Stream reading complete");
-          break;
-        }
-        if (value) {
-          this._chat.appendChunk(value);
-          this._controller?.enqueue(value);
-        }
-      }
-      if (abortController?.signal.aborted) {
-        log.info("Stream aborted", this._chat.iteration, this._chat.id);
-        return { status: "aborted" };
-      }
-      return { status: "success" };
-    } catch (e) {
-      log.error("Error reading from stream", { error: e });
-      if (abortController?.signal.aborted) {
-        log.info("Stream aborted", this._chat.iteration, this._chat.id);
-        return { status: "aborted" };
-      } else {
-        throw e;
-      }
     }
   }
 

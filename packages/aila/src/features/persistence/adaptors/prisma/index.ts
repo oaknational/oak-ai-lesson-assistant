@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
@@ -12,7 +12,6 @@ import type {
   LessonPlanKey,
 } from "../../../../protocol/schema";
 import { migrateChatData } from "../../../../protocol/schemas/versioning/migrateChatData";
-import type { AilaGeneration } from "../../../generation/AilaGeneration";
 
 const log = aiLogger("aila:persistence");
 
@@ -106,44 +105,5 @@ export class AilaPrismaPersistence extends AilaPersistence {
       keys.join("|"),
       payload.id,
     );
-  }
-
-  async upsertGeneration(generation?: AilaGeneration): Promise<void> {
-    if (!generation) return;
-
-    const payload = this.createGenerationPayload(generation);
-    if (!payload.id || !payload.userId) {
-      log.info(
-        "No ID or userId found for generation. Not persisting.",
-        generation.id,
-      );
-      return;
-    }
-
-    if (payload.id) {
-      const updatePayload: Prisma.GenerationUpdateInput = {
-        status: payload.status,
-        response: payload.response,
-        completedAt: payload.completedAt,
-        llmTimeTaken: payload.llmTimeTaken,
-      };
-      if (payload.messageId) {
-        // Only update messageId if it exists
-        updatePayload.messageId = payload.messageId;
-      }
-      await this._prisma.generation.upsert({
-        where: {
-          id: payload.id,
-          userId: payload.userId,
-        },
-        create: payload,
-        update: updatePayload,
-      });
-    } else {
-      const result = await this._prisma.generation.create({
-        data: payload,
-      });
-      generation.id = result.id;
-    }
   }
 }
