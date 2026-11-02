@@ -37,6 +37,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.150",
     "@clerk/nextjs": "7.9.18",
     "@clerk/testing": "^2.2.45",
     "@datadog/datadog-api-client": "^1.27.0",
@@ -72,7 +73,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "@vercel/functions": "^3.10.2",
     "@vercel/oidc": "^4.0.2",
-    "ai": "4.0.20",
+    "ai": "^7.0.150",
     "american-british-english-translator": "^0.2.1",
     "archiver": "^8.0.0",
     "better-react-mathjax": "3.0.3",

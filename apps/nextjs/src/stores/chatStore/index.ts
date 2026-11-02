@@ -42,8 +42,8 @@ export const createChatStore = (
     // From AI SDK
     aiSdkActions: {
       stop: () => {},
-      reload: () => Promise.resolve(null),
-      append: () => Promise.resolve(""),
+      reload: () => Promise.resolve(),
+      append: () => Promise.resolve(),
     },
 
     actions: {

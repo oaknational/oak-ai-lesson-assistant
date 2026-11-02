@@ -1,12 +1,14 @@
-import { useEffect } from "react";
+import { useMemo, useRef } from "react";
 import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
 
+import { useChat } from "@ai-sdk/react";
 import * as Sentry from "@sentry/nextjs";
-import { useChat } from "ai/react";
+import { TextStreamChatTransport } from "ai";
+import type { UIMessage } from "ai";
 import { nanoid } from "nanoid";
 import { usePathname } from "next/navigation";
 import { useChatStoreAiSdkSync } from "src/stores/chatStore/hooks/useChatStoreAiSdkSync";
@@ -18,6 +20,7 @@ import {
   useChatStore,
   useLessonPlanActions,
 } from "@/stores/AilaStoresProvider";
+import type { AiMessage, AiSdkActions } from "@/stores/chatStore/types";
 import { getAilaUrl } from "@/utils/getAilaUrl";
 
 import { findMessageIdFromContent } from "./Chat/utils";
@@ -46,6 +49,35 @@ function useActionMessages() {
   };
 }
 
+// The AI SDK stores messages as parts; the stores and the chat endpoint use
+// plain text content
+function toUIMessage(message: AiMessage): UIMessage[] {
+  if (message.role === "data") {
+    return [];
+  }
+  return [
+    {
+      id: message.id,
+      role: message.role,
+      parts: [{ type: "text", text: message.content }],
+    },
+  ];
+}
+
+function getTextContent(message: UIMessage) {
+  return message.parts
+    .map((part) => (part.type === "text" ? part.text : ""))
+    .join("");
+}
+
+function toAiMessage(message: UIMessage): AiMessage {
+  return {
+    id: message.id,
+    role: message.role,
+    content: getTextContent(message),
+  };
+}
+
 export function AiSdk({ id }: Readonly<AiSdkProps>) {
   const path = usePathname();
 
@@ -56,89 +88,112 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   // TODO: move to chat store
   const { invokeActionMessages } = useActionMessages();
 
+  // The chat keeps the transport from its first render
+  const transport = useMemo(
+    () =>
+      new TextStreamChatTransport<UIMessage>({
+        api: "/api/chat",
+        // The chat endpoint expects messages with text content
+        prepareSendMessagesRequest: ({ messages }) => ({
+          body: { id, messages: messages.map(toAiMessage) },
+        }),
+        async fetch(input: RequestInfo | URL, init?: RequestInit) {
+          lessonPlanActions.messageStarted();
+          const response = await fetch(input, init);
+          log.info("Chat: On Response");
+
+          // TODO: create onResponse handler in store and call from there
+          chatActions.scrollToBottom();
+
+          if (response.status === 401) {
+            toast.error(response.statusText);
+          }
+          if (!path?.includes("chat/[id]")) {
+            window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
+          }
+          return response;
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const {
-    messages,
-    append,
-    reload,
+    messages: uiMessages,
+    sendMessage,
+    regenerate,
     stop: stopStreaming,
-    isLoading,
+    status,
   } = useChat({
-    sendExtraMessageFields: true,
-    // NOTE: these initial messages are used by the chat endpoint
-    initialMessages,
-    generateId: () => generateMessageId({ role: "user" }),
     id,
-    body: {
-      id,
-    },
-    fetch(input: RequestInfo | URL, init?: RequestInit | undefined) {
-      lessonPlanActions.messageStarted();
-      return fetch(input, init);
-    },
+    // NOTE: these initial messages are used by the chat endpoint
+    messages: initialMessages.flatMap(toUIMessage),
+    generateId: () => generateMessageId({ role: "user" }),
+    transport,
     onError(error) {
       Sentry.captureException(new Error("Use chat error"), {
         extra: { originalError: error },
       });
-      log.error("UseChat error", { error, messages });
+      log.error("UseChat error", { error, messages: uiMessages });
 
       // Mark that an error occurred to prevent analytics tracking
       chatActions.streamingFailed();
     },
-    onResponse(response) {
-      log.info("Chat: On Response");
-
-      // TODO: create onResponse handler in store and call from there
-      chatActions.scrollToBottom();
-
-      if (response.status === 401) {
-        toast.error(response.statusText);
+    onFinish({ message, isAbort, isError }) {
+      // Stopped and failed turns are handled by stop and onError
+      if (isAbort || isError) {
+        return;
       }
-      if (!path?.includes("chat/[id]")) {
-        window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
-      }
-    },
-    onFinish(response) {
       log.info("Chat: On Finish", new Date().toISOString(), {
-        response,
+        message,
         path,
       });
 
-      invokeActionMessages(response.content);
+      invokeActionMessages(getTextContent(message));
 
       chatActions.streamingFinished();
       lessonPlanActions.messageFinished();
     },
   });
 
-  useEffect(() => {
-    /**
-     * This is a hack to ensure that the assistant messages have a stable id
-     * across server and client.
-     * We should move away from this either when the vercel/ai package supports it
-     * natively, or when we move away from streaming.
-     */
-    return messages.forEach((message) => {
-      if (message.role !== "assistant") {
-        return;
-      }
+  /**
+   * This is a hack to ensure that the assistant messages have a stable id
+   * across server and client.
+   * We should move away from this either when the AI SDK supports it
+   * natively, or when we move away from streaming.
+   */
+  const pendingIds = useRef(new Map<string, string>());
+  const messages = useMemo(
+    () =>
+      uiMessages.map((uiMessage) => {
+        const message = toAiMessage(uiMessage);
+        if (message.role !== "assistant" || message.id.startsWith("a-")) {
+          return message;
+        }
 
-      const idIsStable = message.id.startsWith("a-");
-      if (idIsStable) {
-        return;
-      }
+        const idFromContent = findMessageIdFromContent(message);
+        if (idFromContent) {
+          return { ...message, id: idFromContent };
+        }
 
-      const idFromContent = findMessageIdFromContent(message);
-      if (idFromContent) {
-        message.id = idFromContent;
-        return;
-      }
+        let pendingId = pendingIds.current.get(uiMessage.id);
+        if (!pendingId) {
+          pendingId = "TEMP_PENDING_" + nanoid();
+          pendingIds.current.set(uiMessage.id, pendingId);
+        }
+        return { ...message, id: pendingId };
+      }),
+    [uiMessages],
+  );
 
-      message.id = "TEMP_PENDING_" + nanoid();
-    });
-  }, [messages]);
+  const isLoading = status === "submitted" || status === "streaming";
+  const stop: AiSdkActions["stop"] = () => void stopStreaming();
+  const append: AiSdkActions["append"] = ({ content }) =>
+    sendMessage({ text: content });
+  const reload: AiSdkActions["reload"] = () => regenerate();
 
   // Hooks to update the Zustand stores
-  useChatStoreAiSdkSync(messages, isLoading, stopStreaming, append, reload);
+  useChatStoreAiSdkSync(messages, isLoading, stop, append, reload);
   useLessonPlanStoreAiSdkSync(messages, isLoading);
 
   return null;

@@ -1,9 +1,15 @@
 import { readFileSync } from "fs";
+import { createRequire } from "module";
 import { dirname, join } from "path";
 import { pathsToModuleNameMapper } from "ts-jest";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const {
+  esmTransform,
+  esmTransformIgnorePatterns,
+} = require("../../packages/test-support/esm.cjs");
 const tsconfig = JSON.parse(
   readFileSync(join(__dirname, "./tsconfig.test.json"), "utf-8"),
 );
@@ -21,7 +27,9 @@ const config = {
     ],
     "^.+\\.svg$": "<rootDir>/jest.svgTransform.mjs",
     "^.+\\.(css|scss|png|jpg|jpeg|gif|webp|avif)$": "jest-transform-stub",
+    ...esmTransform,
   },
+  transformIgnorePatterns: esmTransformIgnorePatterns,
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper: {
     ...pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {

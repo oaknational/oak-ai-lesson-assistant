@@ -1,11 +1,17 @@
 import type { MessagePart } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 
-import type { Message as AiMessage } from "ai";
-import type { ChatRequestOptions, CreateMessage } from "ai";
 import type { StoreApi } from "zustand";
 
-export { AiMessage };
+/**
+ * A chat message as the store and UI use it: plain text content. The AI SDK
+ * represents messages as parts, and AiSdk.tsx converts between the two
+ */
+export type AiMessage = {
+  id: string;
+  role: "system" | "user" | "assistant" | "data";
+  content: string;
+};
 
 export type ChatAction =
   | { type: "message"; content: string }
@@ -14,11 +20,8 @@ export type ChatAction =
 
 export type AiSdkActions = {
   stop: () => void;
-  reload: () => Promise<string | null | undefined>;
-  append: (
-    message: AiMessage | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>;
+  reload: () => Promise<void>;
+  append: (message: { content: string; role: "user" }) => Promise<void>;
 };
 
 export type AilaStreamingStatus =
@@ -66,7 +69,7 @@ export type ChatState = {
   };
 };
 
-export type ParsedMessage = Omit<AiMessage, "parts"> & {
+export type ParsedMessage = AiMessage & {
   parts: MessagePart[];
   hasError: boolean;
   isEditing: boolean;

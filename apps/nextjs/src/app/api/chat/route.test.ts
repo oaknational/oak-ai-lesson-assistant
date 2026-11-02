@@ -78,19 +78,14 @@ type StreamedAssistantMessage = {
 };
 
 /**
- * Splits the response body into what the client receives: events framed by
- * ␞, and the assistant's message streamed between them. Every non-blank
- * segment must be valid JSON, so a malformed message fails the test.
+ * Splits the plain text response into what the client receives: events
+ * framed by ␞, and the assistant's message streamed between them. Every
+ * non-blank segment must be valid JSON, so a malformed message fails the test.
  */
 function parseStreamedEvents(
   body: string,
 ): (JsonPatchDocumentOptional | StreamedAssistantMessage)[] {
-  const text = body
-    .split("\n")
-    .filter((line) => line.startsWith("0:"))
-    .map((line) => JSON.parse(line.slice(2)) as string)
-    .join("");
-  return text
+  return body
     .split("␞")
     .map((segment) => segment.trim())
     .filter((segment) => segment.length > 0)

@@ -9,9 +9,9 @@ import {
   OakTextInput,
 } from "@oaknational/oak-components";
 import { Flex } from "@radix-ui/themes";
-import type { Message } from "ai";
 
 import { usePosthogFeedbackSurvey } from "@/hooks/surveys/usePosthogFeedbackSurvey";
+import type { AiMessage } from "@/stores/chatStore/types";
 
 import ModalFooterButtons from "./ModalFooterButtons";
 
@@ -20,7 +20,7 @@ const log = aiLogger("chat");
 type ShareChatProps = {
   chatId: string | undefined;
   closeDialog: () => void;
-  messages?: Message[];
+  messages?: AiMessage[];
 };
 
 const ReportContentDialog = ({

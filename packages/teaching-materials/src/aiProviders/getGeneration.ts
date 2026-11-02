@@ -7,7 +7,12 @@ import { type ProviderKey, providers } from ".";
 const log = aiLogger("teaching-materials");
 
 export const getLLMGeneration = async <T>(
-  document: { prompt: string; systemMessage: string; schema: ZodType<T> },
+  document: {
+    prompt: string;
+    systemMessage: string;
+    schema: ZodType<T>;
+    jsonMode?: boolean;
+  },
   provider: ProviderKey,
 ) => {
   const model = providers[provider];

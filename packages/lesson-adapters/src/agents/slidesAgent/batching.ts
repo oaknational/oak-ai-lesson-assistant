@@ -97,7 +97,7 @@ Reminder: Return your response using the schema with textEdits, tableCellEdits, 
   const { output, text } = await generateText({
     model: openai(config.model ?? "gpt-4o-mini"),
     output: Output.object({ schema: config.schema }),
-    system: config.prompt,
+    instructions: config.prompt,
     prompt,
     abortSignal: AbortSignal.timeout(LLM_TIMEOUT_MS),
   });

@@ -122,12 +122,10 @@ async function generateChatStream(aila: Aila): Promise<Response> {
       try {
         invariant(aila, "Aila instance is required");
         const result = await aila.generate();
-        const transformStream = new TransformStream({
+        // The client reads the response as a plain text stream
+        const transformStream = new TransformStream<string, Uint8Array>({
           transform(chunk, controller) {
-            const formattedChunk = new TextEncoder().encode(
-              `0:${JSON.stringify(chunk)}\n`,
-            );
-            controller.enqueue(formattedChunk);
+            controller.enqueue(new TextEncoder().encode(chunk));
           },
         });
 

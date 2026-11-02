@@ -45,7 +45,7 @@ export async function classifyLessonAdaptIntent(
   const { output } = await generateText({
     model: openai("gpt-4o-mini"),
     output: Output.object({ schema: intentSchema }),
-    system: SYSTEM_PROMPT,
+    instructions: SYSTEM_PROMPT,
     prompt: userPrompt,
   });
 
