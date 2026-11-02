@@ -34,9 +34,9 @@ const FILTER_OUT_PHRASES: ReadonlySet<string> = new Set([
   "triangles",
 ]);
 
-export class AilaAmericanisms<T extends AilaDocumentContent>
-  implements AilaAmericanismsFeature
-{
+export class AilaAmericanisms<
+  T extends AilaDocumentContent,
+> implements AilaAmericanismsFeature {
   private findSectionAmericanisms(
     section: keyof T,
     document: T,

@@ -32,7 +32,7 @@ export const useModerationFeedbackSurvey = ({
 
   const isValid = comment.trim().length > 0;
 
-  async function onSubmit(e?: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e?: React.SubmitEvent<HTMLFormElement>) {
     e?.preventDefault();
     if (!isValid) {
       return;

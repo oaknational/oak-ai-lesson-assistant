@@ -98,7 +98,7 @@ export const FAQPageContent = () => {
           </OakUL>
         </OakBox>
 
-        <OakBoxCustomMaxWidth customMaxWidth={850}>
+        <OakBoxCustomMaxWidth $customMaxWidth={850}>
           <div className="mb-20">
             <GetInTouchBox />
           </div>

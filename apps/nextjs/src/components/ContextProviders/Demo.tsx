@@ -21,8 +21,7 @@ type Demo = {
 };
 
 export type DemoContextProps = { isSharingEnabled: boolean } & (
-  | { isDemoUser: true; demo: Demo }
-  | { isDemoUser: false; demo: undefined }
+  { isDemoUser: true; demo: Demo } | { isDemoUser: false; demo: undefined }
 );
 
 export const DemoContext = createContext<DemoContextProps | null>(null);

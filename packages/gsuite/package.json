@@ -15,7 +15,7 @@
   "dependencies": {
     "@googleapis/drive": "^8.7.0",
     "@googleapis/slides": "^1.0.5",
-    "dotenv-cli": "^6.0.0",
+    "dotenv-cli": "^11.0.0",
     "google-auth-library": "^9.7.0",
     "zod": "3.25.76"
   },
@@ -25,6 +25,6 @@
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "5.9.2"
+    "typescript": "5.9.3"
   }
 }

@@ -218,7 +218,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
           $gap="spacing-56"
           $pv={["spacing-0", "spacing-80"]}
           $background={"bg-decorative3-very-subdued"}
-          fullWidthBgColor={"lavender30"}
+          $fullWidthBgColor={"lavender30"}
         >
           <OakFlex
             $pv={["spacing-80"]}
@@ -267,7 +267,7 @@ export function HomePageContent({ pageData }: HomePageProps) {
 }
 
 const OakFlexWithBackground = styled(OakFlex)<{
-  fullWidthBgColor: OakColorToken;
+  $fullWidthBgColor: OakColorToken;
 }>`
   position: relative;
   &::before {
@@ -278,8 +278,8 @@ const OakFlexWithBackground = styled(OakFlex)<{
     z-index: -1;
     height: 100%;
     width: 150vw;
-    background-color: ${(props: { fullWidthBgColor: OakColorToken }) =>
-      oakColorTokens[props.fullWidthBgColor]};
+    background-color: ${(props: { $fullWidthBgColor: OakColorToken }) =>
+      oakColorTokens[props.$fullWidthBgColor]};
   }
   /* img {
     max-width: 300px;
@@ -310,7 +310,7 @@ function HomePageHero({ pageData }: HomePageProps) {
         <OakFlexCustomMaxWidthWithHalfWidth
           $flexDirection={"column"}
           $gap={"spacing-24"}
-          customMaxWidth={631}
+          $customMaxWidth={631}
           $width={"100%"}
         >
           <OakHeading tag="h1" $font={"heading-4"}>
@@ -340,7 +340,7 @@ function HomePageHero({ pageData }: HomePageProps) {
           $borderColor="border-primary"
           $borderStyle={"solid"}
           $ba={"border-solid-xl"}
-          customMaxWidth={600}
+          $customMaxWidth={600}
           $height="fit-content"
           $width="100%"
         >
@@ -452,7 +452,7 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             $borderColor="border-primary"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
-            customMaxWidth={600}
+            $customMaxWidth={600}
             $height="fit-content"
           >
             <StyledMuxPlayer

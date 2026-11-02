@@ -1,4 +1,4 @@
-import { findLast } from "remeda/dist/commonjs/findLast";
+import { findLast } from "remeda";
 
 interface HasRole {
   role: string;
@@ -9,6 +9,5 @@ export function getLastAssistantMessage<T extends HasRole>(
   messages: T[],
 ): (T & { role: "assistant" }) | undefined {
   return findLast(messages, (m) => m.role === "assistant") as
-    | (T & { role: "assistant" })
-    | undefined;
+    (T & { role: "assistant" }) | undefined;
 }

@@ -6,13 +6,13 @@ import tsParser from "@typescript-eslint/parser";
 import prettierConfig from "eslint-config-prettier";
 import importPlugin from "eslint-plugin-import";
 import jestPlugin from "eslint-plugin-jest";
-import packageJsonRecommended from "eslint-plugin-package-json/configs/recommended";
+import packageJsonPlugin from "eslint-plugin-package-json";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import storybookPlugin from "eslint-plugin-storybook";
 import turboPlugin from "eslint-plugin-turbo";
 import globals from "globals";
-import jsonParser from "jsonc-eslint-parser";
+import * as jsonParser from "jsonc-eslint-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -48,7 +48,6 @@ const packageConfigs = packages.map((pkg) => ({
       ecmaVersion: "latest",
       sourceType: "module",
       projectService: true,
-      project: [`${pkg.dir}/tsconfig.json`],
       tsconfigRootDir: projectRoot,
       warnOnUnsupportedTypeScriptVersion: false,
     },
@@ -109,7 +108,24 @@ const config = [
   ignores,
   eslint.configs.recommended,
   prettierConfig,
-  packageJsonRecommended,
+  packageJsonPlugin.configs.recommended,
+  {
+    // prettier-plugin-packagejson owns key order, and sorts scripts differently
+    files: ["**/package.json"],
+    rules: {
+      "package-json/sort-collections": "off",
+      // Workspace packages aren't published, so publishing metadata isn't needed
+      "package-json/require-attribution": "off",
+      "package-json/require-description": "off",
+      "package-json/require-exports": "off",
+      "package-json/require-files": "off",
+      "package-json/require-repository": "off",
+      "package-json/require-sideEffects": "off",
+      "package-json/require-type": "off",
+      "package-json/valid-author": "off",
+      "package-json/valid-description": "off",
+    },
+  },
   {
     files: ["**/*.json"],
     languageOptions: {
@@ -203,7 +219,6 @@ const config = [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: ["packages/db/tsconfig.json"],
         tsconfigRootDir: projectRoot,
       },
     },

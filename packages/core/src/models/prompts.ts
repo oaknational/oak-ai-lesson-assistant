@@ -4,12 +4,7 @@ import { PromptTemplate } from "langchain/prompts";
 
 // When we add structured parsing we can find a better type than this
 export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 export type Json = { [key: string]: JsonValue };
 
 export class Prompts {

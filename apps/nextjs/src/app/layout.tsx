@@ -1,6 +1,5 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import { Monitoring } from "react-scan/dist/core/monitor/params/next";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { Theme } from "@radix-ui/themes";
@@ -31,11 +30,6 @@ const provided_vercel_url =
   process.env.VERCEL_URL && process.env.VERCEL_URL?.length > 0
     ? process.env.VERCEL_URL
     : process.env.NEXT_PUBLIC_VERCEL_URL_FALLBACK;
-
-const reactScanApiKey = process.env.NEXT_PUBLIC_REACT_SCAN_KEY;
-const addReactScanMonitor =
-  process.env.NEXT_PUBLIC_RENDER_MONITOR === "true" &&
-  reactScanApiKey !== undefined;
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -102,12 +96,6 @@ export default async function RootLayout({
               GeistMono.variable,
             )}
           >
-            {addReactScanMonitor && (
-              <Monitoring
-                apiKey={reactScanApiKey}
-                url={process.env.NEXT_PUBLIC_REACT_SCAN_URL}
-              />
-            )}
             <Theme
               accentColor="blue"
               grayColor="olive"

@@ -63,11 +63,13 @@ export async function POST(req: Request) {
     try {
       const payload = await req.json();
       const body = JSON.stringify(payload);
-      evt = wh.verify(body, {
+      // Throws if the signature is invalid; returns nothing since svix 2
+      wh.verify(body, {
         "svix-id": svixId,
         "svix-timestamp": svixTimestamp,
         "svix-signature": svixSignature,
-      }) as WebhookEvent;
+      });
+      evt = payload as WebhookEvent;
     } catch (err) {
       log.error("Error verifying webhook:", err);
       return new Response("Error occurred", {

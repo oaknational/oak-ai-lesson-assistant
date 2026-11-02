@@ -14,12 +14,12 @@ jobs:
       all_changed_files: ${{ steps.changed-files.outputs.all_changed_files }}
       any_changed: ${{ steps.changed-files.outputs.any_changed }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         with:
           files: |
             apps/nextjs/**
@@ -32,27 +32,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          version: 8
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
+          node-version-file: package.json
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
       - name: Inject Doppler env vars
-        uses: dopplerhq/secrets-fetch-action@v1.2.0
+        uses: dopplerhq/secrets-fetch-action@451892f16195f9ac360e1a5bcbf0b5fd0e957534 # v2.0.0
         id: doppler
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
       - name: Run Chromatic
-        uses: chromaui/action@latest
+        uses: chromaui/action@e50abd573c8a789526f165fec06137a7c21d7299 # v18.13.0
         with:
           workingDir: apps/nextjs
           exitZeroOnChanges: true

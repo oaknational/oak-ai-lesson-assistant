@@ -30,8 +30,7 @@ export type ResolvedInstructions = {
 };
 
 type InstructionsValue =
-  | string
-  | ((ctx: AilaExecutionContext) => string | ResolvedInstructions);
+  string | ((ctx: AilaExecutionContext) => string | ResolvedInstructions);
 
 function resolveInstructions(
   instructions: InstructionsValue,

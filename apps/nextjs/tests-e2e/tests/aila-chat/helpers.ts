@@ -136,10 +136,7 @@ export type FixtureMode = "record" | "replay";
 export type AilaSystem = "agentic" | "megaprompt";
 
 export type OakModerationFixture =
-  | "clean"
-  | "guidance"
-  | "toxic"
-  | "highly-sensitive";
+  "clean" | "guidance" | "toxic" | "highly-sensitive";
 
 export const applyLlmFixtures = async (
   page: Page,

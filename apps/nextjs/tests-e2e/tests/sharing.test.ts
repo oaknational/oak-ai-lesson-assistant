@@ -43,7 +43,9 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     await bypassVercelProtection(context);
     const login = await prepareUser(page, "sharing-chat");
 
-    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`);
+    await page.goto(`${TEST_BASE_URL}${getAilaUrl("lesson")}/${login.chatId}`, {
+      waitUntil: "domcontentloaded",
+    });
     await expectFinished(page);
     return login.chatId;
   });
@@ -56,6 +58,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     await bypassVercelProtection(anonymousPage);
     await anonymousPage.goto(
       `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+      { waitUntil: "domcontentloaded" },
     );
 
     const title = anonymousPage.locator("h1");
@@ -83,9 +86,11 @@ test("sharing a lesson", async ({ page, context, browser }) => {
   });
 
   await test.step("Share page", async () => {
+    // Don't wait for the load event: a slow third-party script can hold it
+    // back long after the page has rendered. checkPage waits for the content.
     await sharePage.waitForURL(
       `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
-      { timeout: 30000 },
+      { timeout: 30000, waitUntil: "domcontentloaded" },
     );
     await checkPage(sharePage);
   });
@@ -98,6 +103,7 @@ test("sharing a lesson", async ({ page, context, browser }) => {
     await bypassVercelProtection(anonymousPage);
     await anonymousPage.goto(
       `${TEST_BASE_URL}${getAilaUrl("lesson")}/${chatId}/share`,
+      { waitUntil: "domcontentloaded" },
     );
 
     await checkPage(anonymousPage);

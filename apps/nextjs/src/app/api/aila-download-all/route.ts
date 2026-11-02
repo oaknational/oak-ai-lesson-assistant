@@ -4,7 +4,7 @@ import { downloadDriveFile } from "@oakai/exports";
 import { auth } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
 import { kv } from "@vercel/kv";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 import { PassThrough } from "stream";
 
 import { withSentry } from "@/lib/sentry/withSentry";
@@ -91,7 +91,7 @@ async function getHandler(req: Request): Promise<Response> {
   await kv.set(taskId, "loading");
 
   const zipStream = new PassThrough();
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = new ZipArchive({ zlib: { level: 9 } });
   archive.pipe(zipStream);
 
   let filesProcessed = 0;
