@@ -37,12 +37,7 @@ test(
       await expect(page.getByTestId("chat-h1")).toBeInViewport();
     });
 
-    const { setFixture } = await applyLlmFixtures(
-      page,
-      FIXTURE_MODE,
-      "clean",
-      "agentic",
-    );
+    const { setFixture } = await applyLlmFixtures(page, FIXTURE_MODE);
 
     await test.step("Send message and generate full lesson plan", async () => {
       const maxIterations = 20;

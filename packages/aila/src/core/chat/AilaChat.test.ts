@@ -2,25 +2,6 @@ import { subjectWarnings } from "@oakai/core/src/utils/subjects";
 
 import { AilaChat } from "./AilaChat";
 
-describe("AilaChat", () => {
-  it("still requires generation for non-threat errors", async () => {
-    const chat = new AilaChat({
-      id: "chat_123",
-      userId: "user_123",
-      aila: {
-        options: {
-          quizSources: [],
-          useAgenticAila: true,
-        },
-      } as never,
-    });
-
-    await expect(
-      chat.generationFailed(new Error("Unexpected failure")),
-    ).rejects.toThrow("Generation not initialised");
-  });
-});
-
 describe("AilaChat.handleSubjectWarning", () => {
   afterEach(() => {
     jest.restoreAllMocks();
@@ -39,7 +20,6 @@ describe("AilaChat.handleSubjectWarning", () => {
       aila: {
         options: {
           quizSources: [],
-          useAgenticAila: true,
         },
         document: { content: { subject } },
       } as never,

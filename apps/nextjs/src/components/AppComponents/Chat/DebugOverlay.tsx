@@ -43,16 +43,6 @@ export function DebugOverlay() {
 
   const rows = [
     {
-      label: "Agentic",
-      value: overlayState.isLoading
-        ? "checking"
-        : !overlayState.data
-          ? "error"
-          : overlayState.data.agenticEnabled
-            ? "enabled"
-            : "disabled",
-    },
-    {
       label: "Stream",
       value: ailaStreamingStatus,
     },
@@ -63,14 +53,6 @@ export function DebugOverlay() {
         : !overlayState.data
           ? "error"
           : overlayState.data.model,
-    },
-    {
-      label: "Agent",
-      value: overlayState.isLoading
-        ? "checking"
-        : !overlayState.data
-          ? "error"
-          : overlayState.data.agentModel,
     },
   ];
 

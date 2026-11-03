@@ -37,11 +37,8 @@ export interface AilaAnalyticsService {
 
 export interface AilaDocumentService {
   content: AilaDocumentContent;
-  readonly hasInitialisedContentFromMessages: boolean;
   extractAndApplyLlmPatches(patches: string): void;
   applyValidPatches(validPatches: ValidPatchDocument[]): void;
-  initialise(content: AilaDocumentContent): void;
-  initialiseContentFromMessages(messages: Message[]): Promise<void>;
 }
 
 export interface AilaChatService {
@@ -60,7 +57,7 @@ export interface AilaChatService {
   readonly quizService: QuizService;
   loadChat({ store }: { store: string }): Promise<void>;
   addMessage(message: Message): void;
-  startStreaming(abortController?: AbortController): ReadableStream;
+  startStreaming(): ReadableStream;
 }
 
 export interface AilaQuizService {

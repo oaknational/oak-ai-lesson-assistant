@@ -23,10 +23,6 @@ function isControllerClosed(error: unknown): boolean {
   );
 }
 
-// Paths that PatchString schema accepts
-type StringPatchPath =
-  "/title" | "/keyStage" | "/topic" | "/subject" | "/learningOutcome";
-
 export class PatchEnqueuer {
   private controller?: ReadableStreamDefaultController;
 
@@ -65,32 +61,10 @@ export class PatchEnqueuer {
     return this.enqueuePromise;
   }
 
-  public enqueueInitialField(
-    path: StringPatchPath,
-    value: string,
-  ): Promise<void> {
-    return this.enqueueOperation(() => {
-      const patch = this.createPatch(path, value);
-      this.safeEnqueue(this.formatPatch(patch));
-    });
-  }
-
   public enqueueMessage(message: JsonPatchDocumentOptional): Promise<void> {
     return this.enqueueOperation(() => {
       this.safeEnqueue(this.formatPatch(message));
     });
-  }
-
-  private createPatch(
-    path: StringPatchPath,
-    value: string,
-  ): JsonPatchDocumentOptional {
-    return {
-      type: "patch",
-      reasoning: "generated",
-      value: { op: "add" as const, path, value },
-      status: "complete",
-    };
   }
 
   private formatPatch(patch: JsonPatchDocumentOptional): string {

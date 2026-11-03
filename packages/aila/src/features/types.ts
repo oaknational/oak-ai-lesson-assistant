@@ -7,7 +7,6 @@ import type {
   AilaErrorBreadcrumb,
   AilaErrorSeverity,
 } from "./errorReporting/types";
-import type { AilaGeneration } from "./generation/AilaGeneration";
 import type { AilaThreatDetector } from "./threatDetection";
 
 export interface AilaModerationFeature {
@@ -30,7 +29,6 @@ export interface AilaPersistenceFeature {
   name: string;
   loadChat(): Promise<AilaPersistedChat | null>;
   upsertChat(): Promise<void>;
-  upsertGeneration(generation?: AilaGeneration): Promise<void>;
 }
 
 export interface AilaThreatDetectionFeature {
@@ -58,11 +56,4 @@ export interface AilaErrorReportingFeature {
     message?: string,
     breadcrumbs?: { category: string; message: string },
   ): T | null;
-}
-
-export interface AilaCategorisationFeature {
-  categorise<T extends AilaDocumentContent>(
-    messages: Message[],
-    content: AilaDocumentContent,
-  ): Promise<T | undefined>;
 }

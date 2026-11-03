@@ -55,87 +55,93 @@ const runTurn = async (
 
 // --- Test -------------------------------------------------------------------
 
-describe("ailaTurn e2e happy path with continue loop", () => {
-  test.skip("builds a complete lesson from a short prompt using continue", async () => {
-    const userPrompt = "KS4 circle theorems";
-    const openai = new OpenAI();
-    const runtime: AilaRuntimeContext = {
-      config: { mathsQuizEnabled: true },
-      plannerAgent: createOpenAIPlannerAgent(openai),
-      sectionAgents: createSectionAgentRegistry({
-        openai,
-        customAgentHandlers: {
-          "starterQuiz--maths": () =>
-            Promise.resolve({
-              error: null,
-              data: {
-                version: "v3",
-                questions: [],
-                imageAttributions: [],
-                imageMetadata: [],
-              },
-            }),
-          "exitQuiz--maths": () =>
-            Promise.resolve({
-              error: null,
-              data: {
-                version: "v3",
-                questions: [],
-                imageAttributions: [],
-                imageMetadata: [],
-              },
-            }),
-        },
-      }),
-      messageToUserAgent: createOpenAIMessageToUserAgent(openai),
-      britishEnglishCorrectorAgent:
-        createOpenAIBritishEnglishCorrectorAgent(openai),
-      fetchRelevantLessons: () => Promise.resolve([]),
-    };
+// Makes real OpenAI calls, so only runs on request: RUN_LLM_TESTS=true
+const runLlmTests = process.env.RUN_LLM_TESTS === "true";
 
-    const messages: ChatMessage[] = [
-      { id: "m1", role: "user", content: userPrompt },
-    ];
+(runLlmTests ? describe : describe.skip)(
+  "ailaTurn e2e happy path with continue loop",
+  () => {
+    test("builds a complete lesson from a short prompt using continue", async () => {
+      const userPrompt = "KS4 circle theorems";
+      const openai = new OpenAI();
+      const runtime: AilaRuntimeContext = {
+        config: { mathsQuizEnabled: true },
+        plannerAgent: createOpenAIPlannerAgent(openai),
+        sectionAgents: createSectionAgentRegistry({
+          openai,
+          customAgentHandlers: {
+            "starterQuiz--maths": () =>
+              Promise.resolve({
+                error: null,
+                data: {
+                  version: "v3",
+                  questions: [],
+                  imageAttributions: [],
+                  imageMetadata: [],
+                },
+              }),
+            "exitQuiz--maths": () =>
+              Promise.resolve({
+                error: null,
+                data: {
+                  version: "v3",
+                  questions: [],
+                  imageAttributions: [],
+                  imageMetadata: [],
+                },
+              }),
+          },
+        }),
+        messageToUserAgent: createOpenAIMessageToUserAgent(openai),
+        britishEnglishCorrectorAgent:
+          createOpenAIBritishEnglishCorrectorAgent(openai),
+        fetchRelevantLessons: () => Promise.resolve([]),
+      };
 
-    const persisted: AilaPersistedState = {
-      messages,
-      initialDocument: {},
-      relevantLessons: null,
-      ragFetched: { status: "not_fetched", searchIdentity: null },
-    };
+      const messages: ChatMessage[] = [
+        { id: "m1", role: "user", content: userPrompt },
+      ];
 
-    let currentDoc: PartialLessonPlan = persisted.initialDocument;
-    let iterations = 0;
-    const maxIterations = 15;
+      const persisted: AilaPersistedState = {
+        messages,
+        initialDocument: {},
+        relevantLessons: null,
+        ragFetched: { status: "not_fetched", searchIdentity: null },
+      };
 
-    while (iterations < maxIterations) {
-      const { nextDoc, ailaMessage } = await runTurn(persisted, runtime);
+      let currentDoc: PartialLessonPlan = persisted.initialDocument;
+      let iterations = 0;
+      const maxIterations = 15;
 
-      // Record assistant response and update state for next turn
-      persisted.messages.push({
-        id: `a${iterations}`,
-        role: "assistant",
-        content: ailaMessage,
-      });
-      currentDoc = nextDoc;
-      persisted.initialDocument = currentDoc;
+      while (iterations < maxIterations) {
+        const { nextDoc, ailaMessage } = await runTurn(persisted, runtime);
 
-      // Check for completion against the strict schema
-      if (isComplete(currentDoc)) {
-        expect(ailaMessage).toBeTruthy();
-        break;
+        // Record assistant response and update state for next turn
+        persisted.messages.push({
+          id: `a${iterations}`,
+          role: "assistant",
+          content: ailaMessage,
+        });
+        currentDoc = nextDoc;
+        persisted.initialDocument = currentDoc;
+
+        // Check for completion against the strict schema
+        if (isComplete(currentDoc)) {
+          expect(ailaMessage).toBeTruthy();
+          break;
+        }
+
+        // Otherwise, ask to continue
+        persisted.messages.push({
+          id: `u${iterations}`,
+          role: "user",
+          content: "continue",
+        });
+        iterations++;
       }
 
-      // Otherwise, ask to continue
-      persisted.messages.push({
-        id: `u${iterations}`,
-        role: "user",
-        content: "continue",
-      });
-      iterations++;
-    }
-
-    // Final assertion: we should have completed within the limit
-    expect(isComplete(currentDoc)).toBe(true);
-  });
-});
+      // Final assertion: we should have completed within the limit
+      expect(isComplete(currentDoc)).toBe(true);
+    });
+  },
+);

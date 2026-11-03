@@ -4,6 +4,7 @@ import { getEncoding } from "js-tiktoken";
 import { PostHog } from "posthog-node";
 import invariant from "tiny-invariant";
 
+import { AGENTIC_MODEL_ID } from "../../../constants";
 import type { AilaServices } from "../../../core/AilaServices";
 import { reportCompletionAnalyticsEvent } from "../../../lib/openai/OpenAICompletionWithLogging";
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
@@ -70,7 +71,7 @@ export class PosthogAnalyticsAdapter extends AnalyticsAdapter {
       userId: this._aila.userId,
       chatId: this._aila.chatId,
       queryDuration,
-      model: this._aila.options.model,
+      model: AGENTIC_MODEL_ID,
       totalTokens,
       promptTokens,
       completionTokens,

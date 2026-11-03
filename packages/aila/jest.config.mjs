@@ -31,7 +31,7 @@ const config = {
   preset: "ts-jest/presets/default-esm",
   moduleNameMapper,
   extensionsToTreatAsEsm: [".ts"],
-  testEnvironment: "setup-polly-jest/jest-environment-node",
+  testEnvironment: "node",
   testMatch: ["**/*.test.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   rootDir: ".",

@@ -16,6 +16,9 @@ import { seedChat } from "./userPreparation/seedChat";
 const log = aiLogger("testing");
 
 const branch = process.env.VERCEL_GIT_COMMIT_REF ?? os.hostname();
+// Replace non-alphanumeric characters with -. Clerk rejects names that look
+// like domains, such as macOS hostnames ending in ".local"
+const branchSlug = branch.replace(/\W+/g, "-").slice(-15);
 
 /**
  * @example test+adams-macbook-pro-local+typical+clerk_test@thenational.academy
@@ -24,8 +27,7 @@ const generateEmailAddress = (personaName: keyof typeof personas) => {
   const parts = [
     // All users use the "test@thenational.academy" mailbox with a `+` alias
     "test",
-    // Replace non-alphanumeric characters with -
-    branch.replace(/\W+/g, "-").slice(-15),
+    branchSlug,
     // A new login for each persona
     personaName,
     // Allows signing in with the email_code strategy
@@ -65,7 +67,7 @@ const findOrCreateUser = async (
   log.info("Creating test user", { email });
   const newUser = await client.users.createUser({
     emailAddress: [email],
-    firstName: branch,
+    firstName: branchSlug,
     lastName: personaName,
   });
 

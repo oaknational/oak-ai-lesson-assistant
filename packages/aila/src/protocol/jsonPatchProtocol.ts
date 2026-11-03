@@ -476,20 +476,7 @@ export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
   "patchDocumentSchema",
 );
 
-export const LLMResponseSchema = z.discriminatedUnion("type", [
-  PatchDocumentSchema,
-  PromptDocumentSchema,
-  StateDocumentSchema,
-  CommentDocumentSchema,
-  ErrorDocumentSchema,
-]);
-
-export const LLMResponseJsonSchema = zodToJsonSchema(
-  LLMResponseSchema,
-  "llmResponseSchema",
-);
-
-export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
+const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,

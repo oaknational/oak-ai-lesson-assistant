@@ -1,15 +1,9 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
-import {
-  DEFAULT_MODEL,
-  DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
-  DEFAULT_QUIZ_SOURCES,
-  DEFAULT_TEMPERATURE,
-} from "../constants";
+import { DEFAULT_QUIZ_SOURCES } from "../constants";
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import { NullAilaAmericanisms } from "../features/americanisms/NullAilaAmericanisms";
-import { AilaCategorisation } from "../features/categorisation";
 import type { AilaSnapshotStore } from "../features/snapshotStore";
 import type { AilaTracingService } from "../features/tracing";
 import { NullTracingService } from "../features/tracing";
@@ -31,8 +25,6 @@ import type {
 import type { Message } from "./chat";
 import { AilaChat } from "./chat";
 import { AilaDocument } from "./document";
-import type { LLMService } from "./llm/LLMService";
-import { OpenAIService } from "./llm/OpenAIService";
 import type { AilaPlugin } from "./plugins/types";
 import type {
   AilaGenerateDocumentOptions,
@@ -49,7 +41,6 @@ export class Aila implements AilaServices {
   private readonly _errorReporter?: AilaErrorReportingFeature;
   private _isShutdown: boolean = false;
   private readonly _document: AilaDocumentService;
-  private readonly _chatLlmService: LLMService;
   private readonly _moderation?: AilaModerationFeature;
   private readonly _options: AilaOptionsWithDefaultFallbackValues;
   private readonly _snapshotStore: AilaSnapshotStore;
@@ -68,24 +59,13 @@ export class Aila implements AilaServices {
     this._prisma = options.prisma;
     this._options = this.initialiseOptions(options.options);
 
-    this._chatLlmService =
-      options.services?.chatLlmService ??
-      new OpenAIService({ userId: this._userId, chatId: this._chatId });
     this._chat = new AilaChat({
       ...options.chat,
       aila: this,
-      promptBuilder: options.promptBuilder,
-      llmService: this._chatLlmService,
     });
 
     this._document = new AilaDocument({
-      aila: this,
       content: options.document?.content ?? {},
-      categoriser:
-        options.services?.chatCategoriser ??
-        new AilaCategorisation({
-          aila: this,
-        }),
     });
 
     this._analytics = AilaFeatureFactory.createAnalytics(
@@ -148,9 +128,6 @@ export class Aila implements AilaServices {
     if (persistedLessonPlan) {
       this._document.content = persistedLessonPlan;
     }
-    if (!this.options.useAgenticAila) {
-      await this._document.initialiseContentFromMessages(this._chat.messages);
-    }
 
     this._initialised = true;
   }
@@ -159,19 +136,13 @@ export class Aila implements AilaServices {
     options?: AilaOptions,
   ): AilaOptionsWithDefaultFallbackValues {
     return {
-      useRag: options?.useRag ?? true,
-      temperature: options?.temperature ?? DEFAULT_TEMPERATURE,
-      numberOfRecordsInRag:
-        options?.numberOfRecordsInRag ?? DEFAULT_NUMBER_OF_RECORDS_IN_RAG,
       quizSources: options?.quizSources ?? DEFAULT_QUIZ_SOURCES,
       usePersistence: options?.usePersistence ?? true,
       useAnalytics: options?.useAnalytics ?? true,
       useModeration: options?.useModeration ?? true,
       useThreatDetection: options?.useThreatDetection ?? true,
       useErrorReporting: options?.useErrorReporting ?? true,
-      useAgenticAila: options?.useAgenticAila ?? false,
       useMathsQuizRag: options?.useMathsQuizRag ?? false,
-      model: options?.model ?? DEFAULT_MODEL,
       mode: options?.mode ?? "interactive",
       ...(options?.agenticFixture
         ? { agenticFixture: options.agenticFixture }
@@ -242,14 +213,6 @@ export class Aila implements AilaServices {
     return this._plugins;
   }
 
-  public get chatLlmService() {
-    return this._chatLlmService;
-  }
-
-  public get rag() {
-    throw new Error("Attempting to use old, unused RAG service");
-  }
-
   public get americanisms() {
     return this._americanisms;
   }
@@ -286,10 +249,7 @@ export class Aila implements AilaServices {
     }
   }
 
-  public async generate({
-    input,
-    abortController,
-  }: AilaGenerateDocumentOptions) {
+  public async generate({ input }: AilaGenerateDocumentOptions = {}) {
     this.checkInitialised();
     if (this._isShutdown) {
       throw new AilaGenerationError(
@@ -307,7 +267,7 @@ export class Aila implements AilaServices {
     }
 
     await this.initialise();
-    return this._chat.startStreaming(abortController);
+    return this._chat.startStreaming();
   }
 
   // Shutdown method
