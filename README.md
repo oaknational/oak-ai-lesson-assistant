@@ -274,7 +274,7 @@ The current release process is fully documented [in Notion](https://www.notion.s
 
 If you encounter issues with dependencies causing errors, try using PNPM's prune command:
 
-```shell
+```shell test
 pnpm prune
 pnpm install -r
 ```
