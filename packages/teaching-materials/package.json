@@ -23,7 +23,7 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.100",
+    "@ai-sdk/openai": "^4.0.103",
     "@clerk/nextjs": "7.9.18",
     "@oakai/core": "workspace:*",
     "@oakai/logger": "workspace:*",
