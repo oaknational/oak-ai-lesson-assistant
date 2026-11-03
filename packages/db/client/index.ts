@@ -1,12 +1,18 @@
 import { aiLogger } from "@oakai/logger";
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+import { PrismaClient } from "../generated/prisma/client";
+import { createPool } from "./pool";
 
 const log = aiLogger("db");
 const shouldLogQueries = process.env.LOG_DB_QUERIES === "true";
 
 const createPrismaClient = () => {
   const client = new PrismaClient({
+    // The pool is ours, so $disconnect should close it rather than leave it
+    // open until its connections idle out
+    adapter: new PrismaPg(createPool(), { disposeExternalPool: true }),
     log: [
       { emit: "stdout", level: "error" },
       // Prisma supports DEBUG strings (eg: prisma*, prisma:client), but they're noisy debug messages.
@@ -48,4 +54,4 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { prisma };
-export { toPrismaJson } from "./json";
+export { asPrismaJson } from "./json";

@@ -5,8 +5,6 @@ import type {
   ThreatDetection,
 } from "@oakai/db";
 
-import type { InputJsonValue } from "@prisma/client/runtime/library";
-
 import { SafetyViolations } from "./safetyViolations";
 
 export type ThreatDetectionCreateInput = {
@@ -19,7 +17,7 @@ export type ThreatDetectionCreateInput = {
   provider: string;
   category?: string;
   severity?: string;
-  providerResponse?: InputJsonValue;
+  providerResponse?: Prisma.InputJsonValue;
   isFalsePositive?: boolean;
   safetyViolationId?: string;
 };

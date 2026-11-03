@@ -2,8 +2,7 @@ import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
 import { scheduleModerationNotification } from "@oakai/core/src/backgroundTasks";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
 import type { OakPrismaClient } from "@oakai/db";
-
-import type { Moderation } from "@prisma/client";
+import type { Moderation } from "@oakai/db/prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 

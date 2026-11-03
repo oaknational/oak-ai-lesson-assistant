@@ -1,12 +1,18 @@
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "../generated/prisma/client";
 
 /**
- * Prisma's JSON input type rejects `unknown` and `undefined` values, which
- * zod-parsed objects often contain. Serialising to JSON drops `undefined`, so
- * values that came from parsed JSON are safe to store as they are.
+ * Narrows a value to Prisma's JSON input type, for writing to a Json column.
+ *
+ * This is a type-level step only: it doesn't validate, copy or serialise the
+ * value. Callers must pass JSON-compatible data, such as parsed JSON or zod
+ * output, not class instances, functions or bigints.
+ *
+ * It exists because Prisma's JSON input type rejects the `unknown` and
+ * `undefined` values that such objects often contain in their types. Prisma
+ * drops `undefined` when it serialises the value.
  */
-export function toPrismaJson(
+export function asPrismaJson(
   value: string | number | boolean | object,
 ): Prisma.InputJsonValue {
-  return value as Prisma.InputJsonValue;
+  return value;
 }

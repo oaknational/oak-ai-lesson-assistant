@@ -1,7 +1,6 @@
 import type { OakPrismaClient } from "@oakai/db";
+import { Prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
-
-import { Prisma } from "@prisma/client";
 
 import type { DeepPartial, RagLessonPlanResult } from "../../types";
 

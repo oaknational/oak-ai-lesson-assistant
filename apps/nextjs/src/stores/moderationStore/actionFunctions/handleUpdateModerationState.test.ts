@@ -1,4 +1,4 @@
-import type { Moderation } from "@prisma/client";
+import type { Moderation } from "@oakai/db/prisma/client";
 
 import type { ModerationGetter, ModerationSetter } from "../types";
 import { handleUpdateModerationState } from "./handleUpdateModerationState";

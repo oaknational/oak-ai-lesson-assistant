@@ -2,7 +2,7 @@ import { getMockModerationResult } from "@oakai/core/src/utils/ailaModeration/mo
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
@@ -102,7 +102,7 @@ export async function generatePartialLessonPlan({
       },
       output: lesson,
       outputModeration: moderation,
-      inputThreatDetection: toPrismaJson({
+      inputThreatDetection: asPrismaJson({
         flagged: threatDetection.isThreat,
         provider: threatDetection.provider,
         metadata: threatDetection.rawResponse,

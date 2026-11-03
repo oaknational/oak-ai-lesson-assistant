@@ -46,6 +46,7 @@
       ]
     },
     "lint": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "outputs": []
     },
     "lint:fix": {
@@ -66,9 +67,11 @@
       "cache": false
     },
     "type-check": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "cache": false
     },
     "test": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "cache": false
     },
     "test:seq": {

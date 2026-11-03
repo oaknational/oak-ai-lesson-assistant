@@ -1,6 +1,6 @@
 import { ReportStorage } from "@oakai/aila/src/core/quiz/reporting";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { z } from "zod";
@@ -138,7 +138,7 @@ export const quizPlaygroundRouter = router({
         async (upgradedData) => {
           await prisma.appSession.update({
             where: { id: chatId },
-            data: { output: toPrismaJson(upgradedData) },
+            data: { output: asPrismaJson(upgradedData) },
           });
         },
         {

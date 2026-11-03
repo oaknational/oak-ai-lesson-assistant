@@ -1,7 +1,7 @@
 import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
 import type { OakPrismaClient } from "@oakai/db";
+import type { LessonSnapshotTrigger } from "@oakai/db/prisma/client";
 
-import type { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";

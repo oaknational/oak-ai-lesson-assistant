@@ -1,4 +1,4 @@
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import type {
   LessonSnapshot,
   LessonSnapshotTrigger,
@@ -88,7 +88,7 @@ export class LessonSnapshots {
         chatId,
         messageId,
         hash,
-        lessonJson: toPrismaJson(snapshot),
+        lessonJson: asPrismaJson(snapshot),
         lessonSchemaId: lessonSchema.id,
         trigger,
       },
@@ -163,7 +163,7 @@ export class LessonSnapshots {
         messageId,
         lessonSchemaId: lessonSchema.id,
         hash,
-        lessonJson: toPrismaJson(snapshot),
+        lessonJson: asPrismaJson(snapshot),
         trigger,
       },
     });

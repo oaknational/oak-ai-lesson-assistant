@@ -1,4 +1,4 @@
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
@@ -63,7 +63,7 @@ export const chatFeedbackRouter = router({
             chatId,
             messageId,
             sectionPath,
-            sectionValue: toPrismaJson(sectionValue),
+            sectionValue: asPrismaJson(sectionValue),
             action,
             actionOtherText,
           },
@@ -121,7 +121,7 @@ export const chatFeedbackRouter = router({
             flagType,
             userComment,
             sectionPath,
-            sectionValue: toPrismaJson(sectionValue),
+            sectionValue: asPrismaJson(sectionValue),
           },
         });
 

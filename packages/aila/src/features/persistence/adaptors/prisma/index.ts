@@ -1,4 +1,4 @@
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -58,7 +58,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
       async (updatedChat) => {
         await this._prisma.appSession.update({
           where: { id },
-          data: { output: toPrismaJson(updatedChat) },
+          data: { output: asPrismaJson(updatedChat) },
         });
       },
       {
@@ -92,11 +92,11 @@ export class AilaPrismaPersistence extends AilaPersistence {
         id: payload.id,
         userId: payload.userId,
         appId: "lesson-planner",
-        output: toPrismaJson(payload),
+        output: asPrismaJson(payload),
         createdAt: new Date(),
       },
       update: {
-        output: toPrismaJson(payload),
+        output: asPrismaJson(payload),
         updatedAt: new Date(),
       },
     });

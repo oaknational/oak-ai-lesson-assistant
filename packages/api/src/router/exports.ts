@@ -1,6 +1,7 @@
 import { kv } from "@oakai/core/src/utils/kv";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import type { OakPrismaClient } from "@oakai/db";
+import type { LessonExportType } from "@oakai/db/prisma/client";
 import {
   exportDocLessonPlanSchema,
   exportDocQuizSchema,
@@ -11,7 +12,6 @@ import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
-import type { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 

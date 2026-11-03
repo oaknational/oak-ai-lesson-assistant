@@ -1,7 +1,7 @@
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import type { OakPrismaClient } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -39,7 +39,7 @@ export async function getChat(id: string, prisma: OakPrismaClient) {
     async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
-        data: { output: toPrismaJson(upgradedData) },
+        data: { output: asPrismaJson(upgradedData) },
       });
     },
     {
@@ -115,7 +115,7 @@ export const appSessionsRouter = router({
           id: chatId,
           appId,
           userId,
-          output: toPrismaJson(output),
+          output: asPrismaJson(output),
         },
       };
       // Create a blank chat
@@ -270,7 +270,7 @@ export const appSessionsRouter = router({
       // Single update that includes both upgrade (if needed) and sharing
       await ctx.prisma?.appSession.update({
         where: { id },
-        data: { output: toPrismaJson(sharedChat) },
+        data: { output: asPrismaJson(sharedChat) },
       });
 
       return sharedChat;

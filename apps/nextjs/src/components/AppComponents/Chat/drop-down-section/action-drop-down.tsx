@@ -6,10 +6,13 @@ import {
 } from "react";
 import { toast } from "react-hot-toast";
 
+import type {
+  $Enums,
+  AilaUserModificationAction,
+} from "@oakai/db/prisma/client";
 import { aiLogger } from "@oakai/logger";
 
 import { OakP, OakRadioGroup } from "@oaknational/oak-components";
-import type { $Enums, AilaUserModificationAction } from "@prisma/client";
 import { TextArea } from "@radix-ui/themes";
 import * as Sentry from "@sentry/nextjs";
 

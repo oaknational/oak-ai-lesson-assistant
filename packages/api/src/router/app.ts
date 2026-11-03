@@ -2,7 +2,7 @@ import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/mig
 import { Apps } from "@oakai/core";
 import { serializeApp } from "@oakai/core/src/models/serializers";
 import { sendEmailRequestingMoreGenerations } from "@oakai/core/src/utils/sendEmailRequestingMoreGenerations";
-import { prisma, toPrismaJson } from "@oakai/db";
+import { asPrismaJson, prisma } from "@oakai/db";
 import { aiLogger, structuredLogger as logger } from "@oakai/logger";
 
 import { TRPCError } from "@trpc/server";
@@ -94,7 +94,7 @@ export const appRouter = router({
       if (typeof userId === "string") {
         const session = await ctx.prisma.appSession.update({
           where: { userId: userId, id: input.sessionId },
-          data: { output: toPrismaJson(output) },
+          data: { output: asPrismaJson(output) },
         });
         return session;
       }
@@ -120,7 +120,7 @@ export const appRouter = router({
                 async (upgradedData) => {
                   await prisma.appSession.update({
                     where: { id: chatRecord.id },
-                    data: { output: toPrismaJson(upgradedData) },
+                    data: { output: asPrismaJson(upgradedData) },
                   });
                 },
                 {

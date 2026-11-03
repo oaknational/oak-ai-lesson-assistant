@@ -19,7 +19,7 @@ import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/mig
 import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
-import { toPrismaJson } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
 import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -209,7 +209,7 @@ async function loadGenerationContext(
       async (upgradedData) => {
         await prisma.appSession.update({
           where: { id: chat.id },
-          data: { output: toPrismaJson(upgradedData) },
+          data: { output: asPrismaJson(upgradedData) },
         });
       },
       {
