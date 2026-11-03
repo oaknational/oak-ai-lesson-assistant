@@ -14,18 +14,6 @@ datasource db {
   schemas    = ["public", "ingest", "rag", "additional_materials"]
 }
 
-generator zod {
-  provider = "zod-prisma"
-  output   = "./zod-schemas"
-
-  relationModel         = true
-  modelCase             = "camelCase"
-  modelSuffix           = "Model"
-  useDecimalJs          = false
-  // imports               = null
-  prismaJsonNullability = true
-}
-
 model App {
   id        String   @id @default(cuid())
   name      String

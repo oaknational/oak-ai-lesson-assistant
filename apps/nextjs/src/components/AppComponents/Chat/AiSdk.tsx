@@ -1,17 +1,21 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { generateMessageId } from "@oakai/aila/src/helpers/chat/generateMessageId";
 import { parseMessageParts } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 import { aiLogger } from "@oakai/logger";
 
-import { useChat } from "@ai-sdk/react";
+import { Chat, useChat } from "@ai-sdk/react";
 import * as Sentry from "@sentry/nextjs";
 import { TextStreamChatTransport } from "ai";
-import type { UIMessage } from "ai";
+import type { ChatOnErrorCallback, ChatOnFinishCallback, UIMessage } from "ai";
 import { nanoid } from "nanoid";
 import { usePathname } from "next/navigation";
 
+import {
+  CHAT_STREAM_PROTOCOL,
+  CHAT_STREAM_PROTOCOL_HEADER,
+} from "@/app/api/chat/streamProtocol";
 import useAnalytics from "@/lib/analytics/useAnalytics";
 import {
   useChatActions,
@@ -88,34 +92,87 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
   // TODO: move to chat store
   const { invokeActionMessages } = useActionMessages();
 
-  // The chat keeps the transport from its first render
-  const transport = useMemo(
+  // The chat keeps the callbacks from its first render, so they read the
+  // latest props and store actions through this ref
+  const onError: ChatOnErrorCallback = (error) => {
+    Sentry.captureException(new Error("Use chat error"), {
+      extra: { originalError: error },
+    });
+    log.error("UseChat error", { error, messages: chat.messages });
+
+    // Mark that an error occurred to prevent analytics tracking
+    chatActions.streamingFailed();
+  };
+  const onFinish: ChatOnFinishCallback<UIMessage> = ({
+    message,
+    isAbort,
+    isError,
+  }) => {
+    // Stopped and failed turns are handled by stop and onError
+    if (isAbort || isError) {
+      return;
+    }
+    log.info("Chat: On Finish", new Date().toISOString(), {
+      message,
+      path,
+    });
+
+    invokeActionMessages(getTextContent(message));
+
+    chatActions.streamingFinished();
+    lessonPlanActions.messageFinished();
+  };
+  const callbacks = useRef({ onError, onFinish });
+  callbacks.current = { onError, onFinish };
+
+  // Created here rather than by useChat, which stops the chats it creates when
+  // it unmounts. That aborts the request, so leaving the page would lose the
+  // turn, which AI SDK 4 let finish
+  const [chat] = useState(
     () =>
-      new TextStreamChatTransport<UIMessage>({
-        api: "/api/chat",
-        // The chat endpoint expects messages with text content
-        prepareSendMessagesRequest: ({ messages }) => ({
-          body: { id, messages: messages.map(toAiMessage) },
+      new Chat<UIMessage>({
+        id,
+        // NOTE: these initial messages are used by the chat endpoint
+        messages: (initialMessages ?? []).flatMap(toUIMessage),
+        generateId: () => generateMessageId({ role: "user" }),
+        transport: new TextStreamChatTransport<UIMessage>({
+          api: "/api/chat",
+          headers: { [CHAT_STREAM_PROTOCOL_HEADER]: CHAT_STREAM_PROTOCOL },
+          // The chat endpoint expects messages with text content
+          prepareSendMessagesRequest: ({ messages }) => ({
+            body: { id, messages: messages.map(toAiMessage) },
+          }),
+          async fetch(input: RequestInfo | URL, init?: RequestInit) {
+            lessonPlanActions.messageStarted();
+            const response = await fetch(input, init);
+            log.info("Chat: On Response");
+
+            // TODO: create onResponse handler in store and call from there
+            chatActions.scrollToBottom();
+
+            if (response.status === 401) {
+              toast.error(response.statusText);
+            }
+            // Anything else, such as a page reached through a redirect, would
+            // otherwise be shown as Aila's reply
+            if (
+              response.ok &&
+              response.headers.get(CHAT_STREAM_PROTOCOL_HEADER) !==
+                CHAT_STREAM_PROTOCOL
+            ) {
+              throw new Error(
+                `Unexpected chat response: ${response.status} ${response.headers.get("content-type") ?? "no content type"}`,
+              );
+            }
+            if (!path?.includes("chat/[id]")) {
+              window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
+            }
+            return response;
+          },
         }),
-        async fetch(input: RequestInfo | URL, init?: RequestInit) {
-          lessonPlanActions.messageStarted();
-          const response = await fetch(input, init);
-          log.info("Chat: On Response");
-
-          // TODO: create onResponse handler in store and call from there
-          chatActions.scrollToBottom();
-
-          if (response.status === 401) {
-            toast.error(response.statusText);
-          }
-          if (!path?.includes("chat/[id]")) {
-            window.history.pushState({}, "", `${getAilaUrl("lesson")}/${id}`);
-          }
-          return response;
-        },
+        onError: (error) => callbacks.current.onError(error),
+        onFinish: (options) => callbacks.current.onFinish(options),
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
   );
 
   const {
@@ -125,37 +182,7 @@ export function AiSdk({ id }: Readonly<AiSdkProps>) {
     stop: stopStreaming,
     status,
     setMessages: setSdkMessages,
-  } = useChat({
-    id,
-    // NOTE: these initial messages are used by the chat endpoint
-    messages: (initialMessages ?? []).flatMap(toUIMessage),
-    generateId: () => generateMessageId({ role: "user" }),
-    transport,
-    onError(error) {
-      Sentry.captureException(new Error("Use chat error"), {
-        extra: { originalError: error },
-      });
-      log.error("UseChat error", { error, messages: uiMessages });
-
-      // Mark that an error occurred to prevent analytics tracking
-      chatActions.streamingFailed();
-    },
-    onFinish({ message, isAbort, isError }) {
-      // Stopped and failed turns are handled by stop and onError
-      if (isAbort || isError) {
-        return;
-      }
-      log.info("Chat: On Finish", new Date().toISOString(), {
-        message,
-        path,
-      });
-
-      invokeActionMessages(getTextContent(message));
-
-      chatActions.streamingFinished();
-      lessonPlanActions.messageFinished();
-    },
-  });
+  } = useChat({ chat });
 
   const hasInitializedMessages = useRef(initialMessages !== null);
   const initializeMessages: AiSdkActions["initializeMessages"] = (history) => {

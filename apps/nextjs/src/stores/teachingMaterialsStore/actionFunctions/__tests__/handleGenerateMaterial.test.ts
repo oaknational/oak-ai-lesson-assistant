@@ -1,3 +1,5 @@
+import { ZodError } from "zod";
+
 import type { TrpcUtils } from "@/utils/trpc";
 
 import { handleStoreError } from "../../utils/errorHandling";
@@ -77,9 +79,7 @@ describe("handleGenerateMaterial", () => {
     }));
     // @ts-expect-error Only analytics is mocked, not the full actions shape
     const handler = handleGenerateMaterial(mockSet, mockGet, mockTrpc);
-    await expect(handler()).rejects.toThrow(
-      "Expected 'additional-comprehension' | 'additional-glossary' | 'additional-starter-quiz' | 'additional-exit-quiz', received null",
-    );
+    await expect(handler()).rejects.toThrow(ZodError);
   });
 
   it("throws if lesson plan fields are missing", async () => {

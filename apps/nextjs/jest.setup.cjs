@@ -11,25 +11,17 @@ process.env.NEXT_PUBLIC_DEBUG = process.env.DEBUG;
 jest.mock("next/image", () => ({
   __esModule: true,
   default: function MockImage(props) {
-    return {
-      $$typeof: Symbol.for("react.element"),
-      type: "img",
-      props: Object.assign({}, props, { src: props.src || "" }),
-      ref: null,
-      key: null,
-    };
+    // Imported images are mocked as objects, so only keep string sources
+    return require("react").createElement("img", {
+      src: typeof props.src === "string" && props.src ? props.src : undefined,
+      alt: props.alt,
+    });
   },
 }));
 
 // Mock Icon component
 jest.mock("@/components/Icon", () => ({
   Icon: function MockIcon(props) {
-    return {
-      $$typeof: Symbol.for("react.element"),
-      type: "img",
-      props: { src: "", alt: props.icon },
-      ref: null,
-      key: null,
-    };
+    return require("react").createElement("img", { alt: props.icon });
   },
 }));

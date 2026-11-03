@@ -118,7 +118,7 @@ type TeachingMaterialsConfigMap = {
   [K in TeachingMaterialType]: {
     systemMessage: () => string;
     buildPrompt: (context: ContextByMaterialType[K]) => string;
-    schema: ZodType;
+    schema: ZodType<TeachingMaterialSchemas>;
     promptContextSchema: ZodType;
     version: number;
   };

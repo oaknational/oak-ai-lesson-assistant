@@ -35,6 +35,7 @@ import {
   getFixtureModerationOpenAiClient,
   getFixtureOakModerator,
 } from "./fixtures";
+import { formatChatResponse } from "./streamProtocol";
 import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
@@ -196,7 +197,7 @@ async function loadGenerationContext(
     verifyChatOwnership(chat, userId, chatId);
 
     const output = z
-      .object({ lessonPlan: z.record(z.unknown()) })
+      .object({ lessonPlan: z.record(z.string(), z.unknown()) })
       .passthrough()
       .parse(chat.output ?? {});
 
@@ -361,10 +362,9 @@ export async function handleChatPostRequest(
       invariant(aila, "Aila instance is required");
 
       logConnectionAborted(req);
-      const stream = await generateChatStream(aila);
-      return stream;
+      return formatChatResponse(req, await generateChatStream(aila));
     } catch (e) {
-      return handleChatException(e);
+      return formatChatResponse(req, await handleChatException(e));
     } finally {
       if (aila) {
         await aila.ensureShutdown();

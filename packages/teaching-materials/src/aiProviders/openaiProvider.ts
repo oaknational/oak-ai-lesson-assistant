@@ -4,6 +4,9 @@ import type { ZodSchema } from "zod";
 
 const model = openai.chat("gpt-4o");
 
+// AI SDK 4 defaulted to 0; later versions leave the provider's default of 1
+const temperature = 0;
+
 /**
  * Strict structured outputs can't express every schema, such as one with
  * optional fields. JSON mode instead puts the schema in the instructions and
@@ -23,6 +26,7 @@ async function generateJsonModeObject({
     prompt,
     output: Output.json(),
     model,
+    temperature,
     instructions: [
       systemMessage,
       `JSON schema:\n${JSON.stringify(jsonSchema)}\nYou MUST answer with a JSON object that matches the JSON schema above.`,
@@ -52,6 +56,7 @@ export const OpenAIProvider = {
             prompt,
             output: Output.object({ schema }),
             model,
+            temperature,
             instructions: systemMessage,
           })
         ).output;

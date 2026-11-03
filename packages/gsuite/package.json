@@ -16,7 +16,7 @@
     "@googleapis/drive": "^27.0.0",
     "@googleapis/slides": "^10.1.1",
     "dotenv-cli": "^11.0.0",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",

@@ -44,6 +44,7 @@ describe("Sentry privacy", () => {
     expect(JSON.parse(output)).toEqual({
       errorCaptured: true,
       aiSpansCaptured: true,
+      nativeOpenAiSpanCaptured: true,
       privateDataCaptured: false,
     });
   });

@@ -11,14 +11,6 @@ jest.mock("./StatusBanner", () => ({
   StatusBanner: () => null,
 }));
 
-// The shared next/image mock returns a plain object, which React 19 won't render
-jest.mock("next/image", () => ({
-  __esModule: true,
-  default: function MockImage({ alt }: { alt: string }) {
-    return <img alt={alt} />;
-  },
-}));
-
 const renderLayout = (loaded: boolean) =>
   render(
     <OakThemeProvider theme={oakDefaultTheme}>

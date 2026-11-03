@@ -38,7 +38,7 @@
     "next": "16.4.2",
     "remeda": "^2.54.1",
     "superjson": "^2.2.6",
-    "zod": "3.25.76"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",

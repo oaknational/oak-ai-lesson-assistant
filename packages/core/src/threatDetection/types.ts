@@ -40,7 +40,7 @@ export const threatFindingSchema = z.object({
   start: z.number().optional(),
   end: z.number().optional(),
   confidence: z.number().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 export type ThreatFinding = z.infer<typeof threatFindingSchema>;
 

@@ -27,14 +27,13 @@
     "@clerk/nextjs": "7.9.18",
     "@oakai/core": "workspace:*",
     "@oakai/logger": "workspace:*",
-    "@oaknational/oak-curriculum-schema": "1.61.0",
+    "@oaknational/oak-curriculum-schema": "2.17.0",
     "@sentry/nextjs": "^11.9.0",
     "ai": "^7.0.150",
     "dotenv-cli": "^11.0.0",
-    "openai": "^6.45.0",
+    "openai": "^7.45.0",
     "serialize-error": "^13.0.2",
-    "zod": "3.25.76",
-    "zod-to-json-schema": "^3.23.0"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",

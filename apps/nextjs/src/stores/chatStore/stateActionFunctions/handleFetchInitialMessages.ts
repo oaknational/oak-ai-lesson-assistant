@@ -54,5 +54,11 @@ export const handleFetchInitialMessages =
     } catch (err) {
       log.error("Error fetching initial messages", err);
       Sentry.captureException(err);
+
+      // Still let the user send. The chat endpoint loads the history itself
+      if (get().initialMessages === null) {
+        get().aiSdkActions.initializeMessages([]);
+        set({ initialMessages: [] });
+      }
     }
   };

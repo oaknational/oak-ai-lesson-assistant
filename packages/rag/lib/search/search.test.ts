@@ -1,8 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { generateMock } from "@anatine/zod-mock";
-
-import { CompletedLessonPlanSchemaWithoutLength } from "../../../aila/src/protocol/schema";
+import { completedLessonPlanFixture } from "../../lessonPlanFixtures";
 import type { RagLogger } from "../../types";
 import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
 import { vectorSearch } from "./search";
@@ -28,7 +26,7 @@ describe("vectorSearch", () => {
 
   it("returns only the first five unique lesson plans in the order returned by the database", async () => {
     const baseLessonPlan = {
-      ...generateMock(CompletedLessonPlanSchemaWithoutLength),
+      ...completedLessonPlanFixture,
       keyStage: "ks1",
     };
 

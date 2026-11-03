@@ -11,7 +11,13 @@ function getClient() {
         "Missing required environment variables KV_REST_API_URL and KV_REST_API_TOKEN",
       );
     }
-    client = new Redis({ url, token, enableTelemetry: false });
+    client = new Redis({
+      url,
+      token,
+      enableTelemetry: false,
+      // @vercel/kv sent each command on its own; batching is on by default here
+      enableAutoPipelining: false,
+    });
   }
   return client;
 }

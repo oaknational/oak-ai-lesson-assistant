@@ -42,6 +42,8 @@ export type ButtonCoreProps = Readonly<{
   download?: boolean;
   title?: string;
   testId?: string;
+  /** Focused first when the button opens inside a Headless UI dialog */
+  dialogAutoFocus?: boolean;
 }>;
 
 export type ButtonVariant = "primary" | "secondary" | "text-link" | "icon-only";
@@ -183,6 +185,7 @@ const ButtonElement = ({
   button,
   title,
   testId,
+  dialogAutoFocus,
 }: ButtonCoreProps) => (
   <Box position="relative" className={containerClassName({ disabled, width })}>
     <button
@@ -195,6 +198,7 @@ const ButtonElement = ({
       type={type}
       title={title}
       data-testid={testId}
+      data-autofocus={dialogAutoFocus || undefined}
     >
       {icon && iconPosition === "leading" && (
         <IconWrapper

@@ -1,6 +1,5 @@
 import { dedent } from "ts-dedent";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { MessageSchema } from "../core/chat/types";
 import { minMaxText } from "./schemaHelpers";
@@ -440,10 +439,7 @@ export const LessonPlanKeySchema = z.enum([
   ...allSectionsInOrder,
 ]);
 
-export const LessonPlanJsonSchema = zodToJsonSchema(
-  CompletedLessonPlanSchema,
-  "lessonPlanSchema",
-);
+export const LessonPlanJsonSchema = z.toJSONSchema(CompletedLessonPlanSchema);
 
 const AilaRagRelevantLessonSchema = z.object({
   oakLessonId: z.number().nullish(),

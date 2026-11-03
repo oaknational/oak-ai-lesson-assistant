@@ -76,7 +76,7 @@ importers:
     dependencies:
       '@ai-sdk/react':
         specifier: ^4.0.150
-        version: 4.0.157(react@19.3.1)(zod@3.25.76)
+        version: 4.0.157(react@19.3.1)(zod@4.6.7)
       '@clerk/nextjs':
         specifier: 7.9.18
         version: 7.9.18(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -130,10 +130,10 @@ importers:
         version: 3.24.0(@portabletext/react@8.0.1(react@19.3.1))(@tiptap/core@2.27.3(@tiptap/pm@2.27.3))(@tiptap/pm@2.27.3)(@types/react@19.3.0)(next-cloudinary@6.19.3(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1))(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(styled-components@6.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@oaknational/oak-consent-client':
         specifier: ^2.1.0
-        version: 2.4.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@3.25.76)
+        version: 2.4.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@4.6.7)
       '@oaknational/oak-curriculum-schema':
-        specifier: 1.61.0
-        version: 1.61.0(zod@3.25.76)
+        specifier: 2.17.0
+        version: 2.17.0(zod@4.6.7)
       '@portabletext/react':
         specifier: ^8.0.1
         version: 8.0.1(react@19.3.1)
@@ -184,7 +184,7 @@ importers:
         version: 4.0.2
       ai:
         specifier: ^7.0.150
-        version: 7.0.153(zod@3.25.76)
+        version: 7.0.153(zod@4.6.7)
       american-british-english-translator:
         specifier: ^0.2.1
         version: 0.2.1
@@ -207,8 +207,8 @@ importers:
         specifier: ^1.5.1
         version: 1.8.1(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       gleap:
-        specifier: ^19.3.5
-        version: 19.3.5
+        specifier: ^11.1.5
+        version: 11.2.0
       jest-transform-stub:
         specifier: ^2.0.0
         version: 2.0.0
@@ -219,8 +219,8 @@ importers:
         specifier: 16.4.2
         version: 16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       posthog-js:
         specifier: ^1.201.0
         version: 1.438.13(@types/react@19.3.0)(react@19.3.1)
@@ -279,11 +279,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
-      zod-to-json-schema:
-        specifier: ^3.23.0
-        version: 3.25.2(zod@3.25.76)
+        specifier: ^4.6.6
+        version: 4.6.7
       zustand:
         specifier: ^5.0.3
         version: 5.0.15(@types/react@19.3.0)(immer@11.2.6)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
@@ -421,8 +418,8 @@ importers:
         specifier: ^1.0.21
         version: 1.0.21
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       openapi-fetch:
         specifier: ^0.17.0
         version: 0.17.0
@@ -433,11 +430,8 @@ importers:
         specifier: ^1.3.1
         version: 1.3.3
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
-      zod-to-json-schema:
-        specifier: ^3.23.0
-        version: 3.25.2(zod@3.25.76)
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*
@@ -515,8 +509,8 @@ importers:
         specifier: ^2.2.6
         version: 2.2.6
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*
@@ -573,8 +567,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       openapi-fetch:
         specifier: ^0.17.0
         version: 0.17.0
@@ -597,11 +591,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
-      zod-to-json-schema:
-        specifier: ^3.23.0
-        version: 3.25.2(zod@3.25.76)
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/prettier-config':
         specifier: workspace:*
@@ -634,8 +625,8 @@ importers:
         specifier: ^3.0.0
         version: 3.2.1
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@24.19.2)(typescript@6.0.3)
@@ -658,9 +649,6 @@ importers:
       typescript:
         specifier: 6.0.3
         version: 6.0.3
-      zod-prisma:
-        specifier: ^0.5.4
-        version: 0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@6.0.3))(zod@3.25.76)
 
   packages/eslint-config:
     devDependencies:
@@ -795,8 +783,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*
@@ -821,7 +809,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: ^4.0.100
-        version: 4.0.102(zod@3.25.76)
+        version: 4.0.102(zod@4.6.7)
       '@oakai/core':
         specifier: workspace:*
         version: link:../core
@@ -836,16 +824,16 @@ importers:
         version: link:../logger
       ai:
         specifier: ^7.0.150
-        version: 7.0.153(zod@3.25.76)
+        version: 7.0.153(zod@4.6.7)
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       remeda:
         specifier: ^2.54.1
         version: 2.54.1
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*
@@ -902,12 +890,6 @@ importers:
 
   packages/rag:
     dependencies:
-      '@anatine/zod-mock':
-        specifier: ^3.13.4
-        version: 3.14.0(@faker-js/faker@9.9.0)(zod@3.25.76)
-      '@faker-js/faker':
-        specifier: ^9.4.0
-        version: 9.9.0
       '@oakai/core':
         specifier: workspace:*
         version: link:../core
@@ -930,8 +912,8 @@ importers:
         specifier: ^2.54.1
         version: 2.54.1
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/test-support':
         specifier: workspace:*
@@ -950,7 +932,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: ^4.0.100
-        version: 4.0.102(zod@3.25.76)
+        version: 4.0.102(zod@4.6.7)
       '@clerk/nextjs':
         specifier: 7.9.18
         version: 7.9.18(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -961,29 +943,26 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@oaknational/oak-curriculum-schema':
-        specifier: 1.61.0
-        version: 1.61.0(zod@3.25.76)
+        specifier: 2.17.0
+        version: 2.17.0(zod@4.6.7)
       '@sentry/nextjs':
         specifier: ^11.9.0
         version: 11.9.0(next@16.4.2(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@26.6.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(webpack@5.112.0(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.31)(sharp@0.35.5(@types/node@26.6.5))(uglify-js@3.19.3))
       ai:
         specifier: ^7.0.150
-        version: 7.0.153(zod@3.25.76)
+        version: 7.0.153(zod@4.6.7)
       dotenv-cli:
         specifier: ^11.0.0
         version: 11.0.0
       openai:
-        specifier: ^6.45.0
-        version: 6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76)
+        specifier: ^7.45.0
+        version: 7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7)
       serialize-error:
         specifier: ^13.0.2
         version: 13.0.2
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
-      zod-to-json-schema:
-        specifier: ^3.23.0
-        version: 3.25.2(zod@3.25.76)
+        specifier: ^4.6.6
+        version: 4.6.7
     devDependencies:
       '@oakai/eslint-config':
         specifier: workspace:*
@@ -1089,12 +1068,6 @@ packages:
 
   '@altano/repository-tools@2.1.2':
     resolution: {integrity: sha512-JjnlgaE/oHmCGwvfLmuB8OSuRfhuYtjRb7P0SVneal/14f0t6bDG3V1BqutqgqwdZPRRnyO8wxxN2XPt7aAhZw==}
-
-  '@anatine/zod-mock@3.14.0':
-    resolution: {integrity: sha512-pTYyn9dlszUl5gMGWtE7DBRvx1EcqpBJ1iJ73rlJYCZr9lgIEdZ6PCZQqoXIdlC8DYIwuT1M3/N8arkJa7A10Q==}
-    peerDependencies:
-      '@faker-js/faker': ^7.0.0 || ^8.0.0 || ^9.0.0
-      zod: ^3.21.4
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
@@ -2427,10 +2400,6 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@faker-js/faker@9.9.0':
-    resolution: {integrity: sha512-OEl393iCOoo/z8bMezRlJu+GlRGlsKbUAN7jKB6LhnKoqKve5DXRpalbItIIcwnCjs1k/FOPjFzcA6Qn+H+YbA==}
-    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
-
   '@floating-ui/core@1.8.0':
     resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
 
@@ -3031,10 +3000,10 @@ packages:
       react-dom: ^18 || ^19
       zod: 3.x
 
-  '@oaknational/oak-curriculum-schema@1.61.0':
-    resolution: {integrity: sha512-pmwpN/z63+eXxuv8hOe2NZ04H8LRbEBc+ScLZysutctFUNQR1+Vdi4P7QNLuMDA1jETaHHurIgvFQ287HdsMGQ==}
+  '@oaknational/oak-curriculum-schema@2.17.0':
+    resolution: {integrity: sha512-CKhj8mEzq3aI8OmvpTyx0iqA4kGLGcDNQnTbpRkVWVmgqer+3H5snzpXsrkKvedo/QMHRLXFqSxiTgvVbU7C7g==}
     peerDependencies:
-      zod: ^3.22.4
+      zod: ^4.6.6
 
   '@octokit/auth-token@6.0.0':
     resolution: {integrity: sha512-P4YJBPdPSpWTQ1NU4XYdvHvXJJDxM6YwpS0FZHRgP7YFkdVxsWcpWGy/NVqlAA7PcPCnMacXlRm1y2PFZRWL/w==}
@@ -3650,9 +3619,6 @@ packages:
   '@prisma/config@6.19.3':
     resolution: {integrity: sha512-CBPT44BjlQxEt8kiMEauji2WHTDoVBOKl7UlewXmUgBPnr/oPRZC3psci5chJnYmH0ivEIog2OU9PGWoki3DLQ==}
 
-  '@prisma/debug@3.8.1':
-    resolution: {integrity: sha512-ft4VPTYME1UBJ7trfrBuF2w9jX1ipDy786T9fAEskNGb+y26gPDqz5fiEWc2kgHNeVdz/qTI/V3wXILRyEcgxQ==}
-
   '@prisma/debug@6.19.3':
     resolution: {integrity: sha512-ljkJ+SgpXNktLG0Q/n4JGYCkKf0f8oYLyjImS2I8e2q2WCfdRRtWER062ZV/ixaNP2M2VKlWXVJiGzZaUgbKZw==}
 
@@ -3670,9 +3636,6 @@ packages:
 
   '@prisma/fetch-engine@6.19.3':
     resolution: {integrity: sha512-tKtl/qco9Nt7LU5iKhpultD8O4vMCZcU2CHjNTnRrL1QvSUr5W/GcyFPjNL87GtRrwBc7ubXXD9xy4EvLvt8JA==}
-
-  '@prisma/generator-helper@3.8.1':
-    resolution: {integrity: sha512-3zSy+XTEjmjLj6NO+/YPN1Cu7or3xA11TOoOnLRJ9G4pTT67RJXjK0L9Xy5n+3I0Xlb7xrWCgo8MvQQLMWzxPA==}
 
   '@prisma/get-platform@6.19.3':
     resolution: {integrity: sha512-xFj1VcJ1N3MKooOQAGO0W5tsd0W2QzIvW7DD7c/8H14Zmp4jseeWAITm+w2LLoLrlhoHdPPh0NMZ8mfL6puoHA==}
@@ -4713,18 +4676,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rrweb/packer@2.2.0':
-    resolution: {integrity: sha512-NgYYIaXf5sem/0JWsPLpaRBV70cqJKSFZkyvg1MG4wefzWUPtDxufFuWdprblPawg0RdPMSBEzkpQKzcir/sXg==}
-
-  '@rrweb/record@2.2.0':
-    resolution: {integrity: sha512-hJYM4yaS3aFAGPuK1X80kgWod4g3FxG3fymfXLjDkBQvcDrGKTluLENnXYVklbt97eXOJ117uwV9y+xFFYmTIQ==}
-
-  '@rrweb/types@2.2.0':
-    resolution: {integrity: sha512-2gTA/pRpIbuET123oSdX5ZUDZfWCOIMYBvpSai3fr5pk9LcbccPqqaXflX+roP4oKenLjNtJPGpFK3BfYeBKnA==}
-
-  '@rrweb/utils@2.2.0':
-    resolution: {integrity: sha512-e8FEp8wLswqgjDHpQNUUVfEXeDsrRMOVouvqIGKvnPxKYonjLlh0mU3O/17QNvCixFG5eUFR1B2jgTdiLlZxeQ==}
-
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
@@ -5210,9 +5161,6 @@ packages:
     peerDependencies:
       typescript: '>=5.7.2'
 
-  '@ts-morph/common@0.12.3':
-    resolution: {integrity: sha512-4tUmeLyXJnJWvTFOKtcNJ1yh0a3SsTLi2MUoyj8iUNznFRN1ZquaNe7Oukqrnki2FzZkm0J9adCNLDZxUzvj+w==}
-
   '@tsconfig/node10@1.0.13':
     resolution: {integrity: sha512-gcLdvR9HO1ZJBypsOGqaP6TFEzb6vIta0KSTLt9NAQ6pXQO3cRgSVyCN6pzYqI9DlJgY71XKO0dpDhCf08b3pg==}
 
@@ -5282,17 +5230,8 @@ packages:
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
-  '@types/cross-spawn@6.0.2':
-    resolution: {integrity: sha512-KuwNhp3eza+Rhu8IFI5HUXRP0LIhqH5cAjubUvGXXthh4YYBuP2ntwEX+Cz8GJoZUHlKo247wPWOfA9LYEq4cw==}
-
-  '@types/css-font-loading-module@0.0.7':
-    resolution: {integrity: sha512-nl09VhutdjINdWyXxHWN/w9zlNCfr60JUqJbd24YXUuCwgeL0TpFSdElCwb6cxfB6ybE19Gjj4g0jsgkXxKv1Q==}
-
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
-
-  '@types/debug@4.1.7':
-    resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
 
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
@@ -5729,9 +5668,6 @@ packages:
     resolution: {integrity: sha512-5AXjrcMClTryPe9LgZrygpB1lj7s0S9E0+W+AHaVKAVyHanafK86iPSvG5xHVSp/jC+VH1UXu0TAEmY279xH7A==}
     engines: {node: '>=14.6'}
 
-  '@xstate/fsm@1.6.5':
-    resolution: {integrity: sha512-b5o1I6aLNeYlU/3CPlj/Z91ybk1gUsKT+5NAJI+2W4UjvS5KLG28K9v5UvNoFVjHV8PajVZ00RH3vnjyQO7ZAw==}
-
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
 
@@ -6104,10 +6040,6 @@ packages:
 
   bare-url@2.5.5:
     resolution: {integrity: sha512-iM9qJCruvpt2rPaLsrumVDru9pogI7PHziHIa9kTNRFt8C8HuSa+kI9kFezK+NvHEFnnz71rKGZ1EAilq/3V/Q==}
-
-  base64-arraybuffer@1.0.2:
-    resolution: {integrity: sha512-I3yl4r9QB5ZRY3XuJVEPfc2XhZO6YweFPI+UovAzn+8/hb3oJ6lnysaFcjVpkCPfVWFUDvoZ8kmVDP7WyRtYtQ==}
-    engines: {node: '>= 0.6.0'}
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
@@ -6499,9 +6431,6 @@ packages:
   co@4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
-
-  code-block-writer@11.0.3:
-    resolution: {integrity: sha512-NiujjUFB4SwScJq2bwbYUtXbZhBSlY6vYzm++3Q6oC+U+injTqfPYFK8wS9COOmb2lueqp0ZRB4nK1VYeHgNyw==}
 
   cohere-ai@8.3.0:
     resolution: {integrity: sha512-3EIpXefkHcjYgbPDxwJDPa+XgHRSotD1YNi+HrROtuezLLQ12seKZA2GBJSHllbOEBhv+j/TY+f1BGUBn9w0SQ==}
@@ -7079,10 +7008,6 @@ packages:
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
-
-  drange@1.1.1:
-    resolution: {integrity: sha512-pYxfDYpued//QpnLIm4Avk7rsNtAtQkUES2cwAYSvD/wd2pKD71gN2Ebj3e7klzXwjocvE8c5vx/1fxwpqmSxA==}
-    engines: {node: '>=4'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -7846,8 +7771,8 @@ packages:
   git-log-parser@1.2.1:
     resolution: {integrity: sha512-PI+sPDvHXNPl5WNOErAK05s3j0lgwUzMN6o8cyQrDaKfT3qd7TmNJKeXX+SknI5I0QhG5fVPAEwSY4tRGDtYoQ==}
 
-  gleap@19.3.5:
-    resolution: {integrity: sha512-qdvG64hR6eNRJkzAjgqncZZtR1f17Ph+BtvwhzWRLQ3GZavQJlm3RnUwgEoiJuHbpOSVlzD18Sp6CJz9rNJnWg==}
+  gleap@11.2.0:
+    resolution: {integrity: sha512-9mDDVnbGdJWE7J+wEmKE4pHS5A4ildhD96rz9rDm5agLnjZTCjCzQh4xCBIkyM159fIVZBuORDQOlbb5GovB4g==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -9290,22 +9215,11 @@ packages:
     resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  mitt@3.0.1:
-    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
-
   mj-context-menu@0.6.1:
     resolution: {integrity: sha512-7NO5s6n10TIV96d4g2uDpG7ZDpIhMh0QNfGdJw/W47JswFcosz457wqz/b5sAKvl12sxINGFCn80NZHKwxQEXA==}
 
   mj-context-menu@1.0.0:
     resolution: {integrity: sha512-OSgBFQRCVhrZwRa9lhqnKcJU92dd/YXgBjup0uyeuj9bOaVsf4myOyrjU4PfhYkdDk6AqVUTov7v5uFMvIbduA==}
-
-  mkdirp@1.0.4:
-    resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  modern-screenshot@4.7.0:
-    resolution: {integrity: sha512-9YxN+ddPSMMlhylOv25VHzXrl9u67QRxoh7+SEewGtgUw7t6hHTrjptSDJUSne9oG4Xk/h2cwG15nIt4Hc9ujg==}
 
   motion-dom@14.6.0:
     resolution: {integrity: sha512-lIojTl9aYSPIkeOOSzBliy1nNvpdO3JtVzW2WgTXQlOP4ZMuJhtWO3fP7OD4TVFwlRucdvxlDSMkL+fEQnQ52A==}
@@ -9685,13 +9599,16 @@ packages:
     resolution: {integrity: sha512-OS+QTnw1/4vrf+9hh1jc1jnYjzSG4ttTBB8UxOwAnInG3Uo4ssetzC1ihqaIHjLJnA5GGlRl6QlZXOTQhRBUvg==}
     engines: {node: '>=14.16'}
 
-  openai@6.49.0:
-    resolution: {integrity: sha512-aYCc0C6L864eR6WSYIwQGyXriw/nIyZx0ObvhzOEVuk0zoBDpynjSbrionWI7q65B5H8jJX0DXR9snEzM6bfPg==}
+  openai@7.45.0:
+    resolution: {integrity: sha512-krAWw8RRzV5OGGjD9JR3QKDEB+DU5k4YIOyHfdJaNAU9qkV2W1OvGszk9+bxQo9kZ8+//1gEDflgXVFpMH7Lrg==}
+    engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
       '@smithy/hash-node': '>=4.3.0 <5'
       '@smithy/signature-v4': '>=5.4.0 <6'
-      ws: ^8.18.0
+      google-auth-library: '>=9.15.1 <11'
+      undici: '>=5 <9'
+      ws: ^8.21.0
       zod: ^4.6.6
     peerDependenciesMeta:
       '@aws-sdk/credential-provider-node':
@@ -9699,6 +9616,10 @@ packages:
       '@smithy/hash-node':
         optional: true
       '@smithy/signature-v4':
+        optional: true
+      google-auth-library:
+        optional: true
+      undici:
         optional: true
       ws:
         optional: true
@@ -9870,9 +9791,6 @@ packages:
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
-
-  parenthesis@3.1.8:
-    resolution: {integrity: sha512-KF/U8tk54BgQewkJPvB4s/US3VQY68BRDpH638+7O/n58TpnwiwnOtGIOsT2/i+M78s61BBpeC83STB88d8sqw==}
 
   parse-asn1@5.1.10:
     resolution: {integrity: sha512-gBlTKLbYnAJN9WjmawVOMfaGvVoy4lX0LH18t7ccwtEG9RgAa4ETf2eu3d2J4e/5SoCjCms0A0UF4tTw/Eyn6Q==}
@@ -10441,10 +10359,6 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
-  randexp@0.5.3:
-    resolution: {integrity: sha512-U+5l2KrcMNOUPYvazA3h5ekF80FHTUG+87SEAmHZmolh1M+i/WyTCxVzmi+tidIa1tM4BSe8g2Y/D3loWDjj+w==}
-    engines: {node: '>=4'}
-
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
@@ -10781,10 +10695,6 @@ packages:
     resolution: {integrity: sha512-I9fPXU9geO9bHOt9pHHOhOkYerIMsmVaWB0rA2AI9ERh/+x/i7MV5HKBNrg+ljO5eoPVgCcnFuRjJ9uH6I/3eg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  ret@0.2.2:
-    resolution: {integrity: sha512-M0b3YWQs7R3Z917WRQy1HHA7Ba7D8hvZg6UE5mLykJxQVE2ju0IXbGlaHPPlkY+WN7wFP+wUMXmBFA0aV6vYGQ==}
-    engines: {node: '>=4'}
-
   ret@0.5.1:
     resolution: {integrity: sha512-Z/nyvABwcRnRD2mMP7Kz6G1dFZZqX1mNErOnxF42OCQKE07b9k9hK9SQxHL3LFEZUdzQaLM4dId1E/E6Vm4WhA==}
     engines: {node: '>=10'}
@@ -10829,17 +10739,8 @@ packages:
   rope-sequence@1.3.4:
     resolution: {integrity: sha512-UT5EDe2cu2E/6O4igUr5PSFs23nvvukicWHx6GnOPlHAiiYbzNuCRQCuiUdHJQcqKalLKlrYJnjY0ySGsXNQXQ==}
 
-  rrdom@2.2.0:
-    resolution: {integrity: sha512-gxcBJWVtS/Xz+Ys8xcjPoWqr+C7wz/MS8NgmKw136I47Xygy17FYOGZqoGwEyvBn724jRDK1ljS+8w9FsZStOg==}
-
   rrweb-cssom@0.8.0:
     resolution: {integrity: sha512-guoltQEx+9aMf2gDZ0s62EcV8lsXR+0w8915TC3ITdn2YueuNjdAYh/levpU9nFaoChh9RUS5ZdQMrKfVEN9tw==}
-
-  rrweb-snapshot@2.2.0:
-    resolution: {integrity: sha512-Tg/PiCLy+zV9C0Jfb4IAGABtt5l/UOvwW5xjFk41ZQhBfUjeqPP1rZ9HMDrFPc7cawCUEenWw54+g/4vluO5lg==}
-
-  rrweb@2.2.0:
-    resolution: {integrity: sha512-ofVzPq11/yIQ7WhVb++rJGI2LoPPrxdqu0QAvRA4KGeXJ7LH52jQ0VlRH4+VXn5PA/7pz85/rRkQyBUqT1LraQ==}
 
   run-applescript@5.0.0:
     resolution: {integrity: sha512-XcT5rBksx1QdIhlFOCtgZkB99ZEouFZ1E2Kc2LHqNW13U3/74YGdkQRmThTwxy4QIyookibDKYZOPqX//6BlAg==}
@@ -11677,9 +11578,6 @@ packages:
     resolution: {integrity: sha512-yF35FCoEOFBzOclSkMNEUbFQZuv89KEQ+5Xz03HrMSGUGB1+r+El+JiGOFwsP4p9RFNzwlrydYoTLvPOuICl9w==}
     engines: {node: '>=18'}
 
-  ts-morph@13.0.3:
-    resolution: {integrity: sha512-pSOfUMx8Ld/WUreoSzvMFQG5i9uEiWIsBYjpU9+TTASOeUa89j5HykomeqVULm1oqWtBdleI3KEFRLrlA3zGIw==}
-
   ts-node@10.9.2:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
@@ -11850,9 +11748,6 @@ packages:
   unique-names-generator@4.7.1:
     resolution: {integrity: sha512-lMx9dX+KRmG8sq6gulYYpKWZc9RlGsgBR6aoO8Qsm3qvkSJ+3rAymr+TnV8EDMrIrwuFJ4kruzMWM/OpYzPoow==}
     engines: {node: '>=8'}
-
-  unique-selector@0.5.0:
-    resolution: {integrity: sha512-2KCiRgM19ol67lO493tF7mnQPDuYzwRM7JXrVx336+BPXqT2ccCbUOQQpErFbSc8VIdifLf5x34x4lIeebk+YA==}
 
   unique-string@3.0.0:
     resolution: {integrity: sha512-VGXBUVwxKMBUznyffQweQABPRRW1vHZAbadFZud4pLFAqRGvv/96vafgjWFqzourzr8YonlQiPgH0YCJfawoGQ==}
@@ -12276,20 +12171,9 @@ packages:
     resolution: {integrity: sha512-dSvYKdvLsAHCDqPOhIwk/q5CvuWtTB3Dgpoe0uVEFjTzIOAmsQpprX25InCvrvJsirEbu1OHyy67n/kAj1Sw/w==}
     engines: {node: '>=18'}
 
-  zod-prisma@0.5.4:
-    resolution: {integrity: sha512-5Ca4Qd1a1jy1T/NqCEpbr0c+EsbjJfJ/7euEHob3zDvtUK2rTuD1Rc/vfzH8q8PtaR2TZbysD88NHmrLwpv3Xg==}
-    engines: {node: '>=14'}
-    hasBin: true
-    peerDependencies:
-      decimal.js: ^10.0.0
-      prisma: ^3.0.0
-      zod: ^3.0.0
-    peerDependenciesMeta:
-      decimal.js:
-        optional: true
-
-  zod-to-json-schema@3.25.2:
-    resolution: {integrity: sha512-O/PgfnpT1xKSDeQYSCfRI5Gy3hPf91mKVDuYLUHZJMiDFptvP41MSnWofm8dnCm0256ZNfZIM7DSzuSMAFnjHA==}
+  zod-to-camel-case@0.5.0:
+    resolution: {integrity: sha512-IaVeFsfly59+8mgu5uh+J/0AeKXboZau3IKfojF5lYE/IpevpJOSX3q/XX2P7jXHmP1Fg/VrSg+7Wv3UbjOgmg==}
+    engines: {node: '>=20.x'}
     peerDependencies:
       zod: ^4.6.6
 
@@ -12361,46 +12245,46 @@ snapshots:
 
   '@adobe/css-tools@4.5.0': {}
 
-  '@ai-sdk/gateway@4.0.126(zod@3.25.76)':
+  '@ai-sdk/gateway@4.0.126(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.34
-      '@ai-sdk/provider-utils': 5.0.68(zod@3.25.76)
+      '@ai-sdk/provider-utils': 5.0.68(zod@4.6.7)
       '@vercel/oidc': 3.2.0
-      zod: 3.25.76
+      zod: 4.6.7
 
-  '@ai-sdk/mcp@2.0.84(zod@3.25.76)':
+  '@ai-sdk/mcp@2.0.84(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.34
-      '@ai-sdk/provider-utils': 5.0.68(zod@3.25.76)
+      '@ai-sdk/provider-utils': 5.0.68(zod@4.6.7)
       cross-spawn: 7.0.6
       pkce-challenge: 5.0.1
-      zod: 3.25.76
+      zod: 4.6.7
 
-  '@ai-sdk/openai@4.0.102(zod@3.25.76)':
+  '@ai-sdk/openai@4.0.102(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.34
-      '@ai-sdk/provider-utils': 5.0.68(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 5.0.68(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/provider-utils@5.0.68(zod@3.25.76)':
+  '@ai-sdk/provider-utils@5.0.68(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.34
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.1.1
       undici: 7.30.1
-      zod: 3.25.76
+      zod: 4.6.7
 
   '@ai-sdk/provider@4.0.34':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@4.0.157(react@19.3.1)(zod@3.25.76)':
+  '@ai-sdk/react@4.0.157(react@19.3.1)(zod@4.6.7)':
     dependencies:
-      '@ai-sdk/mcp': 2.0.84(zod@3.25.76)
+      '@ai-sdk/mcp': 2.0.84(zod@4.6.7)
       '@ai-sdk/provider': 4.0.34
-      '@ai-sdk/provider-utils': 5.0.68(zod@3.25.76)
-      ai: 7.0.153(zod@3.25.76)
+      '@ai-sdk/provider-utils': 5.0.68(zod@4.6.7)
+      ai: 7.0.153(zod@4.6.7)
       react: 19.3.1
       swr: 2.5.1(react@19.3.1)
       throttleit: 2.1.0
@@ -12410,12 +12294,6 @@ snapshots:
   '@alloc/quick-lru@5.3.0': {}
 
   '@altano/repository-tools@2.1.2': {}
-
-  '@anatine/zod-mock@3.14.0(@faker-js/faker@9.9.0)(zod@3.25.76)':
-    dependencies:
-      '@faker-js/faker': 9.9.0
-      randexp: 0.5.3
-      zod: 3.25.76
 
   '@asamuzakjp/css-color@3.2.0':
     dependencies:
@@ -14034,8 +13912,6 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@faker-js/faker@9.9.0': {}
-
   '@floating-ui/core@1.8.0':
     dependencies:
       '@floating-ui/utils': 0.2.12
@@ -14333,7 +14209,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.5.1
-      jest-config: 30.5.2(@types/node@24.19.2)(supports-color@8.1.1)
+      jest-config: 30.5.2(@types/node@24.19.2)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.19.2)(typescript@6.0.3))
       jest-haste-map: 30.5.1
       jest-message-util: 30.5.1
       jest-regex-util: 30.5.0
@@ -14792,17 +14668,18 @@ snapshots:
       - '@tiptap/pm'
       - '@types/react'
 
-  '@oaknational/oak-consent-client@2.4.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@3.25.76)':
+  '@oaknational/oak-consent-client@2.4.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(zod@4.6.7)':
     dependencies:
       js-cookie: 3.0.8
       nanoid: 5.1.16
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
-      zod: 3.25.76
+      zod: 4.6.7
 
-  '@oaknational/oak-curriculum-schema@1.61.0(zod@3.25.76)':
+  '@oaknational/oak-curriculum-schema@2.17.0(zod@4.6.7)':
     dependencies:
-      zod: 3.25.76
+      zod: 4.6.7
+      zod-to-camel-case: 0.5.0(zod@4.6.7)
 
   '@octokit/auth-token@6.0.0': {}
 
@@ -15209,12 +15086,6 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@prisma/debug@3.8.1':
-    dependencies:
-      '@types/debug': 4.1.7
-      ms: 2.1.3
-      strip-ansi: 6.0.1
-
   '@prisma/debug@6.19.3': {}
 
   '@prisma/engines-version@7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7': {}
@@ -15235,13 +15106,6 @@ snapshots:
       '@prisma/debug': 6.19.3
       '@prisma/engines-version': 7.1.1-3.c2990dca591cba766e3b7ef5d9e8a84796e47ab7
       '@prisma/get-platform': 6.19.3
-
-  '@prisma/generator-helper@3.8.1':
-    dependencies:
-      '@prisma/debug': 3.8.1
-      '@types/cross-spawn': 6.0.2
-      chalk: 4.1.2
-      cross-spawn: 7.0.6
 
   '@prisma/get-platform@6.19.3':
     dependencies:
@@ -16222,21 +16086,6 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.64.12':
     optional: true
 
-  '@rrweb/packer@2.2.0':
-    dependencies:
-      '@rrweb/types': 2.2.0
-      fflate: 0.4.9
-
-  '@rrweb/record@2.2.0':
-    dependencies:
-      '@rrweb/types': 2.2.0
-      '@rrweb/utils': 2.2.0
-      rrweb: 2.2.0
-
-  '@rrweb/types@2.2.0': {}
-
-  '@rrweb/utils@2.2.0': {}
-
   '@rtsao/scc@1.1.0': {}
 
   '@sanity/client@8.11.0':
@@ -17005,13 +16854,6 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  '@ts-morph/common@0.12.3':
-    dependencies:
-      fast-glob: 3.3.3
-      minimatch: 3.1.5
-      mkdirp: 1.0.4
-      path-browserify: 1.0.1
-
   '@tsconfig/node10@1.0.13': {}
 
   '@tsconfig/node12@1.0.11': {}
@@ -17080,17 +16922,7 @@ snapshots:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
 
-  '@types/cross-spawn@6.0.2':
-    dependencies:
-      '@types/node': 24.19.2
-
-  '@types/css-font-loading-module@0.0.7': {}
-
   '@types/debug@4.1.13':
-    dependencies:
-      '@types/ms': 2.1.0
-
-  '@types/debug@4.1.7':
     dependencies:
       '@types/ms': 2.1.0
 
@@ -17542,8 +17374,6 @@ snapshots:
 
   '@xmldom/xmldom@0.9.12': {}
 
-  '@xstate/fsm@1.6.5': {}
-
   '@xtuc/ieee754@1.2.0': {}
 
   '@xtuc/long@4.2.2': {}
@@ -17588,12 +17418,12 @@ snapshots:
       clean-stack: 5.3.0
       indent-string: 5.0.0
 
-  ai@7.0.153(zod@3.25.76):
+  ai@7.0.153(zod@4.6.7):
     dependencies:
-      '@ai-sdk/gateway': 4.0.126(zod@3.25.76)
+      '@ai-sdk/gateway': 4.0.126(zod@4.6.7)
       '@ai-sdk/provider': 4.0.34
-      '@ai-sdk/provider-utils': 5.0.68(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 5.0.68(zod@4.6.7)
+      zod: 4.6.7
 
   ajv-formats@3.0.1:
     dependencies:
@@ -18003,8 +17833,6 @@ snapshots:
     dependencies:
       bare-path: 3.1.2
 
-  base64-arraybuffer@1.0.2: {}
-
   base64-js@1.5.1: {}
 
   baseline-browser-mapping@2.11.30: {}
@@ -18412,8 +18240,6 @@ snapshots:
   clsx@2.1.1: {}
 
   co@4.6.0: {}
-
-  code-block-writer@11.0.3: {}
 
   cohere-ai@8.3.0(@aws-crypto/sha256-js@5.2.0)(@aws-sdk/credential-providers@3.1154.0)(@smithy/protocol-http@5.6.2)(@smithy/signature-v4@5.7.4):
     dependencies:
@@ -18997,8 +18823,6 @@ snapshots:
   dotenv@17.2.2: {}
 
   dotenv@17.4.2: {}
-
-  drange@1.1.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -20017,13 +19841,7 @@ snapshots:
       through2: 2.0.5
       traverse: 0.6.8
 
-  gleap@19.3.5:
-    dependencies:
-      '@floating-ui/dom': 1.8.0
-      '@rrweb/packer': 2.2.0
-      '@rrweb/record': 2.2.0
-      modern-screenshot: 4.7.0
-      unique-selector: 0.5.0
+  gleap@11.2.0: {}
 
   glob-parent@5.1.2:
     dependencies:
@@ -20838,37 +20656,6 @@ snapshots:
       - esbuild-register
       - supports-color
       - ts-node
-
-  jest-config@30.5.2(@types/node@24.19.2)(supports-color@8.1.1):
-    dependencies:
-      '@babel/core': 7.29.7(supports-color@8.1.1)
-      '@jest/get-type': 30.5.0
-      '@jest/pattern': 30.5.0
-      '@jest/test-sequencer': 30.5.2
-      '@jest/types': 30.5.1
-      babel-jest: 30.5.2(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
-      chalk: 4.1.2
-      ci-info: 4.4.0
-      deepmerge: 4.3.1
-      glob: 13.0.6
-      graceful-fs: 4.2.11
-      jest-circus: 30.5.2(supports-color@8.1.1)
-      jest-docblock: 30.5.0
-      jest-environment-node: 30.5.2
-      jest-regex-util: 30.5.0
-      jest-resolve: 30.5.1
-      jest-runner: 30.5.2(supports-color@8.1.1)
-      jest-util: 30.5.1
-      jest-validate: 30.5.1
-      parse-json: 5.2.0
-      pretty-format: 30.5.1
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    optionalDependencies:
-      '@types/node': 24.19.2
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
 
   jest-config@30.5.2(@types/node@24.19.2)(supports-color@8.1.1)(ts-node@10.9.2(@types/node@24.19.2)(typescript@6.0.3)):
     dependencies:
@@ -21990,17 +21777,11 @@ snapshots:
 
   minipass@7.1.3: {}
 
-  mitt@3.0.1: {}
-
   mj-context-menu@0.6.1: {}
 
   mj-context-menu@1.0.0:
     dependencies:
       rimraf: 6.1.3
-
-  mkdirp@1.0.4: {}
-
-  modern-screenshot@4.7.0: {}
 
   motion-dom@14.6.0:
     dependencies:
@@ -22361,12 +22142,14 @@ snapshots:
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
 
-  openai@6.49.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(ws@8.22.0)(zod@3.25.76):
+  openai@7.45.0(@aws-sdk/credential-provider-node@3.972.87)(@smithy/signature-v4@5.7.4)(google-auth-library@11.3.1(supports-color@8.1.1))(undici@7.30.1)(ws@8.22.0)(zod@4.6.7):
     optionalDependencies:
       '@aws-sdk/credential-provider-node': 3.972.87
       '@smithy/signature-v4': 5.7.4
+      google-auth-library: 11.3.1(supports-color@8.1.1)
+      undici: 7.30.1
       ws: 8.22.0
-      zod: 3.25.76
+      zod: 4.6.7
 
   openapi-fetch@0.17.0:
     dependencies:
@@ -22604,8 +22387,6 @@ snapshots:
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
-
-  parenthesis@3.1.8: {}
 
   parse-asn1@5.1.10:
     dependencies:
@@ -23150,11 +22931,6 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  randexp@0.5.3:
-    dependencies:
-      drange: 1.1.1
-      ret: 0.2.2
-
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -23604,8 +23380,6 @@ snapshots:
       onetime: 5.1.2
       signal-exit: 3.0.7
 
-  ret@0.2.2: {}
-
   ret@0.5.1: {}
 
   retry-request@9.1.0:
@@ -23670,26 +23444,7 @@ snapshots:
 
   rope-sequence@1.3.4: {}
 
-  rrdom@2.2.0:
-    dependencies:
-      rrweb-snapshot: 2.2.0
-
   rrweb-cssom@0.8.0: {}
-
-  rrweb-snapshot@2.2.0:
-    dependencies:
-      postcss: 8.5.31
-
-  rrweb@2.2.0:
-    dependencies:
-      '@rrweb/types': 2.2.0
-      '@rrweb/utils': 2.2.0
-      '@types/css-font-loading-module': 0.0.7
-      '@xstate/fsm': 1.6.5
-      base64-arraybuffer: 1.0.2
-      mitt: 3.0.1
-      rrdom: 2.2.0
-      rrweb-snapshot: 2.2.0
 
   run-applescript@5.0.0:
     dependencies:
@@ -24675,11 +24430,6 @@ snapshots:
 
   ts-md5@2.0.1: {}
 
-  ts-morph@13.0.3:
-    dependencies:
-      '@ts-morph/common': 0.12.3
-      code-block-writer: 11.0.3
-
   ts-node@10.9.2(@types/node@24.19.2)(typescript@6.0.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
@@ -24852,8 +24602,6 @@ snapshots:
       vfile: 6.0.3
 
   unique-names-generator@4.7.1: {}
-
-  unique-selector@0.5.0: {}
 
   unique-string@3.0.0:
     dependencies:
@@ -25372,19 +25120,9 @@ snapshots:
       normalize-path: 3.0.0
       readable-stream: 4.8.0
 
-  zod-prisma@0.5.4(decimal.js@10.6.0)(prisma@6.19.3(typescript@6.0.3))(zod@3.25.76):
+  zod-to-camel-case@0.5.0(zod@4.6.7):
     dependencies:
-      '@prisma/generator-helper': 3.8.1
-      parenthesis: 3.1.8
-      prisma: 6.19.3(typescript@6.0.3)
-      ts-morph: 13.0.3
-      zod: 3.25.76
-    optionalDependencies:
-      decimal.js: 10.6.0
-
-  zod-to-json-schema@3.25.2(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
+      zod: 4.6.7
 
   zod-validation-error@4.0.2(zod@4.6.7):
     dependencies:

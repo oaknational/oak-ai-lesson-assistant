@@ -26,8 +26,9 @@ export function ChatHistory() {
   useEffect(() => {
     if (openSidebar) {
       const style = document.createElement("style");
+      // Gleap's other classes on the button change between versions
       style.innerHTML = `
-        .bb-feedback-button.gleap-font.gl-block {
+        .bb-feedback-button {
           display: none !important;
         }
       `;

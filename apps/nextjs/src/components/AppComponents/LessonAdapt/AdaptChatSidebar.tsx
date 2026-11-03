@@ -70,7 +70,9 @@ export function AdaptChatSidebar() {
           >
             <OakP
               $font="body-3"
-              $color={message.role === "user" ? "text-inverted" : "text-primary"}
+              $color={
+                message.role === "user" ? "text-inverted" : "text-primary"
+              }
               style={{ whiteSpace: "pre-wrap" }}
             >
               {message.content}

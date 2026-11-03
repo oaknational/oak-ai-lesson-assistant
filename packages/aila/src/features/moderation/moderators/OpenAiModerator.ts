@@ -9,7 +9,7 @@ import type {
   ChatCompletion,
   ChatCompletionCreateParamsNonStreaming,
 } from "openai/resources/index.mjs";
-import zodToJsonSchema from "zod-to-json-schema";
+import { z } from "zod";
 
 import {
   DEFAULT_MODERATION_MODEL,
@@ -92,7 +92,9 @@ export class OpenAiModerator extends AilaModerator {
       throw new AilaModerationError("Failed to moderate after 3 attempts");
     }
 
-    const schema = zodToJsonSchema(moderationResponseSchema);
+    const schema = z.toJSONSchema(moderationResponseSchema, {
+      target: "draft-7",
+    });
 
     const moderationResponse = await this._callOpenAi({
       model: this._model,

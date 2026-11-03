@@ -11,6 +11,10 @@ import OpenAI from "openai";
 
 import { handleChatPostRequest } from "./chatHandler";
 import type { Config } from "./configTypes";
+import {
+  CHAT_STREAM_PROTOCOL,
+  CHAT_STREAM_PROTOCOL_HEADER,
+} from "./streamProtocol";
 import { fetchAndCheckUser } from "./user";
 
 const chatId = "test-chat-id";
@@ -200,6 +204,7 @@ describe("Chat API Route", () => {
   it("continues a saved chat with an agentic turn and keeps client, server and snapshot in step", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
       method: "POST",
+      headers: { [CHAT_STREAM_PROTOCOL_HEADER]: CHAT_STREAM_PROTOCOL },
       body: JSON.stringify({
         id: chatId,
         messages: [...savedMessages, newUserMessage],
@@ -210,6 +215,9 @@ describe("Chat API Route", () => {
     const response = await handleChatPostRequest(mockRequest, testConfig);
 
     expect(response.status).toBe(200);
+    expect(response.headers.get(CHAT_STREAM_PROTOCOL_HEADER)).toBe(
+      CHAT_STREAM_PROTOCOL,
+    );
     const events = parseStreamedEvents(await response.text());
 
     expect(events.some((event) => event.type === "error")).toBe(false);

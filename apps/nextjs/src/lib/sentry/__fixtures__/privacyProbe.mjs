@@ -89,6 +89,47 @@ try {
     });
     assert.equal(result.text, "PRIVATE_AI_OUTPUT");
   });
+
+  // Aila calls the native OpenAI SDK. Sentry instruments it at build time, and
+  // instrumentOpenAiClient resolves the same recording options. The client's
+  // fetch never leaves the process.
+  const { default: OpenAI } = await import("openai");
+  const openai = Sentry.instrumentOpenAiClient(
+    new OpenAI({
+      apiKey: "synthetic-key",
+      fetch: async () =>
+        new Response(
+          JSON.stringify({
+            id: "synthetic-completion",
+            object: "chat.completion",
+            created: 0,
+            model: "gpt-4o",
+            choices: [
+              {
+                index: 0,
+                message: {
+                  role: "assistant",
+                  content: "PRIVATE_NATIVE_OUTPUT",
+                },
+                finish_reason: "stop",
+              },
+            ],
+            usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+          }),
+          { headers: { "content-type": "application/json" } },
+        ),
+    }),
+  );
+  await Sentry.startSpan({ name: "privacy-native-generation" }, async () => {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: "PRIVATE_NATIVE_PROMPT" }],
+    });
+    assert.equal(
+      completion.choices[0].message.content,
+      "PRIVATE_NATIVE_OUTPUT",
+    );
+  });
   await Sentry.flush(3_000);
 
   const payloads = envelopes.flatMap((envelope) =>
@@ -110,11 +151,18 @@ try {
     ),
     "The test must capture AI spans to prove prompt/output filtering",
   );
+  assert(
+    spans.some(
+      (span) => span.attributes?.["sentry.origin"]?.value === "auto.ai.openai",
+    ),
+    "The test must capture a native OpenAI span to prove its filtering",
+  );
   assert(!JSON.stringify(envelopes).includes("PRIVATE_"));
   console.log(
     JSON.stringify({
       errorCaptured: true,
       aiSpansCaptured: true,
+      nativeOpenAiSpanCaptured: true,
       privateDataCaptured: false,
     }),
   );

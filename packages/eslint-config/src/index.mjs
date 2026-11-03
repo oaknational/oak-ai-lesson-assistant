@@ -212,30 +212,6 @@ const config = [
     },
   },
   ...packageConfigs,
-  {
-    files: ["**/packages/db/prisma/zod-schemas/*.ts"],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-        tsconfigRootDir: projectRoot,
-      },
-    },
-    plugins: {
-      "@typescript-eslint": tsEslint,
-      "@cspell": cspellPlugin,
-    },
-    rules: {
-      "@typescript-eslint/no-import-type-side-effects": "off",
-      "@typescript-eslint/consistent-type-imports": "off",
-    },
-    settings: {
-      "@cspell/spellchecker": {
-        configFile: cspellConfigPath,
-      },
-    },
-  },
 ];
 
 export default config;

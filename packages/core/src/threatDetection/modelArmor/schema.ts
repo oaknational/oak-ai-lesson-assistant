@@ -135,7 +135,7 @@ export const modelArmorSanitizationResultSchema = z
     filterMatchState: z.string(),
     invocationResult: z.string().optional(),
     filterResults: modelArmorFilterResultsSchema.optional(),
-    sanitizationMetadata: z.record(z.unknown()).optional(),
+    sanitizationMetadata: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();
 
