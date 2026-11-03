@@ -18,6 +18,28 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
   ]
 }
 
+provider "registry.terraform.io/jianyuan/sentry" {
+  version     = "0.15.0-beta1"
+  constraints = "0.15.0-beta1"
+  hashes = [
+    "h1:bXoPNGCSWc6EiBzDg+ZSA9WRwUJbtP+e4bOL90V1Jc0=",
+    "zh:0ba8361d283ae548a78a9415057c918d121406bac1e58d194627a917042f5a82",
+    "zh:0dde99e7b343fa01f8eefc378171fb8621bedb20f59157d6cc8e3d46c738105f",
+    "zh:244dcab9532d5cada67ba1d262fbd916bf39fe43868c991e3e56900a6810b513",
+    "zh:3c257ba03c2aaee1a5f49092d07bb05cd1115a4a54c4db8efeb66ec90ed9fdb0",
+    "zh:3de320907e46547039b29c2c5a59ae73455877f9d5f4477e2663413c7f184032",
+    "zh:49a76bd7c2e9ad415e4506e6529b41a842cd3ff29712e80f3797c6286815fdc8",
+    "zh:5d5a0c6b1972927392d17611ce24461550f99efca237992ad3ac049d926aec67",
+    "zh:64786e8deebd97955fdba08c67d0814200e464ac6e06d5bc3f79f376032f0929",
+    "zh:6801eada597ff8bc5664e322d295e3d4fc02b4f00aaea40a6973fe6d69959a9c",
+    "zh:71ee555b7153634a21393115c45243472d9b93647c8f61272b0ea46fe398df5d",
+    "zh:91af50db5286829b445e7391536c59f9ef86457db4269f014f13cff5ad277207",
+    "zh:93a2dbe4add45e9686743bc48d475a19b91818c44567293530000ee1875bb057",
+    "zh:9e3de7977b6d45b22945e8eebb6f67e3e5eb5c8ba98bb7e56b264f11e35bea4e",
+    "zh:bbe939c1ebac18d0c5ae643d6b9df716583d3b2c248c8670cc73d622385f86f2",
+  ]
+}
+
 provider "registry.terraform.io/vercel/vercel" {
   version     = "3.14.1"
   constraints = "~> 3.14.1"
