@@ -45,7 +45,7 @@ export function useProgressForDownloads({
   return useMemo(() => {
     const parsedLessonPlan = lessonPlanSectionsSchema.safeParse(lessonPlan);
     const errors =
-      parsedLessonPlan.error?.errors.filter((error) => {
+      parsedLessonPlan.error?.issues.filter((error) => {
         if (isStreaming) {
           /**
            * When we have partial data, we get errors about nested

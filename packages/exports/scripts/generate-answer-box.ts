@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 /**
  * Generate answer box image and upload to GCS
  *

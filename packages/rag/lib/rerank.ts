@@ -1,5 +1,4 @@
-import type { CohereClient } from "cohere-ai";
-import type { RerankRequest, RerankResponse } from "cohere-ai/api";
+import type { Cohere, CohereClient } from "cohere-ai";
 
 import type { RagLessonPlanResult } from "../types";
 
@@ -14,14 +13,15 @@ export async function rerankResults({
 }): Promise<RagLessonPlanResult[]> {
   const topN = 5;
 
-  const rerankRequest: RerankRequest = {
+  const rerankRequest: Cohere.RerankRequest = {
     documents: results.map((result) => JSON.stringify(result.lessonPlan)),
     returnDocuments: false,
     query,
     topN,
   };
 
-  const rerank: RerankResponse = await cohereClient.rerank(rerankRequest);
+  const rerank: Cohere.RerankResponse =
+    await cohereClient.rerank(rerankRequest);
 
   const mostRelevantHydrated = rerank.results
     .sort((a, b) => b.relevanceScore - a.relevanceScore)

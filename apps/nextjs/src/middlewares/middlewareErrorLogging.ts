@@ -26,7 +26,7 @@ export async function logError(
     sourcePage: event.sourcePage,
   };
 
-  let bodyText = "";
+  let bodyText: string;
   try {
     const clonedRequest = request.clone();
     bodyText = await clonedRequest.text();

@@ -1,6 +1,6 @@
 import { camelCaseToSentenceCase } from "@oakai/core/src/utils/camelCaseConversion";
 
-import { isArray, isNumber, isObject, isString } from "remeda";
+import { isArray, isNumber, isPlainObject, isString } from "remeda";
 import { z } from "zod";
 
 export function sortIgnoringSpecialChars(strings: string[]): string[] {
@@ -127,7 +127,7 @@ export function sectionToMarkdown(
   if (isArray(value)) {
     return renderArray(key, value);
   }
-  if (isObject(value)) {
+  if (isPlainObject(value)) {
     return renderObject(value);
   }
   if (isString(value)) {

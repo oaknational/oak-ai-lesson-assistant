@@ -178,14 +178,16 @@ export const subjectAndKeyStagesRouter = router({
 
     .input(
       z.object({
-        keyStage: z.enum(allKeyStages, {
-          description:
+        keyStage: z
+          .enum(allKeyStages)
+          .describe(
             "Key stage to filter by, e.g. 'Key Stage 2' - note that casing is important here, and should be escaped",
-        }),
-        subject: z.enum(allSubjects, {
-          description:
+          ),
+        subject: z
+          .enum(allSubjects)
+          .describe(
             "Subject to search by, e.g. 'Science' - note that casing is important here",
-        }),
+          ),
       }),
     )
     .output(z.array(lessonWithQuestions))
@@ -198,10 +200,11 @@ export const subjectAndKeyStagesRouter = router({
   getAllQuestionsForSubject: protectedProcedure
     .input(
       z.object({
-        subject: z.string({
-          description:
+        subject: z
+          .string()
+          .describe(
             "Subject to search by, e.g. 'Science' - note that casing is important here",
-        }),
+          ),
       }),
     )
     .output(z.array(lessonWithQuestions))

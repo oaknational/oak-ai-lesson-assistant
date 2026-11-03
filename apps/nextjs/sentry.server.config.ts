@@ -4,11 +4,13 @@
 import * as Sentry from "@sentry/nextjs";
 
 import { getAccelerateConnectivityCode } from "./src/lib/sentry/accelerateConnectivity";
+import { sentryDataCollection } from "./src/lib/sentry/dataCollection";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
   environment: process.env.NEXT_PUBLIC_RELEASE_STAGE,
   release: process.env.NEXT_PUBLIC_APP_VERSION,
+  dataCollection: sentryDataCollection,
 
   beforeSend(event, hint) {
     const code = getAccelerateConnectivityCode(hint.originalException);

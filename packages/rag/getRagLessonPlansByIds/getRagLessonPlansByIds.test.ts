@@ -1,11 +1,12 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { generateMock } from "@anatine/zod-mock";
 import * as Sentry from "@sentry/nextjs";
 
-import { CompletedLessonPlanSchema } from "../../aila/src/protocol/schema";
-import { QuizV1Schema } from "../../aila/src/protocol/schemas/quiz/quizV1";
-import { QuizV2Schema } from "../../aila/src/protocol/schemas/quiz/quizV2";
+import {
+  completedLessonPlanFixture,
+  mockV1Quiz,
+  mockV2Quiz,
+} from "../lessonPlanFixtures";
 import { getRagLessonPlansByIds } from "./getRagLessonPlansByIds";
 
 jest.mock("@sentry/nextjs", () => ({
@@ -27,7 +28,7 @@ function makeRow(overrides: Partial<DbRow> = {}): DbRow {
     ingestLessonId: null,
     oakLessonId: 1,
     oakLessonSlug: "slug",
-    lessonPlan: generateMock(CompletedLessonPlanSchema),
+    lessonPlan: completedLessonPlanFixture,
     ...overrides,
   };
 }
@@ -198,8 +199,8 @@ describe("getRagLessonPlansByIds", () => {
 
   describe("schema migration", () => {
     it("migrates a v2 quiz lesson plan to v3 (regression for empty-basedOn bug)", async () => {
-      const baseLesson = generateMock(CompletedLessonPlanSchema);
-      const v2Quiz = generateMock(QuizV2Schema);
+      const baseLesson = completedLessonPlanFixture;
+      const v2Quiz = mockV2Quiz;
 
       findManyMock.mockResolvedValue([
         makeRow({
@@ -224,8 +225,8 @@ describe("getRagLessonPlansByIds", () => {
     });
 
     it("migrates a v1 quiz lesson plan through to v3", async () => {
-      const baseLesson = generateMock(CompletedLessonPlanSchema);
-      const v1Quiz = generateMock(QuizV1Schema);
+      const baseLesson = completedLessonPlanFixture;
+      const v1Quiz = mockV1Quiz;
 
       findManyMock.mockResolvedValue([
         makeRow({
@@ -272,7 +273,7 @@ describe("getRagLessonPlansByIds", () => {
     });
 
     it("returns the surviving rows when only some plans fail validation", async () => {
-      const validLesson = generateMock(CompletedLessonPlanSchema);
+      const validLesson = completedLessonPlanFixture;
 
       findManyMock.mockResolvedValue([
         makeRow({ id: "rag-good", lessonPlan: validLesson }),

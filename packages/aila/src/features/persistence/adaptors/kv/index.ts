@@ -1,4 +1,4 @@
-import { kv } from "@vercel/kv";
+import { kv } from "@oakai/core/src/utils/kv";
 
 import { AilaPersistence } from "../..";
 import type {

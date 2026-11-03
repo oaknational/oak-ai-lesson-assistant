@@ -14,9 +14,9 @@
     "db-export": "DB_ENV=dev doppler run --config dev -- bash scripts/import-export/db_export.sh",
     "db-export:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_export.sh",
     "db-export:stg": "DB_ENV=stg doppler run --config stg -- bash scripts/import-export/db_export.sh",
-    "db-generate": "echo 'Running db-generate...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --schema=./prisma/schema.prisma",
-    "db-generate:dev": "rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate",
-    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && rm -f ./prisma/zod-schemas/*.ts && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
+    "db-generate": "echo 'Running db-generate...' && pnpm with-env prisma generate --schema=./prisma/schema.prisma",
+    "db-generate:dev": "pnpm with-env prisma generate",
+    "db-generate:no-engine": "echo 'Running db-generate:no-engine...' && pnpm with-env prisma generate --no-engine --schema=./prisma/schema.prisma",
     "db-migrate": "pnpm with-env prisma migrate dev",
     "db-migrate:dev": "pnpm with-env prisma migrate dev",
     "db-migrate:prd": "DB_ENV=prd doppler run --config prd -- bash scripts/import-export/db_migrate.sh",
@@ -74,7 +74,7 @@
     "@prisma/client": "6.19.3",
     "@prisma/extension-accelerate": "^1.2.1",
     "csv-parser": "^3.0.0",
-    "openai": "^6.45.0",
+    "openai": "^7.45.0",
     "ts-node": "^10.9.2",
     "yaml": "^2.4.1"
   },
@@ -83,8 +83,7 @@
     "@oakai/prettier-config": "workspace:*",
     "dotenv-cli": "^11.0.0",
     "prisma": "6.19.3",
-    "typescript": "5.9.3",
-    "zod-prisma": "^0.5.4"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=24.22.1 <25",

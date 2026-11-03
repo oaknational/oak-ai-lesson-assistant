@@ -1,9 +1,9 @@
-import { kv } from "@vercel/kv";
+import { kv } from "@oakai/core/src/utils/kv";
 
 import type { RootReportNode } from "./Report";
 import { ReportStorage, type StoredQuizReport } from "./ReportStorage";
 
-jest.mock("@vercel/kv", () => ({
+jest.mock("@oakai/core/src/utils/kv", () => ({
   kv: {
     set: jest.fn().mockResolvedValue("OK"),
     get: jest.fn().mockResolvedValue(null),

@@ -4,7 +4,6 @@
 **/*.generated.*
 **/*.gen.*
 **/generated/
-**/zod-schemas/*.ts
 
 # Build output
 **/dist/

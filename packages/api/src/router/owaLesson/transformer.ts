@@ -6,20 +6,20 @@ import type {
 } from "@oakai/aila/src/protocol/schema";
 import type { LessonPlanSchemaTeachingMaterials } from "@oakai/teaching-materials/src/documents/teachingMaterials/sharedSchema";
 
-import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
 import { isArray, isTruthy } from "remeda";
 import z from "zod";
 
 import type {
   LessonBrowseDataByKsSchema,
   LessonContentSchema,
+  LessonQuizQuestion,
   UnitDataSchema,
 } from "./schemas";
 
 /**
  * Transforms Oak's quiz format to the format expected by LessonPlanSchemaWhilstStreaming
  */
-export function transformQuiz(questions: OwaQuizQuestion[]): LatestQuiz {
+export function transformQuiz(questions: LessonQuizQuestion[]): LatestQuiz {
   // Refined helper function with proper typing
   function filterUndefined<T>(items?: (T | undefined)[]): T[] {
     return Array.isArray(items)
@@ -29,10 +29,10 @@ export function transformQuiz(questions: OwaQuizQuestion[]): LatestQuiz {
 
   // Updated isTextOnly function
   const isTextOnly = (
-    items?: OwaQuizQuestion["question_stem"] | OwaQuizQuestion["answers"],
+    items?: LessonQuizQuestion["question_stem"] | LessonQuizQuestion["answers"],
   ) => Array.isArray(items) && items.every((i) => i?.type === "text");
 
-  const extractText = (items?: OwaQuizQuestion["question_stem"]) =>
+  const extractText = (items?: LessonQuizQuestion["question_stem"]) =>
     (items ?? [])
       .filter(
         (item): item is { text: string; type: "text" } =>

@@ -1,5 +1,6 @@
+import { kv } from "@oakai/core/src/utils/kv";
+
 import { Ratelimit } from "@upstash/ratelimit";
-import { kv } from "@vercel/kv";
 
 const rateLimiter = new Ratelimit({
   redis: kv,

@@ -371,7 +371,6 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
         $borderColor="border-primary"
         $borderStyle={"solid"}
         $ba={"border-solid-xl"}
-        $grow={1}
       >
         <StyledMuxPlayer
           playbackId={pageData?.belowTheFoldVideo.video.asset.playbackId}
@@ -452,7 +451,6 @@ function HomePageAboutAila({ pageData, user, track }: HomePageAboutAilaProps) {
             $borderColor="border-primary"
             $borderStyle={"solid"}
             $ba={"border-solid-xl"}
-            $customMaxWidth={600}
             $height="fit-content"
           >
             <StyledMuxPlayer

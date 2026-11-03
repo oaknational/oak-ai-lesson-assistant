@@ -42,7 +42,7 @@ const buildLessonPlanInput = (
   const baseFields = ["title", "keyStage", "subject"];
 
   // Get resource-specific lesson parts or use all fields as fallback
-  let lessonPartsToGenerate = baseFields;
+  let lessonPartsToGenerate: string[];
 
   if (materialType?.lessonParts || materialType?.owaLessonParts) {
     const lessonPartsFromMaterialType =

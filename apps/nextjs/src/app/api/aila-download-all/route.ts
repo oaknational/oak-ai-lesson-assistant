@@ -1,9 +1,9 @@
+import { kv } from "@oakai/core/src/utils/kv";
 import { type LessonExportType, prisma } from "@oakai/db";
 import { downloadDriveFile } from "@oakai/exports";
 
 import { auth } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/node";
-import { kv } from "@vercel/kv";
 import { ZipArchive } from "archiver";
 import { PassThrough } from "stream";
 

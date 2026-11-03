@@ -34,12 +34,11 @@
     "@oakai/logger": "workspace:*",
     "@oakai/teaching-materials": "workspace:*",
     "@trpc/server": "11.19.0",
-    "@vercel/kv": "^0.2.2",
     "cloudinary": "^2.11.0",
     "next": "16.4.2",
-    "remeda": "^1.29.0",
-    "superjson": "^1.9.1",
-    "zod": "3.25.76"
+    "remeda": "^2.54.1",
+    "superjson": "^2.2.6",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
@@ -47,7 +46,7 @@
     "@oakai/test-support": "workspace:*",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=24.22.1 <25",

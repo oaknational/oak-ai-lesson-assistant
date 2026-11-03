@@ -1,5 +1,5 @@
 import { OakBox, OakFlex, OakP } from "@oaknational/oak-components";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import type { SideBarChatItem } from "@/lib/types";
 

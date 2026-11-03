@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 /**
  * Agentic Issue Scoring Harness
  *

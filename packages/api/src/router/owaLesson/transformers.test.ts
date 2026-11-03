@@ -1,10 +1,9 @@
-import { type QuizQuestion as OwaQuizQuestion } from "@oaknational/oak-curriculum-schema/";
-
+import type { LessonQuizQuestion } from "./schemas";
 import { transformQuiz } from "./transformer";
 
 describe("transformQuiz", () => {
   it("should include questions with all text-type stems and answers", () => {
-    const validQuestions: OwaQuizQuestion[] = [
+    const validQuestions: LessonQuizQuestion[] = [
       {
         question_id: 1,
         order: 1,
@@ -46,7 +45,7 @@ describe("transformQuiz", () => {
   });
 
   it("should omit questions with non-text type in question stem", () => {
-    const questionsWithNonTextStem: OwaQuizQuestion[] = [
+    const questionsWithNonTextStem: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",
@@ -101,7 +100,7 @@ describe("transformQuiz", () => {
   });
 
   it("should omit questions with non-text type in answers (multiple-choice)", () => {
-    const questionsWithNonTextAnswers: OwaQuizQuestion[] = [
+    const questionsWithNonTextAnswers: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",
@@ -160,7 +159,7 @@ describe("transformQuiz", () => {
   });
 
   it("should omit questions with non-text type in answers (short-answer)", () => {
-    const questionsWithNonTextShortAnswers: OwaQuizQuestion[] = [
+    const questionsWithNonTextShortAnswers: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",
@@ -216,7 +215,7 @@ describe("transformQuiz", () => {
   });
 
   it("should handle mixed text and non-text stems correctly", () => {
-    const mixedQuestions: OwaQuizQuestion[] = [
+    const mixedQuestions: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",
@@ -253,15 +252,13 @@ describe("transformQuiz", () => {
   });
 
   it("should handle questions with unsupported question types", () => {
-    const unsupportedTypeQuestion: OwaQuizQuestion[] = [
+    const unsupportedTypeQuestion: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        question_type: "essay" as any,
+        question_type: "essay",
         question_stem: [{ type: "text", text: "Write an essay about..." }],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        answers: {} as any,
+        answers: {},
         order: 1,
       },
     ];
@@ -273,7 +270,7 @@ describe("transformQuiz", () => {
   });
 
   it("should handle questions where answers array contains items with missing text properties", () => {
-    const questionsWithMissingProps: OwaQuizQuestion[] = [
+    const questionsWithMissingProps: LessonQuizQuestion[] = [
       {
         question_id: 1,
         question_uid: "q1",

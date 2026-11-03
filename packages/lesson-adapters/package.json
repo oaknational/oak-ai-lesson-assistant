@@ -19,14 +19,15 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "npm:@ai-sdk/openai@^3.0.0",
+    "@ai-sdk/openai": "^4.0.100",
     "@oakai/core": "workspace:*",
     "@oakai/db": "workspace:*",
     "@oakai/gsuite": "workspace:*",
     "@oakai/logger": "workspace:*",
-    "ai": "npm:ai@^6.0.48",
-    "openai": "^6.45.0",
-    "zod": "3.25.76"
+    "ai": "^7.0.150",
+    "openai": "^7.45.0",
+    "remeda": "^2.54.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
@@ -35,6 +36,6 @@
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   }
 }

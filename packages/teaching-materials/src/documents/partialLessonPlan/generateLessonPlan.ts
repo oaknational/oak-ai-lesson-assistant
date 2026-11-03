@@ -46,6 +46,9 @@ export const generatePartialLessonPlanObject = async ({
         keyStage: derivedKeystage,
       }),
       schema: schema,
+      // Aila's lesson plan schema has optional fields, which strict
+      // structured outputs can't express
+      jsonMode: true,
     },
     provider,
   );

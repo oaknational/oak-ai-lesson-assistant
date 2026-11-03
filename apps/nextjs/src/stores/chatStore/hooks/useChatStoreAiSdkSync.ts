@@ -1,23 +1,15 @@
 import { useEffect } from "react";
 
-import type {
-  Message as AiMessage,
-  ChatRequestOptions,
-  CreateMessage,
-  Message,
-} from "ai";
-
 import { useChatActions } from "@/stores/AilaStoresProvider";
+import type { AiMessage, AiSdkActions } from "@/stores/chatStore/types";
 
 export const useChatStoreAiSdkSync = (
   messages: AiMessage[],
   isLoading: boolean,
-  stop: () => void,
-  append: (
-    message: Message | CreateMessage,
-    chatRequestOptions?: ChatRequestOptions | undefined,
-  ) => Promise<string | null | undefined>,
-  reload: () => Promise<string | null | undefined>,
+  stop: AiSdkActions["stop"],
+  append: AiSdkActions["append"],
+  reload: AiSdkActions["reload"],
+  initializeMessages: AiSdkActions["initializeMessages"],
 ) => {
   const { setMessages, setAiSdkActions } = useChatActions();
 
@@ -26,7 +18,7 @@ export const useChatStoreAiSdkSync = (
   }, [messages, isLoading, setMessages]);
 
   useEffect(() => {
-    setAiSdkActions({ stop, append, reload });
+    setAiSdkActions({ stop, append, reload, initializeMessages });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

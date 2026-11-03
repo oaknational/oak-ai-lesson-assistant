@@ -27,7 +27,7 @@ export const parseResult =
 
     onError({
       ragLessonPlanId: result.ragLessonPlanId,
-      error: JSON.stringify(parseResult.error.errors),
+      error: JSON.stringify(parseResult.error.issues),
     });
     return false;
   };

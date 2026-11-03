@@ -9,6 +9,10 @@ import Gleap from "gleap";
 
 import { ServicePolicyMap } from "@/lib/cookie-consent/ServicePolicyMap";
 
+// Gleap types getInstance() as `any`, but the instance has an `initialized` flag
+const isGleapInitialized = () =>
+  (Gleap.getInstance() as { initialized?: boolean }).initialized === true;
+
 export const GleapProvider = ({ children }: PropsWithChildren) => {
   const auth = useAuth();
   const user = useUser();
@@ -25,8 +29,7 @@ export const GleapProvider = ({ children }: PropsWithChildren) => {
       return;
     }
     if (gleapApiKey && analyticsAccepted) {
-      const gleapInstance = Gleap.getInstance();
-      if (!gleapInstance.initialized) {
+      if (!isGleapInitialized()) {
         // use first party domains
         Gleap.setFrameUrl(gleapFrameUrl);
         Gleap.setApiUrl(gleapApiUrl);
@@ -42,7 +45,7 @@ export const GleapProvider = ({ children }: PropsWithChildren) => {
       }
     }
 
-    if (!analyticsAccepted && Gleap.getInstance().initialized) {
+    if (!analyticsAccepted && isGleapInitialized()) {
       Gleap.showFeedbackButton(false);
       Gleap.clearIdentity();
     }

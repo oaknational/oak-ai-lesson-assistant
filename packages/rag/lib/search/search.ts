@@ -1,6 +1,6 @@
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 
-import { uniqBy } from "remeda";
+import { uniqueBy } from "remeda";
 
 import type { RagLessonPlanResult, RagLogger } from "../../types";
 import { executePrismaQueryRaw } from "./executePrismaQueryRaw";
@@ -108,7 +108,7 @@ export async function vectorSearch({
     `Fetched ${results.length} lesson plans in ${endAt.getTime() - startAt.getTime()}ms`,
   );
 
-  const uniqueLessonPlans = uniqBy(results, (r) => r.ragLessonPlanId);
+  const uniqueLessonPlans = uniqueBy(results, (r) => r.ragLessonPlanId);
 
   log.info(`Unique lesson plans: ${uniqueLessonPlans.length}`);
 

@@ -1,4 +1,3 @@
-/* eslint-env browser */
 import pino from "pino";
 
 /**

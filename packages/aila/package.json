@@ -24,42 +24,37 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@anatine/zod-mock": "^3.13.4",
     "@clerk/nextjs": "7.9.18",
-    "@faker-js/faker": "^9.4.0",
     "@oakai/core": "workspace:*",
     "@oakai/db": "workspace:*",
     "@oakai/exports": "workspace:*",
     "@oakai/logger": "workspace:*",
     "@oakai/rag": "workspace:*",
-    "@sentry/nextjs": "^10.29.0",
-    "@vercel/kv": "^0.2.2",
+    "@sentry/nextjs": "^11.9.0",
     "@vercel/oidc": "^4.0.2",
     "american-british-english-translator": "^0.2.1",
     "cloudinary": "^2.11.0",
+    "cohere-ai": "^8.3.0",
     "dedent": "^1.5.3",
     "dotenv-cli": "^11.0.0",
     "immer": "^11.2.6",
     "js-tiktoken": "^1.0.21",
-    "openai": "^6.45.0",
+    "openai": "^7.45.0",
     "openapi-fetch": "^0.17.0",
-    "remeda": "^1.29.0",
-    "superjson": "^1.9.1",
+    "remeda": "^2.54.1",
     "tiny-invariant": "^1.3.1",
-    "zod": "3.25.76",
-    "zod-to-json-schema": "^3.23.0"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/eslint-config": "workspace:*",
     "@oakai/prettier-config": "workspace:*",
     "@oakai/test-support": "workspace:*",
-    "@types/dedent": "^0.7.2",
     "@types/jest": "^30.0.0",
     "jest": "^30.0.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "ts-jest": "^29.2.5",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=24.22.1 <25",

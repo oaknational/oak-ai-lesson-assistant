@@ -7,7 +7,12 @@ import { type ProviderKey, providers } from ".";
 const log = aiLogger("teaching-materials");
 
 export const getLLMGeneration = async <T>(
-  document: { prompt: string; systemMessage: string; schema: ZodType<T> },
+  document: {
+    prompt: string;
+    systemMessage: string;
+    schema: ZodType<T>;
+    jsonMode?: boolean;
+  },
   provider: ProviderKey,
 ) => {
   const model = providers[provider];
@@ -26,8 +31,9 @@ export const getLLMGeneration = async <T>(
     if (error instanceof ZodError) {
       throw new Error(
         `Context schema validation failed: ${JSON.stringify(error.issues, null, 2)}`,
+        { cause: error },
       );
     }
-    throw new Error(`Failed to generate : ${String(error)}`);
+    throw new Error(`Failed to generate : ${String(error)}`, { cause: error });
   }
 };

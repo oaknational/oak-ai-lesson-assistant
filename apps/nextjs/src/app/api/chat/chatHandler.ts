@@ -35,6 +35,7 @@ import {
   getFixtureModerationOpenAiClient,
   getFixtureOakModerator,
 } from "./fixtures";
+import { formatChatResponse } from "./streamProtocol";
 import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
@@ -122,12 +123,10 @@ async function generateChatStream(aila: Aila): Promise<Response> {
       try {
         invariant(aila, "Aila instance is required");
         const result = await aila.generate();
-        const transformStream = new TransformStream({
+        // The client reads the response as a plain text stream
+        const transformStream = new TransformStream<string, Uint8Array>({
           transform(chunk, controller) {
-            const formattedChunk = new TextEncoder().encode(
-              `0:${JSON.stringify(chunk)}\n`,
-            );
-            controller.enqueue(formattedChunk);
+            controller.enqueue(new TextEncoder().encode(chunk));
           },
         });
 
@@ -198,7 +197,7 @@ async function loadGenerationContext(
     verifyChatOwnership(chat, userId, chatId);
 
     const output = z
-      .object({ lessonPlan: z.record(z.unknown()) })
+      .object({ lessonPlan: z.record(z.string(), z.unknown()) })
       .passthrough()
       .parse(chat.output ?? {});
 
@@ -327,7 +326,7 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await startSpan("chat-api", {}, async (span: TracingSpan) => {
-    let chatId = "unknown";
+    let chatId: string;
     let aila: Aila | undefined;
     let userId: string | undefined;
     try {
@@ -363,10 +362,9 @@ export async function handleChatPostRequest(
       invariant(aila, "Aila instance is required");
 
       logConnectionAborted(req);
-      const stream = await generateChatStream(aila);
-      return stream;
+      return formatChatResponse(req, await generateChatStream(aila));
     } catch (e) {
-      return handleChatException(e);
+      return formatChatResponse(req, await handleChatException(e));
     } finally {
       if (aila) {
         await aila.ensureShutdown();

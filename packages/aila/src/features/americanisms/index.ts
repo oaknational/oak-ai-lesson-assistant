@@ -23,7 +23,7 @@ const phrasingIssueSchema = z.object({
 const meaningIssueSchema = z.object({
   phrase: z.string(),
   issue: z.literal(AMERICANISM_ISSUE_KIND.MEANING),
-  details: z.record(z.string()),
+  details: z.record(z.string(), z.string()),
 });
 
 export const americanismIssueSchema = z.discriminatedUnion("issue", [

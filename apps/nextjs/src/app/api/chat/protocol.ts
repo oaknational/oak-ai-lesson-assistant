@@ -4,8 +4,8 @@ import type {
 } from "@oakai/aila/src/protocol/jsonPatchProtocol";
 
 export function streamingJSON(message: ErrorDocument | ActionDocument) {
-  const jsonContent = JSON.stringify(message);
-  const errorMessage = `0:"${jsonContent.replace(/"/g, '\\"')}"`;
+  // The client reads the response as a plain text stream
+  const errorMessage = JSON.stringify(message);
 
   const errorEncoder = new TextEncoder();
 

@@ -26,8 +26,6 @@ jest.mock("@/stores/AilaStoresProvider", () => ({
   useChatStore: jest.fn(),
 }));
 
-const fixedDate = new Date("2023-01-01T12:00:00.000Z");
-
 // Helper to create a message with patches
 const createAssistantMessageWithPatches = (
   id: string,
@@ -45,7 +43,6 @@ const createAssistantMessageWithPatches = (
     id,
     role: "assistant",
     content: patchContent,
-    createdAt: fixedDate,
   };
 };
 
@@ -54,7 +51,6 @@ const createUserMessage = (id: string, content: string): AiMessage => {
     id,
     role: "user",
     content,
-    createdAt: fixedDate,
   };
 };
 
