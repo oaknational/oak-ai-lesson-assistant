@@ -26,14 +26,14 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@hubspot/api-client": "^14.0.1",
+    "@hubspot/api-client": "^14.1.1",
     "@oakai/db": "workspace:*",
     "@oakai/logger": "workspace:*",
     "@slack/web-api": "^8.2.0",
     "@upstash/ratelimit": "^2.0.1",
-    "@upstash/redis": "^1.39.0",
-    "@vercel/functions": "^3.10.2",
-    "@vercel/oidc": "^4.0.2",
+    "@upstash/redis": "^1.40.0",
+    "@vercel/functions": "^3.10.4",
+    "@vercel/oidc": "^4.0.4",
     "cloudinary": "^2.11.0",
     "google-auth-library": "^11.3.1",
     "murmurhash": "^2.0.1",

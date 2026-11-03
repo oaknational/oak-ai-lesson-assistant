@@ -19,12 +19,12 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.100",
+    "@ai-sdk/openai": "^4.0.103",
     "@oakai/core": "workspace:*",
     "@oakai/db": "workspace:*",
     "@oakai/gsuite": "workspace:*",
     "@oakai/logger": "workspace:*",
-    "ai": "^7.0.150",
+    "ai": "^7.0.154",
     "openai": "^7.45.0",
     "remeda": "^2.54.1",
     "zod": "4.6.7"
