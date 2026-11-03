@@ -3,8 +3,8 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 import * as Sentry from "@sentry/nextjs";
 
-import { getAccelerateConnectivityCode } from "./src/lib/sentry/accelerateConnectivity";
 import { sentryDataCollection } from "./src/lib/sentry/dataCollection";
+import { getDbConnectivityCode } from "./src/lib/sentry/dbConnectivity";
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -13,7 +13,7 @@ Sentry.init({
   dataCollection: sentryDataCollection,
 
   beforeSend(event, hint) {
-    const code = getAccelerateConnectivityCode(hint.originalException);
+    const code = getDbConnectivityCode(hint.originalException);
 
     if (code) {
       /**
@@ -23,7 +23,7 @@ Sentry.init({
        * infrastructure problem. Collapse them into one issue per error code so
        * the frequency over time is visible.
        */
-      event.fingerprint = ["prisma-accelerate-connectivity", code];
+      event.fingerprint = ["prisma-db-connectivity", code];
       event.tags = { ...event.tags, prisma_error_code: code };
     }
 

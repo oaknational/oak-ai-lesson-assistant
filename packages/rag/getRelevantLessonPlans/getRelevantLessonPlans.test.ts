@@ -5,7 +5,7 @@
  * In this case, the new functionality should be tested and the snapshots updated.
  */
 // import OpenAI from "openai";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import ragFixtures from "../fixtures.json";
 
@@ -17,7 +17,7 @@ async function pgVectorSearch({
 }: {
   vector: number[];
   limit?: number;
-  prisma?: PrismaClientWithAccelerate;
+  prisma?: OakPrismaClient;
 }): Promise<unknown> {
   if (!prisma) {
     throw new Error("pgVectorSearch requires a Prisma client");

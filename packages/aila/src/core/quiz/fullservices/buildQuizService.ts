@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 /**
  * Quiz Generation Pipeline Factory
@@ -46,7 +46,7 @@ import type {
 import { QuizQuestionRetrievalService } from "../services/QuizQuestionRetrievalService";
 
 type QuizServiceDeps = {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
 };
 
 function createSource(

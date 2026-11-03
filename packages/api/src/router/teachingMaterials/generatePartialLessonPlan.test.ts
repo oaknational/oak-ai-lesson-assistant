@@ -6,7 +6,7 @@ import type {
 } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
 import { moderateWithOakService } from "@oakai/core/src/utils/ailaModeration/oakModerationService";
 import { isToxic } from "@oakai/core/src/utils/ailaModeration/safetyResult";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { generateTeachingMaterialModeration } from "@oakai/teaching-materials";
 import { generatePartialLessonPlanObject } from "@oakai/teaching-materials/src/documents/partialLessonPlan/generateLessonPlan";
 import type { PartialLessonContextSchemaType } from "@oakai/teaching-materials/src/documents/partialLessonPlan/schema";
@@ -137,7 +137,7 @@ const mockPrisma = {
   additionalMaterialInteraction: {
     create: jest.fn().mockResolvedValue(mockPrismaInteraction),
   },
-} as unknown as PrismaClientWithAccelerate;
+} as unknown as OakPrismaClient;
 
 const mockAuth: SignedInAuthObject = {
   userId: "test-user-id",

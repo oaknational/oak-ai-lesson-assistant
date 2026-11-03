@@ -1,7 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
 import { PrismaClient } from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
 
 const log = aiLogger("db");
 const shouldLogQueries = process.env.LOG_DB_QUERIES === "true";
@@ -28,18 +27,18 @@ const createPrismaClient = () => {
     log.info(e.message);
   });
 
-  return client.$extends(withAccelerate());
+  return client;
 };
 
-export type PrismaClientWithAccelerate = ReturnType<typeof createPrismaClient>;
+export type OakPrismaClient = ReturnType<typeof createPrismaClient>;
 
 declare global {
   // allow global `var` declarations
 
-  var prisma: PrismaClientWithAccelerate | undefined;
+  var prisma: OakPrismaClient | undefined;
 }
 
-let prisma: PrismaClientWithAccelerate;
+let prisma: OakPrismaClient;
 
 if (process.env.NODE_ENV === "production") {
   prisma = createPrismaClient();
@@ -49,3 +48,4 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export { prisma };
+export { toPrismaJson } from "./json";

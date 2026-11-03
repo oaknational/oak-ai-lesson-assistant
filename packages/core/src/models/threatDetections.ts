@@ -1,6 +1,6 @@
 import type {
+  OakPrismaClient,
   Prisma,
-  PrismaClientWithAccelerate,
   SafetyViolationRecordType,
   ThreatDetection,
 } from "@oakai/db";
@@ -35,7 +35,7 @@ export class ThreatDetections {
   private readonly safetyViolations: SafetyViolations;
 
   constructor(
-    private readonly prisma: PrismaClientWithAccelerate,
+    private readonly prisma: OakPrismaClient,
     safetyViolations?: SafetyViolations,
   ) {
     this.safetyViolations = safetyViolations ?? new SafetyViolations(prisma);

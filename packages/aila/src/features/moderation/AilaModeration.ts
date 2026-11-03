@@ -7,7 +7,7 @@ import {
   isHighlySensitive,
   isToxic,
 } from "@oakai/core/src/utils/ailaModeration/safetyResult";
-import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Moderation, OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { waitUntil } from "@vercel/functions";
@@ -26,7 +26,7 @@ import { OpenAiModerator } from "./moderators/OpenAiModerator";
 const log = aiLogger("aila:moderation");
 
 export class AilaModeration implements AilaModerationFeature {
-  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _prisma: OakPrismaClient;
   private readonly _moderations: Moderations;
   private readonly _moderator: AilaModerator;
   private readonly _shadowModerator?: AilaModerator;
@@ -42,7 +42,7 @@ export class AilaModeration implements AilaModerationFeature {
     shouldPersist = true,
   }: {
     aila: AilaServices;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
     moderator?: AilaModerator;
     shadowModerator?: AilaModerator;
     moderations?: Moderations;

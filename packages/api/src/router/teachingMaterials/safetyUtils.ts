@@ -7,7 +7,7 @@ import {
 } from "@oakai/core";
 import type { ThreatDetectionResult } from "@oakai/core/src/threatDetection/types";
 import type { ModerationResult } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient, Prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -16,7 +16,7 @@ import * as Sentry from "@sentry/nextjs";
 const log = aiLogger("teaching-materials");
 
 type BaseSafetyViolationParams = {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   auth: SignedInAuthObject;
   interactionId: string;
   userAction: "PARTIAL_LESSON_GENERATION" | "ADDITIONAL_MATERIAL_GENERATION";

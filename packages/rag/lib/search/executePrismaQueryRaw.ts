@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { Prisma } from "@prisma/client";
@@ -14,7 +14,7 @@ export function executePrismaQueryRaw({
   subjectSlugs,
   limit,
 }: {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   queryVector: number[];
   keyStageSlugs: string[];
   subjectSlugs: string[];

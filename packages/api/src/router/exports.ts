@@ -1,6 +1,6 @@
 import { kv } from "@oakai/core/src/utils/kv";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import {
   exportDocLessonPlanSchema,
   exportDocQuizSchema,
@@ -57,7 +57,7 @@ export async function ailaSaveExport({
   data,
 }: {
   auth: Pick<SignedInAuthObject, "userId">;
-  prisma: Pick<PrismaClientWithAccelerate, "lessonExport">;
+  prisma: Pick<OakPrismaClient, "lessonExport">;
   lessonSnapshotId: string;
   exportType: LessonExportType;
   data: {
@@ -85,7 +85,7 @@ export async function ailaGetExportBySnapshotId({
   snapshotId,
   exportType,
 }: {
-  prisma: Pick<PrismaClientWithAccelerate, "lessonExport">;
+  prisma: Pick<OakPrismaClient, "lessonExport">;
   snapshotId: string;
   exportType: LessonExportType;
 }) {

@@ -3,7 +3,7 @@ import {
   type SubjectName,
   subjectsAndKeyStages,
 } from "@oakai/core";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import { z } from "zod";
 
@@ -97,7 +97,7 @@ function mapQuestion(question: Question) {
 }
 
 async function getQuestionsForKSAndSubject(
-  prisma: PrismaClientWithAccelerate,
+  prisma: OakPrismaClient,
   keyStage: KeyStageName | undefined,
   subject: SubjectName | undefined,
 ): Promise<LessonWithQuestions[]> {

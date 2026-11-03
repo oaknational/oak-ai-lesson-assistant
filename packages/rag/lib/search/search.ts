@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import { uniqueBy } from "remeda";
 
@@ -36,7 +36,7 @@ export async function vectorSearch({
   queryVector,
   filters,
 }: {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   log: RagLogger;
   queryVector: number[];
   filters: {

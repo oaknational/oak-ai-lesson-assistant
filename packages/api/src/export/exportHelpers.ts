@@ -6,7 +6,7 @@ import { getDisplayCategories } from "@oakai/core/src/utils/ailaModeration/sever
 import type {
   LessonExportType,
   LessonSnapshot,
-  PrismaClientWithAccelerate,
+  OakPrismaClient,
 } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
@@ -41,7 +41,7 @@ export const getLessonPlanCacheKeyInput = async ({
   prisma,
   chatId,
 }: {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   chatId: string;
 }): Promise<{
   cacheKeyInput: string | undefined;
@@ -67,7 +67,7 @@ export const getLessonPlanCacheKeyInput = async ({
 
 export const getUserEmail = async (ctx: {
   auth: SignedInAuthObject;
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
 }) => {
   const client = await clerkClient();
   const user = await client.users.getUser(ctx.auth.userId);
@@ -98,7 +98,7 @@ export const getLessonSnapshot = async <T>({
   };
   ctx: {
     auth: SignedInAuthObject;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   };
   exportType: LessonExportType;
   cacheKeyInput?: string;
@@ -130,7 +130,7 @@ export const getExportData = async ({
   snapshotId,
   exportType,
 }: {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   snapshotId: string;
   exportType: LessonExportType;
 }) => {
@@ -168,7 +168,7 @@ export const getExistingExportData = async <T>({
   };
   ctx: {
     auth: SignedInAuthObject;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   };
   exportType: LessonExportType;
   cacheKeyInput?: string;

@@ -19,7 +19,8 @@ import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/mig
 import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { toPrismaJson } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { captureException } from "@sentry/nextjs";
@@ -176,7 +177,7 @@ function verifyChatOwnership(
 async function loadGenerationContext(
   chatId: string,
   userId: string,
-  prisma: PrismaClientWithAccelerate,
+  prisma: OakPrismaClient,
 ): Promise<{ messages: Message[]; lessonPlan: PartialLessonPlan }> {
   try {
     const chat = await prisma.appSession.findUnique({
@@ -208,7 +209,7 @@ async function loadGenerationContext(
       async (upgradedData) => {
         await prisma.appSession.update({
           where: { id: chat.id },
-          data: { output: upgradedData },
+          data: { output: toPrismaJson(upgradedData) },
         });
       },
       {

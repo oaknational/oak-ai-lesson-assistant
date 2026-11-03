@@ -1,5 +1,5 @@
 import { kv } from "@oakai/core/src/utils/kv";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import type { PartialLessonPlan } from "../../protocol/schema";
 import { fetchLessonPlanContentById } from "./fetchLessonPlanContentById";
@@ -11,7 +11,7 @@ export async function fetchLessonPlan({
 }: {
   id?: string;
   deleteCache?: boolean;
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
 }) {
   if (!id) {
     return null;

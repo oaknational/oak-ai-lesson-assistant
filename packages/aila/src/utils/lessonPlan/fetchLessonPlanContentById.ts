@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import { tryWithErrorReporting } from "../../helpers/errorReporting";
 import type { PartialLessonPlan } from "../../protocol/schema";
@@ -7,13 +7,12 @@ import { migrateLessonPlan } from "../../protocol/schemas/versioning/migrateLess
 
 export async function fetchLessonPlanContentById(
   id: string,
-  prisma: PrismaClientWithAccelerate,
+  prisma: OakPrismaClient,
 ): Promise<PartialLessonPlan | null> {
   const lessonPlanRecord = await prisma.lessonPlan.findFirst({
     where: {
       id,
     },
-    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!lessonPlanRecord?.content) {

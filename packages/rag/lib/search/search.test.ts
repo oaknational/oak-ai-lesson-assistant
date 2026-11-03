@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import { completedLessonPlanFixture } from "../../lessonPlanFixtures";
 import type { RagLogger } from "../../types";
@@ -11,7 +11,7 @@ jest.mock("./executePrismaQueryRaw", () => ({
 }));
 
 describe("vectorSearch", () => {
-  const prisma = {} as PrismaClientWithAccelerate;
+  const prisma = {} as OakPrismaClient;
   const log: RagLogger = {
     info: jest.fn(),
     error: jest.fn(),
