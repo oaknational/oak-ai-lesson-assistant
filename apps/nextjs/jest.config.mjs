@@ -1,6 +1,6 @@
-import { readFileSync } from "fs";
-import { createRequire } from "module";
-import { dirname, join } from "path";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
 import { pathsToModuleNameMapper } from "ts-jest";
 import { fileURLToPath } from "url";
 

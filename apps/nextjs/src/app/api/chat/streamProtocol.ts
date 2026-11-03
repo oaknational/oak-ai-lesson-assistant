@@ -9,7 +9,7 @@ export const CHAT_STREAM_PROTOCOL = "text";
 /**
  * Tabs opened before the AI SDK 7 upgrade read the AI SDK 4 data stream, where
  * each chunk is a text part, and don't send the header.
- * TODO: remove the legacy framing once those tabs are gone
+ * TODO(ADAPT-194): remove the legacy framing once those tabs are gone
  */
 export function formatChatResponse(
   request: Request,

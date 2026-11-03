@@ -105,9 +105,9 @@ describe.each([
       selectedFields(query, "browseData"),
     );
 
-    expect(lessonBrowseDataByKsSchema.safeParse(browseData).error).toBe(
-      undefined,
-    );
+    expect(
+      lessonBrowseDataByKsSchema.safeParse(browseData).error,
+    ).toBeUndefined();
   });
 
   it("accepts lesson content with legacy quiz questions", () => {
@@ -125,7 +125,7 @@ describe.each([
 
     const parsed = lessonContentSchema.safeParse(content);
 
-    expect(parsed.error).toBe(undefined);
+    expect(parsed.error).toBeUndefined();
     expect(parsed.data?.starter_quiz).toHaveLength(2);
   });
 
@@ -155,7 +155,7 @@ describe.each([
         selectedFields(query, "content"),
       );
 
-      expect(schema.safeParse(content).error).toBe(undefined);
+      expect(schema.safeParse(content).error).toBeUndefined();
     },
   );
 });

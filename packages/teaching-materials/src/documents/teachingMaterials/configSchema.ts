@@ -1,4 +1,4 @@
-import { type ZodSchema, type ZodType, z } from "zod";
+import { type ZodType, z } from "zod";
 
 import {
   buildComprehensionPrompt,
@@ -54,7 +54,7 @@ export const teachingMaterialContextSchemasMap = {
   "additional-exit-quiz": exitQuizContextSchema,
   // "partial-lesson-plan": partialLessonContextSchema,
 } satisfies {
-  [K in TeachingMaterialType]: ZodSchema;
+  [K in TeachingMaterialType]: ZodType;
 };
 
 export type ContextByMaterialType = {
@@ -70,7 +70,7 @@ export const teachingMaterialSchemasMap = {
   "additional-starter-quiz": starterQuizSchema,
   "additional-exit-quiz": exitQuizSchema,
 } satisfies {
-  [K in TeachingMaterialType]: ZodSchema;
+  [K in TeachingMaterialType]: ZodType;
 };
 
 export type TeachingMaterialSchemas = z.infer<

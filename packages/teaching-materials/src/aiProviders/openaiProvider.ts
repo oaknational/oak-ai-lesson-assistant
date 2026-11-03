@@ -1,6 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Output, asSchema, generateText } from "ai";
-import type { ZodSchema } from "zod";
+import type { ZodType } from "zod";
 
 const model = openai.chat("gpt-4o");
 
@@ -18,7 +18,7 @@ async function generateJsonModeObject({
   systemMessage,
 }: {
   prompt: string;
-  schema: ZodSchema;
+  schema: ZodType;
   systemMessage?: string;
 }) {
   const jsonSchema = await asSchema(schema).jsonSchema;
@@ -45,7 +45,7 @@ export const OpenAIProvider = {
     jsonMode = false,
   }: {
     prompt: string;
-    schema: ZodSchema<T>;
+    schema: ZodType<T>;
     systemMessage?: string;
     jsonMode?: boolean;
   }): Promise<T> {
