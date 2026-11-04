@@ -82,7 +82,7 @@
     "@oakai/eslint-config": "workspace:*",
     "@oakai/prettier-config": "workspace:*",
     "dotenv-cli": "^11.0.0",
-    "prisma": "6.19.3",
+    "prisma": "7.10.1",
     "typescript": "6.0.3"
   },
   "engines": {
