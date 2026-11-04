@@ -4,7 +4,7 @@ import { Pool } from "pg";
 // Prisma 6 gave up on a new connection after 5 seconds. pg waits forever by default.
 export const CONNECTION_TIMEOUT_MS = 5_000;
 
-// Per function instance. ScaleGrid's PgBouncer runs in session mode, so each
+// Per function instance. The database's PgBouncer runs in session mode, so each
 // open connection holds one of its server connections until it's idle.
 export const MAX_CONNECTIONS = 5;
 
