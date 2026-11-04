@@ -3,7 +3,7 @@ import {
   promptHash,
 } from "@oakai/core/src/models/promptVariants";
 import type { OakPromptDefinition } from "@oakai/core/src/prompts/types";
-import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import type { OakPrismaClient } from "@oakai/db/client";
 
 import { z } from "zod";
 
@@ -49,7 +49,7 @@ function createAgenticPromptDefinition({
 const promptIdCache = new Map<string, Promise<string>>();
 
 async function resolveSinglePromptId(
-  prisma: PrismaClientWithAccelerate,
+  prisma: OakPrismaClient,
   template: AgenticPromptTemplate,
 ): Promise<string> {
   const prompts = new PromptVariants(
@@ -73,7 +73,7 @@ export async function resolveAgenticPromptIds({
   prisma,
   templates,
 }: {
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   templates: AgenticPromptTemplate[];
 }): Promise<Record<string, string>> {
   const uniqueTemplates = new Map<string, AgenticPromptTemplate>();

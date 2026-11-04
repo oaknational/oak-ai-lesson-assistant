@@ -1,7 +1,7 @@
 import { LessonSnapshots } from "@oakai/core/src/models/lessonSnapshots";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
+import type { LessonSnapshotTrigger } from "@oakai/db/prisma/client";
 
-import type { LessonSnapshotTrigger } from "@prisma/client";
 import invariant from "tiny-invariant";
 
 import type { AilaServices } from "../../core/AilaServices";
@@ -10,7 +10,7 @@ import type { AilaDocumentContent } from "../../core/document/types";
 export class AilaSnapshotStore {
   protected _name: string;
   protected _aila: AilaServices;
-  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _prisma: OakPrismaClient;
 
   constructor({
     name = "AilaSnapshotStore",
@@ -19,7 +19,7 @@ export class AilaSnapshotStore {
   }: {
     name?: string;
     aila: AilaServices;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   }) {
     this._name = name;
     this._aila = aila;

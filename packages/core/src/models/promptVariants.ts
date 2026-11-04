@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import dedent from "ts-dedent";
@@ -14,7 +14,7 @@ export class PromptVariants {
   definition: OakPromptDefinition;
   variant: OakPromptVariant;
   constructor(
-    private readonly prisma: PrismaClientWithAccelerate,
+    private readonly prisma: OakPrismaClient,
     promptDefinition: OakPromptDefinition,
     variantSlug: string,
   ) {
@@ -40,7 +40,6 @@ export class PromptVariants {
       where: {
         AND: [{ hash }, { slug }, { variant }, { current: true }],
       },
-      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
     if (existing) {
       return existing;

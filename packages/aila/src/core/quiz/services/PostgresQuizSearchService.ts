@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import OpenAI from "openai";
@@ -22,9 +22,9 @@ export interface SearchRow {
  */
 export class PostgresQuizSearchService {
   private readonly openai: OpenAI;
-  private readonly prisma: PrismaClientWithAccelerate;
+  private readonly prisma: OakPrismaClient;
 
-  constructor({ prisma }: { prisma: PrismaClientWithAccelerate }) {
+  constructor({ prisma }: { prisma: OakPrismaClient }) {
     this.prisma = prisma;
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,

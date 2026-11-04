@@ -5,6 +5,7 @@ import {
   type ThreatDetectionWithSafetyViolation,
   ThreatDetections,
 } from "@oakai/core";
+import { asPrismaJson } from "@oakai/db";
 import type { Moderation, SafetyViolation } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
@@ -77,7 +78,7 @@ export const adminRouter = router({
         async (upgradedData) => {
           await prisma.appSession.update({
             where: { id },
-            data: { output: upgradedData },
+            data: { output: asPrismaJson(upgradedData) },
           });
         },
         {

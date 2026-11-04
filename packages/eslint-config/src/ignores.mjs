@@ -9,5 +9,6 @@ export const ignores = {
     "**/coverage/**",
     "**/playwright-report/**",
     "**/jest.config.mjs",
+    "packages/db/generated/**",
   ],
 };

@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import type { OakPrismaClient } from "@oakai/db/client";
 
 import {
   type AgenticPromptTemplate,
@@ -17,7 +17,7 @@ function createMockPrisma(promptId: string) {
     prompt: { findFirst, upsert, updateMany },
     app: { findFirstOrThrow },
     $queryRaw: jest.fn().mockResolvedValue([{ max_version: 0 }]),
-  } as unknown as PrismaClientWithAccelerate;
+  } as unknown as OakPrismaClient;
   return { prisma, findFirst, findFirstOrThrow, upsert, updateMany };
 }
 
@@ -108,7 +108,7 @@ describe("resolveAgenticPromptIds", () => {
       .mockResolvedValueOnce({ id: "prompt_recovered" });
     const prisma = {
       prompt: { findFirst },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     await expect(
       resolveAgenticPromptIds({ prisma, templates: [tpl("planner")] }),

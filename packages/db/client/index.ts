@@ -1,13 +1,18 @@
 import { aiLogger } from "@oakai/logger";
 
-import { PrismaClient } from "@prisma/client";
-import { withAccelerate } from "@prisma/extension-accelerate";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+import { PrismaClient } from "../generated/prisma/client";
+import { createPool } from "./pool";
 
 const log = aiLogger("db");
 const shouldLogQueries = process.env.LOG_DB_QUERIES === "true";
 
 const createPrismaClient = () => {
   const client = new PrismaClient({
+    // The pool is ours, so $disconnect should close it rather than leave it
+    // open until its connections idle out
+    adapter: new PrismaPg(createPool(), { disposeExternalPool: true }),
     log: [
       { emit: "stdout", level: "error" },
       // Prisma supports DEBUG strings (eg: prisma*, prisma:client), but they're noisy debug messages.
@@ -28,24 +33,22 @@ const createPrismaClient = () => {
     log.info(e.message);
   });
 
-  return client.$extends(withAccelerate());
+  return client;
 };
 
-export type PrismaClientWithAccelerate = ReturnType<typeof createPrismaClient>;
+export type OakPrismaClient = ReturnType<typeof createPrismaClient>;
 
 declare global {
   // allow global `var` declarations
 
-  var prisma: PrismaClientWithAccelerate | undefined;
+  var prisma: OakPrismaClient | undefined;
 }
 
-let prisma: PrismaClientWithAccelerate;
-
-if (process.env.NODE_ENV === "production") {
-  prisma = createPrismaClient();
-} else {
-  global.prisma ??= createPrismaClient();
-  prisma = global.prisma;
-}
+// Outside production, reuse one client across hot reloads
+const prisma: OakPrismaClient =
+  process.env.NODE_ENV === "production"
+    ? createPrismaClient()
+    : (global.prisma ??= createPrismaClient());
 
 export { prisma };
+export { asPrismaJson } from "./json";

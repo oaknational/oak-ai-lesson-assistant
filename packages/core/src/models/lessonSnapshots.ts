@@ -1,7 +1,8 @@
+import { asPrismaJson } from "@oakai/db";
 import type {
   LessonSnapshot,
   LessonSnapshotTrigger,
-  PrismaClientWithAccelerate,
+  OakPrismaClient,
 } from "@oakai/db";
 
 import crypto from "crypto";
@@ -38,7 +39,7 @@ export function getSnapshotHash(snapshot: Snapshot, cacheKeyInput?: string) {
  * for moderation and export downloads respectively.
  */
 export class LessonSnapshots {
-  constructor(private readonly prisma: PrismaClientWithAccelerate) {}
+  constructor(private readonly prisma: OakPrismaClient) {}
 
   async byId(lessonSnapshotId: string): Promise<LessonSnapshot | null> {
     return this.prisma.lessonSnapshot.findFirst({
@@ -87,7 +88,7 @@ export class LessonSnapshots {
         chatId,
         messageId,
         hash,
-        lessonJson: snapshot,
+        lessonJson: asPrismaJson(snapshot),
         lessonSchemaId: lessonSchema.id,
         trigger,
       },
@@ -162,7 +163,7 @@ export class LessonSnapshots {
         messageId,
         lessonSchemaId: lessonSchema.id,
         hash,
-        lessonJson: snapshot,
+        lessonJson: asPrismaJson(snapshot),
         trigger,
       },
     });

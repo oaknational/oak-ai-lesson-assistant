@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { exportDocLessonPlan } from "@oakai/exports";
 import type { LessonInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
@@ -27,7 +27,7 @@ export async function exportLessonPlan({
   };
   ctx: {
     auth: SignedInAuthObject;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   };
 }) {
   const [userEmail, { cacheKeyInput, contentGuidanceCategories }] =

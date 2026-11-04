@@ -6,7 +6,7 @@ import type {
   ThreatDetectionMessage,
   ThreatDetectionResult,
 } from "@oakai/core/src/threatDetection/types";
-import type { Prisma, PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient, Prisma } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type {
@@ -39,7 +39,7 @@ export async function handleThreatDetectionResult(
     chatId: string;
     threatDetection: ThreatDetectionResult;
     messages?: ThreatDetectionMessage[];
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   },
   {
     SafetyViolations = defaultSafetyViolations,
@@ -134,7 +134,7 @@ async function recordThreatDetectionSafetyViolation({
   userId: string;
   chatId: string;
   messages?: ThreatDetectionMessage[];
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   threatDetection: ThreatDetectionResult;
   SafetyViolations: typeof defaultSafetyViolations;
   ThreatDetections: typeof defaultThreatDetections;

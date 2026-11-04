@@ -1,4 +1,4 @@
-import type { Moderation, PrismaClientWithAccelerate } from "@oakai/db";
+import type { Moderation, OakPrismaClient } from "@oakai/db";
 
 import type { ModerationResult } from "../utils/ailaModeration/moderationSchema";
 import type { Snapshot } from "./lessonSnapshots";
@@ -8,7 +8,7 @@ import { LessonSnapshots } from "./lessonSnapshots";
  * By default, only moderations which haven't been invalidated returned by this API
  */
 export class Moderations {
-  constructor(private readonly prisma: PrismaClientWithAccelerate) {
+  constructor(private readonly prisma: OakPrismaClient) {
     this.lessonSnapshots = new LessonSnapshots(prisma);
   }
 
