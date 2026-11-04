@@ -619,7 +619,7 @@ importers:
         specifier: 7.10.1
         version: 7.10.1(prisma@7.10.1(@types/node@24.19.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@6.0.3))(typescript@6.0.3)
       '@vercel/functions':
-        specifier: ^3.10.2
+        specifier: ^3.10.4
         version: 3.10.4(@aws-sdk/credential-provider-web-identity@3.972.81)(ws@8.22.0)
       openai:
         specifier: ^7.45.1

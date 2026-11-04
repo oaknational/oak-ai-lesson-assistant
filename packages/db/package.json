@@ -72,7 +72,7 @@
     "@oakai/logger": "workspace:*",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
-    "@vercel/functions": "^3.10.2",
+    "@vercel/functions": "^3.10.4",
     "openai": "^7.45.1",
     "pg": "^8.23.1",
     "yaml": "^2.4.1"
