@@ -30,25 +30,32 @@ const CONNECTIVITY_MESSAGES: Record<string, string> = {
   "timeout exceeded when trying to connect": "pg-pool-exhausted",
 };
 
+/** Checks one error, ignoring its cause. */
+function matchConnectivity(error: object): string | undefined {
+  // Request errors carry `code`; initialisation errors carry `errorCode`.
+  const codes = [
+    "code" in error ? error.code : undefined,
+    "errorCode" in error ? error.errorCode : undefined,
+  ];
+  const code = codes.find(
+    (c): c is string => typeof c === "string" && CONNECTIVITY_CODES.has(c),
+  );
+  if (code) {
+    return code;
+  }
+  const message = "message" in error ? error.message : undefined;
+  return typeof message === "string"
+    ? CONNECTIVITY_MESSAGES[message]
+    : undefined;
+}
+
 export function getDbConnectivityCode(error: unknown): string | undefined {
   const seen = new Set<object>();
   while (typeof error === "object" && error !== null && !seen.has(error)) {
     seen.add(error);
-    // Request errors carry `code`; initialisation errors carry `errorCode`.
-    const codes = [
-      "code" in error ? error.code : undefined,
-      "errorCode" in error ? error.errorCode : undefined,
-    ];
-    for (const code of codes) {
-      if (typeof code === "string" && CONNECTIVITY_CODES.has(code)) {
-        return code;
-      }
-    }
-    if ("message" in error && typeof error.message === "string") {
-      const label = CONNECTIVITY_MESSAGES[error.message];
-      if (label) {
-        return label;
-      }
+    const match = matchConnectivity(error);
+    if (match) {
+      return match;
     }
     error = "cause" in error ? error.cause : undefined;
   }

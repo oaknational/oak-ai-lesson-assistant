@@ -44,14 +44,11 @@ declare global {
   var prisma: OakPrismaClient | undefined;
 }
 
-let prisma: OakPrismaClient;
-
-if (process.env.NODE_ENV === "production") {
-  prisma = createPrismaClient();
-} else {
-  global.prisma ??= createPrismaClient();
-  prisma = global.prisma;
-}
+// Outside production, reuse one client across hot reloads
+const prisma: OakPrismaClient =
+  process.env.NODE_ENV === "production"
+    ? createPrismaClient()
+    : (global.prisma ??= createPrismaClient());
 
 export { prisma };
 export { asPrismaJson } from "./json";

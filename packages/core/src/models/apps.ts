@@ -1,6 +1,5 @@
-import type { OakPrismaClient, Prompt } from "@oakai/db";
+import type { App, OakPrismaClient, Prompt } from "@oakai/db";
 import { Prisma } from "@oakai/db";
-import type { App } from "@oakai/db";
 
 import { Prompts } from "./prompts";
 
