@@ -8,7 +8,7 @@ import { migrateLessonPlan } from "./migrateLessonPlan";
 // Minimal schema for raw chat input validation
 const RawChatInputSchema = z
   .object({
-    lessonPlan: z.record(z.unknown()), // Must be an object, let migrateLessonPlan validate structure
+    lessonPlan: z.record(z.string(), z.unknown()), // Must be an object, let migrateLessonPlan validate structure
   })
   .passthrough();
 

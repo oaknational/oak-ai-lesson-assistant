@@ -23,6 +23,8 @@ interface ButtonProps {
   download?: boolean;
   title?: string;
   testId?: string;
+  /** Focused first when the button opens inside a Headless UI dialog */
+  dialogAutoFocus?: boolean;
 }
 
 const button = cva(
@@ -106,6 +108,7 @@ const Button = ({
   download,
   title,
   testId,
+  dialogAutoFocus,
 }: Readonly<ButtonProps>) => {
   return (
     <ButtonCore
@@ -127,6 +130,7 @@ const Button = ({
       download={download}
       title={title}
       testId={testId}
+      dialogAutoFocus={dialogAutoFocus}
     >
       {children}
     </ButtonCore>

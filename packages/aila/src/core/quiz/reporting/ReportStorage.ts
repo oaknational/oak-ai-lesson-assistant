@@ -1,6 +1,5 @@
+import { kv } from "@oakai/core/src/utils/kv";
 import { aiLogger } from "@oakai/logger";
-
-import { kv } from "@vercel/kv";
 
 import type { RootReportNode } from "./Report";
 

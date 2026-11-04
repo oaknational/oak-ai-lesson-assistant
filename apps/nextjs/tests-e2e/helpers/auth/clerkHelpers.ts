@@ -60,6 +60,6 @@ export const clerkSignInHelper = async (identifier: string) => {
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    throw new Error(`Clerk: Failed to sign in: ${message}`);
+    throw new Error(`Clerk: Failed to sign in: ${message}`, { cause: err });
   }
 };

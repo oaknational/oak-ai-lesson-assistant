@@ -1,7 +1,7 @@
 "use client";
 
 import { format, isThisMonth, isThisWeek, isToday } from "date-fns";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 import type { SideBarChatItem } from "@/lib/types";
 

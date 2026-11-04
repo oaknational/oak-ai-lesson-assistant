@@ -1,26 +1,67 @@
 import { Aila } from "@oakai/aila/src/core/Aila";
-import { MockLLMService } from "@oakai/aila/src/core/llm/MockLLMService";
+import type { Message } from "@oakai/aila/src/core/chat/types";
 import type { AilaInitializationOptions } from "@oakai/aila/src/core/types";
-import { MockCategoriser } from "@oakai/aila/src/features/categorisation/categorisers/MockCategoriser";
+import { ailaTurn } from "@oakai/aila/src/lib/agentic-system/ailaTurn";
+import type { JsonPatchDocumentOptional } from "@oakai/aila/src/protocol/jsonPatchProtocol";
+import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
+import { createOpenAIClient } from "@oakai/core/src/llm/openai";
 
 import { NextRequest } from "next/server";
+import OpenAI from "openai";
 
 import { handleChatPostRequest } from "./chatHandler";
 import type { Config } from "./configTypes";
+import {
+  CHAT_STREAM_PROTOCOL,
+  CHAT_STREAM_PROTOCOL_HEADER,
+} from "./streamProtocol";
+import { fetchAndCheckUser } from "./user";
 
 const chatId = "test-chat-id";
 const userId = "test-user-id";
 
+const savedLessonPlan: PartialLessonPlan = {
+  title: "Glaciers",
+  subject: "geography",
+  keyStage: "key-stage-3",
+};
+const savedMessages: Message[] = [
+  { id: "u-1", role: "user", content: "Create a lesson about glaciers" },
+  {
+    id: "a-1",
+    role: "assistant",
+    content: JSON.stringify({
+      type: "llmMessage",
+      sectionsToEdit: [],
+      patches: [],
+      sectionsEdited: [],
+      prompt: { type: "text", value: "Here's your lesson plan." },
+      status: "complete",
+    }),
+  },
+];
+const newUserMessage: Message = {
+  id: "u-2",
+  role: "user",
+  content: "Call it Glaciation",
+};
+const newTitle = "Glaciation";
+
 jest.mock("./user", () => ({
-  fetchAndCheckUser: jest.fn().mockResolvedValue("test-user-id"),
+  fetchAndCheckUser: jest.fn(),
 }));
 
 jest.mock("@oakai/api/src/utils/serverSideFeatureFlag", () => ({
   serverSideFeatureFlag: jest.fn(),
 }));
 
-jest.mock("@oakai/api/src/utils/getAgenticAilaEnabled", () => ({
-  getAgenticAilaEnabled: jest.fn().mockResolvedValue(false),
+jest.mock("@oakai/core/src/llm/openai", () => ({
+  ...jest.requireActual<object>("@oakai/core/src/llm/openai"),
+  createOpenAIClient: jest.fn(),
+}));
+
+jest.mock("@oakai/aila/src/lib/agentic-system/ailaTurn", () => ({
+  ailaTurn: jest.fn(),
 }));
 
 jest.mock(
@@ -32,58 +73,118 @@ jest.mock(
   }),
 );
 
+const mockedAilaTurn = jest.mocked(ailaTurn);
+
+type StreamedAssistantMessage = {
+  type: "llmMessage";
+  patches: { value: { op: string; path: string; value?: unknown } }[];
+  prompt: { type: "text"; value: string };
+};
+
+/**
+ * Splits the plain text response into what the client receives: events
+ * framed by ␞, and the assistant's message streamed between them. Every
+ * non-blank segment must be valid JSON, so a malformed message fails the test.
+ */
+function parseStreamedEvents(
+  body: string,
+): (JsonPatchDocumentOptional | StreamedAssistantMessage)[] {
+  return body
+    .split("␞")
+    .map((segment) => segment.trim())
+    .filter((segment) => segment.length > 0)
+    .map(
+      (segment) =>
+        JSON.parse(segment) as
+          JsonPatchDocumentOptional | StreamedAssistantMessage,
+    );
+}
+
 describe("Chat API Route", () => {
   let testConfig: Config;
-  let mockLLMService: MockLLMService;
-  let mockChatCategoriser: MockCategoriser;
-  beforeEach(() => {
-    jest.clearAllMocks();
+  let createdAila: Aila | undefined;
+  let lessonSnapshotCreate: jest.Mock;
 
-    mockChatCategoriser = new MockCategoriser({
-      mockedContent: {
-        title: "Glaciation",
-        topic: "The Landscapes of the UK",
-        subject: "geography",
-        keyStage: "key-stage-3",
-      },
+  beforeEach(() => {
+    createdAila = undefined;
+
+    // resetMocks clears factory implementations, so set them here
+    jest.mocked(fetchAndCheckUser).mockResolvedValue(userId);
+    jest
+      .mocked(createOpenAIClient)
+      .mockImplementation(() => new OpenAI({ apiKey: "test" }));
+
+    // The callback sequence a real turn produces: the planner opens the
+    // message, the section emits its patch, and the final document is the
+    // starting document with that edit applied
+    mockedAilaTurn.mockImplementation(async ({ persistedState, callbacks }) => {
+      callbacks.onPlannerComplete({ sectionKeys: ["title"] });
+      callbacks.onSectionComplete([
+        { op: "replace", path: "/title", value: newTitle },
+      ]);
+      await callbacks.onTurnComplete({
+        stepsExecuted: [
+          {
+            type: "section",
+            sectionKey: "title",
+            action: "generate",
+            sectionInstructions: null,
+          },
+        ],
+        document: { ...persistedState.initialDocument, title: newTitle },
+        ailaMessage: "I've renamed the lesson.",
+      });
+      return {
+        status: "success",
+        correctorStats: { attempted: [], notNeeded: [], failed: [] },
+      };
     });
-    mockLLMService = new MockLLMService();
-    jest.spyOn(mockLLMService, "createChatCompletionObjectStream");
+
+    lessonSnapshotCreate = jest
+      .fn()
+      .mockResolvedValue({ id: "lesson_snapshot_1" });
 
     testConfig = {
+      // Builds Aila from what the handler passes in, so the test checks
+      // the identity, history and lesson the handler loaded
       createAila: jest
         .fn()
         .mockImplementation(
           async (options: Partial<AilaInitializationOptions>) => {
-            const ailaConfig: AilaInitializationOptions = {
+            const ailaInstance = new Aila({
               prisma: options.prisma!,
               options: {
                 usePersistence: false,
-                useRag: false,
                 useAnalytics: false,
                 useModeration: false,
                 useErrorReporting: false,
                 useThreatDetection: false,
               },
-              chat: {
-                id: chatId,
-                userId,
-                messages: options?.chat?.messages ?? [],
-              },
+              chat: options.chat!,
+              document: options.document,
               plugins: [],
-              services: {
-                chatLlmService: mockLLMService,
-                chatCategoriser: mockChatCategoriser,
-              },
-            };
-            const ailaInstance = new Aila(ailaConfig);
+            });
             await ailaInstance.initialise();
+            createdAila = ailaInstance;
             return ailaInstance;
           },
         ),
       prisma: {
         appSession: {
-          findUnique: jest.fn().mockResolvedValue(null),
+          findUnique: jest.fn().mockResolvedValue({
+            id: chatId,
+            userId,
+            output: {
+              id: chatId,
+              path: `/aila/${chatId}`,
+              title: savedLessonPlan.title,
+              userId,
+              createdAt: 1767225600000,
+              lessonPlan: savedLessonPlan,
+              messages: savedMessages,
+            },
+            threatDetections: [],
+          }),
           update: jest.fn(),
         },
         prompt: {
@@ -94,21 +195,19 @@ describe("Chat API Route", () => {
           create: jest.fn(),
         },
         lessonSnapshot: {
-          create: jest.fn().mockResolvedValue({ id: "lesson_snapshot_1" }),
+          create: lessonSnapshotCreate,
         },
       } as unknown as Config["prisma"],
     };
   });
 
-  it("should create correct telemetry spans for a successful chat request", async () => {
+  it("continues a saved chat with an agentic turn and keeps client, server and snapshot in step", async () => {
     const mockRequest = new NextRequest("http://localhost/api/chat", {
       method: "POST",
+      headers: { [CHAT_STREAM_PROTOCOL_HEADER]: CHAT_STREAM_PROTOCOL },
       body: JSON.stringify({
-        id: "test-chat-id",
-        messages: [
-          { role: "user", content: "Create a lesson about Glaciation" },
-        ],
-        lessonPlan: {},
+        id: chatId,
+        messages: [...savedMessages, newUserMessage],
         options: {},
       }),
     });
@@ -116,12 +215,61 @@ describe("Chat API Route", () => {
     const response = await handleChatPostRequest(mockRequest, testConfig);
 
     expect(response.status).toBe(200);
+    expect(response.headers.get(CHAT_STREAM_PROTOCOL_HEADER)).toBe(
+      CHAT_STREAM_PROTOCOL,
+    );
+    const events = parseStreamedEvents(await response.text());
 
-    const receivedContent = await response.text();
+    expect(events.some((event) => event.type === "error")).toBe(false);
+    expect(events).toContainEqual({ type: "comment", value: "CHAT_COMPLETE" });
 
-    expect(receivedContent).not.toContain("error");
-    expect(mockLLMService.createChatCompletionObjectStream).toHaveBeenCalled();
+    // The handler authenticated the user and loaded the saved chat
+    expect(fetchAndCheckUser).toHaveBeenCalledWith(chatId);
+    expect(createdAila?.userId).toBe(userId);
+    expect(mockedAilaTurn).toHaveBeenCalledTimes(1);
+    const { persistedState } = mockedAilaTurn.mock.calls[0]![0];
+    expect(persistedState.initialDocument).toEqual(savedLessonPlan);
+    // Saved history, with assistant replies reduced to their text, then the
+    // new message
+    expect(persistedState.messages).toEqual([
+      expect.objectContaining(savedMessages[0]),
+      expect.objectContaining({
+        id: "a-1",
+        role: "assistant",
+        content: "Here's your lesson plan.",
+      }),
+      expect.objectContaining(newUserMessage),
+    ]);
 
-    // Note: Tracing spans now handled by Sentry - test verifies basic functionality works
+    // The assistant's reply reached the client with its edit and message
+    const assistantReplies = events.filter(
+      (event) => event.type === "llmMessage",
+    );
+    expect(assistantReplies).toEqual([
+      expect.objectContaining({
+        patches: [
+          expect.objectContaining({
+            value: { op: "replace", path: "/title", value: newTitle },
+          }),
+        ],
+        prompt: { type: "text", value: "I've renamed the lesson." },
+      }),
+    ]);
+
+    // The client, the server document and the snapshot agree
+    const expectedLesson = { ...savedLessonPlan, title: newTitle };
+    const finalState = events.find((event) => event.type === "state");
+    expect(finalState).toMatchObject({ value: expectedLesson });
+    expect(createdAila?.document.content).toEqual(expectedLesson);
+    const assistantMessage = createdAila?.messages.at(-1);
+    expect(assistantMessage?.role).toBe("assistant");
+    expect(lessonSnapshotCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userId,
+        chatId,
+        messageId: assistantMessage?.id,
+        lessonJson: expectedLesson,
+      }),
+    });
   }, 60000);
 });

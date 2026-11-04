@@ -10,6 +10,7 @@ import loopingLine from "@/assets/svg/looping-line-1.svg";
 import { aiTools } from "@/data/aiTools";
 import { socialMenuItems } from "@/data/menus";
 import useAnalytics from "@/lib/analytics/useAnalytics";
+import { cn } from "@/lib/utils";
 
 import type { MainNavigationProps } from ".";
 import Button from "../Button";
@@ -17,7 +18,11 @@ import { Icon } from "../Icon";
 import { MobileListItem } from "./MobileListItem";
 
 const MainNavigationWithRef = (
-  { menuOpen, setMenuOpen }: Readonly<MainNavigationProps>,
+  {
+    menuOpen,
+    setMenuOpen,
+    className,
+  }: Readonly<MainNavigationProps & { className?: string }>,
   ref: Ref<HTMLElement>,
 ) => {
   const pathname = usePathname();
@@ -26,7 +31,11 @@ const MainNavigationWithRef = (
   return (
     <nav
       ref={ref}
-      className="fixed bottom-0 right-0 top-0 z-50 h-screen w-full min-w-[60vw] bg-aqua p-22 md:w-[50vw]"
+      // Takes the slide transition's classes from Headless UI
+      className={cn(
+        "fixed bottom-0 right-0 top-0 z-50 h-screen w-full min-w-[60vw] bg-aqua p-22 md:w-[50vw]",
+        className,
+      )}
     >
       <Box position="absolute" className="right-[36px] top-[30px]">
         <Button
@@ -34,6 +43,8 @@ const MainNavigationWithRef = (
           size="lg"
           onClick={() => setMenuOpen(!menuOpen)}
           icon="cross"
+          // Headless UI 2 otherwise focuses the dialog rather than its first control
+          dialogAutoFocus
         />
       </Box>
       <Flex justify="between" direction="column" className="h-full">

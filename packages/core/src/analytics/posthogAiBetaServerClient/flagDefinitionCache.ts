@@ -1,10 +1,11 @@
 import { aiLogger } from "@oakai/logger";
 
-import { kv } from "@vercel/kv";
 import type {
   FlagDefinitionCacheData,
   FlagDefinitionCacheProvider,
 } from "posthog-node/experimental";
+
+import { kv } from "../../utils/kv";
 
 const KV_KEY = "posthog-feature-flag-definitions";
 // Half of the propagation budget described on REFRESH_INTERVAL_MS in ./index.ts.

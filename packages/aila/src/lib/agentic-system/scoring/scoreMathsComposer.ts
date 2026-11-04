@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 /**
  * Maths Composer Eval Harness
  *
@@ -158,8 +157,7 @@ type ExpectedShape = {
   status: "success" | "bail";
   /** Required number of selected questions. */
   questionCount?:
-    | { exactly: number }
-    | { minInclusive: number; maxInclusive: number };
+    { exactly: number } | { minInclusive: number; maxInclusive: number };
   /** None of the selected question UIDs may start with "CURRENT-Q". */
   excludeCurrentQ?: boolean;
 };

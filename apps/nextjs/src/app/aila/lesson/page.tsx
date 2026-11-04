@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -26,18 +26,15 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
     searchExpression = undefined,
   } = await searchParams;
   return (
-    <>
-      <SignedIn>
-        <Layout feature={"aila"}>
-          <ChatStart
-            keyStage={keyStage}
-            subject={subject}
-            unitTitle={unitTitle}
-            searchExpression={searchExpression}
-          />
-        </Layout>
-      </SignedIn>
-      <SignedOut></SignedOut>
-    </>
+    <Show when="signed-in">
+      <Layout feature={"aila"}>
+        <ChatStart
+          keyStage={keyStage}
+          subject={subject}
+          unitTitle={unitTitle}
+          searchExpression={searchExpression}
+        />
+      </Layout>
+    </Show>
   );
 }

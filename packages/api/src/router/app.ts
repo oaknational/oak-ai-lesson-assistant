@@ -77,7 +77,7 @@ export const appRouter = router({
         log.info("session", session);
         return session;
       } catch (error) {
-        logger.error("Error creating session", error);
+        logger.error({ err: error }, "Error creating session");
         throw error;
       }
     }),
@@ -142,7 +142,7 @@ export const appRouter = router({
           return session.id;
         }
       } catch (error) {
-        logger.error("Error taking share snapshot", error);
+        logger.error({ err: error }, "Error taking share snapshot");
       }
     }),
 

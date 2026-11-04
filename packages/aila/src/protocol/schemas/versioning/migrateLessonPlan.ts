@@ -130,10 +130,8 @@ export const migrateLessonPlan = async <TSchema extends ZodTypeAny>({
   }
 
   // Parse the migrated lesson plan with the proper schema
-  const finalParseResult: z.SafeParseReturnType<
-    unknown,
-    z.infer<TSchema>
-  > = outputSchema.safeParse(lessonPlan);
+  const finalParseResult: z.ZodSafeParseResult<z.infer<TSchema>> =
+    outputSchema.safeParse(lessonPlan);
   if (!finalParseResult.success) {
     throw new Error("Migrated lesson plan failed validation", {
       cause: finalParseResult.error,

@@ -15,14 +15,14 @@
   },
   "prettier": "@oakai/prettier-config",
   "dependencies": {
-    "@anatine/zod-mock": "^3.13.4",
-    "@faker-js/faker": "^9.4.0",
-    "@oakai/core": "*",
-    "@oakai/db": "*",
-    "@oakai/logger": "*",
-    "@oakai/prettier-config": "*",
-    "@sentry/nextjs": "^10.29.0",
-    "zod": "3.25.76"
+    "@oakai/core": "workspace:*",
+    "@oakai/db": "workspace:*",
+    "@oakai/logger": "workspace:*",
+    "@oakai/prettier-config": "workspace:*",
+    "@sentry/nextjs": "^11.9.0",
+    "cohere-ai": "^8.3.0",
+    "remeda": "^2.54.1",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@oakai/test-support": "workspace:*",

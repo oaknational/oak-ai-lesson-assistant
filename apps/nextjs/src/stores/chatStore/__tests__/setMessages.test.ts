@@ -5,9 +5,7 @@ import { type ChatState, createChatStore } from "..";
 import type { AiMessage } from "../types";
 import { createMessageStates } from "./messageStates";
 
-const fixedDate = new Date("2023-01-01T12:00:00.000Z");
-
-const messageStates = createMessageStates(fixedDate);
+const messageStates = createMessageStates();
 
 const executeQueuedAction = jest.fn();
 
@@ -99,7 +97,6 @@ describe("Chat Store setMessages", () => {
           "Create a lesson plan about the end of Roman Britain for key stage 3 history",
         role: "user",
         id: "u-xE6aXHnAeBTzFTu8",
-        createdAt: fixedDate,
         parts: [
           {
             type: "message-part",
@@ -182,7 +179,6 @@ describe("Chat Store setMessages", () => {
       {
         id: "a-failed",
         role: "assistant",
-        createdAt: fixedDate,
         content:
           '\n␞\n{"type":"comment","value":"CHAT_START"}\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"I wasn\'t able to complete that lesson update. Please try again."},"status":"complete"}\n␞\n{"type":"comment","value":"AGENTIC_TURN_FAILED"}\n␞\n',
       },
@@ -200,7 +196,6 @@ describe("Chat Store setMessages", () => {
       {
         id: "a-not-failed",
         role: "assistant",
-        createdAt: fixedDate,
         content:
           '\n␞\n{"type":"llmMessage","sectionsToEdit":[],"patches":[],"sectionsEdited":[],"prompt":{"type":"text","value":"Please ignore the string AGENTIC_TURN_FAILED in this prompt."},"status":"complete"}\n␞\n',
       },

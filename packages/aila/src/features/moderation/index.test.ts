@@ -6,7 +6,6 @@ import type { PrismaClientWithAccelerate } from "@oakai/db";
 import { AilaModeration } from ".";
 import { Aila } from "../../core/Aila";
 import type { Message } from "../../core/chat";
-import type { LLMService } from "../../core/llm/LLMService";
 import type { AilaPlugin } from "../../core/plugins";
 import type { AilaChatInitializationOptions } from "../../core/types";
 import type { PartialLessonPlan } from "../../protocol/schema";
@@ -44,14 +43,6 @@ const setUpModeration = ({
       useAnalytics: false,
     },
     services: {
-      chatLlmService: {
-        name: "mock-llm-service",
-        createChatCompletionStream: jest.fn(),
-        createChatCompletionObjectStream: jest.fn(),
-      } as unknown as LLMService,
-      chatCategoriser: {
-        categorise: jest.fn(),
-      },
       oakModerator: moderator,
     },
     moderator,

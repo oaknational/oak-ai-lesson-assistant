@@ -1,3 +1,4 @@
+import { kv } from "@oakai/core/src/utils/kv";
 import { sendEmail } from "@oakai/core/src/utils/sendEmail";
 import type { PrismaClientWithAccelerate } from "@oakai/db";
 import {
@@ -12,7 +13,6 @@ import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
 import type { LessonExportType } from "@prisma/client";
 import * as Sentry from "@sentry/nextjs";
-import { kv } from "@vercel/kv";
 import { z } from "zod";
 
 import { exportAdditionalMaterialsDoc } from "../export/exportAdditionalMaterialsDoc";

@@ -1,5 +1,3 @@
-import type { OpenAIProvider } from "@ai-sdk/openai";
-import { createOpenAI } from "@ai-sdk/openai";
 import type { ClientOptions } from "openai";
 import OpenAI from "openai";
 
@@ -13,7 +11,6 @@ export type CreateOpenAIClientProps =
     }
   | {
       app:
-        | "legacy-lesson-planner"
         | "image-alt-text"
         | "maths-reranker"
         | "quiz-composer"
@@ -31,18 +28,6 @@ function createOpenAIClient(props: CreateOpenAIClientProps): OpenAI {
   return new OpenAI(openAiFields);
 }
 
-function createVercelOpenAIClient(
-  props: CreateOpenAIClientProps,
-): OpenAIProvider {
-  const headers = heliconeHeaders(props);
-  return createOpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    baseURL: process.env.HELICONE_EU_HOST,
-    headers,
-    compatibility: "strict",
-  });
-}
-
 // The helicone proxy throws a 500: "Failed to parse the latest message" error
 // on moderations.create calls. Use openAI directly for these
 function createOpenAIModerationsClient() {
@@ -54,8 +39,4 @@ function createOpenAIModerationsClient() {
   return openAi.moderations;
 }
 
-export {
-  createOpenAIClient,
-  createVercelOpenAIClient,
-  createOpenAIModerationsClient,
-};
+export { createOpenAIClient, createOpenAIModerationsClient };

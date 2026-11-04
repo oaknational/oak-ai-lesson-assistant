@@ -72,6 +72,7 @@ Generate a list of 1-${maxQueries} semantic search queries`;
       log.error("Failed to generate semantic search queries:", error);
       throw new Error(
         "Failed to generate semantic search queries from lesson plan",
+        { cause: error },
       );
     }
   }

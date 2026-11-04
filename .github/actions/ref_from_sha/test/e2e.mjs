@@ -1,0 +1,43 @@
+import * as github from "@actions/github";
+
+import branchFromSha from "../branch_from_sha.cjs";
+import prFromSha from "../pr_from_sha.cjs";
+
+const githubToken = process.env.GITHUB_TOKEN;
+
+if (!githubToken) {
+  throw new Error("Need Github token");
+}
+const octokit = github.getOctokit(githubToken);
+
+const owner = github.context.payload.repository.owner.login;
+const repo = github.context.payload.repository.name;
+if (!owner || !repo) {
+  throw new Error(
+    `Could not determine repo details, got: owner "${owner} and repo "${repo}".`,
+  );
+}
+
+const repoInfo = {
+  owner,
+  repo,
+};
+
+// PR test
+// Set this to the head commit on a branch in a PR, short SHAs are fine.
+const prSha = "c6458f3";
+const pr = await prFromSha(octokit, repoInfo, prSha);
+if (pr === null) {
+  console.log("no pr found");
+} else {
+  console.log(pr.head.ref);
+}
+
+// branch test
+const branchPr = "5c34737740d989b05d021769871dd1a365ded88d";
+const branch = await branchFromSha(octokit, repoInfo, branchPr);
+if (branch === null) {
+  console.log("no branch found");
+} else {
+  console.log(branch);
+}

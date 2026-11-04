@@ -3,6 +3,7 @@ import { aiLogger } from "@oakai/logger";
 import { getEncoding } from "js-tiktoken";
 import { z } from "zod";
 
+import { AGENTIC_MODEL_ID } from "../../../constants";
 import { AnalyticsAdapter } from "./AnalyticsAdapter";
 
 const log = aiLogger("aila:analytics");
@@ -64,7 +65,7 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
       userId: this._aila.userId,
       chatId: this._aila.chatId,
       queryDuration,
-      model: this._aila.options.model,
+      model: AGENTIC_MODEL_ID,
       totalTokens,
       promptTokens,
       completionTokens,
@@ -162,7 +163,7 @@ export class DatadogAnalyticsAdapter extends AnalyticsAdapter {
     void this.reportMetrics({
       chatId: this._aila.chatId,
       userId: this._aila.userId,
-      model: this._aila.options.model,
+      model: AGENTIC_MODEL_ID,
       queryDuration: 0,
       totalTokens: 0,
       promptTokens: 0,

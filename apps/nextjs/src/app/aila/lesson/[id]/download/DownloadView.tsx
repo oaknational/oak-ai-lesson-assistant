@@ -63,13 +63,13 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
 
             <div>
               <h1 className="my-24 text-4xl font-bold">Download resources</h1>
-              <p className="mb-24 max-w-[600px]">
+              <div className="mb-24 max-w-[600px]">
                 {isLessonComplete ? (
                   <SectionsCompleteDownloadNotice />
                 ) : (
                   <SectionsNotCompleteDownloadNotice sections={sections} />
                 )}
-              </p>
+              </div>
             </div>
             <Grid
               columns={{

@@ -5,12 +5,10 @@ import type { AnalyticsAdapter } from "../features/analytics";
 import type { AilaModerator } from "../features/moderation/moderators";
 import type { OpenAILike } from "../features/moderation/moderators/OpenAiModerator";
 import type { AilaPersistence } from "../features/persistence";
-import type { AilaRagFeature } from "../features/rag";
 import type { AilaThreatDetector } from "../features/threatDetection";
 import type { AilaTracingService } from "../features/tracing";
 import type {
   AilaAnalyticsFeature,
-  AilaCategorisationFeature,
   AilaErrorReportingFeature,
   AilaModerationFeature,
   AilaThreatDetectionFeature,
@@ -18,9 +16,7 @@ import type {
 import type { AilaServices } from "./AilaServices";
 import type { Message } from "./chat";
 import type { AilaDocumentContent } from "./document/types";
-import type { LLMService } from "./llm/LLMService";
 import type { AilaPlugin } from "./plugins/types";
-import type { AilaPromptBuilder } from "./prompt/AilaPromptBuilder";
 import type { QuestionSourceType } from "./quiz/schema";
 
 export type AilaGenerateDocumentMode = "interactive" | "generate";
@@ -32,13 +28,9 @@ export type AilaGenerateDocumentOptions = {
   topic?: string;
   keyStage?: string;
   subject?: string;
-  abortController?: AbortController;
 };
 
 export type AilaPublicChatOptions = {
-  useRag?: boolean;
-  temperature?: number;
-  numberOfRecordsInRag?: number;
   quizSources?: QuestionSourceType[];
 };
 
@@ -54,8 +46,6 @@ export type AilaOptions = AilaPublicChatOptions & {
   useAnalytics?: boolean;
   useThreatDetection?: boolean;
   useMathsQuizRag?: boolean;
-  useAgenticAila?: boolean;
-  model?: string;
   mode?: AilaGenerateDocumentMode;
   agenticFixture?: AgenticFixtureConfig;
 };
@@ -69,7 +59,6 @@ export type AilaChatInitializationOptions = {
   id: string;
   userId: string | undefined;
   messages?: Message[];
-  llmService?: LLMService;
   onStreamError?: (error: unknown) => void;
 };
 
@@ -77,7 +66,7 @@ export type AilaInitializationOptions = {
   document?: {
     content: AilaDocumentContent;
   };
-  chat: Omit<AilaChatInitializationOptions, "llmService">;
+  chat: AilaChatInitializationOptions;
   options?: AilaOptions;
   prisma: PrismaClientWithAccelerate;
   moderator?: AilaModerator;
@@ -86,14 +75,10 @@ export type AilaInitializationOptions = {
   analytics?: AilaAnalyticsFeature;
   threatDetection?: AilaThreatDetectionFeature;
   errorReporter?: AilaErrorReportingFeature;
-  promptBuilder?: AilaPromptBuilder;
   plugins: AilaPlugin[];
   services?: {
-    chatCategoriser?: AilaCategorisationFeature;
-    chatLlmService?: LLMService;
     moderationAiClient?: OpenAILike;
     oakModerator?: AilaModerator;
-    ragService?: (aila: AilaServices) => AilaRagFeature;
     americanismsService?: (aila: AilaServices) => AilaAmericanismsFeature;
     analyticsAdapters?: (aila: AilaServices) => AnalyticsAdapter[];
     threatDetectors?: (aila: AilaServices) => AilaThreatDetector[];

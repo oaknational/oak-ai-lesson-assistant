@@ -53,7 +53,7 @@ export function PromptForm({
 
   const isSubmitDisabled = isDisabled || formError !== null;
 
-  const handleSubmit = (e?: React.FormEvent) => {
+  const handleSubmit = (e?: React.SyntheticEvent) => {
     if (e) {
       e.preventDefault();
     }

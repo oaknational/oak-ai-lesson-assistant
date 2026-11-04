@@ -1,4 +1,4 @@
-import type { RerankResponseResultsItem } from "cohere-ai/api/types";
+import type { Cohere } from "cohere-ai";
 
 import type { JsonPatchDocument } from "../../protocol/jsonPatchProtocol";
 import type {
@@ -21,7 +21,7 @@ export interface DocumentReranker {
     query: string,
     docs: SimplifiedResult[],
     topN: number,
-  ): Promise<RerankResponseResultsItem[]>;
+  ): Promise<Cohere.RerankResponseResultsItem[]>;
 }
 
 export interface AilaQuizService {

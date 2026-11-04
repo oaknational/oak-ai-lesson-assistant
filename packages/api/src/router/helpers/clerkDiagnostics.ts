@@ -1,6 +1,6 @@
 import { aiLogger } from "@oakai/logger";
 
-import { isClerkAPIResponseError } from "@clerk/shared";
+import { isClerkAPIResponseError } from "@clerk/backend/errors";
 import * as Sentry from "@sentry/node";
 
 const log = aiLogger("auth");

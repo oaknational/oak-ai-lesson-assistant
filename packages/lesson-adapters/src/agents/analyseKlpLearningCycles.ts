@@ -181,7 +181,7 @@ Analyse each slide above and map which key learning points and learning cycles i
     const { output } = await generateText({
       model: openai("gpt-4o"),
       output: Output.object({ schema: klpLcAgentResponseSchema }),
-      system: SYSTEM_PROMPT,
+      instructions: SYSTEM_PROMPT,
       prompt: promptContent,
       temperature: 0.3, // Lower temperature for more consistent analysis
     });

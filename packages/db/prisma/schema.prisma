@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "multiSchema"]
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
@@ -12,18 +12,6 @@ datasource db {
   directUrl  = env("DIRECT_DATABASE_URL")
   extensions = [vector, pg_trgm]
   schemas    = ["public", "ingest", "rag", "additional_materials"]
-}
-
-generator zod {
-  provider = "zod-prisma"
-  output   = "./zod-schemas"
-
-  relationModel         = true
-  modelCase             = "camelCase"
-  modelSuffix           = "Model"
-  useDecimalJs          = false
-  // imports               = null
-  prismaJsonNullability = true
 }
 
 model App {

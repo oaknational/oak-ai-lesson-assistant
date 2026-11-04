@@ -1,7 +1,12 @@
 import type { Dispatch } from "react";
 import { Fragment } from "react";
 
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogBackdrop,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 
 import { MainNavigationMenu } from "./MainNavigationMenu";
 
@@ -22,7 +27,7 @@ export default function MainNavigation({
         className="fixed inset-0 z-50 overflow-y-auto"
       >
         <div className="flex h-screen">
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition-opacity ease-in duration-600"
             enterFrom="transition-opacity ease-in duration-600 opacity-0"
@@ -32,10 +37,15 @@ export default function MainNavigation({
             leaveFrom="transition-opacity ease-in duration-600 opacity-30"
             leaveTo="transition-opacity ease-in duration-600 opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 z-40 bg-black" />
-          </Transition.Child>
+            {/* Headless UI 2 only closes on clicks outside a DialogPanel, and
+                this dialog has none, so close on backdrop clicks explicitly */}
+            <DialogBackdrop
+              className="fixed inset-0 z-40 bg-black"
+              onClick={() => setMenuOpen(false)}
+            />
+          </TransitionChild>
 
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="transition ease-in-out duration-300 transform"
             enterFrom="translate-x-full"
@@ -51,7 +61,7 @@ export default function MainNavigation({
                 ref={ref}
               />
             )}
-          </Transition.Child>
+          </TransitionChild>
         </div>
       </Dialog>
     </Transition>

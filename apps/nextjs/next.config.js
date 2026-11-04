@@ -9,7 +9,7 @@ const path = require("path");
 
 const { PHASE_TEST } = require("next/constants");
 
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require("@sentry/nextjs/config");
 
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
@@ -23,7 +23,6 @@ const getConfig = async (phase) => {
   let releaseStage;
   /** @type string */
   let appVersion;
-  let isProductionBuild = false;
   const isTestBuild = phase === PHASE_TEST || process.env.NODE_ENV === "test";
 
   if (isTestBuild) {
@@ -36,7 +35,7 @@ const getConfig = async (phase) => {
         process.env.NEXT_PUBLIC_ENVIRONMENT,
     );
 
-    isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
+    const isProductionBuild = releaseStage === RELEASE_STAGE_PRODUCTION;
     appVersion = getAppVersion({ isProductionBuild });
   }
 
@@ -76,7 +75,14 @@ const getConfig = async (phase) => {
         },
       ],
     },
-    transpilePackages: ["@oakai/api", "@oakai/db", "@oakai/exports"],
+    transpilePackages: [
+      "@oakai/api",
+      "@oakai/db",
+      "@oakai/exports",
+      // Generate stable styled-component IDs for Oak's published components
+      // so server and browser import order cannot change their class names.
+      "@oaknational/oak-components",
+    ],
     compiler: {
       styledComponents: true,
     },
@@ -153,9 +159,16 @@ const getConfig = async (phase) => {
 
 module.exports = getConfig;
 
+/**
+ * Only Vercel builds send source maps and releases to Sentry. Local builds
+ * would otherwise do it too, because the Doppler dev config includes
+ * SENTRY_AUTH_TOKEN
+ */
+const isVercelBuild = Boolean(process.env.VERCEL);
+
 module.exports = withSentryConfig(module.exports, {
   // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options
+  // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/build/
 
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
@@ -163,8 +176,17 @@ module.exports = withSentryConfig(module.exports, {
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 
-  // For all available options, see:
-  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+  sourcemaps: {
+    disable: !isVercelBuild,
+  },
+  release: {
+    create: isVercelBuild,
+    finalize: isVercelBuild,
+    setCommits: isVercelBuild ? undefined : false,
+  },
+
+  // Don't send the build plugin's own usage data to Sentry
+  telemetry: false,
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
@@ -175,15 +197,16 @@ module.exports = withSentryConfig(module.exports, {
   // side errors will fail.
   tunnelRoute: "/monitoring",
 
-  // Hides source maps from generated client bundles
-  hideSourceMaps: true,
-
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+  },
 
-  // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-  // See the following for more information:
-  // https://docs.sentry.io/product/crons/
-  // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
+  webpack: {
+    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
+    // See the following for more information:
+    // https://docs.sentry.io/product/crons/
+    // https://vercel.com/docs/cron-jobs
+    automaticVercelMonitors: true,
+  },
 });

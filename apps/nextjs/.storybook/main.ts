@@ -72,7 +72,11 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       "next/navigation": resolve(__dirname, "../src/mocks/next/navigation"),
-      "@clerk/nextjs": resolve(__dirname, "../src/mocks/clerk/nextjs"),
+      "@clerk/nextjs$": resolve(__dirname, "../src/mocks/clerk/nextjs"),
+      "@clerk/nextjs/errors": resolve(
+        __dirname,
+        "../src/mocks/clerk/nextjsErrors",
+      ),
     };
     return config;
   },

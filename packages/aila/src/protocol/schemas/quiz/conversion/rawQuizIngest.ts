@@ -3,27 +3,32 @@ import invariant from "tiny-invariant";
 import type { ImageMetadata, QuizV3, QuizV3Question } from "../quizV3";
 import type {
   HasuraQuiz,
+  ImageItem,
   StemImageObject,
   StemObject,
   StemTextObject,
 } from "../rawQuiz";
 import { getConstrainedStemImageUrl } from "./cloudinaryImageHelper";
 
+// Oak's answers allow images without a secure_url or metadata, which our
+// stem schema requires
+type ContentItem = StemObject | ImageItem;
+
 /**
  * Check if an item is a text item
  */
-function isTextItem(item: StemObject): item is StemTextObject {
+function isTextItem(item: ContentItem): item is StemTextObject {
   return item.type === "text";
 }
 
 /**
  * Check if an item is an image item
  */
-function isImageItem(item: StemObject): item is StemImageObject {
+function isImageItem(item: ContentItem): item is StemImageObject | ImageItem {
   return item.type === "image";
 }
 
-function getImageAttribution(item: StemImageObject): string | null {
+function getImageAttribution(item: StemImageObject | ImageItem): string | null {
   if (
     item.image_object.metadata &&
     typeof item.image_object.metadata === "object" &&
@@ -50,7 +55,7 @@ function isSingleAnswerLetter(text: string): boolean {
  * Returns both the markdown content and image metadata
  */
 function buildMarkdownFromContent(
-  contentItems: Array<StemObject | undefined>,
+  contentItems: Array<ContentItem | undefined>,
 ): {
   markdown: string;
   metadata: ImageMetadata[];
@@ -58,7 +63,7 @@ function buildMarkdownFromContent(
   const metadata: ImageMetadata[] = [];
 
   const validItems = contentItems.filter(
-    (item): item is StemObject => item !== undefined,
+    (item): item is ContentItem => item !== undefined,
   );
 
   const hasImage = validItems.some(isImageItem);
@@ -82,7 +87,10 @@ function buildMarkdownFromContent(
         invariant(width && height, `Image ${imageUrl} has no dimensions`);
 
         // Extract alt text from context if available
-        const altText = item.image_object.context?.custom?.alt ?? "";
+        const altText =
+          ("context" in item.image_object
+            ? item.image_object.context?.custom?.alt
+            : undefined) ?? "";
 
         // Build metadata object for this image
         const imageMetadata: ImageMetadata = {

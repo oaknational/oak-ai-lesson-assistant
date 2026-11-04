@@ -37,11 +37,9 @@ export async function consumeStream(
 export function extractStreamMessage(
   streamedText: string,
 ): UnknownStreamMessage {
-  const content = streamedText.match(/0:"(.*)"/);
-  if (!content?.[1]) {
+  if (!streamedText) {
     throw new Error("No message found in streamed text");
   }
-  const strippedContent = content[1].replace(/\\"/g, '"');
-  const parsedMessage = JSON.parse(strippedContent) as unknown;
+  const parsedMessage = JSON.parse(streamedText) as unknown;
   return UnknownStreamMessageSchema.parse(parsedMessage);
 }

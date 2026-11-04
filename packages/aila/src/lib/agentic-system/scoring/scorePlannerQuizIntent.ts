@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 /**
  * Planner Quiz-Intent Eval Harness
  *

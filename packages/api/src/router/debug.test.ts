@@ -1,7 +1,5 @@
-import { DEFAULT_MODEL } from "@oakai/aila/src/constants";
 import { DEFAULT_RESPONSES_MODEL } from "@oakai/aila/src/lib/agentic-system/constants";
 
-import { getAgenticAilaEnabled } from "../utils/getAgenticAilaEnabled";
 import { debugRouter } from "./debug";
 
 jest.mock("@sentry/node", () => ({
@@ -20,11 +18,6 @@ jest.mock("../middleware/adminAuth", () => {
   };
 });
 
-jest.mock("../utils/getAgenticAilaEnabled", () => ({
-  getAgenticAilaEnabled: jest.fn(),
-}));
-
-const mockedGetAgenticAilaEnabled = jest.mocked(getAgenticAilaEnabled);
 const originalEnvironment = process.env.NEXT_PUBLIC_ENVIRONMENT;
 
 const createCaller = () =>
@@ -47,31 +40,15 @@ describe("debugRouter.getAilaOverlayState", () => {
     process.env.NEXT_PUBLIC_ENVIRONMENT = originalEnvironment;
   });
 
-  it("returns agentic enabled when getAgenticAilaEnabled returns true", async () => {
-    mockedGetAgenticAilaEnabled.mockResolvedValue(true);
-
+  it("returns the model", async () => {
     await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
-      agenticEnabled: true,
-      model: DEFAULT_MODEL,
-      agentModel: DEFAULT_RESPONSES_MODEL,
+      model: DEFAULT_RESPONSES_MODEL,
     });
   });
 
-  it("returns agentic disabled when getAgenticAilaEnabled returns false", async () => {
-    mockedGetAgenticAilaEnabled.mockResolvedValue(false);
-
-    await expect(createCaller().getAilaOverlayState()).resolves.toEqual({
-      agenticEnabled: false,
-      model: DEFAULT_MODEL,
-      agentModel: DEFAULT_RESPONSES_MODEL,
-    });
-  });
-
-  it("does not evaluate agentic state in production", async () => {
+  it("is not available in production", async () => {
     process.env.NEXT_PUBLIC_ENVIRONMENT = "prd";
 
     await expect(createCaller().getAilaOverlayState()).rejects.toBeDefined();
-
-    expect(mockedGetAgenticAilaEnabled).not.toHaveBeenCalled();
   });
 });

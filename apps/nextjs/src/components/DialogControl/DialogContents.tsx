@@ -5,8 +5,9 @@ import {
   OakModalCenter,
   OakModalCenterBody,
 } from "@oaknational/oak-components";
-import type { Message } from "ai";
 import styled from "styled-components";
+
+import type { AiMessage } from "@/stores/chatStore/types";
 
 import type { DialogTypes } from "../AppComponents/Chat/Chat/types";
 import { useDialog } from "../AppComponents/DialogContext";
@@ -97,7 +98,7 @@ const DialogContents = ({
   readonly chatId: string | undefined;
   readonly lesson: PartialLessonPlan;
   readonly children?: React.ReactNode;
-  readonly messages?: Message[];
+  readonly messages?: AiMessage[];
   readonly submit?: () => void;
   readonly isShared?: boolean;
 }) => {

@@ -16,7 +16,7 @@ export const lakeraGuardRequestSchema = z.object({
   project_id: z.string().optional(),
   payload: z.boolean().optional(),
   breakdown: z.boolean().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   dev_info: z.boolean().optional(),
 });
 

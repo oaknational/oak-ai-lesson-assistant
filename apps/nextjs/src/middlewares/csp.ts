@@ -1,9 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
 
 function generateNonce(): string {
-  return uuidv4();
+  return crypto.randomUUID();
 }
 
 export type CspEnvironment = "development" | "preview" | "production" | "test";

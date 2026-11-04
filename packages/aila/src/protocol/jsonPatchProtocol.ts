@@ -7,25 +7,19 @@ import { JsonPatchError, applyPatch, deepClone } from "fast-json-patch";
 import * as immer from "immer";
 import untruncateJson from "untruncate-json";
 import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 
 import type { PartialLessonPlan } from "./schema";
 import {
   BasedOnOptionalSchema,
   BasedOnSchema,
-  CYCLE_COMPOSED_SLIDE_FIELDS,
   CycleOptionalSchema,
   CycleSchema,
-  CycleSchemaWithoutLength,
   KeywordsOptionalSchema,
   KeywordsSchema,
-  KeywordsSchemaWithoutLength,
-  LatestQuizMultipleChoiceOnlySchemaWithoutLength,
   LatestQuizOptionalSchema,
   LatestQuizSchema,
   MisconceptionsOptionalSchema,
   MisconceptionsSchema,
-  MisconceptionsSchemaWithoutLength,
   PartialLessonPlanSchema,
   QuizV1OptionalSchema,
   QuizV1Schema,
@@ -46,38 +40,7 @@ export const PatchString = z.object({
   value: z.string(),
 });
 
-// When using Structured Outputs we must include a "type" attribute as the first
-// attribute in the object, otherwise it results in an error when generating the
-// JSON Schema
-export const PatchStringForLLM = z.object({
-  type: z.literal("string"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/title"),
-    z.literal("/keyStage"),
-    z.literal("/topic"),
-    z.literal("/subject"),
-    z.literal("/additionalMaterials"),
-    z.literal("/learningOutcome"),
-  ]),
-  value: z.string(),
-});
-
 export const PatchStringArray = z.object({
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/priorKnowledge"),
-    z.literal("/learningCycles"),
-    z.literal("/keyLearningPoints"),
-  ]),
-  value: z.array(z.string()),
-});
-
-// When using Structured Outputs we must include a "type" attribute as the first
-// attribute in the object, otherwise it results in an error when generating the
-// JSON Schema
-export const PatchStringArrayForLLM = z.object({
-  type: z.literal("string-array"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.union([
     z.literal("/priorKnowledge"),
@@ -105,21 +68,6 @@ export const PatchCycle = z.object({
     z.literal("/cycle3"),
   ]),
   value: CycleSchema,
-});
-
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchCycleForLLM = z.object({
-  type: z.literal("cycle"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([
-    z.literal("/cycle1"),
-    z.literal("/cycle2"),
-    z.literal("/cycle3"),
-  ]),
-  value: CycleSchemaWithoutLength.omit(CYCLE_COMPOSED_SLIDE_FIELDS).describe(
-    "This is the definition of the learning cycle that you are proposing. You MUST include this definition for the patch to be valid. It should never be just an empty object {}.",
-  ),
 });
 
 /**
@@ -158,18 +106,9 @@ export const PatchQuizV3 = z.object({
   value: LatestQuizSchema,
 });
 
-// For LLM - multiple choice only since LLM can only generate those
-export const PatchQuizV3ForLLM = z.object({
-  type: z.literal("quiz"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.union([z.literal("/starterQuiz"), z.literal("/exitQuiz")]),
-  value: LatestQuizMultipleChoiceOnlySchemaWithoutLength,
-});
-
 // Legacy V2 names for backward compatibility - these now use V3 schemas internally
 export const PatchQuizV2Optional = PatchQuizV3Optional;
 export const PatchQuizV2 = PatchQuizV3;
-export const PatchQuizV2ForLLM = PatchQuizV3ForLLM;
 
 export const PatchBasedOnOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
@@ -178,15 +117,6 @@ export const PatchBasedOnOptional = z.object({
 });
 
 export const PatchBasedOn = z.object({
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/basedOn"),
-  value: BasedOnSchema,
-});
-
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchBasedOnForLLM = z.object({
-  type: z.literal("basedOn"),
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/basedOn"),
   value: BasedOnSchema,
@@ -204,15 +134,6 @@ export const PatchMisconceptions = z.object({
   value: MisconceptionsSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchMisconceptionsForLLM = z.object({
-  type: z.literal("misconceptions"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/misconceptions"),
-  value: MisconceptionsSchemaWithoutLength,
-});
-
 export const PatchKeywordsOptional = z.object({
   op: z.union([z.literal("add"), z.literal("replace")]),
   path: z.literal("/keywords"),
@@ -225,24 +146,7 @@ export const PatchKeywords = z.object({
   value: KeywordsSchema,
 });
 
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const PatchKeywordsForLLM = z.object({
-  type: z.literal("keywords"),
-  op: z.union([z.literal("add"), z.literal("replace")]),
-  path: z.literal("/keywords"),
-  value: KeywordsSchemaWithoutLength,
-});
-
 export const JsonPatchRemoveSchema = z.object({
-  op: z.literal("remove"),
-  path: z.string(),
-});
-
-// When using Structured Outputs we cannot specify the length of arrays or strings
-// so we have to use a different schema and pass in the spec with a description and in the prompt
-export const JsonPatchRemoveSchemaForLLM = z.object({
-  type: z.literal("remove"),
   op: z.literal("remove"),
   path: z.string(),
 });
@@ -275,21 +179,6 @@ export const JsonPatchValueSchema = z.union([
   PatchKeywords,
 ]);
 
-// Because we cannot use min/max lengths for arrays and strings we have a separate schema
-// when we are using Structured Outputs
-export const JsonPatchValueForLLMSchema = z.union([
-  //JsonPatchAddSchema, // Generic add for any path
-  //JsonPatchReplaceSchema, // Generic replace for any path
-  JsonPatchRemoveSchemaForLLM, // Generic remove for any path
-  PatchBasedOnForLLM,
-  PatchStringForLLM,
-  PatchStringArrayForLLM,
-  PatchCycleForLLM,
-  PatchQuizV2ForLLM,
-  PatchMisconceptionsForLLM,
-  PatchKeywordsForLLM,
-]);
-
 export const JsonPatchValueOptionalSchema = z.union([
   // These generate "add" and "replace" patches could potentially be
   // quite dangerous. Zod will validate anything you pass as a value
@@ -315,29 +204,6 @@ export const PatchDocumentSchema = z.object({
   reasoning: z.string().optional(),
   value: JsonPatchValueSchema,
   status: z.string().optional(),
-});
-
-// This is the schema that we send when requesting Structured Outputs
-// From the LLM. We are limited to not having min, max and we also
-// have constraints about ensuring each object has a type attribute
-// as its first attribute in the definition.
-// Note, that unless/until we migrate all past messages we won't be
-// able to use this to validate the patches currently in the database
-// because they would be missing a "type" attribute.
-export const LLMPatchDocumentSchema = z.object({
-  type: z.literal("patch"),
-  reasoning: z.string(),
-  value: z.discriminatedUnion("type", [
-    PatchStringArrayForLLM,
-    PatchStringForLLM,
-    PatchBasedOnForLLM,
-    PatchMisconceptionsForLLM,
-    PatchQuizV2ForLLM,
-    PatchKeywordsForLLM,
-    PatchCycleForLLM,
-    JsonPatchRemoveSchemaForLLM,
-  ]),
-  status: z.literal("complete"),
 });
 
 export type PatchDocument = z.infer<typeof PatchDocumentSchema>;
@@ -471,25 +337,7 @@ export type JsonPatchDocumentOptional = z.infer<
 
 export type JsonPatchDocument = z.infer<typeof JsonPatchDocumentSchema>;
 
-export const JsonPatchDocumentJsonSchema = zodToJsonSchema(
-  JsonPatchDocumentSchema,
-  "patchDocumentSchema",
-);
-
-export const LLMResponseSchema = z.discriminatedUnion("type", [
-  PatchDocumentSchema,
-  PromptDocumentSchema,
-  StateDocumentSchema,
-  CommentDocumentSchema,
-  ErrorDocumentSchema,
-]);
-
-export const LLMResponseJsonSchema = zodToJsonSchema(
-  LLMResponseSchema,
-  "llmResponseSchema",
-);
-
-export const MessagePartDocumentSchema = z.discriminatedUnion("type", [
+const MessagePartDocumentSchema = z.discriminatedUnion("type", [
   ModerationDocumentSchema,
   ErrorDocumentSchema,
   PatchDocumentSchema,
@@ -520,7 +368,7 @@ export type MessagePartType =
 
 export const MessagePartDocumentSchemaByType: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [K in MessagePartType]: z.ZodSchema<any>;
+  [K in MessagePartType]: z.ZodType<any>;
 } = {
   moderation: ModerationDocumentSchema,
   error: ErrorDocumentSchema,
@@ -543,29 +391,6 @@ export const MessagePartSchema = z.object({
 });
 
 export type MessagePart = z.infer<typeof MessagePartSchema>;
-
-export const LLMMessageSchema = z.object({
-  type: z.literal("llmMessage"),
-  sectionsToEdit: z
-    .array(z.string())
-    .describe(
-      "The sections of the lesson plan that you are considering editing. This should be an array of strings, where each string is the key of the section you are proposing to edit. For example, if you are proposing to edit the 'priorKnowledge' section, you should include 'priorKnowledge' in this array. If you are proposing to edit multiple sections, you should include all of the keys in this array.",
-    ),
-  patches: z
-    .array(LLMPatchDocumentSchema)
-    .describe(
-      "This is the set of patches you have generated to edit the lesson plan. Follow the instructions in the system prompt to ensure that you produce a valid patch. For instance, if you are providing a patch to add a cycle, the op should be 'add' and the value should be the JSON object representing the full, valid cycle. The same applies for all of the other parts of the lesson plan. This should not include more than one 'add' patch for the same section of the lesson plan. These edits will overwrite each other and result in unexpected results. If you want to do multiple updates on the same section, it is best to generate one 'add' patch with all of your edits included.",
-    ),
-  sectionsEdited: z
-    .array(z.string())
-    .describe(
-      "The sections of the lesson plan that you are actually edited. This should be an array of strings, where each string is the key of the section you are proposing to edit. For example, if you edited the 'priorKnowledge' section, you should include 'priorKnowledge' in this array. If you edited multiple sections, you should include all of the keys in this array.",
-    ),
-  prompt: TextDocumentSchema.describe(
-    "If you imagine the user talking to you, this is where you would put your human-readable reply that would explain the changes you have made (if any), ask them questions, and prompt them to send their next message. This should not contain any of the lesson plan content. That should all be delivered in patches. If you have made edits, you should respond to the user by asking if they are happy with the changes you have made if any, and prompt them with what they can do next",
-  ),
-  status: z.literal("complete"),
-});
 
 const LLMMessageSchemaWhileStreaming = z.object({
   type: z.literal("llmMessage"),
@@ -656,7 +481,7 @@ function tryParseText(obj: object): TextDocument | UnknownDocument {
 
 // Each Message that is sent back from the server contains the following
 // (separated by the record-separator character and a newline):
-// * An llmMessage matching the LLMMessageSchema, and containing multiple messageParts
+// * An llmMessage containing multiple messageParts
 // * A moderation messagePart
 // * An ID messagePart
 // * A state messagePart
@@ -851,7 +676,7 @@ export function applyLessonPlanPatch(
     } else if (e instanceof z.ZodError) {
       log.error(
         "Zod Error:",
-        e.errors
+        e.issues
           .map((err) => `${err.path.join(".")}: ${err.message}`)
           .join(", "),
       );
@@ -903,7 +728,7 @@ export function applyLessonPlanPatchImmutable(
     if (e instanceof z.ZodError) {
       log.error(
         "Zod Error:",
-        e.errors
+        e.issues
           .map((err) => `${err.path.join(".")}: ${err.message}`)
           .join(", "),
       );

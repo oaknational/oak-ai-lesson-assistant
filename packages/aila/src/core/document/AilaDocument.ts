@@ -2,45 +2,25 @@ import { aiLogger } from "@oakai/logger";
 
 import { deepClone } from "fast-json-patch";
 
-import { AilaCategorisation } from "../../features/categorisation/categorisers/AilaCategorisation";
-import type { AilaCategorisationFeature } from "../../features/types";
 import type { ValidPatchDocument } from "../../protocol/jsonPatchProtocol";
 import {
   applyLessonPlanPatch,
   extractPatches,
 } from "../../protocol/jsonPatchProtocol";
 import type { PartialLessonPlan } from "../../protocol/schema";
-import type { AilaDocumentService, AilaServices } from "../AilaServices";
-import type { Message } from "../chat";
+import type { AilaDocumentService } from "../AilaServices";
 import type { AilaDocumentContent } from "./types";
 
 const log = aiLogger("aila:lesson");
 
 export class AilaDocument implements AilaDocumentService {
-  private readonly _aila: AilaServices;
   private _content: AilaDocumentContent;
-  private _hasInitialisedContentFromMessages = false;
   private readonly _appliedPatches: ValidPatchDocument[] = [];
   private readonly _invalidPatches: ValidPatchDocument[] = [];
-  private readonly _categoriser: AilaCategorisationFeature;
 
-  constructor({
-    aila,
-    content,
-    categoriser,
-  }: {
-    aila: AilaServices;
-    content?: PartialLessonPlan;
-    categoriser?: AilaCategorisationFeature;
-  }) {
+  constructor({ content }: { content?: PartialLessonPlan }) {
     log.info("Creating AilaDocument");
-    this._aila = aila;
     this._content = content ?? {};
-    this._categoriser =
-      categoriser ??
-      new AilaCategorisation({
-        aila,
-      });
   }
 
   public get content(): AilaDocumentContent {
@@ -49,25 +29,6 @@ export class AilaDocument implements AilaDocumentService {
 
   public set content(content: AilaDocumentContent) {
     this._content = content;
-  }
-
-  public get hasInitialisedContentFromMessages(): boolean {
-    return this._hasInitialisedContentFromMessages;
-  }
-
-  public initialise(plan: PartialLessonPlan) {
-    const shouldSetInitialState = Boolean(
-      plan.title && plan.keyStage && plan.subject,
-    );
-    if (shouldSetInitialState) {
-      this._content = {
-        title: plan.title ?? "Untitled",
-        subject: plan.subject ?? "No subject",
-        keyStage: plan.keyStage ?? "No keystage",
-        topic: plan.topic ?? undefined,
-      };
-      this._hasInitialisedContentFromMessages = true;
-    }
   }
 
   public applyValidPatches(validPatches: ValidPatchDocument[]) {
@@ -127,33 +88,5 @@ export class AilaDocument implements AilaDocumentService {
     }
 
     this.applyValidPatches(validPatches);
-  }
-
-  public async initialiseContentFromMessages(messages: Message[]) {
-    log.info("Initialise content based on messages", this._content.title);
-    const shouldCategoriseBasedOnInitialMessages = Boolean(
-      !this._content.subject && !this._content.keyStage && !this._content.title,
-    );
-
-    // The initial lesson plan is blank, so we take the first messages
-    // and attempt to deduce the lesson plan key stage, subject, title and topic
-    if (shouldCategoriseBasedOnInitialMessages) {
-      let result: AilaDocumentContent | undefined;
-      try {
-        result = await this._categoriser.categorise(messages, this._content);
-      } catch (error) {
-        log.error("Failed to initialise content from messages", { error });
-        this._aila.errorReporter?.reportError(
-          error,
-          "Failed to initialise content from messages",
-          "warning",
-        );
-        return;
-      }
-
-      if (result) {
-        this.initialise(result);
-      }
-    }
   }
 }

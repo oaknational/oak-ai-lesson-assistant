@@ -18,8 +18,7 @@ export const authRouter = router({
 
       const user = await client.users.getUser(userId);
       const hasSeenWhatsNew = user.privateMetadata.hasSeenWhatsNew as
-        | undefined
-        | string[];
+        undefined | string[];
 
       const newArray = hasSeenWhatsNew
         ? [...(hasSeenWhatsNew as []), input.userHasSeenThisVersion]

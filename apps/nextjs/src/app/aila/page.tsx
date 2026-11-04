@@ -1,4 +1,4 @@
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -13,13 +13,10 @@ export default async function IndexPage() {
   }
 
   return (
-    <>
-      <SignedIn>
-        <Layout>
-          <AilaStart />
-        </Layout>
-      </SignedIn>
-      <SignedOut></SignedOut>
-    </>
+    <Show when="signed-in">
+      <Layout>
+        <AilaStart />
+      </Layout>
+    </Show>
   );
 }

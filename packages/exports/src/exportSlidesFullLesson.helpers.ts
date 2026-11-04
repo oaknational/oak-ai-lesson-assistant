@@ -1,9 +1,7 @@
 import type { SpeakerNotesTag } from "./gSuite/slides/deleteSlides";
 
 type CycleStimulusFields =
-  | { practiceStimulusSlideText?: string }
-  | null
-  | undefined;
+  { practiceStimulusSlideText?: string } | null | undefined;
 
 /**
  * The template slides this lesson does not need, to be deleted from its deck.

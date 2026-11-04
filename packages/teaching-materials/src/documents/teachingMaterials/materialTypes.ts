@@ -94,10 +94,7 @@ export type BaseMaterialTypeConfig = {
   description: string;
   refinementOptions: RefinementOption[];
   analyticPropertyName:
-    | "comprehension task"
-    | "exit quiz"
-    | "glossary"
-    | "starter quiz";
+    "comprehension task" | "exit quiz" | "glossary" | "starter quiz";
   isAvailable: boolean;
   systemMessage: () => string;
   schema: ZodType;

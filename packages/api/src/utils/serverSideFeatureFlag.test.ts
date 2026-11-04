@@ -2,9 +2,9 @@ import {
   posthogAiBetaServerClient,
   refreshFlagDefinitionsIfStale,
 } from "@oakai/core/src/analytics/posthogAiBetaServerClient";
+import { kv } from "@oakai/core/src/utils/kv";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { kv } from "@vercel/kv";
 
 import { serverSideFeatureFlag } from "./serverSideFeatureFlag";
 
@@ -13,7 +13,7 @@ jest.mock("@clerk/nextjs/server", () => ({
   clerkClient: jest.fn(),
 }));
 
-jest.mock("@vercel/kv", () => ({
+jest.mock("@oakai/core/src/utils/kv", () => ({
   kv: {
     get: jest.fn(),
     set: jest.fn(),
@@ -47,13 +47,9 @@ describe("serverSideFeatureFlag", () => {
   it("returns true for boolean true cache hits", async () => {
     mockedKvGet.mockResolvedValue(true);
 
-    await expect(serverSideFeatureFlag("agentic-aila-nov-25")).resolves.toBe(
-      true,
-    );
+    await expect(serverSideFeatureFlag("quiz-rag")).resolves.toBe(true);
 
-    expect(mockedKvGet).toHaveBeenCalledWith(
-      "feature_flag:agentic-aila-nov-25:user_123",
-    );
+    expect(mockedKvGet).toHaveBeenCalledWith("feature_flag:quiz-rag:user_123");
     expect(mockedIsFeatureEnabled).not.toHaveBeenCalled();
     expect(mockedClerkClient).not.toHaveBeenCalled();
     // No point refreshing definitions we aren't going to evaluate against.
@@ -63,9 +59,7 @@ describe("serverSideFeatureFlag", () => {
   it("returns false for boolean false cache hits", async () => {
     mockedKvGet.mockResolvedValue(false);
 
-    await expect(serverSideFeatureFlag("agentic-aila-nov-25")).resolves.toBe(
-      false,
-    );
+    await expect(serverSideFeatureFlag("quiz-rag")).resolves.toBe(false);
 
     expect(mockedIsFeatureEnabled).not.toHaveBeenCalled();
     expect(mockedClerkClient).not.toHaveBeenCalled();
@@ -82,12 +76,10 @@ describe("serverSideFeatureFlag", () => {
       },
     } as unknown as Awaited<ReturnType<typeof clerkClient>>);
 
-    await expect(serverSideFeatureFlag("agentic-aila-nov-25")).resolves.toBe(
-      true,
-    );
+    await expect(serverSideFeatureFlag("quiz-rag")).resolves.toBe(true);
 
     expect(mockedKvSet).toHaveBeenCalledWith(
-      "feature_flag:agentic-aila-nov-25:user_123",
+      "feature_flag:quiz-rag:user_123",
       true,
       { ex: 60 },
     );
@@ -104,7 +96,7 @@ describe("serverSideFeatureFlag", () => {
       },
     } as unknown as Awaited<ReturnType<typeof clerkClient>>);
 
-    await serverSideFeatureFlag("agentic-aila-nov-25");
+    await serverSideFeatureFlag("quiz-rag");
 
     expect(mockedRefresh).toHaveBeenCalledTimes(1);
     expect(mockedRefresh.mock.invocationCallOrder[0]).toBeLessThan(

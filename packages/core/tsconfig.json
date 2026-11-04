@@ -3,6 +3,5 @@
   "ts-node": {
     "files": true
   },
-  "files": ["webvtt-parser.d.ts"],
-  "include": ["src/**/*.ts", "index.ts", "*.ts", "webvtt-parser.d.ts"]
+  "include": ["src/**/*.ts", "index.ts", "*.ts"]
 }

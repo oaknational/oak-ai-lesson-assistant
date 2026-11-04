@@ -92,7 +92,7 @@ export function AdaptLessonContent({
       </OakBox>
 
       {/* Tabs section */}
-      <OakBox $background="white" $pa="spacing-24" $pb="spacing-24">
+      <OakBox $background="bg-primary" $pa="spacing-24" $pb="spacing-24">
         <OakFlex $gap="spacing-12" $flexWrap="wrap">
           {tabs.map((tab) => (
             <button
@@ -113,7 +113,7 @@ export function AdaptLessonContent({
       {/* Content section */}
       <OakBox
         $height={"100%"}
-        $background="white"
+        $background="bg-primary"
         $pa="spacing-24"
         $pb="spacing-24"
       >

@@ -6,19 +6,16 @@ import type { QuestionSourceType } from "@oakai/aila/src/core/quiz/schema";
 import type {
   AilaInitializationOptions,
   AilaOptions,
-  AilaPublicChatOptions,
 } from "@oakai/aila/src/core/types";
 import { AilaAmericanisms } from "@oakai/aila/src/features/americanisms/AilaAmericanisms";
 import {
   DatadogAnalyticsAdapter,
   PosthogAnalyticsAdapter,
 } from "@oakai/aila/src/features/analytics";
-import { AilaRag } from "@oakai/aila/src/features/rag/AilaRag";
 import type { AilaThreatDetector } from "@oakai/aila/src/features/threatDetection";
 import { SentryTracingService } from "@oakai/aila/src/features/tracing";
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
-import { getAgenticAilaEnabled } from "@oakai/api/src/utils/getAgenticAilaEnabled";
 import { serverSideFeatureFlag } from "@oakai/api/src/utils/serverSideFeatureFlag";
 import { startSpan } from "@oakai/core/src/tracing";
 import type { TracingSpan } from "@oakai/core/src/tracing";
@@ -35,10 +32,10 @@ import type { Config } from "./configTypes";
 import { handleChatException } from "./errorHandling";
 import {
   getAgenticFixtureConfig,
-  getFixtureLLMService,
   getFixtureModerationOpenAiClient,
   getFixtureOakModerator,
 } from "./fixtures";
+import { formatChatResponse } from "./streamProtocol";
 import { getThreatDetectors } from "./threatDetectors";
 import { fetchAndCheckUser } from "./user";
 
@@ -76,68 +73,21 @@ async function setupChatHandler(req: NextRequest) {
     {},
     async (_span: TracingSpan) => {
       const json = await req.json();
-      const {
-        id: chatId,
-        messages,
-        options: chatOptions = {},
-      }: {
-        id: string;
-        messages: Message[];
-        options?: AilaPublicChatOptions;
-      } = json;
-
-      const e2eAilaSystemHeader =
-        process.env.AILA_FIXTURES_ENABLED === "true"
-          ? req.headers.get("x-e2e-aila-system")
-          : null;
-      const e2eAilaSystem =
-        e2eAilaSystemHeader === "agentic" ||
-        e2eAilaSystemHeader === "megaprompt"
-          ? e2eAilaSystemHeader
-          : null;
-
-      const useAgenticAila = e2eAilaSystem
-        ? e2eAilaSystem === "agentic"
-        : await getAgenticAilaEnabled();
-
-      log.info(
-        "Chat handler: e2eAilaSystem=%s useAgenticAila=%s",
-        e2eAilaSystem ?? "null",
-        String(useAgenticAila),
-      );
+      const { id: chatId, messages }: { id: string; messages: Message[] } =
+        json;
 
       const agenticFixture = getAgenticFixtureConfig(req.headers);
-
-      if (
-        process.env.AILA_FIXTURES_ENABLED === "true" &&
-        e2eAilaSystem === "agentic" &&
-        !agenticFixture
-      ) {
-        throw new Error(
-          "Agentic E2E fixture mode requires x-e2e-fixture-name and a valid x-e2e-fixture-mode.",
-        );
-      }
 
       const useMathsQuizRag = await serverSideFeatureFlag("quiz-rag");
 
       const options: AilaOptions = {
-        useRag: chatOptions.useRag ?? true,
-        temperature: chatOptions.temperature ?? 0.7,
-        numberOfRecordsInRag: chatOptions.numberOfRecordsInRag ?? 5,
         quizSources: getQuizSources(),
         usePersistence: true,
         useModeration: true,
-        useAgenticAila,
         agenticFixture,
         useMathsQuizRag: useMathsQuizRag,
       };
 
-      // Agentic system never calls LLMService — skip the chunk-based fixture to
-      // avoid FixtureReplayLLMService throwing ENOENT at construction time.
-      const llmService =
-        e2eAilaSystem !== "agentic"
-          ? getFixtureLLMService(req.headers, chatId)
-          : undefined;
       const moderationAiClient = getFixtureModerationOpenAiClient(
         req.headers,
         chatId,
@@ -149,7 +99,6 @@ async function setupChatHandler(req: NextRequest) {
         chatId,
         messages,
         options,
-        llmService,
         moderationAiClient,
         oakModerator,
         threatDetectors,
@@ -158,20 +107,13 @@ async function setupChatHandler(req: NextRequest) {
   );
 }
 
-function handleConnectionAborted(req: NextRequest) {
-  const abortController = new AbortController();
-
+function logConnectionAborted(req: NextRequest) {
   req.signal.addEventListener("abort", () => {
     log.info("Connection aborted: client has disconnected");
-    abortController.abort();
   });
-  return abortController;
 }
 
-async function generateChatStream(
-  aila: Aila,
-  abortController: AbortController,
-): Promise<Response> {
+async function generateChatStream(aila: Aila): Promise<Response> {
   return await Sentry.startSpanManual(
     {
       name: "chat-aila-generate",
@@ -180,13 +122,11 @@ async function generateChatStream(
     async (_span, finishSpan) => {
       try {
         invariant(aila, "Aila instance is required");
-        const result = await aila.generate({ abortController });
-        const transformStream = new TransformStream({
+        const result = await aila.generate();
+        // The client reads the response as a plain text stream
+        const transformStream = new TransformStream<string, Uint8Array>({
           transform(chunk, controller) {
-            const formattedChunk = new TextEncoder().encode(
-              `0:${JSON.stringify(chunk)}\n`,
-            );
-            controller.enqueue(formattedChunk);
+            controller.enqueue(new TextEncoder().encode(chunk));
           },
         });
 
@@ -257,7 +197,7 @@ async function loadGenerationContext(
     verifyChatOwnership(chat, userId, chatId);
 
     const output = z
-      .object({ lessonPlan: z.record(z.unknown()) })
+      .object({ lessonPlan: z.record(z.string(), z.unknown()) })
       .passthrough()
       .parse(chat.output ?? {});
 
@@ -332,7 +272,6 @@ type CreateAilaInstanceArguments = {
   userId: string | undefined;
   messages: Message[];
   lessonPlan: PartialLessonPlan;
-  llmService: ReturnType<typeof getFixtureLLMService>;
   moderationAiClient: ReturnType<typeof getFixtureModerationOpenAiClient>;
   oakModerator: ReturnType<typeof getFixtureOakModerator>;
   threatDetectors: AilaThreatDetector[];
@@ -345,7 +284,6 @@ async function createAilaInstance({
   userId,
   messages,
   lessonPlan,
-  llmService,
   moderationAiClient,
   oakModerator,
   threatDetectors,
@@ -363,11 +301,8 @@ async function createAilaInstance({
           messages,
         },
         services: {
-          chatLlmService: llmService,
           moderationAiClient,
           oakModerator,
-          ragService: (aila: AilaServices) =>
-            new AilaRag({ aila, prisma: config.prisma }),
           americanismsService: () => new AilaAmericanisms(),
           analyticsAdapters: (aila: AilaServices) => [
             new PosthogAnalyticsAdapter(aila),
@@ -391,7 +326,7 @@ export async function handleChatPostRequest(
   config: Config,
 ): Promise<Response> {
   return await startSpan("chat-api", {}, async (span: TracingSpan) => {
-    let chatId = "unknown";
+    let chatId: string;
     let aila: Aila | undefined;
     let userId: string | undefined;
     try {
@@ -399,7 +334,6 @@ export async function handleChatPostRequest(
         chatId: resolvedChatId,
         messages: frontendMessages,
         options,
-        llmService,
         moderationAiClient,
         oakModerator,
         threatDetectors,
@@ -421,18 +355,16 @@ export async function handleChatPostRequest(
         userId,
         messages,
         lessonPlan: dbLessonPlan,
-        llmService,
         moderationAiClient,
         oakModerator,
         threatDetectors,
       });
       invariant(aila, "Aila instance is required");
 
-      const abortController = handleConnectionAborted(req);
-      const stream = await generateChatStream(aila, abortController);
-      return stream;
+      logConnectionAborted(req);
+      return formatChatResponse(req, await generateChatStream(aila));
     } catch (e) {
-      return handleChatException(e);
+      return formatChatResponse(req, await handleChatException(e));
     } finally {
       if (aila) {
         await aila.ensureShutdown();

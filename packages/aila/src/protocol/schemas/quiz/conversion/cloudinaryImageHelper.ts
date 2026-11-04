@@ -1,4 +1,6 @@
-import type { StemImageObject } from "../rawQuiz";
+import invariant from "tiny-invariant";
+
+import type { ImageItem, StemImageObject } from "../rawQuiz";
 
 // Constrain to a 1200x1200 box
 const sizeConstraints = "c_limit,h_1200,w_1200";
@@ -23,6 +25,10 @@ export function constrainImageUrl(url: string): string {
  * Get a size-limited Cloudinary image URL from a StemImageObject
  * Uses the secure_url and applies size constraints
  */
-export function getConstrainedStemImageUrl(imageStem: StemImageObject): string {
-  return constrainImageUrl(imageStem.image_object.secure_url);
+export function getConstrainedStemImageUrl(
+  imageStem: StemImageObject | ImageItem,
+): string {
+  const url = imageStem.image_object.secure_url;
+  invariant(url, "Image has no secure_url");
+  return constrainImageUrl(url);
 }
