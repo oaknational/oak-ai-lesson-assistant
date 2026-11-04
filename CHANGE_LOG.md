@@ -1,3 +1,5 @@
+## [1.86.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.86.0...v1.86.1) (2026-11-04)
+
 # [1.86.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.85.0...v1.86.0) (2026-10-22)
 
 
