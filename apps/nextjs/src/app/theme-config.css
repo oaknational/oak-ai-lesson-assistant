@@ -9,3 +9,8 @@
   --default-font-family:
     var(--font-lexend), Lexend, ui-sans-serif, sans-serif !important;
 }
+
+/* Radix Themes 3 gives the root Theme min-height: 100dvh. v1 did not, so keep the v1 layout */
+.radix-themes[data-is-root-theme="true"] {
+  min-height: auto;
+}
