@@ -1,3 +1,11 @@
+## [1.86.2](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.86.1...v1.86.2) (2026-11-05)
+
+
+### Bug Fixes
+
+* [ADAPT-181] upgrade prisma and move off prisma accelerate ([#1190](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1190)) ([6bf7e71](https://github.com/oaknational/oak-ai-lesson-assistant/commit/6bf7e7126eaaef5409933f9667a7d6029298c030))
+* align teaching materials learning cycles prompt with schema ([#1192](https://github.com/oaknational/oak-ai-lesson-assistant/issues/1192)) ([3fc3396](https://github.com/oaknational/oak-ai-lesson-assistant/commit/3fc3396a7c1964dc2a01894b46673dca03cb13dc))
+
 ## [1.86.1](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.86.0...v1.86.1) (2026-11-04)
 
 # [1.86.0](https://github.com/oaknational/oak-ai-lesson-assistant/compare/v1.85.0...v1.86.0) (2026-10-22)
