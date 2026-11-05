@@ -1,7 +1,8 @@
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
 import { demoUsers } from "@oakai/core";
 import { rateLimits } from "@oakai/core/src/utils/rateLimiting";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -21,7 +22,7 @@ function userIsOwner(entity: { userId: string }, auth: SignedInAuthObject) {
   return entity.userId === auth.userId;
 }
 
-export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
+export async function getChat(id: string, prisma: OakPrismaClient) {
   const chatRecord = await prisma.appSession.findUnique({
     where: {
       id: id,
@@ -38,7 +39,7 @@ export async function getChat(id: string, prisma: PrismaClientWithAccelerate) {
     async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
-        data: { output: upgradedData },
+        data: { output: asPrismaJson(upgradedData) },
       });
     },
     {
@@ -114,7 +115,7 @@ export const appSessionsRouter = router({
           id: chatId,
           appId,
           userId,
-          output,
+          output: asPrismaJson(output),
         },
       };
       // Create a blank chat
@@ -146,10 +147,9 @@ export const appSessionsRouter = router({
     /**
      * Context for $queryRaw usage:
      * @hannah-bethclark experienced an issue where chat history was empty.
-     * This was caused by Prisma's response size limit of 5mb
-     * @see https://www.prisma.io/docs/accelerate/limitations#response-size-limit
-     * Since the JSONB column 'output' is so large, we need to use $queryRaw to
-     * get only the data we need.
+     * This was caused by Prisma Accelerate's response size limit of 5mb.
+     * We no longer use Accelerate, but the JSONB column 'output' is so large
+     * that we still use $queryRaw to get only the data we need.
      * @see https://github.com/prisma/prisma/issues/2431
      *
      * Part of database refactoring will include not storing all out chat data
@@ -270,7 +270,7 @@ export const appSessionsRouter = router({
       // Single update that includes both upgrade (if needed) and sharing
       await ctx.prisma?.appSession.update({
         where: { id },
-        data: { output: sharedChat },
+        data: { output: asPrismaJson(sharedChat) },
       });
 
       return sharedChat;

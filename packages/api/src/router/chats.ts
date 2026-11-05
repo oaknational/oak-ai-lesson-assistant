@@ -1,5 +1,5 @@
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
-import { prisma } from "@oakai/db/client";
+import { asPrismaJson, prisma } from "@oakai/db/client";
 
 import { TRPCError } from "@trpc/server";
 import { isTruthy } from "remeda";
@@ -24,7 +24,7 @@ async function parseChatAndReportError({
     async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
-        data: { output: upgradedData },
+        data: { output: asPrismaJson(upgradedData) },
       });
     },
     {
@@ -163,7 +163,7 @@ export const chatsRouter = router({
 
       await prisma?.appSession.update({
         where: { id },
-        data: { output: sharedChat },
+        data: { output: asPrismaJson(sharedChat) },
       });
 
       return sharedChat;

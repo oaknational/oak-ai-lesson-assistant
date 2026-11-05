@@ -2,7 +2,7 @@
 
 import type { AilaPersistedChat } from "@oakai/aila/src/protocol/schema";
 import { migrateChatData } from "@oakai/aila/src/protocol/schemas/versioning/migrateChatData";
-import { prisma } from "@oakai/db";
+import { asPrismaJson, prisma } from "@oakai/db";
 
 export async function getChatById(
   id: string,
@@ -20,7 +20,7 @@ export async function getChatById(
     async (upgradedData) => {
       await prisma.appSession.update({
         where: { id },
-        data: { output: upgradedData },
+        data: { output: asPrismaJson(upgradedData) },
       });
     },
     {

@@ -1,10 +1,8 @@
 import { aiLogger } from "@oakai/logger";
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../client";
 
 const log = aiLogger("db");
-
-const prisma = new PrismaClient();
 
 export const apps = [
   {

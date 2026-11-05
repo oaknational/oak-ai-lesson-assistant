@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 
@@ -35,14 +35,14 @@ function makeRow(overrides: Partial<DbRow> = {}): DbRow {
 
 describe("getRagLessonPlansByIds", () => {
   let findManyMock: jest.Mock;
-  let prisma: PrismaClientWithAccelerate;
+  let prisma: OakPrismaClient;
 
   beforeEach(() => {
     jest.clearAllMocks();
     findManyMock = jest.fn();
     prisma = {
       ragLessonPlan: { findMany: findManyMock },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
   });
 
   describe("query construction", () => {

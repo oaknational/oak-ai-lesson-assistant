@@ -1,5 +1,5 @@
 import type { moderationResponseSchema } from "@oakai/core/src/utils/ailaModeration/moderationSchema";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import type { SignedInAuthObject } from "@clerk/backend/internal";
 import type { z } from "zod";
@@ -65,7 +65,7 @@ export const mockPrisma = {
     update: jest.fn(),
     create: jest.fn(),
   },
-} as unknown as PrismaClientWithAccelerate;
+} as unknown as OakPrismaClient;
 
 export const mockAuth: SignedInAuthObject = {
   userId: "test-user-id",

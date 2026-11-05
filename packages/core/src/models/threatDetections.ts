@@ -1,11 +1,9 @@
 import type {
+  OakPrismaClient,
   Prisma,
-  PrismaClientWithAccelerate,
   SafetyViolationRecordType,
   ThreatDetection,
 } from "@oakai/db";
-
-import type { InputJsonValue } from "@prisma/client/runtime/library";
 
 import { SafetyViolations } from "./safetyViolations";
 
@@ -19,7 +17,7 @@ export type ThreatDetectionCreateInput = {
   provider: string;
   category?: string;
   severity?: string;
-  providerResponse?: InputJsonValue;
+  providerResponse?: Prisma.InputJsonValue;
   isFalsePositive?: boolean;
   safetyViolationId?: string;
 };
@@ -35,7 +33,7 @@ export class ThreatDetections {
   private readonly safetyViolations: SafetyViolations;
 
   constructor(
-    private readonly prisma: PrismaClientWithAccelerate,
+    private readonly prisma: OakPrismaClient,
     safetyViolations?: SafetyViolations,
   ) {
     this.safetyViolations = safetyViolations ?? new SafetyViolations(prisma);

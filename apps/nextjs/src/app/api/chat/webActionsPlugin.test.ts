@@ -1,9 +1,8 @@
 import type { AilaPluginContext } from "@oakai/aila/src/core/plugins";
 import { scheduleModerationNotification } from "@oakai/core/src/backgroundTasks";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
-
-import type { Moderation } from "@prisma/client";
+import type { OakPrismaClient } from "@oakai/db";
+import type { Moderation } from "@oakai/db/prisma/client";
 
 import { createWebActionsPlugin } from "./webActionsPlugin";
 
@@ -20,7 +19,7 @@ describe("webActionsPlugin", () => {
         recordViolation,
       }));
 
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const prisma = {} as unknown as OakPrismaClient;
       const moderation = {
         id: "ABC",
         categories: ["t/encouragement-illegal-activity"],
@@ -50,7 +49,7 @@ describe("webActionsPlugin", () => {
         recordViolation: jest.fn(),
       }));
 
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const prisma = {} as unknown as OakPrismaClient;
       const moderation = {
         id: "ABC",
         categories: ["t/encouragement-illegal-activity"],
@@ -84,7 +83,7 @@ describe("webActionsPlugin", () => {
 
   describe("onHighlySensitiveModeration", () => {
     it("should notify slack with highly-sensitive safetyLevel", async () => {
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const prisma = {} as unknown as OakPrismaClient;
       const moderation = {
         id: "ABC",
         categories: ["n/self-harm-suicide"],
@@ -121,7 +120,7 @@ describe("webActionsPlugin", () => {
         recordViolation,
       }));
 
-      const prisma = {} as unknown as PrismaClientWithAccelerate;
+      const prisma = {} as unknown as OakPrismaClient;
       const moderation = {
         id: "ABC",
         categories: ["n/self-harm-suicide"],
@@ -147,7 +146,7 @@ describe("webActionsPlugin", () => {
       recordViolation,
     }));
 
-    const prisma = {} as unknown as PrismaClientWithAccelerate;
+    const prisma = {} as unknown as OakPrismaClient;
     const moderation = {
       id: "ABC",
       categories: ["t/encouragement-illegal-activity"],
@@ -173,7 +172,7 @@ describe("webActionsPlugin", () => {
 describe("onStreamError", () => {
   it("should enqueue and rethrow ordinary stream errors", async () => {
     const mockEnqueue = jest.fn();
-    const prisma = {} as unknown as PrismaClientWithAccelerate;
+    const prisma = {} as unknown as OakPrismaClient;
     const pluginContext = {
       aila: {} as unknown as AilaPluginContext["aila"],
       enqueue: mockEnqueue,

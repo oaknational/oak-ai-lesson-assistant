@@ -1,8 +1,9 @@
-import type { JsonValue } from "@prisma/client/runtime/library";
+import type { Prisma } from "@oakai/db/prisma/client";
+
 import { z } from "zod";
 
 export type ModerationBase = {
-  categories: JsonValue[];
+  categories: Prisma.JsonValue[];
   justification?: string | null;
   messageId?: string | null;
 };

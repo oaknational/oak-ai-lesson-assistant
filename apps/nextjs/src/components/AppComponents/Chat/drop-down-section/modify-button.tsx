@@ -1,6 +1,5 @@
 import type { LessonPlanSectionWhileStreaming } from "@oakai/aila/src/protocol/schema";
-
-import type { AilaUserModificationAction } from "@prisma/client";
+import type { AilaUserModificationAction } from "@oakai/db/prisma/client";
 
 import { ComponentType } from "@/lib/avo/Avo";
 

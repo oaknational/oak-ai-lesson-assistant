@@ -1,5 +1,5 @@
 import type {
-  PrismaClientWithAccelerate,
+  OakPrismaClient,
   SafetyViolation,
   SafetyViolationAction,
   SafetyViolationRecordType,
@@ -35,7 +35,7 @@ const checkWindowMs = 1000 * 60 * 60 * 24 * CHECK_WINDOW_DAYS;
  */
 export class SafetyViolations {
   constructor(
-    private readonly prisma: PrismaClientWithAccelerate,
+    private readonly prisma: OakPrismaClient,
     private readonly logger: StructuredLogger = structuredLogger,
   ) {}
 

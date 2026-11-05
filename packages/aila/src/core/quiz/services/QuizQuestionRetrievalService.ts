@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { QuizPath } from "../../../protocol/schema";
@@ -15,9 +15,9 @@ const log = aiLogger("aila:quiz");
  * Handles lookups by lesson slug, question IDs, or plan ID.
  */
 export class QuizQuestionRetrievalService {
-  private db: PrismaClientWithAccelerate;
+  private db: OakPrismaClient;
 
-  constructor(db: PrismaClientWithAccelerate) {
+  constructor(db: OakPrismaClient) {
     this.db = db;
   }
 

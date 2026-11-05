@@ -1,4 +1,4 @@
-import { Prisma } from "@oakai/db/prisma/client";
+import { Prisma } from "@oakai/db";
 
 import type { PendingGeneration } from "../../lib/agentic-system/agents/executeGenericPromptAgent";
 

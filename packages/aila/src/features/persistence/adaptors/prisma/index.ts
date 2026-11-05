@@ -1,4 +1,5 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import { asPrismaJson } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { AilaPersistence } from "../..";
@@ -16,7 +17,7 @@ import { migrateChatData } from "../../../../protocol/schemas/versioning/migrate
 const log = aiLogger("aila:persistence");
 
 export class AilaPrismaPersistence extends AilaPersistence {
-  private readonly _prisma: PrismaClientWithAccelerate;
+  private readonly _prisma: OakPrismaClient;
 
   constructor({
     chat,
@@ -25,7 +26,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
   }: {
     chat: AilaChatService;
     aila: AilaServices;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   }) {
     super({ chat, name: "AilaPrismaPersistence", aila });
     this._prisma = prisma;
@@ -57,7 +58,7 @@ export class AilaPrismaPersistence extends AilaPersistence {
       async (updatedChat) => {
         await this._prisma.appSession.update({
           where: { id },
-          data: { output: updatedChat },
+          data: { output: asPrismaJson(updatedChat) },
         });
       },
       {
@@ -91,11 +92,11 @@ export class AilaPrismaPersistence extends AilaPersistence {
         id: payload.id,
         userId: payload.userId,
         appId: "lesson-planner",
-        output: payload,
+        output: asPrismaJson(payload),
         createdAt: new Date(),
       },
       update: {
-        output: payload,
+        output: asPrismaJson(payload),
         updatedAt: new Date(),
       },
     });

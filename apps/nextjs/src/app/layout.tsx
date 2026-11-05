@@ -96,12 +96,7 @@ export default async function RootLayout({
               GeistMono.variable,
             )}
           >
-            <Theme
-              accentColor="blue"
-              grayColor="olive"
-              scaling="110%"
-              color="#22222"
-            >
+            <Theme accentColor="blue" grayColor="olive" scaling="110%">
               <TRPCReactProvider>
                 <Toaster />
                 <Providers>

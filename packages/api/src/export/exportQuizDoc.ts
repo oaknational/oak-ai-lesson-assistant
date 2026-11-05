@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { exportDocQuiz } from "@oakai/exports";
 import type { QuizDocInputData } from "@oakai/exports/src/schema/input.schema";
 import { aiLogger } from "@oakai/logger";
@@ -24,7 +24,7 @@ export async function exportQuizDoc({
 }: {
   ctx: {
     auth: SignedInAuthObject;
-    prisma: PrismaClientWithAccelerate;
+    prisma: OakPrismaClient;
   };
   input: {
     chatId: string;

@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import type { OakPrismaClient } from "@oakai/db/client";
 
 import type { AilaAmericanismsFeature } from "../features/americanisms";
 import type { AnalyticsAdapter } from "../features/analytics";
@@ -68,7 +68,7 @@ export type AilaInitializationOptions = {
   };
   chat: AilaChatInitializationOptions;
   options?: AilaOptions;
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
   moderator?: AilaModerator;
   moderation?: AilaModerationFeature;
   persistence?: AilaPersistence[];

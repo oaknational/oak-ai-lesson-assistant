@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import * as Sentry from "@sentry/nextjs";
 import { isTruthy } from "remeda";
@@ -21,7 +21,7 @@ export async function getRagLessonPlansByIds({
    * i.e. the id of the record associated with that particular ingest/RAG interpretation of the Oak lesson
    */
   lessonPlanIds: string[];
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
 }): Promise<
   {
     ragLessonPlanId: string;
