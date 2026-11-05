@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 // import { CohereClient } from "cohere-ai";
@@ -25,7 +25,7 @@ export async function getRelevantLessonPlans({
   title: string;
   keyStageSlugs: string[] | null;
   subjectSlugs: string[] | null;
-  prisma: PrismaClientWithAccelerate;
+  prisma: OakPrismaClient;
 }): Promise<RagLessonPlanResult[]> {
   log.info(`Getting embedding for title: ${title}`);
   const queryVector = await getEmbedding({ text: title, openai });

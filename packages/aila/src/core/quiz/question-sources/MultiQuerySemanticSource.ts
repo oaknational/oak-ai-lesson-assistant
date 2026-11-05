@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import type { PartialLessonPlan, QuizPath } from "../../../protocol/schema";
@@ -36,7 +36,7 @@ export class MultiQuerySemanticSource implements QuestionSource {
   protected rerankService: CohereReranker;
   protected retrievalService: QuizQuestionRetrievalService;
 
-  constructor({ prisma }: { prisma: PrismaClientWithAccelerate }) {
+  constructor({ prisma }: { prisma: OakPrismaClient }) {
     this.queryGenerator = new SemanticQueryGenerator();
     this.searchService = new PostgresQuizSearchService({ prisma });
     this.rerankService = new CohereReranker();

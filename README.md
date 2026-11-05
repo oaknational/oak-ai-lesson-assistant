@@ -127,7 +127,7 @@ pnpm run docker-bootstrap
    2. Use the `seed.ts` file which will populate the required tables only:
 
    ```shell
-   pnpm prisma db seed
+   pnpm run db-seed
    ```
 
 ### Utility Commands

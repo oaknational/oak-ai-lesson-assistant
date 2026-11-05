@@ -1,6 +1,6 @@
 import type { PartialLessonPlan } from "@oakai/aila/src/protocol/schema";
+import type { AilaUserModificationAction } from "@oakai/db/prisma/client";
 
-import type { AilaUserModificationAction } from "@prisma/client";
 import type { StoreApi } from "zustand";
 
 import type { FeedbackOption } from "@/components/AppComponents/Chat/drop-down-section/drop-down-form-wrapper";

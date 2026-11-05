@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import { QuizQuestionRetrievalService } from "./QuizQuestionRetrievalService";
 
@@ -26,7 +26,7 @@ describe("QuizQuestionRetrievalService", () => {
   beforeEach(() => {
     mockPrisma = createMockPrisma();
     service = new QuizQuestionRetrievalService(
-      mockPrisma as unknown as PrismaClientWithAccelerate,
+      mockPrisma as unknown as OakPrismaClient,
     );
     jest.clearAllMocks();
   });

@@ -115,23 +115,6 @@ else
   echo "Export process skipped."
 fi
 
-# Ask the user if they want to validate the data
-read -p "Do you want to validate the exported data? (y/n) " confirm_validate
-if [ "$confirm_validate" == "y" ]; then
-  # Run validation before truncating data
-  echo "Running data validation..."
-  if pnpm run validate-data; then
-    echo "Data validation successful."
-  else
-    echo "Data validation failed." >&2
-    exit 1
-  fi
-
-  echo "Data is valid."
-else
-  echo "Validation skipped."
-fi
-
 # Ask the user if they want to proceed with seeding
 echo "You are about to seed the data into the $TARGET_ENV environment."
 read -p "Do you want to continue with the seeding process? (y/n) " confirm_seed

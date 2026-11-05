@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 import type { SafetyViolations } from "./safetyViolations";
 import { ThreatDetections } from "./threatDetections";
@@ -50,7 +50,7 @@ describe("ThreatDetections", () => {
       threatDetection: {
         create,
       },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     const threatDetections = new ThreatDetections(prisma);
 
@@ -100,7 +100,7 @@ describe("ThreatDetections", () => {
       threatDetection: {
         create,
       },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     const threatDetections = new ThreatDetections(prisma);
 
@@ -138,7 +138,7 @@ describe("ThreatDetections", () => {
       threatDetection: {
         findMany,
       },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     const threatDetections = new ThreatDetections(prisma);
 
@@ -179,7 +179,7 @@ describe("ThreatDetections", () => {
         findUniqueOrThrow,
         update,
       },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     const threatDetections = new ThreatDetections(prisma, mockSafetyViolations);
 
@@ -232,7 +232,7 @@ describe("ThreatDetections", () => {
         findUniqueOrThrow,
         update,
       },
-    } as unknown as PrismaClientWithAccelerate;
+    } as unknown as OakPrismaClient;
 
     const threatDetections = new ThreatDetections(prisma, mockSafetyViolations);
 

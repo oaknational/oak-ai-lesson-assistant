@@ -5,7 +5,7 @@ import type {
 import { scheduleModerationNotification } from "@oakai/core/src/backgroundTasks";
 import { SafetyViolations as defaultSafetyViolations } from "@oakai/core/src/models/safetyViolations";
 import { UserBannedError } from "@oakai/core/src/models/userBannedError";
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 import { aiLogger } from "@oakai/logger";
 
 import { waitUntil } from "@vercel/functions";
@@ -13,7 +13,7 @@ import { waitUntil } from "@vercel/functions";
 const log = aiLogger("chat");
 
 type PluginCreator = (
-  prisma: PrismaClientWithAccelerate,
+  prisma: OakPrismaClient,
   SafetyViolations?: typeof defaultSafetyViolations,
 ) => AilaPlugin;
 

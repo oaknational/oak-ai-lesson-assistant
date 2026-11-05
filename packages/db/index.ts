@@ -11,7 +11,7 @@ export {
   SafetyViolationSource,
   SnippetStatus,
   SnippetVariant,
-} from "@prisma/client";
+} from "./generated/prisma/client";
 export type {
   App,
   KeyStage,
@@ -28,6 +28,6 @@ export type {
   Subject,
   ThreatDetection,
   Transcript,
-} from "@prisma/client";
+} from "./generated/prisma/client";
 export * from "./schemas";
 export * from "./client";

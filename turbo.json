@@ -3,10 +3,6 @@
   "ui": "stream",
 
   "tasks": {
-    "db-generate:no-engine": {
-      "inputs": ["prisma/schema.prisma"],
-      "cache": false
-    },
     "db-generate": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
@@ -39,7 +35,7 @@
     },
     "build": {
       "cache": true,
-      "dependsOn": ["^db-generate:no-engine"],
+      "dependsOn": ["^db-generate"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -50,6 +46,7 @@
       ]
     },
     "lint": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "outputs": []
     },
     "lint:fix": {
@@ -62,7 +59,7 @@
       "cache": false
     },
     "prompts": {
-      "dependsOn": ["^db-generate:no-engine"],
+      "dependsOn": ["^db-generate"],
       "cache": false
     },
     "prompts:dev": {
@@ -70,9 +67,11 @@
       "cache": false
     },
     "type-check": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "cache": false
     },
     "test": {
+      "dependsOn": ["^db-generate", "db-generate"],
       "cache": false
     },
     "test:seq": {
@@ -151,7 +150,6 @@
     "OPENAI_*",
     "POSTHOG_FEATURE_FLAGS_API_KEY",
     "POSTMARK_SERVER_TOKEN",
-    "PRISMA_ACCELERATE_DATABASE_URL",
     "PROMPT_PLAYBACK_ENABLED",
     "RATELIMIT_*",
     "REDIS_*",

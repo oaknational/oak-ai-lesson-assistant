@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db/client";
+import type { OakPrismaClient } from "@oakai/db/client";
 import { aiLogger } from "@oakai/logger";
 
 import { DEFAULT_QUIZ_SOURCES } from "../constants";
@@ -49,7 +49,7 @@ export class Aila implements AilaServices {
   private readonly _plugins: AilaPlugin[];
   private readonly _userId!: string | undefined;
   private readonly _chatId!: string;
-  private readonly _prisma!: PrismaClientWithAccelerate;
+  private readonly _prisma!: OakPrismaClient;
   private readonly _americanisms: AilaAmericanismsFeature;
   private readonly _tracing: AilaTracingService;
 

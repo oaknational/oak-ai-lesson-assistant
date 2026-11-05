@@ -1,4 +1,4 @@
-import type { PrismaClientWithAccelerate } from "@oakai/db";
+import type { OakPrismaClient } from "@oakai/db";
 
 // When we add structured parsing we can find a better type than this
 export type JsonValue =
@@ -6,7 +6,7 @@ export type JsonValue =
 export type Json = { [key: string]: JsonValue };
 
 export class Prompts {
-  constructor(private readonly prisma: PrismaClientWithAccelerate) {}
+  constructor(private readonly prisma: OakPrismaClient) {}
 
   async get(promptId: string, appId: string) {
     return this.prisma.prompt.findFirst({
@@ -16,7 +16,6 @@ export class Prompts {
         current: true,
       },
       include: { app: true },
-      cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
     });
   }
 }

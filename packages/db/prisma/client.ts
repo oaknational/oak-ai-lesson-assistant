@@ -3,6 +3,7 @@
  * via importing "@oakai/db" will fail because of the `new Prisma()` call
  */
 export {
+  $Enums,
   AilaUserFlagType,
   AilaUserModificationAction,
   LessonExportType,
@@ -15,7 +16,7 @@ export {
   SafetyViolationSource,
   SnippetStatus,
   SnippetVariant,
-} from "@prisma/client";
+} from "../generated/prisma/browser";
 export type {
   App,
   KeyStage,
@@ -31,4 +32,4 @@ export type {
   Snippet,
   Subject,
   Transcript,
-} from "@prisma/client";
+} from "../generated/prisma/browser";

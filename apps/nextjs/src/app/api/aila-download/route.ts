@@ -95,7 +95,6 @@ async function getHandler(req: Request): Promise<Response> {
       userId,
       expiredAt: null,
     },
-    cacheStrategy: { ttl: 60 * 5, swr: 60 * 2 },
   });
 
   if (!lessonExport) {
