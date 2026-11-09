@@ -1,3 +1,11 @@
+/*
+ * Radix Themes CSS has no @layer, and CSS outside a layer beats CSS inside one,
+ * so imported as-is it would override every Tailwind class.
+ * Putting it between Tailwind's base and utilities layers keeps the Tailwind 3 order:
+ * Radix overrides Tailwind's reset styles, and Tailwind classes override Radix.
+ */
+@layer theme, base, radix, components, utilities;
+@import "@radix-ui/themes/styles.css" layer(radix);
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
