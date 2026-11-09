@@ -50,7 +50,7 @@ jobs:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
       - name: Run Chromatic
-        uses: chromaui/action@dc6182ace06884faf1d3edf73f652a80ca6dfddc # v18.13.4
+        uses: chromaui/action@80379940a37537422d4419aa4c9578673b8bcd34 # v18.13.9
         with:
           workingDir: apps/nextjs
           exitZeroOnChanges: true
