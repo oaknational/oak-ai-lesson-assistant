@@ -25,6 +25,11 @@ updates:
     open-pull-requests-limit: 10
     cooldown:
       default-days: 7
+    ignore:
+      # Keep @types/node on the same major as the Node runtime (`engines` in
+      # the root package.json). Bump them together when we upgrade Node.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: chore
       include: scope
