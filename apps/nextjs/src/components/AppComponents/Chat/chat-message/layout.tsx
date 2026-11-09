@@ -12,7 +12,7 @@ const roleClassNames = {
   user: "bg-teachersLilac p-9",
   aila: "",
   moderation:
-    "bg-lemon30 p-9 border border-solid border-[var(--Tokens-Border-border-decorative5-stronger,#FBD60E)]",
+    "bg-lemon30 p-9 border border-solid border-(--Tokens-Border-border-decorative5-stronger,#FBD60E)",
   error: "bg-peachCream p-9",
 };
 

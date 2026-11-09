@@ -4,10 +4,9 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Fixed path to the tailwind config
-const tailwindConfigPath = resolve(
+const tailwindStylesheetPath = resolve(
   __dirname,
-  "../../apps/nextjs/tailwind.config.cjs",
+  "../../apps/nextjs/src/app/globals.css",
 );
 
 const plugins = [
@@ -34,7 +33,7 @@ export default {
   singleQuote: false,
   tabWidth: 2,
   tailwindAttributes: ["className"],
-  tailwindConfig: tailwindConfigPath,
+  tailwindStylesheet: tailwindStylesheetPath,
   tailwindFunctions: ["cva"],
   trailingComma: "all",
 };

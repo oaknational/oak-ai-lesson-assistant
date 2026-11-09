@@ -25,7 +25,7 @@ const Skeleton = ({
   );
 };
 
-const skeletonStyles = cva("duration-600 mb-12 min-h-[50px]", {
+const skeletonStyles = cva("mb-12 min-h-[50px]", {
   variants: {
     loaded: {
       true: "background-transparent",

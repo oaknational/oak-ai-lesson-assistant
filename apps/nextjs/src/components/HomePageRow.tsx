@@ -37,7 +37,7 @@ const HomePageRow = ({
       py="9"
       align="center"
       gap="8"
-      className={`${bg} relative after:${bg} after:top:0 bg-[#E3E9FB] py-27 before:absolute before:left-[-50vw] before:top-0 before:z-[-1] before:h-full before:w-[150vw] before:bg-[#E3E9FB] after:absolute after:left-[-50vw] after:z-[-1] after:h-full after:w-[150vw]`}
+      className={`${bg} relative after:${bg} after:top:0 bg-[#E3E9FB] py-27 before:absolute before:top-0 before:left-[-50vw] before:z-[-1] before:h-full before:w-[150vw] before:bg-[#E3E9FB] after:absolute after:left-[-50vw] after:z-[-1] after:h-full after:w-[150vw]`}
     >
       <Box className="mx-auto mb-10 max-w-[300px] sm:mx-0 sm:max-w-[400px] md:mb-0">
         <Image src={image} alt="jigsaw image" />

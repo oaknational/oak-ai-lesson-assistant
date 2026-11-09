@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import Button from "../../Button";
 
 const promptExplainerButtonVariants = cva(
-  "left-0 top-[-120px] z-10 flex w-44 flex-col bg-lemon30 p-10 opacity-100 delay-75 duration-150",
+  "top-[-120px] left-0 z-10 flex w-44 flex-col bg-lemon30 p-10 opacity-100 delay-75 duration-150",
 );
 
 type PromptExplainerButtonProps = {
@@ -38,7 +38,7 @@ const PromptExplainerButton = ({
                 position="absolute"
                 className={promptExplainerButtonVariants()}
               >
-                <span className="absolute bottom-[-4px] left-[-5px] h-0 w-0 rotate-[-90deg] border-l-[12px] border-r-[12px] border-t-[15px] border-l-transparent border-r-transparent border-t-lemon30"></span>
+                <span className="absolute bottom-[-4px] left-[-5px] h-0 w-0 -rotate-90 border-t-15 border-r-12 border-l-12 border-t-lemon30 border-r-transparent border-l-transparent"></span>
                 <Text className="text-sm">
                   {description} {"   "}
                 </Text>

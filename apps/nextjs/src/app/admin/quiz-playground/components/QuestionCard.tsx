@@ -75,7 +75,7 @@ export function QuestionCard({
               </p>
             </MathJaxWrap>
           </div>
-          <span className="bg-blue-100 text-blue-700 whitespace-nowrap rounded px-2 py-1 text-xs">
+          <span className="bg-blue-100 text-blue-700 rounded px-2 py-1 text-xs whitespace-nowrap">
             {q.questionType}
           </span>
         </div>
@@ -84,7 +84,7 @@ export function QuestionCard({
   }
 
   return (
-    <div className="rounded-lg border bg-white p-6 shadow-sm">
+    <div className="rounded-lg border bg-white p-6 shadow-xs">
       <div className="mb-3 flex items-start justify-between">
         <span className="font-mono text-xs text-gray-500">
           {question.sourceUid}

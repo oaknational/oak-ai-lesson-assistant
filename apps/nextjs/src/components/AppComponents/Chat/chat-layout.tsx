@@ -19,7 +19,7 @@ export const ChatLayout = ({ className }: Readonly<ChatLayoutProps>) => {
   return (
     // Pinned to the viewport, so its top edge moves rather than being pushed down.
     <div
-      className={cn("fixed bottom-0 left-0 right-0 z-30", className)}
+      className={cn("fixed right-0 bottom-0 left-0 z-30", className)}
       style={{ top: STATUS_BANNER_OFFSET }}
     >
       <div

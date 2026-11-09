@@ -85,7 +85,7 @@ const Input: React.FC<InputProps> = ({
       <label htmlFor={name} className={labelStyles()}>
         {label}
       </label>
-      <div className="relative w-[100%]">
+      <div className="relative w-full">
         {type === "text" && (
           <input
             type="text"
@@ -132,7 +132,7 @@ const Input: React.FC<InputProps> = ({
             <span className="z-20">
               <Icon
                 icon="chevron-down"
-                className="pointer-events-none absolute right-9 top-9 sm:right-10 sm:top-10"
+                className="pointer-events-none absolute top-9 right-9 sm:top-10 sm:right-10"
                 size="sm"
               />
             </span>

@@ -33,11 +33,11 @@ const MainNavigationWithRef = (
       ref={ref}
       // Takes the slide transition's classes from Headless UI
       className={cn(
-        "fixed bottom-0 right-0 top-0 z-50 h-screen w-full min-w-[60vw] bg-aqua p-22 md:w-[50vw]",
+        "fixed top-0 right-0 bottom-0 z-50 h-screen w-full min-w-[60vw] bg-aqua p-22 md:w-[50vw]",
         className,
       )}
     >
-      <Box position="absolute" className="right-[36px] top-[30px]">
+      <Box position="absolute" className="top-[30px] right-[36px]">
         <Button
           variant="icon-only"
           size="lg"
@@ -131,7 +131,7 @@ const MainNavigationWithRef = (
       <Image
         src={loopingLine}
         alt="looping line"
-        className="absolute bottom-0 right-0 -z-10 w-[80%] opacity-30"
+        className="absolute right-0 bottom-0 -z-10 w-[80%] opacity-30"
       />
     </nav>
   );

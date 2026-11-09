@@ -10,8 +10,8 @@ import { Icon } from "@/components/Icon";
 import { dialogOverlay } from "./FeedbackDialog";
 
 const dialogContent = cva([
-  "bottom-0 left-0 right-0 top-0 md:bottom-[20%] md:left-[20%] md:right-[20%] md:top-[20%]",
-  "data-[state=open]:animate-contentShow fixed z-50 border-2 border-black bg-twilight p-10 focus:outline-none md:p-30",
+  "top-0 right-0 bottom-0 left-0 md:top-[20%] md:right-[20%] md:bottom-[20%] md:left-[20%]",
+  "data-[state=open]:animate-contentShow fixed z-50 border-2 border-black bg-twilight p-10 focus:outline-hidden md:p-30",
   "flex items-center justify-center",
 ]);
 
@@ -77,7 +77,7 @@ const RestoreDialog = (props: Readonly<RestoreDialogProps>) => {
         </Flex>
         <Dialog.Close asChild>
           <button
-            className="absolute right-10 top-10 sm:right-10 sm:top-10"
+            className="absolute top-10 right-10 sm:top-10 sm:right-10"
             onClick={closeDialog}
           >
             Close

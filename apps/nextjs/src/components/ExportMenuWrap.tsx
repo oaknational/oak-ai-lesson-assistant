@@ -8,7 +8,7 @@ import useAnalytics from "@/lib/analytics/useAnalytics";
 import Button from "./Button";
 
 const exportMenuStyles = cva(
-  "fixed bottom-0 left-0 top-0 z-[60] w-full overflow-y-scroll bg-aqua p-17 pb-30 delay-100 duration-200 md:w-[50%]",
+  "fixed top-0 bottom-0 left-0 z-60 w-full overflow-y-scroll bg-aqua p-17 pb-30 delay-100 duration-200 md:w-[50%]",
   {
     variants: {
       open: {
@@ -20,7 +20,7 @@ const exportMenuStyles = cva(
 );
 
 const exportMenuOverlayStyles = cva(
-  "fixed inset-0 bg-black bg-opacity-60 delay-100 duration-200 hover:bg-opacity-30",
+  "fixed inset-0 bg-black/60 delay-100 duration-200 hover:bg-black/30",
   {
     variants: {
       open: {

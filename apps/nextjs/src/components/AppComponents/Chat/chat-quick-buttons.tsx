@@ -77,7 +77,7 @@ const QuickActionButtons = () => {
   }, [append, lessonPlanTracking, trackEvent]);
 
   return (
-    <div className="-ml-7 flex justify-between space-x-7 rounded-bl rounded-br pt-8">
+    <div className="-ml-7 flex justify-between space-x-7 rounded-br rounded-bl pt-8">
       <div className="flex items-center">
         {shouldAllowUserAction && (
           <>

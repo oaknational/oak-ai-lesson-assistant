@@ -73,7 +73,7 @@ export function Header({ page }: { page?: "teachingMaterials" | "aila" }) {
               $alignItems="center"
               $gap="spacing-12"
             >
-              <span className="h-[28px] w-[1px] bg-[#cacaca]" />
+              <span className="h-[28px] w-px bg-[#cacaca]" />
               <OakSpan $font="body-2" $color="text-primary">
                 Oak&apos;s AI lesson assistant
               </OakSpan>

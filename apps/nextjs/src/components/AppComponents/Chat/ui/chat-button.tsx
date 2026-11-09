@@ -35,7 +35,7 @@ const button = cva(
         secondary: "border-2 border-black bg-white text-black",
         "text-link": "border-0 bg-transparent px-0 text-black",
         "icon-only":
-          "rounded-full border-0 bg-transparent px-0 text-black focus:outline-none focus:ring-2 focus:ring-offset-2",
+          "rounded-full border-0 bg-transparent px-0 text-black focus:ring-2 focus:ring-offset-2 focus:outline-hidden",
       },
       active: {
         true: "underline opacity-80",

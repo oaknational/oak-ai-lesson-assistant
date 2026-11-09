@@ -12,7 +12,7 @@ export function SidebarList() {
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="flex-1 overflow-auto">
         <div className="mb-30 space-y-7 px-7">
-          <p className="mb-14 border-t-2 border-black border-opacity-20 pl-10 pt-14 text-xl font-bold">
+          <p className="mb-14 border-t-2 border-black/20 pt-14 pl-10 text-xl font-bold">
             Lesson history
           </p>
           {chats?.length ? <SidebarItems chats={chats} /> : null}
