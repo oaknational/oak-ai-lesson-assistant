@@ -6,7 +6,8 @@
  */
 @layer theme, base, radix, components, utilities;
 @import "@radix-ui/themes/styles.css" layer(radix);
-@import "tailwindcss";
+/* Look for class names in src only, as the v3 config did, wherever the build runs from */
+@import "tailwindcss" source("../");
 
 @plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
