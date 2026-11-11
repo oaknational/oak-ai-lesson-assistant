@@ -91,6 +91,49 @@
   --color-teal: #037b7d;
   --color-peachCream: #ffece0;
 
+  /* v4 changed the default palette's colours, so keep the v3 values of the shades we use */
+  --color-slate-700: #334155;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+
+  --color-yellow-100: #fef9c3;
+  --color-yellow-400: #facc15;
+  --color-yellow-700: #a16207;
+
+  --color-green-50: #f0fdf4;
+  --color-green-200: #bbf7d0;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+
   /* v3 drew rings with no colour class in translucent blue; v4 would use currentColor */
   --default-ring-color: rgb(59 130 246 / 0.5);
 
