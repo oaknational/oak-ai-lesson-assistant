@@ -211,20 +211,18 @@ export const LessonPlanDisplay = ({
               </Text>
             )}
           </Flex>
-          <h1 className="text-2xl font-bold sm:pb-12 sm:pt-8 sm:text-4xl">
+          <h1 className="text-2xl font-bold sm:pt-8 sm:pb-12 sm:text-4xl">
             {lessonPlan.title}
           </h1>{" "}
           {notEmpty(lessonPlan) && lessonPlan.topic !== lessonPlan.title && (
-            <h2 className="text-lg font-bold placeholder-opacity-90">
-              {lessonPlan.topic}
-            </h2>
+            <h2 className="text-lg font-bold">{lessonPlan.topic}</h2>
           )}
         </Flex>
       )}
 
       {notEmpty(lessonPlan.basedOn) && (
         <Flex direction="row" gap="2" className="pb-12">
-          <Text className="whitespace-nowrap font-bold">Based on:</Text>
+          <Text className="font-bold whitespace-nowrap">Based on:</Text>
           {lessonPlan.basedOn && (
             <Text>{basedOnTitle(lessonPlan.basedOn)}</Text>
           )}

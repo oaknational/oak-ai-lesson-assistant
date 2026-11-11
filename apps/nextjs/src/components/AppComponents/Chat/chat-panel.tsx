@@ -55,7 +55,7 @@ export function ChatPanel({ isDemoLocked }: Readonly<ChatPanelProps>) {
     [lessonPlanTracking, setInput, sidebar, trackEvent, id, append],
   );
 
-  const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} peer-[[data-state=open]]:group-[]:lg:pl-[250px] peer-[[data-state=open]]:group-[]:xl:pl-[300px]`;
+  const containerClass = `grid w-full grid-cols-1 ${hasMessages ? "sm:grid-cols-1" : ""} lg:in-[.group]:peer-data-[state=open]:pl-[250px] xl:in-[.group]:peer-data-[state=open]:pl-[300px]`;
 
   return (
     <div className={containerClass}>

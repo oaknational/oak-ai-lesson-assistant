@@ -47,7 +47,7 @@ export default function ShareChat({
   return (
     <div className="flex-1">
       <div data-testid="share-banner" className="bg-lavender50 px-9">
-        <div className="mx-auto max-w-2xl py-14 text-sm min-[835px]:max-w-[80rem] min-[835px]:px-27">
+        <div className="mx-auto max-w-2xl py-14 text-sm min-[835px]:max-w-7xl min-[835px]:px-27">
           Created {!!creatorsName && "by " + creatorsName} with{" "}
           <Link href="/" className="bv-3 text-hyperlink underline">
             Aila, Oak&apos;s AI lesson assistant
@@ -57,12 +57,12 @@ export default function ShareChat({
         </div>
       </div>
       <div className="bg-lavender30 px-9">
-        <div className="mx-auto max-w-2xl min-[835px]:max-w-[80rem] min-[835px]:px-27">
+        <div className="mx-auto max-w-2xl min-[835px]:max-w-7xl min-[835px]:px-27">
           <div className="py-9">
             <Logo />
           </div>
-          <div className="relative pb-24 pt-18">
-            <div className="absolute left-1 top-14 hidden items-center justify-center py-14 xl:flex">
+          <div className="relative pt-18 pb-24">
+            <div className="absolute top-14 left-1 hidden items-center justify-center py-14 xl:flex">
               <Icon
                 className="flex items-center justify-center"
                 icon="ai-lesson"

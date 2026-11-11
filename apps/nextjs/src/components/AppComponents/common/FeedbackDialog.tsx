@@ -18,17 +18,17 @@ type FeedbackDialogProps = {
 };
 
 export const dialogContent = cva([
-  "fixed bottom-0 left-0 right-0 top-0",
+  "fixed top-0 right-0 bottom-0 left-0",
   "border-2 border-black",
-  "md:bottom-[20%] md:left-[20%] md:right-[20%] md:top-[20%]",
+  "md:top-[20%] md:right-[20%] md:bottom-[20%] md:left-[20%]",
   "flex items-center justify-center",
-  "data-[state=open]:animate-contentShow z-50 bg-twilight p-10 focus:outline-none md:p-30",
+  "data-[state=open]:animate-contentShow z-50 bg-twilight p-10 focus:outline-hidden md:p-30",
 ]);
 
 export const dialogOverlay = cva([
   "flex items-center justify-center",
   "cursor-pointer",
-  "bg-white bg-opacity-80 duration-300 hover:bg-opacity-50",
+  "bg-white/80 duration-300 hover:bg-white/50",
   "fixed inset-0 z-40",
 ]);
 
@@ -97,7 +97,7 @@ const FeedbackDialog = ({
 
         <RadixDialog.Close asChild>
           <button
-            className="absolute right-10 top-10 sm:right-10 sm:top-10"
+            className="absolute top-10 right-10 sm:top-10 sm:right-10"
             onClick={() => {
               closeDialog();
               setHasSubmitted(false);

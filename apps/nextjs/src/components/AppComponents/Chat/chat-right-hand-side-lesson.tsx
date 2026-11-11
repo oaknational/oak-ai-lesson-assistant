@@ -57,7 +57,7 @@ const ChatRightHandSideLesson = ({
 
   return (
     <div
-      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "right-[-100%] sm:right-0"} right-0 ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
+      className={`fixed bottom-0 ${showLessonMobile ? "right-0" : "-right-full sm:right-0"} ${demo.isDemoUser ? "top-8 sm:top-0" : "top-0"} z-30 w-[95%] bg-white shadow-md duration-300 sm:relative sm:z-0 sm:w-[50%] sm:shadow-none lg:w-full`}
       data-testid="chat-right-hand-side-lesson"
       ref={documentContainerRef}
       onScroll={handleScroll}
@@ -69,7 +69,7 @@ const ChatRightHandSideLesson = ({
       />
 
       <button
-        className="sticky top-32 z-10 block w-full bg-white px-14 pb-9 pt-12 sm:hidden"
+        className="sticky top-32 z-10 block w-full bg-white px-14 pt-12 pb-9 sm:hidden"
         onClick={() => {
           documentContainerRef.current?.scrollTo({
             top: 0,
@@ -88,7 +88,7 @@ const ChatRightHandSideLesson = ({
         />
       </div>
       <div
-        className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed bottom-20 left-0 right-0 items-center justify-center duration-150 sm:hidden`}
+        className={`${hasResponses && showLessonMobile ? "flex" : "hidden"} fixed right-0 bottom-20 left-0 items-center justify-center duration-150 sm:hidden`}
       >
         <ChatButton
           variant="primary"
@@ -102,7 +102,7 @@ const ChatRightHandSideLesson = ({
         </ChatButton>
       </div>
       <span
-        className={`sticky left-0 right-0 hidden justify-center duration-500 sm:flex ${showScrollButton ? "bottom-10 z-10 opacity-100" : "bottom-0 z-30 opacity-0"} `}
+        className={`sticky right-0 left-0 hidden justify-center duration-500 sm:flex ${showScrollButton ? "bottom-10 z-10 opacity-100" : "bottom-0 z-30 opacity-0"} `}
       >
         <ChatButton
           variant="primary"

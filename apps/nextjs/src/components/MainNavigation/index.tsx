@@ -29,13 +29,13 @@ export default function MainNavigation({
         <div className="flex h-screen">
           <TransitionChild
             as={Fragment}
-            enter="transition-opacity ease-in duration-600"
-            enterFrom="transition-opacity ease-in duration-600 opacity-0"
-            enterTo="transition-opacity ease-in duration-600 opacity-30"
-            entered="transition-opacity ease-in duration-600 opacity-30"
-            leave="transition-opacity ease-out duration-600"
-            leaveFrom="transition-opacity ease-in duration-600 opacity-30"
-            leaveTo="transition-opacity ease-in duration-600 opacity-0"
+            enter="transition-opacity ease-in"
+            enterFrom="transition-opacity ease-in opacity-0"
+            enterTo="transition-opacity ease-in opacity-30"
+            entered="transition-opacity ease-in opacity-30"
+            leave="transition-opacity ease-out"
+            leaveFrom="transition-opacity ease-in opacity-30"
+            leaveTo="transition-opacity ease-in opacity-0"
           >
             {/* Headless UI 2 only closes on clicks outside a DialogPanel, and
                 this dialog has none, so close on backdrop clicks explicitly */}

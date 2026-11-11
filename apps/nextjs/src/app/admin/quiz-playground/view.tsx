@@ -513,7 +513,7 @@ function Section({
 
   return (
     <div
-      className={`rounded-xl border-2 ${colors.border} ${colors.bg} shadow-sm`}
+      className={`rounded-xl border-2 ${colors.border} ${colors.bg} shadow-xs`}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -566,7 +566,7 @@ function SourceAccordion({
   }
 
   return (
-    <div className="rounded-xl border-2 border-mint bg-mint30 shadow-sm">
+    <div className="rounded-xl border-2 border-mint bg-mint30 shadow-xs">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full items-center justify-between px-5 py-4 text-left"
@@ -755,7 +755,7 @@ function ComposerPromptPreview({
             this to select the best 6 questions for the quiz.
           </p>
         </LearnBlock>
-        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+        <pre className="max-h-96 overflow-auto rounded bg-gray-50 p-4 font-mono text-xs whitespace-pre-wrap">
           {prompt}
         </pre>
       </SubSection>
@@ -818,7 +818,7 @@ function ComposerSection({
             this to select the best 6 questions for the quiz.
           </p>
         </LearnBlock>
-        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+        <pre className="max-h-96 overflow-auto rounded bg-gray-50 p-4 font-mono text-xs whitespace-pre-wrap">
           {prompt}
         </pre>
       </SubSection>
@@ -866,7 +866,7 @@ function ComposerSection({
                     </span>
                   )}
                 </div>
-                <p className="mb-2 text-sm italic text-gray-600">
+                <p className="mb-2 text-sm text-gray-600 italic">
                   {selection.reasoning}
                 </p>
                 {question && (
@@ -934,7 +934,7 @@ function FinalQuizDisplay({
       </div>
 
       {showJson && (
-        <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-4 font-mono text-xs">
+        <pre className="max-h-96 overflow-auto rounded bg-gray-50 p-4 font-mono text-xs whitespace-pre-wrap">
           {JSON.stringify(quiz, null, 2)}
         </pre>
       )}

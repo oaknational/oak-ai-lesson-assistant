@@ -20,7 +20,7 @@ export const MobileExportButtons = ({
 
   return (
     <>
-      <div className="ml-[-10px] mt-27 flex justify-between px-14 pt-6 sm:hidden">
+      <div className="mt-27 ml-[-10px] flex justify-between px-14 pt-6 sm:hidden">
         <button
           onClick={() => {
             closeMobileLessonPullOut();

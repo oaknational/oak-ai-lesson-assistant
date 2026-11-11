@@ -7,7 +7,7 @@ export function LessonNotCreatedBanner() {
   const router = useRouter();
 
   return (
-    <div className="w-full px-14 pb-14 pt-9 sm:px-22 sm:pb-22 sm:pt-7">
+    <div className="w-full px-14 pt-9 pb-14 sm:px-22 sm:pt-7 sm:pb-22">
       <OakInlineBanner
         isOpen
         type="neutral"
