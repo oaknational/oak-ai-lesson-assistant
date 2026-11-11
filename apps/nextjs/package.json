@@ -140,7 +140,7 @@
     "storybook": "^10.6.5",
     "tailwindcss": "^4.3.3",
     "ts-jest": "^29.2.5",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "engines": {
     "node": ">=24.22.1 <25",
