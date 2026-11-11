@@ -138,7 +138,7 @@
     "postcss": "^8.5.32",
     "postcss-loader": "^8.1.1",
     "storybook": "^10.6.5",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.4",
     "ts-jest": "^29.2.5",
     "typescript": "6.0.3"
   },
