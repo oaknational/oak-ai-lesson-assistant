@@ -23,8 +23,8 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@clerk/backend": "^3.26.5",
-    "@clerk/nextjs": "7.9.23",
+    "@clerk/backend": "^3.27.0",
+    "@clerk/nextjs": "7.9.25",
     "@oakai/aila": "workspace:*",
     "@oakai/core": "workspace:*",
     "@oakai/db": "workspace:*",
@@ -33,9 +33,9 @@
     "@oakai/lesson-adapters": "workspace:*",
     "@oakai/logger": "workspace:*",
     "@oakai/teaching-materials": "workspace:*",
-    "@trpc/server": "11.22.1",
+    "@trpc/server": "11.25.2",
     "cloudinary": "^2.11.0",
-    "next": "16.4.4",
+    "next": "16.4.5",
     "remeda": "^2.58.0",
     "superjson": "^2.2.6",
     "zod": "4.6.7"

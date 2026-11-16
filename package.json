@@ -56,10 +56,10 @@
     "@semantic-release/git": "^11.0.1",
     "@types/jest": "^30.0.0",
     "autoprefixer": "^10.6.2",
-    "next": "16.4.4",
+    "next": "16.4.5",
     "postcss": "^8.5.32",
     "semantic-release": "^25.0.9",
-    "serialize-error": "^13.0.2",
+    "serialize-error": "^13.1.0",
     "sonarqube-scanner": "^5.0.2",
     "turbo": "^2.5.8",
     "typescript": "6.0.3"
