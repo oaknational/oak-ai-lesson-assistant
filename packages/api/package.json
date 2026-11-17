@@ -35,7 +35,7 @@
     "@oakai/teaching-materials": "workspace:*",
     "@trpc/server": "11.22.1",
     "cloudinary": "^2.11.0",
-    "next": "16.4.4",
+    "next": "16.4.5",
     "remeda": "^2.58.0",
     "superjson": "^2.2.6",
     "zod": "4.6.7"
