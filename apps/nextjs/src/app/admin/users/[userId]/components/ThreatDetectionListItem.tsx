@@ -33,7 +33,7 @@ export function ThreatDetectionListItem({
   const canMarkFalsePositive = !threatDetection.isFalsePositive;
 
   return (
-    <li className="rounded-md border p-6 shadow-sm">
+    <li className="rounded-md border p-6 shadow-xs">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1 space-y-5">
           <p className="text-sm text-zinc-600">
@@ -44,7 +44,7 @@ export function ThreatDetectionListItem({
           </p>
 
           <figure>
-            <figcaption className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+            <figcaption className="mb-1 text-xs font-semibold tracking-wide text-zinc-400 uppercase">
               Flagged message
             </figcaption>
             <blockquote className="max-w-3xl border-l-4 border-zinc-400 bg-zinc-50 px-5 py-4 text-base leading-relaxed text-zinc-900">
@@ -121,7 +121,7 @@ export function ThreatDetectionListItem({
               header="Provider response"
               id={`threat-provider-response-${threatDetection.id}`}
             >
-              <pre className="overflow-x-auto whitespace-pre-wrap text-xs">
+              <pre className="overflow-x-auto text-xs whitespace-pre-wrap">
                 <code>
                   {JSON.stringify(threatDetection.providerResponse, null, 2)}
                 </code>

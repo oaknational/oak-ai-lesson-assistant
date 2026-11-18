@@ -63,7 +63,7 @@ const FeedBack = ({
           ref={closeButtonRef}
           onClick={closeDialogWithPostHogDismiss}
           tabIndex={0}
-          className="absolute right-7 top-7 h-20 w-20"
+          className="absolute top-7 right-7 h-20 w-20"
         />
 
         {survey?.questions.map((question, i) => {

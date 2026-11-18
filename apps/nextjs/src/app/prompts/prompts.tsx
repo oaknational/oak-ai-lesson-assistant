@@ -79,10 +79,7 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
           {apps.map((app) => {
             if (app.name !== "Lesson planner") {
               return (
-                <OakLI
-                  key={app.id}
-                  className="border-b border-black border-opacity-30 pb-14"
-                >
+                <OakLI key={app.id} className="border-b border-black/30 pb-14">
                   <OakHeading
                     tag="h3"
                     $font="body-1-bold"
@@ -114,7 +111,7 @@ export const PromptsContent = ({ apps }: PromptsPageData) => {
                             Prompt:
                             <br />
                           </OakP>
-                          <pre className="max-w-full whitespace-pre-wrap break-words">
+                          <pre className="max-w-full wrap-break-word whitespace-pre-wrap">
                             {prompt.template}
                           </pre>
                         </OakLI>

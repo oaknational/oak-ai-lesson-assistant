@@ -127,7 +127,7 @@ export function ThumbnailsWithKlpTab({
                         <OakBox
                           $background="bg-primary"
                           $borderRadius="border-radius-circle"
-                          className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center"
+                          className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center"
                         >
                           <OakP $font="body-4" $color="text-inverted">
                             {index + 1}
@@ -152,7 +152,7 @@ export function ThumbnailsWithKlpTab({
                         <OakBox
                           $background="bg-decorative1-main"
                           $borderRadius="border-radius-circle"
-                          className="mt-1 flex h-5 w-5 flex-shrink-0 items-center justify-center"
+                          className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center"
                         >
                           <OakP $font="body-4" $color="text-inverted">
                             {index + 1}

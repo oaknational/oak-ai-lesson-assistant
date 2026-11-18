@@ -5,29 +5,29 @@ import BoxBorderLeft from "../Border/BoxBorder/BoxBorderLeft";
 import BoxBorderRight from "../Border/BoxBorder/BoxBorderRight";
 import BoxBorderTop from "../Border/BoxBorder/BoxBorderTop";
 
-const boxEdgeBottom = cva("absolute w-[100%]", {
+const boxEdgeBottom = cva("absolute w-full", {
   variants: {
     inputType: {
-      textarea: "bottom-4 left-0 right-0",
-      text: "bottom-0 left-0 right-0",
-      dropdown: "bottom-0 left-0 right-0",
-      email: "bottom-0 left-0 right-0",
+      textarea: "right-0 bottom-4 left-0",
+      text: "right-0 bottom-0 left-0",
+      dropdown: "right-0 bottom-0 left-0",
+      email: "right-0 bottom-0 left-0",
     },
   },
 });
 
-const boxEdgeLeft = cva("absolute bottom-0 left-0 top-0", {
+const boxEdgeLeft = cva("absolute top-0 bottom-0 left-0", {
   variants: {
     inputType: {
       textarea: "h-[93%]",
-      text: "h-[100%]",
-      dropdown: "h-[100%]",
-      email: "h-[100%]",
+      text: "h-full",
+      dropdown: "h-full",
+      email: "h-full",
     },
   },
 });
 
-const boxEdgeRight = cva("absolute bottom-0 right-0 h-[90%]", {
+const boxEdgeRight = cva("absolute right-0 bottom-0 h-[90%]", {
   variants: {
     inputType: {
       textarea: "bottom-4",
@@ -47,7 +47,7 @@ const BoxEdges = ({ inputType }: Readonly<BoxEdgesProps>) => {
     <>
       <BoxBorderLeft className={boxEdgeLeft({ inputType })} />
       <BoxBorderRight className={boxEdgeRight({ inputType })} />
-      <BoxBorderTop className="absolute left-0 right-0 top-0 w-[100%]" />
+      <BoxBorderTop className="absolute top-0 right-0 left-0 w-full" />
       <BoxBorderBottom className={boxEdgeBottom({ inputType })} />
     </>
   );

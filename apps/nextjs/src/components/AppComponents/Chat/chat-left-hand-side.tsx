@@ -50,7 +50,7 @@ const ChatLeftHandSide = ({
         {!isDemoLocked && <QuickActionButtons />}
       </div>
       <ChatPanel isDemoLocked={isDemoLocked} />
-      <span className="absolute right-0 top-[-70px] z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
+      <span className="absolute top-[-70px] right-0 z-10 hidden h-[calc(100vh+100px)] w-3 bg-black sm:block" />
     </Flex>
   );
 };

@@ -3,7 +3,6 @@ import { Toaster } from "react-hot-toast";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { Theme } from "@radix-ui/themes";
-import "@radix-ui/themes/styles.css";
 import * as Sentry from "@sentry/nextjs";
 import { GeistMono } from "geist/font/mono";
 import type { Metadata } from "next";

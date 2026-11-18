@@ -106,14 +106,14 @@ export const StaticSection = ({
 
   return (
     <div ref={sectionRef}>
-      <Flex align="center" gap="3" className="mb-11 mt-20">
+      <Flex align="center" gap="3" className="mt-20 mb-11">
         <Box>
-          <h2 className="mb-0 mt-0 text-xl font-bold">{title}</h2>
+          <h2 className="mt-0 mb-0 text-xl font-bold">{title}</h2>
         </Box>
         <Tooltip.Provider delayDuration={0}>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
-              <Box className="mb-0 mt-0">
+              <Box className="mt-0 mb-0">
                 <button className="my-0 flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full bg-black p-4">
                   <span className="p-3 text-xs text-white">i</span>
                 </button>

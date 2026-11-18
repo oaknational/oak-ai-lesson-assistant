@@ -40,7 +40,7 @@ export function ChatMessage({
       {normalParts.length > 0 && (
         <Message.Container roleType={message.role === "user" ? "user" : "aila"}>
           <button
-            className="absolute left-0 top-0 h-20 w-20"
+            className="absolute top-0 left-0 h-20 w-20"
             onClick={() => {
               setInspect(!inspect);
             }}

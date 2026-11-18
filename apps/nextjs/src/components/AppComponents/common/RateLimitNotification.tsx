@@ -13,7 +13,7 @@ import Button from "../../Button";
 const notificationStyles = cva(
   [
     "text-center text-black",
-    "top-[70px] z-50 w-full max-w-[100%] bg-lemon sm:max-w-[350px]",
+    "top-[70px] z-50 w-full max-w-full bg-lemon sm:max-w-[350px]",
     "shadow-xl duration-500",
     "border-2 border-black",
   ],

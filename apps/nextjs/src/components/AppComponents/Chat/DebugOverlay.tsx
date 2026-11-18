@@ -65,7 +65,7 @@ export function DebugOverlay() {
   }
 
   return (
-    <aside className="fixed bottom-[88px] right-10 z-[70] w-[260px] overflow-hidden rounded-sm border-2 border-black bg-white text-sm text-black shadow-lg">
+    <aside className="fixed right-10 bottom-[88px] z-70 w-[260px] overflow-hidden rounded-sm border-2 border-black bg-white text-sm text-black shadow-lg">
       <button
         type="button"
         className={`flex w-full items-center justify-between gap-7 px-8 py-6 text-left font-bold ${
@@ -82,7 +82,7 @@ export function DebugOverlay() {
           {rows.map((row) => (
             <div key={row.label} className="contents">
               <dt className="font-bold">{row.label}:</dt>
-              <dd className="min-w-0 break-words">{row.value}</dd>
+              <dd className="min-w-0 wrap-break-word">{row.value}</dd>
             </div>
           ))}
         </dl>

@@ -79,7 +79,7 @@ export function SafetyViolationListItem({
   }
 
   return (
-    <li className="rounded-md border p-6 shadow-sm">
+    <li className="rounded-md border p-6 shadow-xs">
       <div className="flex items-start justify-between gap-4">
         <dl className="grid gap-2 text-sm text-zinc-700 md:grid-cols-2">
           <div>

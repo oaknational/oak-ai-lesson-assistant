@@ -75,7 +75,7 @@ function ModerationListItem({
   return (
     <li
       key={moderation.id}
-      className={`rounded-md border p-4 shadow-sm ${invalidated ? "opacity-50" : "opacity-100"}`}
+      className={`rounded-md border p-4 shadow-xs ${invalidated ? "opacity-50" : "opacity-100"}`}
     >
       <div className="flex w-full items-start justify-between">
         <div className="flex w-full flex-col space-y-8">
@@ -96,10 +96,10 @@ function ModerationListItem({
             </OakPrimaryButton>
           </div>
 
-          <blockquote className="border-l-4 bg-gray-50 p-4 pl-4 italic text-zinc-700 shadow-md">
+          <blockquote className="border-l-4 bg-gray-50 p-4 pl-4 text-zinc-700 italic shadow-md">
             {moderation.justification}
           </blockquote>
-          <div className="mt-2 space-x-2">
+          <div className="space-x-2">
             {Array.from(new Set(moderation.categories))
               .map((c) => String(c))
               .map((category) => (

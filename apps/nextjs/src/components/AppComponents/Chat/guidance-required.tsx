@@ -19,7 +19,7 @@ export function GuidanceRequired({
 
   return (
     <div className={cn("flex rounded-md bg-videoBlue p-14", className)}>
-      <div className="ml-4 mr-12">
+      <div className="mr-12 ml-4">
         <Icon icon="warning" />
       </div>
       <div>

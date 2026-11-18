@@ -34,7 +34,7 @@ const createComponents = (className?: string): Partial<Components> => ({
     <p className={cn("mb-7 last:mb-0", className)}>{children}</p>
   ),
   h1: ({ children }) => (
-    <h2 className="mb-0 mt-20 text-xl font-bold">{children}</h2>
+    <h2 className="mt-20 mb-0 text-xl font-bold">{children}</h2>
   ),
   // Disable blockquote rendering to prevent answers like "> 90 degrees" from being styled as quotes
   blockquote: ({ children }) => <>{children}</>,
@@ -130,7 +130,7 @@ export const MemoizedReactMarkdownWithStyles = ({
     [markdown],
   );
   return (
-    <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+    <div className="prose wrap-break-word dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
       <MemoizedReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={components}

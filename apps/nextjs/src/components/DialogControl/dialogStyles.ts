@@ -5,11 +5,11 @@ export const dialogContent = cva([
   "data-[state=open]:animate-contentShow z-50",
 ]);
 export const dialogContentInner = cva([
-  "h-[100vh] overflow-y-scroll",
+  "h-screen overflow-y-scroll",
   "sm:mx-20 sm:border-2 sm:border-black",
-  "max-h-[100vh] w-full sm:h-full sm:w-[80%] md:w-[680px]",
+  "max-h-screen w-full sm:h-full sm:w-[80%] md:w-[680px]",
   "flex w-full flex-col items-center justify-between",
-  "data-[state=open]:animate-contentShow bg-white p-10 pb-24 focus:outline-none md:p-22",
+  "data-[state=open]:animate-contentShow bg-white p-10 pb-24 focus:outline-hidden md:p-22",
 ]);
 
 export const dialogOverlay = cva(
@@ -17,8 +17,8 @@ export const dialogOverlay = cva(
   {
     variants: {
       opacity: {
-        true: "bg-white sm:bg-lavender30/80 sm:bg-opacity-90", // Adjust opacity class as needed
-        false: "bg-white sm:bg-lavender30 sm:bg-opacity-90",
+        true: "bg-white sm:bg-lavender30/80", // Adjust opacity class as needed
+        false: "bg-white sm:bg-lavender30/90",
       },
     },
     defaultVariants: {

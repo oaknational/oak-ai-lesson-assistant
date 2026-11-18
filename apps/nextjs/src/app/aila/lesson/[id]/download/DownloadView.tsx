@@ -46,7 +46,7 @@ export function DownloadContent({ chat }: Readonly<DownloadViewProps>) {
         isShared={chat.isShared}
       />
       <SurveyDialogLauncher />
-      <div className="mx-auto mb-26 mt-30 w-full max-w-[1280px] px-9">
+      <div className="mx-auto mt-30 mb-26 w-full max-w-[1280px] px-9">
         <Box width="100%">
           <Box className="w-full">
             <Button

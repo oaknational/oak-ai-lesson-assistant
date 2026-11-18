@@ -64,7 +64,7 @@ export const CycleSection = ({ cycleSection }: CycleSectionProps) => {
 
   if (!cycle) {
     return (
-      <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+      <OakBox className="prose wrap-break-word dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
         <OakHeading tag="h2">There's been a problem</OakHeading>
         <p>
           It looks like this learning cycle hasn't generated properly. Tap{" "}
@@ -77,7 +77,7 @@ export const CycleSection = ({ cycleSection }: CycleSectionProps) => {
   return (
     <MathJax hideUntilTypeset="every" dynamic>
       {/* Apply prose styling only to text content sections, not the quiz */}
-      <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+      <OakBox className="prose wrap-break-word dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
         <OakHeading tag="h2">{cycle.title ?? "…"}</OakHeading>
 
         <OakHeading tag="h3" $mt="spacing-24">
@@ -90,13 +90,13 @@ export const CycleSection = ({ cycleSection }: CycleSectionProps) => {
         />
       </OakBox>
       {/* Quiz section without prose styling to prevent checkbox alignment issues */}
-      <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+      <OakBox className="prose wrap-break-word dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
         <OakHeading tag="h3" $mt="spacing-24">
           Check for understanding
         </OakHeading>
       </OakBox>
       <CheckForUnderstandingQuiz cycle={cycle} />
-      <OakBox className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
+      <OakBox className="prose wrap-break-word dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
         <OakHeading tag="h3" $mt="spacing-24">
           Practice
         </OakHeading>

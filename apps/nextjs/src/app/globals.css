@@ -1,6 +1,347 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+ * Radix Themes CSS has no @layer, and CSS outside a layer beats CSS inside one,
+ * so imported as-is it would override every Tailwind class.
+ * Putting it between Tailwind's base and utilities layers keeps the Tailwind 3 order:
+ * Radix overrides Tailwind's reset styles, and Tailwind classes override Radix.
+ */
+@layer theme, base, radix, components, utilities;
+@import "@radix-ui/themes/styles.css" layer(radix);
+/* Look for class names in src only, as the v3 config did, wherever the build runs from */
+@import "tailwindcss" source("../");
+
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@source inline("bg-red-500 text-3xl lg:text-4xl bg-pupilsLimeGreen");
+
+/* Oak Components' round and icon buttons render a "shadow" class that the v3 .shadow utility styled */
+@source inline("shadow");
+
+@theme {
+  /* The v3 config replaced these palettes with a single colour, so their shades never existed */
+  --color-blue-*: initial;
+  --color-amber-*: initial;
+  --color-pink-*: initial;
+  --color-purple-*: initial;
+  --color-teal-*: initial;
+
+  --color-white: #fff;
+  --color-black: #222222;
+  --color-default: #222222;
+  --color-grey1: #f2f2f2;
+  --color-grey2: #e6e6e6;
+  --color-grey3: #ccc;
+  --color-grey4: #b3b3b3;
+  --color-grey5: #999;
+  --color-grey6: #808080;
+  --color-grey7: #666;
+  --color-grey8: #4d4d4d;
+  --color-grey9: #333;
+  --color-grey10: #1a1a1a;
+  --color-oakGrey1: #f5f5f5;
+  --color-oakGrey2: #dadada;
+  --color-oakGrey3: #878787;
+  --color-oakGrey4: #575756;
+  --color-oakGrey5: #2d2d2d;
+  --color-oakGrey6: #1b1b1b;
+  --color-pastelTurquoise: #b0e2de;
+  --color-warning: #ff7234;
+  --color-failure: #e51d4d;
+  --color-success: #a3e420;
+  --color-pupilsHighlight: #25ab38;
+  --color-pupilsAccentPink: #d02aa7;
+  --color-pupilsGreen: #85cb6d;
+  --color-pupilsLightGreen: #d5efd4;
+  --color-pupilsLimeGreen: #bef2bd;
+  --color-pupilsPink: #deb7d5;
+  --color-teachersHighlight: #374cf1;
+  --color-teachersGreen: #037b7d;
+  --color-teachersYellow: #ffe555;
+  --color-teachersPastelYellow: #f6e8a0;
+  --color-teachersPastelBlue: #a0b6f2;
+  --color-teachersRed: #e51d4d;
+  --color-teachersPurple: #845ad9;
+  --color-teachersLilac: #c6d1ef;
+  --color-twilight: #e5d1e0;
+  --color-videoBlue: #cee7e5;
+  --color-hyperlink: #0d24c4;
+  --color-oakGreen: #25ab38;
+  --color-mint: #bef2bd;
+  --color-mint50: #d5efd4;
+  --color-mint30: #ebfbeb;
+  --color-aqua: #b0e2de;
+  --color-aqua50: #cee7e5;
+  --color-aqua30: #e7f6f5;
+  --color-lemon: #ffe555;
+  --color-lemon50: #f6e8a0;
+  --color-lemon30: #fff7cc;
+  --color-lavender: #a0b6f2;
+  --color-lavender50: #c6d1ef;
+  --color-lavender30: #e3e9fb;
+  --color-pink: #deb7d5;
+  --color-pink50: #e5d1e0;
+  --color-pink30: #f5e9f2;
+  --color-amber: #ff934e;
+  --color-amber50: #ffc8a6;
+  --color-amber30: #ffdfca;
+  --color-blue: #374cf1;
+  --color-magenta: #d02aa7;
+  --color-purple: #845ad9;
+  --color-teal: #037b7d;
+  --color-peachCream: #ffece0;
+
+  /* v4 changed the default palette's colours, so keep the v3 values of the shades we use */
+  --color-slate-700: #334155;
+
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+
+  --color-yellow-100: #fef9c3;
+  --color-yellow-400: #facc15;
+  --color-yellow-700: #a16207;
+
+  --color-green-50: #f0fdf4;
+  --color-green-200: #bbf7d0;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+
+  /* v3 drew rings with no colour class in translucent blue; v4 would use currentColor */
+  --default-ring-color: rgb(59 130 246 / 0.5);
+
+  /* v3 sizes set font-size only, so drop the line-heights v4 pairs with them */
+  --text-xs: 12px;
+  --text-xs--line-height: initial;
+  --text-sm: 14px;
+  --text-sm--line-height: initial;
+  --text-base: 16px;
+  --text-base--line-height: initial;
+  --text-md: 17.6px;
+  --text-lg: 18px;
+  --text-lg--line-height: initial;
+  --text-xl: 20px;
+  --text-xl--line-height: initial;
+  --text-2xl: 24px;
+  --text-2xl--line-height: initial;
+
+  --spacing-1: 0px;
+  --spacing-2: 1px;
+  --spacing-3: 2px;
+  --spacing-4: 3px;
+  --spacing-5: 4px;
+  --spacing-6: 6px;
+  --spacing-7: 8px;
+  --spacing-8: 10px;
+  --spacing-9: 12px;
+  --spacing-10: 16px;
+  --spacing-11: 18px;
+  --spacing-12: 20px;
+  --spacing-13: 22px;
+  --spacing-14: 24px;
+  --spacing-15: 26px;
+  --spacing-16: 28px;
+  --spacing-17: 30px;
+  --spacing-18: 32px;
+  --spacing-19: 36px;
+  --spacing-20: 40px;
+  --spacing-21: 44px;
+  --spacing-22: 48px;
+  --spacing-23: 50px;
+  --spacing-24: 56px;
+  --spacing-25: 64px;
+  --spacing-26: 72px;
+  --spacing-27: 80px;
+  --spacing-28: 92px;
+  --spacing-29: 96px;
+  --spacing-30: 110px;
+  --spacing-31: 120px;
+  --spacing-32: 130px;
+  --spacing-33: 140px;
+  --spacing-34: 150px;
+  --spacing-35: 160px;
+  --spacing-36: 166px;
+  --spacing-37: 172px;
+  --spacing-38: 200px;
+  --spacing-39: 220px;
+  --spacing-40: 240px;
+  --spacing-41: 270px;
+  --spacing-42: 300px;
+  --spacing-43: 320px;
+  --spacing-44: 340px;
+  --spacing-45: 350px;
+  --spacing-46: 360px;
+  --spacing-47: 380px;
+  --spacing-48: 400px;
+  --spacing-49: 420px;
+  --spacing-50: 450px;
+  --spacing-51: 480px;
+  --spacing-52: 580px;
+  --spacing-53: 600px;
+  --spacing-54: 640px;
+  --spacing-55: 720px;
+  --spacing-56: 740px;
+  --spacing-57: 812px;
+  --spacing-58: 840px;
+  --spacing-59: 900px;
+  --spacing-60: 960px;
+  --spacing-61: 1280px;
+  --spacing-62: 1600px;
+
+  --animate-slide-from-left: slide-from-left 0.3s
+    cubic-bezier(0.82, 0.085, 0.395, 0.895);
+  --animate-slide-to-left: slide-to-left 0.25s
+    cubic-bezier(0.82, 0.085, 0.395, 0.895);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes slide-from-left {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes slide-to-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* These read runtime variables, so utilities must use them directly, not via a theme variable */
+@theme inline {
+  --font-sans:
+    var(--font-lexend), Lexend, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: var(--font-geist-mono);
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* Used by an arbitrary animate-[wiggle_...] class, which @theme keyframes do not cover */
+@keyframes wiggle {
+  0%,
+  100% {
+    background: #f2f2f2;
+  }
+  50% {
+    background: #d8d8d8;
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  /* v4 Preflight changed these defaults; keep the v3 look */
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* v4 Preflight zeroes all padding; v3 left the browser's 1px on table cells */
+  td,
+  th {
+    padding: 1px;
+  }
+
+  /* v4 resolves the mono font on :root, but GeistMono sets its variable on <body> */
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-geist-mono);
+  }
+}
 
 @layer base {
   :root {

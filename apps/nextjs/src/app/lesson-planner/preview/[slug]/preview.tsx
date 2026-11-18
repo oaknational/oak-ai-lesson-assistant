@@ -118,7 +118,7 @@ export const LessonPlanPreview = ({ planSections }) => {
               })}
             </Box>
           </Box>
-          <Box className="border-t-1 mb-16 mt-26 border border-black border-opacity-30" />
+          <Box className="mt-26 mb-16 border border-t border-black/30" />
           <Flex
             direction={{
               initial: "column",

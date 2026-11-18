@@ -23,7 +23,7 @@ export const ImageOnlyAnswerLayout = ({
             src={src}
             alt={alt}
             title={title}
-            className="aspect-[4/3] h-auto w-full max-w-full object-contain"
+            className="aspect-4/3 h-auto w-full max-w-full object-contain"
           />
         );
       },

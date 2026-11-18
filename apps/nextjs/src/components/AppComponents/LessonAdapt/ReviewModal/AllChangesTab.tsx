@@ -226,7 +226,7 @@ function ChangeCard({
           checked={isApproved}
           onChange={onToggle}
         />
-        <OakBox className="flex-grow">
+        <OakBox className="grow">
           <OakFlex $gap="spacing-8" $mb="spacing-8">
             <OakP $font="body-4" $color="text-subdued">
               Slide {slideNumber}

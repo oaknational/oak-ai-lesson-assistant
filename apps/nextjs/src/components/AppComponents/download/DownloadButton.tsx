@@ -153,12 +153,12 @@ export const DownloadButton = ({
   }
 
   const downloadButtonClasses = downloadAvailable
-    ? `border-opacity-100`
-    : ` border-opacity-40`;
+    ? `border-black`
+    : `border-black/40`;
   return (
     <>
       <button
-        className={`flex items-center justify-between gap-9 rounded-md border-2 border-black px-14 py-10 ${downloadButtonClasses}`}
+        className={`flex items-center justify-between gap-9 rounded-md border-2 px-14 py-10 ${downloadButtonClasses}`}
         onClick={() => onClick()}
         disabled={!downloadAvailable}
         data-testid={dataTestId}

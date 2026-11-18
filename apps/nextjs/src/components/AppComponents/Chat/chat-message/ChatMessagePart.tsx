@@ -88,7 +88,7 @@ function MarkdownMessage({ markdown }: Readonly<{ markdown: string }>) {
 function PartInspector({ part }: Readonly<{ part: MessagePart }>) {
   return (
     <div className="w-full bg-gray-200 px-8 py-16">
-      <pre className="w-full text-wrap text-xs">
+      <pre className="w-full text-xs text-wrap">
         {JSON.stringify(part, null, 2)}
       </pre>
     </div>

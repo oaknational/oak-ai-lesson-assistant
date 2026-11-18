@@ -143,7 +143,7 @@ export function ChatStart({
       <Flex
         direction="column"
         justify="center"
-        className="h-[100vh] min-h-screen bg-lavender30 pt-26"
+        className="h-screen min-h-screen bg-lavender30 pt-26"
       >
         <div className="flex h-full justify-between">
           <div className="h-full w-full overflow-y-scroll p-18 px-10 sm:w-[66%]">
@@ -176,7 +176,7 @@ export function ChatStart({
                   />
                 </div>
                 <div>
-                  <h3 className="mb-9 mt-22 text-base font-bold">
+                  <h3 className="mt-22 mb-9 text-base font-bold">
                     Or try an example:
                   </h3>
                   <div className="flex flex-col items-start space-y-14">

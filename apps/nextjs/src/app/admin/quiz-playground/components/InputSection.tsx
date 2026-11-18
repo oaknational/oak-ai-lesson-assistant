@@ -191,7 +191,7 @@ export function InputSection({
                   onClick={() => setQuizType("/starterQuiz")}
                   className={`rounded px-3 py-1.5 text-sm transition-all ${
                     quizType === "/starterQuiz"
-                      ? "bg-white font-medium text-gray-900 shadow-sm"
+                      ? "bg-white font-medium text-gray-900 shadow-xs"
                       : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
@@ -201,7 +201,7 @@ export function InputSection({
                   onClick={() => setQuizType("/exitQuiz")}
                   className={`rounded px-3 py-1.5 text-sm transition-all ${
                     quizType === "/exitQuiz"
-                      ? "bg-white font-medium text-gray-900 shadow-sm"
+                      ? "bg-white font-medium text-gray-900 shadow-xs"
                       : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
@@ -222,7 +222,7 @@ export function InputSection({
                 value={userInstructions}
                 onChange={(e) => setUserInstructions(e.target.value)}
                 placeholder='e.g., "focus on questions with images" or "make it harder"'
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-400 focus:outline-hidden"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ export function InputSection({
                 onClick={() => handleInputMethodChange(method)}
                 className={`flex-1 rounded-md px-3 py-2 text-sm transition-all ${
                   inputMethod === method
-                    ? "bg-white font-medium text-gray-900 shadow-sm"
+                    ? "bg-white font-medium text-gray-900 shadow-xs"
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
@@ -258,7 +258,7 @@ export function InputSection({
                 value={chatId}
                 onChange={(e) => setChatId(e.target.value)}
                 placeholder="Enter chat ID..."
-                className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-gray-400 focus:outline-none"
+                className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-gray-400 focus:outline-hidden"
               />
               <button
                 onClick={() => void handleChatIdSubmit()}
@@ -318,7 +318,7 @@ export function InputSection({
               onChange={(e) => setReportJson(e.target.value)}
               rows={6}
               placeholder="Paste report JSON..."
-              className="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-gray-400 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 px-3 py-2 font-mono text-sm focus:border-gray-400 focus:outline-hidden"
             />
             <button
               onClick={handleReportParse}
