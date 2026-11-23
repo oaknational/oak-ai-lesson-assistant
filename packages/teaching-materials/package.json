@@ -23,15 +23,15 @@
     "extends": "@oakai/eslint-config"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.111",
-    "@clerk/nextjs": "7.9.25",
+    "@ai-sdk/openai": "^4.0.118",
+    "@clerk/nextjs": "7.10.0",
     "@oakai/core": "workspace:*",
     "@oakai/logger": "workspace:*",
     "@oaknational/oak-curriculum-schema": "2.17.0",
-    "@sentry/nextjs": "^11.11.0",
-    "ai": "^7.0.166",
+    "@sentry/nextjs": "^11.12.0",
+    "ai": "^7.0.173",
     "dotenv-cli": "^11.1.0",
-    "openai": "^7.55.0",
+    "openai": "^7.57.0",
     "serialize-error": "^13.1.0",
     "zod": "4.6.7"
   },
