@@ -34,7 +34,7 @@
     "globals": "^17.14.0",
     "jsonc-eslint-parser": "^3.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "publishConfig": {
     "access": "public"
