@@ -57,11 +57,11 @@
     "@types/jest": "^30.0.0",
     "autoprefixer": "^10.6.2",
     "next": "16.4.6",
-    "postcss": "^8.5.32",
+    "postcss": "^8.5.33",
     "semantic-release": "^25.0.9",
     "serialize-error": "^13.1.0",
     "sonarqube-scanner": "^5.1.0",
-    "turbo": "^2.5.8",
+    "turbo": "^2.11.11",
     "typescript": "6.0.3"
   },
   "packageManager": "pnpm@11.28.6",
