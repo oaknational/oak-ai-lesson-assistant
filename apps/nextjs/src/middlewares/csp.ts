@@ -43,6 +43,13 @@ const posthogPolicies: Record<string, string[]> = {
   "connect-src": ["https://eu.i.posthog.com"],
 };
 
+// Gleap's API and frame are proxied via first-party *.thenational.academy
+// domains, but its realtime socket connects directly to wss://ws.gleap.io.
+// Matches the socket allowance in OWA's CSP.
+const gleapPolicies: Record<string, string[]> = {
+  "connect-src": ["wss://*.gleap.io"],
+};
+
 const devConsentPolicies: Record<string, string[]> = {
   "connect-src": [
     "https://europe-west2-oak-ai-beta-staging.cloudfunctions.net",
@@ -153,6 +160,7 @@ export const buildCspHeaders = (nonce: string, config: CspConfig) => {
       const value = [...baseValue];
 
       const additionalPolicies = [
+        gleapPolicies,
         config.enabledPolicies.vercel ? vercelPolicies : {},
         config.enabledPolicies.clerk ? clerkPolicies : {},
         config.enabledPolicies.avo ? avoPolicies : {},
